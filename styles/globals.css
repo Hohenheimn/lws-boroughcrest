@@ -1,26 +1,53 @@
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+@font-face {
+    font-family: "NHU-thin";
+    src: url("./fonts/NeueHaasUnica-Thin.ttf");
+}
+@font-face {
+    font-family: "NHU-regular";
+    src: url("./fonts/NeueHaasUnica-Regular.ttf");
+}
+@font-face {
+    font-family: "NHU-medium";
+    src: url("./fonts/NeueHaasUnica-Medium.ttf");
+}
+@font-face {
+    font-family: "NHU-bold";
+    src: url("./fonts/NeueHaasUnica-Bold.ttf");
+}
+@font-face {
+    font-family: "NHU-black";
+    src: url("./fonts/NeueHaasUnica-Black.ttf");
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: "NHU-bold";
+}
 * {
-  box-sizing: border-box;
+    font-family: "NHU-regular";
 }
-
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
-  body {
+/* custom theme for tooltip */
+.tippy-tooltip.ThemeRed-theme {
+    background-color: #8f384d;
     color: white;
-    background: black;
-  }
+}
+.tippy-tooltip.ThemeRed-theme[data-placement^="top"] .tippy-arrow {
+    border-top-color: #8f384d;
+}
+.tippy-tooltip.ThemeRed-theme[data-placement^="bottom"] .tippy-arrow {
+    border-bottom-color: #8f384d;
+}
+.tippy-tooltip.ThemeRed-theme[data-placement^="left"] .tippy-arrow {
+    border-left-color: #8f384d;
+}
+.tippy-tooltip.ThemeRed-theme[data-placement^="right"] .tippy-arrow {
+    border-right-color: #8f384d;
 }
