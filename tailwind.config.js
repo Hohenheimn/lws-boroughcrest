@@ -52,7 +52,7 @@ module.exports = {
                 "2500px": { max: "2500px" },
                 "1920px": { max: "1920px" },
                 "1366px": { max: "1366px" },
-                "1120px": { max: "1120px" },
+                "1280px": { max: "1280px" },
                 "1024px": { max: "1024px" },
                 "820px": { max: "820px" },
                 "640px": { max: "640px" },

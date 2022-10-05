@@ -1,9 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Head from "next/head";
-import Link from "next/link";
 import { useRouter } from "next/router";
-import Tippy from "@tippy.js/react";
-import "tippy.js/dist/tippy.css";
+import { Sidebar } from "./PagesUrl";
+import { MdArrowForwardIos } from "react-icons/md";
+import { BiMenuAltRight } from "react-icons/bi";
+import { motion, AnimatePresence } from "framer-motion";
+import MenuLink from "./MenuLink";
+import Submenu from "./Submenu";
+import { FadeSide } from "../Animation/SimpleAnimation";
+import { BsSearch } from "react-icons/bs";
+import { IoNotificationsSharp } from "react-icons/io5";
+import { IoIosArrowDown } from "react-icons/io";
+import { imgProfile } from "../../public/Images/Image";
+import Image from "next/image";
+import CorporateSearch from "../Search/CorporateSearch";
 
 type Layout = {
     children: React.ReactNode;
@@ -11,222 +21,211 @@ type Layout = {
 
 export default function Layout({ children }: Layout) {
     const [isProfileSearch, setProfileSearch] = useState(false);
+    const [isPathName, setPathName] = useState<any>();
+
     const router = useRouter();
     const ValidateParentUrl = router.pathname.split("/")[1];
-    const Sidebar = [
-        {
-            name: "dashboard",
-            url: "/",
-            iconUrl: "Dashboard.png",
-            ActiveUrl: "",
-            SubMenu: [],
-        },
-        {
-            name: "project",
-            url: "/project/corporate",
-            iconUrl: "Project.png",
-            ActiveUrl: "project",
-            SubMenu: [
-                {
-                    name: "corporate",
-                    url: "/project/corporate",
-                    ActiveName: "corporate",
-                },
-                {
-                    name: "user",
-                    url: "/project/user",
-                    ActiveName: "user",
-                },
-                {
-                    name: "roles",
-                    url: "/project/roles",
-                    ActiveName: "roles",
-                },
-            ],
-        },
-        {
-            name: "admin",
-            url: "/admin/customer",
-            iconUrl: "Admin.png",
-            ActiveUrl: "admin",
-            SubMenu: [
-                {
-                    name: "customer",
-                    url: "/admin/customer",
-                    ActiveName: "customer",
-                },
-                {
-                    name: "property",
-                    url: "/admin/property",
-                    ActiveName: "property",
-                },
-                {
-                    name: "request",
-                    url: "/admin/request",
-                    ActiveName: "request",
-                },
-                {
-                    name: "communication",
-                    url: "/admin/communication",
-                    ActiveName: "communication",
-                },
-            ],
-        },
-        {
-            name: "finance",
-            url: "/finance",
-            iconUrl: "Finance.png",
-            ActiveUrl: "finance",
-            SubMenu: [],
-        },
-    ];
+    // toggle for responsive sidebar
+    const [isHide, setHide] = useState<boolean>(false);
+    const [isWindow, setWindow] = useState<any>();
+
+    useEffect(() => {
+        window.innerWidth <= 1024 ? setHide(true) : setHide(false);
+        const updateSize = () => {
+            window.innerWidth <= 1024 ? setHide(true) : setHide(false);
+            setWindow(window.innerWidth);
+        };
+        window.addEventListener("resize", updateSize);
+        setWindow(window.innerWidth);
+    }, []);
+
+    // run this code when the URL change
+    useEffect(() => {
+        setPathName(router.asPath);
+        if (router.asPath.includes("corporate?details")) {
+            setProfileSearch(true);
+        } else {
+            setProfileSearch(false);
+        }
+    }, [router.asPath]);
 
     return (
         <>
             <Head>
                 <title>Boroughcrest</title>
             </Head>
-            <div className="flex flex-wrap bg-MainBG bg-no-repeat bg-cover min-h-screen bg-Gray bg-blend-multiply">
-                <aside className=" 1920:w-300px 2500:w-[500px] border-r-2 border-white min-h-container pt-5 flex flex-col items-center">
-                    <img src="/Images/deus.png" className=" mb-10" alt="" />
-                    <h1 className="font-medium w-full pl-5 mb-5">OVERVIEW</h1>
-                    <div className="w-full flex">
-                        <ul
-                            className={` self-start ${
-                                !isProfileSearch && "w-full"
-                            }`}
-                        >
-                            {Sidebar.map((item, index) => (
-                                <MenuLink
-                                    key={index}
-                                    isProfileSearch={isProfileSearch}
-                                    url={item.url}
-                                    iconUrl={item.iconUrl}
-                                    urlName={item.name}
-                                    ActiveUrl={item.ActiveUrl}
-                                >
-                                    {ValidateParentUrl === item.ActiveUrl &&
-                                        item.SubMenu.length !== 0 && (
-                                            <Submenu
-                                                SubmenuDetail={item.SubMenu}
-                                            />
-                                        )}
-                                </MenuLink>
-                            ))}
-                        </ul>
-                        {/* Search Profile */}
-                        {isProfileSearch && (
-                            <ul className=" flex-1 border border-black overflow-hidden">
-                                <h1>Search Profile Here</h1>
-                            </ul>
+            <div className="flex bg-MainBG bg-no-repeat bg-cover min-h-screen bg-Gray bg-blend-multiply">
+                <AnimatePresence>
+                    {!isHide && (
+                        <>
+                            <motion.aside
+                                variants={FadeSide}
+                                initial="initial"
+                                animate="animate"
+                                exit="exit"
+                                className={`${
+                                    isWindow <= 1024 &&
+                                    "fixed top-0 left-0 z-50 bg-[#ebedf2f6]"
+                                } w-[400px] 1920px:w-[350px] 1280px:w-[300px] border-r-2 border-white min-h-full pt-5 flex flex-col`}
+                            >
+                                <div className=" w-full flex justify-center">
+                                    <img src="/Images/deus.png" alt="" />
+                                </div>
+
+                                <div className="w-full h-full flex flex-1">
+                                    <ul
+                                        className={` self-start pt-10 ${
+                                            !isProfileSearch && "w-full"
+                                        }`}
+                                    >
+                                        <div className=" flex justify-between items-center px-5 mb-5 duration-75">
+                                            <AnimatePresence>
+                                                {!isProfileSearch && (
+                                                    <motion.h1
+                                                        variants={FadeSide}
+                                                        initial="initial"
+                                                        animate="animate"
+                                                        exit="exit"
+                                                    >
+                                                        OVERVIEW
+                                                    </motion.h1>
+                                                )}
+                                            </AnimatePresence>
+                                            {router.asPath.includes(
+                                                "corporate?details"
+                                            ) && (
+                                                <motion.div
+                                                    layout
+                                                    transition={{
+                                                        duration: 0.2,
+                                                        ease: "linear",
+                                                    }}
+                                                >
+                                                    <MdArrowForwardIos
+                                                        className={`cursor-pointer text-[24px] duration-100 ease-out text-ThemeRed ${
+                                                            !isProfileSearch &&
+                                                            "rotate-180"
+                                                        }`}
+                                                        onClick={() =>
+                                                            setProfileSearch(
+                                                                !isProfileSearch
+                                                            )
+                                                        }
+                                                    />
+                                                </motion.div>
+                                            )}
+                                        </div>
+
+                                        {Sidebar.map((item, index) => (
+                                            <MenuLink
+                                                key={index}
+                                                isProfileSearch={
+                                                    isProfileSearch
+                                                }
+                                                url={item.url}
+                                                iconUrl={item.iconUrl}
+                                                urlName={item.name}
+                                                ActiveUrl={item.ActiveUrl}
+                                            >
+                                                {ValidateParentUrl ===
+                                                    item.ActiveUrl &&
+                                                    item.SubMenu.length !==
+                                                        0 && (
+                                                        <Submenu
+                                                            SubmenuDetail={
+                                                                item.SubMenu
+                                                            }
+                                                        />
+                                                    )}
+                                            </MenuLink>
+                                        ))}
+                                    </ul>
+                                    {/* Search Profile */}
+                                    <div className="flex-1 shadow-2xl">
+                                        <AnimatePresence>
+                                            {isProfileSearch && (
+                                                <motion.ul
+                                                    variants={FadeSide}
+                                                    className=" w-full overflow-hidden h-full bg-[#f1f2f5]"
+                                                >
+                                                    {isPathName.includes(
+                                                        "corporate?details"
+                                                    ) && <CorporateSearch />}
+                                                </motion.ul>
+                                            )}
+                                        </AnimatePresence>
+                                    </div>
+                                </div>
+                            </motion.aside>
+                        </>
+                    )}
+                </AnimatePresence>
+
+                <section className="flex flex-col flex-1 1024px:w-full">
+                    <div className="h-full w-full 1024px:p-5 1024px:py-10  p-10 relative">
+                        {isWindow <= 1024 && (
+                            <button
+                                onClick={() => setHide(!isHide)}
+                                className={`absolute z-[99]  right-5 top-3 text-[16px] duration-75 ease-in-out p-1 px-5 shadow-lg rounded-full ${
+                                    isHide
+                                        ? "bg-ThemeRed text-white"
+                                        : "bg-white text-ThemeRed"
+                                }`}
+                            >
+                                <BiMenuAltRight />
+                            </button>
                         )}
+                        <header
+                            className={` flex ${
+                                router.pathname === "/"
+                                    ? "justify-between"
+                                    : "justify-end"
+                            } items-center mb-10 480px:flex-wrap 480px:justify-end`}
+                        >
+                            {router.pathname === "/" && (
+                                <div
+                                    className=" flex items-center px-8 py-4 bg-white flex-1 max-w-[600px] rounded-lg shadow-lg 640px:px-4 640px:py-2 480px:order-2
+                            "
+                                >
+                                    <input
+                                        type="text"
+                                        className="flex-1 outline-none text-14px "
+                                        placeholder="Search anything here..."
+                                    />
+                                    <BsSearch className=" mr-2 text-gray-500 text-[18px]" />
+                                </div>
+                            )}
+                            <ul className=" flex items-center ml-5  480px:my-5">
+                                <li className=" relative mr-5 cursor-pointer">
+                                    <IoNotificationsSharp className=" text-ThemeRed text-[32px]" />
+                                    <div className="absolute w-4 h-4 text-[11px] top-[-5%] right-[-8%] flex justify-center items-start rounded-full bg-Green text-white">
+                                        1
+                                    </div>
+                                </li>
+                                <li className=" flex items-center">
+                                    <aside className=" w-10 h-10 rounded-full overflow-hidden relative shadow-lg mr-3">
+                                        <Image
+                                            src={imgProfile.profile}
+                                            layout="fill"
+                                        />
+                                    </aside>
+                                    <p className="flex items-center cursor-pointer">
+                                        John Doe{" "}
+                                        <IoIosArrowDown className="ml-1 mt-1" />
+                                    </p>
+                                </li>
+                            </ul>
+                        </header>
+                        <main className="w-full">{children}</main>
                     </div>
-                </aside>
-                <section className=" p-10">
-                    <header>Header</header>
-                    <main>{children}</main>
+                    <footer className="w-full h-14 flex justify-end items-center px-10 1024px:px-5">
+                        <p className=" text-ThemeRed text-sm 480px:text-[11px] font-medium">
+                            2022 Boroughcrest Property Management Systems Corp.
+                            All rights reserved.
+                        </p>
+                    </footer>
                 </section>
-                <footer className="w-full h-14 flex justify-end items-center px-10">
-                    <p className=" text-ThemeRed text-sm font-medium">
-                        2022 Boroughcrest Property Management Systems Corp. All
-                        rights reserved.
-                    </p>
-                </footer>
             </div>
         </>
     );
 }
-type MenuLink = {
-    isProfileSearch: boolean;
-    url: string;
-    iconUrl: string;
-    urlName: string;
-    ActiveUrl: string;
-    children: React.ReactNode;
-};
-const MenuLink = ({
-    isProfileSearch,
-    urlName,
-    iconUrl,
-    url,
-    ActiveUrl,
-    children,
-}: MenuLink) => {
-    const router = useRouter();
-    const ValidateUrl = router.pathname.split("/")[1];
-    return (
-        <li className=" mb-3 z-20">
-            <Link href={`${url}`}>
-                <a
-                    className={` flex items-center cursor-pointer ${
-                        ValidateUrl === ActiveUrl && "bg-ThemeRed"
-                    }`}
-                >
-                    <Tippy theme="ThemeRed" content={urlName}>
-                        <img
-                            className="mx-5 my-3"
-                            src={`/images/${
-                                ValidateUrl === ActiveUrl ? "Active" : ""
-                            }${iconUrl}`}
-                            alt=""
-                        />
-                    </Tippy>
-                    {!isProfileSearch && (
-                        <p
-                            className={`${
-                                ValidateUrl === ActiveUrl
-                                    ? "text-white"
-                                    : "text-ThemeRed"
-                            } font-medium capitalize`}
-                        >
-                            {urlName}
-                        </p>
-                    )}
-                </a>
-            </Link>
-            {!isProfileSearch && children}
-        </li>
-    );
-};
-
-type SubmenuDetail = {
-    SubmenuDetail?: any;
-};
-
-const Submenu = ({ SubmenuDetail }: SubmenuDetail) => {
-    const router = useRouter();
-    const innerUrl = router.pathname.split("/")[2];
-    return (
-        <ul className=" text-ThemeRed50 font-medium pt-2 overflow-hidden mt-2">
-            {SubmenuDetail.map(
-                (
-                    item: { url: string; ActiveName: string; name: string },
-                    index: number
-                ) => (
-                    <li className=" pl-16 flex items-center mb-2" key={index}>
-                        <div
-                            className={` h-10 -mt-9 w-3 mr-1 border-l-2 border-b-2 rounded-bl-lg ${
-                                innerUrl === item.ActiveName
-                                    ? "border-ThemeRed"
-                                    : "border-gray-300"
-                            }`}
-                        ></div>
-                        <Link href={`${item.url}`}>
-                            <a
-                                className={` w-fill flex-1 text-ThemeRed py-1 relative ${
-                                    innerUrl === item.ActiveName
-                                        ? "border-r-8 border-Green after:bg-GradientGreen after:w-full after:h-full after:absolute after:left-0 after:top-0"
-                                        : "hover:border-r-8 hover:border-Green duration-75 after:bg-GradientGreen after:w-0 hover:after:w-full after:h-full after:absolute after:right-0 after:top-0 after:duration-[500ms]"
-                                }`}
-                            >
-                                <p className=" z-10 relative text-[16px]">
-                                    {item.name}
-                                </p>
-                            </a>
-                        </Link>
-                    </li>
-                )
-            )}
-        </ul>
-    );
-};

@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { FaKey, FaEnvelope } from "react-icons/fa";
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import Image from "next/image";
 import { imgLogo, imgBackgrounds } from "../public/Images/Image";
 
 export default function Login() {
     const [isUsername, setUsername] = useState();
     const [isPassword, setPassword] = useState();
+
+    const [isEye, setEye] = useState(false);
 
     const Login = () => {};
 
@@ -58,17 +61,30 @@ export default function Login() {
                             <div className=" flex items-center border-2 border-gray-300 px-2 py-1 bg-white w-full max-w-[400px] mb-5">
                                 <FaKey className=" mr-2 text-ThemeRed" />
                                 <input
-                                    type="email"
+                                    type={`${!isEye ? "password" : "text"}`}
                                     className="flex-1 outline-none text-16px"
-                                    placeholder="Enter Email Password"
+                                    placeholder="Enter Password"
                                 />
+                                <div
+                                    onClick={() => setEye(!isEye)}
+                                    className="text-ThemeRed text-[20px]"
+                                >
+                                    {!isEye ? (
+                                        <AiFillEyeInvisible />
+                                    ) : (
+                                        <AiFillEye />
+                                    )}
+                                </div>
                             </div>
-                            <div className="">
+                            <div className=" flex items-center justify-between w-full max-w-[400px] mb-5 640px:mb-4">
                                 <button
                                     onClick={Login}
                                     className=" w-32 py-1 bg-ThemeRed rounded-lg text-white text-[14px] hover:shadow-lg duration-75 ease-in-out font-medium hover:bg-white hover:text-ThemeRed"
                                 >
                                     LOG IN
+                                </button>
+                                <button className="text-ThemeRed hover:underline text-[14px]">
+                                    Remember me
                                 </button>
                             </div>
                         </section>
