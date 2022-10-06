@@ -3,13 +3,17 @@ import { AiFillCamera } from "react-icons/ai";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
-export default function NewCorporate() {
+type NewCorporate = {
+    setToggleNew: Function;
+};
+
+export default function NewCorporate({ setToggleNew }: NewCorporate) {
     const modal = useRef<any>();
     const router = useRouter();
     useEffect(() => {
         const clickOutSide = (e: any) => {
             if (!modal.current.contains(e.target)) {
-                router.push("/project/corporate");
+                setToggleNew(false);
             }
         };
         document.addEventListener("mousedown", clickOutSide);
@@ -18,7 +22,7 @@ export default function NewCorporate() {
         };
     }, []);
     return (
-        <div className=" fixed top-0 left-0 h-screen overflow-auto w-full bg-[#00000040] p-10 z-50 flex justify-center items-center 820px:items-start 480px:p-0 480px:py-5">
+        <div className=" fixed top-0 left-0 h-screen overflow-auto w-full bg-[#00000040] p-10 z-50 flex justify-center items-center 820px:items-center 375px:items-start 480px:p-0 480px:py-5">
             <section
                 ref={modal}
                 className=" p-10 bg-[#e2e3e4] rounded-lg w-[90%] max-w-[700px] text-ThemeRed shadow-lg"
@@ -131,11 +135,13 @@ export default function NewCorporate() {
                     <li className=" flex-1 flex flex-col w-[48%]"></li>
                 </ul>
                 <div className=" w-full flex justify-end items-center">
-                    <Link href="/project/corporate">
-                        <a className=" text-ThemeRed font-semibold text-[14px] mr-5">
-                            CANCEL
-                        </a>
-                    </Link>
+                    <button
+                        onClick={() => setToggleNew(false)}
+                        className=" text-ThemeRed font-semibold text-[14px] mr-5"
+                    >
+                        CANCEL
+                    </button>
+
                     <button className=" text-white h-8 w-20 flex justify-center items-center duration-75 hover:bg-ThemeRed50 leading-none bg-ThemeRed rounded-md text-[14px] mr-5">
                         NEXT
                     </button>

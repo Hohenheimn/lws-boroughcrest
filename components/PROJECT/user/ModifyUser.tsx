@@ -1,15 +1,12 @@
 import React, { useRef, useEffect } from "react";
 import { AiFillCamera } from "react-icons/ai";
-import { useRouter } from "next/router";
-import Link from "next/link";
 
-type ModifyCorporate = {
+type ModifyUser = {
     setToggleModify: Function;
 };
 
-export default function ModifyCorporate({ setToggleModify }: ModifyCorporate) {
+export default function ModifyUser({ setToggleModify }: ModifyUser) {
     const modal = useRef<any>();
-    const router = useRouter();
     useEffect(() => {
         const clickOutSide = (e: any) => {
             if (!modal.current.contains(e.target)) {
@@ -22,7 +19,7 @@ export default function ModifyCorporate({ setToggleModify }: ModifyCorporate) {
         };
     }, []);
     return (
-        <div className=" fixed top-0 left-0 h-screen overflow-auto w-full bg-[#00000040] p-10 z-50 flex justify-center items-center 820px:items-center 375px:items-start 480px:p-5">
+        <div className=" fixed top-0 left-0 h-screen overflow-auto w-full bg-[#00000040] p-10 z-50 flex justify-center items-center origin-top 480px:p-5">
             <section
                 ref={modal}
                 className=" p-10 bg-[#e2e3e4] rounded-lg w-[90%] max-w-[700px] text-ThemeRed shadow-lg"

@@ -56,7 +56,12 @@ export default function FilterCorporate({ setFilter, isFilter }: setFilter) {
 const FilterList = ({ name }: any) => {
     return (
         <li className=" flex items-center mb-1">
-            <input type="checkbox" name="" id={name} className=" mr-1" />
+            <input
+                type="checkbox"
+                name=""
+                id={name}
+                className={`relative after:text-white after:flex after:justify-center after:items-center mr-1 checked:after:bg-ThemeRed checked:after:content-['✓'] appearance-none w-4 h-4 border border-red after:w-full after:h-full after:absolute after:left-0 after:top-0`}
+            />
             <label htmlFor={name}>{name}</label>
         </li>
     );

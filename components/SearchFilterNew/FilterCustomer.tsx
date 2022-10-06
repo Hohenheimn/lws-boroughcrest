@@ -8,7 +8,7 @@ type setFilter = {
     isFilter: boolean;
 };
 
-export default function FilterUser({ setFilter, isFilter }: setFilter) {
+export default function FilterCustomer({ setFilter, isFilter }: setFilter) {
     const modal = useRef<any>();
     useEffect(() => {
         const clickOutSide = (e: any) => {
@@ -33,15 +33,13 @@ export default function FilterUser({ setFilter, isFilter }: setFilter) {
         >
             <li className="font-medium">Columns</li>
             <FilterList name="All" />
-            <FilterList name="ID" />
+            <FilterList name="Class" />
             <FilterList name="Name" />
-            <FilterList name="Department" />
-            <FilterList name="Employee ID" />
-            <FilterList name="Email" />
             <FilterList name="Mobile" />
-            <FilterList name="Role" />
+            <FilterList name="Email" />
             <li>
                 <p className=" font-medium text-[12px]">Rows</p>
+
                 <select className="border border-ThemeRed px-[5px] py-[1px]">
                     <option value="10">10</option>
                     <option value="10">20</option>

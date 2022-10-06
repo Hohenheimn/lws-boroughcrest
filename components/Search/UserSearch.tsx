@@ -3,18 +3,18 @@ import { MdArrowForwardIos } from "react-icons/md";
 import { BsSearch } from "react-icons/bs";
 import Link from "next/link";
 
-export default function CorporateSearch() {
+export default function UserSearch() {
     return (
         <div className=" w-full">
             <div className=" w-full p-5 pb-0">
                 <aside className=" text-ThemeRed flex items-center mb-5 p-3 pb-0 w-full">
-                    <Link href="/project/corporate">
+                    <Link href="/project/user">
                         <a>
                             <MdArrowForwardIos className=" text-[24px] mr-3 rotate-180" />
                         </a>
                     </Link>
 
-                    <h1 className=" text-[20px]">Corporate</h1>
+                    <h1 className=" text-[20px]">User</h1>
                 </aside>
                 <aside className="p-3 w-full">
                     <div
@@ -30,7 +30,7 @@ export default function CorporateSearch() {
                     </div>
                 </aside>
             </div>
-            <Link href="/project/corporate/345">
+            <Link href="/project/user/345">
                 <a className="w-full">
                     <ul className="w-full flex p-5 border-b border-gray-300 flex-wrap">
                         <li className=" w-2/4">
@@ -52,7 +52,7 @@ export default function CorporateSearch() {
                     </ul>
                 </a>
             </Link>
-            <Link href="/project/corporate/789">
+            <Link href="/project/user/789">
                 <a className="w-full">
                     <ul className="w-full flex p-5 border-b border-gray-300 flex-wrap">
                         <li className=" w-2/4">
@@ -74,7 +74,7 @@ export default function CorporateSearch() {
                     </ul>
                 </a>
             </Link>
-            <Link href="/project/corporate/258">
+            <Link href="project/user/258">
                 <a className="w-full">
                     <ul className="w-full flex p-5 border-b border-gray-300 flex-wrap">
                         <li className=" w-2/4">

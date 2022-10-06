@@ -4,22 +4,31 @@ import Image from "next/image";
 import { BsSearch } from "react-icons/bs";
 import { AnimatePresence } from "framer-motion";
 import FilterCorporate from "./FilterCorporate";
-import Link from "next/link";
 import FilterUser from "./FilterUser";
+import FilterCustomer from "./FilterCustomer";
+import { BiExport, BiImport } from "react-icons/bi";
+import { BsFillPrinterFill } from "react-icons/bs";
+import Tippy from "@tippy.js/react";
+import "tippy.js/dist/tippy.css";
+import { useRouter } from "next/router";
 
 type SearchFilter = {
     page: string;
+    setToggleNew: Function;
 };
 
-export default function SearchFilter({ page }: SearchFilter) {
+export default function SearchFilter({ page, setToggleNew }: SearchFilter) {
     const [isFilter, setFilter] = useState(false);
+    const router = useRouter();
+    const ValidatePathName = router.pathname.split("/")[2];
+    console.log(ValidatePathName);
     return (
         <div>
             <h1 className=" font-bold mb-10 text-[24px] 480px:mb-5 capitalize">
                 {page}
             </h1>
-            <section className=" flex justify-between items-center mb-10 480px:flex-wrap 480px:justify-end">
-                <div className=" flex items-center shadow-lg px-4 py-2 bg-white flex-1 max-w-[500px] rounded-lg 480px:order-2">
+            <section className=" flex justify-between items-center mb-10 640px:flex-wrap 640px:justify-end">
+                <div className=" flex items-center shadow-lg px-4 py-2 bg-white flex-1 max-w-[500px] 640px:max-w-[unset] rounded-lg">
                     <input
                         type="text"
                         className="flex-1 outline-none text-14px "
@@ -27,18 +36,41 @@ export default function SearchFilter({ page }: SearchFilter) {
                     />
                     <BsSearch className=" mr-2 text-gray-500 text-[18px]" />
                 </div>
-                <ul className=" flex items-center ml-5  480px:my-5">
+                <ul className=" flex items-center ml-5  640px:my-5 640px:w-full">
+                    {ValidatePathName === "customer" && (
+                        <li className=" flex items-center">
+                            <Tippy theme="ThemeRed" content="Export">
+                                <div>
+                                    <BiExport className=" mr-5 text-ThemeRed text-[30px] font-bold cursor-pointer hover:text-ThemeRed50" />
+                                </div>
+                            </Tippy>
+                            <Tippy theme="ThemeRed" content="Import">
+                                <div>
+                                    <BiImport className=" mr-5 text-ThemeRed text-[30px] font-bold cursor-pointer hover:text-ThemeRed50" />
+                                </div>
+                            </Tippy>
+                            <Tippy theme="ThemeRed" content="Print">
+                                <div>
+                                    <BsFillPrinterFill className=" mr-5 text-ThemeRed text-[30px] font-bold cursor-pointer hover:text-ThemeRed50" />
+                                </div>
+                            </Tippy>
+                        </li>
+                    )}
+
                     <li className=" relative mr-5 cursor-pointer">
-                        <Link href="?new">
-                            <a className=" capitalize px-5 text-[14px] py-3 rounded-lg bg-ThemeRed text-white leading-none duration-75 hover:bg-ThemeRed50">
-                                New {page}
-                            </a>
-                        </Link>
+                        <button
+                            onClick={() => setToggleNew(true)}
+                            className=" capitalize px-5 480px:text-[12px] 480px:px-2 text-[14px] py-3 rounded-lg bg-ThemeRed text-white leading-none duration-75 hover:bg-ThemeRed50"
+                        >
+                            New {page}
+                        </button>
                     </li>
                     <li className=" flex items-center cursor-pointer relative">
-                        <button onClick={() => setFilter(true)}>
-                            <Image src={imgIcons.Filter} />
-                        </button>
+                        <Tippy content="Filter" theme="ThemeRed">
+                            <button onClick={() => setFilter(true)}>
+                                <Image src={imgIcons.Filter} />
+                            </button>
+                        </Tippy>
                         <AnimatePresence>
                             {isFilter && page === "corporate" && (
                                 <FilterCorporate
@@ -48,6 +80,12 @@ export default function SearchFilter({ page }: SearchFilter) {
                             )}
                             {isFilter && page === "user" && (
                                 <FilterUser
+                                    setFilter={setFilter}
+                                    isFilter={isFilter}
+                                />
+                            )}
+                            {isFilter && page === "customer" && (
+                                <FilterCustomer
                                     setFilter={setFilter}
                                     isFilter={isFilter}
                                 />

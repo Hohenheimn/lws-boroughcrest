@@ -14,6 +14,7 @@ import { IoIosArrowDown } from "react-icons/io";
 import { imgProfile } from "../../public/Images/Image";
 import Image from "next/image";
 import CorporateSearch from "../Search/CorporateSearch";
+import UserSearch from "../Search/UserSearch";
 
 type Layout = {
     children: React.ReactNode;
@@ -40,9 +41,13 @@ export default function Layout({ children }: Layout) {
     }, []);
 
     // run this code when the URL change
+    // it opens the sidebar search when in user or corporate Detail
     useEffect(() => {
         setPathName(router.asPath);
-        if (router.asPath.includes("corporate?details")) {
+        if (
+            router.asPath.includes("corporate/") ||
+            router.asPath.includes("user/")
+        ) {
             setProfileSearch(true);
         } else {
             setProfileSearch(false);
@@ -91,29 +96,33 @@ export default function Layout({ children }: Layout) {
                                                     </motion.h1>
                                                 )}
                                             </AnimatePresence>
+                                            {/* Show the toggle arrow icon */}
                                             {router.asPath.includes(
-                                                "corporate?details"
-                                            ) && (
-                                                <motion.div
-                                                    layout
-                                                    transition={{
-                                                        duration: 0.2,
-                                                        ease: "linear",
-                                                    }}
-                                                >
-                                                    <MdArrowForwardIos
-                                                        className={`cursor-pointer text-[24px] duration-100 ease-out text-ThemeRed ${
-                                                            !isProfileSearch &&
-                                                            "rotate-180"
-                                                        }`}
-                                                        onClick={() =>
-                                                            setProfileSearch(
-                                                                !isProfileSearch
-                                                            )
-                                                        }
-                                                    />
-                                                </motion.div>
-                                            )}
+                                                "corporate/"
+                                            ) ||
+                                                (router.asPath.includes(
+                                                    "user/"
+                                                ) && (
+                                                    <motion.div
+                                                        layout
+                                                        transition={{
+                                                            duration: 0.2,
+                                                            ease: "linear",
+                                                        }}
+                                                    >
+                                                        <MdArrowForwardIos
+                                                            className={`cursor-pointer text-[24px] duration-100 ease-out text-ThemeRed ${
+                                                                !isProfileSearch &&
+                                                                "rotate-180"
+                                                            }`}
+                                                            onClick={() =>
+                                                                setProfileSearch(
+                                                                    !isProfileSearch
+                                                                )
+                                                            }
+                                                        />
+                                                    </motion.div>
+                                                ))}
                                         </div>
 
                                         {Sidebar.map((item, index) => (
@@ -140,7 +149,7 @@ export default function Layout({ children }: Layout) {
                                             </MenuLink>
                                         ))}
                                     </ul>
-                                    {/* Search Profile */}
+                                    {/* What Search will show */}
                                     <div className="flex-1 shadow-2xl">
                                         <AnimatePresence>
                                             {isProfileSearch && (
@@ -149,8 +158,11 @@ export default function Layout({ children }: Layout) {
                                                     className=" w-full overflow-hidden h-full bg-[#f1f2f5]"
                                                 >
                                                     {isPathName.includes(
-                                                        "corporate?details"
+                                                        "corporate/"
                                                     ) && <CorporateSearch />}
+                                                    {isPathName.includes(
+                                                        "user/"
+                                                    ) && <UserSearch />}
                                                 </motion.ul>
                                             )}
                                         </AnimatePresence>

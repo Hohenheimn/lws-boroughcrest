@@ -15,11 +15,11 @@ export default function CorporateDetails() {
             </h1>
             <ul className=" w-full shadow-lg flex p-10 bg-white rounded-2xl flex-wrap mb-10">
                 <li className=" flex justify-between items-center w-full mb-5">
-                    <h1 className=" font-bold text-[24px] 480px:mb-5">
+                    <h1 className=" font-bold text-[24px] 480px:mb-0 480px:text-[16px]">
                         Primary Information
                     </h1>
                     <HiPencil
-                        className=" text-ThemeRed font-bold text-[32px] cursor-pointer"
+                        className=" text-ThemeRed font-bold text-[32px] 480px:text-[24px] cursor-pointer"
                         onClick={() => setToggleModify(true)}
                     />
                 </li>

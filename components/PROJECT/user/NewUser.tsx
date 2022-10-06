@@ -4,13 +4,18 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
-export default function NewUser() {
+
+type NewCorporate = {
+    setToggleNew: Function;
+};
+
+export default function NewUser({ setToggleNew }: NewCorporate) {
     const modal = useRef<any>();
     const router = useRouter();
     useEffect(() => {
         const clickOutSide = (e: any) => {
             if (!modal.current.contains(e.target)) {
-                router.push("/project/user");
+                setToggleNew(false);
             }
         };
         document.addEventListener("mousedown", clickOutSide);
@@ -134,11 +139,12 @@ export default function NewUser() {
                     </li>
                 </ul>
                 <div className=" w-full flex justify-end items-center">
-                    <Link href="/project/user">
-                        <a className=" text-ThemeRed font-semibold text-[14px] mr-5">
-                            CANCEL
-                        </a>
-                    </Link>
+                    <button
+                        onClick={() => setToggleNew(false)}
+                        className=" text-ThemeRed font-semibold text-[14px] mr-5"
+                    >
+                        CANCEL
+                    </button>
                     <button className=" text-white h-8 w-20 flex justify-center items-center duration-75 hover:bg-ThemeRed50 leading-none bg-ThemeRed rounded-md text-[14px] mr-5">
                         NEXT
                     </button>

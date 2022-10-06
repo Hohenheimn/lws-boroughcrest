@@ -33,7 +33,7 @@ const List = () => {
     return (
         <tr className="border-b border-gray-300 cursor-pointer">
             <td>
-                <Link href="?details=123">
+                <Link href="/project/user/123">
                     <a className="flex px-4 py-6">
                         <aside className=" w-10 h-10 rounded-full overflow-hidden relative shadow-lg mr-3">
                             <Image src={imgProfile.profile} layout="fill" />
@@ -48,7 +48,7 @@ const List = () => {
                 </Link>
             </td>
             <td>
-                <Link href="?details=123">
+                <Link href="/project/user/123">
                     <a className="flex px-4 py-6">
                         <div>
                             <h2 className=" text-[#2E4364] font-NHU-medium">
@@ -60,7 +60,7 @@ const List = () => {
                 </Link>
             </td>
             <td>
-                <Link href="?details=123">
+                <Link href="/project/user/123">
                     <a className="flex px-4 py-6">
                         <div>
                             <h2 className=" text-[#2E4364] font-NHU-medium">
@@ -72,7 +72,7 @@ const List = () => {
                 </Link>
             </td>
             <td>
-                <Link href="?details=123">
+                <Link href="/project/user/123">
                     <a className="flex px-4 py-6">
                         <div>
                             <h2 className=" text-[#2E4364] font-NHU-medium">
@@ -84,7 +84,7 @@ const List = () => {
                 </Link>
             </td>
             <td>
-                <Link href="?details=123">
+                <Link href="/project/user/123">
                     <a className="flex px-4 py-6">
                         <div>
                             <h2 className=" text-[#2E4364] font-NHU-medium">
@@ -96,7 +96,7 @@ const List = () => {
                 </Link>
             </td>
             <td>
-                <Link href="?details=123">
+                <Link href="/project/user/123">
                     <a className="flex px-4 py-6">
                         <div>
                             <h2 className=" text-[#2E4364] font-NHU-medium">
@@ -108,7 +108,7 @@ const List = () => {
                 </Link>
             </td>
             <td>
-                <Link href="?details=123">
+                <Link href="/project/user/123">
                     <a className="flex px-4 py-6">
                         <div>
                             <h2 className=" text-[#2E4364] font-NHU-medium">
