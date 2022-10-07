@@ -5,11 +5,14 @@ import Image from "next/image";
 import ModifyCustomer from "./ModifyCustomer";
 import CustomerInformation from "./CustomerInformation";
 import CustomerProperty from "./CustomerProperty";
+import Modal_Image from "../../Modal_Image";
 export default function CustomerDetail() {
     const [toggleModify, setToggleModify] = useState(false);
     const [isToggleInfoRole, setToggleInfoRole] = useState<boolean>(false);
+    const [isView, setView] = useState("");
     return (
         <div>
+            {isView !== "" && <Modal_Image setView={setView} isView={isView} />}
             {toggleModify && (
                 <ModifyCustomer setToggleModify={setToggleModify} />
             )}
@@ -101,7 +104,10 @@ export default function CustomerDetail() {
                             <p className=" text-gray-400 1024px:text-[14px]">
                                 VALID ID
                             </p>
-                            <button className="mt-1 px-5 rounded-lg py-1 bg-ThemeRed text-white hover:bg-ThemeRed50 duration-75">
+                            <button
+                                className="mt-1 px-5 rounded-lg py-1 bg-ThemeRed text-white hover:bg-ThemeRed50 duration-75"
+                                onClick={() => setView("view_id")}
+                            >
                                 VIEW
                             </button>
                         </li>
@@ -109,7 +115,10 @@ export default function CustomerDetail() {
                             <p className=" text-gray-400 1024px:text-[14px]">
                                 SIGNATURE
                             </p>
-                            <button className="mt-1 px-5 rounded-lg py-1 bg-ThemeRed text-white hover:bg-ThemeRed50 duration-75">
+                            <button
+                                className="mt-1 px-5 rounded-lg py-1 bg-ThemeRed text-white hover:bg-ThemeRed50 duration-75"
+                                onClick={() => setView("view_signature")}
+                            >
                                 VIEW
                             </button>
                         </li>

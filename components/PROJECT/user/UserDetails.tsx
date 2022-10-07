@@ -5,11 +5,14 @@ import Image from "next/image";
 import ModifyUser from "./ModifyUser";
 import UserInformation from "./UserInformation";
 import UserRolePermissions from "./UserRolePermissions";
+import Modal_Image from "../../Modal_Image";
 export default function UserDetails() {
     const [toggleModify, setToggleModify] = useState(false);
     const [isToggleInfoRole, setToggleInfoRole] = useState<boolean>(false);
+    const [isView, setView] = useState("");
     return (
         <div>
+            {isView !== "" && <Modal_Image setView={setView} isView={isView} />}
             {toggleModify && <ModifyUser setToggleModify={setToggleModify} />}
             <h1 className=" font-bold mb-10 text-[24px] 480px:mb-5">
                 User Details
@@ -60,7 +63,10 @@ export default function UserDetails() {
                             <p className=" text-gray-400 1024px:text-[14px] mb-1">
                                 SIGNATURE
                             </p>
-                            <button className=" px-5 rounded-lg py-1 bg-ThemeRed text-white hover:bg-ThemeRed50 duration-75">
+                            <button
+                                onClick={() => setView("view_signature")}
+                                className=" px-5 rounded-lg py-1 bg-ThemeRed text-white hover:bg-ThemeRed50 duration-75"
+                            >
                                 VIEW
                             </button>
                         </li>

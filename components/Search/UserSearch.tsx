@@ -74,7 +74,7 @@ export default function UserSearch() {
                     </ul>
                 </a>
             </Link>
-            <Link href="project/user/258">
+            <Link href="/project/user/258">
                 <a className="w-full">
                     <ul className="w-full flex p-5 border-b border-gray-300 flex-wrap">
                         <li className=" w-2/4">

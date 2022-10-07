@@ -15,7 +15,7 @@ import { imgProfile } from "../../public/Images/Image";
 import Image from "next/image";
 import CorporateSearch from "../Search/CorporateSearch";
 import UserSearch from "../Search/UserSearch";
-import CustomerSearch from "../ADMIN/Customer/CustomerSearch";
+import CustomerSearch from "../Search/CustomerSearch";
 
 type Layout = {
     children: React.ReactNode;
@@ -54,6 +54,7 @@ export default function Layout({ children }: Layout) {
         } else {
             setProfileSearch(false);
         }
+        console.log(router.query.id);
     }, [router.asPath]);
 
     return (
@@ -99,35 +100,27 @@ export default function Layout({ children }: Layout) {
                                                 )}
                                             </AnimatePresence>
                                             {/* Show the toggle arrow icon */}
-                                            {router.asPath.includes(
-                                                "corporate/"
-                                            ) ||
-                                                router.asPath.includes(
-                                                    "user/"
-                                                ) ||
-                                                (router.asPath.includes(
-                                                    "customer/"
-                                                ) && (
-                                                    <motion.div
-                                                        layout
-                                                        transition={{
-                                                            duration: 0.2,
-                                                            ease: "linear",
-                                                        }}
-                                                    >
-                                                        <MdArrowForwardIos
-                                                            className={`cursor-pointer text-[24px] duration-100 ease-out text-ThemeRed ${
-                                                                !isProfileSearch &&
-                                                                "rotate-180"
-                                                            }`}
-                                                            onClick={() =>
-                                                                setProfileSearch(
-                                                                    !isProfileSearch
-                                                                )
-                                                            }
-                                                        />
-                                                    </motion.div>
-                                                ))}
+                                            {router.query.id !== undefined && (
+                                                <motion.div
+                                                    layout
+                                                    transition={{
+                                                        duration: 0.2,
+                                                        ease: "linear",
+                                                    }}
+                                                >
+                                                    <MdArrowForwardIos
+                                                        className={`cursor-pointer text-[24px] duration-100 ease-out text-ThemeRed ${
+                                                            !isProfileSearch &&
+                                                            "rotate-180"
+                                                        }`}
+                                                        onClick={() =>
+                                                            setProfileSearch(
+                                                                !isProfileSearch
+                                                            )
+                                                        }
+                                                    />
+                                                </motion.div>
+                                            )}
                                         </div>
 
                                         {Sidebar.map((item, index) => (

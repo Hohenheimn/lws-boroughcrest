@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { AiFillCamera } from "react-icons/ai";
 import Link from "next/link";
 
@@ -19,6 +19,37 @@ export default function ModifyCustomer({ setToggleModify }: ModifyCustomer) {
             document.removeEventListener("mousedown", clickOutSide);
         };
     }, []);
+
+    const [isProfileUrl, setProfileUrl] = useState();
+    const [isValidIDUrl, setValidIDUrl] = useState(
+        "../../Images/id-sample.png"
+    );
+    const DisplayImage = (e: any) => {
+        if (e.target.files.length > 0) {
+            let selectedImage = e.target.files[0];
+            if (
+                ["image/jpeg", "image/png", "image/svg+xml"].includes(
+                    selectedImage.type
+                )
+            ) {
+                let ImageReader = new FileReader();
+                ImageReader.readAsDataURL(selectedImage);
+
+                ImageReader.addEventListener("load", (event: any) => {
+                    if (e.target.getAttribute("data-type") === "profile") {
+                        setProfileUrl(event.target.result);
+                    }
+                    if (e.target.getAttribute("data-type") === "validID") {
+                        setValidIDUrl(event.target.result);
+                    }
+                });
+            } else {
+                alert("Invalid Image File");
+            }
+        } else {
+            alert("Nothing Happens");
+        }
+    };
     return (
         <div className=" fixed top-0 left-0 h-screen overflow-auto w-full bg-[#00000040] p-10 z-50 flex justify-center items-center 820px:items-start 480px:p-0 480px:py-5">
             <section
@@ -55,11 +86,17 @@ export default function ModifyCustomer({ setToggleModify }: ModifyCustomer) {
                     <li className=" border flex items-center w-4/12 820px:w-2/4 480px:w-full mb-5">
                         <aside className="w-20 h-20 relative flex mr-4">
                             <img
-                                src=""
+                                src={isProfileUrl}
                                 alt=""
                                 className=" bg-white h-full w-full rounded-full object-cover shadow-lg"
                             />
-                            <input type="file" id="image" className="hidden" />
+                            <input
+                                type="file"
+                                id="image"
+                                className="hidden"
+                                data-type="profile"
+                                onChange={DisplayImage}
+                            />
                             <label
                                 htmlFor="image"
                                 className=" cursor-pointer hover:bg-ThemeRed50 p-1 rounded-full text-white bg-ThemeRed absolute text-[12px] right-[5px] bottom-[5px]"
@@ -69,13 +106,19 @@ export default function ModifyCustomer({ setToggleModify }: ModifyCustomer) {
                         </aside>
                     </li>
                     <li className="  flex items-center w-4/12 820px:w-2/4 480px:w-full mb-5">
-                        <input type="file" id="image" className="hidden" />
+                        <input
+                            type="file"
+                            id="validid"
+                            className="hidden"
+                            data-type="validID"
+                            onChange={DisplayImage}
+                        />
                         <label
-                            htmlFor="image"
+                            htmlFor="validid"
                             className="text-[12px] text-ThemeRed font-NHU-medium cursor-pointer flex items-center"
                         >
                             <img
-                                src="../../Images/id-sample.png"
+                                src={isValidIDUrl}
                                 alt=""
                                 className=" w-24 mr-2"
                             />

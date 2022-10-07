@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { AiFillCamera } from "react-icons/ai";
 import { useRouter } from "next/router";
 import Link from "next/link";
@@ -21,6 +21,29 @@ export default function ModifyCorporate({ setToggleModify }: ModifyCorporate) {
             document.removeEventListener("mousedown", clickOutSide);
         };
     }, []);
+
+    const [isProfileUrl, setProfileUrl] = useState();
+    const DisplayImage = (e: any) => {
+        if (e.target.files.length > 0) {
+            let selectedImage = e.target.files[0];
+            if (
+                ["image/jpeg", "image/png", "image/svg+xml"].includes(
+                    selectedImage.type
+                )
+            ) {
+                let ImageReader = new FileReader();
+                ImageReader.readAsDataURL(selectedImage);
+
+                ImageReader.addEventListener("load", (event: any) => {
+                    setProfileUrl(event.target.result);
+                });
+            } else {
+                alert("Invalid Image File");
+            }
+        } else {
+            alert("Nothing Happens");
+        }
+    };
     return (
         <div className=" fixed top-0 left-0 h-screen overflow-auto w-full bg-[#00000040] p-10 z-50 flex justify-center items-center 820px:items-center 375px:items-start 480px:p-5">
             <section
@@ -35,11 +58,16 @@ export default function ModifyCorporate({ setToggleModify }: ModifyCorporate) {
                     <li className=" border flex items-center w-4/12 820px:w-2/4 480px:w-full mb-5">
                         <aside className="w-10 h-10 relative flex mr-4">
                             <img
-                                src=""
+                                src={isProfileUrl}
                                 alt=""
                                 className=" bg-white h-full w-full object-cover"
                             />
-                            <input type="file" id="image" className="hidden" />
+                            <input
+                                type="file"
+                                id="image"
+                                onChange={DisplayImage}
+                                className="hidden"
+                            />
                             <label
                                 htmlFor="image"
                                 className=" cursor-pointer hover:bg-ThemeRed50 p-1 rounded-full text-white bg-ThemeRed absolute text-[12px] right-[-10px] bottom-[-5px]"
