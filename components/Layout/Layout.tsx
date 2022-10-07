@@ -15,6 +15,7 @@ import { imgProfile } from "../../public/Images/Image";
 import Image from "next/image";
 import CorporateSearch from "../Search/CorporateSearch";
 import UserSearch from "../Search/UserSearch";
+import CustomerSearch from "../ADMIN/Customer/CustomerSearch";
 
 type Layout = {
     children: React.ReactNode;
@@ -46,7 +47,8 @@ export default function Layout({ children }: Layout) {
         setPathName(router.asPath);
         if (
             router.asPath.includes("corporate/") ||
-            router.asPath.includes("user/")
+            router.asPath.includes("user/") ||
+            router.asPath.includes("customer/")
         ) {
             setProfileSearch(true);
         } else {
@@ -100,8 +102,11 @@ export default function Layout({ children }: Layout) {
                                             {router.asPath.includes(
                                                 "corporate/"
                                             ) ||
-                                                (router.asPath.includes(
+                                                router.asPath.includes(
                                                     "user/"
+                                                ) ||
+                                                (router.asPath.includes(
+                                                    "customer/"
                                                 ) && (
                                                     <motion.div
                                                         layout
@@ -163,6 +168,9 @@ export default function Layout({ children }: Layout) {
                                                     {isPathName.includes(
                                                         "user/"
                                                     ) && <UserSearch />}
+                                                    {isPathName.includes(
+                                                        "customer/"
+                                                    ) && <CustomerSearch />}
                                                 </motion.ul>
                                             )}
                                         </AnimatePresence>

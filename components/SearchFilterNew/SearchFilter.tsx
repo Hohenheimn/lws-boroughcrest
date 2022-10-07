@@ -11,13 +11,13 @@ import { BsFillPrinterFill } from "react-icons/bs";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 type SearchFilter = {
     page: string;
-    setToggleNew: Function;
 };
 
-export default function SearchFilter({ page, setToggleNew }: SearchFilter) {
+export default function SearchFilter({ page }: SearchFilter) {
     const [isFilter, setFilter] = useState(false);
     const router = useRouter();
     const ValidatePathName = router.pathname.split("/")[2];
@@ -58,12 +58,11 @@ export default function SearchFilter({ page, setToggleNew }: SearchFilter) {
                     )}
 
                     <li className=" relative mr-5 cursor-pointer">
-                        <button
-                            onClick={() => setToggleNew(true)}
-                            className=" capitalize px-5 480px:text-[12px] 480px:px-2 text-[14px] py-3 rounded-lg bg-ThemeRed text-white leading-none duration-75 hover:bg-ThemeRed50"
-                        >
-                            New {page}
-                        </button>
+                        <Link href={`${router.pathname}?new`}>
+                            <a className=" capitalize px-5 480px:text-[12px] 480px:px-2 text-[14px] py-3 rounded-lg bg-ThemeRed text-white leading-none duration-75 hover:bg-ThemeRed50">
+                                New {page}
+                            </a>
+                        </Link>
                     </li>
                     <li className=" flex items-center cursor-pointer relative">
                         <Tippy content="Filter" theme="ThemeRed">

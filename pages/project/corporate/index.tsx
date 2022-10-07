@@ -10,12 +10,12 @@ export default function corporate() {
     return (
         <div>
             <>
-                <SearchFilter page="corporate" setToggleNew={setToggleNew} />
+                <SearchFilter page="corporate" />
                 <Table />
                 <Pagination />
             </>
 
-            {toggleNew && <NewCorporate setToggleNew={setToggleNew} />}
+            {router.query.new !== undefined && <NewCorporate />}
         </div>
     );
 }

@@ -8,6 +8,7 @@ import home from "./Home.png";
 import print from "./Print.png";
 import profile from "./Profile.png";
 import SampleProfile from "./sampleProfile.png";
+import idSample from "./id-sample.png";
 export const imgBackgrounds = {
     bgMain: bgMain,
     bgLogin: bgLogin,
@@ -28,4 +29,8 @@ export const imgLogo = {
 
 export const imgProfile = {
     profile: SampleProfile,
+};
+
+export const imgOther = {
+    idSample: idSample,
 };

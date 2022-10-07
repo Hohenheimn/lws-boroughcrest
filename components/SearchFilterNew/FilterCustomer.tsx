@@ -33,6 +33,7 @@ export default function FilterCustomer({ setFilter, isFilter }: setFilter) {
         >
             <li className="font-medium">Columns</li>
             <FilterList name="All" />
+            <FilterList name="ID" />
             <FilterList name="Class" />
             <FilterList name="Name" />
             <FilterList name="Mobile" />

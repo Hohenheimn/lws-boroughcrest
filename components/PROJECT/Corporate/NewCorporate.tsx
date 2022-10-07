@@ -3,17 +3,13 @@ import { AiFillCamera } from "react-icons/ai";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
-type NewCorporate = {
-    setToggleNew: Function;
-};
-
-export default function NewCorporate({ setToggleNew }: NewCorporate) {
+export default function NewCorporate() {
     const modal = useRef<any>();
     const router = useRouter();
     useEffect(() => {
         const clickOutSide = (e: any) => {
             if (!modal.current.contains(e.target)) {
-                setToggleNew(false);
+                router.push("");
             }
         };
         document.addEventListener("mousedown", clickOutSide);
@@ -135,12 +131,11 @@ export default function NewCorporate({ setToggleNew }: NewCorporate) {
                     <li className=" flex-1 flex flex-col w-[48%]"></li>
                 </ul>
                 <div className=" w-full flex justify-end items-center">
-                    <button
-                        onClick={() => setToggleNew(false)}
-                        className=" text-ThemeRed font-semibold text-[14px] mr-5"
-                    >
-                        CANCEL
-                    </button>
+                    <Link href="">
+                        <a className=" text-ThemeRed font-semibold text-[14px] mr-5">
+                            CANCEL
+                        </a>
+                    </Link>
 
                     <button className=" text-white h-8 w-20 flex justify-center items-center duration-75 hover:bg-ThemeRed50 leading-none bg-ThemeRed rounded-md text-[14px] mr-5">
                         NEXT
