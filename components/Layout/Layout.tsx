@@ -60,8 +60,18 @@ export default function Layout({ children }: Layout) {
     return (
         <>
             <Head>
-                <title>Boroughcrest</title>
+                <title>
+                    Boroughcrest{" "}
+                    {router.pathname.split("/")[1]
+                        ? `- ${router.pathname.split("/")[1]}`
+                        : "- dashboard"}
+                </title>
+                <meta
+                    name="viewport"
+                    content="initial-scale=1.0, width=device-width"
+                />
             </Head>
+
             <div className="flex bg-MainBG bg-no-repeat bg-cover min-h-screen bg-Gray bg-blend-multiply">
                 <AnimatePresence>
                     {!isHide && (

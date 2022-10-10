@@ -45,10 +45,11 @@ export default function SearchFilter({ page }: SearchFilter) {
                                 </div>
                             </Tippy>
                             <Tippy theme="ThemeRed" content="Import">
-                                <div>
+                                <label htmlFor="import">
                                     <BiImport className=" mr-5 text-ThemeRed text-[30px] font-bold cursor-pointer hover:text-ThemeRed50" />
-                                </div>
+                                </label>
                             </Tippy>
+                            <input type="file" id="import" className="hidden" />
                             <Tippy theme="ThemeRed" content="Print">
                                 <div>
                                     <BsFillPrinterFill className=" mr-5 text-ThemeRed text-[30px] font-bold cursor-pointer hover:text-ThemeRed50" />

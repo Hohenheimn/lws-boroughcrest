@@ -139,9 +139,14 @@ export default function NewCorporate() {
                         <select
                             name=""
                             id=""
-                            className="w-[90%] rounded-md text-black px-2 py-[2px] outline-none 480px:w-full"
+                            className="w-[90%] rounded-md text-black px-2 py-[2px] outline-none 480px:w-full appearance-none"
                         >
-                            <option value=""></option>
+                            <option
+                                value=""
+                                className="bg-ThemeRed text-white appearance-none"
+                            >
+                                lol
+                            </option>
                         </select>
                     </li>
                 </ul>
