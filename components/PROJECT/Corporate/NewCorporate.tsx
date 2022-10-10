@@ -48,7 +48,7 @@ export default function NewCorporate() {
             >
                 <p className=" text-[16px] mb-3">Create Corporate</p>
                 <h1 className=" w-full text-[24px] mb-3">
-                    Primary Information
+                    Primary Informations
                 </h1>
                 <ul className=" flex mb-10 flex-wrap 480px:mb-2">
                     <li className=" border flex items-center w-4/12 820px:w-2/4 480px:w-full mb-5">
