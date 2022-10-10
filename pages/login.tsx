@@ -25,7 +25,11 @@ export default function Login() {
             <div className=" min-h-screen flex justify-center items-center bg-ThemeRed">
                 <div className=" w-11/12 max-w-[1200px] 1366px:max-w-[1000px] 480px:w-[95%] bg-white relative h-[80vh] 640px:h-auto">
                     <aside className=" absolute z-0 h-full w-full top-0 left-0">
-                        <Image src={imgBackgrounds.bgLogin} layout="fill" />
+                        <Image
+                            src={imgBackgrounds.bgLogin}
+                            alt="Background"
+                            layout="fill"
+                        />
                     </aside>
                     <ul className=" w-full h-full flex flex-wrap z-10 relative">
                         <li className=" flex flex-col justify-center p-16 1366px:p-10 items-center w-4/12 820px:w-5/12 640px:w-full py-10 640px:p-5 bg-[#000000b7]">
@@ -33,6 +37,7 @@ export default function Login() {
                                 src={imgLogo.pngDeus}
                                 placeholder="blur"
                                 priority
+                                alt="DEUS logo"
                             />
                             <p className="text-center text-white -mt-3 mb-10 text-[14px] 640px:mb-2">
                                 lorem ipsum

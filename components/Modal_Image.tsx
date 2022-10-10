@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from "react";
+import Image from "next/image";
 
 type Modal_Image = {
     setView: Function;
@@ -18,7 +19,7 @@ export default function Modal_Image({ setView, isView }: Modal_Image) {
         return () => {
             document.removeEventListener("mousedown", clickOutSide);
         };
-    }, []);
+    });
 
     return (
         <div className=" fixed top-0 left-0 h-screen overflow-auto w-full bg-[#00000040] p-10 z-50 flex justify-center items-center origin-top 480px:p-5">
@@ -26,11 +27,9 @@ export default function Modal_Image({ setView, isView }: Modal_Image) {
                 ref={modal}
                 className=" p-10 bg-[#e2e3e4ef] rounded-lg w-[90%] max-w-[700px] text-ThemeRed shadow-lg"
             >
-                <img
-                    src="../../../Images/id-sample.png"
-                    className="w-full h-auto"
-                    alt=""
-                />
+                <aside className="w-full aspect-[1.8/1] relative">
+                    <Image src="/Images/id-sample.png" layout="fill" alt="" />
+                </aside>
             </section>
         </div>
     );

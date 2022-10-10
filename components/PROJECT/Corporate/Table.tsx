@@ -27,12 +27,16 @@ export default function Table() {
 
 const List = () => {
     return (
-        <tr className="border-b border-gray-300 cursor-pointer">
+        <tr className="border-b border-gray-300 cursor-pointer hover:bg-[#e6e6e6be]">
             <td>
                 <Link href="/project/corporate/123">
                     <a className="flex px-4 py-6">
                         <aside className=" w-10 h-10 rounded-full overflow-hidden relative shadow-lg mr-3">
-                            <Image src={imgProfile.profile} layout="fill" />
+                            <Image
+                                src={imgProfile.profile}
+                                alt=""
+                                layout="fill"
+                            />
                         </aside>
                         <div>
                             <h2 className=" text-[#2E4364] font-NHU-medium">
@@ -60,7 +64,7 @@ const List = () => {
                     <a className="flex px-4 py-6">
                         <div>
                             <h2 className=" text-[#2E4364] font-NHU-medium">
-                                Quezon City
+                                Block 8A Lot 31 Brgy Nicolasa Virata GMA Cavite
                             </h2>
                             <p className=" text-[12px]">Lorem Ipsum</p>
                         </div>

@@ -4,7 +4,7 @@ import Pagination from "../../../components/Pagination";
 import { useRouter } from "next/router";
 import UserTable from "../../../components/PROJECT/user/UserTable";
 import NewUser from "../../../components/PROJECT/user/NewUser";
-export default function user() {
+export default function User() {
     const router = useRouter();
 
     return (

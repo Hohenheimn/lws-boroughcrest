@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import { AiFillCamera } from "react-icons/ai";
 import { useRouter } from "next/router";
-import Link from "next/link";
+import Image from "next/image";
 
 type ModifyCorporate = {
     setToggleModify: Function;
@@ -9,7 +9,6 @@ type ModifyCorporate = {
 
 export default function ModifyCorporate({ setToggleModify }: ModifyCorporate) {
     const modal = useRef<any>();
-    const router = useRouter();
     useEffect(() => {
         const clickOutSide = (e: any) => {
             if (!modal.current.contains(e.target)) {
@@ -20,9 +19,9 @@ export default function ModifyCorporate({ setToggleModify }: ModifyCorporate) {
         return () => {
             document.removeEventListener("mousedown", clickOutSide);
         };
-    }, []);
+    });
 
-    const [isProfileUrl, setProfileUrl] = useState();
+    const [isProfileUrl, setProfileUrl] = useState("/Images/sampleProfile.png");
     const DisplayImage = (e: any) => {
         if (e.target.files.length > 0) {
             let selectedImage = e.target.files[0];
@@ -57,11 +56,14 @@ export default function ModifyCorporate({ setToggleModify }: ModifyCorporate) {
                 <ul className=" flex mb-10 flex-wrap 480px:mb-2">
                     <li className=" border flex items-center w-4/12 820px:w-2/4 480px:w-full mb-5">
                         <aside className="w-10 h-10 relative flex mr-4">
-                            <img
-                                src={isProfileUrl}
-                                alt=""
-                                className=" bg-white h-full w-full object-cover"
-                            />
+                            <aside className=" bg-white h-full w-full object-cover relative">
+                                <Image
+                                    src={`${isProfileUrl}`}
+                                    alt=""
+                                    layout="fill"
+                                />
+                            </aside>
+
                             <input
                                 type="file"
                                 id="image"
@@ -114,7 +116,10 @@ export default function ModifyCorporate({ setToggleModify }: ModifyCorporate) {
                             id=""
                             className="w-[90%] rounded-md text-black px-2 py-[2px] outline-none 480px:w-full"
                         >
-                            <option value=""></option>
+                            <option
+                                value=""
+                                className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
+                            ></option>
                         </select>
                     </li>
                     <li className="  flex flex-col  w-4/12 820px:w-2/4 480px:w-full mb-5">

@@ -54,7 +54,6 @@ export default function Layout({ children }: Layout) {
         } else {
             setProfileSearch(false);
         }
-        console.log(router.query.id);
     }, [router.asPath]);
 
     return (
@@ -87,7 +86,12 @@ export default function Layout({ children }: Layout) {
                                 } w-[400px] 1920px:w-[350px] 1280px:w-[300px] border-r-2 border-white min-h-full pt-5 flex flex-col`}
                             >
                                 <div className=" w-full flex justify-center">
-                                    <img src="/Images/deus.png" alt="" />
+                                    <Image
+                                        src="/Images/deus.png"
+                                        width={250}
+                                        height={100}
+                                        alt=""
+                                    />
                                 </div>
 
                                 <div className="w-full h-full flex flex-1">
@@ -230,6 +234,7 @@ export default function Layout({ children }: Layout) {
                                         <Image
                                             src={imgProfile.profile}
                                             layout="fill"
+                                            alt=""
                                         />
                                     </aside>
                                     <p className="flex items-center cursor-pointer">

@@ -5,7 +5,7 @@ import CustomerTable from "../../../components/ADMIN/Customer/CustomerTable";
 import NewCustomer from "../../../components/ADMIN/Customer/NewCustomer";
 import { useRouter } from "next/router";
 
-export default function customer() {
+export default function Customer() {
     const router = useRouter();
     return (
         <div>

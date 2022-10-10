@@ -68,7 +68,7 @@ export default function SearchFilter({ page }: SearchFilter) {
                     <li className=" flex items-center cursor-pointer relative">
                         <Tippy content="Filter" theme="ThemeRed">
                             <button onClick={() => setFilter(true)}>
-                                <Image src={imgIcons.Filter} />
+                                <Image src={imgIcons.Filter} alt="" />
                             </button>
                         </Tippy>
                         <AnimatePresence>

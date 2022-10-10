@@ -31,7 +31,7 @@ export default function ModifyRolesPermission({
         return () => {
             document.removeEventListener("mousedown", clickOutSide);
         };
-    }, []);
+    });
 
     return (
         <div className=" fixed top-0 left-0 h-screen overflow-auto w-full bg-[#00000040] p-10 z-50 flex justify-center items-center origin-top 480px:p-5">
@@ -52,7 +52,12 @@ export default function ModifyRolesPermission({
                             id=""
                             className="w-full rounded-md text-black px-2 text-[14px] py-[2px] outline-none"
                         >
-                            <option value="">Admin Staff</option>
+                            <option
+                                value=""
+                                className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
+                            >
+                                Admin Staff
+                            </option>
                         </select>
                     </li>
                     <li className=" w-7/12 480px:w-full">
@@ -159,7 +164,12 @@ const List = ({ detail, setTable, isTable }: List) => {
                     id=""
                     className="w-full rounded-md text-black px-2 text-[14px] py-[2px] outline-none"
                 >
-                    <option value={detail.permissions} disabled={true} selected>
+                    <option
+                        className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
+                        value={detail.permissions}
+                        disabled={true}
+                        selected
+                    >
                         {detail.permissions}
                     </option>
                 </select>
@@ -170,7 +180,12 @@ const List = ({ detail, setTable, isTable }: List) => {
                     id=""
                     className="w-full rounded-md text-black px-2 text-[14px] py-[2px] outline-none"
                 >
-                    <option value={detail.access} disabled={true} selected>
+                    <option
+                        value={detail.access}
+                        disabled={true}
+                        selected
+                        className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
+                    >
                         {detail.access}
                     </option>
                 </select>
