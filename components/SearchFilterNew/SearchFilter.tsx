@@ -36,7 +36,7 @@ export default function SearchFilter({ page }: SearchFilter) {
                     />
                     <BsSearch className=" mr-2 text-gray-500 text-[18px]" />
                 </div>
-                <ul className=" flex items-center ml-5  640px:my-5 640px:w-full">
+                <ul className=" flex items-center ml-5 640px:ml-0 640px:justify-end 640px:my-10 640px:w-full">
                     {ValidatePathName === "customer" && (
                         <li className=" flex items-center">
                             <Tippy theme="ThemeRed" content="Export">
@@ -67,7 +67,12 @@ export default function SearchFilter({ page }: SearchFilter) {
                     </li>
                     <li className=" flex items-center cursor-pointer relative">
                         <Tippy content="Filter" theme="ThemeRed">
-                            <button onClick={() => setFilter(true)}>
+                            <button
+                                onClick={() => setFilter(true)}
+                                className={`${
+                                    isFilter === true && "pointer-events-none"
+                                }`}
+                            >
                                 <Image src={imgIcons.Filter} alt="" />
                             </button>
                         </Tippy>

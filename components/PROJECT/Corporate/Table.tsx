@@ -2,11 +2,12 @@ import React from "react";
 import { imgProfile } from "../../../public/Images/Image";
 import Image from "next/image";
 import Link from "next/link";
-
+import Tippy from "@tippy.js/react";
+import "tippy.js/dist/tippy.css";
 export default function Table() {
     return (
         <div className=" w-full overflow-x-auto">
-            <table className=" w-full min-w-[800px] 820px:min-w-[1000px]">
+            <table className=" w-full 1024px:min-w-[1200px]">
                 <thead>
                     <tr className="border-b border-gray-300">
                         <th className=" text-start px-4 py-6">ID</th>
@@ -19,6 +20,8 @@ export default function Table() {
                 </thead>
                 <tbody>
                     <List />
+                    <List />
+                    <List />
                 </tbody>
             </table>
         </div>
@@ -27,7 +30,7 @@ export default function Table() {
 
 const List = () => {
     return (
-        <tr className="border-b border-gray-300 cursor-pointer hover:bg-[#e6e6e6be]">
+        <tr className="border-b border-gray-300 cursor-pointer">
             <td>
                 <Link href="/project/corporate/123">
                     <a className="flex px-4 py-6">

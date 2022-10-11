@@ -1,7 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import { RiArrowDownSFill } from "react-icons/ri";
 import Link from "next/link";
-import { IoTerminal } from "react-icons/io5";
 
 type ModifyRolesPermission = {
     setToggle: Function;
@@ -13,11 +12,12 @@ export default function ModifyRolesPermission({
     const [isTable, setTable] = useState([
         {
             id: 1,
-            permissions: "Corporate",
-            access: "View",
-            duration: "-",
+            permissions: "",
+            access: "",
+            duration: "",
         },
     ]);
+    const [isRole, setRole] = useState<string>("");
     const [isSave, setSave] = useState(false);
     const modal = useRef<any>();
 
@@ -50,13 +50,21 @@ export default function ModifyRolesPermission({
                         <select
                             name=""
                             id=""
+                            onChange={(e) => setRole(e.target.value)}
                             className="w-full rounded-md text-black px-2 text-[14px] py-[2px] outline-none"
                         >
+                            <option value="please select"></option>
                             <option
-                                value=""
+                                value="admin"
                                 className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
                             >
-                                Admin Staff
+                                Admin
+                            </option>
+                            <option
+                                value="staff"
+                                className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
+                            >
+                                Staff
                             </option>
                         </select>
                     </li>
@@ -96,6 +104,7 @@ export default function ModifyRolesPermission({
                                 setTable={setTable}
                                 key={index}
                                 isTable={isTable}
+                                index={index}
                             />
                         ))}
                     </tbody>
@@ -119,11 +128,14 @@ export default function ModifyRolesPermission({
                         </div>
                         {isSave && (
                             <ul className=" absolute top-full bg-white w-full">
-                                <Link href="/project/user">
-                                    <a className="text-ThemeRed inline-block py-2 w-full text-center hover:bg-ThemeRed hover:text-white duration-75">
-                                        SAVE
-                                    </a>
-                                </Link>
+                                {/* <Link href="/project/user"> */}
+                                <a
+                                    onClick={() => console.log(isTable)}
+                                    className="text-ThemeRed inline-block py-2 w-full text-center hover:bg-ThemeRed hover:text-white duration-75"
+                                >
+                                    SAVE
+                                </a>
+                                {/* </Link> */}
                                 <Link href="/project/user?new">
                                     <a className="text-ThemeRed inline-block py-2 w-full text-center hover:bg-ThemeRed hover:text-white duration-75">
                                         SAVE & NEW
@@ -141,8 +153,9 @@ type List = {
     detail: any;
     setTable: Function;
     isTable: {}[];
+    index: number;
 };
-const List = ({ detail, setTable, isTable }: List) => {
+const List = ({ detail, setTable, isTable, index }: List) => {
     const newID = Math.random();
 
     const updateDuration = (event: any) => {
@@ -153,7 +166,24 @@ const List = ({ detail, setTable, isTable }: List) => {
             return item;
         });
         setTable(newItems);
-        console.log(isTable);
+    };
+    const updatePermission = (event: any) => {
+        const newItems = isTable.map((item: any) => {
+            if (detail.id == item.id) {
+                return { ...item, permissions: event.target.value };
+            }
+            return item;
+        });
+        setTable(newItems);
+    };
+    const updateAccess = (event: any) => {
+        const newItems = isTable.map((item: any) => {
+            if (detail.id == item.id) {
+                return { ...item, access: event.target.value };
+            }
+            return item;
+        });
+        setTable(newItems);
     };
 
     return (
@@ -163,14 +193,20 @@ const List = ({ detail, setTable, isTable }: List) => {
                     name=""
                     id=""
                     className="w-full rounded-md text-black px-2 text-[14px] py-[2px] outline-none"
+                    onChange={updatePermission}
                 >
+                    <option value=""></option>
                     <option
                         className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
-                        value={detail.permissions}
-                        disabled={true}
-                        selected
+                        value="admin"
                     >
-                        {detail.permissions}
+                        Admin
+                    </option>
+                    <option
+                        className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
+                        value="Staff"
+                    >
+                        Staff
                     </option>
                 </select>
             </td>
@@ -179,14 +215,20 @@ const List = ({ detail, setTable, isTable }: List) => {
                     name=""
                     id=""
                     className="w-full rounded-md text-black px-2 text-[14px] py-[2px] outline-none"
+                    onChange={updateAccess}
                 >
+                    <option value=""></option>
                     <option
-                        value={detail.access}
-                        disabled={true}
-                        selected
+                        value="view"
                         className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
                     >
-                        {detail.access}
+                        View
+                    </option>
+                    <option
+                        value="access"
+                        className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
+                    >
+                        Access
                     </option>
                 </select>
             </td>
@@ -195,9 +237,11 @@ const List = ({ detail, setTable, isTable }: List) => {
                     type="number"
                     className="w-full rounded-md text-black px-2 text-[14px] py-[2px] outline-none relative after:absolute after:right-1 after:top-[50%] after:content-['Days'] after:translate-x-2/4"
                     value={detail.duration}
+                    placeholder="Number of Days"
                     onChange={updateDuration}
                 />
             </td>
+
             <td className=" flex justify-center">
                 {isTable.length > 1 && (
                     <button
@@ -213,22 +257,24 @@ const List = ({ detail, setTable, isTable }: List) => {
                         -
                     </button>
                 )}
-                <button
-                    className=" text-[32px] text-ThemeRed"
-                    onClick={() =>
-                        setTable((item: any) => [
-                            {
-                                id: newID,
-                                permissions: "",
-                                access: "",
-                                duration: "",
-                            },
-                            ...item,
-                        ])
-                    }
-                >
-                    +
-                </button>
+                {isTable.length === index + 1 && (
+                    <button
+                        className=" text-[32px] text-ThemeRed"
+                        onClick={() =>
+                            setTable((item: any) => [
+                                {
+                                    id: newID,
+                                    permissions: "",
+                                    access: "",
+                                    duration: "",
+                                },
+                                ...item,
+                            ])
+                        }
+                    >
+                        +
+                    </button>
+                )}
             </td>
         </tr>
     );

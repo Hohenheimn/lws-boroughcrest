@@ -108,6 +108,7 @@ export default function Layout({ children }: Layout) {
                                                         initial="initial"
                                                         animate="animate"
                                                         exit="exit"
+                                                        className="h1-text"
                                                     >
                                                         OVERVIEW
                                                     </motion.h1>

@@ -20,7 +20,7 @@ export default function FilterUser({ setFilter, isFilter }: setFilter) {
         return () => {
             document.removeEventListener("mousedown", clickOutSide);
         };
-    }, []);
+    });
 
     return (
         <motion.ul
