@@ -1,4 +1,4 @@
-export const Sidebar = [
+export const SidebarLinks = [
     {
         name: "dashboard",
         url: "/",

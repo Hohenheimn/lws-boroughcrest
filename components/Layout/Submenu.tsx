@@ -7,9 +7,13 @@ import "tippy.js/dist/tippy.css";
 
 type SubmenuDetail = {
     SubmenuDetail?: any;
+    closeOnClick: () => void;
 };
 
-export default function Submenu({ SubmenuDetail }: SubmenuDetail) {
+export default function Submenu({
+    SubmenuDetail,
+    closeOnClick,
+}: SubmenuDetail) {
     const router = useRouter();
     const innerUrl = router.pathname.split("/")[2];
     return (
@@ -29,6 +33,7 @@ export default function Submenu({ SubmenuDetail }: SubmenuDetail) {
                         ></div>
                         <Link href={`${item.url}`}>
                             <a
+                                onClick={closeOnClick}
                                 className={` w-fill flex-1 py-1 relative capitalize ${
                                     innerUrl === item.ActiveName
                                         ? "border-r-8 border-Green text-ThemeRed font-bold after:bg-GradientGreen after:w-full after:h-full after:absolute after:left-0 after:top-0"
