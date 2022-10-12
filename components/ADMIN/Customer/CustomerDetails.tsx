@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { HiPencil } from "react-icons/hi";
-import { imgProfile } from "../../../public/Images/Image";
 import Image from "next/image";
 import ModifyCustomer from "./ModifyCustomer";
 import CustomerInformation from "./CustomerInformation";
@@ -23,7 +22,7 @@ export default function CustomerDetail() {
             <ul className=" w-full shadow-lg flex p-10 bg-white rounded-2xl flex-wrap mb-10">
                 <li className=" flex justify-between items-center w-full mb-5">
                     <h1 className=" font-bold text-[24px] 480px:mb-0 480px:text-[16px]">
-                        Primary Information
+                        Primary Informations
                     </h1>
                     <HiPencil
                         className=" text-ThemeRed font-bold text-[32px] 480px:text-[24px] cursor-pointer"
@@ -33,7 +32,7 @@ export default function CustomerDetail() {
                 <li className="w-3/12 flex-col 480px:w-full p-5 flex justify-center items-center">
                     <aside className=" w-6/12 820px:w-10/12 rounded-full overflow-hidden 480px:w-5/12 aspect-square relative shadow-xl">
                         <Image
-                            src={imgProfile.profile}
+                            src="/Images/sampleProfile.png"
                             alt="profile"
                             layout="fill"
                         />

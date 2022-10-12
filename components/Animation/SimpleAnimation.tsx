@@ -1,5 +1,3 @@
-import { motion } from "framer-motion";
-
 export const FadeSide = {
     initial: {
         opacity: 0,

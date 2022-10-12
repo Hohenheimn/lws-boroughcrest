@@ -1,5 +1,4 @@
 import React from "react";
-import { imgProfile } from "../../../public/Images/Image";
 import Image from "next/image";
 import Link from "next/link";
 import Tippy from "@tippy.js/react";
@@ -36,7 +35,7 @@ const List = () => {
                     <a className="flex px-4 py-6">
                         <aside className=" w-10 h-10 rounded-full overflow-hidden relative shadow-lg mr-3">
                             <Image
-                                src={imgProfile.profile}
+                                src="/Images/sampleProfile.png"
                                 alt=""
                                 layout="fill"
                             />

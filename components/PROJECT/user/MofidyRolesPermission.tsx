@@ -128,7 +128,6 @@ export default function ModifyRolesPermission({
                         </div>
                         {isSave && (
                             <ul className=" absolute top-full bg-white w-full">
-                                {/* <Link href="/project/user"> */}
                                 <a
                                     onClick={() => console.log(isTable)}
                                     className="text-ThemeRed inline-block py-2 w-full text-center hover:bg-ThemeRed hover:text-white duration-75"
@@ -158,34 +157,20 @@ type List = {
 const List = ({ detail, setTable, isTable, index }: List) => {
     const newID = Math.random();
 
-    const updateDuration = (event: any) => {
+    const updateValue = (event: any, whatValue: string | undefined) => {
         const newItems = isTable.map((item: any) => {
             if (detail.id == item.id) {
-                return { ...item, duration: event.target.value };
+                if (whatValue === "duration")
+                    return { ...item, duration: event.target.value };
+                if (whatValue === "permission")
+                    return { ...item, permissions: event.target.value };
+                if (whatValue === "access")
+                    return { ...item, access: event.target.value };
             }
             return item;
         });
         setTable(newItems);
     };
-    const updatePermission = (event: any) => {
-        const newItems = isTable.map((item: any) => {
-            if (detail.id == item.id) {
-                return { ...item, permissions: event.target.value };
-            }
-            return item;
-        });
-        setTable(newItems);
-    };
-    const updateAccess = (event: any) => {
-        const newItems = isTable.map((item: any) => {
-            if (detail.id == item.id) {
-                return { ...item, access: event.target.value };
-            }
-            return item;
-        });
-        setTable(newItems);
-    };
-
     return (
         <tr>
             <td className=" pr-2">
@@ -193,7 +178,8 @@ const List = ({ detail, setTable, isTable, index }: List) => {
                     name=""
                     id=""
                     className="w-full rounded-md text-black px-2 text-[14px] py-[2px] outline-none"
-                    onChange={updatePermission}
+                    onChange={(e) => updateValue(e, "permission")}
+                    value={detail.permissions}
                 >
                     <option value=""></option>
                     <option
@@ -215,7 +201,8 @@ const List = ({ detail, setTable, isTable, index }: List) => {
                     name=""
                     id=""
                     className="w-full rounded-md text-black px-2 text-[14px] py-[2px] outline-none"
-                    onChange={updateAccess}
+                    onChange={(e) => updateValue(e, "access")}
+                    value={detail.access}
                 >
                     <option value=""></option>
                     <option
@@ -238,11 +225,11 @@ const List = ({ detail, setTable, isTable, index }: List) => {
                     className="w-full rounded-md text-black px-2 text-[14px] py-[2px] outline-none relative after:absolute after:right-1 after:top-[50%] after:content-['Days'] after:translate-x-2/4"
                     value={detail.duration}
                     placeholder="Number of Days"
-                    onChange={updateDuration}
+                    onChange={(e) => updateValue(e, "duration")}
                 />
             </td>
 
-            <td className=" flex justify-center">
+            <td className=" flex justify-start">
                 {isTable.length > 1 && (
                     <button
                         className=" text-[32px] text-ThemeRed mr-2"
@@ -262,13 +249,13 @@ const List = ({ detail, setTable, isTable, index }: List) => {
                         className=" text-[32px] text-ThemeRed"
                         onClick={() =>
                             setTable((item: any) => [
+                                ...item,
                                 {
                                     id: newID,
                                     permissions: "",
                                     access: "",
                                     duration: "",
                                 },
-                                ...item,
                             ])
                         }
                     >
