@@ -27,6 +27,7 @@ export default function Login() {
                         <Image
                             src="/Images/LoginBG.png"
                             alt="Background"
+                            priority
                             layout="fill"
                         />
                     </aside>
@@ -34,10 +35,12 @@ export default function Login() {
                         <li className=" flex flex-col justify-center p-16 1366px:p-10 items-center w-4/12 820px:w-5/12 640px:w-full py-10 640px:p-5 bg-[#000000b7]">
                             <Image
                                 src="/Images/deus.png"
-                                placeholder="blur"
                                 priority
                                 alt="DEUS logo"
+                                width={400}
+                                height={150}
                             />
+
                             <p className="text-center text-white -mt-3 mb-10 text-[14px] 640px:mb-2">
                                 lorem ipsum
                             </p>
