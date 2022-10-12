@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { HiPencil } from "react-icons/hi";
-import { imgProfile } from "../../../public/Images/Image";
 import Image from "next/image";
 import ModifyUser from "./ModifyUser";
 import UserInformation from "./UserInformation";
@@ -29,7 +28,11 @@ export default function UserDetails() {
                 </li>
                 <li className="w-3/12 480px:w-full p-5 flex justify-center items-center">
                     <aside className=" w-6/12 820px:w-10/12 rounded-full overflow-hidden 480px:w-5/12 aspect-square relative shadow-xl">
-                        <Image src={imgProfile.profile} alt="" layout="fill" />
+                        <Image
+                            src="/Images/sampleProfile.png"
+                            alt=""
+                            layout="fill"
+                        />
                     </aside>
                 </li>
                 <li className=" w-9/12  480px:w-full flex flex-wrap items-start">

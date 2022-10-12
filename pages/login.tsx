@@ -3,7 +3,6 @@ import { FaKey, FaEnvelope } from "react-icons/fa";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import Image from "next/image";
 import Head from "next/head";
-import { imgLogo, imgBackgrounds } from "../public/Images/Image";
 
 export default function Login() {
     const [isUsername, setUsername] = useState();
@@ -26,7 +25,7 @@ export default function Login() {
                 <div className=" w-11/12 max-w-[1200px] 1366px:max-w-[1000px] 480px:w-[95%] bg-white relative h-[80vh] 640px:h-auto">
                     <aside className=" absolute z-0 h-full w-full top-0 left-0">
                         <Image
-                            src={imgBackgrounds.bgLogin}
+                            src="/Images/LoginBG.png"
                             alt="Background"
                             layout="fill"
                         />
@@ -34,7 +33,7 @@ export default function Login() {
                     <ul className=" w-full h-full flex flex-wrap z-10 relative">
                         <li className=" flex flex-col justify-center p-16 1366px:p-10 items-center w-4/12 820px:w-5/12 640px:w-full py-10 640px:p-5 bg-[#000000b7]">
                             <Image
-                                src={imgLogo.pngDeus}
+                                src="/Images/deus.png"
                                 placeholder="blur"
                                 priority
                                 alt="DEUS logo"

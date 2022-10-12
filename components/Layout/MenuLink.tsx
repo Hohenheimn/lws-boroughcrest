@@ -42,7 +42,7 @@ export default function MenuLink({
                     <Tippy theme="ThemeRed" content={urlName}>
                         <aside className="mx-5 h-5 w-5 my-3 relative">
                             <Image
-                                src={`/images/${
+                                src={`/Images/${
                                     ValidateUrl === ActiveUrl ? "Active" : ""
                                 }${iconUrl}`}
                                 alt=""

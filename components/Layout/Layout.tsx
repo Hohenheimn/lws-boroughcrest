@@ -11,7 +11,6 @@ import { FadeSide } from "../Animation/SimpleAnimation";
 import { BsSearch } from "react-icons/bs";
 import { IoNotificationsSharp } from "react-icons/io5";
 import { IoIosArrowDown } from "react-icons/io";
-import { imgProfile } from "../../public/Images/Image";
 import Image from "next/image";
 import CorporateSearch from "../Search/CorporateSearch";
 import UserSearch from "../Search/UserSearch";
@@ -233,7 +232,7 @@ export default function Layout({ children }: Layout) {
                                 <li className=" flex items-center">
                                     <aside className=" w-10 h-10 rounded-full overflow-hidden relative shadow-lg mr-3">
                                         <Image
-                                            src={imgProfile.profile}
+                                            src="/Images/sampleProfile.png"
                                             layout="fill"
                                             alt=""
                                         />

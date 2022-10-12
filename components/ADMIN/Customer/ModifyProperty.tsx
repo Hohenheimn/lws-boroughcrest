@@ -11,8 +11,8 @@ export default function ModifyProperty({ setToggle }: ModifyRolesPermission) {
     const [isTable, setTable] = useState([
         {
             id: 1,
-            unitCode: "123",
-            project: "Bay Garden",
+            unitCode: "",
+            project: "",
         },
     ]);
     const [isSave, setSave] = useState(false);
@@ -83,11 +83,12 @@ export default function ModifyProperty({ setToggle }: ModifyRolesPermission) {
                         </div>
                         {isSave && (
                             <ul className=" absolute top-full bg-white w-full">
-                                <Link href="/admin/customer">
-                                    <a className="text-ThemeRed inline-block py-2 w-full text-center hover:bg-ThemeRed hover:text-white duration-75">
-                                        SAVE
-                                    </a>
-                                </Link>
+                                <a
+                                    onClick={() => console.log(isTable)}
+                                    className="text-ThemeRed inline-block py-2 w-full text-center hover:bg-ThemeRed hover:text-white duration-75"
+                                >
+                                    SAVE
+                                </a>
                                 <Link href="/admin/customer?new">
                                     <a className="text-ThemeRed inline-block py-2 w-full text-center hover:bg-ThemeRed hover:text-white duration-75">
                                         SAVE & NEW
@@ -109,15 +110,17 @@ type List = {
 const List = ({ detail, setTable, isTable }: List) => {
     const newID = Math.random();
 
-    const updateDuration = (event: any) => {
+    const updateValue = (event: any, valueType: string) => {
         const newItems = isTable.map((item: any) => {
             if (detail.id == item.id) {
-                return { ...item, duration: event.target.value };
+                if (valueType === "project")
+                    return { ...item, project: event.target.value };
+                if (valueType === "unitCode")
+                    return { ...item, unitCode: event.target.value };
             }
             return item;
         });
         setTable(newItems);
-        console.log(isTable);
     };
 
     return (
@@ -127,6 +130,7 @@ const List = ({ detail, setTable, isTable }: List) => {
                     type="text"
                     value={detail.unitCode}
                     className="w-full rounded-md text-black px-2 text-[14px] py-[2px] outline-none"
+                    onChange={(e) => updateValue(e, "unitCode")}
                 />
             </td>
             <td className="  pr-2">
@@ -134,7 +138,7 @@ const List = ({ detail, setTable, isTable }: List) => {
                     type="text"
                     className="w-full rounded-md text-black px-2 text-[14px] py-[2px] outline-none bg-ThemeRed50"
                     value={detail.project}
-                    onChange={updateDuration}
+                    onChange={(e) => updateValue(e, "project")}
                 />
             </td>
             <td className=" flex justify-center">
@@ -156,12 +160,12 @@ const List = ({ detail, setTable, isTable }: List) => {
                     className=" text-[32px] text-ThemeRed"
                     onClick={() =>
                         setTable((item: any) => [
+                            ...item,
                             {
                                 id: newID,
-                                unitCode: "123",
-                                project: "Bay Garden",
+                                unitCode: "",
+                                project: "",
                             },
-                            ...item,
                         ])
                     }
                 >

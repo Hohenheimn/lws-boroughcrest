@@ -1,6 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
 import { AiFillCamera } from "react-icons/ai";
-import { useRouter } from "next/router";
 import Image from "next/image";
 
 type ModifyCorporate = {

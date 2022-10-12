@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { imgIcons } from "../../public/Images/Image";
 import Image from "next/image";
 import { BsSearch } from "react-icons/bs";
 import { AnimatePresence } from "framer-motion";
@@ -69,11 +68,15 @@ export default function SearchFilter({ page }: SearchFilter) {
                         <Tippy content="Filter" theme="ThemeRed">
                             <button
                                 onClick={() => setFilter(true)}
-                                className={`${
+                                className={`w-6 h-5 relative ${
                                     isFilter === true && "pointer-events-none"
                                 }`}
                             >
-                                <Image src={imgIcons.Filter} alt="" />
+                                <Image
+                                    src="/Images/Filter.png"
+                                    layout="fill"
+                                    alt=""
+                                />
                             </button>
                         </Tippy>
                         <AnimatePresence>
