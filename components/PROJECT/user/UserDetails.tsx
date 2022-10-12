@@ -29,7 +29,7 @@ export default function UserDetails() {
                 </li>
                 <li className="w-3/12 480px:w-full p-5 flex justify-center items-center">
                     <aside className=" w-6/12 820px:w-10/12 rounded-full overflow-hidden 480px:w-5/12 aspect-square relative shadow-xl">
-                        <Image src={imgProfile.profile} layout="fill" />
+                        <Image src={imgProfile.profile} alt="" layout="fill" />
                     </aside>
                 </li>
                 <li className=" w-9/12  480px:w-full flex flex-wrap items-start">

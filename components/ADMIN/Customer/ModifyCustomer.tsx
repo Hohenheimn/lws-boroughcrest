@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import { AiFillCamera } from "react-icons/ai";
-import Link from "next/link";
+import Image from "next/image";
 
 type ModifyCustomer = {
     setToggleModify: Function;
@@ -8,6 +8,7 @@ type ModifyCustomer = {
 
 export default function ModifyCustomer({ setToggleModify }: ModifyCustomer) {
     const modal = useRef<any>();
+
     useEffect(() => {
         const clickOutSide = (e: any) => {
             if (!modal.current.contains(e.target)) {
@@ -18,12 +19,10 @@ export default function ModifyCustomer({ setToggleModify }: ModifyCustomer) {
         return () => {
             document.removeEventListener("mousedown", clickOutSide);
         };
-    }, []);
+    });
 
-    const [isProfileUrl, setProfileUrl] = useState();
-    const [isValidIDUrl, setValidIDUrl] = useState(
-        "../../Images/id-sample.png"
-    );
+    const [isProfileUrl, setProfileUrl] = useState("/Images/sampleProfile.png");
+    const [isValidIDUrl, setValidIDUrl] = useState("/Images/id-sample.png");
     const DisplayImage = (e: any) => {
         if (e.target.files.length > 0) {
             let selectedImage = e.target.files[0];
@@ -70,7 +69,18 @@ export default function ModifyCustomer({ setToggleModify }: ModifyCustomer) {
                             id=""
                             className="rounded-md text-black px-2 py-[2px] outline-none w-[90%] 480px:w-full"
                         >
-                            <option value=""></option>
+                            <option
+                                value=""
+                                className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
+                            >
+                                Individual
+                            </option>
+                            <option
+                                value=""
+                                className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
+                            >
+                                Company
+                            </option>
                         </select>
                     </aside>
                     <aside className=" flex w-4/12 justify-end 480px:w-2/5">
@@ -85,11 +95,15 @@ export default function ModifyCustomer({ setToggleModify }: ModifyCustomer) {
                 <ul className=" flex mb-5 flex-wrap 480px:mb-2">
                     <li className=" border flex items-center w-4/12 820px:w-2/4 480px:w-full mb-5">
                         <aside className="w-20 h-20 relative flex mr-4">
-                            <img
-                                src={isProfileUrl}
-                                alt=""
-                                className=" bg-white h-full w-full rounded-full object-cover shadow-lg"
-                            />
+                            <aside className=" bg-white h-full w-full text-[12px] rounded-full object-cover shadow-lg relative">
+                                <Image
+                                    src={`${isProfileUrl}`}
+                                    alt="Sample Profile"
+                                    // className=" bg-white h-full w-full rounded-full object-cover shadow-lg"
+                                    layout="fill"
+                                />
+                            </aside>
+
                             <input
                                 type="file"
                                 id="image"
@@ -117,11 +131,13 @@ export default function ModifyCustomer({ setToggleModify }: ModifyCustomer) {
                             htmlFor="validid"
                             className="text-[12px] text-ThemeRed font-NHU-medium cursor-pointer flex items-center"
                         >
-                            <img
-                                src={isValidIDUrl}
-                                alt=""
-                                className=" w-24 mr-2"
-                            />
+                            <aside className=" w-24 h-16 mr-2 relative">
+                                <Image
+                                    src={`${isValidIDUrl}`}
+                                    alt="sample id"
+                                    layout="fill"
+                                />
+                            </aside>
                             UPLOAD VALID ID
                         </label>
                     </li>
@@ -155,7 +171,10 @@ export default function ModifyCustomer({ setToggleModify }: ModifyCustomer) {
                             id=""
                             className="w-[90%] rounded-md text-black px-2 py-[2px] outline-none 480px:w-full"
                         >
-                            <option value=""></option>
+                            <option
+                                value=""
+                                className="rounded-md text-black px-2 py-[2px] outline-none w-[90%] 480px:w-full"
+                            ></option>
                         </select>
                     </li>
                     <li className="  flex flex-col  w-4/12 820px:w-2/4 480px:w-full mb-5">

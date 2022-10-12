@@ -1,5 +1,5 @@
 import React from "react";
 
-export default function property() {
-    return <div>property</div>;
+export default function Property() {
+    return <div>roperty</div>;
 }

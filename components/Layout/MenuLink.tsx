@@ -5,6 +5,7 @@ import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 import { FadeSide } from "../Animation/SimpleAnimation";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 type MenuLink = {
     isProfileSearch: boolean;
@@ -39,13 +40,15 @@ export default function MenuLink({
                     }`}
                 >
                     <Tippy theme="ThemeRed" content={urlName}>
-                        <img
-                            className="mx-5 my-3"
-                            src={`/images/${
-                                ValidateUrl === ActiveUrl ? "Active" : ""
-                            }${iconUrl}`}
-                            alt=""
-                        />
+                        <aside className="mx-5 h-5 w-5 my-3 relative">
+                            <Image
+                                src={`/images/${
+                                    ValidateUrl === ActiveUrl ? "Active" : ""
+                                }${iconUrl}`}
+                                alt=""
+                                layout="fill"
+                            />
+                        </aside>
                     </Tippy>
                     {!isProfileSearch && (
                         <p

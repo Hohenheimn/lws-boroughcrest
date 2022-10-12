@@ -34,7 +34,11 @@ const List = () => {
                 <Link href="/admin/customer/123">
                     <a className="flex px-4 py-6">
                         <aside className=" w-10 h-10 rounded-full overflow-hidden relative shadow-lg mr-3">
-                            <Image src={imgProfile.profile} layout="fill" />
+                            <Image
+                                src={imgProfile.profile}
+                                alt="profile"
+                                layout="fill"
+                            />
                         </aside>
                         <div>
                             <h2 className=" text-[#2E4364] font-NHU-medium">

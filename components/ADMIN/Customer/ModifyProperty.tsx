@@ -28,7 +28,7 @@ export default function ModifyProperty({ setToggle }: ModifyRolesPermission) {
         return () => {
             document.removeEventListener("mousedown", clickOutSide);
         };
-    }, []);
+    });
 
     return (
         <div className=" fixed top-0 left-0 h-screen overflow-auto w-full bg-[#00000040] p-10 z-50 flex justify-center items-center origin-top 480px:p-5">
