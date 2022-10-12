@@ -1,8 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import Tippy from "@tippy.js/react";
-import "tippy.js/dist/tippy.css";
+import { GoPencil } from "react-icons/go";
 
 export default function UserTable() {
     return (
@@ -29,9 +28,29 @@ export default function UserTable() {
 }
 
 const List = () => {
+    const [isEdit, setEdit] = useState(false);
+    const MouseEnter = () => {
+        setEdit(true);
+    };
+    const MouseLeave = () => {
+        setEdit(false);
+    };
     return (
-        <tr className="border-b border-gray-300 cursor-pointer">
+        <tr
+            className="border-b border-gray-300 cursor-pointer relative"
+            onMouseEnter={MouseEnter}
+            onMouseLeave={MouseLeave}
+        >
             <td>
+                {isEdit && (
+                    <Link href="/project/corporate/123">
+                        <a className="text-white flex items-center text-[18px]">
+                            <aside className=" absolute z-0 w-full h-[60%] bg-[#7f7f7f5a] top-[20%] left-0 flex justify-center items-center">
+                                <GoPencil className="mr-2" /> Edit
+                            </aside>
+                        </a>
+                    </Link>
+                )}
                 <Link href="/project/user/123">
                     <a className="flex px-4 py-6">
                         <aside className=" w-10 h-10 rounded-full overflow-hidden relative shadow-lg mr-3">
@@ -124,12 +143,10 @@ const List = () => {
             </td>
             <td>
                 <div className="w-full flex justify-center">
-                    <Tippy theme="ThemeRed" content={"Active"}>
-                        <div
-                            className=" h-5 w-5 rounded-full border-4 border-[#19d142]"
-                            style={{ boxShadow: "0 0 15px 0 #19d142" }}
-                        ></div>
-                    </Tippy>
+                    <div
+                        className=" h-5 w-5 rounded-full border-4 border-[#19d142]"
+                        style={{ boxShadow: "0 0 15px 0 #19d142" }}
+                    ></div>
                 </div>
             </td>
         </tr>
