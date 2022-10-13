@@ -9,12 +9,13 @@ export default function User() {
 
     return (
         <div>
-            <>
+            user
+            {/* <>
                 <SearchFilter page="user" />
                 <UserTable />
                 <Pagination />
             </>
-            {router.query.new !== undefined && <NewUser />}
+            {router.query.new !== undefined && <NewUser />} */}
         </div>
     );
 }

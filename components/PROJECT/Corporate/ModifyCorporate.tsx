@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import { AiFillCamera } from "react-icons/ai";
 import Image from "next/image";
+import style from "../../../styles/Popup_Modal.module.scss";
 
 type ModifyCorporate = {
     setToggleModify: Function;
@@ -43,19 +44,16 @@ export default function ModifyCorporate({ setToggleModify }: ModifyCorporate) {
         }
     };
     return (
-        <div className=" fixed top-0 left-0 h-screen overflow-auto w-full bg-[#00000040] p-10 z-50 flex justify-center items-center 820px:items-center 375px:items-start 480px:p-5">
-            <section
-                ref={modal}
-                className=" p-10 bg-[#e2e3e4] rounded-lg w-[90%] max-w-[700px] text-ThemeRed shadow-lg"
-            >
-                <p className=" text-[16px] mb-3">Modify Corporate</p>
-                <h1 className=" w-full text-[24px] mb-3">
+        <div className={style.container}>
+            <section ref={modal}>
+                <p className={style.modal_title}>Modify Corporate</p>
+                <h1 className={style.modal_label_primary}>
                     Primary Information
                 </h1>
-                <ul className=" flex mb-10 flex-wrap 480px:mb-2">
-                    <li className=" border flex items-center w-4/12 820px:w-2/4 480px:w-full mb-5">
-                        <aside className="w-10 h-10 relative flex mr-4">
-                            <aside className=" bg-white h-full w-full object-cover relative">
+                <ul className={style.ThreeRows}>
+                    <li className={style.upload_image}>
+                        <aside>
+                            <aside>
                                 <Image
                                     src={`${isProfileUrl}`}
                                     alt=""
@@ -67,82 +65,52 @@ export default function ModifyCorporate({ setToggleModify }: ModifyCorporate) {
                                 type="file"
                                 id="image"
                                 onChange={DisplayImage}
-                                className="hidden"
                             />
-                            <label
-                                htmlFor="image"
-                                className=" cursor-pointer hover:bg-ThemeRed50 p-1 rounded-full text-white bg-ThemeRed absolute text-[12px] right-[-10px] bottom-[-5px]"
-                            >
+                            <label htmlFor="image">
                                 <AiFillCamera />
                             </label>
                         </aside>
-                        <label
-                            htmlFor="image"
-                            className=" text-[12px] font-semibold"
-                        >
-                            UPLOAD LOGO
+                        <label htmlFor="image" className={style.image_label}>
+                            <p>UPLOAD LOGO</p>
                         </label>
                     </li>
-                    <li className="  flex flex-col w-4/12 820px:w-2/4 480px:w-full mb-5">
-                        <label className=" text-[12px] font-semibold mb-1 w-[90%]">
-                            ID
-                        </label>
+                    <li>
+                        <label>ID</label>
                         <input
                             type="text"
                             value="123"
                             disabled={true}
-                            className="rounded-md bg-[#cdb8be] text-black px-2 py-[2px]  w-[90%] 480px:w-full"
+                            className=" bg-[#cdb8be]"
                         />
                     </li>
-                    <li className="  flex flex-col  w-4/12 820px:w-2/4 480px:w-full mb-5">
-                        <label className=" text-[12px] font-semibold mb-1 uppercase  w-[90%]">
-                            Corporate Name
-                        </label>
-                        <input
-                            type="text"
-                            className="rounded-md text-black px-2 py-[2px] outline-none  w-[90%]  480px:w-full"
-                        />
+                    <li>
+                        <label>Corporate Name</label>
+                        <input type="text" />
                     </li>
                 </ul>
 
-                <ul className=" flex mb-10 flex-wrap 480px:mb-2">
-                    <li className="  flex flex-col  w-4/12 820px:w-2/4 480px:w-full mb-5">
-                        <label className=" text-[12px] font-semibold mb-1 uppercase">
-                            GST TYPE.
-                        </label>
-                        <select
-                            name=""
-                            id=""
-                            className="w-[90%] rounded-md text-black px-2 py-[2px] outline-none 480px:w-full"
-                        >
-                            <option
-                                value=""
-                                className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
-                            ></option>
+                <ul className={style.ThreeRows}>
+                    <li>
+                        <label>GST TYPE.</label>
+                        <select name="" id="">
+                            <option value=""></option>
                         </select>
                     </li>
-                    <li className="  flex flex-col  w-4/12 820px:w-2/4 480px:w-full mb-5">
-                        <label className=" text-[12px] font-semibold mb-1 uppercase w-[90%]">
-                            RDO NO.
-                        </label>
-                        <input
-                            type="text"
-                            className="rounded-md text-black px-2 py-[2px] outline-none w-[90%] 480px:w-full"
-                        />
+                    <li>
+                        <label>RDO NO.</label>
+                        <input type="text" />
                     </li>
                 </ul>
 
-                <div className=" w-full flex justify-end items-center">
+                <div className={style.button_container}>
                     <button
-                        className=" text-ThemeRed font-semibold text-[14px] mr-5"
+                        className="button_cancel"
                         onClick={() => setToggleModify(false)}
                     >
                         CANCEL
                     </button>
 
-                    <button className=" text-white h-8 w-20 flex justify-center items-center duration-75 hover:bg-ThemeRed50 leading-none bg-ThemeRed rounded-md text-[14px] mr-5">
-                        NEXT
-                    </button>
+                    <button className="buttonRed">NEXT</button>
                 </div>
             </section>
         </div>

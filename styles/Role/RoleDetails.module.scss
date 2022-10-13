@@ -1,0 +1,18 @@
+.header {
+    @apply w-full flex justify-between items-center mb-10;
+}
+.container {
+    @apply bg-white px-20 py-10 1366px:px-10;
+    aside {
+        @apply w-full overflow-auto;
+        table {
+            @apply w-full 480px:min-w-[500px];
+        }
+    }
+    ul {
+        @apply flex flex-wrap w-full;
+        li {
+            @apply w-4/12 mb-10 820px:w-2/4 480px:w-full 480px:mb-3;
+        }
+    }
+}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { MdArrowForwardIos } from "react-icons/md";
 import { motion, AnimatePresence } from "framer-motion";
 import MenuLink from "./MenuLink";
@@ -129,7 +129,7 @@ export default function Sidebar({
                             </MenuLink>
                         ))}
                     </ul>
-                    {/* What Search will show */}
+                    {/* Wheres page the Search will show */}
                     <div className="flex-1 shadow-2xl">
                         <AnimatePresence>
                             {isProfileSearch && (

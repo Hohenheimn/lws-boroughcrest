@@ -1,0 +1,85 @@
+.container {
+    @apply overflow-hidden fixed top-0 left-0 h-screen 820px:overflow-auto w-full bg-[#00000040] p-10 z-50 flex justify-center items-center 820px:items-center 375px:items-start 480px:p-5;
+    section {
+        @apply p-10 bg-[#e2e3e4] rounded-lg w-[90%] max-w-[700px] text-ThemeRed shadow-lg;
+        .modal_title {
+            @apply text-[16px] mb-3;
+        }
+        .modal_label_primary {
+            @apply w-full text-[24px] mb-3;
+        }
+        .statusTitle {
+            @apply w-[95%] text-[12px] flex items-center justify-end mb-5;
+            span {
+                @apply mr-2 font-bold;
+            }
+        }
+        .twoRows_container {
+            @apply flex w-full justify-between mb-5;
+            li {
+                @apply w-2/4 flex flex-col;
+                aside {
+                    @apply mb-2;
+                }
+                input {
+                    @apply w-3/5 mr-1 rounded-md text-black px-2 py-[2px] outline-none 480px:w-full;
+                }
+                span {
+                    @apply text-[12px] text-gray-500;
+                }
+                label {
+                    @apply text-[12px] font-semibold uppercase;
+                }
+            }
+        }
+        .ThreeRows {
+            @apply flex mb-10 flex-wrap 480px:mb-2;
+            .upload_image {
+                @apply flex flex-row items-center justify-start w-4/12 820px:w-2/4 480px:w-full mb-5;
+                aside {
+                    @apply w-10 h-10 relative flex;
+                    aside {
+                        @apply bg-white h-full w-full object-cover relative;
+                    }
+                    input {
+                        @apply hidden;
+                    }
+                    label {
+                        @apply cursor-pointer hover:bg-ThemeRed50 p-1 rounded-full text-white bg-ThemeRed absolute text-[12px] right-[-10px] bottom-[-5px];
+                    }
+                }
+            }
+            li {
+                @apply flex flex-col  w-4/12 820px:w-2/4 480px:w-full mb-5 pr-2;
+                .image_label {
+                    @apply text-[12px] font-semibold;
+                    p {
+                        @apply ml-4;
+                    }
+                }
+                label {
+                    @apply text-[12px] font-semibold uppercase;
+                }
+                input {
+                    @apply rounded-md text-black px-2 py-[2px] outline-none w-[100%] 480px:w-full;
+                }
+                select {
+                    @apply w-[90%] rounded-md text-black px-2 py-[2px] outline-none 480px:w-full;
+                    option {
+                        @apply hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed;
+                    }
+                }
+            }
+            li.twoRows {
+                @apply flex justify-between  w-4/12 820px:w-2/4 480px:w-full mb-5 -mt-1;
+                .wrapper {
+                    @apply w-[90%] flex justify-between  480px:w-full;
+                }
+            }
+        }
+    }
+}
+
+.button_container {
+    @apply w-full flex justify-end items-center;
+}

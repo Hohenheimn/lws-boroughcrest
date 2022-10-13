@@ -1,0 +1,42 @@
+.container {
+    @apply w-full;
+    .header {
+        @apply w-full p-5 pb-0;
+    }
+    .title {
+        @apply text-ThemeRed flex items-center mb-5 p-3 pb-0 w-full;
+        .arrow {
+            @apply text-[24px] mr-3 rotate-180;
+        }
+        h1 {
+            @apply text-[20px];
+        }
+    }
+    .searchBar {
+        @apply p-3 w-full;
+        div {
+            @apply w-full flex items-center px-4 py-2 border border-ThemeRed flex-1 rounded-lg shadow-lg 640px:px-4 640px:py-2;
+            input {
+                @apply flex-1 outline-none text-[12px] w-full bg-transparent;
+            }
+            .searchIcon {
+                @apply mr-2 text-gray-500 text-[12px];
+            }
+        }
+    }
+    .searchedItem {
+        @apply w-full;
+        ul {
+            @apply w-full flex p-5 border-b border-gray-300 flex-wrap;
+            li {
+                @apply w-2/4;
+                h4 {
+                    @apply text-[14px] text-gray-500;
+                }
+                p {
+                    @apply text-[14px] text-gray-400;
+                }
+            }
+        }
+    }
+}

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-
+import style from "../../styles/SearchFilter.module.scss";
 import { flip } from "../Animation/SimpleAnimation";
 import { motion } from "framer-motion";
 
@@ -29,7 +29,7 @@ export default function FilterCustomer({ setFilter, isFilter }: setFilter) {
             initial="initial"
             animate="animate"
             exit="exit"
-            className=" z-50 origin-top absolute top-[180%] right-0 border border-ThemeRed bg-white p-2 pb-10 text-[14px] text-ThemeRed font-bold w-[200px]"
+            className={style.column}
         >
             <li className="font-medium">Columns</li>
             <FilterList name="All" />
@@ -55,13 +55,8 @@ export default function FilterCustomer({ setFilter, isFilter }: setFilter) {
 
 const FilterList = ({ name }: any) => {
     return (
-        <li className=" flex items-center mb-1">
-            <input
-                type="checkbox"
-                name=""
-                id={name}
-                className={`relative after:text-white after:flex after:justify-center after:items-center mr-1 checked:after:bg-ThemeRed checked:after:content-['✓'] appearance-none w-4 h-4 border border-red after:w-full after:h-full after:absolute after:left-0 after:top-0`}
-            />
+        <li className={style.column_item}>
+            <input type="checkbox" name="" id={name} />
             <label htmlFor={name}>{name}</label>
         </li>
     );
