@@ -124,3 +124,7 @@ h6 {
         box-shadow: 0 0 15px 0 #19d142;
     }
 }
+
+input[type="checkbox"] {
+    @apply relative after:text-white after:flex after:justify-center after:items-center mr-1 checked:after:bg-ThemeRed checked:after:content-['✓'] appearance-none border border-[#8F384D] after:w-full after:h-full after:absolute after:left-0 after:top-0;
+}

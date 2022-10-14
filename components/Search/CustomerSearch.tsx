@@ -28,7 +28,7 @@ export default function CustomerSearch() {
                 </aside>
             </div>
 
-            <Link href="/project/corporate/345">
+            <Link href="/admin/customer/345">
                 <a className={style.searchedItem}>
                     <ul>
                         <li>
@@ -42,7 +42,7 @@ export default function CustomerSearch() {
                     </ul>
                 </a>
             </Link>
-            <Link href="/project/corporate/345">
+            <Link href="/admin/customer/345">
                 <a className={style.searchedItem}>
                     <ul>
                         <li>
@@ -56,7 +56,7 @@ export default function CustomerSearch() {
                     </ul>
                 </a>
             </Link>
-            <Link href="/project/corporate/345">
+            <Link href="/admin/customer/345">
                 <a className={style.searchedItem}>
                     <ul>
                         <li>

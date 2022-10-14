@@ -1,8 +1,8 @@
 import React, { useRef, useEffect, useState } from "react";
 import { RiArrowDownSFill } from "react-icons/ri";
 import Link from "next/link";
-import { IoTerminal } from "react-icons/io5";
-
+import { AnimatePresence, motion } from "framer-motion";
+import { ModalSideFade } from "../../Animation/SimpleAnimation";
 type ModifyRolesPermission = {
     setToggle: Function;
 };
@@ -37,67 +37,75 @@ export default function ModifyProperty({ setToggle }: ModifyRolesPermission) {
                 className=" p-10 bg-[#e2e3e4ef] rounded-lg w-[90%] max-w-[700px] text-ThemeRed shadow-lg"
             >
                 <p className=" text-[16px] mb-3 font-bold">Create Customer</p>
-                <h1 className=" w-full text-[24px] mb-3">
-                    Property Information
-                </h1>
 
-                <table className="w-full mb-20">
-                    <thead>
-                        <tr>
-                            <th className=" text-[12px] font-semibold mb-1 uppercase text-start">
-                                UNIT CODE
-                            </th>
-                            <th className=" text-[12px] font-semibold mb-1 uppercase text-start">
-                                PROJECT
-                            </th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {isTable.map((item, index) => (
-                            <List
-                                detail={item}
-                                setTable={setTable}
-                                key={index}
-                                isTable={isTable}
-                            />
-                        ))}
-                    </tbody>
-                </table>
+                <motion.div
+                    variants={ModalSideFade}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                >
+                    <h1 className=" w-full text-[24px] mb-3">
+                        Property Information
+                    </h1>
 
-                <div className=" w-full flex justify-end items-center">
-                    <button
-                        className=" text-ThemeRed font-semibold text-[14px] mr-5"
-                        onClick={() => setToggle(false)}
-                    >
-                        CANCEL
-                    </button>
+                    <table className="w-full mb-20">
+                        <thead>
+                            <tr>
+                                <th className=" text-[12px] font-semibold mb-1 uppercase text-start">
+                                    UNIT CODE
+                                </th>
+                                <th className=" text-[12px] font-semibold mb-1 uppercase text-start">
+                                    PROJECT
+                                </th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {isTable.map((item, index) => (
+                                <List
+                                    detail={item}
+                                    setTable={setTable}
+                                    key={index}
+                                    isTable={isTable}
+                                />
+                            ))}
+                        </tbody>
+                    </table>
 
-                    <button className=" relative text-white flex justify-center items-center duration-75 hover:bg-ThemeRed50 leading-none bg-ThemeRed rounded-md text-[14px] mr-5">
-                        <div
-                            className=" h-8 px-5 w-full flex justify-center items-center"
-                            onClick={() => setSave(!isSave)}
+                    <div className=" w-full flex justify-end items-center">
+                        <button
+                            className=" text-ThemeRed font-semibold text-[14px] mr-5"
+                            onClick={() => setToggle(false)}
                         >
-                            SAVE{" "}
-                            <RiArrowDownSFill className=" ml-1 text-[24px]" />
-                        </div>
-                        {isSave && (
-                            <ul className=" absolute top-full bg-white w-full">
-                                <a
-                                    onClick={() => console.log(isTable)}
-                                    className="text-ThemeRed inline-block py-2 w-full text-center hover:bg-ThemeRed hover:text-white duration-75"
-                                >
-                                    SAVE
-                                </a>
-                                <Link href="/admin/customer?new">
-                                    <a className="text-ThemeRed inline-block py-2 w-full text-center hover:bg-ThemeRed hover:text-white duration-75">
-                                        SAVE & NEW
+                            CANCEL
+                        </button>
+
+                        <button className=" relative text-white flex justify-center items-center duration-75 hover:bg-ThemeRed50 leading-none bg-ThemeRed rounded-md text-[14px] mr-5">
+                            <div
+                                className=" h-8 px-5 w-full flex justify-center items-center"
+                                onClick={() => setSave(!isSave)}
+                            >
+                                SAVE{" "}
+                                <RiArrowDownSFill className=" ml-1 text-[24px]" />
+                            </div>
+                            {isSave && (
+                                <ul className=" absolute top-full bg-white w-full">
+                                    <a
+                                        onClick={() => console.log(isTable)}
+                                        className="text-ThemeRed inline-block py-2 w-full text-center hover:bg-ThemeRed hover:text-white duration-75"
+                                    >
+                                        SAVE
                                     </a>
-                                </Link>
-                            </ul>
-                        )}
-                    </button>
-                </div>
+                                    <Link href="/admin/customer?new">
+                                        <a className="text-ThemeRed inline-block py-2 w-full text-center hover:bg-ThemeRed hover:text-white duration-75">
+                                            SAVE & NEW
+                                        </a>
+                                    </Link>
+                                </ul>
+                            )}
+                        </button>
+                    </div>
+                </motion.div>
             </section>
         </div>
     );

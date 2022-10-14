@@ -8,6 +8,8 @@ import { BsSearch } from "react-icons/bs";
 import { IoNotificationsSharp } from "react-icons/io5";
 import { IoIosArrowDown } from "react-icons/io";
 import Image from "next/image";
+import Tippy from "@tippy.js/react";
+import "tippy.js/dist/tippy.css";
 
 type Layout = {
     children: React.ReactNode;
@@ -112,7 +114,19 @@ export default function Layout({ children }: Layout) {
                             )}
                             <ul className=" flex items-center ml-5  480px:my-5">
                                 <li className=" relative mr-5 cursor-pointer">
-                                    <IoNotificationsSharp className=" text-ThemeRed text-[32px]" />
+                                    <Tippy
+                                        theme="ThemeRed"
+                                        content={
+                                            <span className="capitalize">
+                                                Notification
+                                            </span>
+                                        }
+                                    >
+                                        <div>
+                                            <IoNotificationsSharp className=" text-ThemeRed text-[32px]" />
+                                        </div>
+                                    </Tippy>
+
                                     <div className="absolute w-4 h-4 text-[11px] top-[-5%] right-[-8%] flex justify-center items-start rounded-full bg-Green text-white">
                                         1
                                     </div>

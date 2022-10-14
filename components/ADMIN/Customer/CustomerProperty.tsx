@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { HiPencil } from "react-icons/hi";
 import ModifyProperty from "./ModifyProperty";
+import Tippy from "@tippy.js/react";
+import "tippy.js/dist/tippy.css";
 
 export default function CustomerProperty() {
     const [isToggle, setToggle] = useState(false);
@@ -11,10 +13,17 @@ export default function CustomerProperty() {
                 <h1 className=" w-full text-[24px] mb-3 480px:text-[16px]">
                     Property Information
                 </h1>
-                <HiPencil
-                    className=" text-ThemeRed font-bold text-[32px] 480px:text-[24px] cursor-pointer"
-                    onClick={() => setToggle(true)}
-                />
+                <Tippy
+                    theme="ThemeRed"
+                    content={<span className="capitalize">Modify</span>}
+                >
+                    <div>
+                        <HiPencil
+                            className=" text-ThemeRed font-bold text-[32px] 480px:text-[24px] cursor-pointer"
+                            onClick={() => setToggle(true)}
+                        />
+                    </div>
+                </Tippy>
             </header>
             <div className=" overflow-auto w-full">
                 <table className=" w-full 480px:w-[800px]">

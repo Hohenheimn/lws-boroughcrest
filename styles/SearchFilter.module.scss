@@ -18,7 +18,10 @@
         .importExportPrint {
             @apply flex items-center;
             .icon {
-                @apply mr-5 text-ThemeRed text-[30px] font-bold cursor-pointer hover:text-ThemeRed50;
+                @apply mr-5 text-ThemeRed text-[30px] font-bold cursor-pointer flex hover:text-ThemeRed50;
+                label {
+                    @apply flex;
+                }
             }
         }
         .new {

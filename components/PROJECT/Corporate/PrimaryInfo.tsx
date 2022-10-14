@@ -3,6 +3,8 @@ import Link from "next/link";
 import Image from "next/image";
 import style from "../../../styles/Popup_Modal.module.scss";
 import { AiFillCamera } from "react-icons/ai";
+import { motion } from "framer-motion";
+import { ModalSideFade } from "../../../components/Animation/SimpleAnimation";
 
 type PrimaryInfo = {
     setNewActive: Function;
@@ -36,7 +38,12 @@ export default function PrimaryInfo({
         }
     };
     return (
-        <div>
+        <motion.div
+            variants={ModalSideFade}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+        >
             <h1 className={style.modal_label_primary}>Primary Informations</h1>
             <ul className={style.ThreeRows}>
                 <li className={style.upload_image}>
@@ -86,11 +93,11 @@ export default function PrimaryInfo({
                         </div>
                     </div>
                 </li>
-                <li className="  flex flex-col  w-4/12 820px:w-2/4 480px:w-full mb-5">
+                <li>
                     <label>RDO NO.</label>
                     <input type="text" />
                 </li>
-                <li className="  flex flex-col  w-4/12 820px:w-2/4 480px:w-full mb-5">
+                <li>
                     <label>GST TYPE.</label>
                     <select name="" id="">
                         <option value=""></option>
@@ -122,6 +129,6 @@ export default function PrimaryInfo({
                     NEXT
                 </button>
             </div>
-        </div>
+        </motion.div>
     );
 }

@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import style from "../../../styles/Popup_Modal.module.scss";
 import PrimaryInfo from "./PrimaryInfo";
 import NextContactInfo from "./NextContactInfo";
+import { AnimatePresence } from "framer-motion";
 
 export default function NewCorporate() {
     const [isNewActive, setNewActive] = useState([true, false]);
@@ -24,18 +25,22 @@ export default function NewCorporate() {
         <div className={style.container}>
             <section ref={modal}>
                 <p className={style.modal_title}>Create Corporate</p>
-                {isNewActive[0] && (
-                    <PrimaryInfo
-                        setNewActive={setNewActive}
-                        isNewActive={isNewActive}
-                    />
-                )}
-                {isNewActive[1] && (
-                    <NextContactInfo
-                        setNewActive={setNewActive}
-                        isNewActive={isNewActive}
-                    />
-                )}
+                <AnimatePresence mode="wait">
+                    {isNewActive[0] && (
+                        <PrimaryInfo
+                            key={1}
+                            setNewActive={setNewActive}
+                            isNewActive={isNewActive}
+                        />
+                    )}
+                    {isNewActive[1] && (
+                        <NextContactInfo
+                            key={2}
+                            setNewActive={setNewActive}
+                            isNewActive={isNewActive}
+                        />
+                    )}
+                </AnimatePresence>
             </section>
         </div>
     );

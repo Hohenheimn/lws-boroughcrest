@@ -5,6 +5,8 @@ import ModifyCustomer from "./ModifyCustomer";
 import CustomerInformation from "./CustomerInformation";
 import CustomerProperty from "./CustomerProperty";
 import Modal_Image from "../../Modal_Image";
+import Tippy from "@tippy.js/react";
+import "tippy.js/dist/tippy.css";
 export default function CustomerDetail() {
     const [toggleModify, setToggleModify] = useState(false);
     const [isToggleInfoRole, setToggleInfoRole] = useState<boolean>(false);
@@ -24,10 +26,17 @@ export default function CustomerDetail() {
                     <h1 className=" font-bold text-[24px] 480px:mb-0 480px:text-[16px]">
                         Primary Informations
                     </h1>
-                    <HiPencil
-                        className=" text-ThemeRed font-bold text-[32px] 480px:text-[24px] cursor-pointer"
-                        onClick={() => setToggleModify(true)}
-                    />
+                    <Tippy
+                        theme="ThemeRed"
+                        content={<span className="capitalize">Modify</span>}
+                    >
+                        <div>
+                            <HiPencil
+                                className=" text-ThemeRed font-bold text-[32px] 480px:text-[24px] cursor-pointer"
+                                onClick={() => setToggleModify(true)}
+                            />
+                        </div>
+                    </Tippy>
                 </li>
                 <li className="w-3/12 flex-col 480px:w-full p-5 flex justify-center items-center">
                     <aside className=" w-6/12 820px:w-10/12 rounded-full overflow-hidden 480px:w-5/12 aspect-square relative shadow-xl">

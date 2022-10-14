@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import Link from "next/link";
 import { RiArrowDownSFill } from "react-icons/ri";
 import style from "../../../styles/Popup_Modal.module.scss";
+import { motion } from "framer-motion";
+import { ModalSideFade } from "../../../components/Animation/SimpleAnimation";
 
 type NextContactInfo = {
     setNewActive: Function;
@@ -14,7 +15,12 @@ export default function NextContactInfo({
 }: NextContactInfo) {
     const [isSave, setSave] = useState(false);
     return (
-        <div>
+        <motion.div
+            variants={ModalSideFade}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+        >
             <h1 className={style.modal_label_primary}>Contact Informations</h1>
             <ul className={style.twoRows_container}>
                 <li>
@@ -65,9 +71,9 @@ export default function NextContactInfo({
                     <input type="text" />
                 </li>
             </ul>
-            <div className=" w-full flex justify-end items-center">
+            <div className=" w-full flex justify-end items-center  mb-10">
                 <button
-                    className="cancel_button mr-5"
+                    className="cancel_button mr-5 font-bold"
                     onClick={() =>
                         setNewActive((item: any) => [
                             (item[0] = true),
@@ -77,27 +83,26 @@ export default function NextContactInfo({
                 >
                     Back
                 </button>
-                <button className="buttonRed relative">
+                <button className=" relative text-white flex justify-center items-center duration-75 hover:bg-ThemeRed50 leading-none bg-ThemeRed rounded-md text-[14px] mr-5">
                     <div
-                        className=" w-full flex justify-center items-center"
+                        className=" h-8 px-5 w-full flex justify-center items-center"
                         onClick={() => setSave(!isSave)}
                     >
                         SAVE <RiArrowDownSFill className=" ml-1 text-[24px]" />
                     </div>
                     {isSave && (
-                        <ul className=" absolute left-0 top-full bg-white w-full">
+                        <ul className=" absolute top-full bg-white w-full">
                             <a className="text-ThemeRed inline-block py-2 w-full text-center hover:bg-ThemeRed hover:text-white duration-75">
                                 SAVE
                             </a>
-                            <Link href="/project/corporate?new">
-                                <a className="text-ThemeRed inline-block py-2 w-full text-center hover:bg-ThemeRed hover:text-white duration-75">
-                                    SAVE & NEW
-                                </a>
-                            </Link>
+
+                            <a className="text-ThemeRed inline-block py-2 w-full text-center hover:bg-ThemeRed hover:text-white duration-75">
+                                SAVE & NEW
+                            </a>
                         </ul>
                     )}
                 </button>
             </div>
-        </div>
+        </motion.div>
     );
 }

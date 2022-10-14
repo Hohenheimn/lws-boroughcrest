@@ -6,6 +6,9 @@ export const FadeSide = {
     animate: {
         opacity: 1,
         marginLeft: 0,
+        transition: {
+            ease: "linear",
+        },
     },
     exit: {
         opacity: 0,
@@ -47,5 +50,20 @@ export const flip = {
     exit: {
         rotateX: "90deg",
         transition: { type: "spring", bounce: 0 },
+    },
+};
+
+export const ModalSideFade = {
+    initial: {
+        opacity: 0,
+        marginLeft: "30px",
+    },
+    animate: {
+        opacity: 1,
+        marginLeft: 0,
+    },
+    exit: {
+        opacity: 0,
+        marginLeft: "-30px",
     },
 };

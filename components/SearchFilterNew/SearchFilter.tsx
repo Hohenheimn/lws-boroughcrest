@@ -35,19 +35,36 @@ export default function SearchFilter({ page }: SearchFilter) {
                     {ValidatePathName === "customer" && (
                         <li className={style.importExportPrint}>
                             <Tippy theme="ThemeRed" content="Export">
-                                <div>
-                                    <BiExport className={style.icon} />
+                                <div className={style.icon}>
+                                    <Image
+                                        src="/Images/Export.png"
+                                        width={30}
+                                        height={30}
+                                        alt="Export"
+                                    />
                                 </div>
                             </Tippy>
                             <Tippy theme="ThemeRed" content="Import">
-                                <label htmlFor="import">
-                                    <BiImport className={style.icon} />
-                                </label>
+                                <div className={style.icon}>
+                                    <label htmlFor="import">
+                                        <Image
+                                            src="/Images/Import.png"
+                                            width={30}
+                                            height={30}
+                                            alt="Import"
+                                        />
+                                    </label>
+                                </div>
                             </Tippy>
                             <input type="file" id="import" className="hidden" />
                             <Tippy theme="ThemeRed" content="Print">
-                                <div>
-                                    <BsFillPrinterFill className={style.icon} />
+                                <div className={style.icon}>
+                                    <Image
+                                        src="/Images/Print.png"
+                                        width={27}
+                                        height={27}
+                                        alt="Print"
+                                    />
                                 </div>
                             </Tippy>
                         </li>

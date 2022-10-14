@@ -9,7 +9,6 @@ export default function User() {
 
     return (
         <div>
-            user
             {/* <>
                 <SearchFilter page="user" />
                 <UserTable />

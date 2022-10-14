@@ -42,7 +42,10 @@ export default function MenuLink({
                         ValidateUrl === ActiveUrl && "bg-ThemeRed"
                     }`}
                 >
-                    <Tippy theme="ThemeRed" content={urlName}>
+                    <Tippy
+                        theme="ThemeRed"
+                        content={<span className="capitalize">{urlName}</span>}
+                    >
                         <aside className="mx-5 h-5 w-5 my-3 relative">
                             <Image
                                 src={`/Images/${

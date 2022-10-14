@@ -1,7 +1,7 @@
 .container {
-    @apply overflow-hidden fixed top-0 left-0 h-screen 820px:overflow-auto w-full bg-[#00000040] p-10 z-50 flex justify-center items-center 820px:items-center 375px:items-start 480px:p-5;
+    @apply overflow-hidden fixed top-0 left-0 h-screen w-full bg-[#00000040] p-10 z-50 flex justify-center items-center 820px:items-center 375px:items-start 480px:p-5;
     section {
-        @apply p-10 bg-[#e2e3e4] rounded-lg w-[90%] max-w-[700px] text-ThemeRed shadow-lg;
+        @apply p-10 bg-[#e2e3e4] rounded-lg w-[90%] max-w-[700px] max-h-[95vh] overflow-auto text-ThemeRed shadow-lg;
         .modal_title {
             @apply text-[16px] mb-3;
         }
@@ -33,7 +33,7 @@
             }
         }
         .ThreeRows {
-            @apply flex mb-10 flex-wrap 480px:mb-2;
+            @apply flex mb-5 flex-wrap 480px:mb-2;
             .upload_image {
                 @apply flex flex-row items-center justify-start w-4/12 820px:w-2/4 480px:w-full mb-5;
                 aside {
@@ -50,7 +50,7 @@
                 }
             }
             li {
-                @apply flex flex-col  w-4/12 820px:w-2/4 480px:w-full mb-5 pr-2;
+                @apply flex flex-col  w-4/12 820px:w-2/4 480px:w-full mb-3 pr-2;
                 .image_label {
                     @apply text-[12px] font-semibold;
                     p {
@@ -58,15 +58,21 @@
                     }
                 }
                 label {
-                    @apply text-[12px] font-semibold uppercase;
+                    @apply text-[12px] font-semibold uppercase mb-1;
                 }
                 input {
                     @apply rounded-md text-black px-2 py-[2px] outline-none w-[100%] 480px:w-full;
                 }
                 select {
-                    @apply w-[90%] rounded-md text-black px-2 py-[2px] outline-none 480px:w-full;
+                    @apply w-full rounded-md text-black px-2 py-[2px] outline-none 480px:w-full;
                     option {
                         @apply hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed;
+                    }
+                }
+                .checkboxContainer {
+                    @apply mt-2;
+                    label {
+                        @apply mb-0;
                     }
                 }
             }
@@ -75,6 +81,15 @@
                 .wrapper {
                     @apply w-[90%] flex justify-between  480px:w-full;
                 }
+            }
+        }
+        .checkboxContainer {
+            @apply flex items-center mb-2;
+            input[type="checkbox"] {
+                @apply w-3 aspect-square border border-[#8f384d] rounded-none mr-1 checked:bg-ThemeRed appearance-none p-0;
+            }
+            label {
+                @apply text-[12px] font-bold p-0 mb-0;
             }
         }
     }

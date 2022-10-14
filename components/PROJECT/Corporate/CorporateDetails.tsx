@@ -3,6 +3,8 @@ import { HiPencil } from "react-icons/hi";
 import Image from "next/image";
 import ModifyCorporate from "./ModifyCorporate";
 import style from "../../../styles/Project/CorporateDetails.module.scss";
+import Tippy from "@tippy.js/react";
+import "tippy.js/dist/tippy.css";
 export default function CorporateDetails() {
     const [toggleModify, setToggleModify] = useState(false);
     return (
@@ -14,10 +16,17 @@ export default function CorporateDetails() {
             <ul className={style.primary}>
                 <li className={style.head}>
                     <h1>Primary Information</h1>
-                    <HiPencil
-                        className={style.pencil}
-                        onClick={() => setToggleModify(true)}
-                    />
+                    <Tippy
+                        theme="ThemeRed"
+                        content={<span className="capitalize">Modify</span>}
+                    >
+                        <div>
+                            <HiPencil
+                                className={style.pencil}
+                                onClick={() => setToggleModify(true)}
+                            />
+                        </div>
+                    </Tippy>
                 </li>
                 <li className={style.image}>
                     <aside>

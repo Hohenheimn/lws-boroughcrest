@@ -3,14 +3,44 @@ import { FaKey, FaEnvelope } from "react-icons/fa";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import Image from "next/image";
 import Head from "next/head";
+import { useRouter } from "next/router";
+import api from "../util/api";
+import { setCookie, getCookie } from "cookies-next";
+import axios from "axios";
 
 export default function Login() {
-    const [isUsername, setUsername] = useState();
-    const [isPassword, setPassword] = useState();
+    const router = useRouter();
+    const [isUsername, setUsername] = useState("");
+    const [isPassword, setPassword] = useState("");
 
     const [isEye, setEye] = useState(false);
 
-    const Login = () => {};
+    const ValidateLogin = async (e: any) => {
+        e.preventDefault();
+        console.log(isUsername, isPassword);
+        try {
+            const response = await axios.post(
+                "https://boroughcrest-api.lws.codes/auth/login",
+                {
+                    email: isUsername,
+                    password: isPassword,
+                },
+                {
+                    headers: {
+                        Authorization: "Bearer " + getCookie("user"),
+                    },
+                }
+            );
+
+            const { token } = await response.data;
+            if (response.status === 200) {
+                setCookie("user", token);
+                router.push("/");
+            }
+        } catch (error) {
+            alert("invalid user and pass");
+        }
+    };
 
     return (
         <>
@@ -21,7 +51,10 @@ export default function Login() {
                     content="initial-scale=1.0, width=device-width"
                 />
             </Head>
-            <div className=" min-h-screen flex justify-center items-center bg-ThemeRed">
+            <form
+                onSubmit={ValidateLogin}
+                className=" min-h-screen flex justify-center items-center bg-ThemeRed"
+            >
                 <div className=" w-11/12 max-w-[1200px] 1366px:max-w-[1000px] 480px:w-[95%] bg-white relative h-[80vh] 640px:h-auto">
                     <aside className=" absolute z-0 h-full w-full top-0 left-0">
                         <Image
@@ -56,7 +89,7 @@ export default function Login() {
                                 <p className=" text-ThemeRed text-[30px] mb-1 font-NHU-medium 640px:mb-0 640px:text-[24px]">
                                     Log In
                                 </p>
-                                <h2 className=" text-[20px] mb-12 font-bold font-NHU-bold 640px:mb-5 640px:text-[16px]">
+                                <h2 className=" text-[20px] mb-10 font-bold font-NHU-bold 640px:mb-5 640px:text-[16px]">
                                     Enter your login details
                                 </h2>
 
@@ -67,6 +100,12 @@ export default function Login() {
                                     <FaEnvelope className=" mr-2 text-ThemeRed" />
                                     <input
                                         type="email"
+                                        value={isUsername}
+                                        required
+                                        onChange={(e: any) =>
+                                            setUsername(e.target.value)
+                                        }
+                                        name="username"
                                         className="flex-1 outline-none text-16px "
                                         placeholder="Enter Email Address"
                                     />
@@ -78,6 +117,12 @@ export default function Login() {
                                     <FaKey className=" mr-2 text-ThemeRed" />
                                     <input
                                         type={`${!isEye ? "password" : "text"}`}
+                                        value={isPassword}
+                                        name="password"
+                                        required
+                                        onChange={(e: any) =>
+                                            setPassword(e.target.value)
+                                        }
                                         className="flex-1 outline-none text-16px"
                                         placeholder="Enter Password"
                                     />
@@ -94,14 +139,24 @@ export default function Login() {
                                 </div>
                                 <div className=" flex items-center justify-between w-full max-w-[400px] mb-5 640px:mb-4">
                                     <button
-                                        onClick={Login}
+                                        type="submit"
                                         className=" w-32 py-1 bg-ThemeRed rounded-lg text-white text-[14px] hover:shadow-lg duration-75 ease-in-out font-medium hover:bg-white hover:text-ThemeRed"
                                     >
                                         LOG IN
                                     </button>
-                                    <button className="text-ThemeRed hover:underline text-[14px]">
-                                        Remember me
-                                    </button>
+                                    <div className=" flex items-center">
+                                        <input
+                                            type="checkbox"
+                                            id="rememberme"
+                                            className="mr-1 h-4 w-4 after:text-[11px]"
+                                        />
+                                        <label
+                                            htmlFor="rememberme"
+                                            className="text-ThemeRed hover:underline text-[14px]"
+                                        >
+                                            Remember me
+                                        </label>
+                                    </div>
                                 </div>
                             </section>
                             <div className="px-5 640px:px-5 flex justify-end">
@@ -113,7 +168,7 @@ export default function Login() {
                         </li>
                     </ul>
                 </div>
-            </div>
+            </form>
         </>
     );
 }
