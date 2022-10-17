@@ -12,6 +12,7 @@ import "tippy.js/dist/tippy.css";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import style from "../../styles/SearchFilter.module.scss";
+import FilterProperty from "./FilterProperty";
 
 type SearchFilter = {
     page: string;
@@ -32,43 +33,48 @@ export default function SearchFilter({ page }: SearchFilter) {
                 </div>
 
                 <ul className={style.navigation}>
-                    {ValidatePathName === "customer" && (
-                        <li className={style.importExportPrint}>
-                            <Tippy theme="ThemeRed" content="Export">
-                                <div className={style.icon}>
-                                    <Image
-                                        src="/Images/Export.png"
-                                        width={30}
-                                        height={30}
-                                        alt="Export"
-                                    />
-                                </div>
-                            </Tippy>
-                            <Tippy theme="ThemeRed" content="Import">
-                                <div className={style.icon}>
-                                    <label htmlFor="import">
+                    {ValidatePathName === "customer" ||
+                        (ValidatePathName === "property" && (
+                            <li className={style.importExportPrint}>
+                                <Tippy theme="ThemeRed" content="Export">
+                                    <div className={style.icon}>
                                         <Image
-                                            src="/Images/Import.png"
+                                            src="/Images/Export.png"
                                             width={30}
                                             height={30}
-                                            alt="Import"
+                                            alt="Export"
                                         />
-                                    </label>
-                                </div>
-                            </Tippy>
-                            <input type="file" id="import" className="hidden" />
-                            <Tippy theme="ThemeRed" content="Print">
-                                <div className={style.icon}>
-                                    <Image
-                                        src="/Images/Print.png"
-                                        width={27}
-                                        height={27}
-                                        alt="Print"
-                                    />
-                                </div>
-                            </Tippy>
-                        </li>
-                    )}
+                                    </div>
+                                </Tippy>
+                                <Tippy theme="ThemeRed" content="Import">
+                                    <div className={style.icon}>
+                                        <label htmlFor="import">
+                                            <Image
+                                                src="/Images/Import.png"
+                                                width={30}
+                                                height={30}
+                                                alt="Import"
+                                            />
+                                        </label>
+                                    </div>
+                                </Tippy>
+                                <input
+                                    type="file"
+                                    id="import"
+                                    className="hidden"
+                                />
+                                <Tippy theme="ThemeRed" content="Print">
+                                    <div className={style.icon}>
+                                        <Image
+                                            src="/Images/Print.png"
+                                            width={27}
+                                            height={27}
+                                            alt="Print"
+                                        />
+                                    </div>
+                                </Tippy>
+                            </li>
+                        ))}
 
                     <li className={style.new}>
                         <Link href={`${router.pathname}?new`}>
@@ -106,6 +112,12 @@ export default function SearchFilter({ page }: SearchFilter) {
                             )}
                             {isFilter && page === "customer" && (
                                 <FilterCustomer
+                                    setFilter={setFilter}
+                                    isFilter={isFilter}
+                                />
+                            )}
+                            {isFilter && page === "property unit" && (
+                                <FilterProperty
                                     setFilter={setFilter}
                                     isFilter={isFilter}
                                 />

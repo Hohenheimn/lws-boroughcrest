@@ -1,9 +1,9 @@
 export const SidebarLinks = [
     {
         name: "dashboard",
-        url: "/",
+        url: "/dashboard",
         iconUrl: "Dashboard.png",
-        ActiveUrl: "",
+        ActiveUrl: "dashboard",
         SubMenu: [],
     },
     {

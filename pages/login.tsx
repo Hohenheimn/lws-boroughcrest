@@ -6,7 +6,6 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import api from "../util/api";
 import { setCookie, getCookie } from "cookies-next";
-import axios from "axios";
 
 export default function Login() {
     const router = useRouter();
@@ -19,8 +18,8 @@ export default function Login() {
         e.preventDefault();
         console.log(isUsername, isPassword);
         try {
-            const response = await axios.post(
-                "https://boroughcrest-api.lws.codes/auth/login",
+            const response = await api.post(
+                "/auth/login",
                 {
                     email: isUsername,
                     password: isPassword,
@@ -31,12 +30,9 @@ export default function Login() {
                     },
                 }
             );
-
             const { token } = await response.data;
-            if (response.status === 200) {
-                setCookie("user", token);
-                router.push("/");
-            }
+            setCookie("user", token);
+            router.push("/dashboard");
         } catch (error) {
             alert("invalid user and pass");
         }

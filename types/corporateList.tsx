@@ -1,0 +1,20 @@
+export type corporateColumns = {
+    logo: string;
+    name: string;
+    tin_no: string;
+    branch_code: string;
+    rdo_no: string;
+    gst_type: string;
+    sec_registration: string;
+    email: string;
+    contact_no: string;
+    alt_email: string;
+    alt_contact_no: string;
+    address_unit_floor: string;
+    address_building: string;
+    street: string;
+    district: string;
+    municifality: string;
+    province: string;
+    zip_code: string;
+};

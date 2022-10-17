@@ -1,0 +1,27 @@
+.FourRows {
+    @apply flex relative w-full shadow-lg p-10  bg-white rounded-2xl mb-10 flex-wrap  480px:p-8;
+    aside {
+        @apply absolute top-5 right-5 text-ThemeRed font-bold text-[28px] 480px:text-[24px] cursor-pointer;
+    }
+    li {
+        @apply w-1/4 pr-2 mb-10 640px:mb-5 480px:w-2/4;
+        h4 {
+            @apply mb-0;
+        }
+    }
+}
+.title {
+    @apply text-ThemeRed mb-5 text-[16px] 480px:text-[12px];
+}
+.Occupants {
+    @apply flex relative w-full shadow-lg p-10 480px:p-8 bg-white rounded-2xl mb-10 flex-wrap;
+    li {
+        @apply w-full;
+        ul {
+            @apply flex flex-wrap;
+            li {
+                @apply w-2/6 pr-5 820px:w-2/4 480px:w-full;
+            }
+        }
+    }
+}

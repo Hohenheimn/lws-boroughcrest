@@ -10,6 +10,7 @@ import UserSearch from "../Search/UserSearch";
 import CustomerSearch from "../Search/CustomerSearch";
 import { useRouter } from "next/router";
 import { SidebarLinks } from "./PagesUrl";
+import PropertySearch from "../Search/PropertySearch";
 
 type SidebarType = {
     isWindow: number;
@@ -129,7 +130,7 @@ export default function Sidebar({
                             </MenuLink>
                         ))}
                     </ul>
-                    {/* Wheres page the Search will show */}
+                    {/* Pages, the Search will show */}
                     <div className="flex-1 shadow-2xl">
                         <AnimatePresence>
                             {isProfileSearch && (
@@ -145,6 +146,9 @@ export default function Sidebar({
                                     )}
                                     {isPathName.includes("customer/") && (
                                         <CustomerSearch />
+                                    )}
+                                    {isPathName.includes("property/") && (
+                                        <PropertySearch />
                                     )}
                                 </motion.ul>
                             )}

@@ -35,7 +35,7 @@
         .ThreeRows {
             @apply flex mb-5 flex-wrap 480px:mb-2;
             .upload_image {
-                @apply flex flex-row items-center justify-start w-4/12 820px:w-2/4 480px:w-full mb-5;
+                @apply flex flex-row items-center justify-start w-4/12 820px:w-2/4 480px:w-full 480px:mb-5 mb-0;
                 aside {
                     @apply w-10 h-10 relative flex;
                     aside {
@@ -90,6 +90,24 @@
             }
             label {
                 @apply text-[12px] font-bold p-0 mb-0;
+            }
+        }
+        .SaveButton {
+            @apply w-full flex justify-end items-center  mb-10;
+            .Save {
+                @apply relative text-white flex justify-center items-center duration-75 hover:bg-ThemeRed50 leading-none bg-ThemeRed rounded-md text-[14px] mr-5;
+                div {
+                    @apply h-8 px-5 w-full flex justify-center items-center;
+                    .Arrow {
+                        @apply ml-1 text-[24px];
+                    }
+                }
+                ul {
+                    @apply absolute top-full bg-white w-full;
+                    li {
+                        @apply text-ThemeRed inline-block py-2 w-full text-center hover:bg-ThemeRed hover:text-white duration-75;
+                    }
+                }
             }
         }
     }

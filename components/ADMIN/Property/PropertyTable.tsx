@@ -2,26 +2,23 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { GoPencil } from "react-icons/go";
-import api from "../../../util/api";
-import { useQuery } from "react-query";
-import axios from "axios";
 
-export default function Table() {
-    const { data, isLoading, isError } = useQuery("get-corporate-list", () => {
-        return api.get("/project/corporate?paginate=1");
-    });
-
+export default function PropertyTable() {
     return (
         <div className=" w-full overflow-x-auto">
             <table className="table_list 1024px:min-w-[1200px]">
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Name</th>
-                        <th>Address</th>
-                        <th>TIN</th>
-                        <th>Contact No.</th>
-                        <th>Email</th>
+                        <th>Unit Code</th>
+                        <th>Project</th>
+                        <th>Developer</th>
+                        <th>Tower</th>
+                        <th>Floor</th>
+                        <th>Class</th>
+                        <th>Type</th>
+                        <th>Turn Over</th>
+                        <th>Owner</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -47,7 +44,7 @@ const List = () => {
         <tr onMouseEnter={MouseEnter} onMouseLeave={MouseLeave}>
             <td>
                 {isEdit && (
-                    <Link href="/project/corporate/123">
+                    <Link href="/admin/property/123">
                         <a className="edit">
                             <aside>
                                 <GoPencil className="mr-2" /> Edit
@@ -56,7 +53,7 @@ const List = () => {
                     </Link>
                 )}
 
-                <Link href="/project/corporate/123">
+                <Link href="/admin/property/123">
                     <a className="item">
                         <aside>
                             <Image
@@ -73,50 +70,90 @@ const List = () => {
                 </Link>
             </td>
             <td>
-                <Link href="/project/corporate/123">
+                <Link href="/admin/property/123">
                     <a className="item">
                         <div>
-                            <h2>JUan Dela Cruz</h2>
+                            <h2>205</h2>
                             <p>Lorem Ipsum</p>
                         </div>
                     </a>
                 </Link>
             </td>
             <td>
-                <Link href="/project/corporate/123">
+                <Link href="/admin/property/123">
                     <a className="item">
                         <div>
-                            <h2>847 Bear Hill Drive Alameda, CA 94501</h2>
+                            <h2>Finance</h2>
                             <p>Lorem Ipsum</p>
                         </div>
                     </a>
                 </Link>
             </td>
             <td>
-                <Link href="/project/corporate/123">
+                <Link href="/admin/property/123">
                     <a className="item">
                         <div>
-                            <h2>1234567890</h2>
+                            <h2>Builder</h2>
                             <p>Lorem Ipsum</p>
                         </div>
                     </a>
                 </Link>
             </td>
             <td>
-                <Link href="/project/corporate/123">
+                <Link href="/admin/property/123">
                     <a className="item">
                         <div>
-                            <h2>099999999</h2>
+                            <h2>Y Tower</h2>
                             <p>Lorem Ipsum</p>
                         </div>
                     </a>
                 </Link>
             </td>
             <td>
-                <Link href="/project/corporate/123">
+                <Link href="/admin/property/123">
                     <a className="item">
                         <div>
-                            <h2>juandelacruz@no.com</h2>
+                            <h2>2nd</h2>
+                            <p>Lorem Ipsum</p>
+                        </div>
+                    </a>
+                </Link>
+            </td>
+            <td>
+                <Link href="/admin/property/123">
+                    <a className="item">
+                        <div>
+                            <h2>1</h2>
+                            <p>Lorem Ipsum</p>
+                        </div>
+                    </a>
+                </Link>
+            </td>
+            <td>
+                <Link href="/admin/property/123">
+                    <a className="item">
+                        <div>
+                            <h2>Lorem</h2>
+                            <p>Lorem Ipsum</p>
+                        </div>
+                    </a>
+                </Link>
+            </td>
+            <td>
+                <Link href="/admin/property/123">
+                    <a className="item">
+                        <div>
+                            <h2>07/20/2016</h2>
+                            <p>Lorem Ipsum</p>
+                        </div>
+                    </a>
+                </Link>
+            </td>
+            <td>
+                <Link href="/admin/property/123">
+                    <a className="item">
+                        <div>
+                            <h2>Jane Doe</h2>
                             <p>Lorem Ipsum</p>
                         </div>
                     </a>

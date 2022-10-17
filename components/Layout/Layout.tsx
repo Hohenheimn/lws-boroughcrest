@@ -10,6 +10,7 @@ import { IoIosArrowDown } from "react-icons/io";
 import Image from "next/image";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
+import SignOut from "./SignOut";
 
 type Layout = {
     children: React.ReactNode;
@@ -18,6 +19,7 @@ type Layout = {
 export default function Layout({ children }: Layout) {
     const [isProfileSearch, setProfileSearch] = useState(false);
     const [isPathName, setPathName] = useState<any>();
+    const [toggleProfileMenu, setToggleProfileMenu] = useState(false);
 
     const router = useRouter();
 
@@ -36,13 +38,14 @@ export default function Layout({ children }: Layout) {
     }, []);
 
     // run this code when the URL change
-    // it opens the sidebar search when in user or corporate Detail
+    // it opens the sidebar search when following asPath
     useEffect(() => {
         setPathName(router.asPath);
         if (
             router.asPath.includes("corporate/") ||
             router.asPath.includes("user/") ||
-            router.asPath.includes("customer/")
+            router.asPath.includes("customer/") ||
+            router.asPath.includes("property/")
         ) {
             setProfileSearch(true);
         } else {
@@ -139,10 +142,20 @@ export default function Layout({ children }: Layout) {
                                             alt=""
                                         />
                                     </aside>
-                                    <p className="flex items-center cursor-pointer">
-                                        John Doe{" "}
-                                        <IoIosArrowDown className="ml-1 mt-1" />
-                                    </p>
+                                    <div className="relative">
+                                        <p
+                                            className="flex items-center cursor-pointer relative"
+                                            onClick={() =>
+                                                setToggleProfileMenu(
+                                                    !toggleProfileMenu
+                                                )
+                                            }
+                                        >
+                                            John Doe{" "}
+                                            <IoIosArrowDown className="ml-1 mt-1" />
+                                        </p>
+                                        {toggleProfileMenu && <SignOut />}
+                                    </div>
                                 </li>
                             </ul>
                         </header>
