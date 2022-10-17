@@ -1,20 +1,16 @@
 import React, { useState, useEffect } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { Sidebar } from "./PagesUrl";
-import { MdArrowForwardIos } from "react-icons/md";
+import Sidebar from "./Sidebar";
 import { BiMenuAltRight } from "react-icons/bi";
-import { motion, AnimatePresence } from "framer-motion";
-import MenuLink from "./MenuLink";
-import Submenu from "./Submenu";
-import { FadeSide } from "../Animation/SimpleAnimation";
+import { AnimatePresence } from "framer-motion";
 import { BsSearch } from "react-icons/bs";
 import { IoNotificationsSharp } from "react-icons/io5";
 import { IoIosArrowDown } from "react-icons/io";
 import Image from "next/image";
-import CorporateSearch from "../Search/CorporateSearch";
-import UserSearch from "../Search/UserSearch";
-import CustomerSearch from "../Search/CustomerSearch";
+import Tippy from "@tippy.js/react";
+import "tippy.js/dist/tippy.css";
+import SignOut from "./SignOut";
 
 type Layout = {
     children: React.ReactNode;
@@ -23,9 +19,10 @@ type Layout = {
 export default function Layout({ children }: Layout) {
     const [isProfileSearch, setProfileSearch] = useState(false);
     const [isPathName, setPathName] = useState<any>();
+    const [toggleProfileMenu, setToggleProfileMenu] = useState(false);
 
     const router = useRouter();
-    const ValidateParentUrl = router.pathname.split("/")[1];
+
     // toggle for responsive sidebar
     const [isHide, setHide] = useState<boolean>(false);
     const [isWindow, setWindow] = useState<any>();
@@ -41,13 +38,14 @@ export default function Layout({ children }: Layout) {
     }, []);
 
     // run this code when the URL change
-    // it opens the sidebar search when in user or corporate Detail
+    // it opens the sidebar search when following asPath
     useEffect(() => {
         setPathName(router.asPath);
         if (
             router.asPath.includes("corporate/") ||
             router.asPath.includes("user/") ||
-            router.asPath.includes("customer/")
+            router.asPath.includes("customer/") ||
+            router.asPath.includes("property/")
         ) {
             setProfileSearch(true);
         } else {
@@ -73,118 +71,13 @@ export default function Layout({ children }: Layout) {
             <div className="flex bg-MainBG bg-no-repeat bg-cover min-h-screen bg-Gray bg-blend-multiply">
                 <AnimatePresence>
                     {!isHide && (
-                        <>
-                            <motion.aside
-                                variants={FadeSide}
-                                initial="initial"
-                                animate="animate"
-                                exit="exit"
-                                className={`${
-                                    isWindow <= 1024 &&
-                                    "fixed top-0 left-0 z-50 bg-[#ebedf2f6]"
-                                } w-[400px] 1920px:w-[350px] 1280px:w-[300px] border-r-2 border-white min-h-full pt-5 flex flex-col`}
-                            >
-                                <div className=" w-full flex justify-center">
-                                    <Image
-                                        src="/Images/deus.png"
-                                        width={250}
-                                        height={100}
-                                        alt=""
-                                    />
-                                </div>
-
-                                <div className="w-full h-full flex flex-1">
-                                    <ul
-                                        className={` self-start pt-10 ${
-                                            !isProfileSearch && "w-full"
-                                        }`}
-                                    >
-                                        <div className=" flex justify-between items-center px-5 mb-5 duration-75">
-                                            <AnimatePresence>
-                                                {!isProfileSearch && (
-                                                    <motion.h1
-                                                        variants={FadeSide}
-                                                        initial="initial"
-                                                        animate="animate"
-                                                        exit="exit"
-                                                        className="h1-text"
-                                                    >
-                                                        OVERVIEW
-                                                    </motion.h1>
-                                                )}
-                                            </AnimatePresence>
-                                            {/* Show the toggle arrow icon */}
-                                            {router.query.id !== undefined && (
-                                                <motion.div
-                                                    layout
-                                                    transition={{
-                                                        duration: 0.2,
-                                                        ease: "linear",
-                                                    }}
-                                                >
-                                                    <MdArrowForwardIos
-                                                        className={`cursor-pointer text-[24px] duration-100 ease-out text-ThemeRed ${
-                                                            !isProfileSearch &&
-                                                            "rotate-180"
-                                                        }`}
-                                                        onClick={() =>
-                                                            setProfileSearch(
-                                                                !isProfileSearch
-                                                            )
-                                                        }
-                                                    />
-                                                </motion.div>
-                                            )}
-                                        </div>
-
-                                        {Sidebar.map((item, index) => (
-                                            <MenuLink
-                                                key={index}
-                                                isProfileSearch={
-                                                    isProfileSearch
-                                                }
-                                                url={item.url}
-                                                iconUrl={item.iconUrl}
-                                                urlName={item.name}
-                                                ActiveUrl={item.ActiveUrl}
-                                            >
-                                                {ValidateParentUrl ===
-                                                    item.ActiveUrl &&
-                                                    item.SubMenu.length !==
-                                                        0 && (
-                                                        <Submenu
-                                                            SubmenuDetail={
-                                                                item.SubMenu
-                                                            }
-                                                        />
-                                                    )}
-                                            </MenuLink>
-                                        ))}
-                                    </ul>
-                                    {/* What Search will show */}
-                                    <div className="flex-1 shadow-2xl">
-                                        <AnimatePresence>
-                                            {isProfileSearch && (
-                                                <motion.ul
-                                                    variants={FadeSide}
-                                                    className=" w-full overflow-hidden h-full bg-[#f1f2f5]"
-                                                >
-                                                    {isPathName.includes(
-                                                        "corporate/"
-                                                    ) && <CorporateSearch />}
-                                                    {isPathName.includes(
-                                                        "user/"
-                                                    ) && <UserSearch />}
-                                                    {isPathName.includes(
-                                                        "customer/"
-                                                    ) && <CustomerSearch />}
-                                                </motion.ul>
-                                            )}
-                                        </AnimatePresence>
-                                    </div>
-                                </div>
-                            </motion.aside>
-                        </>
+                        <Sidebar
+                            isWindow={isWindow}
+                            isProfileSearch={isProfileSearch}
+                            setProfileSearch={setProfileSearch}
+                            isPathName={isPathName}
+                            setHide={setHide}
+                        />
                     )}
                 </AnimatePresence>
 
@@ -224,7 +117,19 @@ export default function Layout({ children }: Layout) {
                             )}
                             <ul className=" flex items-center ml-5  480px:my-5">
                                 <li className=" relative mr-5 cursor-pointer">
-                                    <IoNotificationsSharp className=" text-ThemeRed text-[32px]" />
+                                    <Tippy
+                                        theme="ThemeRed"
+                                        content={
+                                            <span className="capitalize">
+                                                Notification
+                                            </span>
+                                        }
+                                    >
+                                        <div>
+                                            <IoNotificationsSharp className=" text-ThemeRed text-[32px]" />
+                                        </div>
+                                    </Tippy>
+
                                     <div className="absolute w-4 h-4 text-[11px] top-[-5%] right-[-8%] flex justify-center items-start rounded-full bg-Green text-white">
                                         1
                                     </div>
@@ -237,10 +142,20 @@ export default function Layout({ children }: Layout) {
                                             alt=""
                                         />
                                     </aside>
-                                    <p className="flex items-center cursor-pointer">
-                                        John Doe{" "}
-                                        <IoIosArrowDown className="ml-1 mt-1" />
-                                    </p>
+                                    <div className="relative">
+                                        <p
+                                            className="flex items-center cursor-pointer relative"
+                                            onClick={() =>
+                                                setToggleProfileMenu(
+                                                    !toggleProfileMenu
+                                                )
+                                            }
+                                        >
+                                            John Doe{" "}
+                                            <IoIosArrowDown className="ml-1 mt-1" />
+                                        </p>
+                                        {toggleProfileMenu && <SignOut />}
+                                    </div>
                                 </li>
                             </ul>
                         </header>

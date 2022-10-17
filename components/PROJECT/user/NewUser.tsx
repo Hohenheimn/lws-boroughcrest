@@ -3,6 +3,7 @@ import { AiFillCamera } from "react-icons/ai";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Image from "next/image";
+import style from "../../../styles/Popup_Modal.module.scss";
 
 export default function NewUser() {
     const modal = useRef<any>();
@@ -42,19 +43,13 @@ export default function NewUser() {
         }
     };
     return (
-        <div className=" fixed top-0 left-0 h-screen overflow-auto w-full bg-[#00000040] p-10 z-50 flex justify-center items-center 820px:items-start 480px:p-0 480px:py-5">
-            <section
-                ref={modal}
-                className=" p-10 bg-[#e2e3e4] rounded-lg w-[90%] max-w-[700px] text-ThemeRed shadow-lg"
-            >
-                <p className=" text-[16px] mb-3 font-bold">Create User</p>
-                <h1 className=" w-[95%] text-[12px] flex items-center justify-end mb-5">
-                    <span className="mr-2 font-bold">STATUS</span>
+        <div className={style.container}>
+            <section ref={modal}>
+                <p className={style.modal_title}>Create User</p>
+                <h1 className={style.statusTitle}>
+                    <span>STATUS</span>
 
-                    <div
-                        className=" h-5 w-5 rounded-full border-4 border-[#19d142] cursor-pointer"
-                        style={{ boxShadow: "0 0 15px 0 #19d142" }}
-                    ></div>
+                    <div className="statusCircle active"></div>
                 </h1>
                 <ul className=" flex mb-5 flex-wrap 480px:mb-2">
                     <li className=" border flex items-center w-4/12 820px:w-2/4 480px:w-full mb-5">
@@ -99,85 +94,42 @@ export default function NewUser() {
                         <input id="file" type="file" className="hidden" />
                     </li>
                 </ul>
-                <ul className=" flex mb-10 flex-wrap 480px:mb-2">
-                    <li className="  flex flex-col  w-4/12 820px:w-2/4 480px:w-full mb-5">
-                        <label className=" text-[12px] font-semibold mb-1 uppercase">
-                            POSITION
-                        </label>
-                        <input
-                            type="text"
-                            className="w-[90%] rounded-md text-black px-2 py-[2px] outline-none 480px:w-full"
-                        />
+                <ul className={style.ThreeRows}>
+                    <li>
+                        <label>POSITION</label>
+                        <input type="text" />
                     </li>
-                    <li className="  flex flex-col  w-4/12 820px:w-2/4 480px:w-full mb-5">
-                        <label className=" text-[12px] font-semibold mb-1 uppercase">
-                            EMPLOYEE ID
-                        </label>
-                        <input
-                            type="text"
-                            className="w-[90%] rounded-md text-black px-2 py-[2px] outline-none 480px:w-full"
-                        />
+                    <li>
+                        <label>EMPLOYEE ID</label>
+                        <input type="text" />
                     </li>
-                    <li className="  flex flex-col  w-4/12 820px:w-2/4 480px:w-full mb-5">
-                        <label className=" text-[12px] font-semibold mb-1 uppercase w-[90%]">
-                            DEPARTMENT
-                        </label>
-                        <select
-                            name=""
-                            id=""
-                            className="w-[90%] rounded-md text-black px-2 py-[2px] outline-none 480px:w-full"
-                        >
-                            <option
-                                value=""
-                                className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
-                            ></option>
+                    <li>
+                        <label>DEPARTMENT</label>
+                        <select name="" id="">
+                            <option value=""></option>
                         </select>
                     </li>
-                    <li className="  flex flex-col  w-4/12 820px:w-2/4 480px:w-full mb-5">
-                        <label className=" text-[12px] font-semibold mb-1 uppercase">
-                            EMAIL
-                        </label>
-                        <input
-                            type="email"
-                            className="w-[90%] rounded-md text-black px-2 py-[2px] outline-none 480px:w-full"
-                        />
+                    <li>
+                        <label>EMAIL</label>
+                        <input type="email" />
                     </li>
 
-                    <li className="  flex flex-col  w-4/12 820px:w-2/4 480px:w-full mb-5">
-                        <label className=" text-[12px] font-semibold mb-1 uppercase">
-                            MOBILE
-                        </label>
-                        <input
-                            type="number"
-                            placeholder="+63"
-                            className="w-[90%] rounded-md text-black px-2 py-[2px] outline-none 480px:w-full"
-                        />
+                    <li>
+                        <label>MOBILE</label>
+                        <input type="number" placeholder="+63" />
                     </li>
-                    <li className="  flex flex-col  w-4/12 820px:w-2/4 480px:w-full mb-5">
-                        <label className=" text-[12px] font-semibold mb-1 uppercase">
-                            CORPORATE
-                        </label>
-                        <select
-                            name=""
-                            id=""
-                            className="w-[90%] rounded-md text-black px-2 py-[2px] outline-none 480px:w-full"
-                        >
-                            <option
-                                value=""
-                                className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
-                            ></option>
+                    <li>
+                        <label>CORPORATE</label>
+                        <select name="" id="">
+                            <option value=""></option>
                         </select>
                     </li>
                 </ul>
-                <div className=" w-full flex justify-end items-center">
+                <div className={style.button_container}>
                     <Link href="">
-                        <a className=" text-ThemeRed font-semibold text-[14px] mr-5">
-                            Cancel
-                        </a>
+                        <a className="button_cancel">CANCEL</a>
                     </Link>
-                    <button className=" text-white h-8 w-20 flex justify-center items-center duration-75 hover:bg-ThemeRed50 leading-none bg-ThemeRed rounded-md text-[14px] mr-5">
-                        NEXT
-                    </button>
+                    <button className="buttonRed">NEXT</button>
                 </div>
             </section>
         </div>

@@ -1,0 +1,50 @@
+.primary {
+    @apply w-full shadow-lg flex p-10 bg-white rounded-2xl flex-wrap mb-10;
+    .head {
+        @apply flex justify-between items-center w-full mb-5;
+
+        h1 {
+            @apply font-bold text-[24px] 480px:mb-0 480px:text-[16px];
+        }
+        .pencil {
+            @apply text-ThemeRed font-bold text-[32px] 480px:text-[24px] cursor-pointer;
+        }
+    }
+    .image {
+        @apply w-3/12 480px:w-full p-5 flex justify-center items-center;
+        aside {
+            @apply w-6/12 820px:w-10/12  480px:w-5/12 aspect-square relative shadow-xl;
+        }
+    }
+    .details {
+        @apply w-9/12  480px:w-full flex flex-wrap items-start;
+        ul {
+            @apply w-full flex flex-wrap;
+            li {
+                @apply w-4/12 text-start  820px:w-2/4 480px:w-full pr-2;
+            }
+        }
+    }
+}
+
+.Contact_Address {
+    @apply w-full shadow-lg p-10  bg-white rounded-2xl;
+    h1 {
+        @apply font-bold text-[24px] mb-5;
+    }
+    .contact {
+        @apply pl-10 1024px:pl-5 flex flex-wrap w-2/4 1280px:w-full mb-10 480px:mb-10;
+        li {
+            @apply w-2/4 480px:w-full pr-2;
+            h4 {
+                @apply mb-0;
+            }
+        }
+    }
+    .address {
+        @apply pl-10 1024px:pl-5 flex w-full flex-wrap;
+        li {
+            @apply w-1/4 1280px:w-4/12 1024px:w-2/4 480px:w-full pr-2;
+        }
+    }
+}

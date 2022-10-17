@@ -1,0 +1,85 @@
+.container {
+  @apply overflow-hidden fixed top-0 left-0 h-screen 820px:overflow-auto w-full bg-[#00000040] p-10 z-50 flex justify-center items-center 820px:items-center 375px:items-start 480px:p-5;
+}
+.container section {
+  @apply p-10 bg-[#e2e3e4] rounded-lg w-[90%] max-w-[700px] text-ThemeRed shadow-lg;
+}
+.container section .modal_title {
+  @apply text-[16px] mb-3;
+}
+.container section .modal_label_primary {
+  @apply w-full text-[24px] mb-3;
+}
+.container section .statusTitle {
+  @apply w-[95%] text-[12px] flex items-center justify-end mb-5;
+}
+.container section .statusTitle span {
+  @apply mr-2 font-bold;
+}
+.container section .twoRows_container {
+  @apply flex w-full justify-between mb-5;
+}
+.container section .twoRows_container li {
+  @apply w-2/4 flex flex-col;
+}
+.container section .twoRows_container li aside {
+  @apply mb-2;
+}
+.container section .twoRows_container li input {
+  @apply w-3/5 mr-1 rounded-md text-black px-2 py-[2px] outline-none 480px:w-full;
+}
+.container section .twoRows_container li span {
+  @apply text-[12px] text-gray-500;
+}
+.container section .twoRows_container li label {
+  @apply text-[12px] font-semibold uppercase;
+}
+.container section .ThreeRows {
+  @apply flex mb-10 flex-wrap 480px:mb-2;
+}
+.container section .ThreeRows .upload_image {
+  @apply flex flex-row items-center justify-start w-4/12 820px:w-2/4 480px:w-full mb-5;
+}
+.container section .ThreeRows .upload_image aside {
+  @apply w-10 h-10 relative flex;
+}
+.container section .ThreeRows .upload_image aside aside {
+  @apply bg-white h-full w-full object-cover relative;
+}
+.container section .ThreeRows .upload_image aside input {
+  @apply hidden;
+}
+.container section .ThreeRows .upload_image aside label {
+  @apply cursor-pointer hover:bg-ThemeRed50 p-1 rounded-full text-white bg-ThemeRed absolute text-[12px] right-[-10px] bottom-[-5px];
+}
+.container section .ThreeRows li {
+  @apply flex flex-col  w-4/12 820px:w-2/4 480px:w-full mb-5 pr-2;
+}
+.container section .ThreeRows li .image_label {
+  @apply text-[12px] font-semibold;
+}
+.container section .ThreeRows li .image_label p {
+  @apply ml-4;
+}
+.container section .ThreeRows li label {
+  @apply text-[12px] font-semibold uppercase;
+}
+.container section .ThreeRows li input {
+  @apply rounded-md text-black px-2 py-[2px] outline-none w-[100%] 480px:w-full;
+}
+.container section .ThreeRows li select {
+  @apply w-full rounded-md text-black px-2 py-[2px] outline-none 480px:w-full;
+}
+.container section .ThreeRows li select option {
+  @apply hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed;
+}
+.container section .ThreeRows li.twoRows {
+  @apply flex justify-between  w-4/12 820px:w-2/4 480px:w-full mb-5 -mt-1;
+}
+.container section .ThreeRows li.twoRows .wrapper {
+  @apply w-[90%] flex justify-between  480px:w-full;
+}
+
+.button_container {
+  @apply w-full flex justify-end items-center;
+}

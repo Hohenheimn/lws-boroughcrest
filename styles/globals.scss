@@ -1,0 +1,130 @@
+@font-face {
+    font-family: "NHU-thin";
+    src: url("./fonts/NeueHaasUnica-Thin.ttf");
+}
+@font-face {
+    font-family: "NHU-regular";
+    src: url("./fonts/NeueHaasUnica-Regular.ttf");
+}
+@font-face {
+    font-family: "NHU-medium";
+    src: url("./fonts/NeueHaasUnica-Medium.ttf");
+}
+@font-face {
+    font-family: "NHU-bold";
+    src: url("./fonts/NeueHaasUnica-Bold.ttf");
+}
+@font-face {
+    font-family: "NHU-black";
+    src: url("./fonts/NeueHaasUnica-Black.ttf");
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: "NHU-bold";
+}
+* {
+    font-family: "NHU-regular";
+}
+/* custom theme for tooltip */
+.tippy-tooltip.ThemeRed-theme {
+    background-color: #8f384d;
+    color: white;
+}
+.tippy-tooltip.ThemeRed-theme[data-placement^="top"] .tippy-arrow {
+    border-top-color: #8f384d;
+}
+.tippy-tooltip.ThemeRed-theme[data-placement^="bottom"] .tippy-arrow {
+    border-bottom-color: #8f384d;
+}
+.tippy-tooltip.ThemeRed-theme[data-placement^="left"] .tippy-arrow {
+    border-left-color: #8f384d;
+}
+.tippy-tooltip.ThemeRed-theme[data-placement^="right"] .tippy-arrow {
+    border-right-color: #8f384d;
+}
+// Page Loading
+#nprogress .bar {
+    background: #8f384d !important;
+}
+#nprogress .peg {
+    box-shadow: 0 0 10px #ffbb00, 0 0 5px #ffbb00 !important;
+}
+// button
+.buttonRed {
+    @apply capitalize px-5 480px:text-[12px] 480px:px-2 text-[14px] py-3 rounded-lg bg-ThemeRed text-white leading-none duration-75 hover:bg-ThemeRed50;
+}
+.button_cancel {
+    @apply text-ThemeRed font-semibold text-[14px] mr-5;
+}
+// Text
+.pageTitle {
+    @apply text-[24px] 480px:text-[18px];
+}
+.label_text {
+    @apply text-start text-gray-400 1024px:text-[14px] font-medium;
+}
+.main_text {
+    @apply text-gray-500 mb-5 1024px:text-[14px];
+    span {
+        @apply text-gray-400 text-[12px];
+    }
+}
+// Table
+.table_list {
+    @apply w-full;
+    thead {
+        tr {
+            @apply border-b border-gray-300;
+            th {
+                @apply text-start px-4 py-6;
+            }
+            .status {
+                @apply text-center;
+            }
+        }
+    }
+    tbody {
+        tr {
+            @apply border-b border-gray-300 cursor-pointer relative;
+            td {
+                .edit {
+                    @apply absolute z-0 w-full h-[60%] bg-[#7f7f7f5a] top-[20%] left-0 flex justify-center items-center;
+                    aside {
+                        @apply text-white flex items-center;
+                    }
+                }
+                .item {
+                    @apply flex px-4 py-6;
+                    aside {
+                        @apply w-10 h-10 rounded-full overflow-hidden relative shadow-lg mr-3;
+                    }
+                    h2 {
+                        @apply text-[#2E4364] font-NHU-medium;
+                    }
+                    p {
+                        @apply text-[12px];
+                    }
+                }
+            }
+        }
+    }
+}
+// Active Status
+.statusCircle {
+    @apply h-5 w-5 rounded-full border-4 border-gray-500;
+    box-shadow: 0 0 15px 0 gray;
+
+    &.active {
+        @apply border-[#19d142];
+        box-shadow: 0 0 15px 0 #19d142;
+    }
+}
+
+input[type="checkbox"] {
+    @apply relative after:text-white after:flex after:justify-center after:items-center mr-1 checked:after:bg-ThemeRed checked:after:content-['✓'] appearance-none border border-[#8F384D] after:w-full after:h-full after:absolute after:left-0 after:top-0;
+}

@@ -5,6 +5,8 @@ import ModifyCustomer from "./ModifyCustomer";
 import CustomerInformation from "./CustomerInformation";
 import CustomerProperty from "./CustomerProperty";
 import Modal_Image from "../../Modal_Image";
+import Tippy from "@tippy.js/react";
+import "tippy.js/dist/tippy.css";
 export default function CustomerDetail() {
     const [toggleModify, setToggleModify] = useState(false);
     const [isToggleInfoRole, setToggleInfoRole] = useState<boolean>(false);
@@ -24,10 +26,17 @@ export default function CustomerDetail() {
                     <h1 className=" font-bold text-[24px] 480px:mb-0 480px:text-[16px]">
                         Primary Informations
                     </h1>
-                    <HiPencil
-                        className=" text-ThemeRed font-bold text-[32px] 480px:text-[24px] cursor-pointer"
-                        onClick={() => setToggleModify(true)}
-                    />
+                    <Tippy
+                        theme="ThemeRed"
+                        content={<span className="capitalize">Modify</span>}
+                    >
+                        <div>
+                            <HiPencil
+                                className=" text-ThemeRed font-bold text-[32px] 480px:text-[24px] cursor-pointer"
+                                onClick={() => setToggleModify(true)}
+                            />
+                        </div>
+                    </Tippy>
                 </li>
                 <li className="w-3/12 flex-col 480px:w-full p-5 flex justify-center items-center">
                     <aside className=" w-6/12 820px:w-10/12 rounded-full overflow-hidden 480px:w-5/12 aspect-square relative shadow-xl">
@@ -126,41 +135,6 @@ export default function CustomerDetail() {
                             </button>
                         </li>
                     </ul>
-                    {/* <ul className=" w-full flex flex-wrap">
-                        <li className=" w-6/12 text-start  820px:w-2/4 480px:w-full pr-2">
-                            <p className=" text-gray-400 1024px:text-[14px]">
-                                ID
-                            </p>
-                            <h4 className=" text-gray-500 mb-5 1024px:text-[14px]">
-                                1234
-                            </h4>
-                        </li>
-                        <li className=" w-6/12 text-start  820px:w-2/4 480px:w-full pr-2">
-                            <p className=" text-gray-400 1024px:text-[14px]">
-                                NAME
-                            </p>
-                            <h4 className=" text-gray-500 mb-5 1024px:text-[14px]">
-                                Juan Dela Cruz
-                            </h4>
-                        </li>
-                        <li className=" w-6/12 text-start  820px:w-2/4 480px:w-full pr-2">
-                            <p className=" text-gray-400 1024px:text-[14px] mb-1">
-                                STATUS
-                            </p>
-                            <div
-                                className=" h-5 w-5 rounded-full border-4 border-[#19d142] mb-5"
-                                style={{ boxShadow: "0 0 15px 0 #19d142" }}
-                            ></div>
-                        </li>
-                        <li className=" w-6/12 text-start  820px:w-2/4 480px:w-full pr-2">
-                            <p className=" text-gray-400 1024px:text-[14px] mb-1">
-                                SIGNATURE
-                            </p>
-                            <button className=" px-5 rounded-lg py-1 bg-ThemeRed text-white hover:bg-ThemeRed50 duration-75">
-                                VIEW
-                            </button>
-                        </li>
-                    </ul> */}
                 </li>
             </ul>
             <ul className="flex items-end mb-2">
