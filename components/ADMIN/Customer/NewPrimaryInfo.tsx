@@ -1,4 +1,5 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useState, useContext } from "react";
+import AppContext from "../../Context/AppContext";
 import { AiFillCamera } from "react-icons/ai";
 import Link from "next/link";
 import Image from "next/image";
@@ -13,8 +14,9 @@ type NewPrimaryInfo = {
 };
 
 export default function NewPrimaryInfo({ setActiveForm }: NewPrimaryInfo) {
-    const [isType, setType] = useState<string>("");
+    const { setToggleNewForm } = useContext(AppContext);
 
+    const [isType, setType] = useState<string>("");
     const [isProfileUrl, setProfileUrl] = useState("/Images/sampleProfile.png");
     const [isValidIDUrl, setValidIDUrl] = useState("/Images/id-sample.png");
 
@@ -159,11 +161,12 @@ export default function NewPrimaryInfo({ setActiveForm }: NewPrimaryInfo) {
             </AnimatePresence>
 
             <div className=" w-full flex justify-end items-center">
-                <Link href="">
-                    <a className=" text-ThemeRed font-semibold text-[14px] mr-5">
-                        CANCEL
-                    </a>
-                </Link>
+                <aside
+                    className=" text-ThemeRed font-semibold text-[14px] mr-5 cursor-pointer"
+                    onClick={() => setToggleNewForm(false)}
+                >
+                    CANCEL
+                </aside>
                 <button
                     onClick={NextFormValidation}
                     className=" text-white h-8 w-20 flex justify-center items-center duration-75 hover:bg-ThemeRed50 leading-none bg-ThemeRed rounded-md text-[14px] mr-5"

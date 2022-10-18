@@ -1,12 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import AppContext from "../Context/AppContext";
 import Image from "next/image";
 import { BsSearch } from "react-icons/bs";
 import { AnimatePresence } from "framer-motion";
 import FilterCorporate from "./FilterCorporate";
 import FilterUser from "./FilterUser";
 import FilterCustomer from "./FilterCustomer";
-import { BiExport, BiImport } from "react-icons/bi";
-import { BsFillPrinterFill } from "react-icons/bs";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 import { useRouter } from "next/router";
@@ -19,10 +18,12 @@ type SearchFilter = {
 };
 
 export default function SearchFilter({ page }: SearchFilter) {
+    const { setToggleNewForm } = useContext(AppContext);
+
     const [isFilter, setFilter] = useState(false);
     const router = useRouter();
     const ValidatePathName = router.pathname.split("/")[2];
-    console.log(ValidatePathName);
+
     return (
         <div>
             <h1 className={style.page_title}>{page}</h1>
@@ -77,9 +78,9 @@ export default function SearchFilter({ page }: SearchFilter) {
                         ))}
 
                     <li className={style.new}>
-                        <Link href={`${router.pathname}?new`}>
-                            <a>New {page}</a>
-                        </Link>
+                        <button onClick={() => setToggleNewForm(true)}>
+                            New {page}
+                        </button>
                     </li>
 
                     <li className={style.filter}>

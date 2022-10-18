@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaKey, FaEnvelope } from "react-icons/fa";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import Image from "next/image";
@@ -16,23 +16,15 @@ export default function Login() {
 
     const ValidateLogin = async (e: any) => {
         e.preventDefault();
-        console.log(isUsername, isPassword);
         try {
-            const response = await api.post(
-                "/auth/login",
-                {
-                    email: isUsername,
-                    password: isPassword,
-                },
-                {
-                    headers: {
-                        Authorization: "Bearer " + getCookie("user"),
-                    },
-                }
-            );
+            const response = await api.post("/auth/login", {
+                email: isUsername,
+                password: isPassword,
+            });
             const { token } = await response.data;
             setCookie("user", token);
             router.push("/dashboard");
+            router.reload();
         } catch (error) {
             alert("invalid user and pass");
         }
