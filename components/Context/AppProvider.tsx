@@ -15,6 +15,17 @@ export default function AppProvider({ children }: AppProvider) {
         gst_type: "VAT",
         rdo_no: undefined,
         sec_registration_no: undefined,
+        email: "",
+        contact_no: undefined,
+        alt_email: "",
+        alt_contact_no: undefined,
+        address_unit_floor: undefined,
+        address_building: "",
+        address_street: "",
+        address_district: undefined,
+        address_municipal_city: "",
+        address_province: "",
+        address_zip_code: undefined,
     });
     return (
         <AppContext.Provider

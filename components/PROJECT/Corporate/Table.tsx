@@ -4,12 +4,19 @@ import Link from "next/link";
 import { GoPencil } from "react-icons/go";
 import api from "../../../util/api";
 import { useQuery } from "react-query";
-import axios from "axios";
+import Pagination from "../../Pagination";
 
 export default function Table() {
-    const { data, isLoading, isError } = useQuery("get-corporate-list", () => {
-        return api.get("/project/corporate?paginate=1");
-    });
+    const [TablePage, setTablePage] = useState(1);
+    const { data, isLoading, isError, refetch } = useQuery(
+        ["get-corporate-list", TablePage],
+        () => {
+            return api.get(`/project/corporate?paginate=1&page=${TablePage}`);
+        },
+        {
+            keepPreviousData: true,
+        }
+    );
 
     return (
         <div className=" w-full overflow-x-auto">
@@ -25,16 +32,36 @@ export default function Table() {
                     </tr>
                 </thead>
                 <tbody>
-                    <List />
-                    <List />
-                    <List />
+                    {isLoading && (
+                        <tr>
+                            <td colSpan={5} className="text-center">
+                                Loading...
+                            </td>
+                        </tr>
+                    )}
+                    {isError && (
+                        <tr>
+                            <td colSpan={5} className="text-center">
+                                Error...
+                            </td>
+                        </tr>
+                    )}
+                    {data?.data.data.map((item: any, index: number) => (
+                        <List key={index} itemDetail={item} />
+                    ))}
                 </tbody>
             </table>
+            <Pagination
+                setTablePage={setTablePage}
+                TablePage={TablePage}
+                PageNumber={data?.data.total}
+                CurrentPage={data?.data.current_page}
+            />
         </div>
     );
 }
 
-const List = () => {
+const List = ({ itemDetail }: any) => {
     const [isEdit, setEdit] = useState(false);
     const MouseEnter = () => {
         setEdit(true);
@@ -43,11 +70,12 @@ const List = () => {
         setEdit(false);
     };
 
+    const Address = `${itemDetail.address_unit_floor} ${itemDetail.address_building} ${itemDetail.address_building} ${itemDetail.address_district} ${itemDetail.address_municipal_city} ${itemDetail.address_province} ${itemDetail.address_zip_code}`;
     return (
         <tr onMouseEnter={MouseEnter} onMouseLeave={MouseLeave}>
             <td>
                 {isEdit && (
-                    <Link href="/project/corporate/123">
+                    <Link href={`/project/corporate/${itemDetail.id}`}>
                         <a className="edit">
                             <aside>
                                 <GoPencil className="mr-2" /> Edit
@@ -56,7 +84,7 @@ const List = () => {
                     </Link>
                 )}
 
-                <Link href="/project/corporate/123">
+                <Link href={`/project/corporate/${itemDetail.id}`}>
                     <a className="item">
                         <aside>
                             <Image
@@ -66,57 +94,57 @@ const List = () => {
                             />
                         </aside>
                         <div>
-                            <h2>1234</h2>
+                            <h2>{itemDetail.id}</h2>
                             <p>Lorem Ipsum</p>
                         </div>
                     </a>
                 </Link>
             </td>
             <td>
-                <Link href="/project/corporate/123">
+                <Link href={`/project/corporate/${itemDetail.id}`}>
                     <a className="item">
                         <div>
-                            <h2>JUan Dela Cruz</h2>
+                            <h2>{itemDetail.name}</h2>
                             <p>Lorem Ipsum</p>
                         </div>
                     </a>
                 </Link>
             </td>
             <td>
-                <Link href="/project/corporate/123">
+                <Link href={`/project/corporate/${itemDetail.id}`}>
                     <a className="item">
                         <div>
-                            <h2>847 Bear Hill Drive Alameda, CA 94501</h2>
+                            <h2>{Address}</h2>
                             <p>Lorem Ipsum</p>
                         </div>
                     </a>
                 </Link>
             </td>
             <td>
-                <Link href="/project/corporate/123">
+                <Link href={`/project/corporate/${itemDetail.id}`}>
                     <a className="item">
                         <div>
-                            <h2>1234567890</h2>
+                            <h2>{itemDetail.tin}</h2>
                             <p>Lorem Ipsum</p>
                         </div>
                     </a>
                 </Link>
             </td>
             <td>
-                <Link href="/project/corporate/123">
+                <Link href={`/project/corporate/${itemDetail.id}`}>
                     <a className="item">
                         <div>
-                            <h2>099999999</h2>
+                            <h2>{itemDetail.contact_no}</h2>
                             <p>Lorem Ipsum</p>
                         </div>
                     </a>
                 </Link>
             </td>
             <td>
-                <Link href="/project/corporate/123">
+                <Link href={`/project/corporate/${itemDetail.id}`}>
                     <a className="item">
                         <div>
-                            <h2>juandelacruz@no.com</h2>
+                            <h2>{itemDetail.email}</h2>
                             <p>Lorem Ipsum</p>
                         </div>
                     </a>
