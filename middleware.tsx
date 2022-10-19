@@ -6,18 +6,20 @@ export default async function middleware(req: NextRequest, res: NextResponse) {
     const url = req.url;
 
     if (!cookie && req.nextUrl.pathname.startsWith("/dashboard")) {
-        return NextResponse.redirect(new URL("/login", url));
+        return NextResponse.redirect(new URL("/login", req.url));
     }
     if (!cookie && req.nextUrl.pathname.startsWith("/project")) {
-        return NextResponse.redirect(new URL("/login", url));
+        return NextResponse.redirect(new URL("/login", req.url));
     }
     if (!cookie && req.nextUrl.pathname.startsWith("/admin")) {
-        return NextResponse.redirect(new URL("/login", url));
+        return NextResponse.redirect(new URL("/login", req.url));
     }
     if (!cookie && req.nextUrl.pathname.startsWith("/finance")) {
-        return NextResponse.redirect(new URL("/login", url));
+        return NextResponse.redirect(new URL("/login", req.url));
     }
-    if (cookie && req.nextUrl.pathname.startsWith("/login")) {
-        return NextResponse.redirect(new URL("/dashboard", url));
+
+    //if the cookies is verified, redirect to the dashboard
+    if (cookie && url.includes("/login")) {
+        return NextResponse.redirect(new URL("/dashboard", req.url));
     }
 }

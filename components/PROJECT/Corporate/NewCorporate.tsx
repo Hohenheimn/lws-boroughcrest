@@ -1,4 +1,5 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useContext } from "react";
+import AppContext from "../../Context/AppContext";
 import { useRouter } from "next/router";
 import style from "../../../styles/Popup_Modal.module.scss";
 import { AnimatePresence } from "framer-motion";
@@ -6,19 +7,21 @@ import { motion } from "framer-motion";
 import { ModalSideFade } from "../../../components/Animation/SimpleAnimation";
 import { RiArrowDownSFill } from "react-icons/ri";
 import { AiFillCamera } from "react-icons/ai";
-import Link from "next/link";
 import Image from "next/image";
-import type { corporateColumns } from "../../../types/corporateList";
 import { AddCorporateAccount } from "../../API_methods/AddMutation";
+import { useForm } from "react-hook-form";
+import { useMutation } from "react-query";
+import api from "../../../util/api";
+import axios from "axios";
 
 export default function NewCorporate() {
+    const { setToggleNewForm } = useContext(AppContext);
     const [isNewActive, setNewActive] = useState([true, false]);
     const modal = useRef<any>();
-    const router = useRouter();
     useEffect(() => {
         const clickOutSide = (e: any) => {
             if (!modal.current.contains(e.target)) {
-                router.push("");
+                setToggleNewForm(false);
             }
         };
         document.addEventListener("mousedown", clickOutSide);
@@ -26,27 +29,9 @@ export default function NewCorporate() {
             document.removeEventListener("mousedown", clickOutSide);
         };
     });
+
     const [isProfileUrl, setProfileUrl] = useState("/Images/sampleProfile.png");
-    const [Corporate, setCorporate] = useState<corporateColumns>({
-        logo: "",
-        name: "",
-        tin_no: "",
-        branch_code: "",
-        rdo_no: "",
-        gst_type: "",
-        sec_registration: "",
-        email: "",
-        contact_no: "",
-        alt_email: "",
-        alt_contact_no: "",
-        address_unit_floor: "",
-        address_building: "",
-        street: "",
-        district: "",
-        municifality: "",
-        province: "",
-        zip_code: "",
-    });
+
     return (
         <div className={style.container}>
             <section ref={modal}>
@@ -56,20 +41,13 @@ export default function NewCorporate() {
                     {isNewActive[0] && (
                         <Primary
                             key={1}
-                            Corporate={Corporate}
-                            setCorporate={setCorporate}
                             setNewActive={setNewActive}
                             isProfileUrl={isProfileUrl}
                             setProfileUrl={setProfileUrl}
                         />
                     )}
                     {isNewActive[1] && (
-                        <Contact
-                            key={2}
-                            Corporate={Corporate}
-                            setNewActive={setNewActive}
-                            setCorporate={setCorporate}
-                        />
+                        <Contact key={2} setNewActive={setNewActive} />
                     )}
                 </AnimatePresence>
             </section>
@@ -79,19 +57,19 @@ export default function NewCorporate() {
 
 type Props = {
     setNewActive: Function;
-    Corporate: any;
-    setCorporate: Function;
     isProfileUrl?: any;
     setProfileUrl?: any;
 };
-const Primary = ({
-    setNewActive,
-    Corporate,
-    setCorporate,
-    setProfileUrl,
-    isProfileUrl,
-}: Props) => {
+const Primary = ({ setProfileUrl, isProfileUrl, setNewActive }: Props) => {
+    const [isLargeFile, setLargeFile] = useState("Upload Logo");
+
     const DisplayImage = (e: any) => {
+        if (e.target.files[0]?.size > 2000) {
+            setLargeFile("File is too large");
+            return;
+        } else {
+            setLargeFile("");
+        }
         if (e.target.files.length > 0) {
             let selectedImage = e.target.files[0];
             if (
@@ -101,22 +79,52 @@ const Primary = ({
             ) {
                 let ImageReader = new FileReader();
                 ImageReader.readAsDataURL(selectedImage);
-
                 ImageReader.addEventListener("load", (event: any) => {
                     setProfileUrl(event.target.result);
                 });
-
-                const fileName = e.target.value.split("fakepath\\")[1];
-                setCorporate({
-                    ...Corporate,
-                    logo: "corporate-logos/" + fileName,
-                });
+                const file = e.target.files;
+                setLargeFile(file[0].name);
             } else {
-                alert("Invalid Image File");
+                setLargeFile("Invalid Image File");
             }
         } else {
-            alert("Nothing Happens");
         }
+    };
+
+    const { setToggleNewForm, setCreateCorporate, createCorporate } =
+        useContext(AppContext);
+
+    const {
+        register,
+        handleSubmit,
+        watch,
+        formState: { errors },
+    } = useForm({
+        defaultValues: {
+            logo: createCorporate.logo,
+            name: createCorporate.name,
+            tin: createCorporate.tin,
+            branch_code: createCorporate.branch_code,
+            rdo_no: createCorporate.rdo_no,
+            gst_type: createCorporate.gst_type,
+            sec_registration_no: createCorporate.sec_registration_no,
+        },
+    });
+
+    const Submit = (data: any) => {
+        setCreateCorporate({
+            ...createCorporate,
+            logo: data.logo[0].name,
+            name: data.name,
+            tin: data.tin,
+            branch_code: data.branch_code,
+            rdo_no: data.rdo_no,
+            gst_type: data.gst_type,
+            sec_registration_no: data.sec_registration_no,
+        });
+
+        setNewActive((item: any) => [(item[0] = false), (item[1] = true)]);
+        console.log(createCorporate);
     };
 
     return (
@@ -126,158 +134,182 @@ const Primary = ({
             animate="animate"
             exit="exit"
         >
-            <h1 className={style.modal_label_primary}>Primary Informations</h1>
-            <ul className={style.ThreeRows}>
-                <li className={style.upload_image}>
-                    <aside>
+            <form onSubmit={handleSubmit(Submit)}>
+                <h1 className={style.modal_label_primary}>
+                    Primary Informations
+                </h1>
+                <input
+                    type="file"
+                    id="image"
+                    {...register("logo")}
+                    onChange={DisplayImage}
+                    className="appearance-none z-[-99] absolute bottom-full"
+                />
+                <ul className={style.ThreeRows}>
+                    <li className={style.upload_image}>
                         <aside>
-                            <Image src={isProfileUrl} alt="" layout="fill" />
+                            <aside>
+                                <Image
+                                    src={isProfileUrl}
+                                    alt=""
+                                    layout="fill"
+                                />
+                            </aside>
+                            <label htmlFor="image">
+                                <AiFillCamera />
+                            </label>
                         </aside>
-                        <input
-                            type="file"
-                            id="image"
-                            className="hidden"
-                            onChange={DisplayImage}
-                        />
-                        <label htmlFor="image">
-                            <AiFillCamera />
+                        <label htmlFor="image" className={style.image_label}>
+                            <p>{isLargeFile}</p>
+                            <p className=" text-[12px] text-black lowercase">
+                                {/* {errors.image && "This is Required"} */}
+                            </p>
                         </label>
-                    </aside>
-                    <label htmlFor="image" className={style.image_label}>
-                        <p>UPLOAD LOGO</p>
-                    </label>
-                </li>
-                <li>
-                    <label>ID</label>
-                    <input
-                        type="text"
-                        value="123"
-                        disabled={true}
-                        className=" bg-[#cdb8be]"
-                    />
-                </li>
-                <li>
-                    <label>Corporate Name</label>
-                    <input
-                        type="text"
-                        value={Corporate.name}
-                        onChange={(e) =>
-                            setCorporate({ ...Corporate, name: e.target.value })
-                        }
-                    />
-                </li>
-            </ul>
-            <p className="text-[16px]">TIN</p>
-            <ul className={style.ThreeRows}>
-                <li className={style.twoRows}>
-                    <div className={style.wrapper}>
-                        <div className=" w-[48%]">
-                            <label>TIN Number</label>
-                            <input
-                                type="text"
-                                value={Corporate.tin_no}
-                                onChange={(e) =>
-                                    setCorporate({
-                                        ...Corporate,
-                                        tin_no: e.target.value,
-                                    })
-                                }
-                            />
+                    </li>
+                    <li>
+                        <label>ID</label>
+                        <input
+                            type="text"
+                            value="1"
+                            disabled={true}
+                            className=" bg-[#cdb8be]"
+                        />
+                    </li>
+                    <li>
+                        <label>Corporate Name</label>
+                        <input
+                            type="text"
+                            {...register("name", {
+                                required: true,
+                            })}
+                            required
+                        />
+                    </li>
+                </ul>
+                <p className="text-[16px]">TIN</p>
+                <ul className={style.ThreeRows}>
+                    <li className={style.twoRows}>
+                        <div className={style.wrapper}>
+                            <div className=" w-[48%]">
+                                <label>TIN Number</label>
+                                <input
+                                    {...register("tin", {
+                                        required: true,
+                                    })}
+                                    type="number"
+                                    required
+                                />
+                            </div>
+                            <div className=" w-[48%]">
+                                <label>Branch Code</label>
+                                <input
+                                    {...register("branch_code", {
+                                        required: true,
+                                    })}
+                                    required
+                                    type="number"
+                                />
+                            </div>
                         </div>
-                        <div className=" w-[48%]">
-                            <label>Branch Code</label>
-                            <input
-                                type="text"
-                                value={Corporate.branch_code}
-                                onChange={(e) =>
-                                    setCorporate({
-                                        ...Corporate,
-                                        branch_code: e.target.value,
-                                    })
-                                }
-                            />
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <label>RDO NO.</label>
-                    <input
-                        type="text"
-                        value={Corporate.rdo_no}
-                        onChange={(e) =>
-                            setCorporate({
-                                ...Corporate,
-                                rdo_no: e.target.value,
-                            })
-                        }
-                    />
-                </li>
-                <li>
-                    <label>GST TYPE.</label>
-                    <select
-                        name=""
-                        id=""
-                        value={Corporate.gst_type}
-                        onChange={(e) =>
-                            setCorporate({
-                                ...Corporate,
-                                gsp_type: e.target.value,
-                            })
-                        }
+                    </li>
+                    <li>
+                        <label>RDO NO.</label>
+                        <input
+                            type="number"
+                            {...register("rdo_no", {
+                                required: true,
+                            })}
+                            required
+                        />
+                    </li>
+                    <li>
+                        <label>GST TYPE.</label>
+                        <select
+                            {...register("gst_type", {
+                                required: true,
+                            })}
+                            id=""
+                            required
+                        >
+                            <option value="VAT">VAT</option>
+                            <option value="SAMPLE">SAMPLE</option>
+                        </select>
+                    </li>
+                </ul>
+                <ul className={style.ThreeRows}>
+                    <li>
+                        <label>SEC. Registration</label>
+                        <input
+                            type="number"
+                            {...register("sec_registration_no", {
+                                required: true,
+                            })}
+                            required
+                        />
+                    </li>
+                    <li></li>
+                    <li></li>
+                </ul>
+                <div className={style.button_container}>
+                    <aside
+                        onClick={() => setToggleNewForm(false)}
+                        className="button_cancel cursor-pointer"
                     >
-                        <option value=""></option>
-                    </select>
-                </li>
-            </ul>
-            <ul className={style.ThreeRows}>
-                <li>
-                    <label>SEC. Registration</label>
-                    <input
-                        type="text"
-                        value={Corporate.sec_registration}
-                        onChange={(e) =>
-                            setCorporate({
-                                ...Corporate,
-                                sec_registration: e.target.value,
-                            })
-                        }
-                    />
-                </li>
-                <li></li>
-                <li></li>
-            </ul>
-            <div className={style.button_container}>
-                <Link href="">
-                    <a className="button_cancel">CANCEL</a>
-                </Link>
+                        CANCEL
+                    </aside>
 
-                <button
-                    className="buttonRed"
-                    onClick={() => {
-                        setNewActive((item: any) => [
-                            (item[0] = false),
-                            (item[1] = true),
-                        ]);
-                    }}
-                >
-                    NEXT
-                </button>
-            </div>
+                    <button className="buttonRed" type="submit">
+                        NEXT
+                    </button>
+                </div>
+            </form>
         </motion.div>
     );
 };
 
-const Contact = ({ setNewActive, setCorporate, Corporate }: Props) => {
+const Contact = ({ setNewActive }: Props) => {
+    const { setCreateCorporate, createCorporate, setToggleNewForm } =
+        useContext(AppContext);
+
     const [isSave, setSave] = useState(false);
+
+    const onSuccess = () => {
+        alert("Successfuly Created an Account");
+        setToggleNewForm(false);
+    };
+    // const {
+    //     isLoading: mutateLoading,
+    //     mutate,
+    //     isError: mutateError,
+    // } = AddCorporateAccount(onSuccess);
+
+    const {
+        register,
+        handleSubmit,
+        watch,
+        formState: { errors },
+    } = useForm();
+
     const {
         isLoading: mutateLoading,
         mutate,
         isError: mutateError,
-    } = AddCorporateAccount();
+    } = useMutation((CorporateDetail) => {
+        return api.post("/project/corporate", CorporateDetail);
+    });
 
-    const addCorporate = () => {
-        // mutate(Corporate);
-        console.log(Corporate);
+    const Submit = async (data: any) => {
+        // mutate({
+        //     ...createCorporate,
+        //     ...data,
+        // });
+        // setCreateCorporate({ ...createCorporate, ...data });
+        // console.log(createCorporate);
+        const response = await axios.post(
+            "https://boroughcrest-api.lws.codes/project/corporate",
+            { ...createCorporate, ...data }
+        );
+        console.log(response);
     };
 
     if (mutateLoading) {
@@ -286,6 +318,7 @@ const Contact = ({ setNewActive, setCorporate, Corporate }: Props) => {
     if (mutateError) {
         return <h1>Error Mutation</h1>;
     }
+
     return (
         <motion.div
             variants={ModalSideFade}
@@ -294,192 +327,151 @@ const Contact = ({ setNewActive, setCorporate, Corporate }: Props) => {
             exit="exit"
         >
             <h1 className={style.modal_label_primary}>Contact Informations</h1>
-            <ul className={style.twoRows_container}>
-                <li>
-                    <label>CONTACT NO</label>
-                    <aside>
+            <form onSubmit={handleSubmit(Submit)}>
+                <ul className={style.twoRows_container}>
+                    <li>
+                        <label>CONTACT NO</label>
+                        <aside>
+                            <input
+                                type="number"
+                                {...register("contact_no", {
+                                    required: true,
+                                })}
+                                required
+                            />
+                            <span>Official</span>
+                        </aside>
+                        <input type="number" {...register("alt_contact_no")} />
+                    </li>
+                    <li>
+                        <label>EMAIL ADDRESS</label>
+                        <aside>
+                            <input
+                                type="email"
+                                {...register("email", {
+                                    required: true,
+                                })}
+                                required
+                            />
+                            <span>Official</span>
+                        </aside>
+                        <input type="email" {...register("alt_email")} />
+                    </li>
+                </ul>
+                <p className="text-[14px] font-bold mb-2">ADDRESS</p>
+                <ul className={style.ThreeRows}>
+                    <li>
+                        <label>UNIT/FLOOR/HOUSE NO.</label>
+                        <input
+                            type="number"
+                            {...register("address_unit_floor", {
+                                required: true,
+                            })}
+                            required
+                        />
+                    </li>
+                    <li>
+                        <label>BUILDING</label>
                         <input
                             type="text"
-                            value={Corporate.contact_no}
-                            onChange={(e) =>
-                                setCorporate({
-                                    ...Corporate,
-                                    contact_no: e.target.value,
-                                })
-                            }
+                            {...register("address_building", {
+                                required: true,
+                            })}
+                            required
                         />
-                        <span>Official</span>
-                    </aside>
-                    <input
-                        type="text"
-                        value={Corporate.alt_contact_no}
-                        onChange={(e) =>
-                            setCorporate({
-                                ...Corporate,
-                                alt_contact_no: e.target.value,
-                            })
-                        }
-                    />
-                </li>
-                <li>
-                    <label>EMAIL ADDRESS</label>
-                    <aside>
+                    </li>
+                    <li>
+                        <label>STREET</label>
                         <input
                             type="text"
-                            value={Corporate.email}
-                            onChange={(e) =>
-                                setCorporate({
-                                    ...Corporate,
-                                    email: e.target.value,
-                                })
-                            }
+                            {...register("address_street", {
+                                required: true,
+                            })}
+                            required
                         />
-                        <span>Official</span>
-                    </aside>
-                    <input
-                        type="text"
-                        value={Corporate.alt_email}
-                        onChange={(e) =>
-                            setCorporate({
-                                ...Corporate,
-                                alt_email: e.target.value,
-                            })
+                    </li>
+                    <li>
+                        <label>DISTRICT</label>
+                        <input
+                            type="text"
+                            {...register("address_district", {
+                                required: true,
+                            })}
+                            required
+                        />
+                    </li>
+                    <li>
+                        <label>MUNICIPALITY</label>
+                        <input
+                            type="text"
+                            {...register("address_municipal_city", {
+                                required: true,
+                            })}
+                            required
+                        />
+                    </li>
+                    <li>
+                        <label>PROVINCE</label>
+                        <input
+                            type="text"
+                            {...register("address_province", {
+                                required: true,
+                            })}
+                            required
+                        />
+                    </li>
+                    <li>
+                        <label>ZIP CODE</label>
+                        <input
+                            type="number"
+                            {...register("address_zip_code", {
+                                required: true,
+                            })}
+                            required
+                        />
+                    </li>
+                </ul>
+                <div className={style.SaveButton}>
+                    <aside
+                        className="cancel_button mr-5 font-bold cursor-pointer"
+                        onClick={() =>
+                            setNewActive((item: any) => [
+                                (item[0] = true),
+                                (item[1] = false),
+                            ])
                         }
-                    />
-                </li>
-            </ul>
-            <p className="text-[14px] font-bold mb-2">ADDRESS</p>
-            <ul className={style.ThreeRows}>
-                <li>
-                    <label>UNIT/FLOOR/HOUSE NO.</label>
-                    <input
-                        type="text"
-                        value={Corporate.address_unit_floor}
-                        onChange={(e) =>
-                            setCorporate({
-                                ...Corporate,
-                                address_unit_floor: e.target.value,
-                            })
-                        }
-                    />
-                </li>
-                <li>
-                    <label>BUILDING</label>
-                    <input
-                        type="text"
-                        value={Corporate.address_building}
-                        onChange={(e) =>
-                            setCorporate({
-                                ...Corporate,
-                                address_building: e.target.value,
-                            })
-                        }
-                    />
-                </li>
-                <li>
-                    <label>STREET</label>
-                    <input
-                        type="text"
-                        value={Corporate.street}
-                        onChange={(e) =>
-                            setCorporate({
-                                ...Corporate,
-                                street: e.target.value,
-                            })
-                        }
-                    />
-                </li>
-                <li>
-                    <label>DISTRICT</label>
-                    <input
-                        type="text"
-                        value={Corporate.district}
-                        onChange={(e) =>
-                            setCorporate({
-                                ...Corporate,
-                                district: e.target.value,
-                            })
-                        }
-                    />
-                </li>
-                <li>
-                    <label>MUNICIPALITY</label>
-                    <input
-                        type="text"
-                        value={Corporate.municifality}
-                        onChange={(e) =>
-                            setCorporate({
-                                ...Corporate,
-                                municifality: e.target.value,
-                            })
-                        }
-                    />
-                </li>
-                <li>
-                    <label>PROVINCE</label>
-                    <input
-                        type="text"
-                        value={Corporate.province}
-                        onChange={(e) =>
-                            setCorporate({
-                                ...Corporate,
-                                province: e.target.value,
-                            })
-                        }
-                    />
-                </li>
-                <li>
-                    <label>ZIP CODE</label>
-                    <input
-                        type="text"
-                        value={Corporate.zip_code}
-                        onChange={(e) =>
-                            setCorporate({
-                                ...Corporate,
-                                zip_code: e.target.value,
-                            })
-                        }
-                    />
-                </li>
-            </ul>
-            <div className=" w-full flex justify-end items-center  mb-10">
-                <button
-                    className="cancel_button mr-5 font-bold"
-                    onClick={() =>
-                        setNewActive((item: any) => [
-                            (item[0] = true),
-                            (item[1] = false),
-                        ])
-                    }
-                >
-                    Back
-                </button>
-                <button className=" relative text-white flex justify-center items-center duration-75 hover:bg-ThemeRed50 leading-none bg-ThemeRed rounded-md text-[14px] mr-5">
-                    <div
-                        className=" h-8 px-5 w-full flex justify-center items-center"
-                        onClick={() => setSave(!isSave)}
                     >
-                        SAVE <RiArrowDownSFill className=" ml-1 text-[24px]" />
-                    </div>
-                    {isSave && (
-                        <ul className=" absolute top-full bg-white w-full">
-                            <a
-                                onClick={addCorporate}
-                                className="text-ThemeRed inline-block py-2 w-full text-center hover:bg-ThemeRed hover:text-white duration-75"
-                            >
-                                SAVE
-                            </a>
+                        Back
+                    </aside>
+                    <div className={style.Save}>
+                        <div onClick={() => setSave(!isSave)}>
+                            SAVE{" "}
+                            <RiArrowDownSFill className=" ml-1 text-[24px]" />
+                        </div>
+                        {isSave && (
+                            <ul>
+                                <li>
+                                    <button name="save" data-type="save">
+                                        SAVE
+                                    </button>
+                                </li>
 
-                            <a
-                                onClick={addCorporate}
-                                className="text-ThemeRed inline-block py-2 w-full text-center hover:bg-ThemeRed hover:text-white duration-75"
-                            >
-                                SAVE & NEW
-                            </a>
-                        </ul>
-                    )}
-                </button>
-            </div>
+                                <li>
+                                    <button name="save" data-type="save-new">
+                                        SAVE & NEW
+                                    </button>
+                                </li>
+
+                                <li>
+                                    <button name="draft" data-type="save-draft">
+                                        SAVE AS DRAFT
+                                    </button>
+                                </li>
+                            </ul>
+                        )}
+                    </div>
+                </div>
+            </form>
         </motion.div>
     );
 };

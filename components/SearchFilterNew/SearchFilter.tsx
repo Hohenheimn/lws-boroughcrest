@@ -1,12 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import AppContext from "../Context/AppContext";
 import Image from "next/image";
 import { BsSearch } from "react-icons/bs";
 import { AnimatePresence } from "framer-motion";
 import FilterCorporate from "./FilterCorporate";
 import FilterUser from "./FilterUser";
 import FilterCustomer from "./FilterCustomer";
-import { BiExport, BiImport } from "react-icons/bi";
-import { BsFillPrinterFill } from "react-icons/bs";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 import { useRouter } from "next/router";
@@ -19,10 +18,13 @@ type SearchFilter = {
 };
 
 export default function SearchFilter({ page }: SearchFilter) {
+    const { setToggleNewForm } = useContext(AppContext);
+
     const [isFilter, setFilter] = useState(false);
     const router = useRouter();
     const ValidatePathName = router.pathname.split("/")[2];
     console.log(ValidatePathName);
+
     return (
         <div>
             <h1 className={style.page_title}>{page}</h1>
@@ -33,53 +35,49 @@ export default function SearchFilter({ page }: SearchFilter) {
                 </div>
 
                 <ul className={style.navigation}>
-                    {ValidatePathName === "customer" ||
-                        (ValidatePathName === "property" && (
-                            <li className={style.importExportPrint}>
-                                <Tippy theme="ThemeRed" content="Export">
-                                    <div className={style.icon}>
+                    {(ValidatePathName === "customer" ||
+                        ValidatePathName === "property") && (
+                        <li className={style.importExportPrint}>
+                            <Tippy theme="ThemeRed" content="Export">
+                                <div className={style.icon}>
+                                    <Image
+                                        src="/Images/Export.png"
+                                        width={30}
+                                        height={30}
+                                        alt="Export"
+                                    />
+                                </div>
+                            </Tippy>
+                            <Tippy theme="ThemeRed" content="Import">
+                                <div className={style.icon}>
+                                    <label htmlFor="import">
                                         <Image
-                                            src="/Images/Export.png"
+                                            src="/Images/Import.png"
                                             width={30}
                                             height={30}
-                                            alt="Export"
+                                            alt="Import"
                                         />
-                                    </div>
-                                </Tippy>
-                                <Tippy theme="ThemeRed" content="Import">
-                                    <div className={style.icon}>
-                                        <label htmlFor="import">
-                                            <Image
-                                                src="/Images/Import.png"
-                                                width={30}
-                                                height={30}
-                                                alt="Import"
-                                            />
-                                        </label>
-                                    </div>
-                                </Tippy>
-                                <input
-                                    type="file"
-                                    id="import"
-                                    className="hidden"
-                                />
-                                <Tippy theme="ThemeRed" content="Print">
-                                    <div className={style.icon}>
-                                        <Image
-                                            src="/Images/Print.png"
-                                            width={27}
-                                            height={27}
-                                            alt="Print"
-                                        />
-                                    </div>
-                                </Tippy>
-                            </li>
-                        ))}
+                                    </label>
+                                </div>
+                            </Tippy>
+                            <input type="file" id="import" className="hidden" />
+                            <Tippy theme="ThemeRed" content="Print">
+                                <div className={style.icon}>
+                                    <Image
+                                        src="/Images/Print.png"
+                                        width={27}
+                                        height={27}
+                                        alt="Print"
+                                    />
+                                </div>
+                            </Tippy>
+                        </li>
+                    )}
 
                     <li className={style.new}>
-                        <Link href={`${router.pathname}?new`}>
-                            <a>New {page}</a>
-                        </Link>
+                        <button onClick={() => setToggleNewForm(true)}>
+                            New {page}
+                        </button>
                     </li>
 
                     <li className={style.filter}>

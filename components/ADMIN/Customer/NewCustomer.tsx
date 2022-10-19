@@ -1,4 +1,5 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useContext } from "react";
+import AppContext from "../../Context/AppContext";
 import { useRouter } from "next/router";
 import style from "../../../styles/Popup_Modal.module.scss";
 import NewPrimaryInfo from "./NewPrimaryInfo";
@@ -7,13 +8,14 @@ import NewPropertyInfo from "./NewPropertyInfo";
 import { AnimatePresence } from "framer-motion";
 
 export default function NewCustomer() {
+    const { setToggleNewForm } = useContext(AppContext);
     // click outside close
     const modal = useRef<any>();
     const router = useRouter();
     useEffect(() => {
         const clickOutSide = (e: any) => {
             if (!modal.current.contains(e.target)) {
-                router.push("");
+                setToggleNewForm(false);
             }
         };
         document.addEventListener("mousedown", clickOutSide);

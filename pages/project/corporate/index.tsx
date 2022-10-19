@@ -1,11 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
+import AppContext from "../../../components/Context/AppContext";
 import SearchFilter from "../../../components/SearchFilterNew/SearchFilter";
 import Pagination from "../../../components/Pagination";
 import Table from "../../../components/PROJECT/Corporate/Table";
 import NewCorporate from "../../../components/PROJECT/Corporate/NewCorporate";
-import { useRouter } from "next/router";
+
 export default function Corporate() {
-    const router = useRouter();
+    const { toggleNewForm } = useContext(AppContext);
     return (
         <div>
             <>
@@ -14,7 +15,7 @@ export default function Corporate() {
                 <Pagination />
             </>
 
-            {router.query.new !== undefined && <NewCorporate />}
+            {toggleNewForm && <NewCorporate />}
         </div>
     );
 }

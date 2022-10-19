@@ -93,7 +93,7 @@
             }
         }
         .SaveButton {
-            @apply w-full flex justify-end items-center  mb-10;
+            @apply w-full flex justify-end items-center  mb-16;
             .Save {
                 @apply relative text-white flex justify-center items-center duration-75 hover:bg-ThemeRed50 leading-none bg-ThemeRed rounded-md text-[14px] mr-5;
                 div {
@@ -105,7 +105,9 @@
                 ul {
                     @apply absolute top-full bg-white w-full;
                     li {
-                        @apply text-ThemeRed inline-block py-2 w-full text-center hover:bg-ThemeRed hover:text-white duration-75;
+                        button {
+                            @apply cursor-pointer text-ThemeRed inline-block text-[12px] py-2 w-full text-center hover:bg-ThemeRed hover:text-white duration-75;
+                        }
                     }
                 }
             }

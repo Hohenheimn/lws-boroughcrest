@@ -1,21 +1,19 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useContext, useState } from "react";
+import AppContext from "../../Context/AppContext";
 import style from "../../../styles/Popup_Modal.module.scss";
 import { motion } from "framer-motion";
 import { ModalSideFade } from "../../Animation/SimpleAnimation";
-import { useRouter } from "next/router";
 import { RiArrowDownSFill } from "react-icons/ri";
-import Link from "next/link";
 
 export default function NewProperty() {
+    const { setToggleNewForm } = useContext(AppContext);
     const modal = useRef<any>();
-    const router = useRouter();
-
     const [isSave, setSave] = useState(false);
 
     useEffect(() => {
         const clickOutSide = (e: any) => {
             if (!modal.current.contains(e.target)) {
-                router.push("");
+                setToggleNewForm(false);
             }
         };
         document.addEventListener("mousedown", clickOutSide);
@@ -102,11 +100,12 @@ export default function NewProperty() {
                         </li>
                     </ul>
                     <div className={style.SaveButton}>
-                        <Link href="">
-                            <a className="cancel_button mr-5 font-bold">
-                                Cancel
-                            </a>
-                        </Link>
+                        <aside
+                            className="cancel_button mr-5 font-bold cursor-pointer"
+                            onClick={() => setToggleNewForm(false)}
+                        >
+                            Cancel
+                        </aside>
 
                         <button className={style.Save}>
                             <div onClick={() => setSave(!isSave)}>
@@ -115,9 +114,16 @@ export default function NewProperty() {
                             </div>
                             {isSave && (
                                 <ul>
-                                    <li>SAVE</li>
+                                    <li>
+                                        <button>SAVE</button>
+                                    </li>
 
-                                    <li>SAVE & NEW</li>
+                                    <li>
+                                        <button>SAVE & NEW</button>
+                                    </li>
+                                    <li>
+                                        <button>SAVE AS DRAFT</button>
+                                    </li>
                                 </ul>
                             )}
                         </button>

@@ -3,10 +3,10 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 
 const Home: NextPage = () => {
-    const router = useRouter()
+    const router = useRouter();
     useEffect(() => {
-        router.push('/dashboard')
-    })
+        router.push("/login");
+    });
     return <div></div>;
 };
 

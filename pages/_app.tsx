@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { QueryClientProvider, QueryClient } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
+import AppProvider from "../components/Context/AppProvider";
 // Page Loading
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
@@ -36,9 +37,11 @@ function MyApp({ Component, pageProps }: ExtendAppProps) {
     return (
         <>
             <QueryClientProvider client={queryClient}>
-                <Layout>
-                    <Component {...pageProps} />
-                </Layout>
+                <AppProvider>
+                    <Layout>
+                        <Component {...pageProps} />
+                    </Layout>
+                </AppProvider>
                 <ReactQueryDevtools />
             </QueryClientProvider>
         </>
