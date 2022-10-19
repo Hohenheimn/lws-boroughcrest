@@ -23,6 +23,7 @@ export default function SearchFilter({ page }: SearchFilter) {
     const [isFilter, setFilter] = useState(false);
     const router = useRouter();
     const ValidatePathName = router.pathname.split("/")[2];
+    console.log(ValidatePathName);
 
     return (
         <div>
@@ -34,48 +35,44 @@ export default function SearchFilter({ page }: SearchFilter) {
                 </div>
 
                 <ul className={style.navigation}>
-                    {ValidatePathName === "customer" ||
-                        (ValidatePathName === "property" && (
-                            <li className={style.importExportPrint}>
-                                <Tippy theme="ThemeRed" content="Export">
-                                    <div className={style.icon}>
+                    {(ValidatePathName === "customer" ||
+                        ValidatePathName === "property") && (
+                        <li className={style.importExportPrint}>
+                            <Tippy theme="ThemeRed" content="Export">
+                                <div className={style.icon}>
+                                    <Image
+                                        src="/Images/Export.png"
+                                        width={30}
+                                        height={30}
+                                        alt="Export"
+                                    />
+                                </div>
+                            </Tippy>
+                            <Tippy theme="ThemeRed" content="Import">
+                                <div className={style.icon}>
+                                    <label htmlFor="import">
                                         <Image
-                                            src="/Images/Export.png"
+                                            src="/Images/Import.png"
                                             width={30}
                                             height={30}
-                                            alt="Export"
+                                            alt="Import"
                                         />
-                                    </div>
-                                </Tippy>
-                                <Tippy theme="ThemeRed" content="Import">
-                                    <div className={style.icon}>
-                                        <label htmlFor="import">
-                                            <Image
-                                                src="/Images/Import.png"
-                                                width={30}
-                                                height={30}
-                                                alt="Import"
-                                            />
-                                        </label>
-                                    </div>
-                                </Tippy>
-                                <input
-                                    type="file"
-                                    id="import"
-                                    className="hidden"
-                                />
-                                <Tippy theme="ThemeRed" content="Print">
-                                    <div className={style.icon}>
-                                        <Image
-                                            src="/Images/Print.png"
-                                            width={27}
-                                            height={27}
-                                            alt="Print"
-                                        />
-                                    </div>
-                                </Tippy>
-                            </li>
-                        ))}
+                                    </label>
+                                </div>
+                            </Tippy>
+                            <input type="file" id="import" className="hidden" />
+                            <Tippy theme="ThemeRed" content="Print">
+                                <div className={style.icon}>
+                                    <Image
+                                        src="/Images/Print.png"
+                                        width={27}
+                                        height={27}
+                                        alt="Print"
+                                    />
+                                </div>
+                            </Tippy>
+                        </li>
+                    )}
 
                     <li className={style.new}>
                         <button onClick={() => setToggleNewForm(true)}>

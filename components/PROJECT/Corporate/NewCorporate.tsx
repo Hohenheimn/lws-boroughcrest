@@ -7,10 +7,12 @@ import { motion } from "framer-motion";
 import { ModalSideFade } from "../../../components/Animation/SimpleAnimation";
 import { RiArrowDownSFill } from "react-icons/ri";
 import { AiFillCamera } from "react-icons/ai";
-import Link from "next/link";
 import Image from "next/image";
-import type { corporateColumns } from "../../../types/corporateList";
 import { AddCorporateAccount } from "../../API_methods/AddMutation";
+import { useForm } from "react-hook-form";
+import { useMutation } from "react-query";
+import api from "../../../util/api";
+import axios from "axios";
 
 export default function NewCorporate() {
     const { setToggleNewForm } = useContext(AppContext);
@@ -27,27 +29,8 @@ export default function NewCorporate() {
             document.removeEventListener("mousedown", clickOutSide);
         };
     });
+
     const [isProfileUrl, setProfileUrl] = useState("/Images/sampleProfile.png");
-    const [Corporate, setCorporate] = useState<corporateColumns>({
-        logo: "",
-        name: "",
-        email: "",
-        contact_no: undefined,
-        alt_email: "",
-        alt_contact_no: undefined,
-        address_unit_floor: undefined,
-        address_building: "",
-        address_street: "",
-        address_district: undefined,
-        address_municipal_city: "",
-        address_province: "",
-        address_zip_code: undefined,
-        tin: "",
-        branch_code: undefined,
-        gst_type: "VAT",
-        rdo_no: undefined,
-        sec_registration_no: undefined,
-    });
 
     return (
         <div className={style.container}>
@@ -58,20 +41,13 @@ export default function NewCorporate() {
                     {isNewActive[0] && (
                         <Primary
                             key={1}
-                            Corporate={Corporate}
-                            setCorporate={setCorporate}
                             setNewActive={setNewActive}
                             isProfileUrl={isProfileUrl}
                             setProfileUrl={setProfileUrl}
                         />
                     )}
                     {isNewActive[1] && (
-                        <Contact
-                            key={2}
-                            Corporate={Corporate}
-                            setNewActive={setNewActive}
-                            setCorporate={setCorporate}
-                        />
+                        <Contact key={2} setNewActive={setNewActive} />
                     )}
                 </AnimatePresence>
             </section>
@@ -81,14 +57,12 @@ export default function NewCorporate() {
 
 type Props = {
     setNewActive: Function;
-    Corporate: any;
-    setCorporate: Function;
     isProfileUrl?: any;
     setProfileUrl?: any;
 };
 const Primary = ({ setProfileUrl, isProfileUrl, setNewActive }: Props) => {
-    const { setToggleNewForm } = useContext(AppContext);
-    const [isLargeFile, setLargeFile] = useState("");
+    const [isLargeFile, setLargeFile] = useState("Upload Logo");
+
     const DisplayImage = (e: any) => {
         if (e.target.files[0]?.size > 2000) {
             setLargeFile("File is too large");
@@ -117,9 +91,40 @@ const Primary = ({ setProfileUrl, isProfileUrl, setNewActive }: Props) => {
         }
     };
 
-    const OnSubmitHandler = (e: any) => {
-        e.preventDefault();
+    const { setToggleNewForm, setCreateCorporate, createCorporate } =
+        useContext(AppContext);
+
+    const {
+        register,
+        handleSubmit,
+        watch,
+        formState: { errors },
+    } = useForm({
+        defaultValues: {
+            logo: createCorporate.logo,
+            name: createCorporate.name,
+            tin: createCorporate.tin,
+            branch_code: createCorporate.branch_code,
+            rdo_no: createCorporate.rdo_no,
+            gst_type: createCorporate.gst_type,
+            sec_registration_no: createCorporate.sec_registration_no,
+        },
+    });
+
+    const Submit = (data: any) => {
+        setCreateCorporate({
+            ...createCorporate,
+            logo: data.logo[0].name,
+            name: data.name,
+            tin: data.tin,
+            branch_code: data.branch_code,
+            rdo_no: data.rdo_no,
+            gst_type: data.gst_type,
+            sec_registration_no: data.sec_registration_no,
+        });
+
         setNewActive((item: any) => [(item[0] = false), (item[1] = true)]);
+        console.log(createCorporate);
     };
 
     return (
@@ -129,10 +134,17 @@ const Primary = ({ setProfileUrl, isProfileUrl, setNewActive }: Props) => {
             animate="animate"
             exit="exit"
         >
-            <form onSubmit={OnSubmitHandler}>
+            <form onSubmit={handleSubmit(Submit)}>
                 <h1 className={style.modal_label_primary}>
                     Primary Informations
                 </h1>
+                <input
+                    type="file"
+                    id="image"
+                    {...register("logo")}
+                    onChange={DisplayImage}
+                    className="appearance-none z-[-99] absolute bottom-full"
+                />
                 <ul className={style.ThreeRows}>
                     <li className={style.upload_image}>
                         <aside>
@@ -143,40 +155,35 @@ const Primary = ({ setProfileUrl, isProfileUrl, setNewActive }: Props) => {
                                     layout="fill"
                                 />
                             </aside>
-                            <input
-                                type="file"
-                                id="image"
-                                required
-                                className="hidden"
-                                name="logo"
-                                onChange={DisplayImage}
-                            />
                             <label htmlFor="image">
                                 <AiFillCamera />
                             </label>
                         </aside>
                         <label htmlFor="image" className={style.image_label}>
-                            <p>UPLOAD LOGO</p>
-                            {isLargeFile !== "" && (
-                                <p className=" text-[12px] text-black lowercase">
-                                    {isLargeFile}
-                                </p>
-                            )}
+                            <p>{isLargeFile}</p>
+                            <p className=" text-[12px] text-black lowercase">
+                                {/* {errors.image && "This is Required"} */}
+                            </p>
                         </label>
                     </li>
                     <li>
                         <label>ID</label>
                         <input
                             type="text"
-                            value="123"
+                            value="1"
                             disabled={true}
-                            required
                             className=" bg-[#cdb8be]"
                         />
                     </li>
                     <li>
                         <label>Corporate Name</label>
-                        <input type="text" required name="name" />
+                        <input
+                            type="text"
+                            {...register("name", {
+                                required: true,
+                            })}
+                            required
+                        />
                     </li>
                 </ul>
                 <p className="text-[16px]">TIN</p>
@@ -185,26 +192,47 @@ const Primary = ({ setProfileUrl, isProfileUrl, setNewActive }: Props) => {
                         <div className={style.wrapper}>
                             <div className=" w-[48%]">
                                 <label>TIN Number</label>
-                                <input name="tin" required type="number" />
+                                <input
+                                    {...register("tin", {
+                                        required: true,
+                                    })}
+                                    type="number"
+                                    required
+                                />
                             </div>
                             <div className=" w-[48%]">
                                 <label>Branch Code</label>
                                 <input
-                                    name="branch_code"
-                                    type="number"
+                                    {...register("branch_code", {
+                                        required: true,
+                                    })}
                                     required
+                                    type="number"
                                 />
                             </div>
                         </div>
                     </li>
                     <li>
                         <label>RDO NO.</label>
-                        <input type="number" name="rdo_no" required />
+                        <input
+                            type="number"
+                            {...register("rdo_no", {
+                                required: true,
+                            })}
+                            required
+                        />
                     </li>
                     <li>
                         <label>GST TYPE.</label>
-                        <select name="gst_type" id="" required>
+                        <select
+                            {...register("gst_type", {
+                                required: true,
+                            })}
+                            id=""
+                            required
+                        >
                             <option value="VAT">VAT</option>
+                            <option value="SAMPLE">SAMPLE</option>
                         </select>
                     </li>
                 </ul>
@@ -213,7 +241,9 @@ const Primary = ({ setProfileUrl, isProfileUrl, setNewActive }: Props) => {
                         <label>SEC. Registration</label>
                         <input
                             type="number"
-                            name="sec_registration_no"
+                            {...register("sec_registration_no", {
+                                required: true,
+                            })}
                             required
                         />
                     </li>
@@ -228,30 +258,58 @@ const Primary = ({ setProfileUrl, isProfileUrl, setNewActive }: Props) => {
                         CANCEL
                     </aside>
 
-                    <button className="buttonRed">NEXT</button>
+                    <button className="buttonRed" type="submit">
+                        NEXT
+                    </button>
                 </div>
             </form>
         </motion.div>
     );
 };
 
-const Contact = ({ setNewActive, setCorporate, Corporate }: Props) => {
-    const router = useRouter();
+const Contact = ({ setNewActive }: Props) => {
+    const { setCreateCorporate, createCorporate, setToggleNewForm } =
+        useContext(AppContext);
+
     const [isSave, setSave] = useState(false);
 
     const onSuccess = () => {
         alert("Successfuly Created an Account");
-        router.push("");
+        setToggleNewForm(false);
     };
+    // const {
+    //     isLoading: mutateLoading,
+    //     mutate,
+    //     isError: mutateError,
+    // } = AddCorporateAccount(onSuccess);
+
+    const {
+        register,
+        handleSubmit,
+        watch,
+        formState: { errors },
+    } = useForm();
+
     const {
         isLoading: mutateLoading,
         mutate,
         isError: mutateError,
-    } = AddCorporateAccount(onSuccess);
+    } = useMutation((CorporateDetail) => {
+        return api.post("/project/corporate", CorporateDetail);
+    });
 
-    const addCorporate = (typeOfSave: string) => {
-        mutate(Corporate);
-        console.log(Corporate);
+    const Submit = async (data: any) => {
+        // mutate({
+        //     ...createCorporate,
+        //     ...data,
+        // });
+        // setCreateCorporate({ ...createCorporate, ...data });
+        // console.log(createCorporate);
+        const response = await axios.post(
+            "https://boroughcrest-api.lws.codes/project/corporate",
+            { ...createCorporate, ...data }
+        );
+        console.log(response);
     };
 
     if (mutateLoading) {
@@ -260,6 +318,7 @@ const Contact = ({ setNewActive, setCorporate, Corporate }: Props) => {
     if (mutateError) {
         return <h1>Error Mutation</h1>;
     }
+
     return (
         <motion.div
             variants={ModalSideFade}
@@ -268,202 +327,151 @@ const Contact = ({ setNewActive, setCorporate, Corporate }: Props) => {
             exit="exit"
         >
             <h1 className={style.modal_label_primary}>Contact Informations</h1>
-            <ul className={style.twoRows_container}>
-                <li>
-                    <label>CONTACT NO</label>
-                    <aside>
+            <form onSubmit={handleSubmit(Submit)}>
+                <ul className={style.twoRows_container}>
+                    <li>
+                        <label>CONTACT NO</label>
+                        <aside>
+                            <input
+                                type="number"
+                                {...register("contact_no", {
+                                    required: true,
+                                })}
+                                required
+                            />
+                            <span>Official</span>
+                        </aside>
+                        <input type="number" {...register("alt_contact_no")} />
+                    </li>
+                    <li>
+                        <label>EMAIL ADDRESS</label>
+                        <aside>
+                            <input
+                                type="email"
+                                {...register("email", {
+                                    required: true,
+                                })}
+                                required
+                            />
+                            <span>Official</span>
+                        </aside>
+                        <input type="email" {...register("alt_email")} />
+                    </li>
+                </ul>
+                <p className="text-[14px] font-bold mb-2">ADDRESS</p>
+                <ul className={style.ThreeRows}>
+                    <li>
+                        <label>UNIT/FLOOR/HOUSE NO.</label>
                         <input
                             type="number"
-                            value={Corporate.contact_no}
-                            onChange={(e) =>
-                                setCorporate({
-                                    ...Corporate,
-                                    contact_no: e.target.value,
-                                })
-                            }
+                            {...register("address_unit_floor", {
+                                required: true,
+                            })}
+                            required
                         />
-                        <span>Official</span>
-                    </aside>
-                    <input
-                        type="number"
-                        value={Corporate.alt_contact_no}
-                        onChange={(e) =>
-                            setCorporate({
-                                ...Corporate,
-                                alt_contact_no: e.target.value,
-                            })
-                        }
-                    />
-                </li>
-                <li>
-                    <label>EMAIL ADDRESS</label>
-                    <aside>
+                    </li>
+                    <li>
+                        <label>BUILDING</label>
                         <input
-                            type="email"
-                            value={Corporate.email}
-                            onChange={(e) =>
-                                setCorporate({
-                                    ...Corporate,
-                                    email: e.target.value,
-                                })
-                            }
+                            type="text"
+                            {...register("address_building", {
+                                required: true,
+                            })}
+                            required
                         />
-                        <span>Official</span>
+                    </li>
+                    <li>
+                        <label>STREET</label>
+                        <input
+                            type="text"
+                            {...register("address_street", {
+                                required: true,
+                            })}
+                            required
+                        />
+                    </li>
+                    <li>
+                        <label>DISTRICT</label>
+                        <input
+                            type="text"
+                            {...register("address_district", {
+                                required: true,
+                            })}
+                            required
+                        />
+                    </li>
+                    <li>
+                        <label>MUNICIPALITY</label>
+                        <input
+                            type="text"
+                            {...register("address_municipal_city", {
+                                required: true,
+                            })}
+                            required
+                        />
+                    </li>
+                    <li>
+                        <label>PROVINCE</label>
+                        <input
+                            type="text"
+                            {...register("address_province", {
+                                required: true,
+                            })}
+                            required
+                        />
+                    </li>
+                    <li>
+                        <label>ZIP CODE</label>
+                        <input
+                            type="number"
+                            {...register("address_zip_code", {
+                                required: true,
+                            })}
+                            required
+                        />
+                    </li>
+                </ul>
+                <div className={style.SaveButton}>
+                    <aside
+                        className="cancel_button mr-5 font-bold cursor-pointer"
+                        onClick={() =>
+                            setNewActive((item: any) => [
+                                (item[0] = true),
+                                (item[1] = false),
+                            ])
+                        }
+                    >
+                        Back
                     </aside>
-                    <input
-                        type="email"
-                        value={Corporate.alt_email}
-                        onChange={(e) =>
-                            setCorporate({
-                                ...Corporate,
-                                alt_email: e.target.value,
-                            })
-                        }
-                    />
-                </li>
-            </ul>
-            <p className="text-[14px] font-bold mb-2">ADDRESS</p>
-            <ul className={style.ThreeRows}>
-                <li>
-                    <label>UNIT/FLOOR/HOUSE NO.</label>
-                    <input
-                        type="number"
-                        value={Corporate.address_unit_floor}
-                        onChange={(e) =>
-                            setCorporate({
-                                ...Corporate,
-                                address_unit_floor: e.target.value,
-                            })
-                        }
-                    />
-                </li>
-                <li>
-                    <label>BUILDING</label>
-                    <input
-                        type="text"
-                        value={Corporate.address_building}
-                        onChange={(e) =>
-                            setCorporate({
-                                ...Corporate,
-                                address_building: e.target.value,
-                            })
-                        }
-                    />
-                </li>
-                <li>
-                    <label>STREET</label>
-                    <input
-                        type="text"
-                        value={Corporate.address_street}
-                        onChange={(e) =>
-                            setCorporate({
-                                ...Corporate,
-                                address_street: e.target.value,
-                            })
-                        }
-                    />
-                </li>
-                <li>
-                    <label>DISTRICT</label>
-                    <input
-                        type="text"
-                        value={Corporate.address_district}
-                        onChange={(e) =>
-                            setCorporate({
-                                ...Corporate,
-                                address_district: e.target.value,
-                            })
-                        }
-                    />
-                </li>
-                <li>
-                    <label>MUNICIPALITY</label>
-                    <input
-                        type="text"
-                        value={Corporate.address_municipal_city}
-                        onChange={(e) =>
-                            setCorporate({
-                                ...Corporate,
-                                address_municipal_city: e.target.value,
-                            })
-                        }
-                    />
-                </li>
-                <li>
-                    <label>PROVINCE</label>
-                    <input
-                        type="text"
-                        value={Corporate.address_province}
-                        onChange={(e) =>
-                            setCorporate({
-                                ...Corporate,
-                                address_province: e.target.value,
-                            })
-                        }
-                    />
-                </li>
-                <li>
-                    <label>ZIP CODE</label>
-                    <input
-                        type="text"
-                        value={Corporate.address_zip_code}
-                        onChange={(e) =>
-                            setCorporate({
-                                ...Corporate,
-                                address_zip_code: e.target.value,
-                            })
-                        }
-                    />
-                </li>
-            </ul>
-            <div className={style.SaveButton}>
-                <button
-                    className="cancel_button mr-5 font-bold"
-                    onClick={() =>
-                        setNewActive((item: any) => [
-                            (item[0] = true),
-                            (item[1] = false),
-                        ])
-                    }
-                >
-                    Back
-                </button>
-                <div className={style.Save}>
-                    <div onClick={() => setSave(!isSave)}>
-                        SAVE <RiArrowDownSFill className=" ml-1 text-[24px]" />
+                    <div className={style.Save}>
+                        <div onClick={() => setSave(!isSave)}>
+                            SAVE{" "}
+                            <RiArrowDownSFill className=" ml-1 text-[24px]" />
+                        </div>
+                        {isSave && (
+                            <ul>
+                                <li>
+                                    <button name="save" data-type="save">
+                                        SAVE
+                                    </button>
+                                </li>
+
+                                <li>
+                                    <button name="save" data-type="save-new">
+                                        SAVE & NEW
+                                    </button>
+                                </li>
+
+                                <li>
+                                    <button name="draft" data-type="save-draft">
+                                        SAVE AS DRAFT
+                                    </button>
+                                </li>
+                            </ul>
+                        )}
                     </div>
-                    {isSave && (
-                        <ul>
-                            <li>
-                                <button
-                                    name="save"
-                                    onClick={() => addCorporate("save")}
-                                >
-                                    SAVE
-                                </button>
-                            </li>
-
-                            <li>
-                                <button
-                                    name="save"
-                                    onClick={() => addCorporate("save_new")}
-                                >
-                                    SAVE & NEW
-                                </button>
-                            </li>
-
-                            <li>
-                                <button
-                                    onClick={() => addCorporate("save_draft")}
-                                    name="draft"
-                                >
-                                    SAVE AS DRAFT
-                                </button>
-                            </li>
-                        </ul>
-                    )}
                 </div>
-            </div>
+            </form>
         </motion.div>
     );
 };
