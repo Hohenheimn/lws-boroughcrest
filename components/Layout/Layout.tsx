@@ -159,7 +159,9 @@ export default function Layout({ children }: Layout) {
                                 </li>
                             </ul>
                         </header>
-                        <main className="w-full">{children}</main>
+                        <main className="w-full relative min-h-[100%]">
+                            {children}
+                        </main>
                     </div>
                     <footer className="w-full h-14 flex justify-end items-center px-10 1024px:px-5">
                         <p className=" text-ThemeRed text-sm 480px:text-[11px] font-medium">

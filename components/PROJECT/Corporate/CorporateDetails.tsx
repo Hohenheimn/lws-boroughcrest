@@ -5,7 +5,8 @@ import ModifyCorporate from "./ModifyCorporate";
 import style from "../../../styles/Project/CorporateDetails.module.scss";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
-import { useRouter } from "next/router";
+import { FadeIn } from "../../../components/Animation/SimpleAnimation";
+import { motion } from "framer-motion";
 
 type Props = {
     CorporateData: any;
@@ -15,7 +16,12 @@ export default function CorporateDetails({ CorporateData }: Props) {
     const [toggleModify, setToggleModify] = useState(false);
 
     return (
-        <div>
+        <motion.div
+            variants={FadeIn}
+            animate="animate"
+            initial="initial"
+            exit="exit"
+        >
             {toggleModify && (
                 <ModifyCorporate setToggleModify={setToggleModify} />
             )}
@@ -152,6 +158,6 @@ export default function CorporateDetails({ CorporateData }: Props) {
                     </li>
                 </ul>
             </ul>
-        </div>
+        </motion.div>
     );
 }

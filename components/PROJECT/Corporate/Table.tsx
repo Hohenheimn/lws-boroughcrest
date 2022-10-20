@@ -1,20 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
+import AppContext from "../../Context/AppContext";
 import Image from "next/image";
 import Link from "next/link";
 import { GoPencil } from "react-icons/go";
 import api from "../../../util/api";
 import { useQuery } from "react-query";
 import Pagination from "../../Pagination";
+import BarLoader from "react-spinners/BarLoader";
 
-export default function Table() {
+type Props = {
+    isSearchTable: string;
+};
+
+export default function Table({ isSearchTable }: Props) {
+    const { TableRows } = useContext(AppContext);
     const [TablePage, setTablePage] = useState(1);
-    const { data, isLoading, isError, refetch } = useQuery(
-        ["get-corporate-list", TablePage],
+
+    const { data, isLoading, isError } = useQuery(
+        ["get-corporate-list", TablePage, isSearchTable, TableRows],
         () => {
-            return api.get(`/project/corporate?paginate=1&page=${TablePage}`);
-        },
-        {
-            keepPreviousData: true,
+            return api.get(
+                `/project/corporate?keywords=${isSearchTable}&paginate=${TableRows}&page=${TablePage}`
+            );
         }
     );
 
@@ -32,13 +39,6 @@ export default function Table() {
                     </tr>
                 </thead>
                 <tbody>
-                    {isLoading && (
-                        <tr>
-                            <td colSpan={5} className="text-center">
-                                Loading...
-                            </td>
-                        </tr>
-                    )}
                     {isError && (
                         <tr>
                             <td colSpan={5} className="text-center">
@@ -51,10 +51,23 @@ export default function Table() {
                     ))}
                 </tbody>
             </table>
+            {isLoading && (
+                <div>
+                    <aside className="text-center flex justify-center py-5">
+                        <BarLoader
+                            color={"#8f384d"}
+                            height="10px"
+                            width="200px"
+                            aria-label="Loading Spinner"
+                            data-testid="loader"
+                        />
+                    </aside>
+                </div>
+            )}
             <Pagination
                 setTablePage={setTablePage}
                 TablePage={TablePage}
-                PageNumber={data?.data.total}
+                PageNumber={data?.data.last_page}
                 CurrentPage={data?.data.current_page}
             />
         </div>

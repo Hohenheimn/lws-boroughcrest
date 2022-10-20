@@ -27,6 +27,7 @@ export default function AppProvider({ children }: AppProvider) {
         address_province: "",
         address_zip_code: undefined,
     });
+    const [TableRows, setTableRows] = useState<number>(10);
     return (
         <AppContext.Provider
             value={{
@@ -34,6 +35,8 @@ export default function AppProvider({ children }: AppProvider) {
                 setToggleNewForm,
                 createCorporate,
                 setCreateCorporate,
+                TableRows,
+                setTableRows,
             }}
         >
             {children}

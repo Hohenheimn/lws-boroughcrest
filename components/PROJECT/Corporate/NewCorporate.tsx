@@ -8,38 +8,39 @@ import { ModalSideFade } from "../../../components/Animation/SimpleAnimation";
 import { RiArrowDownSFill } from "react-icons/ri";
 import { AiFillCamera } from "react-icons/ai";
 import Image from "next/image";
-import { AddCorporateAccount } from "../../API_methods/AddMutation";
 import { useForm } from "react-hook-form";
-import { useMutation } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import api from "../../../util/api";
-import axios from "axios";
 import type { firstCorporateForm } from "../../../types/corporateList";
 import type { secondCorporateForm } from "../../../types/corporateList";
+import { ScaleLoader } from "react-spinners";
 
 export default function NewCorporate() {
-    const { setToggleNewForm } = useContext(AppContext);
     const [isNewActive, setNewActive] = useState([true, false]);
-    const modal = useRef<any>();
-    useEffect(() => {
-        const clickOutSide = (e: any) => {
-            if (!modal.current.contains(e.target)) {
-                setToggleNewForm(false);
-            }
-        };
-        document.addEventListener("mousedown", clickOutSide);
-        return () => {
-            document.removeEventListener("mousedown", clickOutSide);
-        };
+    const { isLoading, isError, data } = useQuery("get-id", () => {
+        return api.get("project/corporate");
     });
+    if (isLoading || isError) {
+        return;
+    }
+    let Current_id: any;
+    for (let index = 0; index < data?.data.length; index++) {
+        const id = data?.data[index];
+        Current_id = id.id;
+    }
 
     return (
         <div className={style.container}>
-            <section ref={modal}>
+            <section>
                 <p className={style.modal_title}>Create Corporate</p>
 
                 <AnimatePresence mode="wait">
                     {isNewActive[0] && (
-                        <Primary key={1} setNewActive={setNewActive} />
+                        <Primary
+                            key={1}
+                            setNewActive={setNewActive}
+                            Current_id={Current_id}
+                        />
                     )}
                     {isNewActive[1] && (
                         <Contact key={2} setNewActive={setNewActive} />
@@ -52,10 +53,13 @@ export default function NewCorporate() {
 
 type Props = {
     setNewActive: Function;
+    Current_id?: any;
 };
-const Primary = ({ setNewActive }: Props) => {
+const Primary = ({ setNewActive, Current_id }: Props) => {
     const [isLogoStatus, setLogoStatus] = useState("Upload Logo");
     const [isProfileUrl, setProfileUrl] = useState("/Images/sampleProfile.png");
+    const Next_ID = Current_id + 1;
+
     const DisplayImage = (e: any) => {
         if (e.target.files[0]?.size > 2000) {
             setLogoStatus("File is too large");
@@ -90,7 +94,6 @@ const Primary = ({ setNewActive }: Props) => {
     const {
         register,
         handleSubmit,
-        watch,
         formState: { errors },
     } = useForm<firstCorporateForm>({
         defaultValues: {
@@ -127,7 +130,7 @@ const Primary = ({ setNewActive }: Props) => {
             animate="animate"
             exit="exit"
         >
-            <form onSubmit={handleSubmit(Submit)} encType="multipart/form-data">
+            <form onSubmit={handleSubmit(Submit)}>
                 <h1 className={style.modal_label_primary}>
                     Primary Informations
                 </h1>
@@ -167,7 +170,7 @@ const Primary = ({ setNewActive }: Props) => {
                         <label>ID</label>
                         <input
                             type="text"
-                            value="1"
+                            value={Next_ID}
                             disabled={true}
                             className=" bg-[#cdb8be]"
                         />
@@ -334,7 +337,33 @@ const Contact = ({ setNewActive }: Props) => {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm<secondCorporateForm>();
+    } = useForm<secondCorporateForm>({
+        defaultValues: {
+            email: createCorporate.email,
+            contact_no: createCorporate.contact_no,
+            alt_email: createCorporate.alt_email,
+            alt_contact_no: createCorporate.alt_contact_no,
+            address_unit_floor: createCorporate.address_unit_floor,
+            address_building: createCorporate.address_building,
+            address_street: createCorporate.address_street,
+            address_district: createCorporate.address_district,
+            address_municipal_city: createCorporate.address_municipal_city,
+            address_province: createCorporate.address_province,
+            address_zip_code: createCorporate.address_zip_code,
+        },
+    });
+
+    const {
+        isLoading: MutateLoading,
+        mutate,
+        isError,
+        error,
+    } = useMutation((data: FormData) => {
+        return api.post("/project/corporate", data);
+    });
+    if (isError) {
+        console.log(error);
+    }
 
     const Submit = async (data: any) => {
         if (data.email === data.alt_email) {
@@ -345,11 +374,29 @@ const Contact = ({ setNewActive }: Props) => {
             setErrorContact(true);
             return;
         }
-        const response = await axios.post(
-            "https://boroughcrest-api.lws.codes/project/corporate",
-            { ...createCorporate, ...data }
+        const FD = new FormData();
+        FD.append("logo", createCorporate.logo);
+        FD.append("name", createCorporate.name);
+        FD.append("tin", createCorporate.tin);
+        FD.append("branch_code", createCorporate.branch_code);
+        FD.append("gst_type", createCorporate.gst_type);
+        FD.append("rdo_no", createCorporate.rdo_no);
+        FD.append("sec_registration_no", createCorporate.sec_registration_no);
+        FD.append("email", createCorporate.email);
+        FD.append("contact_no", createCorporate.contact_no);
+        FD.append("alt_email", createCorporate.alt_email);
+        FD.append("alt_contact_no", createCorporate.alt_contact_no);
+        FD.append("address_unit_floor", createCorporate.address_unit_floor);
+        FD.append("address_building", createCorporate.address_building);
+        FD.append("address_street", createCorporate.address_street);
+        FD.append("address_district", createCorporate.address_district);
+        FD.append(
+            "address_municipal_city",
+            createCorporate.address_municipal_city
         );
-        console.log(response);
+        FD.append("address_province", createCorporate.address_province);
+        FD.append("address_zip_code", createCorporate.address_zip_code);
+        mutate(FD);
     };
 
     return (
@@ -360,7 +407,7 @@ const Contact = ({ setNewActive }: Props) => {
             exit="exit"
         >
             <h1 className={style.modal_label_primary}>Contact Informations</h1>
-            <form onSubmit={handleSubmit(Submit)} encType="multipart/form-data">
+            <form onSubmit={handleSubmit(Submit)}>
                 <ul className={style.twoRows_container}>
                     <li>
                         <label>CONTACT NO</label>
@@ -378,6 +425,12 @@ const Contact = ({ setNewActive }: Props) => {
                                         message: "Must be 11 Number",
                                     },
                                 })}
+                                onChange={(e) =>
+                                    setCreateCorporate({
+                                        ...createCorporate,
+                                        contact_no: e.target.value,
+                                    })
+                                }
                             />
                             <span>Official</span>
                         </aside>
@@ -398,6 +451,12 @@ const Contact = ({ setNewActive }: Props) => {
                                     message: "Must be 11 Number",
                                 },
                             })}
+                            onChange={(e) =>
+                                setCreateCorporate({
+                                    ...createCorporate,
+                                    alt_contact_no: e.target.value,
+                                })
+                            }
                         />
                         {errors.alt_contact_no && (
                             <p className="text-[10px]">
@@ -419,6 +478,12 @@ const Contact = ({ setNewActive }: Props) => {
                                     required: "Required",
                                 })}
                                 required
+                                onChange={(e) =>
+                                    setCreateCorporate({
+                                        ...createCorporate,
+                                        email: e.target.value,
+                                    })
+                                }
                             />
                             <span>Official</span>
                         </aside>
@@ -427,7 +492,16 @@ const Contact = ({ setNewActive }: Props) => {
                                 {errors.email.message}
                             </p>
                         )}
-                        <input type="email" {...register("alt_email", {})} />
+                        <input
+                            type="email"
+                            {...register("alt_email", {})}
+                            onChange={(e) =>
+                                setCreateCorporate({
+                                    ...createCorporate,
+                                    alt_email: e.target.value,
+                                })
+                            }
+                        />
                         {errors.alt_email && (
                             <p className="text-[10px]">
                                 {errors.alt_email.message}
@@ -449,6 +523,12 @@ const Contact = ({ setNewActive }: Props) => {
                             {...register("address_unit_floor", {
                                 required: "Required",
                             })}
+                            onChange={(e) =>
+                                setCreateCorporate({
+                                    ...createCorporate,
+                                    address_unit_floor: e.target.value,
+                                })
+                            }
                         />
                         {errors.address_unit_floor && (
                             <p className="text-[10px]">
@@ -463,6 +543,12 @@ const Contact = ({ setNewActive }: Props) => {
                             {...register("address_building", {
                                 required: "Required",
                             })}
+                            onChange={(e) =>
+                                setCreateCorporate({
+                                    ...createCorporate,
+                                    address_building: e.target.value,
+                                })
+                            }
                         />
                         {errors.address_building && (
                             <p className="text-[10px]">
@@ -477,6 +563,12 @@ const Contact = ({ setNewActive }: Props) => {
                             {...register("address_street", {
                                 required: "Required",
                             })}
+                            onChange={(e) =>
+                                setCreateCorporate({
+                                    ...createCorporate,
+                                    address_street: e.target.value,
+                                })
+                            }
                         />
                         {errors.address_street && (
                             <p className="text-[10px]">
@@ -491,6 +583,12 @@ const Contact = ({ setNewActive }: Props) => {
                             {...register("address_district", {
                                 required: "Required",
                             })}
+                            onChange={(e) =>
+                                setCreateCorporate({
+                                    ...createCorporate,
+                                    address_district: e.target.value,
+                                })
+                            }
                         />
                         {errors.address_district && (
                             <p className="text-[10px]">
@@ -505,6 +603,12 @@ const Contact = ({ setNewActive }: Props) => {
                             {...register("address_municipal_city", {
                                 required: "Required",
                             })}
+                            onChange={(e) =>
+                                setCreateCorporate({
+                                    ...createCorporate,
+                                    address_municipal_city: e.target.value,
+                                })
+                            }
                         />
                         {errors.address_municipal_city && (
                             <p className="text-[10px]">
@@ -519,6 +623,12 @@ const Contact = ({ setNewActive }: Props) => {
                             {...register("address_province", {
                                 required: "Required",
                             })}
+                            onChange={(e) =>
+                                setCreateCorporate({
+                                    ...createCorporate,
+                                    address_province: e.target.value,
+                                })
+                            }
                         />
                         {errors.address_province && (
                             <p className="text-[10px]">
@@ -541,6 +651,12 @@ const Contact = ({ setNewActive }: Props) => {
                                     message: "Must be 4 Numbers",
                                 },
                             })}
+                            onChange={(e) =>
+                                setCreateCorporate({
+                                    ...createCorporate,
+                                    address_zip_code: e.target.value,
+                                })
+                            }
                         />
                         {errors.address_zip_code && (
                             <p className="text-[10px]">
@@ -561,33 +677,52 @@ const Contact = ({ setNewActive }: Props) => {
                     >
                         Back
                     </aside>
-                    <div className={style.Save}>
-                        <div onClick={() => setSave(!isSave)}>
-                            SAVE{" "}
-                            <RiArrowDownSFill className=" ml-1 text-[24px]" />
+                    {MutateLoading && (
+                        <div className={style.Save}>
+                            <div>
+                                <ScaleLoader
+                                    color="#fff"
+                                    height="10px"
+                                    width="2px"
+                                />
+                            </div>
                         </div>
-                        {isSave && (
-                            <ul>
-                                <li>
-                                    <button name="save" data-type="save">
-                                        SAVE
-                                    </button>
-                                </li>
+                    )}
+                    {!MutateLoading && (
+                        <div className={style.Save}>
+                            <div onClick={() => setSave(!isSave)}>
+                                SAVE{" "}
+                                <RiArrowDownSFill className=" ml-1 text-[24px]" />
+                            </div>
+                            {isSave && (
+                                <ul>
+                                    <li>
+                                        <button name="save" data-type="save">
+                                            SAVE
+                                        </button>
+                                    </li>
 
-                                <li>
-                                    <button name="save" data-type="save-new">
-                                        SAVE & NEW
-                                    </button>
-                                </li>
+                                    <li>
+                                        <button
+                                            name="save"
+                                            data-type="save-new"
+                                        >
+                                            SAVE & NEW
+                                        </button>
+                                    </li>
 
-                                <li>
-                                    <button name="draft" data-type="save-draft">
-                                        SAVE AS DRAFT
-                                    </button>
-                                </li>
-                            </ul>
-                        )}
-                    </div>
+                                    <li>
+                                        <button
+                                            name="draft"
+                                            data-type="save-draft"
+                                        >
+                                            SAVE AS DRAFT
+                                        </button>
+                                    </li>
+                                </ul>
+                            )}
+                        </div>
+                    )}
                 </div>
             </form>
         </motion.div>

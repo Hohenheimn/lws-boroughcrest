@@ -67,3 +67,14 @@ export const ModalSideFade = {
         marginLeft: "-30px",
     },
 };
+export const FadeIn = {
+    initial: {
+        opacity: 0,
+    },
+    animate: {
+        opacity: 1,
+    },
+    exit: {
+        opacity: 0,
+    },
+};

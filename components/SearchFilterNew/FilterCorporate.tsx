@@ -1,4 +1,5 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useContext } from "react";
+import AppContext from "../Context/AppContext";
 import style from "../../styles/SearchFilter.module.scss";
 import { flip } from "../Animation/SimpleAnimation";
 import { motion } from "framer-motion";
@@ -22,6 +23,8 @@ export default function FilterCorporate({ setFilter, isFilter }: setFilter) {
         };
     });
 
+    const { setTableRows, TableRows } = useContext(AppContext);
+
     return (
         <motion.ul
             ref={modal}
@@ -41,12 +44,18 @@ export default function FilterCorporate({ setFilter, isFilter }: setFilter) {
             <FilterList name="Email Address" />
             <li>
                 <p className=" font-medium text-[12px]">Rows</p>
-                <select className="border border-ThemeRed px-[5px] py-[1px]">
+                <select
+                    value={TableRows}
+                    onChange={(e) =>
+                        setTableRows((no: any) => (no = e.target.value))
+                    }
+                    className="border border-ThemeRed px-[5px] py-[1px]"
+                >
                     <option value="10">10</option>
-                    <option value="10">20</option>
-                    <option value="10">30</option>
-                    <option value="10">40</option>
-                    <option value="10">50</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                    <option value="40">40</option>
+                    <option value="50">50</option>
                 </select>
             </li>
         </motion.ul>

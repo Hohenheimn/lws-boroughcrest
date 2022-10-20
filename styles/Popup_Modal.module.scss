@@ -95,9 +95,9 @@
         .SaveButton {
             @apply w-full flex justify-end items-center  mb-16;
             .Save {
-                @apply relative text-white flex justify-center items-center duration-75 hover:bg-ThemeRed50 leading-none bg-ThemeRed rounded-md text-[14px] mr-5;
+                @apply relative text-white flex justify-center items-center py-2 duration-75 hover:bg-ThemeRed50 leading-none bg-ThemeRed rounded-md text-[14px] mr-5;
                 div {
-                    @apply h-8 px-5 w-full flex justify-center items-center;
+                    @apply h-5 px-5 w-full flex justify-center items-center;
                     .Arrow {
                         @apply ml-1 text-[24px];
                     }

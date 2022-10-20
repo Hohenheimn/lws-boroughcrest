@@ -15,22 +15,30 @@ import FilterProperty from "./FilterProperty";
 
 type SearchFilter = {
     page: string;
+    setSearchTable: Function;
 };
 
-export default function SearchFilter({ page }: SearchFilter) {
+export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
     const { setToggleNewForm } = useContext(AppContext);
 
     const [isFilter, setFilter] = useState(false);
     const router = useRouter();
     const ValidatePathName = router.pathname.split("/")[2];
-    console.log(ValidatePathName);
 
     return (
         <div>
             <h1 className={style.page_title}>{page}</h1>
             <section className={style.container}>
                 <div className={style.searchBar}>
-                    <input type="text" placeholder="Search anything here..." />
+                    <input
+                        type="text"
+                        placeholder="Search anything here..."
+                        onChange={(e) =>
+                            setSearchTable(
+                                (text: string) => (text = e.target.value)
+                            )
+                        }
+                    />
                     <BsSearch className={style.searchIcon} />
                 </div>
 
