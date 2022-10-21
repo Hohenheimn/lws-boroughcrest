@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
+import AppContext from "../../Context/AppContext";
 import { HiPencil } from "react-icons/hi";
 import Image from "next/image";
 import ModifyCorporate from "./ModifyCorporate";
@@ -7,13 +8,42 @@ import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 import { FadeIn } from "../../../components/Animation/SimpleAnimation";
 import { motion } from "framer-motion";
+import type { corporateColumns } from "../../../types/corporateList";
 
 type Props = {
-    CorporateData: any;
+    CorporateData: corporateColumns;
 };
 
 export default function CorporateDetails({ CorporateData }: Props) {
+    const { setModifyCorporate, modifyCorporate } = useContext(AppContext);
     const [toggleModify, setToggleModify] = useState(false);
+
+    useEffect(() => {
+        setModifyCorporate({
+            ...modifyCorporate,
+            id: CorporateData.id,
+            name: CorporateData.name,
+            gst_type: CorporateData.gst_type,
+            rdo_no: CorporateData.rdo_no,
+            sec_registration_no: CorporateData.sec_registration_no,
+            email: CorporateData.email,
+            contact_no: CorporateData.contact_no,
+            alt_email: CorporateData.alt_email,
+            alt_contact_no: CorporateData.alt_contact_no,
+            address_unit_floor: CorporateData.address_unit_floor,
+            address_building: CorporateData.address_building,
+            address_street: CorporateData.address_street,
+            address_district: CorporateData.address_district,
+            address_municipal_city: CorporateData.address_municipal_city,
+            address_province: CorporateData.address_province,
+            address_zip_code: CorporateData.address_zip_code,
+        });
+    }, []);
+
+    const Logo =
+        "boroughcrest-api.lws.codes/get-img?image=" + CorporateData.logo;
+
+    console.log(Logo);
 
     return (
         <motion.div
@@ -23,7 +53,10 @@ export default function CorporateDetails({ CorporateData }: Props) {
             exit="exit"
         >
             {toggleModify && (
-                <ModifyCorporate setToggleModify={setToggleModify} />
+                <ModifyCorporate
+                    setToggleModify={setToggleModify}
+                    CorporateData={CorporateData}
+                />
             )}
             <h1 className="pageTitle mb-5">Corporate Details</h1>
             <ul className={style.primary}>
@@ -44,7 +77,7 @@ export default function CorporateDetails({ CorporateData }: Props) {
                 <li className={style.image}>
                     <aside>
                         <Image
-                            src="/Images/sampleProfile.png"
+                            src="https://boroughcrest-api.lws.codes/get-img?image=corporate-logos/1666321813_Dashboard.png"
                             alt=""
                             layout="fill"
                         />

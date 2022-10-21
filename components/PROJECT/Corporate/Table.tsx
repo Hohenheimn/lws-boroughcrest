@@ -7,6 +7,7 @@ import api from "../../../util/api";
 import { useQuery } from "react-query";
 import Pagination from "../../Pagination";
 import BarLoader from "react-spinners/BarLoader";
+import { getCookie } from "cookies-next";
 
 type Props = {
     isSearchTable: string;
@@ -20,7 +21,12 @@ export default function Table({ isSearchTable }: Props) {
         ["get-corporate-list", TablePage, isSearchTable, TableRows],
         () => {
             return api.get(
-                `/project/corporate?keywords=${isSearchTable}&paginate=${TableRows}&page=${TablePage}`
+                `/project/corporate?keywords=${isSearchTable}&paginate=${TableRows}&page=${TablePage}`,
+                {
+                    headers: {
+                        Authorization: "Bearer " + getCookie("user"),
+                    },
+                }
             );
         }
     );

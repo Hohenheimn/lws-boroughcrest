@@ -27,14 +27,14 @@
     .searchedItem {
         @apply w-full;
         ul {
-            @apply w-full flex p-5 border-b border-gray-300 flex-wrap;
+            @apply w-full flex p-5 1550px:px-3 border-b border-gray-300 flex-wrap;
             li {
-                @apply w-2/4;
+                @apply w-full flex flex-wrap;
                 h4 {
-                    @apply text-[14px] text-gray-500;
+                    @apply text-[13px] text-gray-500 w-2/4;
                 }
                 p {
-                    @apply text-[14px] text-gray-400;
+                    @apply text-[13px] text-gray-400 w-2/4 break-words;
                 }
             }
         }

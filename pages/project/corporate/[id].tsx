@@ -4,6 +4,7 @@ import api from "../../../util/api";
 import { useQuery } from "react-query";
 import { useRouter } from "next/router";
 import BeatLoader from "react-spinners/BeatLoader";
+import { getCookie } from "cookies-next";
 
 export default function CorporateId() {
     const router = useRouter();
@@ -12,7 +13,11 @@ export default function CorporateId() {
     const { isLoading, data, isError } = useQuery(
         ["Corporate-detail", id],
         () => {
-            return api.get(`/project/corporate/${id}`);
+            return api.get(`/project/corporate/${id}`, {
+                headers: {
+                    Authorization: "Bearer " + getCookie("user"),
+                },
+            });
         }
     );
     if (isLoading) {

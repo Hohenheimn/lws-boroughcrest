@@ -5,19 +5,45 @@ import Link from "next/link";
 import style from "../../styles/SearchSidebar.module.scss";
 import api from "../../util/api";
 import { useQuery } from "react-query";
+import { getCookie } from "cookies-next";
 
 export default function CorporateSearch() {
     const [search, setSearch] = useState<string>("");
+    let dataSearch;
 
-    const { isLoading, data, isError } = useQuery(
+    let { isLoading, data, isError } = useQuery(
         ["search-corporate", search],
         () => {
-            return api.get(`/project/corporate?keywords=${search}`);
+            return api.get(`/project/corporate?keywords=${search}`, {
+                headers: {
+                    Authorization: "Bearer " + getCookie("user"),
+                },
+            });
         },
         {
             keepPreviousData: true,
         }
     );
+
+    let {
+        isLoading: RecentLoading,
+        data: RecentData,
+        isError: RecentError,
+    } = useQuery("recent-corporate", () => {
+        return api.get("/project/corporate/recent-search/3", {
+            headers: {
+                Authorization: "Bearer " + getCookie("user"),
+            },
+        });
+    });
+
+    if (!RecentLoading) {
+        if (search === "") {
+            dataSearch = RecentData?.data;
+        } else {
+            dataSearch = data?.data;
+        }
+    }
 
     return (
         <div className={style.container}>
@@ -48,11 +74,12 @@ export default function CorporateSearch() {
 
             {isLoading || isError ? (
                 <div>
-                    {isLoading && <span>Loading...</span>}
-                    {isError && <span>Can't find the result...</span>}
+                    {isLoading || (RecentLoading && <span>Loading...</span>)}
+                    {isError ||
+                        (RecentError && <span>Can't find the result...</span>)}
                 </div>
             ) : (
-                data?.data.map((item: any, index: number) => (
+                dataSearch?.map((item: any, index: number) => (
                     <Link key={index} href={`/project/corporate/${item.id}`}>
                         <a className={style.searchedItem}>
                             <ul>

@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useContext } from "react";
+import React, { useState, useContext } from "react";
 import AppContext from "../../Context/AppContext";
 import { useRouter } from "next/router";
 import style from "../../../styles/Popup_Modal.module.scss";
@@ -14,19 +14,28 @@ import api from "../../../util/api";
 import type { firstCorporateForm } from "../../../types/corporateList";
 import type { secondCorporateForm } from "../../../types/corporateList";
 import { ScaleLoader } from "react-spinners";
+import { getCookie } from "cookies-next";
 
 export default function NewCorporate() {
     const [isNewActive, setNewActive] = useState([true, false]);
     const { isLoading, isError, data } = useQuery("get-id", () => {
-        return api.get("project/corporate");
+        return api.get("project/corporate", {
+            headers: {
+                Authorization: "Bearer " + getCookie("user"),
+            },
+        });
     });
     if (isLoading || isError) {
-        return;
+        return <></>;
     }
     let Current_id: any;
-    for (let index = 0; index < data?.data.length; index++) {
-        const id = data?.data[index];
-        Current_id = id.id;
+    if (data?.data.length === 0) {
+        Current_id = 0;
+    } else {
+        for (let index = 0; index < data?.data.length; index++) {
+            const id = data?.data[index];
+            Current_id = id.id;
+        }
     }
 
     return (
@@ -69,11 +78,7 @@ const Primary = ({ setNewActive, Current_id }: Props) => {
         }
         if (e.target.files.length > 0) {
             let selectedImage = e.target.files[0];
-            if (
-                ["image/jpeg", "image/png", "image/svg+xml"].includes(
-                    selectedImage.type
-                )
-            ) {
+            if (["image/jpeg", "image/png"].includes(selectedImage.type)) {
                 let ImageReader = new FileReader();
                 ImageReader.readAsDataURL(selectedImage);
                 ImageReader.addEventListener("load", (event: any) => {
@@ -85,6 +90,7 @@ const Primary = ({ setNewActive, Current_id }: Props) => {
                 setLogoStatus("Invalid Image File");
             }
         } else {
+            setLogoStatus("Please Select an Image");
         }
     };
 
@@ -108,6 +114,13 @@ const Primary = ({ setNewActive, Current_id }: Props) => {
     });
 
     const Submit = (data: any) => {
+        if (
+            isLogoStatus === "File is too large" ||
+            isLogoStatus === "Invalid Image File" ||
+            isLogoStatus === "Please Select an Image"
+        ) {
+            return;
+        }
         setCreateCorporate({
             ...createCorporate,
             logo: data.logo[0],
@@ -326,12 +339,20 @@ const Primary = ({ setNewActive, Current_id }: Props) => {
 };
 
 const Contact = ({ setNewActive }: Props) => {
+    // true for save, false for save and new
+    const [whatClickedButon, setWhatClickedButton] = useState(true);
     const [isSave, setSave] = useState(false);
-    const { setCreateCorporate, createCorporate, setToggleNewForm } =
-        useContext(AppContext);
+    const {
+        setCreateCorporate,
+        createCorporate,
+        setToggleNewForm,
+        emptyCorporate,
+    } = useContext(AppContext);
 
     const [ErrorContact, setErrorContact] = useState(false);
     const [ErrorAddress, setErrorAddress] = useState(false);
+
+    const router = useRouter();
 
     const {
         register,
@@ -358,9 +379,30 @@ const Contact = ({ setNewActive }: Props) => {
         mutate,
         isError,
         error,
-    } = useMutation((data: FormData) => {
-        return api.post("/project/corporate", data);
-    });
+    } = useMutation(
+        (data: FormData) => {
+            return api.post("/project/corporate", data, {
+                headers: {
+                    Authorization: "Bearer " + getCookie("user"),
+                },
+            });
+        },
+        {
+            onSuccess: () => {
+                // router.reload();
+                if (whatClickedButon) {
+                    setToggleNewForm(false);
+                    emptyCorporate();
+                } else {
+                    setNewActive((item: any) => [
+                        (item[0] = true),
+                        (item[1] = false),
+                    ]);
+                    emptyCorporate();
+                }
+            },
+        }
+    );
     if (isError) {
         console.log(error);
     }
@@ -374,29 +416,24 @@ const Contact = ({ setNewActive }: Props) => {
             setErrorContact(true);
             return;
         }
-        const FD = new FormData();
-        FD.append("logo", createCorporate.logo);
-        FD.append("name", createCorporate.name);
-        FD.append("tin", createCorporate.tin);
-        FD.append("branch_code", createCorporate.branch_code);
-        FD.append("gst_type", createCorporate.gst_type);
-        FD.append("rdo_no", createCorporate.rdo_no);
-        FD.append("sec_registration_no", createCorporate.sec_registration_no);
-        FD.append("email", createCorporate.email);
-        FD.append("contact_no", createCorporate.contact_no);
-        FD.append("alt_email", createCorporate.alt_email);
-        FD.append("alt_contact_no", createCorporate.alt_contact_no);
-        FD.append("address_unit_floor", createCorporate.address_unit_floor);
-        FD.append("address_building", createCorporate.address_building);
-        FD.append("address_street", createCorporate.address_street);
-        FD.append("address_district", createCorporate.address_district);
-        FD.append(
-            "address_municipal_city",
-            createCorporate.address_municipal_city
-        );
-        FD.append("address_province", createCorporate.address_province);
-        FD.append("address_zip_code", createCorporate.address_zip_code);
-        mutate(FD);
+
+        // keys name of rows, keyData is the value
+        const formData = new FormData();
+        const arrayData: any = [];
+        const keys = Object.keys(createCorporate);
+
+        await keys.forEach((key) => {
+            arrayData.push({
+                key: key,
+                keyData: createCorporate[key],
+            });
+        });
+        arrayData.map(({ key, keyData }: any) => {
+            formData.append(key, keyData);
+        });
+        mutate(formData);
+        // console.log(keys);
+        // console.log(arrayData);
     };
 
     return (
@@ -414,6 +451,7 @@ const Contact = ({ setNewActive }: Props) => {
                         <aside>
                             <input
                                 type="number"
+                                placeholder="09"
                                 {...register("contact_no", {
                                     required: "Required",
                                     minLength: {
@@ -423,6 +461,10 @@ const Contact = ({ setNewActive }: Props) => {
                                     maxLength: {
                                         value: 11,
                                         message: "Must be 11 Number",
+                                    },
+                                    pattern: {
+                                        value: /^(09)\d{9}$/,
+                                        message: "Invalid Contact Number",
                                     },
                                 })}
                                 onChange={(e) =>
@@ -441,6 +483,7 @@ const Contact = ({ setNewActive }: Props) => {
                         )}
                         <input
                             type="number"
+                            placeholder="09"
                             {...register("alt_contact_no", {
                                 minLength: {
                                     value: 11,
@@ -697,26 +740,26 @@ const Contact = ({ setNewActive }: Props) => {
                             {isSave && (
                                 <ul>
                                     <li>
-                                        <button name="save" data-type="save">
+                                        <button
+                                            type="submit"
+                                            name="save"
+                                            onClick={() =>
+                                                setWhatClickedButton(true)
+                                            }
+                                        >
                                             SAVE
                                         </button>
                                     </li>
 
                                     <li>
                                         <button
-                                            name="save"
-                                            data-type="save-new"
+                                            type="submit"
+                                            name="save-new"
+                                            onClick={() =>
+                                                setWhatClickedButton(false)
+                                            }
                                         >
                                             SAVE & NEW
-                                        </button>
-                                    </li>
-
-                                    <li>
-                                        <button
-                                            name="draft"
-                                            data-type="save-draft"
-                                        >
-                                            SAVE AS DRAFT
                                         </button>
                                     </li>
                                 </ul>

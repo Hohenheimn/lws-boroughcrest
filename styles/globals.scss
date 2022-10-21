@@ -132,3 +132,7 @@ input[type="checkbox"] {
 .pageDetail {
     @apply h-full w-full flex justify-center items-center absolute top-0 left-0;
 }
+
+input[type="number"] {
+    @apply appearance-none;
+}

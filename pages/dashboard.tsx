@@ -1,5 +1,8 @@
 import React from "react";
+import HOC from "../components/HOC";
 
-export default function dashboard() {
+function Dashboard() {
     return <div>dashboard</div>;
 }
+
+export default HOC(Dashboard);

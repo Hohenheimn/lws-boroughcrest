@@ -1,4 +1,5 @@
 export type corporateColumns = {
+    id?: number;
     logo: any;
     name: string;
     email: string;
@@ -12,8 +13,8 @@ export type corporateColumns = {
     address_municipal_city: string;
     address_province: string;
     address_zip_code: number | undefined;
-    tin: string;
-    branch_code: number | undefined;
+    tin?: string;
+    branch_code?: number | undefined;
     gst_type: string;
     rdo_no: number | undefined;
     sec_registration_no: number | undefined;
