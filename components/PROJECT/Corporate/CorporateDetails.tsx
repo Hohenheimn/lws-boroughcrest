@@ -41,9 +41,8 @@ export default function CorporateDetails({ CorporateData }: Props) {
     }, []);
 
     const Logo =
-        "boroughcrest-api.lws.codes/get-img?image=" + CorporateData.logo;
-
-    console.log(Logo);
+        "https://boroughcrest-api.lws.codes/get-img?image=" +
+        CorporateData.logo;
 
     return (
         <motion.div
@@ -56,6 +55,7 @@ export default function CorporateDetails({ CorporateData }: Props) {
                 <ModifyCorporate
                     setToggleModify={setToggleModify}
                     CorporateData={CorporateData}
+                    Logo={Logo}
                 />
             )}
             <h1 className="pageTitle mb-5">Corporate Details</h1>

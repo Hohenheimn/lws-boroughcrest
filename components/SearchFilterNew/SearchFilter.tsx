@@ -19,8 +19,6 @@ type SearchFilter = {
 };
 
 export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
-    const { setToggleNewForm } = useContext(AppContext);
-
     const [isFilter, setFilter] = useState(false);
     const router = useRouter();
     const ValidatePathName = router.pathname.split("/")[2];
@@ -83,9 +81,9 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
                     )}
 
                     <li className={style.new}>
-                        <button onClick={() => setToggleNewForm(true)}>
-                            New {page}
-                        </button>
+                        <Link href="?new">
+                            <a>New {page}</a>
+                        </Link>
                     </li>
 
                     <li className={style.filter}>

@@ -15,6 +15,7 @@ import type { firstCorporateForm } from "../../../types/corporateList";
 import type { secondCorporateForm } from "../../../types/corporateList";
 import { ScaleLoader } from "react-spinners";
 import { getCookie } from "cookies-next";
+import Link from "next/link";
 
 export default function NewCorporate() {
     const [isNewActive, setNewActive] = useState([true, false]);
@@ -94,8 +95,7 @@ const Primary = ({ setNewActive, Current_id }: Props) => {
         }
     };
 
-    const { setToggleNewForm, setCreateCorporate, createCorporate } =
-        useContext(AppContext);
+    const { setCreateCorporate, createCorporate } = useContext(AppContext);
 
     const {
         register,
@@ -133,7 +133,6 @@ const Primary = ({ setNewActive, Current_id }: Props) => {
         });
 
         setNewActive((item: any) => [(item[0] = false), (item[1] = true)]);
-        console.log(createCorporate);
     };
 
     return (
@@ -322,13 +321,9 @@ const Primary = ({ setNewActive, Current_id }: Props) => {
                     <li></li>
                 </ul>
                 <div className={style.button_container}>
-                    <aside
-                        onClick={() => setToggleNewForm(false)}
-                        className="button_cancel cursor-pointer"
-                    >
-                        CANCEL
-                    </aside>
-
+                    <Link href="">
+                        <a className="button_cancel cursor-pointer">CANCEL</a>
+                    </Link>
                     <button className="buttonRed" type="submit">
                         NEXT
                     </button>

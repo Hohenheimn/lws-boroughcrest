@@ -3,7 +3,7 @@ const nextConfig = {
     reactStrictMode: true,
     swcMinify: true,
     images: {
-        domains: ["boroughcrest-api.lws.codes"],
+        domains: ["https://boroughcrest-api.lws.codes"],
     },
 };
 

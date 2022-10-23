@@ -35,7 +35,7 @@
         .ThreeRows {
             @apply flex mb-5 flex-wrap 480px:mb-2;
             .upload_image {
-                @apply flex flex-row items-center justify-start w-4/12 820px:w-2/4 480px:w-full 480px:mb-5 mb-0;
+                @apply flex flex-row items-center justify-start w-4/12 820px:w-2/4 480px:w-full 480px:mb-5 480px:flex-col mb-0;
                 aside {
                     @apply w-10 h-10 relative flex;
                     aside {
@@ -54,7 +54,7 @@
                 .image_label {
                     @apply text-[12px] font-semibold;
                     p {
-                        @apply ml-4;
+                        @apply ml-4 border  break-all max-w-[140px] 480px:max-w-none 480px:m-0;
                     }
                 }
                 label {
