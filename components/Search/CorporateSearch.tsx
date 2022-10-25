@@ -6,10 +6,14 @@ import style from "../../styles/SearchSidebar.module.scss";
 import api from "../../util/api";
 import { useQuery } from "react-query";
 import { getCookie } from "cookies-next";
+import { useRouter } from "next/router";
 
 export default function CorporateSearch() {
     const [search, setSearch] = useState<string>("");
     let dataSearch;
+    const router = useRouter();
+    const ValidateUrl = router.pathname.includes("transaction");
+    console.log(ValidateUrl);
 
     let { isLoading, data, isError } = useQuery(
         ["search-corporate", search],
@@ -80,7 +84,14 @@ export default function CorporateSearch() {
                 </div>
             ) : (
                 dataSearch?.map((item: any, index: number) => (
-                    <Link key={index} href={`/project/corporate/${item.id}`}>
+                    <Link
+                        key={index}
+                        href={
+                            ValidateUrl === false
+                                ? `/project/corporate/${item.id}`
+                                : `/project/corporate/transaction/${item.id}`
+                        }
+                    >
                         <a className={style.searchedItem}>
                             <ul>
                                 <li>

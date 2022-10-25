@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import AppContext from "../../Context/AppContext";
 import { RiArrowDownSFill } from "react-icons/ri";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -9,6 +10,8 @@ type NewPropertyInfo = {
 };
 
 export default function NewPropertyInfo({ setActiveForm }: NewPropertyInfo) {
+    const { isNewCustomer } = useContext(AppContext);
+    console.log(isNewCustomer);
     const [isTable, setTable] = useState([
         {
             id: 1,

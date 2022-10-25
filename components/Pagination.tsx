@@ -20,7 +20,6 @@ export default function Pagination({
         const SelectedPage = page + 1;
         setTablePage(SelectedPage);
     };
-    console.log(CurrentPage, TablePage);
     return (
         <div className=" w-full flex justify-end mt-32">
             <ul className=" flex items-center">

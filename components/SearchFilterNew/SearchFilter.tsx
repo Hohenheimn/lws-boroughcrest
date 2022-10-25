@@ -1,5 +1,4 @@
-import React, { useState, useContext } from "react";
-import AppContext from "../Context/AppContext";
+import React, { useState } from "react";
 import Image from "next/image";
 import { BsSearch } from "react-icons/bs";
 import { AnimatePresence } from "framer-motion";

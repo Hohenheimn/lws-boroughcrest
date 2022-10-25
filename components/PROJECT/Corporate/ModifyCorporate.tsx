@@ -65,6 +65,8 @@ type Props = {
 };
 
 const PrimaryInformation = ({ setToggleModify, setNewActive, Logo }: Props) => {
+    const router = useRouter();
+    const validateTransaction = router.pathname.includes("transaction");
     // Default Image
     const LogoName = Logo.split("/")[4].split("_")[1];
     const [isLogo, setLogo] = useState(`${LogoName}`);
@@ -104,6 +106,8 @@ const PrimaryInformation = ({ setToggleModify, setNewActive, Logo }: Props) => {
             name: modifyCorporate.name,
             rdo_no: modifyCorporate.rdo_no,
             gst_type: modifyCorporate.gst_type,
+            tin: modifyCorporate.tin,
+            branch_code: modifyCorporate.branch_code,
             sec_registration_no: modifyCorporate.sec_registration_no,
         },
     });
@@ -114,9 +118,37 @@ const PrimaryInformation = ({ setToggleModify, setNewActive, Logo }: Props) => {
             name: data.name,
             rdo_no: data.rdo_no,
             gst_type: data.gst_type,
+            tin: data.tin,
+            branch_code: data.branch_code,
+            sec_registration_no: data.sec_registration_no,
         });
-        console.log(modifyCorporate);
         setNewActive((item: any) => [(item[0] = false), (item[1] = true)]);
+    };
+
+    const OnSuccess = () => {};
+
+    const {
+        isLoading: DeleteLoading,
+        mutate,
+        isError: DeleteError,
+    } = useMutation(
+        (id: any) => {
+            return api.delete(`/project/corporate/${id}`, {
+                headers: {
+                    Authorization: "Bearer " + getCookie("user"),
+                },
+            });
+        },
+        {
+            onSuccess: () => {
+                router.push("/project/corporate");
+            },
+        }
+    );
+
+    const DeleteHandler = () => {
+        const id = router.query.id;
+        mutate(id);
     };
     return (
         <motion.form
@@ -175,20 +207,63 @@ const PrimaryInformation = ({ setToggleModify, setNewActive, Logo }: Props) => {
             </ul>
 
             <ul className={style.ThreeRows}>
-                <li>
-                    <label>GST TYPE.</label>
-                    <select
-                        {...register("gst_type", {
-                            required: true,
-                        })}
-                        id=""
-                        required
-                    >
-                        <option value="VAT">VAT</option>
-                        <option value="NON-VATA">NON-VAT</option>
-                    </select>
-                    {errors.gst_type && <p>{errors.gst_type.message}</p>}
-                </li>
+                {validateTransaction && (
+                    <li className={style.twoRows}>
+                        <div className={style.wrapper}>
+                            <div className=" w-[48%]">
+                                <label>TIN Number</label>
+                                <input
+                                    type="text"
+                                    placeholder="000-000-000"
+                                    {...register("tin", {
+                                        required: "Required",
+                                        minLength: {
+                                            value: 11,
+                                            message: "Must be 11 Characters",
+                                        },
+                                        maxLength: {
+                                            value: 11,
+                                            message: "Must be 11 Characters",
+                                        },
+                                        pattern: {
+                                            value: /^[0-9,-]+$/i,
+                                            message: "Only number and Hyphen",
+                                        },
+                                    })}
+                                />
+                                {errors.tin && (
+                                    <p className="text-[10px]">
+                                        {errors.tin.message}
+                                    </p>
+                                )}
+                            </div>
+                            <div className=" w-[48%]">
+                                <label>Branch Code</label>
+                                <input
+                                    placeholder="00000"
+                                    {...register("branch_code", {
+                                        required: "Required",
+                                        minLength: {
+                                            value: 5,
+                                            message: "Must be 5 Number",
+                                        },
+                                        maxLength: {
+                                            value: 5,
+                                            message: "Must be 5 Number",
+                                        },
+                                    })}
+                                    type="number"
+                                />
+                                {errors.branch_code && (
+                                    <p className="text-[10px]">
+                                        {errors.branch_code.message}
+                                    </p>
+                                )}
+                            </div>
+                        </div>
+                    </li>
+                )}
+
                 <li>
                     <label>RDO NO.</label>
                     <input
@@ -210,7 +285,50 @@ const PrimaryInformation = ({ setToggleModify, setNewActive, Logo }: Props) => {
                         <p className="text-[10px]">{errors.rdo_no.message}</p>
                     )}
                 </li>
+                <li>
+                    <label>GST TYPE.</label>
+                    <select
+                        {...register("gst_type", {
+                            required: true,
+                        })}
+                        id=""
+                        required
+                    >
+                        <option value="VAT">VAT</option>
+                        <option value="NON-VATA">NON-VAT</option>
+                    </select>
+                    {errors.gst_type && <p>{errors.gst_type.message}</p>}
+                </li>
             </ul>
+            {validateTransaction && (
+                <ul className={style.ThreeRows}>
+                    <li>
+                        <label>SEC. Registration</label>
+                        <input
+                            type="number"
+                            placeholder="000"
+                            {...register("sec_registration_no", {
+                                required: "Required",
+                                minLength: {
+                                    value: 3,
+                                    message: "Must be 3 Number",
+                                },
+                                maxLength: {
+                                    value: 3,
+                                    message: "Must be 3 Number",
+                                },
+                            })}
+                        />
+                        {errors.sec_registration_no && (
+                            <p className="text-[10px]">
+                                {errors.sec_registration_no.message}
+                            </p>
+                        )}
+                    </li>
+                    <li></li>
+                    <li></li>
+                </ul>
+            )}
 
             <div className={style.button_container}>
                 <button
@@ -219,6 +337,26 @@ const PrimaryInformation = ({ setToggleModify, setNewActive, Logo }: Props) => {
                 >
                     CANCEL
                 </button>
+                {!DeleteLoading && (
+                    <aside
+                        className="buttonRed mr-5 cursor-point"
+                        onClick={DeleteHandler}
+                    >
+                        DELETE
+                    </aside>
+                )}
+
+                {DeleteLoading && (
+                    <div className="buttonRed mr-5">
+                        <div>
+                            <ScaleLoader
+                                color="#fff"
+                                height="10px"
+                                width="2px"
+                            />
+                        </div>
+                    </div>
+                )}
 
                 <button className="buttonRed" type="submit">
                     NEXT
@@ -307,12 +445,12 @@ const Contact = ({ setNewActive }: Props) => {
         });
         arrayData.map(({ key, keyData }: any) => {
             if (keyData === undefined || keyData === "" || keyData === null) {
-                console.log("di kasama", keyData);
             } else {
                 formData.append(key, keyData);
             }
         });
         mutate(formData);
+        // console.log(arrayData);
     };
     return (
         <motion.div
@@ -611,7 +749,10 @@ const Contact = ({ setNewActive }: Props) => {
                     )}
                     {!MutateLoading && (
                         <div className={style.Save}>
-                            <div onClick={() => setSave(!isSave)}>
+                            <div
+                                onClick={() => setSave(!isSave)}
+                                className="cursor-pointer"
+                            >
                                 SAVE{" "}
                                 <RiArrowDownSFill className=" ml-1 text-[24px]" />
                             </div>

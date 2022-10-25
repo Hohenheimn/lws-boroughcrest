@@ -1,12 +1,11 @@
-import React, { useContext, useState } from "react";
-import AppContext from "../../../components/Context/AppContext";
+import React, { useState } from "react";
+
 import SearchFilter from "../../../components/SearchFilterNew/SearchFilter";
 import Table from "../../../components/PROJECT/Corporate/Table";
 import NewCorporate from "../../../components/PROJECT/Corporate/NewCorporate";
 import { useRouter } from "next/router";
 
 export default function Corporate() {
-    const { toggleNewForm } = useContext(AppContext);
     const [isSearchTable, setSearchTable] = useState("");
     const router = useRouter();
     return (

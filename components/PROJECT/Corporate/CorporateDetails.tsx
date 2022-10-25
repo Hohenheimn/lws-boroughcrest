@@ -23,6 +23,8 @@ export default function CorporateDetails({ CorporateData }: Props) {
             ...modifyCorporate,
             id: CorporateData.id,
             name: CorporateData.name,
+            tin: CorporateData.tin,
+            branch_code: CorporateData.branch_code,
             gst_type: CorporateData.gst_type,
             rdo_no: CorporateData.rdo_no,
             sec_registration_no: CorporateData.sec_registration_no,
@@ -76,11 +78,7 @@ export default function CorporateDetails({ CorporateData }: Props) {
                 </li>
                 <li className={style.image}>
                     <aside>
-                        <Image
-                            src="https://boroughcrest-api.lws.codes/get-img?image=corporate-logos/1666321813_Dashboard.png"
-                            alt=""
-                            layout="fill"
-                        />
+                        <Image src={Logo} alt="" layout="fill" />
                     </aside>
                 </li>
                 <li className={style.details}>

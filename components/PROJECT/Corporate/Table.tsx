@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import AppContext from "../../Context/AppContext";
 import Image from "next/image";
 import Link from "next/link";
@@ -14,7 +14,7 @@ type Props = {
 };
 
 export default function Table({ isSearchTable }: Props) {
-    const { TableRows } = useContext(AppContext);
+    const { TableRows, corpColumn } = useContext(AppContext);
     const [TablePage, setTablePage] = useState(1);
 
     const { data, isLoading, isError } = useQuery(
@@ -30,18 +30,14 @@ export default function Table({ isSearchTable }: Props) {
             );
         }
     );
-
     return (
         <div className=" w-full overflow-x-auto">
             <table className="table_list 1024px:min-w-[1200px]">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Address</th>
-                        <th>TIN</th>
-                        <th>Contact No.</th>
-                        <th>Email</th>
+                        {corpColumn.map((item: any, index: number) => (
+                            <th key={index}>{item}</th>
+                        ))}
                     </tr>
                 </thead>
                 <tbody>
@@ -82,93 +78,214 @@ export default function Table({ isSearchTable }: Props) {
 
 const List = ({ itemDetail }: any) => {
     const [isEdit, setEdit] = useState(false);
+    const [isEdit1, setEdit1] = useState(false);
+    const { corpColumn } = useContext(AppContext);
     const MouseEnter = () => {
         setEdit(true);
     };
     const MouseLeave = () => {
         setEdit(false);
     };
-
+    const MouseEnter1 = () => {
+        setEdit1(true);
+    };
+    const MouseLeave1 = () => {
+        setEdit1(false);
+    };
+    const Logo =
+        "https://boroughcrest-api.lws.codes/get-img?image=" + itemDetail.logo;
     const Address = `${itemDetail.address_unit_floor} ${itemDetail.address_building} ${itemDetail.address_building} ${itemDetail.address_district} ${itemDetail.address_municipal_city} ${itemDetail.address_province} ${itemDetail.address_zip_code}`;
     return (
-        <tr onMouseEnter={MouseEnter} onMouseLeave={MouseLeave}>
-            <td>
-                {isEdit && (
-                    <Link href={`/project/corporate/${itemDetail.id}`}>
-                        <a className="edit">
-                            <aside>
-                                <GoPencil className="mr-2" /> Edit
-                            </aside>
-                        </a>
-                    </Link>
-                )}
-
-                <Link href={`/project/corporate/${itemDetail.id}`}>
-                    <a className="item">
-                        <aside>
-                            <Image
-                                src="/Images/sampleProfile.png"
-                                alt=""
-                                layout="fill"
-                            />
-                        </aside>
-                        <div>
-                            <h2>{itemDetail.id}</h2>
-                            <p>Lorem Ipsum</p>
-                        </div>
-                    </a>
-                </Link>
-            </td>
-            <td>
-                <Link href={`/project/corporate/${itemDetail.id}`}>
-                    <a className="item">
-                        <div>
-                            <h2>{itemDetail.name}</h2>
-                            <p>Lorem Ipsum</p>
-                        </div>
-                    </a>
-                </Link>
-            </td>
-            <td>
-                <Link href={`/project/corporate/${itemDetail.id}`}>
-                    <a className="item">
-                        <div>
-                            <h2>{Address}</h2>
-                            <p>Lorem Ipsum</p>
-                        </div>
-                    </a>
-                </Link>
-            </td>
-            <td>
-                <Link href={`/project/corporate/${itemDetail.id}`}>
-                    <a className="item">
-                        <div>
-                            <h2>{itemDetail.tin}</h2>
-                            <p>Lorem Ipsum</p>
-                        </div>
-                    </a>
-                </Link>
-            </td>
-            <td>
-                <Link href={`/project/corporate/${itemDetail.id}`}>
-                    <a className="item">
-                        <div>
-                            <h2>{itemDetail.contact_no}</h2>
-                            <p>Lorem Ipsum</p>
-                        </div>
-                    </a>
-                </Link>
-            </td>
-            <td>
-                <Link href={`/project/corporate/${itemDetail.id}`}>
-                    <a className="item">
-                        <div>
-                            <h2>{itemDetail.email}</h2>
-                            <p>Lorem Ipsum</p>
-                        </div>
-                    </a>
-                </Link>
-            </td>
-        </tr>
+        <>
+            <tr onMouseEnter={MouseEnter} onMouseLeave={MouseLeave}>
+                {corpColumn.map((item: any, index: number) => (
+                    <td key={index}>
+                        {item === "ID" && (
+                            <>
+                                {" "}
+                                {isEdit && (
+                                    <Link
+                                        href={`/project/corporate/${itemDetail.id}`}
+                                    >
+                                        <a className="edit">
+                                            <aside>
+                                                <GoPencil className="mr-2" />{" "}
+                                                Edit
+                                            </aside>
+                                        </a>
+                                    </Link>
+                                )}
+                                <Link
+                                    href={`/project/corporate/${itemDetail.id}`}
+                                >
+                                    <a className="item">
+                                        <aside>
+                                            <Image
+                                                src={Logo}
+                                                alt=""
+                                                layout="fill"
+                                            />
+                                        </aside>
+                                        <div>
+                                            <h2>{itemDetail.id}</h2>
+                                            <p>Lorem Ipsum</p>
+                                        </div>
+                                    </a>
+                                </Link>
+                            </>
+                        )}
+                        {item === "Name" && (
+                            <Link href={`/project/corporate/${itemDetail.id}`}>
+                                <a className="item">
+                                    <div>
+                                        <h2>{itemDetail.name}</h2>
+                                        <p>Lorem Ipsum</p>
+                                    </div>
+                                </a>
+                            </Link>
+                        )}
+                        {item === "Address" && (
+                            <Link href={`/project/corporate/${itemDetail.id}`}>
+                                <a className="item">
+                                    <div>
+                                        <h2>{Address}</h2>
+                                        <p>Lorem Ipsum</p>
+                                    </div>
+                                </a>
+                            </Link>
+                        )}
+                        {item === "TIN" && (
+                            <Link href={`/project/corporate/${itemDetail.id}`}>
+                                <a className="item">
+                                    <div>
+                                        <h2>{itemDetail.tin}</h2>
+                                        <p>Lorem Ipsum</p>
+                                    </div>
+                                </a>
+                            </Link>
+                        )}
+                        {item === "Contact no." && (
+                            <Link href={`/project/corporate/${itemDetail.id}`}>
+                                <a className="item">
+                                    <div>
+                                        <h2>{itemDetail.contact_no}</h2>
+                                        <p>Lorem Ipsum</p>
+                                    </div>
+                                </a>
+                            </Link>
+                        )}
+                        {item === "Email" && (
+                            <Link href={`/project/corporate/${itemDetail.id}`}>
+                                <a className="item">
+                                    <div>
+                                        <h2>{itemDetail.email}</h2>
+                                        <p>Lorem Ipsum</p>
+                                    </div>
+                                </a>
+                            </Link>
+                        )}
+                    </td>
+                ))}
+            </tr>
+            <tr onMouseEnter={MouseEnter1} onMouseLeave={MouseLeave1}>
+                {corpColumn.map((item: any, index: number) => (
+                    <td key={index}>
+                        {item === "ID" && (
+                            <>
+                                {isEdit1 && (
+                                    <Link
+                                        href={`/project/corporate/transaction/${itemDetail.id}`}
+                                    >
+                                        <a className="edit">
+                                            <aside>
+                                                <GoPencil className="mr-2" />
+                                                Edit With Transaction
+                                            </aside>
+                                        </a>
+                                    </Link>
+                                )}
+                                <Link
+                                    href={`/project/corporate/transaction/${itemDetail.id}`}
+                                >
+                                    <a className="item">
+                                        <aside>
+                                            <Image
+                                                src={Logo}
+                                                alt=""
+                                                layout="fill"
+                                            />
+                                        </aside>
+                                        <div>
+                                            <h2>{itemDetail.id}</h2>
+                                            <p>Lorem Ipsum</p>
+                                        </div>
+                                    </a>
+                                </Link>
+                            </>
+                        )}
+                        {item === "Name" && (
+                            <Link
+                                href={`/project/corporate/transaction/${itemDetail.id}`}
+                            >
+                                <a className="item">
+                                    <div>
+                                        <h2>{itemDetail.name}</h2>
+                                        <p>Lorem Ipsum</p>
+                                    </div>
+                                </a>
+                            </Link>
+                        )}
+                        {item === "Address" && (
+                            <Link
+                                href={`/project/corporate/transaction/${itemDetail.id}`}
+                            >
+                                <a className="item">
+                                    <div>
+                                        <h2>{Address}</h2>
+                                        <p>Lorem Ipsum</p>
+                                    </div>
+                                </a>
+                            </Link>
+                        )}
+                        {item === "TIN" && (
+                            <Link
+                                href={`/project/corporate/transaction/${itemDetail.id}`}
+                            >
+                                <a className="item">
+                                    <div>
+                                        <h2>{itemDetail.tin}</h2>
+                                        <p>Lorem Ipsum</p>
+                                    </div>
+                                </a>
+                            </Link>
+                        )}
+                        {item === "Contact no." && (
+                            <Link
+                                href={`/project/corporate/transaction/${itemDetail.id}`}
+                            >
+                                <a className="item">
+                                    <div>
+                                        <h2>{itemDetail.contact_no}</h2>
+                                        <p>Lorem Ipsum</p>
+                                    </div>
+                                </a>
+                            </Link>
+                        )}
+                        {item === "Email" && (
+                            <Link
+                                href={`/project/corporate/transaction/${itemDetail.id}`}
+                            >
+                                <a className="item">
+                                    <div>
+                                        <h2>{itemDetail.email}</h2>
+                                        <p>Lorem Ipsum</p>
+                                    </div>
+                                </a>
+                            </Link>
+                        )}
+                    </td>
+                ))}
+            </tr>
+        </>
     );
 };

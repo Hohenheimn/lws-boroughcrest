@@ -289,7 +289,6 @@ const Primary = ({ setNewActive, Current_id }: Props) => {
                             required
                         >
                             <option value="VAT">VAT</option>
-                            <option value="NON-VATA">NON-VAT</option>
                         </select>
                     </li>
                 </ul>
@@ -385,15 +384,18 @@ const Contact = ({ setNewActive }: Props) => {
         {
             onSuccess: () => {
                 // router.reload();
+
                 if (whatClickedButon) {
-                    setToggleNewForm(false);
+                    // save
+                    router.push("");
                     emptyCorporate();
                 } else {
+                    // Save and New
+                    emptyCorporate();
                     setNewActive((item: any) => [
                         (item[0] = true),
                         (item[1] = false),
                     ]);
-                    emptyCorporate();
                 }
             },
         }
@@ -439,7 +441,7 @@ const Contact = ({ setNewActive }: Props) => {
             exit="exit"
         >
             <h1 className={style.modal_label_primary}>Contact Informations</h1>
-            <form onSubmit={handleSubmit(Submit)}>
+            <form onSubmit={handleSubmit(Submit)} autoComplete="off">
                 <ul className={style.twoRows_container}>
                     <li>
                         <label>CONTACT NO</label>
