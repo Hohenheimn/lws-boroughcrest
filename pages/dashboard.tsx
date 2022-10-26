@@ -5,4 +5,5 @@ function Dashboard() {
     return <div>dashboard</div>;
 }
 
-export default HOC(Dashboard);
+// export default HOC(Dashboard);
+export default Dashboard;

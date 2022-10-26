@@ -13,7 +13,6 @@ export default function CorporateSearch() {
     let dataSearch;
     const router = useRouter();
     const ValidateUrl = router.pathname.includes("transaction");
-    console.log(ValidateUrl);
 
     let { isLoading, data, isError } = useQuery(
         ["search-corporate", search],
@@ -80,7 +79,9 @@ export default function CorporateSearch() {
                 <div>
                     {isLoading || (RecentLoading && <span>Loading...</span>)}
                     {isError ||
-                        (RecentError && <span>Can't find the result...</span>)}
+                        (RecentError && (
+                            <span>Can&rsquo;t find the result...</span>
+                        ))}
                 </div>
             ) : (
                 dataSearch?.map((item: any, index: number) => (

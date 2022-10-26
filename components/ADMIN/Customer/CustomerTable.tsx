@@ -27,6 +27,8 @@ export default function CustomerTable() {
             );
         }
     );
+
+    console.log(data?.data.data);
     return (
         <div className="w-full overflow-x-auto">
             <table className="table_list min-w-[800px] 820px:min-w-[1000px]">
@@ -96,7 +98,7 @@ const List = ({ itemDetail }: customerItemDetail) => {
                             />
                         </aside>
                         <div>
-                            <h2>{itemDetail.id}</h2>
+                            <h2>{itemDetail?.id}</h2>
                         </div>
                     </a>
                 </Link>
@@ -105,7 +107,7 @@ const List = ({ itemDetail }: customerItemDetail) => {
                 <Link href="/admin/customer/123">
                     <a className="item">
                         <div>
-                            <h2>{itemDetail.class}</h2>
+                            <h2>{itemDetail?.class}</h2>
                         </div>
                     </a>
                 </Link>
@@ -114,7 +116,7 @@ const List = ({ itemDetail }: customerItemDetail) => {
                 <Link href="/admin/customer/123">
                     <a className="item">
                         <div>
-                            <h2>{itemDetail.name}</h2>
+                            <h2>{itemDetail?.name}</h2>
                         </div>
                     </a>
                 </Link>
@@ -123,7 +125,7 @@ const List = ({ itemDetail }: customerItemDetail) => {
                 <Link href="/admin/customer/123">
                     <a className="item">
                         <div>
-                            <h2>{itemDetail.contact_no}</h2>
+                            <h2>{itemDetail?.contact_no}</h2>
                         </div>
                     </a>
                 </Link>
@@ -132,7 +134,7 @@ const List = ({ itemDetail }: customerItemDetail) => {
                 <Link href="/admin/customer/123">
                     <a className="item">
                         <div>
-                            <h2>{itemDetail.preferred_email}</h2>
+                            <h2>{itemDetail?.preferred_email}</h2>
                         </div>
                     </a>
                 </Link>

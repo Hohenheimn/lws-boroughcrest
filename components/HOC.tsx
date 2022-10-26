@@ -2,8 +2,9 @@ import React from "react";
 import { getCookie } from "cookies-next";
 
 export default function HOC() {
+    console.log(getCookie("user"));
     const CheckToken = () => {
-        console.log(getCookie("user"));
+        <></>;
     };
     return CheckToken;
 }

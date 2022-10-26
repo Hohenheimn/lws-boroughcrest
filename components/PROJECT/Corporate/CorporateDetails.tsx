@@ -40,7 +40,7 @@ export default function CorporateDetails({ CorporateData }: Props) {
             address_province: CorporateData.address_province,
             address_zip_code: CorporateData.address_zip_code,
         });
-    }, []);
+    });
 
     const Logo =
         "https://boroughcrest-api.lws.codes/get-img?image=" +
