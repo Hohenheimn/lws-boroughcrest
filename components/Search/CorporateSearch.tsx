@@ -1,10 +1,53 @@
-import React from "react";
+import React, { useState } from "react";
 import { MdArrowForwardIos } from "react-icons/md";
 import { BsSearch } from "react-icons/bs";
 import Link from "next/link";
 import style from "../../styles/SearchSidebar.module.scss";
+import api from "../../util/api";
+import { useQuery } from "react-query";
+import { getCookie } from "cookies-next";
+import { useRouter } from "next/router";
 
 export default function CorporateSearch() {
+    const [search, setSearch] = useState<string>("");
+    let dataSearch;
+    const router = useRouter();
+    const ValidateUrl = router.pathname.includes("transaction");
+
+    let { isLoading, data, isError } = useQuery(
+        ["search-corporate", search],
+        () => {
+            return api.get(`/project/corporate?keywords=${search}`, {
+                headers: {
+                    Authorization: "Bearer " + getCookie("user"),
+                },
+            });
+        },
+        {
+            keepPreviousData: true,
+        }
+    );
+
+    let {
+        isLoading: RecentLoading,
+        data: RecentData,
+        isError: RecentError,
+    } = useQuery("recent-corporate", () => {
+        return api.get("/project/corporate/recent-search/3", {
+            headers: {
+                Authorization: "Bearer " + getCookie("user"),
+            },
+        });
+    });
+
+    if (!RecentLoading) {
+        if (search === "") {
+            dataSearch = RecentData?.data;
+        } else {
+            dataSearch = data?.data;
+        }
+    }
+
     return (
         <div className={style.container}>
             <div className={style.header}>
@@ -22,54 +65,49 @@ export default function CorporateSearch() {
                         <input
                             type="text"
                             placeholder="Search anything here..."
+                            value={search}
+                            onChange={(e) => {
+                                setSearch((text) => (text = e.target.value));
+                            }}
                         />
                         <BsSearch />
                     </div>
                 </aside>
             </div>
 
-            <Link href="/project/corporate/345">
-                <a className={style.searchedItem}>
-                    <ul>
-                        <li>
-                            <h4>Juan Dela Cruz</h4>
-                            <p>Quezon City</p>
-                        </li>
-                        <li>
-                            <p>ID: 1234</p>
-                            <p>TIN: 123456489</p>
-                        </li>
-                    </ul>
-                </a>
-            </Link>
-            <Link href="/project/corporate/345">
-                <a className={style.searchedItem}>
-                    <ul>
-                        <li>
-                            <h4>Juan Dela Cruz</h4>
-                            <p>Quezon City</p>
-                        </li>
-                        <li>
-                            <p>ID: 1234</p>
-                            <p>TIN: 123456489</p>
-                        </li>
-                    </ul>
-                </a>
-            </Link>
-            <Link href="/project/corporate/345">
-                <a className={style.searchedItem}>
-                    <ul>
-                        <li>
-                            <h4>Juan Dela Cruz</h4>
-                            <p>Quezon City</p>
-                        </li>
-                        <li>
-                            <p>ID: 1234</p>
-                            <p>TIN: 123456489</p>
-                        </li>
-                    </ul>
-                </a>
-            </Link>
+            {isLoading || isError ? (
+                <div>
+                    {isLoading || (RecentLoading && <span>Loading...</span>)}
+                    {isError ||
+                        (RecentError && (
+                            <span>Can&rsquo;t find the result...</span>
+                        ))}
+                </div>
+            ) : (
+                dataSearch?.map((item: any, index: number) => (
+                    <Link
+                        key={index}
+                        href={
+                            ValidateUrl === false
+                                ? `/project/corporate/${item.id}`
+                                : `/project/corporate/transaction/${item.id}`
+                        }
+                    >
+                        <a className={style.searchedItem}>
+                            <ul>
+                                <li>
+                                    <h4>{item.name}</h4>
+                                    <p>{item.address_municipal_city}</p>
+                                </li>
+                                <li>
+                                    <p>ID: {item.id}</p>
+                                    <p>TIN: {item.tin}</p>
+                                </li>
+                            </ul>
+                        </a>
+                    </Link>
+                ))
+            )}
         </div>
     );
 }

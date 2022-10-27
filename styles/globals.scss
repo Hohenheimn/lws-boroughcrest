@@ -128,3 +128,11 @@ h6 {
 input[type="checkbox"] {
     @apply relative after:text-white after:flex after:justify-center after:items-center mr-1 checked:after:bg-ThemeRed checked:after:content-['✓'] appearance-none border border-[#8F384D] after:w-full after:h-full after:absolute after:left-0 after:top-0;
 }
+
+.pageDetail {
+    @apply h-full w-full flex justify-center items-center absolute top-0 left-0;
+}
+
+input[type="number"] {
+    @apply appearance-none;
+}

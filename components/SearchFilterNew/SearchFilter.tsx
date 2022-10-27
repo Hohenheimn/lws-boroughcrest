@@ -1,5 +1,4 @@
-import React, { useState, useContext } from "react";
-import AppContext from "../Context/AppContext";
+import React, { useState } from "react";
 import Image from "next/image";
 import { BsSearch } from "react-icons/bs";
 import { AnimatePresence } from "framer-motion";
@@ -15,22 +14,28 @@ import FilterProperty from "./FilterProperty";
 
 type SearchFilter = {
     page: string;
+    setSearchTable: Function;
 };
 
-export default function SearchFilter({ page }: SearchFilter) {
-    const { setToggleNewForm } = useContext(AppContext);
-
+export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
     const [isFilter, setFilter] = useState(false);
     const router = useRouter();
     const ValidatePathName = router.pathname.split("/")[2];
-    console.log(ValidatePathName);
 
     return (
         <div>
             <h1 className={style.page_title}>{page}</h1>
             <section className={style.container}>
                 <div className={style.searchBar}>
-                    <input type="text" placeholder="Search anything here..." />
+                    <input
+                        type="text"
+                        placeholder="Search anything here..."
+                        onChange={(e) =>
+                            setSearchTable(
+                                (text: string) => (text = e.target.value)
+                            )
+                        }
+                    />
                     <BsSearch className={style.searchIcon} />
                 </div>
 
@@ -75,9 +80,9 @@ export default function SearchFilter({ page }: SearchFilter) {
                     )}
 
                     <li className={style.new}>
-                        <button onClick={() => setToggleNewForm(true)}>
-                            New {page}
-                        </button>
+                        <Link href="?new">
+                            <a>New {page}</a>
+                        </Link>
                     </li>
 
                     <li className={style.filter}>

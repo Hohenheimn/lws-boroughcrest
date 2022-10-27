@@ -3,7 +3,23 @@ import { RiArrowRightSLine, RiArrowLeftSLine } from "react-icons/ri";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 
-export default function Pagination() {
+type Pagination = {
+    setTablePage: Function;
+    TablePage: number;
+    PageNumber: number;
+    CurrentPage: number;
+};
+
+export default function Pagination({
+    setTablePage,
+    TablePage,
+    PageNumber,
+    CurrentPage,
+}: Pagination) {
+    const SelectPage = (page: number) => {
+        const SelectedPage = page + 1;
+        setTablePage(SelectedPage);
+    };
     return (
         <div className=" w-full flex justify-end mt-32">
             <ul className=" flex items-center">
@@ -12,32 +28,48 @@ export default function Pagination() {
                     content={<span className="capitalize">Back</span>}
                 >
                     <li>
-                        <RiArrowLeftSLine className=" text-[32px] text-ThemeRed cursor-pointer" />
+                        <button
+                            className="flex items-center"
+                            disabled={1 === TablePage && true}
+                            onClick={() =>
+                                setTablePage((page: number) => page - 1)
+                            }
+                        >
+                            <RiArrowLeftSLine className=" text-[32px] text-ThemeRed cursor-pointer" />
+                        </button>
                     </li>
                 </Tippy>
                 <li className=" border-2 border-white flex items-center text-gray-400">
-                    <div className=" text-ThemeRed font-bold h-8 w-8 480px:w-6 480px:h-6 480px:text-[12px] flex justify-center items-center bg-[#eeeff2] border-r border-white cursor-pointer">
-                        1
-                    </div>
-                    <div className=" h-8 w-8 480px:w-6 480px:h-6 480px:text-[12px] flex justify-center items-center bg-[#eeeff2] border-r border-white cursor-pointer">
-                        2
-                    </div>
-                    <div className=" h-8 w-8 480px:w-6 480px:h-6 480px:text-[12px] flex justify-center items-center bg-[#eeeff2] border-r border-white cursor-pointer">
-                        3
-                    </div>
-                    <div className=" h-8 w-8 480px:w-6 480px:h-6 480px:text-[12px] flex justify-center items-center bg-[#eeeff2] border-r border-white cursor-pointer">
-                        4
-                    </div>
-                    <div className=" h-8 w-8 480px:w-6 480px:h-6 480px:text-[12px] flex justify-center items-center bg-[#eeeff2]">
-                        5
-                    </div>
+                    {Array.from(Array(PageNumber), (e, index) => {
+                        return (
+                            <div
+                                onClick={() => SelectPage(index)}
+                                key={index}
+                                className={`${
+                                    CurrentPage === index + 1
+                                        ? "text-white bg-ThemeRed"
+                                        : "text-ThemeRed bg-[#eeeff2]"
+                                } font-bold h-8 w-8 480px:w-6 480px:h-6 480px:text-[12px] flex justify-center items-center border-r border-white cursor-pointer`}
+                            >
+                                {index + 1}
+                            </div>
+                        );
+                    })}
                 </li>
                 <Tippy
                     theme="ThemeRed"
                     content={<span className="capitalize">Next</span>}
                 >
                     <li>
-                        <RiArrowRightSLine className=" text-[32px] text-ThemeRed cursor-pointer" />
+                        <button
+                            className="flex items-center"
+                            onClick={() =>
+                                setTablePage((page: number) => page + 1)
+                            }
+                            disabled={CurrentPage === PageNumber}
+                        >
+                            <RiArrowRightSLine className=" text-[32px] text-ThemeRed cursor-pointer" />
+                        </button>
                     </li>
                 </Tippy>
             </ul>

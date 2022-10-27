@@ -1,12 +1,12 @@
 import React from "react";
-import CorporateDetails from "../../../components/PROJECT/Corporate/CorporateDetails";
-import api from "../../../util/api";
+import CorporateDetails from "../../../../components/PROJECT/Corporate/CorporateDetails";
+import api from "../../../../util/api";
 import { useQuery } from "react-query";
 import { useRouter } from "next/router";
 import BeatLoader from "react-spinners/BeatLoader";
 import { getCookie } from "cookies-next";
 
-export default function CorporateId() {
+export default function CorporateTransactionId() {
     const router = useRouter();
     const id = router.query.id;
 

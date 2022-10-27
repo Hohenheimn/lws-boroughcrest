@@ -1,29 +1,16 @@
-import React, { useRef, useEffect, useContext, useState } from "react";
-import AppContext from "../../Context/AppContext";
+import React, { useState } from "react";
 import style from "../../../styles/Popup_Modal.module.scss";
 import { motion } from "framer-motion";
 import { ModalSideFade } from "../../Animation/SimpleAnimation";
 import { RiArrowDownSFill } from "react-icons/ri";
+import Link from "next/link";
 
 export default function NewProperty() {
-    const { setToggleNewForm } = useContext(AppContext);
-    const modal = useRef<any>();
     const [isSave, setSave] = useState(false);
 
-    useEffect(() => {
-        const clickOutSide = (e: any) => {
-            if (!modal.current.contains(e.target)) {
-                setToggleNewForm(false);
-            }
-        };
-        document.addEventListener("mousedown", clickOutSide);
-        return () => {
-            document.removeEventListener("mousedown", clickOutSide);
-        };
-    });
     return (
         <div className={style.container}>
-            <section ref={modal}>
+            <section>
                 <p className={style.modal_title}>New Property</p>
                 <motion.div
                     variants={ModalSideFade}
@@ -100,12 +87,11 @@ export default function NewProperty() {
                         </li>
                     </ul>
                     <div className={style.SaveButton}>
-                        <aside
-                            className="cancel_button mr-5 font-bold cursor-pointer"
-                            onClick={() => setToggleNewForm(false)}
-                        >
-                            Cancel
-                        </aside>
+                        <Link href="">
+                            <a className="cancel_button mr-5 font-bold cursor-pointer">
+                                Cancel
+                            </a>
+                        </Link>
 
                         <button className={style.Save}>
                             <div onClick={() => setSave(!isSave)}>

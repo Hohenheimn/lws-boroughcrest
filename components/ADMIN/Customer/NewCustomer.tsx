@@ -8,34 +8,24 @@ import NewPropertyInfo from "./NewPropertyInfo";
 import { AnimatePresence } from "framer-motion";
 
 export default function NewCustomer() {
-    const { setToggleNewForm } = useContext(AppContext);
     // click outside close
-    const modal = useRef<any>();
     const router = useRouter();
-    useEffect(() => {
-        const clickOutSide = (e: any) => {
-            if (!modal.current.contains(e.target)) {
-                setToggleNewForm(false);
-            }
-        };
-        document.addEventListener("mousedown", clickOutSide);
-        return () => {
-            document.removeEventListener("mousedown", clickOutSide);
-        };
-    });
 
     const [isActiveForm, setActiveForm] = useState([true, false, false]);
+    const [isType, setType] = useState<string>("");
 
     return (
         <div className={style.container}>
-            <section
-                ref={modal}
-                className=" p-10 bg-[#e2e3e4] rounded-lg w-[90%] max-w-[800px] text-ThemeRed shadow-lg"
-            >
+            <section className=" p-10 bg-[#e2e3e4] rounded-lg w-[90%] max-w-[800px] text-ThemeRed shadow-lg">
                 <p className=" text-[16px] mb-3 font-bold">Create Customer</p>
                 <AnimatePresence mode="wait">
                     {isActiveForm[0] && (
-                        <NewPrimaryInfo key={1} setActiveForm={setActiveForm} />
+                        <NewPrimaryInfo
+                            key={1}
+                            setActiveForm={setActiveForm}
+                            isType={isType}
+                            setType={setType}
+                        />
                     )}
                     {isActiveForm[1] && (
                         <NewContactInfo key={2} setActiveForm={setActiveForm} />

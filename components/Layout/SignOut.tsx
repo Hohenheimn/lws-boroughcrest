@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { getCookie, deleteCookie } from "cookies-next";
 import api from "../../util/api";
 export default function SignOut() {
+    console.log(localStorage.username);
     const router = useRouter();
     const SignOutHandler = async () => {
         try {

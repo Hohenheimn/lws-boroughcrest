@@ -1,4 +1,5 @@
 export type corporateColumns = {
+    id?: number;
     logo: any;
     name: string;
     email: string;
@@ -12,9 +13,31 @@ export type corporateColumns = {
     address_municipal_city: string;
     address_province: string;
     address_zip_code: number | undefined;
+    tin?: string;
+    branch_code?: number | undefined;
+    gst_type: string;
+    rdo_no: number | undefined;
+    sec_registration_no: number | undefined;
+};
+export type firstCorporateForm = {
+    logo: any;
+    name: string;
     tin: string;
     branch_code: number | undefined;
     gst_type: string;
     rdo_no: number | undefined;
     sec_registration_no: number | undefined;
+};
+export type secondCorporateForm = {
+    email: string;
+    contact_no: number | undefined;
+    alt_email: string;
+    alt_contact_no: number | undefined;
+    address_unit_floor: number | undefined;
+    address_building: string;
+    address_street: string;
+    address_district: number | undefined;
+    address_municipal_city: string;
+    address_province: string;
+    address_zip_code: number | undefined;
 };

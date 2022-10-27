@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useContext } from "react";
+import React, { useState, useContext } from "react";
 import AppContext from "../../Context/AppContext";
 import { useRouter } from "next/router";
 import style from "../../../styles/Popup_Modal.module.scss";
@@ -8,33 +8,40 @@ import { ModalSideFade } from "../../../components/Animation/SimpleAnimation";
 import { RiArrowDownSFill } from "react-icons/ri";
 import { AiFillCamera } from "react-icons/ai";
 import Image from "next/image";
-import { AddCorporateAccount } from "../../API_methods/AddMutation";
 import { useForm } from "react-hook-form";
-import { useMutation } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import api from "../../../util/api";
-import axios from "axios";
+import type { firstCorporateForm } from "../../../types/corporateList";
+import type { secondCorporateForm } from "../../../types/corporateList";
+import { ScaleLoader } from "react-spinners";
+import { getCookie } from "cookies-next";
+import Link from "next/link";
 
 export default function NewCorporate() {
-    const { setToggleNewForm } = useContext(AppContext);
     const [isNewActive, setNewActive] = useState([true, false]);
-    const modal = useRef<any>();
-    useEffect(() => {
-        const clickOutSide = (e: any) => {
-            if (!modal.current.contains(e.target)) {
-                setToggleNewForm(false);
-            }
-        };
-        document.addEventListener("mousedown", clickOutSide);
-        return () => {
-            document.removeEventListener("mousedown", clickOutSide);
-        };
+    const { isLoading, isError, data } = useQuery("get-id", () => {
+        return api.get("project/corporate", {
+            headers: {
+                Authorization: "Bearer " + getCookie("user"),
+            },
+        });
     });
-
-    const [isProfileUrl, setProfileUrl] = useState("/Images/sampleProfile.png");
+    if (isLoading || isError) {
+        return <></>;
+    }
+    let Current_id: any;
+    if (data?.data.length === 0) {
+        Current_id = 0;
+    } else {
+        for (let index = 0; index < data?.data.length; index++) {
+            const id = data?.data[index];
+            Current_id = id.id;
+        }
+    }
 
     return (
         <div className={style.container}>
-            <section ref={modal}>
+            <section>
                 <p className={style.modal_title}>Create Corporate</p>
 
                 <AnimatePresence mode="wait">
@@ -42,8 +49,7 @@ export default function NewCorporate() {
                         <Primary
                             key={1}
                             setNewActive={setNewActive}
-                            isProfileUrl={isProfileUrl}
-                            setProfileUrl={setProfileUrl}
+                            Current_id={Current_id}
                         />
                     )}
                     {isNewActive[1] && (
@@ -57,49 +63,45 @@ export default function NewCorporate() {
 
 type Props = {
     setNewActive: Function;
-    isProfileUrl?: any;
-    setProfileUrl?: any;
+    Current_id?: any;
 };
-const Primary = ({ setProfileUrl, isProfileUrl, setNewActive }: Props) => {
-    const [isLargeFile, setLargeFile] = useState("Upload Logo");
+const Primary = ({ setNewActive, Current_id }: Props) => {
+    const [isLogoStatus, setLogoStatus] = useState("Upload Logo");
+    const [isProfileUrl, setProfileUrl] = useState("/Images/sampleProfile.png");
+    const Next_ID = Current_id + 1;
 
     const DisplayImage = (e: any) => {
         if (e.target.files[0]?.size > 2000) {
-            setLargeFile("File is too large");
+            setLogoStatus("File is too large");
             return;
         } else {
-            setLargeFile("");
+            setLogoStatus("");
         }
         if (e.target.files.length > 0) {
             let selectedImage = e.target.files[0];
-            if (
-                ["image/jpeg", "image/png", "image/svg+xml"].includes(
-                    selectedImage.type
-                )
-            ) {
+            if (["image/jpeg", "image/png"].includes(selectedImage.type)) {
                 let ImageReader = new FileReader();
                 ImageReader.readAsDataURL(selectedImage);
                 ImageReader.addEventListener("load", (event: any) => {
                     setProfileUrl(event.target.result);
                 });
                 const file = e.target.files;
-                setLargeFile(file[0].name);
+                setLogoStatus(file[0].name);
             } else {
-                setLargeFile("Invalid Image File");
+                setLogoStatus("Invalid Image File");
             }
         } else {
+            setLogoStatus("Please Select an Image");
         }
     };
 
-    const { setToggleNewForm, setCreateCorporate, createCorporate } =
-        useContext(AppContext);
+    const { setCreateCorporate, createCorporate } = useContext(AppContext);
 
     const {
         register,
         handleSubmit,
-        watch,
         formState: { errors },
-    } = useForm({
+    } = useForm<firstCorporateForm>({
         defaultValues: {
             logo: createCorporate.logo,
             name: createCorporate.name,
@@ -112,9 +114,16 @@ const Primary = ({ setProfileUrl, isProfileUrl, setNewActive }: Props) => {
     });
 
     const Submit = (data: any) => {
+        if (
+            isLogoStatus === "File is too large" ||
+            isLogoStatus === "Invalid Image File" ||
+            isLogoStatus === "Please Select an Image"
+        ) {
+            return;
+        }
         setCreateCorporate({
             ...createCorporate,
-            logo: data.logo[0].name,
+            logo: data.logo[0],
             name: data.name,
             tin: data.tin,
             branch_code: data.branch_code,
@@ -124,7 +133,6 @@ const Primary = ({ setProfileUrl, isProfileUrl, setNewActive }: Props) => {
         });
 
         setNewActive((item: any) => [(item[0] = false), (item[1] = true)]);
-        console.log(createCorporate);
     };
 
     return (
@@ -141,7 +149,9 @@ const Primary = ({ setProfileUrl, isProfileUrl, setNewActive }: Props) => {
                 <input
                     type="file"
                     id="image"
-                    {...register("logo")}
+                    {...register("logo", {
+                        required: "Required",
+                    })}
                     onChange={DisplayImage}
                     className="appearance-none z-[-99] absolute bottom-full"
                 />
@@ -160,17 +170,19 @@ const Primary = ({ setProfileUrl, isProfileUrl, setNewActive }: Props) => {
                             </label>
                         </aside>
                         <label htmlFor="image" className={style.image_label}>
-                            <p>{isLargeFile}</p>
-                            <p className=" text-[12px] text-black lowercase">
-                                {/* {errors.image && "This is Required"} */}
-                            </p>
+                            <p>{isLogoStatus}</p>
+                            {errors.logo && (
+                                <p className="text-[10px] capitalize">
+                                    Required
+                                </p>
+                            )}
                         </label>
                     </li>
                     <li>
                         <label>ID</label>
                         <input
                             type="text"
-                            value="1"
+                            value={Next_ID}
                             disabled={true}
                             className=" bg-[#cdb8be]"
                         />
@@ -180,10 +192,12 @@ const Primary = ({ setProfileUrl, isProfileUrl, setNewActive }: Props) => {
                         <input
                             type="text"
                             {...register("name", {
-                                required: true,
+                                required: "Required",
                             })}
-                            required
                         />
+                        {errors.name && (
+                            <p className="text-[10px]">{errors.name.message}</p>
+                        )}
                     </li>
                 </ul>
                 <p className="text-[16px]">TIN</p>
@@ -193,22 +207,52 @@ const Primary = ({ setProfileUrl, isProfileUrl, setNewActive }: Props) => {
                             <div className=" w-[48%]">
                                 <label>TIN Number</label>
                                 <input
+                                    type="text"
+                                    placeholder="000-000-000"
                                     {...register("tin", {
-                                        required: true,
+                                        required: "Required",
+                                        minLength: {
+                                            value: 11,
+                                            message: "Must be 11 Characters",
+                                        },
+                                        maxLength: {
+                                            value: 11,
+                                            message: "Must be 11 Characters",
+                                        },
+                                        pattern: {
+                                            value: /^[0-9,-]+$/i,
+                                            message: "Only number and Hyphen",
+                                        },
                                     })}
-                                    type="number"
-                                    required
                                 />
+                                {errors.tin && (
+                                    <p className="text-[10px]">
+                                        {errors.tin.message}
+                                    </p>
+                                )}
                             </div>
                             <div className=" w-[48%]">
                                 <label>Branch Code</label>
                                 <input
+                                    placeholder="00000"
                                     {...register("branch_code", {
-                                        required: true,
+                                        required: "Required",
+                                        minLength: {
+                                            value: 5,
+                                            message: "Must be 5 Number",
+                                        },
+                                        maxLength: {
+                                            value: 5,
+                                            message: "Must be 5 Number",
+                                        },
                                     })}
-                                    required
                                     type="number"
                                 />
+                                {errors.branch_code && (
+                                    <p className="text-[10px]">
+                                        {errors.branch_code.message}
+                                    </p>
+                                )}
                             </div>
                         </div>
                     </li>
@@ -216,11 +260,24 @@ const Primary = ({ setProfileUrl, isProfileUrl, setNewActive }: Props) => {
                         <label>RDO NO.</label>
                         <input
                             type="number"
+                            placeholder="000"
                             {...register("rdo_no", {
-                                required: true,
+                                required: "Required",
+                                minLength: {
+                                    value: 3,
+                                    message: "Must be 3 Number",
+                                },
+                                maxLength: {
+                                    value: 3,
+                                    message: "Must be 3 Number",
+                                },
                             })}
-                            required
                         />
+                        {errors.rdo_no && (
+                            <p className="text-[10px]">
+                                {errors.rdo_no.message}
+                            </p>
+                        )}
                     </li>
                     <li>
                         <label>GST TYPE.</label>
@@ -232,7 +289,6 @@ const Primary = ({ setProfileUrl, isProfileUrl, setNewActive }: Props) => {
                             required
                         >
                             <option value="VAT">VAT</option>
-                            <option value="SAMPLE">SAMPLE</option>
                         </select>
                     </li>
                 </ul>
@@ -241,23 +297,32 @@ const Primary = ({ setProfileUrl, isProfileUrl, setNewActive }: Props) => {
                         <label>SEC. Registration</label>
                         <input
                             type="number"
+                            placeholder="000"
                             {...register("sec_registration_no", {
-                                required: true,
+                                required: "Required",
+                                minLength: {
+                                    value: 3,
+                                    message: "Must be 3 Number",
+                                },
+                                maxLength: {
+                                    value: 3,
+                                    message: "Must be 3 Number",
+                                },
                             })}
-                            required
                         />
+                        {errors.sec_registration_no && (
+                            <p className="text-[10px]">
+                                {errors.sec_registration_no.message}
+                            </p>
+                        )}
                     </li>
                     <li></li>
                     <li></li>
                 </ul>
                 <div className={style.button_container}>
-                    <aside
-                        onClick={() => setToggleNewForm(false)}
-                        className="button_cancel cursor-pointer"
-                    >
-                        CANCEL
-                    </aside>
-
+                    <Link href="">
+                        <a className="button_cancel cursor-pointer">CANCEL</a>
+                    </Link>
                     <button className="buttonRed" type="submit">
                         NEXT
                     </button>
@@ -268,56 +333,105 @@ const Primary = ({ setProfileUrl, isProfileUrl, setNewActive }: Props) => {
 };
 
 const Contact = ({ setNewActive }: Props) => {
-    const { setCreateCorporate, createCorporate, setToggleNewForm } =
-        useContext(AppContext);
-
+    // true for save, false for save and new
+    const [whatClickedButon, setWhatClickedButton] = useState(true);
     const [isSave, setSave] = useState(false);
+    const {
+        setCreateCorporate,
+        createCorporate,
+        setToggleNewForm,
+        emptyCorporate,
+    } = useContext(AppContext);
 
-    const onSuccess = () => {
-        alert("Successfuly Created an Account");
-        setToggleNewForm(false);
-    };
-    // const {
-    //     isLoading: mutateLoading,
-    //     mutate,
-    //     isError: mutateError,
-    // } = AddCorporateAccount(onSuccess);
+    const [ErrorContact, setErrorContact] = useState(false);
+    const [ErrorAddress, setErrorAddress] = useState(false);
+
+    const router = useRouter();
 
     const {
         register,
         handleSubmit,
-        watch,
         formState: { errors },
-    } = useForm();
-
-    const {
-        isLoading: mutateLoading,
-        mutate,
-        isError: mutateError,
-    } = useMutation((CorporateDetail) => {
-        return api.post("/project/corporate", CorporateDetail);
+    } = useForm<secondCorporateForm>({
+        defaultValues: {
+            email: createCorporate.email,
+            contact_no: createCorporate.contact_no,
+            alt_email: createCorporate.alt_email,
+            alt_contact_no: createCorporate.alt_contact_no,
+            address_unit_floor: createCorporate.address_unit_floor,
+            address_building: createCorporate.address_building,
+            address_street: createCorporate.address_street,
+            address_district: createCorporate.address_district,
+            address_municipal_city: createCorporate.address_municipal_city,
+            address_province: createCorporate.address_province,
+            address_zip_code: createCorporate.address_zip_code,
+        },
     });
 
-    const Submit = async (data: any) => {
-        // mutate({
-        //     ...createCorporate,
-        //     ...data,
-        // });
-        // setCreateCorporate({ ...createCorporate, ...data });
-        // console.log(createCorporate);
-        const response = await axios.post(
-            "https://boroughcrest-api.lws.codes/project/corporate",
-            { ...createCorporate, ...data }
-        );
-        console.log(response);
-    };
+    const {
+        isLoading: MutateLoading,
+        mutate,
+        isError,
+        error,
+    } = useMutation(
+        (data: FormData) => {
+            return api.post("/project/corporate", data, {
+                headers: {
+                    Authorization: "Bearer " + getCookie("user"),
+                },
+            });
+        },
+        {
+            onSuccess: () => {
+                // router.reload();
 
-    if (mutateLoading) {
-        return <h1>Loading Mutation</h1>;
+                if (whatClickedButon) {
+                    // save
+                    router.push("");
+                    emptyCorporate();
+                } else {
+                    // Save and New
+                    emptyCorporate();
+                    setNewActive((item: any) => [
+                        (item[0] = true),
+                        (item[1] = false),
+                    ]);
+                }
+            },
+        }
+    );
+    if (isError) {
+        console.log(error);
     }
-    if (mutateError) {
-        return <h1>Error Mutation</h1>;
-    }
+
+    const Submit = async (data: any) => {
+        if (data.email === data.alt_email) {
+            setErrorAddress(true);
+            return;
+        }
+        if (data.contact_no === data.alt_contact_no) {
+            setErrorContact(true);
+            return;
+        }
+
+        // keys name of rows, keyData is the value
+        const formData = new FormData();
+        const arrayData: any = [];
+        const keys = Object.keys(createCorporate);
+
+        await keys.forEach((key) => {
+            arrayData.push({
+                key: key,
+                keyData: createCorporate[key],
+            });
+        });
+        arrayData.map(({ key, keyData }: any) => {
+            formData.append(key, keyData);
+        });
+        mutate(formData);
+        // console.log(keys);
+        // console.log(arrayData);
+    };
 
     return (
         <motion.div
@@ -327,21 +441,73 @@ const Contact = ({ setNewActive }: Props) => {
             exit="exit"
         >
             <h1 className={style.modal_label_primary}>Contact Informations</h1>
-            <form onSubmit={handleSubmit(Submit)}>
+            <form onSubmit={handleSubmit(Submit)} autoComplete="off">
                 <ul className={style.twoRows_container}>
                     <li>
                         <label>CONTACT NO</label>
                         <aside>
                             <input
                                 type="number"
+                                placeholder="09"
                                 {...register("contact_no", {
-                                    required: true,
+                                    required: "Required",
+                                    minLength: {
+                                        value: 11,
+                                        message: "Must be 11 Numbers",
+                                    },
+                                    maxLength: {
+                                        value: 11,
+                                        message: "Must be 11 Number",
+                                    },
+                                    pattern: {
+                                        value: /^(09)\d{9}$/,
+                                        message: "Invalid Contact Number",
+                                    },
                                 })}
-                                required
+                                onChange={(e) =>
+                                    setCreateCorporate({
+                                        ...createCorporate,
+                                        contact_no: e.target.value,
+                                    })
+                                }
                             />
                             <span>Official</span>
                         </aside>
-                        <input type="number" {...register("alt_contact_no")} />
+                        {errors.contact_no && (
+                            <p className="text-[10px]">
+                                {errors.contact_no.message}
+                            </p>
+                        )}
+                        <input
+                            type="number"
+                            placeholder="09"
+                            {...register("alt_contact_no", {
+                                minLength: {
+                                    value: 11,
+                                    message: "Must be 11 Numbers",
+                                },
+                                maxLength: {
+                                    value: 11,
+                                    message: "Must be 11 Number",
+                                },
+                            })}
+                            onChange={(e) =>
+                                setCreateCorporate({
+                                    ...createCorporate,
+                                    alt_contact_no: e.target.value,
+                                })
+                            }
+                        />
+                        {errors.alt_contact_no && (
+                            <p className="text-[10px]">
+                                {errors.alt_contact_no.message}
+                            </p>
+                        )}
+                        {ErrorContact && (
+                            <p className="text-[10px]">
+                                Contact number cannot be the same
+                            </p>
+                        )}
                     </li>
                     <li>
                         <label>EMAIL ADDRESS</label>
@@ -349,13 +515,43 @@ const Contact = ({ setNewActive }: Props) => {
                             <input
                                 type="email"
                                 {...register("email", {
-                                    required: true,
+                                    required: "Required",
                                 })}
                                 required
+                                onChange={(e) =>
+                                    setCreateCorporate({
+                                        ...createCorporate,
+                                        email: e.target.value,
+                                    })
+                                }
                             />
                             <span>Official</span>
                         </aside>
-                        <input type="email" {...register("alt_email")} />
+                        {errors.email && (
+                            <p className="text-[10px]">
+                                {errors.email.message}
+                            </p>
+                        )}
+                        <input
+                            type="email"
+                            {...register("alt_email", {})}
+                            onChange={(e) =>
+                                setCreateCorporate({
+                                    ...createCorporate,
+                                    alt_email: e.target.value,
+                                })
+                            }
+                        />
+                        {errors.alt_email && (
+                            <p className="text-[10px]">
+                                {errors.alt_email.message}
+                            </p>
+                        )}
+                        {ErrorAddress && (
+                            <p className="text-[10px]">
+                                Email cannot be the same
+                            </p>
+                        )}
                     </li>
                 </ul>
                 <p className="text-[14px] font-bold mb-2">ADDRESS</p>
@@ -365,70 +561,148 @@ const Contact = ({ setNewActive }: Props) => {
                         <input
                             type="number"
                             {...register("address_unit_floor", {
-                                required: true,
+                                required: "Required",
                             })}
-                            required
+                            onChange={(e) =>
+                                setCreateCorporate({
+                                    ...createCorporate,
+                                    address_unit_floor: e.target.value,
+                                })
+                            }
                         />
+                        {errors.address_unit_floor && (
+                            <p className="text-[10px]">
+                                {errors.address_unit_floor.message}
+                            </p>
+                        )}
                     </li>
                     <li>
                         <label>BUILDING</label>
                         <input
                             type="text"
                             {...register("address_building", {
-                                required: true,
+                                required: "Required",
                             })}
-                            required
+                            onChange={(e) =>
+                                setCreateCorporate({
+                                    ...createCorporate,
+                                    address_building: e.target.value,
+                                })
+                            }
                         />
+                        {errors.address_building && (
+                            <p className="text-[10px]">
+                                {errors.address_building.message}
+                            </p>
+                        )}
                     </li>
                     <li>
                         <label>STREET</label>
                         <input
                             type="text"
                             {...register("address_street", {
-                                required: true,
+                                required: "Required",
                             })}
-                            required
+                            onChange={(e) =>
+                                setCreateCorporate({
+                                    ...createCorporate,
+                                    address_street: e.target.value,
+                                })
+                            }
                         />
+                        {errors.address_street && (
+                            <p className="text-[10px]">
+                                {errors.address_street.message}
+                            </p>
+                        )}
                     </li>
                     <li>
                         <label>DISTRICT</label>
                         <input
                             type="text"
                             {...register("address_district", {
-                                required: true,
+                                required: "Required",
                             })}
-                            required
+                            onChange={(e) =>
+                                setCreateCorporate({
+                                    ...createCorporate,
+                                    address_district: e.target.value,
+                                })
+                            }
                         />
+                        {errors.address_district && (
+                            <p className="text-[10px]">
+                                {errors.address_district.message}
+                            </p>
+                        )}
                     </li>
                     <li>
                         <label>MUNICIPALITY</label>
                         <input
                             type="text"
                             {...register("address_municipal_city", {
-                                required: true,
+                                required: "Required",
                             })}
-                            required
+                            onChange={(e) =>
+                                setCreateCorporate({
+                                    ...createCorporate,
+                                    address_municipal_city: e.target.value,
+                                })
+                            }
                         />
+                        {errors.address_municipal_city && (
+                            <p className="text-[10px]">
+                                {errors.address_municipal_city.message}
+                            </p>
+                        )}
                     </li>
                     <li>
                         <label>PROVINCE</label>
                         <input
                             type="text"
                             {...register("address_province", {
-                                required: true,
+                                required: "Required",
                             })}
-                            required
+                            onChange={(e) =>
+                                setCreateCorporate({
+                                    ...createCorporate,
+                                    address_province: e.target.value,
+                                })
+                            }
                         />
+                        {errors.address_province && (
+                            <p className="text-[10px]">
+                                {errors.address_province.message}
+                            </p>
+                        )}
                     </li>
                     <li>
                         <label>ZIP CODE</label>
                         <input
                             type="number"
                             {...register("address_zip_code", {
-                                required: true,
+                                required: "Required",
+                                minLength: {
+                                    value: 4,
+                                    message: "Must be 4 Numbers",
+                                },
+                                maxLength: {
+                                    value: 4,
+                                    message: "Must be 4 Numbers",
+                                },
                             })}
-                            required
+                            onChange={(e) =>
+                                setCreateCorporate({
+                                    ...createCorporate,
+                                    address_zip_code: e.target.value,
+                                })
+                            }
                         />
+                        {errors.address_zip_code && (
+                            <p className="text-[10px]">
+                                {errors.address_zip_code.message}
+                            </p>
+                        )}
                     </li>
                 </ul>
                 <div className={style.SaveButton}>
@@ -443,33 +717,52 @@ const Contact = ({ setNewActive }: Props) => {
                     >
                         Back
                     </aside>
-                    <div className={style.Save}>
-                        <div onClick={() => setSave(!isSave)}>
-                            SAVE{" "}
-                            <RiArrowDownSFill className=" ml-1 text-[24px]" />
+                    {MutateLoading && (
+                        <div className={style.Save}>
+                            <div>
+                                <ScaleLoader
+                                    color="#fff"
+                                    height="10px"
+                                    width="2px"
+                                />
+                            </div>
                         </div>
-                        {isSave && (
-                            <ul>
-                                <li>
-                                    <button name="save" data-type="save">
-                                        SAVE
-                                    </button>
-                                </li>
+                    )}
+                    {!MutateLoading && (
+                        <div className={style.Save}>
+                            <div onClick={() => setSave(!isSave)}>
+                                SAVE{" "}
+                                <RiArrowDownSFill className=" ml-1 text-[24px]" />
+                            </div>
+                            {isSave && (
+                                <ul>
+                                    <li>
+                                        <button
+                                            type="submit"
+                                            name="save"
+                                            onClick={() =>
+                                                setWhatClickedButton(true)
+                                            }
+                                        >
+                                            SAVE
+                                        </button>
+                                    </li>
 
-                                <li>
-                                    <button name="save" data-type="save-new">
-                                        SAVE & NEW
-                                    </button>
-                                </li>
-
-                                <li>
-                                    <button name="draft" data-type="save-draft">
-                                        SAVE AS DRAFT
-                                    </button>
-                                </li>
-                            </ul>
-                        )}
-                    </div>
+                                    <li>
+                                        <button
+                                            type="submit"
+                                            name="save-new"
+                                            onClick={() =>
+                                                setWhatClickedButton(false)
+                                            }
+                                        >
+                                            SAVE & NEW
+                                        </button>
+                                    </li>
+                                </ul>
+                            )}
+                        </div>
+                    )}
                 </div>
             </form>
         </motion.div>
