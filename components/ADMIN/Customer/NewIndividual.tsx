@@ -22,6 +22,7 @@ export default function NewIndividual({
 }: Props) {
     const [isProfileUrl, setProfileUrl] = useState("/Images/sampleProfile.png");
     const [isValidIDUrl, setValidIDUrl] = useState("/Images/id-sample.png");
+    const [isSignature, setSignature] = useState(false);
 
     const DisplayImage = (e: any) => {
         if (e.target.files.length > 0) {
@@ -78,13 +79,13 @@ export default function NewIndividual({
             individual_birth_date: data.individual_birth_date,
             tin: data.tin,
             branch_code: data.branch_code,
-            image_photo: data.image_photo,
-            image_valid_id: data.image_valid_id,
-            image_signature: data.image_signature,
+            image_photo: data.image_photo[0],
+            image_valid_id: data.image_valid_id[0],
+            image_signature: data.image_signature[0],
             type: isType,
             status: status ? 1 : 0,
         });
-        console.log(isNewCustomer);
+
         setActiveForm((item: boolean[]) => [
             (item[0] = false),
             (item[1] = true),
@@ -167,12 +168,21 @@ export default function NewIndividual({
                     </li>
                     <li className="  flex flex-col  w-4/12 820px:w-2/4 480px:w-full mb-5 justify-center items-center">
                         <div>
-                            <label
-                                className=" text-[12px] font-NHU-medium mb-1 uppercase cursor-pointer w-[90%] 480px:w-full"
-                                htmlFor="file"
-                            >
-                                Upload Signature
-                            </label>
+                            {isSignature ? (
+                                <label
+                                    className=" text-[12px] text-[#19d142] font-NHU-medium mb-1 uppercase cursor-pointer w-[90%] 480px:w-full"
+                                    htmlFor="file"
+                                >
+                                    Uploaded Signature
+                                </label>
+                            ) : (
+                                <label
+                                    className=" text-[12px] font-NHU-medium mb-1 uppercase cursor-pointer w-[90%] 480px:w-full"
+                                    htmlFor="file"
+                                >
+                                    Upload Signature
+                                </label>
+                            )}
                             <input
                                 id="file"
                                 type="file"
@@ -180,6 +190,11 @@ export default function NewIndividual({
                                 {...register("image_signature", {
                                     required: "Required",
                                 })}
+                                onChange={(e) => {
+                                    e.target.files
+                                        ? setSignature(true)
+                                        : setSignature(false);
+                                }}
                             />
                         </div>
                         {errors.image_signature && (
@@ -196,7 +211,9 @@ export default function NewIndividual({
                             id=""
                             {...register("class", { required: "Required" })}
                         >
-                            <option value="sample">Sample</option>
+                            <option value="developer">Developer</option>
+                            <option value="owner">Owner</option>
+                            <option value="tenant">Tenant</option>
                         </select>
                         {errors.class && (
                             <p className="text-[10px]">

@@ -47,6 +47,7 @@ export default function AppProvider({ children }: AppProvider) {
         address_municipal_city: "",
         address_province: "",
         address_zip_code: undefined,
+        _method: "PUT",
     });
 
     const [isNewCustomer, setNewCustomer] = useState({
@@ -82,6 +83,7 @@ export default function AppProvider({ children }: AppProvider) {
         registered_email: "",
         preferred_email: "",
         status: "",
+        unit_codes: [],
     });
 
     const emptyCorporate = () => {
@@ -125,10 +127,49 @@ export default function AppProvider({ children }: AppProvider) {
             address_municipal_city: "",
             address_province: "",
             address_zip_code: undefined,
+            _method: "PUT",
         });
     };
 
-    const [TableRows, setTableRows] = useState<number>(5);
+    const emptyCustomer = () => {
+        setNewCustomer({
+            assigned_customer_id: "",
+            portal_id: "",
+            class: "",
+            type: "",
+            name: "",
+            individual_co_owner: "",
+            individual_citizenship: "",
+            individual_birth_date: "",
+            company_contact_person: "",
+            tin: "",
+            branch_code: "",
+            registered_address_unit_floor: "",
+            registered_address_building: "",
+            registered_address_street: "",
+            registered_address_district: "",
+            registered_address_municipal_city: "",
+            registered_address_province: "",
+            registered_address_zip_code: "",
+            mailing_address_unit_floor: "",
+            mailing_address_building: "",
+            mailing_address_street: "",
+            mailing_address_district: "",
+            mailing_address_municipal_city: "",
+            mailing_address_province: "",
+            mailing_address_zip_code: "",
+            image_photo: "",
+            image_valid_id: "",
+            image_signature: "",
+            contact_no: "",
+            registered_email: "",
+            preferred_email: "",
+            status: "",
+            unit_codes: [],
+        });
+    };
+    const [CorpTableRows, setCorpTableRows] = useState<number>(5);
+    const [TableRows, setTableRows] = useState<number>(10);
     const [corpColumn, setCorpColumn] = useState([
         "ID",
         "Name",
@@ -137,20 +178,36 @@ export default function AppProvider({ children }: AppProvider) {
         "Contact no.",
         "Email",
     ]);
-    const [cusColumn, setCusColumn] = useState([
-        "ID",
+    const [cusTableColumn, setCusTableColumn] = useState([
         "Class",
-        "Name",
         "Mobile",
         "Email",
         "Status",
     ]);
+    const [cusFilterColumn, setCusFilterColumn] = useState([
+        "Class",
+        "Mobile",
+        "Email",
+        "Status",
+        "Spouse",
+        "Citizenship",
+        "Birth Date",
+        "Contact Person",
+        "Property",
+        "TIN",
+        "Branch Code",
+        "Type",
+    ]);
+    const ImgUrl = "https://boroughcrest-api.lws.codes/get-img?image=";
+
     const [isSearchBar, setSearchBar] = useState("");
     return (
         <AppContext.Provider
             value={{
                 createCorporate,
                 setCreateCorporate,
+                CorpTableRows,
+                setCorpTableRows,
                 TableRows,
                 setTableRows,
                 emptyCorporate,
@@ -158,12 +215,16 @@ export default function AppProvider({ children }: AppProvider) {
                 setModifyCorporate,
                 corpColumn,
                 setCorpColumn,
-                cusColumn,
-                setCusColumn,
+                cusTableColumn,
+                setCusTableColumn,
                 isSearchBar,
                 setSearchBar,
                 setNewCustomer,
                 isNewCustomer,
+                emptyCustomer,
+                cusFilterColumn,
+                setCusFilterColumn,
+                ImgUrl,
             }}
         >
             {children}

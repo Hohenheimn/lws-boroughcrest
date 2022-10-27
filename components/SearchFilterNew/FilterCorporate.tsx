@@ -23,7 +23,7 @@ export default function FilterCorporate({ setFilter, isFilter }: setFilter) {
         };
     });
 
-    const { setTableRows, TableRows, corpColumn, setCorpColumn } =
+    const { setCorpTableRows, CorpTableRows, corpColumn, setCorpColumn } =
         useContext(AppContext);
 
     const OnChangeHandler = (e: any) => {
@@ -168,26 +168,20 @@ export default function FilterCorporate({ setFilter, isFilter }: setFilter) {
                 <label htmlFor="Email">Email</label>
             </li>
 
-            {/* <FilterList name="ID" setColumns={setColumns} />
-            <FilterList name="Name" setColumns={setColumns} />
-            <FilterList name="Address" setColumns={setColumns} />
-            <FilterList name="TIN" setColumns={setColumns} />
-            <FilterList name="Contact No." etColumns={setColumns} />
-            <FilterList name="Email" etColumns={setColumns} /> */}
             <li>
                 <p className=" font-medium text-[12px]">Rows</p>
                 <select
-                    value={TableRows}
+                    value={CorpTableRows}
                     onChange={(e) =>
-                        setTableRows((no: any) => (no = e.target.value))
+                        setCorpTableRows((no: any) => (no = e.target.value))
                     }
                     className="border border-ThemeRed px-[5px] py-[1px]"
                 >
-                    <option value="5">10</option>
-                    <option value="10">20</option>
-                    <option value="15">30</option>
-                    <option value="20">40</option>
-                    <option value="25">50</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                    <option value="40">40</option>
+                    <option value="50">50</option>
                 </select>
             </li>
         </motion.ul>

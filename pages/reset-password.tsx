@@ -5,7 +5,7 @@ import Image from "next/image";
 import Head from "next/head";
 import { useRouter } from "next/router";
 
-export default function ForgotPassword() {
+export default function ResetPassword() {
     const router = useRouter();
     const [confirmPass, setConfirmPass] = useState("");
     const [isPassword, setPassword] = useState("");
@@ -156,6 +156,6 @@ export default function ForgotPassword() {
     );
 }
 
-ForgotPassword.getLayout = function getLayout(page: any) {
+ResetPassword.getLayout = function getLayout(page: any) {
     return <>{page}</>;
 };

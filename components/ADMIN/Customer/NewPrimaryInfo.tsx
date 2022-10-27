@@ -81,7 +81,14 @@ export default function NewPrimaryInfo({
                         status={status}
                     />
                 )}
-                {isType === "company" && <NewCompany key={3} />}
+                {isType === "company" && (
+                    <NewCompany
+                        key={3}
+                        setActiveForm={setActiveForm}
+                        isType={isType}
+                        status={status}
+                    />
+                )}
             </AnimatePresence>
         </>
     );

@@ -1,6 +1,9 @@
 import React from "react";
+import { customer, customerItemDetail } from "../../../types/customerList";
 
-export default function CustomerInformation() {
+export default function CustomerInformation({
+    itemDetail,
+}: customerItemDetail) {
     return (
         <ul className="flex flex-wrap">
             <li className=" w-full">
@@ -11,27 +14,36 @@ export default function CustomerInformation() {
             <li className=" w-4/12 mb-5 820px:w-2/4 480px:w-full 480px:mb-3">
                 <p className=" text-gray-400 1024px:text-[14px]">MOBILE</p>
                 <h4 className=" text-gray-500 mb-5 1024px:text-[14px]">
-                    09999999999
+                    {itemDetail?.contact_no}
                 </h4>
             </li>
-            <li className=" w-4/12 mb-5 820px:w-2/4 480px:w-full 480px:mb-3">
-                <p className=" text-gray-400 1024px:text-[14px]">CO-OWNER</p>
-                <h4 className=" text-gray-500 mb-5 1024px:text-[14px]">
-                    Jualiana Dela Cruz
-                </h4>
-            </li>
-            <li className=" w-4/12 mb-5 820px:w-2/4 480px:w-full 480px:mb-3">
-                <p className=" text-gray-400 1024px:text-[14px]">BIRTH DATE</p>
-                <h4 className=" text-gray-500 mb-5 1024px:text-[14px]">
-                    23 July 1998
-                </h4>
-            </li>
+            {itemDetail?.type !== "Company" && (
+                <>
+                    <li className=" w-4/12 mb-5 820px:w-2/4 480px:w-full 480px:mb-3">
+                        <p className=" text-gray-400 1024px:text-[14px]">
+                            CO-OWNER
+                        </p>
+                        <h4 className=" text-gray-500 mb-5 1024px:text-[14px]">
+                            {itemDetail?.individual_co_owner}
+                        </h4>
+                    </li>
+                    <li className=" w-4/12 mb-5 820px:w-2/4 480px:w-full 480px:mb-3">
+                        <p className=" text-gray-400 1024px:text-[14px]">
+                            BIRTH DATE
+                        </p>
+                        <h4 className=" text-gray-500 mb-5 1024px:text-[14px]">
+                            {itemDetail?.individual_birth_date}
+                        </h4>
+                    </li>
+                </>
+            )}
+
             <li className=" w-4/12 mb-5 820px:w-2/4 480px:w-full 480px:mb-3">
                 <p className=" text-gray-400 1024px:text-[14px]">
                     REGITERED EMAIL
                 </p>
                 <h4 className=" text-gray-500 mb-5 1024px:text-[14px]">
-                    juan@gmail.com
+                    {itemDetail?.registered_email}
                 </h4>
             </li>
             <li className=" w-4/12 mb-5 820px:w-2/4 480px:w-full 480px:mb-3">
@@ -39,7 +51,7 @@ export default function CustomerInformation() {
                     PREFERED EMAIL
                 </p>
                 <h4 className=" text-gray-500 mb-5 1024px:text-[14px]">
-                    juandelacruz@no
+                    {itemDetail?.preferred_email}
                 </h4>
             </li>
             <li className=" w-4/12 mb-5 820px:w-2/4 480px:w-full 480px:mb-3">
@@ -47,7 +59,12 @@ export default function CustomerInformation() {
                     REGISTERED ADDRESS
                 </p>
                 <h4 className=" text-gray-500 mb-5 1024px:text-[14px]">
-                    Quezon City
+                    {itemDetail?.registered_address_street},{" "}
+                    {itemDetail?.registered_address_building},{" "}
+                    {itemDetail?.registered_address_district},{" "}
+                    {itemDetail?.registered_address_municipal_city},{" "}
+                    {itemDetail?.registered_address_province},{" "}
+                    {itemDetail?.registered_address_zip_code}
                 </h4>
             </li>
             <li className=" w-4/12 mb-5 820px:w-2/4 480px:w-full 480px:mb-3">
@@ -55,7 +72,12 @@ export default function CustomerInformation() {
                     MAILING ADDRESS
                 </p>
                 <h4 className=" text-gray-500 mb-5 1024px:text-[14px]">
-                    Quezon City
+                    {itemDetail?.mailing_address_street},{" "}
+                    {itemDetail?.mailing_address_building},{" "}
+                    {itemDetail?.mailing_address_district},{" "}
+                    {itemDetail?.mailing_address_municipal_city},{" "}
+                    {itemDetail?.mailing_address_province},{" "}
+                    {itemDetail?.mailing_address_zip_code}
                 </h4>
             </li>
         </ul>

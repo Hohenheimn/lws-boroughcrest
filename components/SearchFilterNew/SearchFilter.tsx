@@ -30,11 +30,7 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
                     <input
                         type="text"
                         placeholder="Search anything here..."
-                        onChange={(e) =>
-                            setSearchTable(
-                                (text: string) => (text = e.target.value)
-                            )
-                        }
+                        onChange={(e) => setSearchTable(e.target.value)}
                     />
                     <BsSearch className={style.searchIcon} />
                 </div>

@@ -101,45 +101,26 @@ const List = ({ itemDetail }: any) => {
                 {corpColumn.map((item: any, index: number) => (
                     <td key={index}>
                         {item === "ID" && (
-                            <>
-                                {" "}
-                                {isEdit && (
-                                    <Link
-                                        href={`/project/corporate/${itemDetail.id}`}
-                                    >
-                                        <a className="edit">
-                                            <aside>
-                                                <GoPencil className="mr-2" />{" "}
-                                                Edit
-                                            </aside>
-                                        </a>
-                                    </Link>
-                                )}
-                                <Link
-                                    href={`/project/corporate/${itemDetail.id}`}
-                                >
-                                    <a className="item">
-                                        <aside>
-                                            <Image
-                                                src={Logo}
-                                                alt=""
-                                                layout="fill"
-                                            />
-                                        </aside>
-                                        <div>
-                                            <h2>{itemDetail.id}</h2>
-                                            <p>Lorem Ipsum</p>
-                                        </div>
-                                    </a>
-                                </Link>
-                            </>
+                            <Link href={`/project/corporate/${itemDetail.id}`}>
+                                <a className="item">
+                                    <aside>
+                                        <Image
+                                            src={Logo}
+                                            alt=""
+                                            layout="fill"
+                                        />
+                                    </aside>
+                                    <div>
+                                        <h2>{itemDetail.id}</h2>
+                                    </div>
+                                </a>
+                            </Link>
                         )}
                         {item === "Name" && (
                             <Link href={`/project/corporate/${itemDetail.id}`}>
                                 <a className="item">
                                     <div>
                                         <h2>{itemDetail.name}</h2>
-                                        <p>Lorem Ipsum</p>
                                     </div>
                                 </a>
                             </Link>
@@ -149,7 +130,6 @@ const List = ({ itemDetail }: any) => {
                                 <a className="item">
                                     <div>
                                         <h2>{Address}</h2>
-                                        <p>Lorem Ipsum</p>
                                     </div>
                                 </a>
                             </Link>
@@ -159,7 +139,6 @@ const List = ({ itemDetail }: any) => {
                                 <a className="item">
                                     <div>
                                         <h2>{itemDetail.tin}</h2>
-                                        <p>Lorem Ipsum</p>
                                     </div>
                                 </a>
                             </Link>
@@ -169,7 +148,6 @@ const List = ({ itemDetail }: any) => {
                                 <a className="item">
                                     <div>
                                         <h2>{itemDetail.contact_no}</h2>
-                                        <p>Lorem Ipsum</p>
                                     </div>
                                 </a>
                             </Link>
@@ -179,106 +157,6 @@ const List = ({ itemDetail }: any) => {
                                 <a className="item">
                                     <div>
                                         <h2>{itemDetail.email}</h2>
-                                        <p>Lorem Ipsum</p>
-                                    </div>
-                                </a>
-                            </Link>
-                        )}
-                    </td>
-                ))}
-            </tr>
-            <tr onMouseEnter={MouseEnter1} onMouseLeave={MouseLeave1}>
-                {corpColumn.map((item: any, index: number) => (
-                    <td key={index}>
-                        {item === "ID" && (
-                            <>
-                                {isEdit1 && (
-                                    <Link
-                                        href={`/project/corporate/transaction/${itemDetail.id}`}
-                                    >
-                                        <a className="edit">
-                                            <aside>
-                                                <GoPencil className="mr-2" />
-                                                Edit With Transaction
-                                            </aside>
-                                        </a>
-                                    </Link>
-                                )}
-                                <Link
-                                    href={`/project/corporate/transaction/${itemDetail.id}`}
-                                >
-                                    <a className="item">
-                                        <aside>
-                                            <Image
-                                                src={Logo}
-                                                alt=""
-                                                layout="fill"
-                                            />
-                                        </aside>
-                                        <div>
-                                            <h2>{itemDetail.id}</h2>
-                                            <p>Lorem Ipsum</p>
-                                        </div>
-                                    </a>
-                                </Link>
-                            </>
-                        )}
-                        {item === "Name" && (
-                            <Link
-                                href={`/project/corporate/transaction/${itemDetail.id}`}
-                            >
-                                <a className="item">
-                                    <div>
-                                        <h2>{itemDetail.name}</h2>
-                                        <p>Lorem Ipsum</p>
-                                    </div>
-                                </a>
-                            </Link>
-                        )}
-                        {item === "Address" && (
-                            <Link
-                                href={`/project/corporate/transaction/${itemDetail.id}`}
-                            >
-                                <a className="item">
-                                    <div>
-                                        <h2>{Address}</h2>
-                                        <p>Lorem Ipsum</p>
-                                    </div>
-                                </a>
-                            </Link>
-                        )}
-                        {item === "TIN" && (
-                            <Link
-                                href={`/project/corporate/transaction/${itemDetail.id}`}
-                            >
-                                <a className="item">
-                                    <div>
-                                        <h2>{itemDetail.tin}</h2>
-                                        <p>Lorem Ipsum</p>
-                                    </div>
-                                </a>
-                            </Link>
-                        )}
-                        {item === "Contact no." && (
-                            <Link
-                                href={`/project/corporate/transaction/${itemDetail.id}`}
-                            >
-                                <a className="item">
-                                    <div>
-                                        <h2>{itemDetail.contact_no}</h2>
-                                        <p>Lorem Ipsum</p>
-                                    </div>
-                                </a>
-                            </Link>
-                        )}
-                        {item === "Email" && (
-                            <Link
-                                href={`/project/corporate/transaction/${itemDetail.id}`}
-                            >
-                                <a className="item">
-                                    <div>
-                                        <h2>{itemDetail.email}</h2>
-                                        <p>Lorem Ipsum</p>
                                     </div>
                                 </a>
                             </Link>

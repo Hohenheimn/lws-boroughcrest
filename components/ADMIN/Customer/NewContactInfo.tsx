@@ -43,6 +43,7 @@ export default function NewContactInfo({ setActiveForm }: NewContactInfo) {
             mailing_address_province: data.mailing_address_province,
             mailing_address_zip_code: data.mailing_address_zip_code,
         });
+
         setActiveForm((item: boolean[]) => [
             (item[0] = false),
             (item[1] = false),
@@ -161,6 +162,30 @@ export default function NewContactInfo({ setActiveForm }: NewContactInfo) {
                             </label>
                         </aside>
                     </li>
+                    {isNewCustomer.type === "company" && (
+                        <li>
+                            <label>CONTACT PERSON</label>
+                            <input
+                                type="text"
+                                {...register("company_contact_person", {
+                                    required: "Required",
+                                })}
+                                // isNewCustomer.registered_email
+                                value={isNewCustomer.company_contact_person}
+                                onChange={(e) =>
+                                    setNewCustomer({
+                                        ...isNewCustomer,
+                                        company_contact_person: e.target.value,
+                                    })
+                                }
+                            />
+                            {errors.company_contact_person && (
+                                <p className="text-[10px]">
+                                    {errors.company_contact_person.message}
+                                </p>
+                            )}
+                        </li>
+                    )}
                 </ul>
 
                 <p className="text-[14px] font-bold mb-2">REGISTERED ADDRESS</p>

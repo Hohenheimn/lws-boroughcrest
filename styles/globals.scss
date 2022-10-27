@@ -123,6 +123,10 @@ h6 {
         @apply border-[#19d142];
         box-shadow: 0 0 15px 0 #19d142;
     }
+    &.inactive {
+        @apply border-[#8f384d];
+        box-shadow: 0 0 15px 0 #8f384d;
+    }
 }
 
 input[type="checkbox"] {

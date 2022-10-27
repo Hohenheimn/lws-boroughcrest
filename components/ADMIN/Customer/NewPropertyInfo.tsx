@@ -1,18 +1,26 @@
 import React, { useState, useContext } from "react";
 import AppContext from "../../Context/AppContext";
 import { RiArrowDownSFill } from "react-icons/ri";
-import Link from "next/link";
+import { ScaleLoader } from "react-spinners";
 import { motion } from "framer-motion";
 import { ModalSideFade } from "../../Animation/SimpleAnimation";
+import style from "../../../styles/Popup_Modal.module.scss";
+import { useRouter } from "next/router";
+import {
+    PostCustomerDraft,
+    PostCustomerSave,
+} from "../../ReactQuery/CustomerMethod";
 
 type NewPropertyInfo = {
     setActiveForm: Function;
 };
 
 export default function NewPropertyInfo({ setActiveForm }: NewPropertyInfo) {
-    const { isNewCustomer } = useContext(AppContext);
-    console.log(isNewCustomer);
-    const [isTable, setTable] = useState([
+    const router = useRouter();
+    const [whichSaveBtn, setWhichSaveBtn] = useState("");
+    const { isNewCustomer, setNewCustomer, emptyCustomer } =
+        useContext(AppContext);
+    const [isProperty, setProperty] = useState<any>([
         {
             id: 1,
             unitCode: "",
@@ -27,6 +35,113 @@ export default function NewPropertyInfo({ setActiveForm }: NewPropertyInfo) {
         ]);
     };
     const [isSave, setSave] = useState(false);
+
+    // MUTATION START HERE
+    // Save Mutation
+    const Success = () => {
+        if (whichSaveBtn === "save") {
+            emptyCustomer();
+            router.push("");
+        }
+        if (whichSaveBtn === "savenew") {
+            // empty Field
+            emptyCustomer();
+            // Go to first form
+            setActiveForm((item: boolean[]) => [
+                (item[0] = true),
+                (item[1] = false),
+                (item[2] = false),
+            ]);
+        }
+    };
+    const {
+        isLoading: MutateLoading,
+        mutate,
+        isError,
+        error,
+    } = PostCustomerSave(Success);
+
+    // SAVE DRAFT MUTATION
+    const SuccessDraft = () => {
+        router.push("");
+    };
+    const {
+        isLoading: DraftLoading,
+        mutate: DraftMutate,
+        isError: DraftError,
+    } = PostCustomerDraft(SuccessDraft);
+
+    if (isError) {
+        console.log(error);
+    }
+
+    const SaveMutation = async () => {
+        const ArrayPropertyID = isProperty.map((item: any) => {
+            return item.unitCode;
+        });
+
+        await setNewCustomer({
+            ...isNewCustomer,
+            unit_codes: ArrayPropertyID,
+        });
+
+        if (ArrayPropertyID.includes("")) {
+            alert("Cannot proceed, one of unit code is empty");
+            return;
+        }
+
+        const formData = new FormData();
+        const arrayData: any = [];
+        const keys = Object.keys(isNewCustomer);
+
+        await keys.forEach((key) => {
+            arrayData.push({
+                key: key,
+                keyData: isNewCustomer[key],
+            });
+        });
+        arrayData.map(({ key, keyData }: any) => {
+            formData.append(key, keyData);
+        });
+
+        mutate(formData);
+        // console.log(arrayData);
+    };
+
+    // SAVE BUTTONS
+    const Save = () => {
+        setWhichSaveBtn("save");
+        SaveMutation();
+    };
+    const SaveNew = () => {
+        setWhichSaveBtn("savenew");
+        SaveMutation();
+    };
+    const SaveDraft = async () => {
+        const formData = new FormData();
+        const arrayData: any = [];
+        const keys = Object.keys(isNewCustomer);
+
+        const ArrayPropertyID = isProperty.map((item: any) => {
+            return item.unitCode;
+        });
+
+        await setNewCustomer({
+            ...isNewCustomer,
+            unit_codes: ArrayPropertyID,
+        });
+
+        await keys.forEach((key) => {
+            arrayData.push({
+                key: key,
+                keyData: isNewCustomer[key],
+            });
+        });
+        arrayData.map(({ key, keyData }: any) => {
+            formData.append(key, keyData);
+        });
+        DraftMutate(formData);
+    };
 
     return (
         <motion.div
@@ -50,62 +165,89 @@ export default function NewPropertyInfo({ setActiveForm }: NewPropertyInfo) {
                     </tr>
                 </thead>
                 <tbody>
-                    {isTable.map((item, index) => (
+                    {isProperty.map((item: any, index: number) => (
                         <List
                             detail={item}
-                            setTable={setTable}
+                            setProperty={setProperty}
                             key={index}
-                            isTable={isTable}
+                            isProperty={isProperty}
                         />
                     ))}
                 </tbody>
             </table>
 
-            <div className=" w-full flex justify-end items-center mb-10">
+            <div className={style.SaveButton}>
                 <button
                     className=" text-ThemeRed font-semibold text-[14px] mr-5"
                     onClick={Back}
                 >
                     BACK
                 </button>
-
-                <button className=" relative text-white flex justify-center items-center duration-75 hover:bg-ThemeRed50 leading-none bg-ThemeRed rounded-md text-[14px] mr-5">
-                    <div
-                        className=" h-8 px-5 w-full flex justify-center items-center"
-                        onClick={() => setSave(!isSave)}
-                    >
-                        SAVE <RiArrowDownSFill className=" ml-1 text-[24px]" />
+                {(MutateLoading || DraftLoading) && (
+                    <div className={style.Save}>
+                        <div>
+                            <ScaleLoader
+                                color="#fff"
+                                height="10px"
+                                width="2px"
+                            />
+                        </div>
                     </div>
-                    {isSave && (
-                        <ul className=" absolute top-full bg-white w-full">
-                            <a
-                                onClick={() => console.log(isTable)}
-                                className="text-ThemeRed inline-block py-2 w-full text-center hover:bg-ThemeRed hover:text-white duration-75"
-                            >
-                                SAVE
-                            </a>
-                            <Link href="/admin/customer?new">
-                                <a className="text-ThemeRed inline-block py-2 w-full text-center hover:bg-ThemeRed hover:text-white duration-75">
-                                    SAVE & NEW
-                                </a>
-                            </Link>
-                        </ul>
-                    )}
-                </button>
+                )}
+                {(!MutateLoading || !DraftLoading) && (
+                    <div className={style.Save}>
+                        <div onClick={() => setSave(!isSave)}>
+                            SAVE{" "}
+                            <RiArrowDownSFill className=" ml-1 text-[24px]" />
+                        </div>
+                        {isSave && (
+                            <ul>
+                                <li>
+                                    <button
+                                        type="submit"
+                                        name="save"
+                                        onClick={Save}
+                                    >
+                                        SAVE
+                                    </button>
+                                </li>
+
+                                <li>
+                                    <button
+                                        type="submit"
+                                        name="save-new"
+                                        onClick={SaveNew}
+                                    >
+                                        SAVE & NEW
+                                    </button>
+                                </li>
+                                <li>
+                                    <button
+                                        type="submit"
+                                        name="save-new"
+                                        onClick={SaveDraft}
+                                    >
+                                        SAVE AS DRAFT
+                                    </button>
+                                </li>
+                            </ul>
+                        )}
+                    </div>
+                )}
             </div>
         </motion.div>
     );
 }
 type List = {
     detail: any;
-    setTable: Function;
-    isTable: {}[];
+    setProperty: Function;
+    isProperty: {}[];
 };
-const List = ({ detail, setTable, isTable }: List) => {
+const List = ({ detail, isProperty, setProperty }: List) => {
     const newID = Math.random();
 
     const updateValue = (event: any, valueType: string) => {
-        const newItems = isTable.map((item: any) => {
+        const newItems = isProperty.map((item: any) => {
             if (detail.id == item.id) {
                 if (valueType === "project")
                     return { ...item, project: event.target.value };
@@ -114,20 +256,32 @@ const List = ({ detail, setTable, isTable }: List) => {
             }
             return item;
         });
-        setTable(newItems);
+        setProperty(newItems);
     };
 
     return (
         <tr>
-            <td className=" pr-2">
-                <input
+            <td className=" pr-2 w-2/4">
+                {/* <input
                     type="text"
                     value={detail.unitCode}
                     className="w-full rounded-md text-black px-2 text-[14px] py-[2px] outline-none"
                     onChange={(e) => updateValue(e, "unitCode")}
-                />
+                /> */}
+                <select
+                    name=""
+                    id=""
+                    value={detail.unitCode}
+                    onChange={(e) => updateValue(e, "unitCode")}
+                    className="w-full rounded-md text-black px-2 text-[14px] py-[2px] outline-none"
+                >
+                    <option value=""></option>
+                    <option value="123">123</option>
+                    <option value="321">321</option>
+                    <option value="132">132</option>
+                </select>
             </td>
-            <td className="  pr-2">
+            <td className=" pr-2">
                 <input
                     type="text"
                     className="w-full rounded-md text-black px-2 text-[14px] py-[2px] outline-none bg-ThemeRed50"
@@ -136,11 +290,11 @@ const List = ({ detail, setTable, isTable }: List) => {
                 />
             </td>
             <td className=" flex justify-center">
-                {isTable.length > 1 && (
+                {isProperty.length > 1 && (
                     <button
                         className=" text-[32px] text-ThemeRed mr-2"
                         onClick={() =>
-                            setTable((item: any[]) =>
+                            setProperty((item: any[]) =>
                                 item.filter(
                                     (x: { id: any }) => x.id !== detail.id
                                 )
@@ -153,7 +307,7 @@ const List = ({ detail, setTable, isTable }: List) => {
                 <button
                     className=" text-[32px] text-ThemeRed"
                     onClick={() =>
-                        setTable((item: any) => [
+                        setProperty((item: any) => [
                             ...item,
                             {
                                 id: newID,

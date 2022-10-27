@@ -4,7 +4,7 @@ import ModifyProperty from "./ModifyProperty";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 
-export default function CustomerProperty() {
+export default function CustomerProperty({ data }: any) {
     const [isToggle, setToggle] = useState(false);
     return (
         <div>

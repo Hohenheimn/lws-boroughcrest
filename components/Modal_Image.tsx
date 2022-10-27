@@ -28,7 +28,7 @@ export default function Modal_Image({ setView, isView }: Modal_Image) {
                 className=" p-10 bg-[#e2e3e4ef] rounded-lg w-[90%] max-w-[700px] text-ThemeRed shadow-lg"
             >
                 <aside className="w-full aspect-[1.8/1] relative">
-                    <Image src="/Images/id-sample.png" layout="fill" alt="" />
+                    <Image src={isView} layout="fill" alt="" />
                 </aside>
             </section>
         </div>

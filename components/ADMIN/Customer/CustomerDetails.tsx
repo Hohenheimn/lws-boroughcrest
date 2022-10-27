@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import AppContext from "../../Context/AppContext";
 import { HiPencil } from "react-icons/hi";
 import Image from "next/image";
 import ModifyCustomer from "./ModifyCustomer";
@@ -7,10 +8,41 @@ import CustomerProperty from "./CustomerProperty";
 import Modal_Image from "../../Modal_Image";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
+import { GetCustomer } from "../../ReactQuery/CustomerMethod";
+import { useRouter } from "next/router";
+import BeatLoader from "react-spinners/BeatLoader";
+import { customer } from "../../../types/customerList";
+
 export default function CustomerDetail() {
+    const { ImgUrl } = useContext(AppContext);
     const [toggleModify, setToggleModify] = useState(false);
     const [isToggleInfoRole, setToggleInfoRole] = useState<boolean>(false);
     const [isView, setView] = useState("");
+
+    const router = useRouter();
+    const id = router.query.id;
+
+    const {
+        isLoading: DetailLoading,
+        data: DetailData,
+        isError: DetailError,
+    } = GetCustomer(id);
+
+    if (DetailLoading) {
+        return (
+            <div className="pageDetail">
+                <BeatLoader
+                    color={"#8f384d"}
+                    size={20}
+                    aria-label="Loading Spinner"
+                    data-testid="loader"
+                />
+            </div>
+        );
+    }
+
+    const data: customer = DetailData?.data;
+
     return (
         <div>
             {isView !== "" && <Modal_Image setView={setView} isView={isView} />}
@@ -41,7 +73,7 @@ export default function CustomerDetail() {
                 <li className="w-3/12 flex-col 480px:w-full p-5 flex justify-center items-center">
                     <aside className=" w-6/12 820px:w-10/12 rounded-full overflow-hidden 480px:w-5/12 aspect-square relative shadow-xl">
                         <Image
-                            src="/Images/sampleProfile.png"
+                            src={ImgUrl + data.image_photo}
                             alt="profile"
                             layout="fill"
                         />
@@ -61,15 +93,15 @@ export default function CustomerDetail() {
                                 ID
                             </p>
                             <h4 className=" text-gray-500 mb-5 1024px:text-[14px]">
-                                12234
+                                {data.id}
                             </h4>
                         </li>
                         <li className=" w-4/12 mb-5 820px:w-2/4 480px:w-full 480px:mb-3">
                             <p className=" text-gray-400 1024px:text-[14px]">
-                                NAME
+                                {data.type == "Company" ? "COMPANY" : ""} NAME
                             </p>
                             <h4 className=" text-gray-500 mb-5 1024px:text-[14px]">
-                                Juan Dela Cruz
+                                {data.name}
                             </h4>
                         </li>
                         <li className=" w-4/12 mb-5 820px:w-2/4 480px:w-full 480px:mb-3">
@@ -77,7 +109,7 @@ export default function CustomerDetail() {
                                 CLASS
                             </p>
                             <h4 className=" text-gray-500 mb-5 1024px:text-[14px]">
-                                Lorem ipsum
+                                {data.class}
                             </h4>
                         </li>
                         <li className=" w-4/12 mb-5 820px:w-2/4 480px:w-full 480px:mb-3">
@@ -85,7 +117,7 @@ export default function CustomerDetail() {
                                 TYPE
                             </p>
                             <h4 className=" text-gray-500 mb-5 1024px:text-[14px]">
-                                Lorem ipsum
+                                {data.type}
                             </h4>
                         </li>
                         <li className=" w-4/12 mb-5 820px:w-2/4 480px:w-full 480px:mb-3">
@@ -93,7 +125,7 @@ export default function CustomerDetail() {
                                 TIN
                             </p>
                             <h4 className=" text-gray-500 mb-5 1024px:text-[14px]">
-                                123-456-78998
+                                {data.tin}
                             </h4>
                         </li>
                         <li className=" w-4/12 mb-5 820px:w-2/4 480px:w-full 480px:mb-3">
@@ -101,24 +133,32 @@ export default function CustomerDetail() {
                                 PORTAL ID
                             </p>
                             <h4 className=" text-gray-500 mb-5 1024px:text-[14px]">
-                                65498
+                                {data.portal_id}
                             </h4>
                         </li>
-                        <li className=" w-4/12 mb-5 820px:w-2/4 480px:w-full 480px:mb-3">
-                            <p className=" text-gray-400 1024px:text-[14px]">
-                                CITIZENSHIP
-                            </p>
-                            <h4 className=" text-gray-500 mb-5 1024px:text-[14px]">
-                                Filipino
-                            </h4>
-                        </li>
+                        {data.type !== "Company" && (
+                            <li className=" w-4/12 mb-5 820px:w-2/4 480px:w-full 480px:mb-3">
+                                <p className=" text-gray-400 1024px:text-[14px]">
+                                    CITIZENSHIP
+                                </p>
+                                <h4 className=" text-gray-500 mb-5 1024px:text-[14px]">
+                                    {data.individual_citizenship}
+                                </h4>
+                            </li>
+                        )}
                         <li className=" w-4/12 mb-5 820px:w-2/4 480px:w-full 480px:mb-3">
                             <p className=" text-gray-400 1024px:text-[14px]">
                                 VALID ID
                             </p>
                             <button
                                 className="mt-1 px-5 rounded-lg py-1 bg-ThemeRed text-white hover:bg-ThemeRed50 duration-75"
-                                onClick={() => setView("view_id")}
+                                onClick={() =>
+                                    setView(
+                                        (imgPass) =>
+                                            (imgPass =
+                                                ImgUrl + data.image_valid_id)
+                                    )
+                                }
                             >
                                 VIEW
                             </button>
@@ -129,7 +169,13 @@ export default function CustomerDetail() {
                             </p>
                             <button
                                 className="mt-1 px-5 rounded-lg py-1 bg-ThemeRed text-white hover:bg-ThemeRed50 duration-75"
-                                onClick={() => setView("view_signature")}
+                                onClick={() =>
+                                    setView(
+                                        (imgPass) =>
+                                            (imgPass =
+                                                ImgUrl + data.image_signature)
+                                    )
+                                }
                             >
                                 VIEW
                             </button>
@@ -156,8 +202,10 @@ export default function CustomerDetail() {
                 </li>
             </ul>
             <ul className=" w-full shadow-lg p-10  bg-white rounded-2xl">
-                {!isToggleInfoRole && <CustomerInformation />}
-                {isToggleInfoRole && <CustomerProperty />}
+                {!isToggleInfoRole && <CustomerInformation itemDetail={data} />}
+                {isToggleInfoRole && (
+                    <CustomerProperty data={data.properties} />
+                )}
             </ul>
         </div>
     );

@@ -66,7 +66,8 @@ type Props = {
 
 const PrimaryInformation = ({ setToggleModify, setNewActive, Logo }: Props) => {
     const router = useRouter();
-    const validateTransaction = router.pathname.includes("transaction");
+    // true if may transaction
+    const validateTransaction = true;
     // Default Image
     const LogoName = Logo.split("/")[4].split("_")[1];
     const [isLogo, setLogo] = useState(`${LogoName}`);
@@ -124,8 +125,6 @@ const PrimaryInformation = ({ setToggleModify, setNewActive, Logo }: Props) => {
         });
         setNewActive((item: any) => [(item[0] = false), (item[1] = true)]);
     };
-
-    const OnSuccess = () => {};
 
     const {
         isLoading: DeleteLoading,
@@ -337,25 +336,30 @@ const PrimaryInformation = ({ setToggleModify, setNewActive, Logo }: Props) => {
                 >
                     CANCEL
                 </button>
-                {!DeleteLoading && (
-                    <aside
-                        className="buttonRed mr-5 cursor-point"
-                        onClick={DeleteHandler}
-                    >
-                        DELETE
-                    </aside>
-                )}
 
-                {DeleteLoading && (
-                    <div className="buttonRed mr-5">
-                        <div>
-                            <ScaleLoader
-                                color="#fff"
-                                height="10px"
-                                width="2px"
-                            />
-                        </div>
-                    </div>
+                {validateTransaction && (
+                    <>
+                        {!DeleteLoading && (
+                            <aside
+                                className="buttonRed mr-5 cursor-point"
+                                onClick={DeleteHandler}
+                            >
+                                DELETE
+                            </aside>
+                        )}
+
+                        {DeleteLoading && (
+                            <div className="buttonRed mr-5">
+                                <div>
+                                    <ScaleLoader
+                                        color="#fff"
+                                        height="10px"
+                                        width="2px"
+                                    />
+                                </div>
+                            </div>
+                        )}
+                    </>
                 )}
 
                 <button className="buttonRed" type="submit">
@@ -366,7 +370,7 @@ const PrimaryInformation = ({ setToggleModify, setNewActive, Logo }: Props) => {
     );
 };
 
-const Contact = ({ setNewActive }: Props) => {
+const Contact = ({ setNewActive, setToggleModify }: Props) => {
     const router = useRouter();
     const [isSave, setSave] = useState(false);
     const [ErrorContact, setErrorContact] = useState(false);
@@ -407,7 +411,7 @@ const Contact = ({ setNewActive }: Props) => {
         error,
     } = useMutation(
         (data: FormData) => {
-            return api.put(`/project/corporate/${router.query.id}`, data, {
+            return api.post(`/project/corporate/${router.query.id}`, data, {
                 headers: {
                     Authorization: "Bearer " + getCookie("user"),
                 },
@@ -416,7 +420,7 @@ const Contact = ({ setNewActive }: Props) => {
         {
             onSuccess: () => {
                 if (whatClickedButon) {
-                    router.push("/project/corporate");
+                    // setToggleModify(false);
                 } else {
                     router.push("/project/corporate?new");
                 }
@@ -445,6 +449,7 @@ const Contact = ({ setNewActive }: Props) => {
         });
         arrayData.map(({ key, keyData }: any) => {
             if (keyData === undefined || keyData === "" || keyData === null) {
+                console.log("di kasama");
             } else {
                 formData.append(key, keyData);
             }

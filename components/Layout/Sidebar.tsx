@@ -131,7 +131,7 @@ export default function Sidebar({
                         ))}
                     </ul>
                     {/* Pages, the Search will show */}
-                    <div className="flex-1 shadow-2xl">
+                    <div className="flex-1 shadow-2xl ">
                         <AnimatePresence>
                             {isProfileSearch && (
                                 <motion.ul

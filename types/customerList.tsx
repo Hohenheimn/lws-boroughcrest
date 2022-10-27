@@ -37,5 +37,6 @@ export type customer = {
     registered_email: string;
     preferred_email: string;
     status: string;
-    property: string;
+    unit_codes: [];
+    properties?: [];
 };

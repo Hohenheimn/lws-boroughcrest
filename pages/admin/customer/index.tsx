@@ -6,11 +6,11 @@ import NewCustomer from "../../../components/ADMIN/Customer/NewCustomer";
 import { useRouter } from "next/router";
 
 export default function Customer() {
-    const [searchTable, setSearchTable] = useState();
+    const { setSearchBar, isSearchBar } = useContext(AppContext);
     const router = useRouter();
     return (
         <div>
-            <SearchFilter page="customer" setSearchTable={setSearchTable} />
+            <SearchFilter page="customer" setSearchTable={setSearchBar} />
             <CustomerTable />
 
             {router.query.new !== undefined && <NewCustomer />}
