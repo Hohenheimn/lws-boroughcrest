@@ -1,17 +1,24 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaKey } from "react-icons/fa";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import Image from "next/image";
 import Head from "next/head";
 import { useRouter } from "next/router";
 
-export default function ForgotPassword() {
+export default function ResetPassword({ token }: any) {
+    console.log(token);
     const router = useRouter();
     const [confirmPass, setConfirmPass] = useState("");
     const [isPassword, setPassword] = useState("");
     const [inValid, setInvalid] = useState(false);
     const [isEye1, setEye1] = useState(false);
     const [isEye, setEye] = useState(false);
+
+    useEffect(() => {
+        if (token === "") {
+            router.push("/login");
+        }
+    }, []);
 
     const Submit = (e: any) => {
         e.preventDefault();
@@ -156,6 +163,15 @@ export default function ForgotPassword() {
     );
 }
 
-ForgotPassword.getLayout = function getLayout(page: any) {
+export async function getServerSideProps(context: any) {
+    const token = "";
+    return {
+        props: {
+            token: token,
+        },
+    };
+}
+
+ResetPassword.getLayout = function getLayout(page: any) {
     return <>{page}</>;
 };

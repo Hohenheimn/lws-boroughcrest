@@ -11,7 +11,7 @@ import BarLoader from "react-spinners/BarLoader";
 import type { customerItemDetail } from "../../../types/customerList";
 
 export default function CustomerTable() {
-    const { TableRows, cusColumn, isSearchBar } = useContext(AppContext);
+    const { TableRows, cusTableColumn, isSearchBar } = useContext(AppContext);
     const [TablePage, setTablePage] = useState(1);
 
     const { data, isLoading, isError } = useQuery(
@@ -28,21 +28,35 @@ export default function CustomerTable() {
         }
     );
 
-    console.log(data?.data.data);
     return (
         <div className="w-full overflow-x-auto">
             <table className="table_list min-w-[800px] 820px:min-w-[1000px]">
                 <thead>
                     <tr>
-                        {cusColumn.map((item: any, index: number) => (
-                            <th key={index}>{item}</th>
+                        <th>ID</th>
+                        <th>Name</th>
+                        {cusTableColumn.map((item: any, index: number) => (
+                            <>
+                                {item === "Property" ? (
+                                    <>
+                                        <th>Property (Unit Code)</th>
+                                        <th>Property (Tower)</th>
+                                    </>
+                                ) : (
+                                    <th key={index}>{item}</th>
+                                )}
+                            </>
                         ))}
                     </tr>
                 </thead>
                 <tbody>
-                    {data?.data.data.map((item: any, index: number) => (
-                        <List key={index} itemDetail={item} />
-                    ))}
+                    {!isLoading && !isError && (
+                        <>
+                            {data?.data.data.map((item: any, index: number) => (
+                                <List key={index} itemDetail={item} />
+                            ))}
+                        </>
+                    )}
                 </tbody>
             </table>
             {isLoading && (
@@ -69,6 +83,7 @@ export default function CustomerTable() {
 }
 
 const List = ({ itemDetail }: customerItemDetail) => {
+    const { TableRows, cusTableColumn, isSearchBar } = useContext(AppContext);
     const [isEdit, setEdit] = useState(false);
     const MouseEnter = () => {
         setEdit(true);
@@ -76,26 +91,17 @@ const List = ({ itemDetail }: customerItemDetail) => {
     const MouseLeave = () => {
         setEdit(false);
     };
+
+    const Logo =
+        "https://boroughcrest-api.lws.codes/get-img?image=" +
+        itemDetail?.image_photo;
     return (
         <tr onMouseEnter={MouseEnter} onMouseLeave={MouseLeave}>
             <td>
-                {isEdit && (
-                    <Link href="/admin/customer/123">
-                        <a className="edit">
-                            <aside>
-                                <GoPencil className="mr-2" /> Edit
-                            </aside>
-                        </a>
-                    </Link>
-                )}
-                <Link href="/admin/customer/123">
+                <Link href={`/admin/customer/${itemDetail?.id}`}>
                     <a className="item">
                         <aside>
-                            <Image
-                                src="/Images/sampleProfile.png"
-                                alt="profile"
-                                layout="fill"
-                            />
+                            <Image src={Logo} alt="profile" layout="fill" />
                         </aside>
                         <div>
                             <h2>{itemDetail?.id}</h2>
@@ -104,16 +110,7 @@ const List = ({ itemDetail }: customerItemDetail) => {
                 </Link>
             </td>
             <td>
-                <Link href="/admin/customer/123">
-                    <a className="item">
-                        <div>
-                            <h2>{itemDetail?.class}</h2>
-                        </div>
-                    </a>
-                </Link>
-            </td>
-            <td>
-                <Link href="/admin/customer/123">
+                <Link href={`/admin/customer/${itemDetail?.id}`}>
                     <a className="item">
                         <div>
                             <h2>{itemDetail?.name}</h2>
@@ -121,29 +118,175 @@ const List = ({ itemDetail }: customerItemDetail) => {
                     </a>
                 </Link>
             </td>
-            <td>
-                <Link href="/admin/customer/123">
-                    <a className="item">
-                        <div>
-                            <h2>{itemDetail?.contact_no}</h2>
-                        </div>
-                    </a>
-                </Link>
-            </td>
-            <td>
-                <Link href="/admin/customer/123">
-                    <a className="item">
-                        <div>
-                            <h2>{itemDetail?.preferred_email}</h2>
-                        </div>
-                    </a>
-                </Link>
-            </td>
-            <td>
-                <div className="w-full flex justify-center">
-                    <div className="statusCircle active"></div>
-                </div>
-            </td>
+            {cusTableColumn.map((item: string, index: number) => (
+                <>
+                    {item === "Class" && (
+                        <td>
+                            <Link href={`/admin/customer/${itemDetail?.id}`}>
+                                <a className="item">
+                                    <div>
+                                        <h2>{itemDetail?.class}</h2>
+                                    </div>
+                                </a>
+                            </Link>
+                        </td>
+                    )}
+                    {item === "Mobile" && (
+                        <td>
+                            <Link href={`/admin/customer/${itemDetail?.id}`}>
+                                <a className="item">
+                                    <div>
+                                        <h2>{itemDetail?.contact_no}</h2>
+                                    </div>
+                                </a>
+                            </Link>
+                        </td>
+                    )}
+
+                    {item === "Status" && (
+                        <td>
+                            <div className="w-full flex px-5">
+                                <div
+                                    className={`statusCircle ${
+                                        itemDetail?.status
+                                            ? "active"
+                                            : "inactive"
+                                    }`}
+                                ></div>
+                            </div>
+                        </td>
+                    )}
+                    {item === "Type" && (
+                        <td>
+                            <Link href={`/admin/customer/${itemDetail?.id}`}>
+                                <a className="item">
+                                    <div>
+                                        <h2>{itemDetail?.type}</h2>
+                                    </div>
+                                </a>
+                            </Link>
+                        </td>
+                    )}
+                    {item === "Email" && (
+                        <td>
+                            <Link href={`/admin/customer/${itemDetail?.id}`}>
+                                <a className="item">
+                                    <div>
+                                        <h2>{itemDetail?.preferred_email}</h2>
+                                    </div>
+                                </a>
+                            </Link>
+                        </td>
+                    )}
+
+                    {item === "Spouse" && (
+                        <td>
+                            <Link href={`/admin/customer/${itemDetail?.id}`}>
+                                <a className="item">
+                                    <div>
+                                        <h2>
+                                            {itemDetail?.individual_co_owner}
+                                        </h2>
+                                    </div>
+                                </a>
+                            </Link>
+                        </td>
+                    )}
+                    {item === "Citizenship" && (
+                        <td>
+                            <Link href={`/admin/customer/${itemDetail?.id}`}>
+                                <a className="item">
+                                    <div>
+                                        <h2>
+                                            {itemDetail?.individual_citizenship}
+                                        </h2>
+                                    </div>
+                                </a>
+                            </Link>
+                        </td>
+                    )}
+                    {item === "Birth Date" && (
+                        <td>
+                            <Link href={`/admin/customer/${itemDetail?.id}`}>
+                                <a className="item">
+                                    <div>
+                                        <h2>
+                                            {itemDetail?.individual_birth_date}
+                                        </h2>
+                                    </div>
+                                </a>
+                            </Link>
+                        </td>
+                    )}
+                    {item === "Contact Person" && (
+                        <td>
+                            <Link href={`/admin/customer/${itemDetail?.id}`}>
+                                <a className="item">
+                                    <div>
+                                        <h2>
+                                            {itemDetail?.company_contact_person}
+                                        </h2>
+                                    </div>
+                                </a>
+                            </Link>
+                        </td>
+                    )}
+                    {item === "TIN" && (
+                        <td>
+                            <Link href={`/admin/customer/${itemDetail?.id}`}>
+                                <a className="item">
+                                    <div>
+                                        <h2>{itemDetail?.tin}</h2>
+                                    </div>
+                                </a>
+                            </Link>
+                        </td>
+                    )}
+                    {item === "Branch Code" && (
+                        <td>
+                            <Link href={`/admin/customer/${itemDetail?.id}`}>
+                                <a className="item">
+                                    <div>
+                                        <h2>{itemDetail?.branch_code}</h2>
+                                    </div>
+                                </a>
+                            </Link>
+                        </td>
+                    )}
+                    {item === "Property" && (
+                        <>
+                            <td>
+                                <Link
+                                    href={`/admin/customer/${itemDetail?.id}`}
+                                >
+                                    <a className="item">
+                                        <div>
+                                            <h2>1231231</h2>
+                                            <h2>1231231</h2>
+                                            <h2>1231231</h2>
+                                            <h2>1231231</h2>
+                                        </div>
+                                    </a>
+                                </Link>
+                            </td>
+                            <td>
+                                <Link
+                                    href={`/admin/customer/${itemDetail?.id}`}
+                                >
+                                    <a className="item">
+                                        <div>
+                                            <h2>Tower 1</h2>
+                                            <h2>Tower 1</h2>
+                                            <h2>Tower 1</h2>
+                                            <h2>Tower 1</h2>
+                                        </div>
+                                    </a>
+                                </Link>
+                            </td>
+                        </>
+                    )}
+                </>
+            ))}
         </tr>
     );
 };

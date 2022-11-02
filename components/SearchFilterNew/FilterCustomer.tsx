@@ -1,4 +1,5 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useContext } from "react";
+import AppContext from "../Context/AppContext";
 import style from "../../styles/SearchFilter.module.scss";
 import { flip } from "../Animation/SimpleAnimation";
 import { motion } from "framer-motion";
@@ -8,7 +9,14 @@ type setFilter = {
     isFilter: boolean;
 };
 
-export default function FilterCustomer({ setFilter, isFilter }: setFilter) {
+export default function FilterCustomer({ setFilter }: setFilter) {
+    const {
+        cusFilterColumn,
+        setCusTableColumn,
+        cusTableColumn,
+        setTableRows,
+        TableRows,
+    } = useContext(AppContext);
     const modal = useRef<any>();
     useEffect(() => {
         const clickOutSide = (e: any) => {
@@ -22,6 +30,45 @@ export default function FilterCustomer({ setFilter, isFilter }: setFilter) {
         };
     });
 
+    const OnChangeHandler = (e: any) => {
+        const name = e.target.id;
+        console.log(cusTableColumn);
+
+        if (cusTableColumn.length === 12) {
+            setCusTableColumn([`${name}`]);
+            return;
+        }
+        if (cusTableColumn.includes(name)) {
+            setCusTableColumn((col: any) =>
+                col.filter((item: any) => {
+                    return item !== name;
+                })
+            );
+            return;
+        }
+        if (cusTableColumn.length < 12) {
+            setCusTableColumn([...cusTableColumn, `${name}`]);
+            return;
+        }
+    };
+
+    const AllHandler = () => {
+        setCusTableColumn([
+            "Class",
+            "Mobile",
+            "Email",
+            "Status",
+            "Spouse",
+            "Citizenship",
+            "Birth Date",
+            "Contact Person",
+            "Property",
+            "TIN",
+            "Branch Code",
+            "Type",
+        ]);
+    };
+
     return (
         <motion.ul
             ref={modal}
@@ -32,31 +79,45 @@ export default function FilterCustomer({ setFilter, isFilter }: setFilter) {
             className={style.column}
         >
             <li className="font-medium">Columns</li>
-            <FilterList name="All" />
-            <FilterList name="ID" />
-            <FilterList name="Class" />
-            <FilterList name="Name" />
-            <FilterList name="Mobile" />
-            <FilterList name="Email" />
+            <FilterList name="All" onChangeHandler={AllHandler} />
+            {cusFilterColumn.map((item: string, index: number) => (
+                <FilterList
+                    name={item}
+                    key={index}
+                    onChangeHandler={OnChangeHandler}
+                />
+            ))}
+
             <li>
                 <p className=" font-medium text-[12px]">Rows</p>
 
-                <select className="border border-ThemeRed px-[5px] py-[1px]">
+                <select
+                    className="border border-ThemeRed px-[5px] py-[1px]"
+                    onChange={(e) => setTableRows(e.target.value)}
+                    value={TableRows}
+                >
                     <option value="10">10</option>
-                    <option value="10">20</option>
-                    <option value="10">30</option>
-                    <option value="10">40</option>
-                    <option value="10">50</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                    <option value="40">40</option>
+                    <option value="50">50</option>
                 </select>
             </li>
         </motion.ul>
     );
 }
 
-const FilterList = ({ name }: any) => {
+const FilterList = ({ name, onChangeHandler }: any) => {
+    const { cusFilterColumn, cusTableColumn } = useContext(AppContext);
     return (
         <li className={style.column_item}>
-            <input type="checkbox" name="" id={name} />
+            <input
+                type="checkbox"
+                name=""
+                id={name}
+                checked={cusTableColumn.includes(`${name}`) ? true : false}
+                onChange={onChangeHandler}
+            />
             <label htmlFor={name}>{name}</label>
         </li>
     );

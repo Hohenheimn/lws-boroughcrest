@@ -27,7 +27,7 @@ export default function SignOut() {
     return (
         <ul className="absolute w-[200px] top-full right-0 bg-white px-5 py-3 text-ThemeRed">
             <li className="cursor-pointer" onClick={SignOutHandler}>
-                Sign Out
+                Log Out
             </li>
         </ul>
     );

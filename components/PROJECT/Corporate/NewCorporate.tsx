@@ -9,7 +9,7 @@ import { RiArrowDownSFill } from "react-icons/ri";
 import { AiFillCamera } from "react-icons/ai";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import api from "../../../util/api";
 import type { firstCorporateForm } from "../../../types/corporateList";
 import type { secondCorporateForm } from "../../../types/corporateList";
@@ -289,6 +289,7 @@ const Primary = ({ setNewActive, Current_id }: Props) => {
                             required
                         >
                             <option value="VAT">VAT</option>
+                            <option value="NON-VAT">NON-VAT</option>
                         </select>
                     </li>
                 </ul>
@@ -368,6 +369,7 @@ const Contact = ({ setNewActive }: Props) => {
         },
     });
 
+    const clietQuery = useQueryClient();
     const {
         isLoading: MutateLoading,
         mutate,
@@ -384,7 +386,7 @@ const Contact = ({ setNewActive }: Props) => {
         {
             onSuccess: () => {
                 // router.reload();
-
+                clietQuery.invalidateQueries("get-corporate-list");
                 if (whatClickedButon) {
                     // save
                     router.push("");
@@ -426,7 +428,11 @@ const Contact = ({ setNewActive }: Props) => {
             });
         });
         arrayData.map(({ key, keyData }: any) => {
-            formData.append(key, keyData);
+            if (keyData === undefined || keyData === null) {
+                formData.append(key, "");
+            } else {
+                formData.append(key, keyData);
+            }
         });
         mutate(formData);
         // console.log(keys);
@@ -480,7 +486,7 @@ const Contact = ({ setNewActive }: Props) => {
                         )}
                         <input
                             type="number"
-                            placeholder="09"
+                            // placeholder="09"
                             {...register("alt_contact_no", {
                                 minLength: {
                                     value: 11,

@@ -53,7 +53,7 @@ export default function Sidebar({
                 exit="exit"
                 className={`${
                     isWindow <= 1024 && "fixed top-0 left-0 z-50 bg-[#ebedf2f6]"
-                } w-[400px] 1920px:w-[350px] 1550px:w-[270px] border-r-2 border-white min-h-full pt-5 flex flex-col`}
+                } w-[400px] 1920px:w-[350px] 1550px:w-[230px] border-r-2 border-white min-h-full pt-5 flex flex-col`}
             >
                 <div className=" w-full flex justify-center">
                     <Image
@@ -131,7 +131,7 @@ export default function Sidebar({
                         ))}
                     </ul>
                     {/* Pages, the Search will show */}
-                    <div className="flex-1 shadow-2xl">
+                    <div className="flex-1 shadow-2xl ">
                         <AnimatePresence>
                             {isProfileSearch && (
                                 <motion.ul

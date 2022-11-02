@@ -1,7 +1,4 @@
 import React, { useState } from "react";
-import { AiFillCamera } from "react-icons/ai";
-import Link from "next/link";
-import Image from "next/image";
 import NewDefault from "./NewDefault";
 import NewIndividual from "./NewIndividual";
 import NewCompany from "./NewCompany";
@@ -81,7 +78,14 @@ export default function NewPrimaryInfo({
                         status={status}
                     />
                 )}
-                {isType === "company" && <NewCompany key={3} />}
+                {isType === "company" && (
+                    <NewCompany
+                        key={3}
+                        setActiveForm={setActiveForm}
+                        isType={isType}
+                        status={status}
+                    />
+                )}
             </AnimatePresence>
         </>
     );

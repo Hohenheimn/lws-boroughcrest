@@ -7,45 +7,30 @@ import api from "../../util/api";
 import { useQuery } from "react-query";
 import { getCookie } from "cookies-next";
 import { useRouter } from "next/router";
+import BeatLoader from "react-spinners/BeatLoader";
 
 export default function CorporateSearch() {
     const [search, setSearch] = useState<string>("");
     let dataSearch;
     const router = useRouter();
-    const ValidateUrl = router.pathname.includes("transaction");
 
-    let { isLoading, data, isError } = useQuery(
-        ["search-corporate", search],
-        () => {
-            return api.get(`/project/corporate?keywords=${search}`, {
+    const {
+        isLoading,
+        data: RecentData,
+        isError,
+    } = useQuery(["recent-customer", router.query.id, search], () => {
+        return api.get(
+            `/project/corporate/recent-search/${router.query.id}&keywords=${search}&paginate=3`,
+            {
                 headers: {
                     Authorization: "Bearer " + getCookie("user"),
                 },
-            });
-        },
-        {
-            keepPreviousData: true,
-        }
-    );
-
-    let {
-        isLoading: RecentLoading,
-        data: RecentData,
-        isError: RecentError,
-    } = useQuery("recent-corporate", () => {
-        return api.get("/project/corporate/recent-search/3", {
-            headers: {
-                Authorization: "Bearer " + getCookie("user"),
-            },
-        });
+            }
+        );
     });
 
-    if (!RecentLoading) {
-        if (search === "") {
-            dataSearch = RecentData?.data;
-        } else {
-            dataSearch = data?.data;
-        }
+    if (!isLoading) {
+        dataSearch = RecentData?.data;
     }
 
     return (
@@ -74,40 +59,44 @@ export default function CorporateSearch() {
                     </div>
                 </aside>
             </div>
-
-            {isLoading || isError ? (
-                <div>
-                    {isLoading || (RecentLoading && <span>Loading...</span>)}
-                    {isError ||
-                        (RecentError && (
-                            <span>Can&rsquo;t find the result...</span>
-                        ))}
-                </div>
-            ) : (
-                dataSearch?.map((item: any, index: number) => (
-                    <Link
-                        key={index}
-                        href={
-                            ValidateUrl === false
-                                ? `/project/corporate/${item.id}`
-                                : `/project/corporate/transaction/${item.id}`
-                        }
-                    >
-                        <a className={style.searchedItem}>
-                            <ul>
-                                <li>
-                                    <h4>{item.name}</h4>
-                                    <p>{item.address_municipal_city}</p>
-                                </li>
-                                <li>
-                                    <p>ID: {item.id}</p>
-                                    <p>TIN: {item.tin}</p>
-                                </li>
-                            </ul>
-                        </a>
-                    </Link>
-                ))
-            )}
+            <div className=" overflow-y-auto">
+                {isLoading ? (
+                    <div className="flex justify-center py-5">
+                        <BeatLoader
+                            color={"#8f384d"}
+                            size={10}
+                            aria-label="Loading Spinner"
+                            data-testid="loader"
+                        />
+                    </div>
+                ) : (
+                    dataSearch?.map((item: any, index: number) => (
+                        <Link
+                            key={index}
+                            href={`/project/corporate/${item.id}`}
+                        >
+                            <a className={style.searchedItem}>
+                                <ul>
+                                    <li>
+                                        <h4>
+                                            {item.name} {item.com}
+                                        </h4>
+                                        <p>
+                                            {
+                                                item.registered_address_municipal_city
+                                            }
+                                        </p>
+                                    </li>
+                                    <li>
+                                        <p>ID: {item.id}</p>
+                                        <p>TIN: {item.tin}</p>
+                                    </li>
+                                </ul>
+                            </a>
+                        </Link>
+                    ))
+                )}
+            </div>
         </div>
     );
 }

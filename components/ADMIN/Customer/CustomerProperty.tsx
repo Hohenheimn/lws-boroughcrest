@@ -4,7 +4,8 @@ import ModifyProperty from "./ModifyProperty";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 
-export default function CustomerProperty() {
+export default function CustomerProperty({ data }: any) {
+    console.log(data);
     const [isToggle, setToggle] = useState(false);
     return (
         <div>
@@ -50,9 +51,9 @@ export default function CustomerProperty() {
                         </tr>
                     </thead>
                     <tbody>
-                        <List />
-                        <List />
-                        <List />
+                        {data.map((item: any, index: number) => (
+                            <List item={item} key={index} />
+                        ))}
                     </tbody>
                 </table>
             </div>
@@ -60,26 +61,27 @@ export default function CustomerProperty() {
     );
 }
 
-const List = () => {
+const List = ({ item }: any) => {
+    console.log(item);
     return (
         <tr>
             <td className=" text-gray-500 mb-5 1024px:text-[14px] font-bold py-2 px-2">
-                0937
+                {item.unit_code}
             </td>
             <td className=" text-gray-500 mb-5 1024px:text-[14px] font-bold py-2 px-2">
-                Lorem ipsum
+                {item.type}
             </td>
             <td className=" text-gray-500 mb-5 1024px:text-[14px] font-bold py-2 px-2">
-                Lorem ipsum
+                {item.tower.name}
             </td>
             <td className=" text-gray-500 mb-5 1024px:text-[14px] font-bold py-2 px-2">
-                Lorem ipsum
+                {item.floor.name}
             </td>
             <td className=" text-gray-500 mb-5 1024px:text-[14px] font-bold py-2 px-2">
-                Lorem ipsum
+                {item.area}
             </td>
             <td className=" text-gray-500 mb-5 1024px:text-[14px] font-bold py-2 px-2">
-                Lorem ipsum
+                {item.turnover_date}
             </td>
         </tr>
     );

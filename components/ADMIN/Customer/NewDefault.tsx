@@ -74,10 +74,6 @@ export default function NewDefault() {
                 className={style.ThreeRows}
             >
                 <li>
-                    <label>ID</label>
-                    <input type="text" disabled className="bg-ThemeRed50" />
-                </li>
-                <li>
                     <label>CLASS</label>
                     <select name="" id="" disabled>
                         <option value=""></option>
@@ -124,10 +120,12 @@ export default function NewDefault() {
                     <label>PORTAL ID</label>
                     <input disabled type="text" className="bg-white" />
                 </li>
+            </motion.ul>
+            <ul>
                 <li>
                     <label>Please Select a Type</label>
                 </li>
-            </motion.ul>
+            </ul>
             <div className=" w-full flex justify-end items-center">
                 <Link href="">
                     <a className=" text-ThemeRed font-semibold text-[14px] mr-5 cursor-pointer">
