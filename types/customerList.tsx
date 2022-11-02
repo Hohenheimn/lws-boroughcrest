@@ -39,4 +39,5 @@ export type customer = {
     status: string;
     unit_codes: [];
     properties?: [];
+    _method?: "PUT";
 };

@@ -1,5 +1,6 @@
 import AppContext from "./AppContext";
 import { useState } from "react";
+import type { customer } from "../../types/customerList";
 
 type AppProvider = {
     children: React.ReactNode;
@@ -50,7 +51,7 @@ export default function AppProvider({ children }: AppProvider) {
         _method: "PUT",
     });
 
-    const [isNewCustomer, setNewCustomer] = useState({
+    const [isNewCustomer, setNewCustomer] = useState<customer>({
         assigned_customer_id: "",
         portal_id: "",
         class: "",
@@ -84,6 +85,10 @@ export default function AppProvider({ children }: AppProvider) {
         preferred_email: "",
         status: "",
         unit_codes: [],
+    });
+    const [isModifyCustomer, setModifyCustomer] = useState<customer>({
+        ...isNewCustomer,
+        _method: "PUT",
     });
 
     const emptyCorporate = () => {
@@ -225,6 +230,8 @@ export default function AppProvider({ children }: AppProvider) {
                 cusFilterColumn,
                 setCusFilterColumn,
                 ImgUrl,
+                isModifyCustomer,
+                setModifyCustomer,
             }}
         >
             {children}

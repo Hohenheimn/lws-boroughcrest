@@ -1,21 +1,24 @@
 import React, { useEffect, useState, useContext } from "react";
 import AppContext from "../../Context/AppContext";
-import { useRouter } from "next/router";
 import style from "../../../styles/Popup_Modal.module.scss";
 import NewPrimaryInfo from "./NewPrimaryInfo";
 import NewContactInfo from "./NewContactInfo";
 import NewPropertyInfo from "./NewPropertyInfo";
 import { AnimatePresence } from "framer-motion";
+import { GetDraft } from "../../ReactQuery/CustomerMethod";
 
 export default function NewCustomer() {
-    // click outside close
-    const router = useRouter();
-    const { emptyCustomer } = useContext(AppContext);
+    const { emptyCustomer, isNewCustomer, setNewCustomer } =
+        useContext(AppContext);
     const [isActiveForm, setActiveForm] = useState([true, false, false]);
     const [isType, setType] = useState<string>("");
+    const { isLoading, data, isError } = GetDraft();
+    const DraftData = data?.data.values;
 
     useEffect(() => {
-        emptyCustomer();
+        if (data) {
+            setNewCustomer(DraftData);
+        }
     }, [isType]);
 
     return (

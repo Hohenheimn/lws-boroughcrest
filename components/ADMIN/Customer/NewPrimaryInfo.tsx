@@ -1,7 +1,4 @@
 import React, { useState } from "react";
-import { AiFillCamera } from "react-icons/ai";
-import Link from "next/link";
-import Image from "next/image";
 import NewDefault from "./NewDefault";
 import NewIndividual from "./NewIndividual";
 import NewCompany from "./NewCompany";

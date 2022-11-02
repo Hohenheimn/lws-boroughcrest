@@ -8,7 +8,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ModalSideFade } from "../../Animation/SimpleAnimation";
 import { getCookie } from "cookies-next";
 import { ScaleLoader } from "react-spinners";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import api from "../../../util/api";
 import type {
     corporateColumns,
@@ -403,7 +403,7 @@ const Contact = ({ setNewActive, setToggleModify }: Props) => {
             address_zip_code: modifyCorporate.address_zip_code,
         },
     });
-
+    const queryClient = useQueryClient();
     const {
         isLoading: MutateLoading,
         mutate,
@@ -420,7 +420,11 @@ const Contact = ({ setNewActive, setToggleModify }: Props) => {
         {
             onSuccess: () => {
                 if (whatClickedButon) {
-                    // setToggleModify(false);
+                    queryClient.invalidateQueries([
+                        "Corporate-detail",
+                        router.query.id,
+                    ]);
+                    setToggleModify(false);
                 } else {
                     router.push("/project/corporate?new");
                 }

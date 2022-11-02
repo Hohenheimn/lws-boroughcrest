@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useRef, useEffect } from "react";
 import AppContext from "../../Context/AppContext";
 import { RiArrowDownSFill } from "react-icons/ri";
 import { ScaleLoader } from "react-spinners";
@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import {
     PostCustomerDraft,
     PostCustomerSave,
+    GetUnitCode,
 } from "../../ReactQuery/CustomerMethod";
 
 type NewPropertyInfo = {
@@ -61,6 +62,39 @@ export default function NewPropertyInfo({ setActiveForm }: NewPropertyInfo) {
         error,
     } = PostCustomerSave(Success);
 
+    const SaveMutation = async () => {
+        const ArrayPropertyID = isProperty.map((item: any) => {
+            return item.unitCode;
+        });
+        const sample = { ...isNewCustomer, unit_codes: ArrayPropertyID };
+
+        if (ArrayPropertyID.includes("")) {
+            alert("Cannot proceed, one of unit code is empty");
+            return;
+        }
+
+        const formData = new FormData();
+        const arrayData: any = [];
+        const keys = Object.keys(sample);
+
+        await keys.forEach((key) => {
+            arrayData.push({
+                key: key,
+                keyData: sample[key],
+            });
+        });
+        arrayData.map(({ key, keyData }: any) => {
+            if (key === "unit_codes") {
+                const stringify = JSON.stringify(keyData);
+                formData.append("unit_codes", stringify);
+            } else {
+                formData.append(key, keyData);
+            }
+        });
+
+        mutate(formData);
+    };
+
     // SAVE DRAFT MUTATION
     const SuccessDraft = () => {
         router.push("");
@@ -75,39 +109,6 @@ export default function NewPropertyInfo({ setActiveForm }: NewPropertyInfo) {
         console.log(error);
     }
 
-    const SaveMutation = async () => {
-        const ArrayPropertyID = isProperty.map((item: any) => {
-            return item.unitCode;
-        });
-
-        await setNewCustomer({
-            ...isNewCustomer,
-            unit_codes: ArrayPropertyID,
-        });
-
-        if (ArrayPropertyID.includes("")) {
-            alert("Cannot proceed, one of unit code is empty");
-            return;
-        }
-
-        const formData = new FormData();
-        const arrayData: any = [];
-        const keys = Object.keys(isNewCustomer);
-
-        await keys.forEach((key) => {
-            arrayData.push({
-                key: key,
-                keyData: isNewCustomer[key],
-            });
-        });
-        arrayData.map(({ key, keyData }: any) => {
-            formData.append(key, keyData);
-        });
-
-        mutate(formData);
-        // console.log(arrayData);
-    };
-
     // SAVE BUTTONS
     const Save = () => {
         setWhichSaveBtn("save");
@@ -118,27 +119,28 @@ export default function NewPropertyInfo({ setActiveForm }: NewPropertyInfo) {
         SaveMutation();
     };
     const SaveDraft = async () => {
-        const formData = new FormData();
-        const arrayData: any = [];
-        const keys = Object.keys(isNewCustomer);
-
         const ArrayPropertyID = isProperty.map((item: any) => {
             return item.unitCode;
         });
+        const sample = { ...isNewCustomer, unit_codes: ArrayPropertyID };
 
-        await setNewCustomer({
-            ...isNewCustomer,
-            unit_codes: ArrayPropertyID,
-        });
+        const formData = new FormData();
+        const arrayData: any = [];
+        const keys = Object.keys(sample);
 
         await keys.forEach((key) => {
             arrayData.push({
                 key: key,
-                keyData: isNewCustomer[key],
+                keyData: sample[key],
             });
         });
         arrayData.map(({ key, keyData }: any) => {
-            formData.append(key, keyData);
+            if (key === "unit_codes") {
+                const stringify = JSON.stringify(keyData);
+                formData.append("unit_codes", stringify);
+            } else {
+                formData.append(key, keyData);
+            }
         });
         DraftMutate(formData);
     };
@@ -169,6 +171,7 @@ export default function NewPropertyInfo({ setActiveForm }: NewPropertyInfo) {
                         <List
                             detail={item}
                             setProperty={setProperty}
+                            id={index}
                             key={index}
                             isProperty={isProperty}
                         />
@@ -194,7 +197,7 @@ export default function NewPropertyInfo({ setActiveForm }: NewPropertyInfo) {
                         </div>
                     </div>
                 )}
-                {(!MutateLoading || !DraftLoading) && (
+                {!MutateLoading && !DraftLoading && (
                     <div className={style.Save}>
                         <div onClick={() => setSave(!isSave)}>
                             SAVE{" "}
@@ -242,84 +245,139 @@ type List = {
     detail: any;
     setProperty: Function;
     isProperty: {}[];
+    id: number;
 };
-const List = ({ detail, isProperty, setProperty }: List) => {
+const List = ({ detail, isProperty, setProperty, id }: List) => {
     const newID = Math.random();
+    const [isSelect, setSelect] = useState(false);
 
-    const updateValue = (event: any, valueType: string) => {
-        const newItems = isProperty.map((item: any) => {
-            if (detail.id == item.id) {
-                if (valueType === "project")
-                    return { ...item, project: event.target.value };
-                if (valueType === "unitCode")
-                    return { ...item, unitCode: event.target.value };
+    const updateValue = (event: any) => {
+        const UnitCode = event.target.innerHTML;
+        let validate = true;
+        isProperty.map((item: any) => {
+            if (item.unitCode === UnitCode) {
+                alert("Selected Unit Code already in the list");
+                validate = false;
+                return;
             }
-            return item;
         });
-        setProperty(newItems);
+        if (validate === true) {
+            const newItems = isProperty.map((item: any) => {
+                if (detail.id == item.id) {
+                    return {
+                        ...item,
+                        project: event.target.getAttribute("data-projname"),
+                        unitCode: UnitCode,
+                    };
+                }
+                return item;
+            });
+            setProperty(newItems);
+            setSelect(false);
+        }
     };
 
     return (
         <tr>
-            <td className=" pr-2 w-2/4">
-                {/* <input
-                    type="text"
-                    value={detail.unitCode}
-                    className="w-full rounded-md text-black px-2 text-[14px] py-[2px] outline-none"
-                    onChange={(e) => updateValue(e, "unitCode")}
-                /> */}
-                <select
-                    name=""
-                    id=""
-                    value={detail.unitCode}
-                    onChange={(e) => updateValue(e, "unitCode")}
-                    className="w-full rounded-md text-black px-2 text-[14px] py-[2px] outline-none"
-                >
-                    <option value=""></option>
-                    <option value="123">123</option>
-                    <option value="321">321</option>
-                    <option value="132">132</option>
-                </select>
+            <td className=" max-w-[50px] pr-2 ">
+                <div className=" relative">
+                    <input
+                        type="text"
+                        value={detail.unitCode}
+                        onChange={(e) => updateValue(e)}
+                        className="w-full rounded-md text-black px-2 text-[14px] py-[2px] outline-none"
+                        onFocus={() => setSelect(true)}
+                    />
+                    {isSelect && (
+                        <Select
+                            setSelect={setSelect}
+                            updateValue={updateValue}
+                        />
+                    )}
+                </div>
             </td>
-            <td className=" pr-2">
-                <input
-                    type="text"
-                    className="w-full rounded-md text-black px-2 text-[14px] py-[2px] outline-none bg-ThemeRed50"
-                    value={detail.project}
-                    onChange={(e) => updateValue(e, "project")}
-                />
+            <td className="pr-2">
+                <p className="w-full rounded-md text-black h-6 px-2 text-[14px] py-[2px] outline-none bg-ThemeRed50">
+                    {detail.project}
+                </p>
             </td>
             <td className=" flex justify-center">
-                {isProperty.length > 1 && (
-                    <button
-                        className=" text-[32px] text-ThemeRed mr-2"
-                        onClick={() =>
-                            setProperty((item: any[]) =>
-                                item.filter(
-                                    (x: { id: any }) => x.id !== detail.id
+                <div className="flex justify-between w-10">
+                    {isProperty.length > 1 && (
+                        <button
+                            className=" text-[32px] text-ThemeRed mr-2"
+                            onClick={() =>
+                                setProperty((item: any[]) =>
+                                    item.filter(
+                                        (x: { id: any }) => x.id !== detail.id
+                                    )
                                 )
-                            )
-                        }
-                    >
-                        -
-                    </button>
-                )}
-                <button
-                    className=" text-[32px] text-ThemeRed"
-                    onClick={() =>
-                        setProperty((item: any) => [
-                            ...item,
-                            {
-                                id: newID,
-                                unitCode: "",
-                                project: "",
-                            },
-                        ])
-                    }
-                >
-                    +
-                </button>
+                            }
+                        >
+                            -
+                        </button>
+                    )}
+                    {isProperty.length - 1 === id && (
+                        <button
+                            className=" text-[32px] text-ThemeRed"
+                            onClick={() =>
+                                setProperty((item: any) => [
+                                    ...item,
+                                    {
+                                        id: newID,
+                                        unitCode: "",
+                                        project: "",
+                                    },
+                                ])
+                            }
+                        >
+                            +
+                        </button>
+                    )}
+                </div>
             </td>
         </tr>
+    );
+};
+
+const Select = ({ setSelect, updateValue }: any) => {
+    const Menu = useRef<any>();
+
+    // Get unit codes to display
+    const { isLoading, data, isError } = GetUnitCode();
+
+    useEffect(() => {
+        const clickOutSide = (e: any) => {
+            if (!Menu.current.contains(e.target)) {
+                setSelect(false);
+            }
+        };
+        document.addEventListener("mousedown", clickOutSide);
+        return () => {
+            document.removeEventListener("mousedown", clickOutSide);
+        };
+    });
+
+    return (
+        <ul
+            ref={Menu}
+            className=" absolute top-full left-0 w-full bg-white p-3 z-10"
+        >
+            {isLoading && (
+                <div className="flex justify-center">
+                    <ScaleLoader color="#8f384d" height="10px" width="2px" />
+                </div>
+            )}
+            {!isLoading &&
+                data?.data.map((item: any, index: number) => (
+                    <li
+                        key={index}
+                        data-projname={item.type}
+                        onClick={updateValue}
+                    >
+                        {item.unit_code}
+                    </li>
+                ))}
+        </ul>
     );
 };

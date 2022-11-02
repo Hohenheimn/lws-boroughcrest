@@ -5,20 +5,23 @@ import Image from "next/image";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import api from "../util/api";
-import { setCookie, getCookie } from "cookies-next";
-import { BiUnderline } from "react-icons/bi";
+import { setCookie } from "cookies-next";
+import { ScaleLoader, MoonLoader } from "react-spinners";
+import { SendLink } from "../components/ReactQuery/ForgotPassword";
 
 export default function Login() {
     const router = useRouter();
+    const [isLoading, setLoading] = useState(false);
     const [isUsername, setUsername] = useState("");
     const [isPassword, setPassword] = useState("");
     const [CheckRemember, setCheckRemember] = useState(false);
-    const [inValid, setInvalid] = useState(false);
+    const [inValid, setInvalid] = useState("");
 
     const [isEye, setEye] = useState(false);
 
     const ValidateLogin = async (e: any) => {
         e.preventDefault();
+        setLoading(true);
         try {
             const response = await api.post("/auth/login", {
                 email: isUsername,
@@ -30,11 +33,12 @@ export default function Login() {
                 localStorage.setItem("password", isPassword);
             }
             setCookie("user", token);
-
             router.push("/dashboard");
             router.reload();
-        } catch (error) {
-            setInvalid(true);
+        } catch (error: any) {
+            console.log(error);
+            setInvalid(error.message);
+            setLoading(false);
         }
     };
 
@@ -60,8 +64,20 @@ export default function Login() {
         }
     };
 
+    const SuccessSendLink = () => {
+        setInvalid("Email sent successfully!");
+    };
+    const { mutate, isLoading: SendLinkLoading } = SendLink(SuccessSendLink);
+
     const forgotHandler = () => {
-        router.push("/forgot-password");
+        const regex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+        if (!regex.test(isUsername)) {
+            setInvalid("Invalid email");
+            return;
+        } else {
+            setInvalid("");
+            mutate(isUsername);
+        }
     };
 
     return (
@@ -161,16 +177,29 @@ export default function Login() {
                                 </div>
                                 {inValid && (
                                     <p className=" text-[12px] text-ThemeRed mb-5">
-                                        Invalid Username or Password
+                                        {inValid}
                                     </p>
                                 )}
                                 <div className=" flex items-center justify-between w-full max-w-[400px] mb-5 640px:mb-4">
-                                    <button
-                                        type="submit"
-                                        className=" w-32 py-1 bg-ThemeRed rounded-lg text-white text-[14px] hover:shadow-lg duration-75 ease-in-out font-medium hover:bg-white hover:text-ThemeRed"
-                                    >
-                                        LOG IN
-                                    </button>
+                                    {isLoading ? (
+                                        <div className=" flex justify-center w-32 py-1 bg-white pointer-events-none rounded-lg text-white text-[14px] hover:shadow-lg duration-75 ease-in-out font-medium hover:bg-white hover:text-ThemeRed">
+                                            <div>
+                                                <ScaleLoader
+                                                    color="#8f384d"
+                                                    height="10px"
+                                                    width="2px"
+                                                />
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <button
+                                            type="submit"
+                                            className=" w-32 py-1 bg-ThemeRed rounded-lg text-white text-[14px] hover:shadow-lg duration-75 ease-in-out font-medium hover:bg-white hover:text-ThemeRed"
+                                        >
+                                            LOG IN
+                                        </button>
+                                    )}
+
                                     <div className=" flex items-center">
                                         <input
                                             type="checkbox"
@@ -195,6 +224,9 @@ export default function Login() {
                                     >
                                         Forgot Password
                                     </p>
+                                    {SendLinkLoading && (
+                                        <MoonLoader size={20} color="#8f384d" />
+                                    )}
                                 </div>
                             </section>
                             <div className="px-5 640px:px-5 flex justify-end">

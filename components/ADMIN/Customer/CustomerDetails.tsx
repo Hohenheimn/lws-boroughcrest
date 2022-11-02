@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import AppContext from "../../Context/AppContext";
 import { HiPencil } from "react-icons/hi";
 import Image from "next/image";
@@ -14,7 +14,8 @@ import BeatLoader from "react-spinners/BeatLoader";
 import { customer } from "../../../types/customerList";
 
 export default function CustomerDetail() {
-    const { ImgUrl } = useContext(AppContext);
+    const { ImgUrl, isModifyCustomer, setModifyCustomer } =
+        useContext(AppContext);
     const [toggleModify, setToggleModify] = useState(false);
     const [isToggleInfoRole, setToggleInfoRole] = useState<boolean>(false);
     const [isView, setView] = useState("");
@@ -28,7 +29,7 @@ export default function CustomerDetail() {
         isError: DetailError,
     } = GetCustomer(id);
 
-    if (DetailLoading) {
+    if (DetailLoading || DetailError) {
         return (
             <div className="pageDetail">
                 <BeatLoader
@@ -65,7 +66,14 @@ export default function CustomerDetail() {
                         <div>
                             <HiPencil
                                 className=" text-ThemeRed font-bold text-[32px] 480px:text-[24px] cursor-pointer"
-                                onClick={() => setToggleModify(true)}
+                                onClick={() => {
+                                    setModifyCustomer({
+                                        ...data,
+                                        _method: "PUT",
+                                    });
+                                    setToggleModify(true);
+                                    console.log(isModifyCustomer);
+                                }}
                             />
                         </div>
                     </Tippy>
@@ -78,10 +86,17 @@ export default function CustomerDetail() {
                             layout="fill"
                         />
                     </aside>
-                    <div
-                        className=" h-5 w-5 rounded-full border-4 border-[#19d142] cursor-pointer my-3"
-                        style={{ boxShadow: "0 0 15px 0 #19d142" }}
-                    ></div>
+                    {data.type ? (
+                        <div
+                            className=" h-5 w-5 rounded-full border-4 border-[#19d142] cursor-pointer my-3"
+                            style={{ boxShadow: "0 0 15px 0 #19d142" }}
+                        ></div>
+                    ) : (
+                        <div
+                            className=" h-5 w-5 rounded-full border-4 border-[#8f384d] cursor-pointer my-3"
+                            style={{ boxShadow: "0 0 15px 0 #8f384d" }}
+                        ></div>
+                    )}
                     <button className=" text-white h-8 px-2 flex justify-center items-center duration-75 hover:bg-ThemeRed50 leading-none bg-ThemeRed rounded-md text-[14px]">
                         SEND PORTAL ACCESS
                     </button>

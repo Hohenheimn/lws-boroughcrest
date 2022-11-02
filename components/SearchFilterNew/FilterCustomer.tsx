@@ -9,9 +9,14 @@ type setFilter = {
     isFilter: boolean;
 };
 
-export default function FilterCustomer({ setFilter, isFilter }: setFilter) {
-    const { cusFilterColumn, setCusTableColumn, cusTableColumn } =
-        useContext(AppContext);
+export default function FilterCustomer({ setFilter }: setFilter) {
+    const {
+        cusFilterColumn,
+        setCusTableColumn,
+        cusTableColumn,
+        setTableRows,
+        TableRows,
+    } = useContext(AppContext);
     const modal = useRef<any>();
     useEffect(() => {
         const clickOutSide = (e: any) => {
@@ -86,12 +91,16 @@ export default function FilterCustomer({ setFilter, isFilter }: setFilter) {
             <li>
                 <p className=" font-medium text-[12px]">Rows</p>
 
-                <select className="border border-ThemeRed px-[5px] py-[1px]">
+                <select
+                    className="border border-ThemeRed px-[5px] py-[1px]"
+                    onChange={(e) => setTableRows(e.target.value)}
+                    value={TableRows}
+                >
                     <option value="10">10</option>
-                    <option value="10">20</option>
-                    <option value="10">30</option>
-                    <option value="10">40</option>
-                    <option value="10">50</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                    <option value="40">40</option>
+                    <option value="50">50</option>
                 </select>
             </li>
         </motion.ul>

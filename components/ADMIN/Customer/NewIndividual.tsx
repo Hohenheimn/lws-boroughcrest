@@ -4,7 +4,7 @@ import AppContext from "../../Context/AppContext";
 import { motion } from "framer-motion";
 import style from "../../../styles/Popup_Modal.module.scss";
 import { useForm } from "react-hook-form";
-import { customerItemDetail, customer } from "../../../types/customerList";
+import { customer } from "../../../types/customerList";
 import Link from "next/link";
 import Image from "next/image";
 import { AiFillCamera } from "react-icons/ai";
@@ -173,7 +173,7 @@ export default function NewIndividual({
                                     className=" text-[12px] text-[#19d142] font-NHU-medium mb-1 uppercase cursor-pointer w-[90%] 480px:w-full"
                                     htmlFor="file"
                                 >
-                                    Uploaded Signature
+                                    Upload Signature
                                 </label>
                             ) : (
                                 <label

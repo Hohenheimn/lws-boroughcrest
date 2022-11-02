@@ -11,6 +11,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import style from "../../styles/SearchFilter.module.scss";
 import FilterProperty from "./FilterProperty";
+import { CustomerImport, CustomerExport } from "../ReactQuery/CustomerMethod";
 
 type SearchFilter = {
     page: string;
@@ -21,6 +22,45 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
     const [isFilter, setFilter] = useState(false);
     const router = useRouter();
     const ValidatePathName = router.pathname.split("/")[2];
+
+    const CustomerSuccess = () => {
+        alert("Success");
+    };
+
+    const { isLoading: CusLoading, mutate: CusMutate } =
+        CustomerImport(CustomerSuccess);
+
+    const importHandler = (e: any) => {
+        if (e.target.files.length > 0) {
+            let selectedFile = e.target.files[0];
+            if (
+                [
+                    "XLSX",
+                    "XLSM",
+                    "XLS",
+                    "XLTX",
+                    "XLTM",
+                    "xlsx",
+                    "xlsm",
+                    "xls",
+                    "xltx",
+                    "xltm",
+                ].includes(selectedFile.type)
+            ) {
+                if (router.pathname.includes("admin/customer")) {
+                    console.log(selectedFile);
+                }
+            } else {
+                alert("Invalid File");
+            }
+        } else {
+            alert("Please Select a File");
+        }
+    };
+    const exportHandler = () => {
+        if (router.pathname.includes("admin/customer")) {
+        }
+    };
 
     return (
         <div>
@@ -40,7 +80,10 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
                         ValidatePathName === "property") && (
                         <li className={style.importExportPrint}>
                             <Tippy theme="ThemeRed" content="Export">
-                                <div className={style.icon}>
+                                <div
+                                    className={style.icon}
+                                    onClick={exportHandler}
+                                >
                                     <Image
                                         src="/Images/Export.png"
                                         width={30}
@@ -61,7 +104,12 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
                                     </label>
                                 </div>
                             </Tippy>
-                            <input type="file" id="import" className="hidden" />
+                            <input
+                                type="file"
+                                id="import"
+                                onChange={importHandler}
+                                className="hidden"
+                            />
                             <Tippy theme="ThemeRed" content="Print">
                                 <div className={style.icon}>
                                     <Image

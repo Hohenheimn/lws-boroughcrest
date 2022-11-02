@@ -43,16 +43,6 @@ const List = () => {
     return (
         <tr onMouseEnter={MouseEnter} onMouseLeave={MouseLeave}>
             <td>
-                {isEdit && (
-                    <Link href="/admin/property/123">
-                        <a className="edit">
-                            <aside>
-                                <GoPencil className="mr-2" /> Edit
-                            </aside>
-                        </a>
-                    </Link>
-                )}
-
                 <Link href="/admin/property/123">
                     <a className="item">
                         <aside>
@@ -64,7 +54,6 @@ const List = () => {
                         </aside>
                         <div>
                             <h2>1234</h2>
-                            <p>Lorem Ipsum</p>
                         </div>
                     </a>
                 </Link>
@@ -74,7 +63,6 @@ const List = () => {
                     <a className="item">
                         <div>
                             <h2>205</h2>
-                            <p>Lorem Ipsum</p>
                         </div>
                     </a>
                 </Link>
@@ -84,7 +72,6 @@ const List = () => {
                     <a className="item">
                         <div>
                             <h2>Finance</h2>
-                            <p>Lorem Ipsum</p>
                         </div>
                     </a>
                 </Link>
@@ -94,7 +81,6 @@ const List = () => {
                     <a className="item">
                         <div>
                             <h2>Builder</h2>
-                            <p>Lorem Ipsum</p>
                         </div>
                     </a>
                 </Link>
@@ -104,7 +90,6 @@ const List = () => {
                     <a className="item">
                         <div>
                             <h2>Y Tower</h2>
-                            <p>Lorem Ipsum</p>
                         </div>
                     </a>
                 </Link>
@@ -114,7 +99,6 @@ const List = () => {
                     <a className="item">
                         <div>
                             <h2>2nd</h2>
-                            <p>Lorem Ipsum</p>
                         </div>
                     </a>
                 </Link>
@@ -124,7 +108,6 @@ const List = () => {
                     <a className="item">
                         <div>
                             <h2>1</h2>
-                            <p>Lorem Ipsum</p>
                         </div>
                     </a>
                 </Link>
@@ -134,7 +117,6 @@ const List = () => {
                     <a className="item">
                         <div>
                             <h2>Lorem</h2>
-                            <p>Lorem Ipsum</p>
                         </div>
                     </a>
                 </Link>
@@ -144,7 +126,6 @@ const List = () => {
                     <a className="item">
                         <div>
                             <h2>07/20/2016</h2>
-                            <p>Lorem Ipsum</p>
                         </div>
                     </a>
                 </Link>
@@ -154,7 +135,6 @@ const List = () => {
                     <a className="item">
                         <div>
                             <h2>Jane Doe</h2>
-                            <p>Lorem Ipsum</p>
                         </div>
                     </a>
                 </Link>
