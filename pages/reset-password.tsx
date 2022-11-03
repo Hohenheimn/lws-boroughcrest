@@ -4,15 +4,28 @@ import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import Image from "next/image";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import { ScaleLoader } from "react-spinners";
+import { ChangePassword } from "../components/ReactQuery/ForgotPassword";
+import Link from "next/link";
 
 export default function ResetPassword({ token }: any) {
-    console.log(token);
     const router = useRouter();
     const [confirmPass, setConfirmPass] = useState("");
     const [isPassword, setPassword] = useState("");
     const [inValid, setInvalid] = useState(false);
     const [isEye1, setEye1] = useState(false);
     const [isEye, setEye] = useState(false);
+
+    const OnSuccess = () => {
+        alert("Successfully changed your password!");
+        router.push("/login");
+    };
+
+    const OnError = () => {
+        alert("Invalid token, token might expire or already used!");
+    };
+
+    const { mutate, isLoading } = ChangePassword(token, OnSuccess, OnError);
 
     useEffect(() => {
         if (token === "") {
@@ -23,8 +36,11 @@ export default function ResetPassword({ token }: any) {
     const Submit = (e: any) => {
         e.preventDefault();
         if (confirmPass === isPassword) {
-            // request update
             setInvalid(false);
+            const data = {
+                password: confirmPass,
+            };
+            mutate(data);
         } else {
             setInvalid(true);
         }
@@ -62,7 +78,7 @@ export default function ResetPassword({ token }: any) {
                                 height={150}
                             />
 
-                            <p className="text-center text-white -mt-3 mb-10 text-[14px] 640px:mb-2">
+                            {/* <p className="text-center text-white -mt-3 mb-10 text-[14px] 640px:mb-2">
                                 lorem ipsum
                             </p>
                             <p className="text-center text-white text-[14px] leading-tight">
@@ -70,7 +86,7 @@ export default function ResetPassword({ token }: any) {
                                 adipiscing elit. Et nec bibendum congue aliquet
                                 augue diam mauris lobortis. Morbi mattis
                                 tincidunt ut dignissim lacinia..
-                            </p>
+                            </p> */}
                         </li>
                         <li className=" w-8/12 820px:w-7/12 bg-[#e5e4e455] flex flex-col 640px:w-full">
                             <section className=" p-16 820px:p-10 640px:p-5 flex flex-col items-start justify-center flex-1">
@@ -141,12 +157,31 @@ export default function ResetPassword({ token }: any) {
                                     </p>
                                 )}
                                 <div className=" flex items-center justify-between w-full max-w-[400px] mb-5 640px:mb-4">
-                                    <button
-                                        type="submit"
-                                        className=" w-32 py-1 bg-ThemeRed rounded-lg text-white text-[14px] hover:shadow-lg duration-75 ease-in-out font-medium hover:bg-white hover:text-ThemeRed"
-                                    >
-                                        SUBMIT
-                                    </button>
+                                    {isLoading ? (
+                                        <div className=" flex justify-center w-32 py-1 bg-white pointer-events-none rounded-lg text-white text-[14px] hover:shadow-lg duration-75 ease-in-out font-medium hover:bg-white hover:text-ThemeRed">
+                                            <div className="flex items-center my-1">
+                                                <ScaleLoader
+                                                    color="#8f384d"
+                                                    height="10px"
+                                                    width="2px"
+                                                />
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className=" flex items-center justify-between max-w-[400px] 640px:mb-4">
+                                            <button
+                                                type="submit"
+                                                className=" w-32 py-1 bg-ThemeRed rounded-lg text-white text-[14px] hover:shadow-lg duration-75 ease-in-out font-medium hover:bg-white hover:text-ThemeRed"
+                                            >
+                                                SUBMIT
+                                            </button>
+                                        </div>
+                                    )}
+                                    <Link href="/login">
+                                        <a className="hover:underline cursor-pointer text-ThemeRed text-[12px] flex">
+                                            Go to login page
+                                        </a>
+                                    </Link>
                                 </div>
                             </section>
                             <div className="px-5 640px:px-5 flex justify-end">
@@ -164,7 +199,8 @@ export default function ResetPassword({ token }: any) {
 }
 
 export async function getServerSideProps(context: any) {
-    const token = "";
+    // const router = useRouter();
+    const token = context.query.token;
     return {
         props: {
             token: token,

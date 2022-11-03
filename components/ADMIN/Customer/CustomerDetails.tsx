@@ -69,10 +69,10 @@ export default function CustomerDetail() {
                                 onClick={() => {
                                     setModifyCustomer({
                                         ...data,
+                                        tin: data.tin.replaceAll("-", ""),
                                         _method: "PUT",
                                     });
                                     setToggleModify(true);
-                                    console.log(isModifyCustomer);
                                 }}
                             />
                         </div>

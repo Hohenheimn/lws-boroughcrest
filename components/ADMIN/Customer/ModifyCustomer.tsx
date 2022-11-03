@@ -3,7 +3,7 @@ import { AiFillCamera } from "react-icons/ai";
 import Image from "next/image";
 import style from "../../../styles/Popup_Modal.module.scss";
 import { RiArrowDownSFill } from "react-icons/ri";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { ModalSideFade } from "../../Animation/SimpleAnimation";
 import AppContext from "../../Context/AppContext";
 import { useForm } from "react-hook-form";
@@ -24,22 +24,18 @@ export default function ModifyCustomer({ setToggleModify }: ModifyCustomer) {
         <div className={style.container}>
             <section className=" p-10 bg-[#e2e3e4] rounded-lg w-[90%] max-w-[800px] text-ThemeRed shadow-lg">
                 <p className=" text-[16px] mb-3 font-bold">Modify Customer</p>
-                <AnimatePresence mode="wait">
-                    {isActiveForm[0] && (
-                        <Primary
-                            key={1}
-                            setToggleModify={setToggleModify}
-                            setActiveForm={setActiveForm}
-                        />
-                    )}
-                    {isActiveForm[1] && (
-                        <Contact
-                            key={2}
-                            setToggleModify={setToggleModify}
-                            setActiveForm={setActiveForm}
-                        />
-                    )}
-                </AnimatePresence>
+
+                <Primary
+                    setToggleModify={setToggleModify}
+                    setActiveForm={setActiveForm}
+                    isActiveForm={isActiveForm}
+                />
+
+                <Contact
+                    setToggleModify={setToggleModify}
+                    setActiveForm={setActiveForm}
+                    isActiveForm={isActiveForm}
+                />
             </section>
         </div>
     );
@@ -47,14 +43,42 @@ export default function ModifyCustomer({ setToggleModify }: ModifyCustomer) {
 type Props = {
     setToggleModify: Function;
     setActiveForm: Function;
+    isActiveForm: any;
 };
-const Primary = ({ setToggleModify, setActiveForm }: Props) => {
-    const [isProfileUrl, setProfileUrl] = useState("");
-    const [isValidIDUrl, setValidIDUrl] = useState("");
+const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
     const { isModifyCustomer, ImgUrl, setModifyCustomer } =
         useContext(AppContext);
     const [isType, setType] = useState(isModifyCustomer.type);
     const [isStatus, setStatus] = useState(isModifyCustomer.status);
+    const [isSignature, setSignature] = useState(false);
+    const prevProf = ImgUrl + isModifyCustomer.image_photo;
+    const prevValid = ImgUrl + isModifyCustomer.image_valid_id;
+    const [isProfileUrl, setProfileUrl] = useState(
+        ImgUrl + isModifyCustomer.image_photo
+    );
+    const [isValidIDUrl, setValidIDUrl] = useState(
+        ImgUrl + isModifyCustomer.image_valid_id
+    );
+
+    const typeHandler = (e: any) => {
+        if (e.target.value === "individual") {
+            setModifyCustomer({
+                ...isModifyCustomer,
+                company_contact_person: null,
+                type: e.target.value,
+            });
+        }
+        if (e.target.value === "company") {
+            setModifyCustomer({
+                ...isModifyCustomer,
+                individual_citizenship: "",
+                individual_co_owner: "",
+                individual_birth_date: "",
+                type: e.target.value,
+            });
+        }
+        setType(e.target.value);
+    };
 
     const {
         register,
@@ -83,6 +107,7 @@ const Primary = ({ setToggleModify, setActiveForm }: Props) => {
             image_signature: data.image_signature[0],
             image_valid_id: data.image_valid_id[0],
             status: isStatus,
+            class: data.class,
         });
         setActiveForm((item: boolean[]) => [
             (item[0] = false),
@@ -92,6 +117,10 @@ const Primary = ({ setToggleModify, setActiveForm }: Props) => {
     };
 
     const DisplayImage = (e: any) => {
+        if (e.target.files[0]?.size > 2000000) {
+            alert("Image must be 2mb only");
+            return;
+        }
         if (e.target.files.length > 0) {
             let selectedImage = e.target.files[0];
             if (
@@ -124,6 +153,7 @@ const Primary = ({ setToggleModify, setActiveForm }: Props) => {
             initial="initial"
             animate="animate"
             exit="exit"
+            className={`${isActiveForm[0] ? "" : "hidden"}`}
         >
             <form onSubmit={handleSubmit(NextFormValidation)}>
                 <h1 className=" w-full text-[24px] mb-3">
@@ -136,12 +166,12 @@ const Primary = ({ setToggleModify, setActiveForm }: Props) => {
                         </p>
                         <select
                             name=""
-                            defaultValue="default"
+                            defaultValue={isType}
                             id=""
                             className="rounded-md text-black px-2 py-[2px] outline-none w-[90%] 480px:w-full"
-                            onChange={(e) => setType(e.target.value)}
+                            onChange={typeHandler}
                         >
-                            <option value="default" disabled>
+                            <option value={isType} disabled>
                                 {isType}
                             </option>
                             <option
@@ -185,12 +215,7 @@ const Primary = ({ setToggleModify, setActiveForm }: Props) => {
                         <aside className="w-20 h-20 relative flex mr-4">
                             <aside className=" bg-white h-full w-full text-[12px] rounded-full object-cover shadow-lg relative">
                                 <Image
-                                    src={
-                                        isProfileUrl
-                                            ? isProfileUrl
-                                            : ImgUrl +
-                                              isModifyCustomer.image_photo
-                                    }
+                                    src={isProfileUrl}
                                     alt="Sample Profile"
                                     layout="fill"
                                 />
@@ -227,12 +252,7 @@ const Primary = ({ setToggleModify, setActiveForm }: Props) => {
                         >
                             <aside className=" w-24 h-16 mr-2 relative">
                                 <Image
-                                    src={
-                                        isValidIDUrl
-                                            ? isProfileUrl
-                                            : ImgUrl +
-                                              isModifyCustomer.image_valid_id
-                                    }
+                                    src={isValidIDUrl}
                                     alt="sample id"
                                     layout="fill"
                                 />
@@ -241,17 +261,31 @@ const Primary = ({ setToggleModify, setActiveForm }: Props) => {
                         </label>
                     </li>
                     <li className="  flex flex-col  w-4/12 820px:w-2/4 480px:w-full mb-5 justify-center items-end">
-                        <label
-                            className=" text-[12px] font-NHU-medium mb-1 uppercase cursor-pointer w-[90%] 480px:w-full"
-                            htmlFor="file"
-                        >
-                            Upload Signature
-                        </label>
+                        {isSignature ? (
+                            <label
+                                className=" text-[12px] text-[#19d142] font-NHU-medium mb-1 uppercase cursor-pointer w-[90%] 480px:w-full"
+                                htmlFor="file"
+                            >
+                                Upload Signature
+                            </label>
+                        ) : (
+                            <label
+                                className=" text-[12px] font-NHU-medium mb-1 uppercase cursor-pointer w-[90%] 480px:w-full"
+                                htmlFor="file"
+                            >
+                                Upload Signature
+                            </label>
+                        )}
                         <input
                             id="file"
                             type="file"
                             className="absolute z-[-99] top-[-100px]"
                             {...register("image_signature")}
+                            onChange={(e) => {
+                                e.target.files
+                                    ? setSignature(true)
+                                    : setSignature(false);
+                            }}
                         />
                     </li>
                 </ul>
@@ -351,58 +385,47 @@ const Primary = ({ setToggleModify, setActiveForm }: Props) => {
                             </li>
                         </>
                     )}
-                    <li className={style.twoRows}>
-                        <div className={style.wrapper}>
-                            <div className=" w-[48%]">
-                                <label>TIN Number</label>
-                                <input
-                                    type="text"
-                                    placeholder="000-000-000"
-                                    {...register("tin", {
-                                        required: "Required",
-                                        minLength: {
-                                            value: 11,
-                                            message: "Must be 11 Characters",
-                                        },
-                                        maxLength: {
-                                            value: 11,
-                                            message: "Must be 11 Characters",
-                                        },
-                                        pattern: {
-                                            value: /^[0-9,-]+$/i,
-                                            message: "Only number and Hyphen",
-                                        },
-                                    })}
-                                />
-                                {errors.tin && (
-                                    <p className="text-[10px]">
-                                        {errors.tin.message}
-                                    </p>
-                                )}
-                            </div>
-                            <div className=" w-[48%]">
-                                <label>Branch Code</label>
-                                <input
-                                    type="number"
-                                    {...register("branch_code", {
-                                        required: "Required",
-                                        minLength: {
-                                            value: 5,
-                                            message: "Must be 5 Number",
-                                        },
-                                        maxLength: {
-                                            value: 5,
-                                            message: "Must be 5 Number",
-                                        },
-                                    })}
-                                />
-                                {errors.branch_code && (
-                                    <p className="text-[10px]">
-                                        {errors.branch_code.message}
-                                    </p>
-                                )}
-                            </div>
-                        </div>
+                    <li>
+                        <label>TIN Number</label>
+                        <input
+                            type="number"
+                            {...register("tin", {
+                                required: "Required",
+                                minLength: {
+                                    value: 9,
+                                    message: "Must be 9 numbers only",
+                                },
+                                maxLength: {
+                                    value: 9,
+                                    message: "Must be 9 numbers only",
+                                },
+                            })}
+                        />
+                        {errors.tin && (
+                            <p className="text-[10px]">{errors.tin.message}</p>
+                        )}
+                    </li>
+                    <li>
+                        <label>Branch Code</label>
+                        <input
+                            type="number"
+                            {...register("branch_code", {
+                                required: "Required",
+                                minLength: {
+                                    value: 5,
+                                    message: "Must be 5 Number",
+                                },
+                                maxLength: {
+                                    value: 5,
+                                    message: "Must be 5 Number",
+                                },
+                            })}
+                        />
+                        {errors.branch_code && (
+                            <p className="text-[10px]">
+                                {errors.branch_code.message}
+                            </p>
+                        )}
                     </li>
                 </ul>
                 <div className=" w-full flex justify-end items-center">
@@ -424,7 +447,7 @@ const Primary = ({ setToggleModify, setActiveForm }: Props) => {
     );
 };
 
-const Contact = ({ setActiveForm, setToggleModify }: Props) => {
+const Contact = ({ setActiveForm, setToggleModify, isActiveForm }: Props) => {
     const { isModifyCustomer, setModifyCustomer } = useContext(AppContext);
     const [isSameEmail, setSameEmail] = useState(false);
     const [isSameAddress, setSameAddress] = useState(false);
@@ -447,7 +470,7 @@ const Contact = ({ setActiveForm, setToggleModify }: Props) => {
             setToggleModify(false);
         }
         if (whatClickedButon === "new") {
-            router.push("/admin/cusomter?new");
+            router.push("/admin/customer?new");
         }
     };
 
@@ -455,14 +478,13 @@ const Contact = ({ setActiveForm, setToggleModify }: Props) => {
         onSuccess,
         router.query.id
     );
-    const {
-        isLoading: DraftLoading,
-        isError: DraftError,
-        mutate: DraftMutate,
-    } = SaveDraftUpdate(onSuccess, router.query.id);
+    const { isLoading: DraftLoading } = SaveDraftUpdate(
+        onSuccess,
+        router.query.id
+    );
 
     const NextFormValidation = async (data: any) => {
-        setModifyCustomer({
+        const Payload = {
             ...isModifyCustomer,
             contact_no: data.contact_no,
             registered_email: data.registered_email,
@@ -482,29 +504,37 @@ const Contact = ({ setActiveForm, setToggleModify }: Props) => {
             mailing_address_municipal_city: data.mailing_address_municipal_city,
             mailing_address_province: data.mailing_address_province,
             mailing_address_zip_code: data.mailing_address_zip_code,
-        });
+        };
+
+        delete Payload["updated_at"];
+        delete Payload["created_at"];
+        delete Payload["portal_id"];
+        delete Payload["assigned_customer_id"];
+        delete Payload["deleted_at"];
+        delete Payload["id"];
+
         const formData = new FormData();
         const arrayData: any = [];
-        const keys = Object.keys(isModifyCustomer);
+        const keys = Object.keys(Payload);
 
         await keys.forEach((key) => {
             if (
-                isModifyCustomer[key] === null ||
-                isModifyCustomer[key] === undefined ||
-                isModifyCustomer[key] === ""
+                Payload[key] === null ||
+                Payload[key] === undefined ||
+                Payload[key] === ""
             ) {
                 return;
             } else {
                 arrayData.push({
                     key: key,
-                    keyData: isModifyCustomer[key],
+                    keyData: Payload[key],
                 });
             }
         });
         arrayData.map(({ key, keyData }: any) => {
             formData.append(key, keyData);
         });
-        console.log(arrayData);
+
         if (whatClickedButon === "save" || whatClickedButon === "new") {
             mutate(formData);
         }
@@ -525,6 +555,7 @@ const Contact = ({ setActiveForm, setToggleModify }: Props) => {
             initial="initial"
             animate="animate"
             exit="exit"
+            className={`${isActiveForm[1] ? "" : "hidden"}`}
         >
             <form onSubmit={handleSubmit(NextFormValidation)}>
                 <h1 className={style.modal_label_primary}>

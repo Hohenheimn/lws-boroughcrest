@@ -12,6 +12,7 @@ import Link from "next/link";
 import style from "../../styles/SearchFilter.module.scss";
 import FilterProperty from "./FilterProperty";
 import { CustomerImport, CustomerExport } from "../ReactQuery/CustomerMethod";
+import { MoonLoader } from "react-spinners";
 
 type SearchFilter = {
     page: string;
@@ -23,6 +24,9 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
     const router = useRouter();
     const ValidatePathName = router.pathname.split("/")[2];
 
+    const { data, isLoading } = CustomerExport();
+    // console.log(data?.data);
+
     const CustomerSuccess = () => {
         alert("Success");
     };
@@ -33,32 +37,15 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
     const importHandler = (e: any) => {
         if (e.target.files.length > 0) {
             let selectedFile = e.target.files[0];
-            if (
-                [
-                    "XLSX",
-                    "XLSM",
-                    "XLS",
-                    "XLTX",
-                    "XLTM",
-                    "xlsx",
-                    "xlsm",
-                    "xls",
-                    "xltx",
-                    "xltm",
-                ].includes(selectedFile.type)
-            ) {
-                if (router.pathname.includes("admin/customer")) {
-                    console.log(selectedFile);
-                }
-            } else {
-                alert("Invalid File");
-            }
-        } else {
-            alert("Please Select a File");
+            const formData = new FormData();
+            formData.append("file", selectedFile);
+            CusMutate(formData);
+            console.log(selectedFile);
         }
     };
     const exportHandler = () => {
         if (router.pathname.includes("admin/customer")) {
+            // download(data?.data);
         }
     };
 
@@ -94,14 +81,18 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
                             </Tippy>
                             <Tippy theme="ThemeRed" content="Import">
                                 <div className={style.icon}>
-                                    <label htmlFor="import">
-                                        <Image
-                                            src="/Images/Import.png"
-                                            width={30}
-                                            height={30}
-                                            alt="Import"
-                                        />
-                                    </label>
+                                    {CusLoading ? (
+                                        <MoonLoader size={20} color="#8f384d" />
+                                    ) : (
+                                        <label htmlFor="import">
+                                            <Image
+                                                src="/Images/Import.png"
+                                                width={30}
+                                                height={30}
+                                                alt="Import"
+                                            />
+                                        </label>
+                                    )}
                                 </div>
                             </Tippy>
                             <input

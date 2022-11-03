@@ -37,7 +37,7 @@ export default function Login() {
             router.reload();
         } catch (error: any) {
             console.log(error);
-            setInvalid(error.message);
+            setInvalid("Invalid Username or Password");
             setLoading(false);
         }
     };
@@ -67,7 +67,14 @@ export default function Login() {
     const SuccessSendLink = () => {
         setInvalid("Email sent successfully!");
     };
-    const { mutate, isLoading: SendLinkLoading } = SendLink(SuccessSendLink);
+    const ErrorSendLink = () => {
+        setInvalid("Email not found!");
+    };
+    const {
+        mutate,
+        isLoading: SendLinkLoading,
+        isError,
+    } = SendLink(SuccessSendLink, ErrorSendLink);
 
     const forgotHandler = () => {
         const regex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
@@ -112,7 +119,7 @@ export default function Login() {
                                 height={150}
                             />
 
-                            <p className="text-center text-white -mt-3 mb-10 text-[14px] 640px:mb-2">
+                            {/* <p className="text-center text-white -mt-3 mb-10 text-[14px] 640px:mb-2">
                                 lorem ipsum
                             </p>
                             <p className="text-center text-white text-[14px] leading-tight">
@@ -120,7 +127,7 @@ export default function Login() {
                                 adipiscing elit. Et nec bibendum congue aliquet
                                 augue diam mauris lobortis. Morbi mattis
                                 tincidunt ut dignissim lacinia..
-                            </p>
+                            </p> */}
                         </li>
                         <li className=" w-8/12 820px:w-7/12 bg-[#e5e4e455] flex flex-col 640px:w-full">
                             <section className=" p-16 820px:p-10 640px:p-5 flex flex-col items-start justify-center flex-1">
@@ -183,7 +190,7 @@ export default function Login() {
                                 <div className=" flex items-center justify-between w-full max-w-[400px] mb-5 640px:mb-4">
                                     {isLoading ? (
                                         <div className=" flex justify-center w-32 py-1 bg-white pointer-events-none rounded-lg text-white text-[14px] hover:shadow-lg duration-75 ease-in-out font-medium hover:bg-white hover:text-ThemeRed">
-                                            <div>
+                                            <div className="flex items-center my-1">
                                                 <ScaleLoader
                                                     color="#8f384d"
                                                     height="10px"
@@ -196,7 +203,9 @@ export default function Login() {
                                             type="submit"
                                             className=" w-32 py-1 bg-ThemeRed rounded-lg text-white text-[14px] hover:shadow-lg duration-75 ease-in-out font-medium hover:bg-white hover:text-ThemeRed"
                                         >
-                                            LOG IN
+                                            <div className="flex items-center justify-center">
+                                                LOG IN
+                                            </div>
                                         </button>
                                     )}
 

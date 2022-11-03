@@ -64,7 +64,7 @@ export default function Sidebar({
                     />
                 </div>
 
-                <div className="w-full h-full flex flex-1">
+                <div className="w-full h-full flex">
                     <ul
                         className={` self-start pt-10 ${
                             !isProfileSearch && "w-full"
@@ -131,7 +131,7 @@ export default function Sidebar({
                         ))}
                     </ul>
                     {/* Pages, the Search will show */}
-                    <div className="flex-1 shadow-2xl ">
+                    <div className="shadow-2xl flex-1">
                         <AnimatePresence>
                             {isProfileSearch && (
                                 <motion.ul

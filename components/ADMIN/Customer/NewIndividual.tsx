@@ -25,6 +25,10 @@ export default function NewIndividual({
     const [isSignature, setSignature] = useState(false);
 
     const DisplayImage = (e: any) => {
+        if (e.target.files[0]?.size > 2000000) {
+            alert("Image must be 2mb only");
+            return;
+        }
         if (e.target.files.length > 0) {
             let selectedImage = e.target.files[0];
             if (
@@ -42,11 +46,32 @@ export default function NewIndividual({
                     if (e.target.getAttribute("data-type") === "validID") {
                         setValidIDUrl(event.target.result);
                     }
+                    if (e.target.getAttribute("data-type") === "signature") {
+                        setSignature(true);
+                    }
                 });
             } else {
+                if (e.target.getAttribute("data-type") === "profile") {
+                    setProfileUrl("/Images/sampleProfile.png");
+                }
+                if (e.target.getAttribute("data-type") === "validID") {
+                    setValidIDUrl("/Images/id-sample.png");
+                }
+                if (e.target.getAttribute("data-type") === "signature") {
+                    setSignature(false);
+                }
                 alert("Invalid Image File");
             }
         } else {
+            if (e.target.getAttribute("data-type") === "profile") {
+                setProfileUrl("/Images/sampleProfile.png");
+            }
+            if (e.target.getAttribute("data-type") === "validID") {
+                setValidIDUrl("/Images/id-sample.png");
+            }
+            if (e.target.getAttribute("data-type") === "signature") {
+                setSignature(false);
+            }
             alert("Nothing Happens");
         }
     };
@@ -190,11 +215,8 @@ export default function NewIndividual({
                                 {...register("image_signature", {
                                     required: "Required",
                                 })}
-                                onChange={(e) => {
-                                    e.target.files
-                                        ? setSignature(true)
-                                        : setSignature(false);
-                                }}
+                                onChange={DisplayImage}
+                                data-type="signature"
                             />
                         </div>
                         {errors.image_signature && (
@@ -279,58 +301,48 @@ export default function NewIndividual({
                             </p>
                         )}
                     </li>
-                    <li className={style.twoRows}>
-                        <div className={style.wrapper}>
-                            <div className=" w-[48%]">
-                                <label>TIN Number</label>
-                                <input
-                                    type="text"
-                                    placeholder="000-000-000"
-                                    {...register("tin", {
-                                        required: "Required",
-                                        minLength: {
-                                            value: 11,
-                                            message: "Must be 11 Characters",
-                                        },
-                                        maxLength: {
-                                            value: 11,
-                                            message: "Must be 11 Characters",
-                                        },
-                                        pattern: {
-                                            value: /^[0-9,-]+$/i,
-                                            message: "Only number and Hyphen",
-                                        },
-                                    })}
-                                />
-                                {errors.tin && (
-                                    <p className="text-[10px]">
-                                        {errors.tin.message}
-                                    </p>
-                                )}
-                            </div>
-                            <div className=" w-[48%]">
-                                <label>Branch Code</label>
-                                <input
-                                    type="number"
-                                    {...register("branch_code", {
-                                        required: "Required",
-                                        minLength: {
-                                            value: 5,
-                                            message: "Must be 5 Number",
-                                        },
-                                        maxLength: {
-                                            value: 5,
-                                            message: "Must be 5 Number",
-                                        },
-                                    })}
-                                />
-                                {errors.branch_code && (
-                                    <p className="text-[10px]">
-                                        {errors.branch_code.message}
-                                    </p>
-                                )}
-                            </div>
-                        </div>
+                    <li>
+                        <label>TIN Number</label>
+                        <input
+                            type="text"
+                            placeholder="000000000"
+                            {...register("tin", {
+                                required: "Required",
+                                minLength: {
+                                    value: 9,
+                                    message: "Must be 9 numbers only",
+                                },
+                                maxLength: {
+                                    value: 11,
+                                    message: "Must be 9 numbers only",
+                                },
+                            })}
+                        />
+                        {errors.tin && (
+                            <p className="text-[10px]">{errors.tin.message}</p>
+                        )}
+                    </li>
+                    <li>
+                        <label>Branch Code</label>
+                        <input
+                            type="number"
+                            {...register("branch_code", {
+                                required: "Required",
+                                minLength: {
+                                    value: 5,
+                                    message: "Must be 5 Number",
+                                },
+                                maxLength: {
+                                    value: 5,
+                                    message: "Must be 5 Number",
+                                },
+                            })}
+                        />
+                        {errors.branch_code && (
+                            <p className="text-[10px]">
+                                {errors.branch_code.message}
+                            </p>
+                        )}
                     </li>
                 </ul>
 

@@ -372,7 +372,7 @@ const Select = ({ setSelect, updateValue }: any) => {
                 data?.data.map((item: any, index: number) => (
                     <li
                         key={index}
-                        data-projname={item.type}
+                        data-projname={item.project.name}
                         onClick={updateValue}
                     >
                         {item.unit_code}

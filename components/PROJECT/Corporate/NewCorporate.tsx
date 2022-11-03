@@ -2,7 +2,6 @@ import React, { useState, useContext } from "react";
 import AppContext from "../../Context/AppContext";
 import { useRouter } from "next/router";
 import style from "../../../styles/Popup_Modal.module.scss";
-import { AnimatePresence } from "framer-motion";
 import { motion } from "framer-motion";
 import { ModalSideFade } from "../../../components/Animation/SimpleAnimation";
 import { RiArrowDownSFill } from "react-icons/ri";
@@ -19,6 +18,7 @@ import Link from "next/link";
 
 export default function NewCorporate() {
     const [isNewActive, setNewActive] = useState([true, false]);
+    const [isProfileUrl, setProfileUrl] = useState("/Images/sampleProfile.png");
     const { isLoading, isError, data } = useQuery("get-id", () => {
         return api.get("project/corporate", {
             headers: {
@@ -44,18 +44,21 @@ export default function NewCorporate() {
             <section>
                 <p className={style.modal_title}>Create Corporate</p>
 
-                <AnimatePresence mode="wait">
-                    {isNewActive[0] && (
-                        <Primary
-                            key={1}
-                            setNewActive={setNewActive}
-                            Current_id={Current_id}
-                        />
-                    )}
-                    {isNewActive[1] && (
-                        <Contact key={2} setNewActive={setNewActive} />
-                    )}
-                </AnimatePresence>
+                <Primary
+                    key={1}
+                    setNewActive={setNewActive}
+                    Current_id={Current_id}
+                    isNewActive={isNewActive}
+                    setProfileUrl={setProfileUrl}
+                    isProfileUrl={isProfileUrl}
+                />
+                <Contact
+                    key={2}
+                    setNewActive={setNewActive}
+                    isNewActive={isNewActive}
+                    setProfileUrl={setProfileUrl}
+                    isProfileUrl={isProfileUrl}
+                />
             </section>
         </div>
     );
@@ -64,18 +67,27 @@ export default function NewCorporate() {
 type Props = {
     setNewActive: Function;
     Current_id?: any;
+    isNewActive: any;
+    isProfileUrl: any;
+    setProfileUrl: Function;
 };
-const Primary = ({ setNewActive, Current_id }: Props) => {
+const Primary = ({
+    setNewActive,
+    Current_id,
+    isNewActive,
+    isProfileUrl,
+    setProfileUrl,
+}: Props) => {
     const [isLogoStatus, setLogoStatus] = useState("Upload Logo");
-    const [isProfileUrl, setProfileUrl] = useState("/Images/sampleProfile.png");
     const Next_ID = Current_id + 1;
 
     const DisplayImage = (e: any) => {
-        if (e.target.files[0]?.size > 2000) {
-            setLogoStatus("File is too large");
+        if (e.target.files[0]?.size > 2000000) {
+            setLogoStatus("Image must be 2mb only");
             return;
         } else {
             setLogoStatus("");
+            console.log(e.target.files[0]);
         }
         if (e.target.files.length > 0) {
             let selectedImage = e.target.files[0];
@@ -101,17 +113,7 @@ const Primary = ({ setNewActive, Current_id }: Props) => {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm<firstCorporateForm>({
-        defaultValues: {
-            logo: createCorporate.logo,
-            name: createCorporate.name,
-            tin: createCorporate.tin,
-            branch_code: createCorporate.branch_code,
-            rdo_no: createCorporate.rdo_no,
-            gst_type: createCorporate.gst_type,
-            sec_registration_no: createCorporate.sec_registration_no,
-        },
-    });
+    } = useForm<firstCorporateForm>();
 
     const Submit = (data: any) => {
         if (
@@ -124,12 +126,6 @@ const Primary = ({ setNewActive, Current_id }: Props) => {
         setCreateCorporate({
             ...createCorporate,
             logo: data.logo[0],
-            name: data.name,
-            tin: data.tin,
-            branch_code: data.branch_code,
-            rdo_no: data.rdo_no,
-            gst_type: data.gst_type,
-            sec_registration_no: data.sec_registration_no,
         });
 
         setNewActive((item: any) => [(item[0] = false), (item[1] = true)]);
@@ -141,6 +137,7 @@ const Primary = ({ setNewActive, Current_id }: Props) => {
             initial="initial"
             animate="animate"
             exit="exit"
+            className={`${isNewActive[0] ? "" : "hidden"}`}
         >
             <form onSubmit={handleSubmit(Submit)}>
                 <h1 className={style.modal_label_primary}>
@@ -194,6 +191,13 @@ const Primary = ({ setNewActive, Current_id }: Props) => {
                             {...register("name", {
                                 required: "Required",
                             })}
+                            value={createCorporate.name}
+                            onChange={(e) => {
+                                setCreateCorporate({
+                                    ...createCorporate,
+                                    name: e.target.value,
+                                });
+                            }}
                         />
                         {errors.name && (
                             <p className="text-[10px]">{errors.name.message}</p>
@@ -202,60 +206,66 @@ const Primary = ({ setNewActive, Current_id }: Props) => {
                 </ul>
                 <p className="text-[16px]">TIN</p>
                 <ul className={style.ThreeRows}>
-                    <li className={style.twoRows}>
-                        <div className={style.wrapper}>
-                            <div className=" w-[48%]">
-                                <label>TIN Number</label>
-                                <input
-                                    type="text"
-                                    placeholder="000-000-000"
-                                    {...register("tin", {
-                                        required: "Required",
-                                        minLength: {
-                                            value: 11,
-                                            message: "Must be 11 Characters",
-                                        },
-                                        maxLength: {
-                                            value: 11,
-                                            message: "Must be 11 Characters",
-                                        },
-                                        pattern: {
-                                            value: /^[0-9,-]+$/i,
-                                            message: "Only number and Hyphen",
-                                        },
-                                    })}
-                                />
-                                {errors.tin && (
-                                    <p className="text-[10px]">
-                                        {errors.tin.message}
-                                    </p>
-                                )}
-                            </div>
-                            <div className=" w-[48%]">
-                                <label>Branch Code</label>
-                                <input
-                                    placeholder="00000"
-                                    {...register("branch_code", {
-                                        required: "Required",
-                                        minLength: {
-                                            value: 5,
-                                            message: "Must be 5 Number",
-                                        },
-                                        maxLength: {
-                                            value: 5,
-                                            message: "Must be 5 Number",
-                                        },
-                                    })}
-                                    type="number"
-                                />
-                                {errors.branch_code && (
-                                    <p className="text-[10px]">
-                                        {errors.branch_code.message}
-                                    </p>
-                                )}
-                            </div>
-                        </div>
+                    <li>
+                        <label>TIN Number</label>
+                        <input
+                            type="number"
+                            placeholder="000000000"
+                            {...register("tin", {
+                                required: "Required",
+                                minLength: {
+                                    value: 9,
+                                    message: "Must be 9 number only",
+                                },
+                                maxLength: {
+                                    value: 11,
+                                    message: "Must be 9 number only",
+                                },
+                            })}
+                            value={createCorporate.tin}
+                            onChange={(e) => {
+                                setCreateCorporate({
+                                    ...createCorporate,
+                                    tin: e.target.value,
+                                });
+                            }}
+                        />
+                        {errors.tin && (
+                            <p className="text-[10px]">{errors.tin.message}</p>
+                        )}
                     </li>
+                    <li>
+                        <label>Branch Code</label>
+                        <input
+                            placeholder="00000"
+                            {...register("branch_code", {
+                                required: "Required",
+                                minLength: {
+                                    value: 5,
+                                    message: "Must be 5 Number",
+                                },
+                                maxLength: {
+                                    value: 5,
+                                    message: "Must be 5 Number",
+                                },
+                            })}
+                            type="number"
+                            value={createCorporate.branch_code}
+                            onChange={(e) => {
+                                setCreateCorporate({
+                                    ...createCorporate,
+                                    branch_code: e.target.value,
+                                });
+                            }}
+                        />
+                        {errors.branch_code && (
+                            <p className="text-[10px]">
+                                {errors.branch_code.message}
+                            </p>
+                        )}
+                    </li>
+                </ul>
+                <ul className={style.ThreeRows}>
                     <li>
                         <label>RDO NO.</label>
                         <input
@@ -272,6 +282,13 @@ const Primary = ({ setNewActive, Current_id }: Props) => {
                                     message: "Must be 3 Number",
                                 },
                             })}
+                            value={createCorporate.rdo_no}
+                            onChange={(e) => {
+                                setCreateCorporate({
+                                    ...createCorporate,
+                                    rdo_no: e.target.value,
+                                });
+                            }}
                         />
                         {errors.rdo_no && (
                             <p className="text-[10px]">
@@ -287,13 +304,18 @@ const Primary = ({ setNewActive, Current_id }: Props) => {
                             })}
                             id=""
                             required
+                            value={createCorporate.gst_type}
+                            onChange={(e) => {
+                                setCreateCorporate({
+                                    ...createCorporate,
+                                    gst_type: e.target.value,
+                                });
+                            }}
                         >
                             <option value="VAT">VAT</option>
                             <option value="NON-VAT">NON-VAT</option>
                         </select>
                     </li>
-                </ul>
-                <ul className={style.ThreeRows}>
                     <li>
                         <label>SEC. Registration</label>
                         <input
@@ -310,6 +332,13 @@ const Primary = ({ setNewActive, Current_id }: Props) => {
                                     message: "Must be 3 Number",
                                 },
                             })}
+                            value={createCorporate.sec_registration_no}
+                            onChange={(e) => {
+                                setCreateCorporate({
+                                    ...createCorporate,
+                                    sec_registration_no: e.target.value,
+                                });
+                            }}
                         />
                         {errors.sec_registration_no && (
                             <p className="text-[10px]">
@@ -333,16 +362,11 @@ const Primary = ({ setNewActive, Current_id }: Props) => {
     );
 };
 
-const Contact = ({ setNewActive }: Props) => {
+const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
     // true for save, false for save and new
     const [whatClickedButon, setWhatClickedButton] = useState(true);
     const [isSave, setSave] = useState(false);
-    const {
-        setCreateCorporate,
-        createCorporate,
-        setToggleNewForm,
-        emptyCorporate,
-    } = useContext(AppContext);
+    const { setCreateCorporate, createCorporate } = useContext(AppContext);
 
     const [ErrorContact, setErrorContact] = useState(false);
     const [ErrorAddress, setErrorAddress] = useState(false);
@@ -390,14 +414,9 @@ const Contact = ({ setNewActive }: Props) => {
                 if (whatClickedButon) {
                     // save
                     router.push("");
-                    emptyCorporate();
                 } else {
-                    // Save and New
-                    emptyCorporate();
-                    setNewActive((item: any) => [
-                        (item[0] = true),
-                        (item[1] = false),
-                    ]);
+                    alert("Corporate Successfully Registered!");
+                    router.reload();
                 }
             },
         }
@@ -435,8 +454,6 @@ const Contact = ({ setNewActive }: Props) => {
             }
         });
         mutate(formData);
-        // console.log(keys);
-        // console.log(arrayData);
     };
 
     return (
@@ -445,6 +462,7 @@ const Contact = ({ setNewActive }: Props) => {
             initial="initial"
             animate="animate"
             exit="exit"
+            className={`${isNewActive[1] ? "" : "hidden"}`}
         >
             <h1 className={style.modal_label_primary}>Contact Informations</h1>
             <form onSubmit={handleSubmit(Submit)} autoComplete="off">
@@ -470,6 +488,7 @@ const Contact = ({ setNewActive }: Props) => {
                                         message: "Invalid Contact Number",
                                     },
                                 })}
+                                value={createCorporate.contact_no}
                                 onChange={(e) =>
                                     setCreateCorporate({
                                         ...createCorporate,
@@ -497,6 +516,7 @@ const Contact = ({ setNewActive }: Props) => {
                                     message: "Must be 11 Number",
                                 },
                             })}
+                            value={createCorporate.alt_contact_no}
                             onChange={(e) =>
                                 setCreateCorporate({
                                     ...createCorporate,
@@ -524,6 +544,7 @@ const Contact = ({ setNewActive }: Props) => {
                                     required: "Required",
                                 })}
                                 required
+                                value={createCorporate.email}
                                 onChange={(e) =>
                                     setCreateCorporate({
                                         ...createCorporate,
@@ -541,6 +562,7 @@ const Contact = ({ setNewActive }: Props) => {
                         <input
                             type="email"
                             {...register("alt_email", {})}
+                            value={createCorporate.alt_email}
                             onChange={(e) =>
                                 setCreateCorporate({
                                     ...createCorporate,
@@ -565,10 +587,11 @@ const Contact = ({ setNewActive }: Props) => {
                     <li>
                         <label>UNIT/FLOOR/HOUSE NO.</label>
                         <input
-                            type="number"
+                            type="text"
                             {...register("address_unit_floor", {
                                 required: "Required",
                             })}
+                            value={createCorporate.address_unit_floor}
                             onChange={(e) =>
                                 setCreateCorporate({
                                     ...createCorporate,
@@ -589,6 +612,7 @@ const Contact = ({ setNewActive }: Props) => {
                             {...register("address_building", {
                                 required: "Required",
                             })}
+                            value={createCorporate.address_building}
                             onChange={(e) =>
                                 setCreateCorporate({
                                     ...createCorporate,
@@ -609,6 +633,7 @@ const Contact = ({ setNewActive }: Props) => {
                             {...register("address_street", {
                                 required: "Required",
                             })}
+                            value={createCorporate.address_street}
                             onChange={(e) =>
                                 setCreateCorporate({
                                     ...createCorporate,
@@ -629,6 +654,7 @@ const Contact = ({ setNewActive }: Props) => {
                             {...register("address_district", {
                                 required: "Required",
                             })}
+                            value={createCorporate.address_district}
                             onChange={(e) =>
                                 setCreateCorporate({
                                     ...createCorporate,
@@ -649,6 +675,7 @@ const Contact = ({ setNewActive }: Props) => {
                             {...register("address_municipal_city", {
                                 required: "Required",
                             })}
+                            value={createCorporate.address_municipal_city}
                             onChange={(e) =>
                                 setCreateCorporate({
                                     ...createCorporate,
@@ -669,6 +696,7 @@ const Contact = ({ setNewActive }: Props) => {
                             {...register("address_province", {
                                 required: "Required",
                             })}
+                            value={createCorporate.address_province}
                             onChange={(e) =>
                                 setCreateCorporate({
                                     ...createCorporate,
@@ -697,6 +725,7 @@ const Contact = ({ setNewActive }: Props) => {
                                     message: "Must be 4 Numbers",
                                 },
                             })}
+                            value={createCorporate.address_zip_code}
                             onChange={(e) =>
                                 setCreateCorporate({
                                     ...createCorporate,

@@ -68,6 +68,9 @@
                     option {
                         @apply hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed;
                     }
+                    option.disabled {
+                        @apply bg-ThemeRed text-white text-[12px];
+                    }
                 }
                 .checkboxContainer {
                     @apply mt-2;

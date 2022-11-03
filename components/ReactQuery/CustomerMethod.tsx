@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import api from "../../util/api";
 import { getCookie } from "cookies-next";
+import axios from "axios";
 
 export const PostCustomerSave = (Success: any) => {
     const queryClient = useQueryClient();
@@ -101,7 +102,7 @@ export const SaveDraftUpdate = (onSuccess: any, id: any) => {
 
 export const CustomerImport = (onSuccess: any) => {
     return useMutation(
-        (data) => {
+        (data: FormData) => {
             return api.post(`/admin/customer/import`, data, {
                 headers: {
                     Authorization: "Bearer " + getCookie("user"),
@@ -113,11 +114,20 @@ export const CustomerImport = (onSuccess: any) => {
         }
     );
 };
-export const CustomerExport = (onSuccess: any) => {
-    return useQuery(
-        "Customer-Export",
-        (data) => {
-            return api.get(`/admin/customer/export`, {
+export const CustomerExport = () => {
+    return useQuery("export-customer", () => {
+        return api.get("/admin/customer/export", {
+            headers: {
+                Authorization: "Bearer " + getCookie("user"),
+                "Content-Type": "application/xlsx",
+            },
+        });
+    });
+};
+export const UpdateProperties = (id: any, onSuccess: any) => {
+    return useMutation(
+        (data: any) => {
+            return api.post(`admin/customer/${id}/property`, data, {
                 headers: {
                     Authorization: "Bearer " + getCookie("user"),
                 },

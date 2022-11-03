@@ -17,13 +17,14 @@ type Props = {
 export default function CorporateDetails({ CorporateData }: Props) {
     const { setModifyCorporate, modifyCorporate } = useContext(AppContext);
     const [toggleModify, setToggleModify] = useState(false);
+    const tin = CorporateData.tin?.replaceAll("-", "");
 
     useEffect(() => {
         setModifyCorporate({
             ...modifyCorporate,
             id: CorporateData.id,
             name: CorporateData.name,
-            tin: CorporateData.tin,
+            tin: tin,
             branch_code: CorporateData.branch_code,
             gst_type: CorporateData.gst_type,
             rdo_no: CorporateData.rdo_no,
