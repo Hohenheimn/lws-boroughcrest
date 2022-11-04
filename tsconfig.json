@@ -19,7 +19,9 @@
         "next-env.d.ts",
         "**/*.ts",
         "**/*.tsx",
-        "pages/project/corporate/transaction"
+        "pages/project/corporate/transaction",
+        "components/ConvertImageSourceToFile.js",
+        "components/ConvertImageSourceToFile.js"
     ],
     "exclude": ["node_modules"]
 }

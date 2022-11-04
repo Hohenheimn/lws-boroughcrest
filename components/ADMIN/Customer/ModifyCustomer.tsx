@@ -61,22 +61,6 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
     );
 
     const typeHandler = (e: any) => {
-        if (e.target.value === "individual") {
-            setModifyCustomer({
-                ...isModifyCustomer,
-                company_contact_person: null,
-                type: e.target.value,
-            });
-        }
-        if (e.target.value === "company") {
-            setModifyCustomer({
-                ...isModifyCustomer,
-                individual_citizenship: "",
-                individual_co_owner: "",
-                individual_birth_date: "",
-                type: e.target.value,
-            });
-        }
         setType(e.target.value);
     };
 
@@ -478,13 +462,13 @@ const Contact = ({ setActiveForm, setToggleModify, isActiveForm }: Props) => {
         onSuccess,
         router.query.id
     );
-    const { isLoading: DraftLoading } = SaveDraftUpdate(
+    const { isLoading: DraftLoading, mutate: DraftMutate } = SaveDraftUpdate(
         onSuccess,
         router.query.id
     );
 
     const NextFormValidation = async (data: any) => {
-        const Payload = {
+        let Payload = {
             ...isModifyCustomer,
             contact_no: data.contact_no,
             registered_email: data.registered_email,
@@ -512,6 +496,19 @@ const Contact = ({ setActiveForm, setToggleModify, isActiveForm }: Props) => {
         delete Payload["assigned_customer_id"];
         delete Payload["deleted_at"];
         delete Payload["id"];
+        delete Payload["properties"];
+
+        if (Payload.type === "Company" || Payload.type === "company") {
+            Payload = {
+                ...Payload,
+                individual_birth_date: "",
+                individual_citizenship: "",
+                individual_co_owner: "",
+            };
+        }
+        if (Payload.type === "individual" || Payload.type === "Individual") {
+            Payload = { ...Payload, company_contact_person: "" };
+        }
 
         const formData = new FormData();
         const arrayData: any = [];
@@ -535,6 +532,7 @@ const Contact = ({ setActiveForm, setToggleModify, isActiveForm }: Props) => {
             formData.append(key, keyData);
         });
 
+        console.log(arrayData);
         if (whatClickedButon === "save" || whatClickedButon === "new") {
             mutate(formData);
         }

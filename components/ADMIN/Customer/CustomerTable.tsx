@@ -29,36 +29,41 @@ export default function CustomerTable() {
     );
 
     return (
-        <div className="w-full overflow-x-auto">
-            <table className="table_list min-w-[800px] 820px:min-w-[1000px]">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        {cusTableColumn.map((item: any, index: number) => (
+        <div className="w-full">
+            <div className="w-full overflow-x-auto">
+                <table className="table_list 820px:min-w-[1000px]">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            {cusTableColumn.map((item: any, index: number) => (
+                                <>
+                                    {item === "Property" ? (
+                                        <>
+                                            <th>Property (Unit Code)</th>
+                                            <th>Property (Tower)</th>
+                                        </>
+                                    ) : (
+                                        <th key={index}>{item}</th>
+                                    )}
+                                </>
+                            ))}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {!isLoading && !isError && (
                             <>
-                                {item === "Property" ? (
-                                    <>
-                                        <th>Property (Unit Code)</th>
-                                        <th>Property (Tower)</th>
-                                    </>
-                                ) : (
-                                    <th key={index}>{item}</th>
+                                {data?.data.data.map(
+                                    (item: any, index: number) => (
+                                        <List key={index} itemDetail={item} />
+                                    )
                                 )}
                             </>
-                        ))}
-                    </tr>
-                </thead>
-                <tbody>
-                    {!isLoading && !isError && (
-                        <>
-                            {data?.data.data.map((item: any, index: number) => (
-                                <List key={index} itemDetail={item} />
-                            ))}
-                        </>
-                    )}
-                </tbody>
-            </table>
+                        )}
+                    </tbody>
+                </table>
+            </div>
+
             {isLoading && (
                 <div>
                     <aside className="text-center flex justify-center py-5">
@@ -261,10 +266,13 @@ const List = ({ itemDetail }: customerItemDetail) => {
                                 >
                                     <a className="item">
                                         <div>
-                                            <h2>1231231</h2>
-                                            <h2>1231231</h2>
-                                            <h2>1231231</h2>
-                                            <h2>1231231</h2>
+                                            {itemDetail?.properties?.map(
+                                                (item: any, index: number) => (
+                                                    <h2 key={index}>
+                                                        {item.unit_code}
+                                                    </h2>
+                                                )
+                                            )}
                                         </div>
                                     </a>
                                 </Link>
@@ -275,10 +283,13 @@ const List = ({ itemDetail }: customerItemDetail) => {
                                 >
                                     <a className="item">
                                         <div>
-                                            <h2>Tower 1</h2>
-                                            <h2>Tower 1</h2>
-                                            <h2>Tower 1</h2>
-                                            <h2>Tower 1</h2>
+                                            {itemDetail?.properties?.map(
+                                                (item: any, index: number) => (
+                                                    <h2 key={index}>
+                                                        {item.tower.name}
+                                                    </h2>
+                                                )
+                                            )}
                                         </div>
                                     </a>
                                 </Link>

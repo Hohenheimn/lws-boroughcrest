@@ -99,7 +99,7 @@ h6 {
                     }
                 }
                 .item {
-                    @apply flex px-4 py-4;
+                    @apply flex items-center px-4 py-4;
                     aside {
                         @apply w-10 h-10 rounded-full overflow-hidden relative shadow-lg mr-3;
                     }
@@ -146,4 +146,23 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type="number"] {
     -moz-appearance: textfield;
+}
+
+.calc-sidebar {
+    width: calc(100% - 400px);
+}
+@media (max-width: 1950px) {
+    .calc-sidebar {
+        width: calc(100% - 350px);
+    }
+}
+@media (max-width: 1550px) {
+    .calc-sidebar {
+        width: calc(100% - 230px);
+    }
+}
+@media (max-width: 1024px) {
+    .calc-sidebar {
+        width: 100%;
+    }
 }

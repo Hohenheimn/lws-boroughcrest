@@ -59,17 +59,6 @@ export const GetUnitCode = () => {
         });
     });
 };
-
-export const GetDraft = () => {
-    return useQuery("get-customer-draft", () => {
-        return api.get("/admin/customer/draft", {
-            headers: {
-                Authorization: "Bearer " + getCookie("user"),
-            },
-        });
-    });
-};
-
 export const PutCustomer = (onSuccess: any, id: any) => {
     return useMutation(
         (data: FormData) => {
@@ -124,6 +113,7 @@ export const CustomerExport = () => {
         });
     });
 };
+
 export const UpdateProperties = (id: any, onSuccess: any) => {
     return useMutation(
         (data: any) => {
@@ -135,6 +125,33 @@ export const UpdateProperties = (id: any, onSuccess: any) => {
         },
         {
             onSuccess: onSuccess,
+        }
+    );
+};
+
+export const GetDraft = () => {
+    return useQuery("get-customer-draft", () => {
+        return api.get("/admin/customer/draft", {
+            headers: {
+                Authorization: "Bearer " + getCookie("user"),
+            },
+        });
+    });
+};
+
+export const GetImage = (pathName: any) => {
+    return useQuery(
+        ["get-image", pathName],
+        () => {
+            return api.get(`/get-img?image=${pathName}`, {
+                headers: {
+                    Authorization: "Bearer " + getCookie("user"),
+                },
+                responseType: "blob",
+            });
+        },
+        {
+            enabled: !!pathName,
         }
     );
 };

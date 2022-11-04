@@ -86,7 +86,7 @@ export default function CustomerDetail() {
                             layout="fill"
                         />
                     </aside>
-                    {data.type ? (
+                    {data.status ? (
                         <div
                             className=" h-5 w-5 rounded-full border-4 border-[#19d142] cursor-pointer my-3"
                             style={{ boxShadow: "0 0 15px 0 #19d142" }}

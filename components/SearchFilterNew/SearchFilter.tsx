@@ -13,6 +13,8 @@ import style from "../../styles/SearchFilter.module.scss";
 import FilterProperty from "./FilterProperty";
 import { CustomerImport, CustomerExport } from "../ReactQuery/CustomerMethod";
 import { MoonLoader } from "react-spinners";
+import axios from "axios";
+import { getCookie } from "cookies-next";
 
 type SearchFilter = {
     page: string;
@@ -27,25 +29,54 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
     const { data, isLoading } = CustomerExport();
     // console.log(data?.data);
 
-    const CustomerSuccess = () => {
-        alert("Success");
+    const CustomerImportSuccess = () => {
+        alert("Successfully imported!");
     };
 
-    const { isLoading: CusLoading, mutate: CusMutate } =
-        CustomerImport(CustomerSuccess);
+    const { isLoading: CusLoading, mutate: CusMutate } = CustomerImport(
+        CustomerImportSuccess
+    );
+    //file download to excel
+    const handleExport = (endPoint: string) => {
+        axios({
+            url: `${process.env.NEXT_PUBLIC_API_URL}${endPoint}`,
+            headers: {
+                Authorization: "Bearer " + getCookie("user"),
+            },
+            method: "get",
+            responseType: "blob",
+        }).then((response) => {
+            const href = URL.createObjectURL(response.data);
+            const link = document.createElement("a");
+            link.href = href;
+            link.setAttribute("download", "customers.xlsx");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(href);
+        });
+    };
 
     const importHandler = (e: any) => {
         if (e.target.files.length > 0) {
-            let selectedFile = e.target.files[0];
-            const formData = new FormData();
-            formData.append("file", selectedFile);
-            CusMutate(formData);
-            console.log(selectedFile);
+            const fileArray = e.target.files[0].name.split(".");
+            const extension = fileArray[fileArray.length - 1];
+            if (extension === "xlsx" || extension === "csv") {
+                let selectedFile = e.target.files[0];
+                const formData = new FormData();
+                formData.append("file", selectedFile);
+                if (router.pathname.includes("admin/customer")) {
+                    CusMutate(formData);
+                }
+            } else {
+                alert("Invalid Files, must xlsx or csv only");
+            }
         }
     };
     const exportHandler = () => {
         if (router.pathname.includes("admin/customer")) {
-            // download(data?.data);
+            const endPoint = "/admin/customer/export?type={'csv' or 'xlsx'}";
+            handleExport(endPoint);
         }
     };
 

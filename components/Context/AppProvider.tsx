@@ -205,6 +205,8 @@ export default function AppProvider({ children }: AppProvider) {
     ]);
     const ImgUrl = "https://boroughcrest-api.lws.codes/get-img?image=";
 
+    const [isDraft, setDraft] = useState(false);
+
     const [isSearchBar, setSearchBar] = useState("");
     return (
         <AppContext.Provider
@@ -232,6 +234,8 @@ export default function AppProvider({ children }: AppProvider) {
                 ImgUrl,
                 isModifyCustomer,
                 setModifyCustomer,
+                setDraft,
+                isDraft,
             }}
         >
             {children}

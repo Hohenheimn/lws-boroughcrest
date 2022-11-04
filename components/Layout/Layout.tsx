@@ -81,7 +81,7 @@ export default function Layout({ children }: Layout) {
                     )}
                 </AnimatePresence>
 
-                <section className="flex flex-col flex-1 1024px:w-full">
+                <section className="flex flex-col 1024px:w-full calc-sidebar">
                     <div className="h-full w-full 1024px:p-5 1024px:py-10  p-10 relative">
                         {isWindow <= 1024 && (
                             <button
@@ -159,7 +159,7 @@ export default function Layout({ children }: Layout) {
                                 </li>
                             </ul>
                         </header>
-                        <main className="w-full relative min-h-[100%]">
+                        <main className="relative min-h-[100%]">
                             {children}
                         </main>
                     </div>
