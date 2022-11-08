@@ -4,26 +4,21 @@ import style from "../../../styles/Popup_Modal.module.scss";
 import NewPrimaryInfo from "./NewPrimaryInfo";
 import NewContactInfo from "./NewContactInfo";
 import NewPropertyInfo from "./NewPropertyInfo";
-import { GetDraft } from "../../ReactQuery/CustomerMethod";
 
-export default function NewCustomer() {
+export default function NewCustomer({ Draft, DraftImageFile }: any) {
     const { setDraft, isNewCustomer, setNewCustomer, ImgUrl } =
         useContext(AppContext);
     const [isActiveForm, setActiveForm] = useState([true, false, false]);
     const [isType, setType] = useState<string>("");
     const [status, setStatus] = useState(true);
 
-    // Draft
-    const { data } = GetDraft();
-    const DraftData = data?.data.values;
-
+    const DraftData = Draft?.values;
     const image_photo_PathName = DraftData?.image_photo;
     const image_valid_id_PathName = DraftData?.image_valid_id;
     const image_signature_Pathname = DraftData?.image_signature;
 
-    // ConvertSourceToImage()
-
     useEffect(() => {
+        // Check there is draft
         if (DraftData) {
             setNewCustomer({
                 ...DraftData,
@@ -33,6 +28,8 @@ export default function NewCustomer() {
             });
             setType(DraftData.type);
             setDraft(true);
+
+            // convert source to file
         }
     }, []);
 
@@ -60,6 +57,7 @@ export default function NewCustomer() {
                     key={3}
                     setActiveForm={setActiveForm}
                     isActiveForm={isActiveForm}
+                    DraftImageFile={DraftImageFile}
                 />
             </section>
         </div>

@@ -103,7 +103,7 @@ const Primary = ({
                 setLogoStatus("Invalid Image File");
             }
         } else {
-            setLogoStatus("Please Select an Image");
+            setLogoStatus("Nothing Happens");
         }
     };
 
@@ -146,9 +146,7 @@ const Primary = ({
                 <input
                     type="file"
                     id="image"
-                    {...register("logo", {
-                        required: "Required",
-                    })}
+                    {...register("logo")}
                     onChange={DisplayImage}
                     className="appearance-none z-[-99] absolute bottom-full"
                 />
@@ -168,11 +166,6 @@ const Primary = ({
                         </aside>
                         <label htmlFor="image" className={style.image_label}>
                             <p>{isLogoStatus}</p>
-                            {errors.logo && (
-                                <p className="text-[10px] capitalize">
-                                    Required
-                                </p>
-                            )}
                         </label>
                     </li>
                     <li>
@@ -185,7 +178,7 @@ const Primary = ({
                         />
                     </li>
                     <li>
-                        <label>Corporate Name</label>
+                        <label>*Corporate Name</label>
                         <input
                             type="text"
                             {...register("name", {
@@ -207,7 +200,7 @@ const Primary = ({
                 <p className="text-[16px]">TIN</p>
                 <ul className={style.ThreeRows}>
                     <li>
-                        <label>TIN Number</label>
+                        <label>*TIN Number</label>
                         <input
                             type="number"
                             placeholder="000000000"
@@ -235,7 +228,7 @@ const Primary = ({
                         )}
                     </li>
                     <li>
-                        <label>Branch Code</label>
+                        <label>*Branch Code</label>
                         <input
                             placeholder="00000"
                             {...register("branch_code", {
@@ -272,7 +265,6 @@ const Primary = ({
                             type="number"
                             placeholder="000"
                             {...register("rdo_no", {
-                                required: "Required",
                                 minLength: {
                                     value: 3,
                                     message: "Must be 3 Number",
@@ -297,7 +289,7 @@ const Primary = ({
                         )}
                     </li>
                     <li>
-                        <label>GST TYPE.</label>
+                        <label>*GST TYPE.</label>
                         <select
                             {...register("gst_type", {
                                 required: true,
@@ -322,7 +314,6 @@ const Primary = ({
                             type="number"
                             placeholder="000"
                             {...register("sec_registration_no", {
-                                required: "Required",
                                 minLength: {
                                     value: 3,
                                     message: "Must be 3 Number",
@@ -496,7 +487,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                                     })
                                 }
                             />
-                            <span>Official</span>
+                            <span>*Official</span>
                         </aside>
                         {errors.contact_no && (
                             <p className="text-[10px]">
@@ -552,7 +543,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                                     })
                                 }
                             />
-                            <span>Official</span>
+                            <span>*Official</span>
                         </aside>
                         {errors.email && (
                             <p className="text-[10px]">
@@ -585,7 +576,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                 <p className="text-[14px] font-bold mb-2">ADDRESS</p>
                 <ul className={style.ThreeRows}>
                     <li>
-                        <label>UNIT/FLOOR/HOUSE NO.</label>
+                        <label>*UNIT/FLOOR/HOUSE NO.</label>
                         <input
                             type="text"
                             {...register("address_unit_floor", {
@@ -606,7 +597,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>BUILDING</label>
+                        <label>*BUILDING</label>
                         <input
                             type="text"
                             {...register("address_building", {
@@ -627,7 +618,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>STREET</label>
+                        <label>*STREET</label>
                         <input
                             type="text"
                             {...register("address_street", {
@@ -648,7 +639,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>DISTRICT</label>
+                        <label>*DISTRICT</label>
                         <input
                             type="text"
                             {...register("address_district", {
@@ -669,7 +660,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>MUNICIPALITY</label>
+                        <label>*MUNICIPALITY</label>
                         <input
                             type="text"
                             {...register("address_municipal_city", {
@@ -690,7 +681,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>PROVINCE</label>
+                        <label>*PROVINCE</label>
                         <input
                             type="text"
                             {...register("address_province", {
@@ -711,7 +702,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>ZIP CODE</label>
+                        <label>*ZIP CODE</label>
                         <input
                             type="number"
                             {...register("address_zip_code", {

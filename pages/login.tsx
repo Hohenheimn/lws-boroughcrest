@@ -33,6 +33,7 @@ export default function Login() {
                 localStorage.setItem("password", isPassword);
             }
             setCookie("user", token);
+            console.log(token);
             router.push("/dashboard");
             router.reload();
         } catch (error: any) {

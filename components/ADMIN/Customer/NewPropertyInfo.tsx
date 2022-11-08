@@ -9,16 +9,17 @@ import {
     PostCustomerSave,
     GetUnitCode,
 } from "../../ReactQuery/CustomerMethod";
-import { ConvertSourceToImage } from "../../ConvertImageSourceToFile";
 
 type NewPropertyInfo = {
     setActiveForm: Function;
     isActiveForm: any;
+    DraftImageFile: any;
 };
 
 export default function NewPropertyInfo({
     setActiveForm,
     isActiveForm,
+    DraftImageFile,
 }: NewPropertyInfo) {
     const router = useRouter();
     const [whichSaveBtn, setWhichSaveBtn] = useState("");
@@ -37,6 +38,7 @@ export default function NewPropertyInfo({
             setProperty([...isNewCustomer.unit_codes]);
         }
     }, []);
+
     const Back = () => {
         setActiveForm((item: boolean[]) => [
             (item[0] = false),
@@ -73,15 +75,13 @@ export default function NewPropertyInfo({
         const ArrayPropertyID = isProperty.map((item: any) => {
             return item.unitCode;
         });
-        let newData = { ...isNewCustomer, unit_codes: ArrayPropertyID };
 
-        // detect if image if from draft
-        if (isDraft) {
-            // convert source to file
-            let ImageName = isNewCustomer.image_photo.split("/");
-            ImageName = ImageName[ImageName.length - 1];
-            ConvertSourceToImage(ImageName, isNewCustomer.image_photo);
+        if (ArrayPropertyID.includes("")) {
+            alert("Cannot proceed, one of unit code is empty");
+            return;
         }
+
+        let newData = { ...isNewCustomer, unit_codes: ArrayPropertyID };
 
         // if Type is company, empty the field of not for company
         if (newData.type === "Company" || newData.type === "company") {
@@ -97,9 +97,13 @@ export default function NewPropertyInfo({
             newData = { ...newData, company_contact_person: "" };
         }
 
-        if (ArrayPropertyID.includes("")) {
-            alert("Cannot proceed, one of unit code is empty");
-            return;
+        if (isDraft) {
+            newData = {
+                ...newData,
+                image_photo: DraftImageFile.profile_file,
+                image_valid_id: DraftImageFile.valid_file,
+                image_signature: DraftImageFile.signature,
+            };
         }
 
         const formData = new FormData();
@@ -121,7 +125,7 @@ export default function NewPropertyInfo({
             }
         });
 
-        // mutate(formData);
+        mutate(formData);
     };
 
     // SAVE BUTTONS
@@ -175,7 +179,6 @@ export default function NewPropertyInfo({
                 formData.append(key, keyData);
             }
         });
-        console.log(arrayData);
         DraftMutate(formData);
     };
 

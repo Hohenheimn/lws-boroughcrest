@@ -77,7 +77,7 @@ export const PutCustomer = (onSuccess: any, id: any) => {
 export const SaveDraftUpdate = (onSuccess: any, id: any) => {
     return useMutation(
         (data: FormData) => {
-            return api.post(`/admin/customer/${id}?save=1`, data, {
+            return api.post(`/admin/customer/${id}?draft=1`, data, {
                 headers: {
                     Authorization: "Bearer " + getCookie("user"),
                 },
@@ -139,7 +139,7 @@ export const GetDraft = () => {
     });
 };
 
-export const GetImage = (pathName: any) => {
+export const GetImage = (pathName: any, wait: any) => {
     return useQuery(
         ["get-image", pathName],
         () => {
@@ -151,7 +151,7 @@ export const GetImage = (pathName: any) => {
             });
         },
         {
-            enabled: !!pathName,
+            enabled: !!wait,
         }
     );
 };

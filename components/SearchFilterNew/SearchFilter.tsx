@@ -26,9 +26,6 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
     const router = useRouter();
     const ValidatePathName = router.pathname.split("/")[2];
 
-    const { data, isLoading } = CustomerExport();
-    // console.log(data?.data);
-
     const CustomerImportSuccess = () => {
         alert("Successfully imported!");
     };
@@ -69,7 +66,7 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
                     CusMutate(formData);
                 }
             } else {
-                alert("Invalid Files, must xlsx or csv only");
+                alert("Invalid file, must be XLSX or CSV only!");
             }
         }
     };
@@ -160,7 +157,7 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
                                 }`}
                             >
                                 <Image
-                                    src="/Images/Filter.png"
+                                    src="/Images/New_Filter.png"
                                     layout="fill"
                                     alt=""
                                 />

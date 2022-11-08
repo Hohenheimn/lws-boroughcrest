@@ -15,10 +15,15 @@ import { useQueryClient } from "react-query";
 
 type ModifyCustomer = {
     setToggleModify: Function;
+    isDraft: any;
 };
 
-export default function ModifyCustomer({ setToggleModify }: ModifyCustomer) {
+export default function ModifyCustomer({
+    setToggleModify,
+    isDraft,
+}: ModifyCustomer) {
     const [isActiveForm, setActiveForm] = useState([true, false, false]);
+    const { isModifyCustomer } = useContext(AppContext);
 
     return (
         <div className={style.container}>
@@ -35,6 +40,7 @@ export default function ModifyCustomer({ setToggleModify }: ModifyCustomer) {
                     setToggleModify={setToggleModify}
                     setActiveForm={setActiveForm}
                     isActiveForm={isActiveForm}
+                    isDraft={isDraft}
                 />
             </section>
         </div>
@@ -44,21 +50,29 @@ type Props = {
     setToggleModify: Function;
     setActiveForm: Function;
     isActiveForm: any;
+    isDraft?: any;
 };
 const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
     const { isModifyCustomer, ImgUrl, setModifyCustomer } =
         useContext(AppContext);
     const [isType, setType] = useState(isModifyCustomer.type);
     const [isStatus, setStatus] = useState(isModifyCustomer.status);
+
     const [isSignature, setSignature] = useState(false);
-    const prevProf = ImgUrl + isModifyCustomer.image_photo;
-    const prevValid = ImgUrl + isModifyCustomer.image_valid_id;
-    const [isProfileUrl, setProfileUrl] = useState(
-        ImgUrl + isModifyCustomer.image_photo
-    );
-    const [isValidIDUrl, setValidIDUrl] = useState(
-        ImgUrl + isModifyCustomer.image_valid_id
-    );
+    const [isProfileUrl, setProfileUrl] = useState("/Images/sampleProfile.png");
+    const [isValidIDUrl, setValidIDUrl] = useState("/Images/id-sample.png");
+
+    useEffect(() => {
+        if (isModifyCustomer.image_signature !== null) {
+            setSignature(true);
+        }
+        if (isModifyCustomer.image_photo !== null) {
+            setProfileUrl(ImgUrl + isModifyCustomer.image_photo);
+        }
+        if (isModifyCustomer.image_valid_id !== null) {
+            setValidIDUrl(ImgUrl + isModifyCustomer.image_valid_id);
+        }
+    }, []);
 
     const typeHandler = (e: any) => {
         setType(e.target.value);
@@ -209,7 +223,7 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
                                 type="file"
                                 {...register("image_photo")}
                                 id="image"
-                                className="absolute z-[-99] top-[-100px]"
+                                className="absolute z-[-99] top-[-500px]"
                                 data-type="profile"
                                 onChange={DisplayImage}
                             />
@@ -225,7 +239,7 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
                         <input
                             type="file"
                             id="validid"
-                            className="absolute z-[-99]  top-[-100px]"
+                            className="absolute z-[-99] top-[-500px]"
                             data-type="validID"
                             {...register("image_valid_id")}
                             onChange={DisplayImage}
@@ -263,7 +277,7 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
                         <input
                             id="file"
                             type="file"
-                            className="absolute z-[-99] top-[-100px]"
+                            className="absolute z-[-99] top-[-500px]"
                             {...register("image_signature")}
                             onChange={(e) => {
                                 e.target.files
@@ -284,7 +298,7 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
                         </p>
                     </li>
                     <li>
-                        <label>CLASS</label>
+                        <label>*CLASS</label>
                         <select
                             id=""
                             defaultValue={isModifyCustomer.class}
@@ -305,6 +319,7 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
                     </li>
                     <li>
                         <label>
+                            *
                             {(isType === "Company" || isType === "company") &&
                                 "COMPANY"}{" "}
                             NAME
@@ -325,9 +340,7 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
                                 <input
                                     type="text"
                                     className="bg-white"
-                                    {...register("individual_co_owner", {
-                                        required: "Required",
-                                    })}
+                                    {...register("individual_co_owner")}
                                 />
                                 {errors.individual_co_owner && (
                                     <p className="text-[10px]">
@@ -337,7 +350,7 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
                             </li>
 
                             <li>
-                                <label>CITIZENSHIP</label>
+                                <label>*CITIZENSHIP</label>
                                 <input
                                     type="text"
                                     className="bg-white"
@@ -370,7 +383,7 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
                         </>
                     )}
                     <li>
-                        <label>TIN Number</label>
+                        <label>*TIN Number</label>
                         <input
                             type="number"
                             {...register("tin", {
@@ -390,7 +403,7 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>Branch Code</label>
+                        <label>*Branch Code</label>
                         <input
                             type="number"
                             {...register("branch_code", {
@@ -431,7 +444,12 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
     );
 };
 
-const Contact = ({ setActiveForm, setToggleModify, isActiveForm }: Props) => {
+const Contact = ({
+    setActiveForm,
+    setToggleModify,
+    isActiveForm,
+    isDraft,
+}: Props) => {
     const { isModifyCustomer, setModifyCustomer } = useContext(AppContext);
     const [isSameEmail, setSameEmail] = useState(false);
     const [isSameAddress, setSameAddress] = useState(false);
@@ -446,7 +464,7 @@ const Contact = ({ setActiveForm, setToggleModify, isActiveForm }: Props) => {
         ]);
     };
     const onSuccess = () => {
-        if (whatClickedButon === "save") {
+        if (whatClickedButon === "save" || whatClickedButon === "draft") {
             queryClient.invalidateQueries([
                 "get-customer-detail",
                 router.query.id,
@@ -455,6 +473,9 @@ const Contact = ({ setActiveForm, setToggleModify, isActiveForm }: Props) => {
         }
         if (whatClickedButon === "new") {
             router.push("/admin/customer?new");
+        }
+        if (whatClickedButon === "draft") {
+            router.reload();
         }
     };
 
@@ -516,11 +537,16 @@ const Contact = ({ setActiveForm, setToggleModify, isActiveForm }: Props) => {
 
         await keys.forEach((key) => {
             if (
-                Payload[key] === null ||
-                Payload[key] === undefined ||
-                Payload[key] === ""
+                key === "image_photo" ||
+                key === "image_signature" ||
+                key === "image_valid_id"
             ) {
-                return;
+                if (Payload[key]) {
+                    arrayData.push({
+                        key: key,
+                        keyData: Payload[key],
+                    });
+                }
             } else {
                 arrayData.push({
                     key: key,
@@ -532,12 +558,11 @@ const Contact = ({ setActiveForm, setToggleModify, isActiveForm }: Props) => {
             formData.append(key, keyData);
         });
 
-        console.log(arrayData);
         if (whatClickedButon === "save" || whatClickedButon === "new") {
             mutate(formData);
         }
         if (whatClickedButon === "draft") {
-            console.log(arrayData);
+            DraftMutate(formData);
         }
     };
 
@@ -562,7 +587,7 @@ const Contact = ({ setActiveForm, setToggleModify, isActiveForm }: Props) => {
                 <p className="text-[14px] font-bold mb-2">ADDRESS</p>
                 <ul className={style.ThreeRows}>
                     <li>
-                        <label>MOBILE</label>
+                        <label>*MOBILE</label>
                         <input
                             type="text"
                             {...register("contact_no", {
@@ -595,7 +620,7 @@ const Contact = ({ setActiveForm, setToggleModify, isActiveForm }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>REGISTERED-EMAIL</label>
+                        <label>*REGISTERED-EMAIL</label>
                         <input
                             type="email"
                             {...register("registered_email", {
@@ -616,7 +641,7 @@ const Contact = ({ setActiveForm, setToggleModify, isActiveForm }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>PREFERED EMAIL</label>
+                        <label>*PREFERED EMAIL</label>
                         <input
                             type="email"
                             {...register("preferred_email", {
@@ -655,7 +680,7 @@ const Contact = ({ setActiveForm, setToggleModify, isActiveForm }: Props) => {
                     </li>
                     {isModifyCustomer.type === "company" && (
                         <li>
-                            <label>CONTACT PERSON</label>
+                            <label>*CONTACT PERSON</label>
                             <input
                                 type="text"
                                 {...register("company_contact_person", {
@@ -682,7 +707,7 @@ const Contact = ({ setActiveForm, setToggleModify, isActiveForm }: Props) => {
                 <p className="text-[14px] font-bold mb-2">REGISTERED ADDRESS</p>
                 <ul className={style.ThreeRows}>
                     <li>
-                        <label>UNIT/FLOOR/HOUSE NO.</label>
+                        <label>*UNIT/FLOOR/HOUSE NO.</label>
                         <input
                             type="text"
                             {...register("registered_address_unit_floor", {
@@ -706,7 +731,7 @@ const Contact = ({ setActiveForm, setToggleModify, isActiveForm }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>BUILDING</label>
+                        <label>*BUILDING</label>
                         <input
                             type="text"
                             {...register("registered_address_building", {
@@ -727,7 +752,7 @@ const Contact = ({ setActiveForm, setToggleModify, isActiveForm }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>STREET</label>
+                        <label>*STREET</label>
                         <input
                             type="text"
                             {...register("registered_address_street", {
@@ -748,7 +773,7 @@ const Contact = ({ setActiveForm, setToggleModify, isActiveForm }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>DISTRICT</label>
+                        <label>*DISTRICT</label>
                         <input
                             type="text"
                             {...register("registered_address_district", {
@@ -769,7 +794,7 @@ const Contact = ({ setActiveForm, setToggleModify, isActiveForm }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>MUNICIPALITY CITY</label>
+                        <label>*MUNICIPALITY CITY</label>
                         <input
                             type="text"
                             {...register("registered_address_municipal_city", {
@@ -796,7 +821,7 @@ const Contact = ({ setActiveForm, setToggleModify, isActiveForm }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>PROVINCE</label>
+                        <label>*PROVINCE</label>
                         <input
                             type="text"
                             {...register("registered_address_province", {
@@ -817,7 +842,7 @@ const Contact = ({ setActiveForm, setToggleModify, isActiveForm }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>ZIP CODE</label>
+                        <label>*ZIP CODE</label>
                         <input
                             type="number"
                             {...register("registered_address_zip_code", {
@@ -847,7 +872,7 @@ const Contact = ({ setActiveForm, setToggleModify, isActiveForm }: Props) => {
                     </li>
                 </ul>
 
-                <p className="text-[14px] font-bold mb-2">MAILING ADDRESS</p>
+                <p className="text-[14px] font-bold mb-2">*MAILING ADDRESS</p>
                 <aside className={style.checkboxContainer}>
                     <input
                         type="checkbox"
@@ -857,13 +882,13 @@ const Contact = ({ setActiveForm, setToggleModify, isActiveForm }: Props) => {
                         onChange={() => setSameAddress(!isSameAddress)}
                     />
                     <label htmlFor="sameAddress">
-                        SAME AS REGISTER ADDRESS
+                        *SAME AS REGISTER ADDRESS
                     </label>
                 </aside>
 
                 <ul className={style.ThreeRows}>
                     <li>
-                        <label>UNIT/FLOOR/HOUSE NO.</label>
+                        <label>*UNIT/FLOOR/HOUSE NO.</label>
                         <input
                             type="text"
                             {...register("mailing_address_unit_floor", {
@@ -888,7 +913,7 @@ const Contact = ({ setActiveForm, setToggleModify, isActiveForm }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>BUILDING</label>
+                        <label>*BUILDING</label>
                         <input
                             type="text"
                             {...register("mailing_address_building", {
@@ -913,7 +938,7 @@ const Contact = ({ setActiveForm, setToggleModify, isActiveForm }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>STREET</label>
+                        <label>*STREET</label>
                         <input
                             type="text"
                             {...register("mailing_address_street", {
@@ -938,7 +963,7 @@ const Contact = ({ setActiveForm, setToggleModify, isActiveForm }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>DISTRICT</label>
+                        <label>*DISTRICT</label>
                         <input
                             type="text"
                             {...register("mailing_address_district", {
@@ -963,7 +988,7 @@ const Contact = ({ setActiveForm, setToggleModify, isActiveForm }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>MUNICIPALITY CITY</label>
+                        <label>*MUNICIPALITY CITY</label>
                         <input
                             type="text"
                             {...register("mailing_address_municipal_city", {
@@ -989,7 +1014,7 @@ const Contact = ({ setActiveForm, setToggleModify, isActiveForm }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>PROVINCE</label>
+                        <label>*PROVINCE</label>
                         <input
                             type="text"
                             {...register("mailing_address_province", {
@@ -1014,7 +1039,7 @@ const Contact = ({ setActiveForm, setToggleModify, isActiveForm }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>ZIP CODE</label>
+                        <label>*ZIP CODE</label>
                         <input
                             type="text"
                             {...register("mailing_address_zip_code", {
@@ -1101,6 +1126,9 @@ const Contact = ({ setActiveForm, setToggleModify, isActiveForm }: Props) => {
                                         <button
                                             type="submit"
                                             name="save-draft"
+                                            className={
+                                                isDraft ? style.disabled : ""
+                                            }
                                             onClick={() =>
                                                 setWhatClickedButton("draft")
                                             }

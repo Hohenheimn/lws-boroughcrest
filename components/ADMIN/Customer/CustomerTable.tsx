@@ -1,14 +1,15 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useRef, useEffect } from "react";
 import AppContext from "../../Context/AppContext";
 import Image from "next/image";
 import Link from "next/link";
-import { GoPencil } from "react-icons/go";
 import Pagination from "../../Pagination";
 import { useQuery } from "react-query";
 import { getCookie } from "cookies-next";
 import api from "../../../util/api";
 import BarLoader from "react-spinners/BarLoader";
 import type { customerItemDetail } from "../../../types/customerList";
+import Tippy from "@tippy.js/react";
+import "tippy.js/dist/tippy.css";
 
 export default function CustomerTable() {
     const { TableRows, cusTableColumn, isSearchBar } = useContext(AppContext);
@@ -30,8 +31,8 @@ export default function CustomerTable() {
 
     return (
         <div className="w-full">
-            <div className="w-full overflow-x-auto">
-                <table className="table_list 820px:min-w-[1000px]">
+            <div className="table_container">
+                <table className="table_list">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -102,7 +103,7 @@ const List = ({ itemDetail }: customerItemDetail) => {
         itemDetail?.image_photo;
     return (
         <tr onMouseEnter={MouseEnter} onMouseLeave={MouseLeave}>
-            <td>
+            <td className="normal">
                 <Link href={`/admin/customer/${itemDetail?.id}`}>
                     <a className="item">
                         <aside>
@@ -114,7 +115,7 @@ const List = ({ itemDetail }: customerItemDetail) => {
                     </a>
                 </Link>
             </td>
-            <td>
+            <td className="normal">
                 <Link href={`/admin/customer/${itemDetail?.id}`}>
                     <a className="item">
                         <div>
@@ -126,7 +127,7 @@ const List = ({ itemDetail }: customerItemDetail) => {
             {cusTableColumn.map((item: string, index: number) => (
                 <>
                     {item === "Class" && (
-                        <td>
+                        <td className="normal">
                             <Link href={`/admin/customer/${itemDetail?.id}`}>
                                 <a className="item">
                                     <div>
@@ -137,7 +138,7 @@ const List = ({ itemDetail }: customerItemDetail) => {
                         </td>
                     )}
                     {item === "Mobile" && (
-                        <td>
+                        <td className="normal">
                             <Link href={`/admin/customer/${itemDetail?.id}`}>
                                 <a className="item">
                                     <div>
@@ -149,20 +150,29 @@ const List = ({ itemDetail }: customerItemDetail) => {
                     )}
 
                     {item === "Status" && (
-                        <td>
+                        <td className="normal">
                             <div className="w-full flex px-5">
-                                <div
-                                    className={`statusCircle ${
+                                <Tippy
+                                    content={`${
                                         itemDetail?.status
-                                            ? "active"
-                                            : "inactive"
+                                            ? "Active"
+                                            : "Inactive"
                                     }`}
-                                ></div>
+                                    theme="ThemeRed"
+                                >
+                                    <div
+                                        className={`statusCircle ${
+                                            itemDetail?.status
+                                                ? "active"
+                                                : "inactive"
+                                        }`}
+                                    ></div>
+                                </Tippy>
                             </div>
                         </td>
                     )}
                     {item === "Type" && (
-                        <td>
+                        <td className="normal">
                             <Link href={`/admin/customer/${itemDetail?.id}`}>
                                 <a className="item">
                                     <div>
@@ -173,7 +183,7 @@ const List = ({ itemDetail }: customerItemDetail) => {
                         </td>
                     )}
                     {item === "Email" && (
-                        <td>
+                        <td className="normal">
                             <Link href={`/admin/customer/${itemDetail?.id}`}>
                                 <a className="item">
                                     <div>
@@ -185,12 +195,14 @@ const List = ({ itemDetail }: customerItemDetail) => {
                     )}
 
                     {item === "Spouse" && (
-                        <td>
+                        <td className="normal">
                             <Link href={`/admin/customer/${itemDetail?.id}`}>
                                 <a className="item">
                                     <div>
                                         <h2>
-                                            {itemDetail?.individual_co_owner}
+                                            {itemDetail?.individual_co_owner
+                                                ? itemDetail?.individual_co_owner
+                                                : "N/A"}
                                         </h2>
                                     </div>
                                 </a>
@@ -198,12 +210,14 @@ const List = ({ itemDetail }: customerItemDetail) => {
                         </td>
                     )}
                     {item === "Citizenship" && (
-                        <td>
+                        <td className="normal">
                             <Link href={`/admin/customer/${itemDetail?.id}`}>
                                 <a className="item">
                                     <div>
                                         <h2>
-                                            {itemDetail?.individual_citizenship}
+                                            {itemDetail?.individual_citizenship
+                                                ? itemDetail?.individual_citizenship
+                                                : "N/A"}
                                         </h2>
                                     </div>
                                 </a>
@@ -211,12 +225,14 @@ const List = ({ itemDetail }: customerItemDetail) => {
                         </td>
                     )}
                     {item === "Birth Date" && (
-                        <td>
+                        <td className="normal">
                             <Link href={`/admin/customer/${itemDetail?.id}`}>
                                 <a className="item">
                                     <div>
                                         <h2>
-                                            {itemDetail?.individual_birth_date}
+                                            {itemDetail?.individual_birth_date
+                                                ? itemDetail?.individual_birth_date
+                                                : "N/A"}
                                         </h2>
                                     </div>
                                 </a>
@@ -224,12 +240,14 @@ const List = ({ itemDetail }: customerItemDetail) => {
                         </td>
                     )}
                     {item === "Contact Person" && (
-                        <td>
+                        <td className="normal">
                             <Link href={`/admin/customer/${itemDetail?.id}`}>
                                 <a className="item">
                                     <div>
                                         <h2>
-                                            {itemDetail?.company_contact_person}
+                                            {itemDetail?.company_contact_person
+                                                ? itemDetail?.company_contact_person
+                                                : "N/A"}
                                         </h2>
                                     </div>
                                 </a>
@@ -237,7 +255,7 @@ const List = ({ itemDetail }: customerItemDetail) => {
                         </td>
                     )}
                     {item === "TIN" && (
-                        <td>
+                        <td className="normal">
                             <Link href={`/admin/customer/${itemDetail?.id}`}>
                                 <a className="item">
                                     <div>
@@ -248,7 +266,7 @@ const List = ({ itemDetail }: customerItemDetail) => {
                         </td>
                     )}
                     {item === "Branch Code" && (
-                        <td>
+                        <td className="normal">
                             <Link href={`/admin/customer/${itemDetail?.id}`}>
                                 <a className="item">
                                     <div>
@@ -260,7 +278,7 @@ const List = ({ itemDetail }: customerItemDetail) => {
                     )}
                     {item === "Property" && (
                         <>
-                            <td>
+                            <td className="large">
                                 <Link
                                     href={`/admin/customer/${itemDetail?.id}`}
                                 >
@@ -277,7 +295,7 @@ const List = ({ itemDetail }: customerItemDetail) => {
                                     </a>
                                 </Link>
                             </td>
-                            <td>
+                            <td className="large">
                                 <Link
                                     href={`/admin/customer/${itemDetail?.id}`}
                                 >

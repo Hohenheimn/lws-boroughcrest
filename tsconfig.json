@@ -20,8 +20,8 @@
         "**/*.ts",
         "**/*.tsx",
         "pages/project/corporate/transaction",
-        "components/ConvertImageSourceToFile.js",
-        "components/ConvertImageSourceToFile.js"
+        "components/ConvertImageSourceToFile.tsxx",
+        "components/ConvertImageSourceToFile.tsxx"
     ],
     "exclude": ["node_modules"]
 }

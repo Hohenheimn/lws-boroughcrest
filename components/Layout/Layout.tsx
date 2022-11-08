@@ -81,8 +81,8 @@ export default function Layout({ children }: Layout) {
                     )}
                 </AnimatePresence>
 
-                <section className="flex flex-col 1024px:w-full calc-sidebar">
-                    <div className="h-full w-full 1024px:p-5 1024px:py-10  p-10 relative">
+                <section className="flex flex-col w-full pl-[400px] 1920px:pl-[350px] 1550px:pl-[230px] 1024px:pl-0">
+                    <div className="h-full w-full 1550px:p-5 1024px:py-10  p-10 relative ">
                         {isWindow <= 1024 && (
                             <button
                                 onClick={() => setHide(!isHide)}
@@ -100,7 +100,7 @@ export default function Layout({ children }: Layout) {
                                 router.pathname === "/"
                                     ? "justify-between"
                                     : "justify-end"
-                            } items-center mb-10 480px:flex-wrap 480px:justify-end`}
+                            } items-center mb-10 1550px:mb-5 480px:flex-wrap 480px:justify-end`}
                         >
                             {router.pathname === "/" && (
                                 <div

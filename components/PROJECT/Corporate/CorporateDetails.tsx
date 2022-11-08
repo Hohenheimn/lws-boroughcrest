@@ -42,10 +42,14 @@ export default function CorporateDetails({ CorporateData }: Props) {
             address_zip_code: CorporateData.address_zip_code,
         });
     }, []);
-
-    const Logo =
-        "https://boroughcrest-api.lws.codes/get-img?image=" +
-        CorporateData.logo;
+    let Logo;
+    if (CorporateData.logo) {
+        Logo =
+            "https://boroughcrest-api.lws.codes/get-img?image=" +
+            CorporateData.logo;
+    } else {
+        Logo = "/Images/sampleProfile.png";
+    }
 
     return (
         <motion.div
@@ -59,6 +63,7 @@ export default function CorporateDetails({ CorporateData }: Props) {
                     setToggleModify={setToggleModify}
                     CorporateData={CorporateData}
                     Logo={Logo}
+                    validataLogo={CorporateData.logo}
                 />
             )}
             <h1 className="pageTitle mb-5">Corporate Details</h1>
@@ -105,13 +110,17 @@ export default function CorporateDetails({ CorporateData }: Props) {
                         <li>
                             <p className="label_text">RDO NUMBER:</p>
                             <h4 className="main_text">
-                                {CorporateData.rdo_no}
+                                {CorporateData.rdo_no
+                                    ? CorporateData.rdo_no
+                                    : "N/A"}
                             </h4>
                         </li>
                         <li>
                             <p className="label_text">SEC REGISTRATION NO:</p>
                             <h4 className="main_text">
-                                {CorporateData.sec_registration_no}
+                                {CorporateData.sec_registration_no
+                                    ? CorporateData.sec_registration_no
+                                    : "N/A"}
                             </h4>
                         </li>
                     </ul>

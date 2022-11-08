@@ -32,27 +32,30 @@ export default function Table({ isSearchTable }: Props) {
     );
     return (
         <div className=" w-full overflow-x-auto">
-            <table className="table_list 1024px:min-w-[1200px]">
-                <thead>
-                    <tr>
-                        {corpColumn.map((item: any, index: number) => (
-                            <th key={index}>{item}</th>
-                        ))}
-                    </tr>
-                </thead>
-                <tbody>
-                    {isError && (
+            <div className="table_container">
+                <table className="table_list">
+                    <thead>
                         <tr>
-                            <td colSpan={5} className="text-center">
-                                Error...
-                            </td>
+                            {corpColumn.map((item: any, index: number) => (
+                                <th key={index}>{item}</th>
+                            ))}
                         </tr>
-                    )}
-                    {data?.data.data.map((item: any, index: number) => (
-                        <List key={index} itemDetail={item} />
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {isError && (
+                            <tr>
+                                <td colSpan={5} className="text-center">
+                                    Error...
+                                </td>
+                            </tr>
+                        )}
+                        {data?.data.data.map((item: any, index: number) => (
+                            <List key={index} itemDetail={item} />
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+
             {isLoading && (
                 <div>
                     <aside className="text-center flex justify-center py-5">
@@ -92,14 +95,26 @@ const List = ({ itemDetail }: any) => {
     const MouseLeave1 = () => {
         setEdit1(false);
     };
-    const Logo =
-        "https://boroughcrest-api.lws.codes/get-img?image=" + itemDetail.logo;
+
+    let Logo: any;
+    if (itemDetail.logo) {
+        Logo =
+            "https://boroughcrest-api.lws.codes/get-img?image=" +
+            itemDetail.logo;
+    } else {
+        Logo = "/Images/sampleProfile.png";
+    }
     const Address = `${itemDetail.address_unit_floor} ${itemDetail.address_building} ${itemDetail.address_building} ${itemDetail.address_district} ${itemDetail.address_municipal_city} ${itemDetail.address_province} ${itemDetail.address_zip_code}`;
     return (
         <>
             <tr onMouseEnter={MouseEnter} onMouseLeave={MouseLeave}>
                 {corpColumn.map((item: any, index: number) => (
-                    <td key={index}>
+                    <td
+                        key={index}
+                        className={`${
+                            item === "Address" ? "xLarge" : "normal"
+                        }`}
+                    >
                         {item === "ID" && (
                             <Link href={`/project/corporate/${itemDetail.id}`}>
                                 <a className="item">

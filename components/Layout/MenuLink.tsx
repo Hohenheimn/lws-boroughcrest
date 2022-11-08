@@ -46,7 +46,7 @@ export default function MenuLink({
                         theme="ThemeRed"
                         content={<span className="capitalize">{urlName}</span>}
                     >
-                        <aside className="mx-5 h-5 w-5 my-3 relative">
+                        <aside className="mx-5 h-5 w-5  my-3 1550px:my-2 relative">
                             <Image
                                 src={`/Images/${
                                     ValidateUrl === ActiveUrl ? "Active" : ""

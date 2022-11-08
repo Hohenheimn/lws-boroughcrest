@@ -1,7 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { ModalSideFade } from "../../Animation/SimpleAnimation";
 import AppContext from "../../Context/AppContext";
-import { motion } from "framer-motion";
 import style from "../../../styles/Popup_Modal.module.scss";
 import { useForm } from "react-hook-form";
 import { customer } from "../../../types/customerList";
@@ -23,7 +21,7 @@ export default function NewIndividual({
     const [isProfileUrl, setProfileUrl] = useState("/Images/sampleProfile.png");
     const [isValidIDUrl, setValidIDUrl] = useState("/Images/id-sample.png");
     const [isSignature, setSignature] = useState(false);
-    const { ImgUrl } = useContext(AppContext);
+    const { isDraft } = useContext(AppContext);
 
     useEffect(() => {
         if (isNewCustomer.image_photo !== "") {
@@ -108,21 +106,36 @@ export default function NewIndividual({
     });
 
     const Submit = (data: any) => {
-        setNewCustomer({
-            ...isNewCustomer,
-            class: data.class,
-            name: data.name,
-            individual_co_owner: data.individual_co_owner,
-            individual_citizenship: data.individual_citizenship,
-            individual_birth_date: data.individual_birth_date,
-            tin: data.tin,
-            branch_code: data.branch_code,
-            image_photo: data.image_photo[0],
-            image_valid_id: data.image_valid_id[0],
-            image_signature: data.image_signature[0],
-            type: isType,
-            status: status ? 1 : 0,
-        });
+        if (isDraft) {
+            setNewCustomer({
+                ...isNewCustomer,
+                class: data.class,
+                name: data.name,
+                individual_co_owner: data.individual_co_owner,
+                individual_citizenship: data.individual_citizenship,
+                individual_birth_date: data.individual_birth_date,
+                tin: data.tin,
+                branch_code: data.branch_code,
+                type: isType,
+                status: status ? 1 : 0,
+            });
+        } else {
+            setNewCustomer({
+                ...isNewCustomer,
+                class: data.class,
+                name: data.name,
+                individual_co_owner: data.individual_co_owner,
+                individual_citizenship: data.individual_citizenship,
+                individual_birth_date: data.individual_birth_date,
+                tin: data.tin,
+                branch_code: data.branch_code,
+                image_photo: data.image_photo[0],
+                image_valid_id: data.image_valid_id[0],
+                image_signature: data.image_signature[0],
+                type: isType,
+                status: status ? 1 : 0,
+            });
+        }
 
         setActiveForm((item: boolean[]) => [
             (item[0] = false),
@@ -144,28 +157,14 @@ export default function NewIndividual({
                                     layout="fill"
                                 />
                             </aside>
-                            {/* if image photo already have a value, should not be required */}
-                            {isNewCustomer.image_photo !== "" ? (
-                                <input
-                                    type="file"
-                                    id="image"
-                                    className="absolute z-[-99] w-0 overflow-hidden"
-                                    {...register("image_photo")}
-                                    onChange={DisplayImage}
-                                    data-type="profile"
-                                />
-                            ) : (
-                                <input
-                                    type="file"
-                                    id="image"
-                                    className="absolute z-[-99] w-0 overflow-hidden"
-                                    {...register("image_photo", {
-                                        required: "Required",
-                                    })}
-                                    onChange={DisplayImage}
-                                    data-type="profile"
-                                />
-                            )}
+                            <input
+                                type="file"
+                                id="image"
+                                className="absolute z-[-99] w-0 overflow-hidden"
+                                {...register("image_photo")}
+                                onChange={DisplayImage}
+                                data-type="profile"
+                            />
 
                             <label
                                 htmlFor="image"
@@ -182,28 +181,14 @@ export default function NewIndividual({
                     </li>
                     <li className=" flex flex-col items-center justify-center w-4/12 820px:w-2/4 480px:w-full mb-5">
                         <div>
-                            {/* if image photo already have a value, should not be required */}
-                            {isNewCustomer.image_valid_id !== "" ? (
-                                <input
-                                    type="file"
-                                    id="validid"
-                                    className="absolute z-[-99] w-0 overflow-hidden"
-                                    {...register("image_valid_id")}
-                                    onChange={DisplayImage}
-                                    data-type="validID"
-                                />
-                            ) : (
-                                <input
-                                    type="file"
-                                    id="validid"
-                                    className="absolute z-[-99] w-0 overflow-hidden"
-                                    {...register("image_valid_id", {
-                                        required: "Required",
-                                    })}
-                                    onChange={DisplayImage}
-                                    data-type="validID"
-                                />
-                            )}
+                            <input
+                                type="file"
+                                id="validid"
+                                className="absolute z-[-99] w-0 overflow-hidden"
+                                {...register("image_valid_id")}
+                                onChange={DisplayImage}
+                                data-type="validID"
+                            />
 
                             <label
                                 htmlFor="validid"
@@ -242,28 +227,14 @@ export default function NewIndividual({
                                     Upload Signature
                                 </label>
                             )}
-                            {/* if image photo already have a value, should not be required */}
-                            {isNewCustomer.image_valid_id !== "" ? (
-                                <input
-                                    id="file"
-                                    type="file"
-                                    className="absolute z-[-99] w-0 overflow-hidden"
-                                    {...register("image_signature")}
-                                    onChange={DisplayImage}
-                                    data-type="signature"
-                                />
-                            ) : (
-                                <input
-                                    id="file"
-                                    type="file"
-                                    className="absolute z-[-99] w-0 overflow-hidden"
-                                    {...register("image_signature", {
-                                        required: "Required",
-                                    })}
-                                    onChange={DisplayImage}
-                                    data-type="signature"
-                                />
-                            )}
+                            <input
+                                id="file"
+                                type="file"
+                                className="absolute z-[-99] w-0 overflow-hidden"
+                                {...register("image_signature")}
+                                onChange={DisplayImage}
+                                data-type="signature"
+                            />
                         </div>
                         {errors.image_signature && (
                             <p className="text-[10px]">

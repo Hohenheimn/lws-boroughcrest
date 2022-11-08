@@ -4,7 +4,7 @@ import { AiFillCamera } from "react-icons/ai";
 import Image from "next/image";
 import style from "../../../styles/Popup_Modal.module.scss";
 import { RiArrowDownSFill } from "react-icons/ri";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { ModalSideFade } from "../../Animation/SimpleAnimation";
 import { getCookie } from "cookies-next";
 import { ScaleLoader } from "react-spinners";
@@ -22,11 +22,13 @@ type ModifyCorporate = {
     setToggleModify: Function;
     CorporateData: corporateColumns;
     Logo: String;
+    validataLogo: any;
 };
 
 export default function ModifyCorporate({
     setToggleModify,
     Logo,
+    validataLogo,
 }: ModifyCorporate) {
     const [isNewActive, setNewActive] = useState([true, false]);
 
@@ -34,22 +36,22 @@ export default function ModifyCorporate({
         <div className={style.container}>
             <section>
                 <p className={style.modal_title}>Modify Corporate</p>
-                <AnimatePresence mode="wait">
-                    <PrimaryInformation
-                        key={1}
-                        setToggleModify={setToggleModify}
-                        setNewActive={setNewActive}
-                        Logo={Logo}
-                        isNewActive={isNewActive}
-                    />
 
-                    <Contact
-                        key={2}
-                        setToggleModify={setToggleModify}
-                        setNewActive={setNewActive}
-                        isNewActive={isNewActive}
-                    />
-                </AnimatePresence>
+                <PrimaryInformation
+                    key={1}
+                    setToggleModify={setToggleModify}
+                    setNewActive={setNewActive}
+                    Logo={Logo}
+                    isNewActive={isNewActive}
+                    validataLogo={validataLogo}
+                />
+
+                <Contact
+                    key={2}
+                    setToggleModify={setToggleModify}
+                    setNewActive={setNewActive}
+                    isNewActive={isNewActive}
+                />
             </section>
         </div>
     );
@@ -62,6 +64,7 @@ type Props = {
     Logo?: any;
     setLogo?: any;
     isNewActive: any;
+    validataLogo?: any;
 };
 
 const PrimaryInformation = ({
@@ -69,12 +72,18 @@ const PrimaryInformation = ({
     setNewActive,
     Logo,
     isNewActive,
+    validataLogo,
 }: Props) => {
     const router = useRouter();
     // true if may transaction
     const validateTransaction = true;
     // Default Image
-    const LogoName = Logo.split("/")[4].split("_")[1];
+    let LogoName;
+    if (validataLogo) {
+        LogoName = Logo.split("/")[4].split("_")[1];
+    } else {
+        LogoName = "N/A";
+    }
     const [isLogo, setLogo] = useState(`${LogoName}`);
     const [isProfileUrl, setProfileUrl] = useState(`${Logo}`);
     const DisplayImage = (e: any) => {
@@ -200,7 +209,7 @@ const PrimaryInformation = ({
                     />
                 </li>
                 <li>
-                    <label>Corporate Name</label>
+                    <label>*Corporate Name</label>
                     <input
                         type="text"
                         {...register("name", {
@@ -213,7 +222,7 @@ const PrimaryInformation = ({
             {validateTransaction && (
                 <ul className={style.ThreeRows}>
                     <li>
-                        <label>TIN Number</label>
+                        <label>*TIN Number</label>
                         <input
                             type="number"
                             {...register("tin", {
@@ -233,7 +242,7 @@ const PrimaryInformation = ({
                         )}
                     </li>
                     <li>
-                        <label>Branch Code</label>
+                        <label>*Branch Code</label>
                         <input
                             placeholder="00000"
                             {...register("branch_code", {
@@ -264,7 +273,6 @@ const PrimaryInformation = ({
                         type="number"
                         placeholder="000"
                         {...register("rdo_no", {
-                            required: "Required",
                             minLength: {
                                 value: 3,
                                 message: "Must be 3 Number",
@@ -280,7 +288,7 @@ const PrimaryInformation = ({
                     )}
                 </li>
                 <li>
-                    <label>GST TYPE.</label>
+                    <label>*GST TYPE.</label>
                     <select
                         {...register("gst_type", {
                             required: true,
@@ -297,7 +305,7 @@ const PrimaryInformation = ({
                             {modifyCorporate.gst_type}
                         </option>
                         <option value="VAT">VAT</option>
-                        <option value="NON-VATA">NON-VAT</option>
+                        <option value="NON-VAT">NON-VAT</option>
                     </select>
                     {errors.gst_type && <p>{errors.gst_type.message}</p>}
                 </li>
@@ -308,7 +316,6 @@ const PrimaryInformation = ({
                             type="number"
                             placeholder="000"
                             {...register("sec_registration_no", {
-                                required: "Required",
                                 minLength: {
                                     value: 3,
                                     message: "Must be 3 Number",
@@ -435,20 +442,34 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
         const keys = Object.keys(modifyCorporate);
 
         await keys.forEach((key) => {
-            arrayData.push({
-                key: key,
-                keyData: modifyCorporate[key],
-            });
-        });
-        arrayData.map(({ key, keyData }: any) => {
-            if (keyData === undefined || keyData === "" || keyData === null) {
-                console.log("di kasama");
+            if (key === "logo") {
+                if (modifyCorporate[key]) {
+                    arrayData.push({
+                        key: key,
+                        keyData: modifyCorporate[key],
+                    });
+                }
             } else {
-                formData.append(key, keyData);
+                if (
+                    modifyCorporate[key] === "" ||
+                    modifyCorporate[key] === undefined
+                ) {
+                    arrayData.push({
+                        key: key,
+                        keyData: null,
+                    });
+                } else {
+                    arrayData.push({
+                        key: key,
+                        keyData: modifyCorporate[key],
+                    });
+                }
             }
         });
+        arrayData.map(({ key, keyData }: any) => {
+            formData.append(key, keyData);
+        });
         mutate(formData);
-        // console.log(arrayData);
     };
     return (
         <motion.div
@@ -468,6 +489,7 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                         <aside>
                             <input
                                 type="text"
+                                placeholder="09"
                                 {...register("contact_no", {
                                     required: "Required",
                                     minLength: {
@@ -490,7 +512,7 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                                     })
                                 }
                             />
-                            <span>Official</span>
+                            <span>*Official</span>
                         </aside>
                         {errors.contact_no && (
                             <p className="text-[10px]">
@@ -499,6 +521,7 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                         )}
                         <input
                             type="text"
+                            placeholder="09"
                             {...register("alt_contact_no", {
                                 minLength: {
                                     value: 11,
@@ -507,6 +530,10 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                                 maxLength: {
                                     value: 11,
                                     message: "Must be 11 Number",
+                                },
+                                pattern: {
+                                    value: /^(09)\d{9}$/,
+                                    message: "Invalid Contact Number",
                                 },
                             })}
                             onChange={(e) =>
@@ -543,7 +570,7 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                                     })
                                 }
                             />
-                            <span>Official</span>
+                            <span>*Official</span>
                         </aside>
                         {errors.contact_no && (
                             <p className="text-[10px]">
@@ -575,7 +602,7 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                 <p className="text-[14px] font-bold mb-2">ADDRESS</p>
                 <ul className={style.ThreeRows}>
                     <li>
-                        <label>UNIT/FLOOR/HOUSE NO.</label>
+                        <label>*UNIT/FLOOR/HOUSE NO.</label>
                         <input
                             type="text"
                             {...register("address_unit_floor", {
@@ -595,7 +622,7 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>BUILDING</label>
+                        <label>*BUILDING</label>
                         <input
                             type="text"
                             {...register("address_building", {
@@ -615,7 +642,7 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>STREET</label>
+                        <label>*STREET</label>
                         <input
                             type="text"
                             {...register("address_street", {
@@ -635,7 +662,7 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>DISTRICT</label>
+                        <label>*DISTRICT</label>
                         <input
                             type="text"
                             {...register("address_district", {
@@ -655,7 +682,7 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>MUNICIPALITY</label>
+                        <label>*MUNICIPALITY</label>
                         <input
                             type="text"
                             {...register("address_municipal_city", {
@@ -675,7 +702,7 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>PROVINCE</label>
+                        <label>*PROVINCE</label>
                         <input
                             type="text"
                             {...register("address_province", {
@@ -695,7 +722,7 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>ZIP CODE</label>
+                        <label>*ZIP CODE</label>
                         <input
                             type="text"
                             {...register("address_zip_code", {

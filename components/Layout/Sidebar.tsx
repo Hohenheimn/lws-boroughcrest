@@ -51,11 +51,9 @@ export default function Sidebar({
                 initial="initial"
                 animate="animate"
                 exit="exit"
-                className={`${
-                    isWindow <= 1024 && "fixed top-0 left-0 z-50 bg-[#ebedf2f6]"
-                } w-[400px] 1920px:w-[350px] 1550px:w-[230px] border-r-2 border-white min-h-full pt-5 flex flex-col`}
+                className="absolute left-0 top-0 w-[400px] 1920px:w-[350px] 1550px:w-[230px] border-r-2 border-white min-h-full flex flex-col"
             >
-                <div className=" w-full flex justify-center">
+                <div className=" w-full flex justify-center mt-5 1550px:mt-0">
                     <Image
                         src="/Images/deus.png"
                         width={250}
@@ -66,7 +64,7 @@ export default function Sidebar({
 
                 <div className="w-full h-full flex">
                     <ul
-                        className={` self-start pt-10 ${
+                        className={` self-start pt-8 ${
                             !isProfileSearch && "w-full"
                         }`}
                     >
