@@ -26,27 +26,12 @@ h4,
 h5,
 h6 {
     font-family: "NHU-bold";
+    @apply text-[#2B2B2B];
 }
 * {
     font-family: "NHU-regular";
 }
-/* custom theme for tooltip */
-.tippy-tooltip.ThemeRed-theme {
-    background-color: #8f384d;
-    color: white;
-}
-.tippy-tooltip.ThemeRed-theme[data-placement^="top"] .tippy-arrow {
-    border-top-color: #8f384d;
-}
-.tippy-tooltip.ThemeRed-theme[data-placement^="bottom"] .tippy-arrow {
-    border-bottom-color: #8f384d;
-}
-.tippy-tooltip.ThemeRed-theme[data-placement^="left"] .tippy-arrow {
-    border-left-color: #8f384d;
-}
-.tippy-tooltip.ThemeRed-theme[data-placement^="right"] .tippy-arrow {
-    border-right-color: #8f384d;
-}
+
 // Page Loading
 #nprogress .bar {
     background: #8f384d !important;
@@ -75,13 +60,16 @@ h6 {
     }
 }
 // Table
+.table_container {
+    @apply w-full overflow-x-auto;
+}
 .table_list {
-    @apply w-full;
+    @apply min-w-full;
     thead {
         tr {
             @apply border-b border-gray-300;
             th {
-                @apply text-start px-4 py-6;
+                @apply text-start px-4 py-5 480px:py-3 480px:px-3 text-[#2B2B2B] 480px:text-[12px];
             }
             .status {
                 @apply text-center;
@@ -92,6 +80,7 @@ h6 {
         tr {
             @apply border-b border-gray-300 cursor-pointer relative;
             td {
+                @apply min-w-[150px] 480px:min-w-[100px];
                 .edit {
                     @apply absolute z-0 w-full h-[60%] bg-[#7f7f7f5a] top-[20%] left-0 flex justify-center items-center;
                     aside {
@@ -99,24 +88,30 @@ h6 {
                     }
                 }
                 .item {
-                    @apply flex px-4 py-6;
+                    @apply flex items-center px-4 py-4 480px:py-2 480px:px-2;
                     aside {
-                        @apply w-10 h-10 rounded-full overflow-hidden relative shadow-lg mr-3;
+                        @apply w-10 h-10 480px:w-8 480px:h-8 rounded-full overflow-hidden relative shadow-lg mr-3;
                     }
                     h2 {
-                        @apply text-[#2E4364] font-NHU-medium;
-                    }
-                    p {
-                        @apply text-[12px];
+                        @apply text-[#2E4364] font-NHU-medium 480px:text-[12px];
                     }
                 }
+            }
+            td.normal {
+                @apply min-w-[150px] 480px:min-w-[100px];
+            }
+            td.large {
+                @apply min-w-[200px] 480px:min-w-[150px];
+            }
+            td.xLarge {
+                @apply min-w-[500px] 480px:min-w-[350px];
             }
         }
     }
 }
 // Active Status
 .statusCircle {
-    @apply h-5 w-5 rounded-full border-4 border-gray-500;
+    @apply h-5 w-5 rounded-full border-4 border-gray-500 cursor-pointer;
     box-shadow: 0 0 15px 0 gray;
 
     &.active {
@@ -136,7 +131,37 @@ input[type="checkbox"] {
 .pageDetail {
     @apply h-full w-full flex justify-center items-center absolute top-0 left-0;
 }
+// Input number remove arrow default appearance
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
 
+/* Firefox */
 input[type="number"] {
-    @apply appearance-none;
+    -moz-appearance: textfield;
+}
+
+/* custom theme for tooltip */
+.tippy-tooltip.ThemeRed-theme {
+    background-color: #8f384d;
+    color: white !important;
+    p,
+    span,
+    div {
+        color: white;
+    }
+}
+.tippy-tooltip.ThemeRed-theme[data-placement^="top"] .tippy-arrow {
+    border-top-color: #8f384d;
+}
+.tippy-tooltip.ThemeRed-theme[data-placement^="bottom"] .tippy-arrow {
+    border-bottom-color: #8f384d;
+}
+.tippy-tooltip.ThemeRed-theme[data-placement^="left"] .tippy-arrow {
+    border-left-color: #8f384d;
+}
+.tippy-tooltip.ThemeRed-theme[data-placement^="right"] .tippy-arrow {
+    border-right-color: #8f384d;
 }

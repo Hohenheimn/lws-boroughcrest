@@ -32,7 +32,6 @@ export default function FilterCustomer({ setFilter }: setFilter) {
 
     const OnChangeHandler = (e: any) => {
         const name = e.target.id;
-        console.log(cusTableColumn);
 
         if (cusTableColumn.length === 12) {
             setCusTableColumn([`${name}`]);
@@ -108,14 +107,19 @@ export default function FilterCustomer({ setFilter }: setFilter) {
 }
 
 const FilterList = ({ name, onChangeHandler }: any) => {
-    const { cusFilterColumn, cusTableColumn } = useContext(AppContext);
+    const { cusTableColumn } = useContext(AppContext);
     return (
         <li className={style.column_item}>
             <input
                 type="checkbox"
                 name=""
                 id={name}
-                checked={cusTableColumn.includes(`${name}`) ? true : false}
+                checked={
+                    cusTableColumn.includes(`${name}`) ||
+                    cusTableColumn.length === 12
+                        ? true
+                        : false
+                }
                 onChange={onChangeHandler}
             />
             <label htmlFor={name}>{name}</label>

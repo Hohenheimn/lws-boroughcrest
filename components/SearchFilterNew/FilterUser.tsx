@@ -1,4 +1,5 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useContext } from "react";
+import AppContext from "../Context/AppContext";
 import style from "../../styles/SearchFilter.module.scss";
 import { flip } from "../Animation/SimpleAnimation";
 import { motion } from "framer-motion";
@@ -21,7 +22,52 @@ export default function FilterUser({ setFilter, isFilter }: setFilter) {
             document.removeEventListener("mousedown", clickOutSide);
         };
     });
+    const ColumnList = [
+        "Department",
+        "Employee ID",
+        "Email",
+        "Mobile",
+        "Role",
+        "Status",
+    ];
+    const {
+        userTableRows,
+        usersetTableRows,
+        userTableColumn,
+        setUserTableColumn,
+    } = useContext(AppContext);
 
+    const OnChangeHandler = (e: any) => {
+        const name = e.target.id;
+
+        if (userTableColumn.length === 6) {
+            setUserTableColumn([`${name}`]);
+            return;
+        }
+        if (userTableColumn.includes(name)) {
+            setUserTableColumn((col: any) =>
+                col.filter((item: any) => {
+                    return item !== name;
+                })
+            );
+            return;
+        }
+        if (userTableColumn.length < 6) {
+            setUserTableColumn([...userTableColumn, `${name}`]);
+            return;
+        }
+    };
+
+    const AllHandler = () => {
+        setUserTableColumn([
+            "Department",
+            "Employee ID",
+            "Email",
+            "Mobile",
+            "Role",
+            "Status",
+        ]);
+    };
     return (
         <motion.ul
             ref={modal}
@@ -32,32 +78,48 @@ export default function FilterUser({ setFilter, isFilter }: setFilter) {
             className={style.column}
         >
             <li className="font-medium">Columns</li>
-            <FilterList name="All" />
-            <FilterList name="ID" />
-            <FilterList name="Name" />
-            <FilterList name="Department" />
-            <FilterList name="Employee ID" />
-            <FilterList name="Email" />
-            <FilterList name="Mobile" />
-            <FilterList name="Role" />
+            <FilterList name="All" onChangeHandler={AllHandler} />
+            {ColumnList.map((item: string, index: number) => (
+                <FilterList
+                    name={item}
+                    key={index}
+                    onChangeHandler={OnChangeHandler}
+                />
+            ))}
             <li>
                 <p className=" font-medium text-[12px]">Rows</p>
-                <select className="border border-ThemeRed px-[5px] py-[1px]">
+                <select
+                    className="border border-ThemeRed px-[5px] py-[1px]"
+                    onChange={(e) => usersetTableRows(e.target.value)}
+                    value={userTableRows}
+                >
                     <option value="10">10</option>
-                    <option value="10">20</option>
-                    <option value="10">30</option>
-                    <option value="10">40</option>
-                    <option value="10">50</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                    <option value="40">40</option>
+                    <option value="50">50</option>
                 </select>
             </li>
         </motion.ul>
     );
 }
 
-const FilterList = ({ name }: any) => {
+const FilterList = ({ name, onChangeHandler }: any) => {
+    const { userTableColumn } = useContext(AppContext);
     return (
         <li className={style.column_item}>
-            <input type="checkbox" name="" id={name} />
+            <input
+                type="checkbox"
+                name=""
+                id={name}
+                checked={
+                    userTableColumn.includes(`${name}`) ||
+                    userTableColumn.length === 6
+                        ? true
+                        : false
+                }
+                onChange={onChangeHandler}
+            />
             <label htmlFor={name}>{name}</label>
         </li>
     );

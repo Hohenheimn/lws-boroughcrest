@@ -173,8 +173,7 @@ export default function AppProvider({ children }: AppProvider) {
             unit_codes: [],
         });
     };
-    const [CorpTableRows, setCorpTableRows] = useState<number>(5);
-    const [TableRows, setTableRows] = useState<number>(10);
+    const [CorpTableRows, setCorpTableRows] = useState<number>(10);
     const [corpColumn, setCorpColumn] = useState([
         "ID",
         "Name",
@@ -189,6 +188,7 @@ export default function AppProvider({ children }: AppProvider) {
         "Email",
         "Status",
     ]);
+    const [TableRows, setTableRows] = useState<number>(10);
     const [cusFilterColumn, setCusFilterColumn] = useState([
         "Class",
         "Mobile",
@@ -203,7 +203,19 @@ export default function AppProvider({ children }: AppProvider) {
         "Branch Code",
         "Type",
     ]);
+    const [userTableRows, usersetTableRows] = useState<number>(10);
+    const [userTableColumn, setUserTableColumn] = useState([
+        "Department",
+        "Employee ID",
+        "Email",
+        "Mobile",
+        "Role",
+        "Status",
+    ]);
+
     const ImgUrl = "https://boroughcrest-api.lws.codes/get-img?image=";
+
+    const [isDraft, setDraft] = useState(false);
 
     const [isSearchBar, setSearchBar] = useState("");
     return (
@@ -232,6 +244,12 @@ export default function AppProvider({ children }: AppProvider) {
                 ImgUrl,
                 isModifyCustomer,
                 setModifyCustomer,
+                setDraft,
+                isDraft,
+                userTableRows,
+                usersetTableRows,
+                userTableColumn,
+                setUserTableColumn,
             }}
         >
             {children}

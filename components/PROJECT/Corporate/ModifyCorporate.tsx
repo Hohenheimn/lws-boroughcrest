@@ -4,7 +4,7 @@ import { AiFillCamera } from "react-icons/ai";
 import Image from "next/image";
 import style from "../../../styles/Popup_Modal.module.scss";
 import { RiArrowDownSFill } from "react-icons/ri";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { ModalSideFade } from "../../Animation/SimpleAnimation";
 import { getCookie } from "cookies-next";
 import { ScaleLoader } from "react-spinners";
@@ -22,11 +22,13 @@ type ModifyCorporate = {
     setToggleModify: Function;
     CorporateData: corporateColumns;
     Logo: String;
+    validataLogo: any;
 };
 
 export default function ModifyCorporate({
     setToggleModify,
     Logo,
+    validataLogo,
 }: ModifyCorporate) {
     const [isNewActive, setNewActive] = useState([true, false]);
 
@@ -34,23 +36,22 @@ export default function ModifyCorporate({
         <div className={style.container}>
             <section>
                 <p className={style.modal_title}>Modify Corporate</p>
-                <AnimatePresence mode="wait">
-                    {isNewActive[0] && (
-                        <PrimaryInformation
-                            key={1}
-                            setToggleModify={setToggleModify}
-                            setNewActive={setNewActive}
-                            Logo={Logo}
-                        />
-                    )}
-                    {isNewActive[1] && (
-                        <Contact
-                            key={2}
-                            setToggleModify={setToggleModify}
-                            setNewActive={setNewActive}
-                        />
-                    )}
-                </AnimatePresence>
+
+                <PrimaryInformation
+                    key={1}
+                    setToggleModify={setToggleModify}
+                    setNewActive={setNewActive}
+                    Logo={Logo}
+                    isNewActive={isNewActive}
+                    validataLogo={validataLogo}
+                />
+
+                <Contact
+                    key={2}
+                    setToggleModify={setToggleModify}
+                    setNewActive={setNewActive}
+                    isNewActive={isNewActive}
+                />
             </section>
         </div>
     );
@@ -62,19 +63,32 @@ type Props = {
     isLogo?: string;
     Logo?: any;
     setLogo?: any;
+    isNewActive: any;
+    validataLogo?: any;
 };
 
-const PrimaryInformation = ({ setToggleModify, setNewActive, Logo }: Props) => {
+const PrimaryInformation = ({
+    setToggleModify,
+    setNewActive,
+    Logo,
+    isNewActive,
+    validataLogo,
+}: Props) => {
     const router = useRouter();
     // true if may transaction
     const validateTransaction = true;
     // Default Image
-    const LogoName = Logo.split("/")[4].split("_")[1];
+    let LogoName;
+    if (validataLogo) {
+        LogoName = Logo.split("/")[4].split("_")[1];
+    } else {
+        LogoName = "N/A";
+    }
     const [isLogo, setLogo] = useState(`${LogoName}`);
     const [isProfileUrl, setProfileUrl] = useState(`${Logo}`);
     const DisplayImage = (e: any) => {
-        if (e.target.files[0]?.size > 2000) {
-            setLogo("File is too large");
+        if (e.target.files[0]?.size > 2000000) {
+            setLogo("Image must be 2mb only");
             return;
         } else {
             setLogo("");
@@ -156,6 +170,7 @@ const PrimaryInformation = ({ setToggleModify, setNewActive, Logo }: Props) => {
             initial="initial"
             animate="animate"
             exit="exit"
+            className={`${isNewActive[0] ? "" : "hidden"}`}
         >
             <h1 className={style.modal_label_primary}>Primary Information</h1>
             <input
@@ -194,7 +209,7 @@ const PrimaryInformation = ({ setToggleModify, setNewActive, Logo }: Props) => {
                     />
                 </li>
                 <li>
-                    <label>Corporate Name</label>
+                    <label>*Corporate Name</label>
                     <input
                         type="text"
                         {...register("name", {
@@ -204,72 +219,60 @@ const PrimaryInformation = ({ setToggleModify, setNewActive, Logo }: Props) => {
                     {errors.name && <p>{errors.name.message}</p>}
                 </li>
             </ul>
-
-            <ul className={style.ThreeRows}>
-                {validateTransaction && (
-                    <li className={style.twoRows}>
-                        <div className={style.wrapper}>
-                            <div className=" w-[48%]">
-                                <label>TIN Number</label>
-                                <input
-                                    type="text"
-                                    placeholder="000-000-000"
-                                    {...register("tin", {
-                                        required: "Required",
-                                        minLength: {
-                                            value: 11,
-                                            message: "Must be 11 Characters",
-                                        },
-                                        maxLength: {
-                                            value: 11,
-                                            message: "Must be 11 Characters",
-                                        },
-                                        pattern: {
-                                            value: /^[0-9,-]+$/i,
-                                            message: "Only number and Hyphen",
-                                        },
-                                    })}
-                                />
-                                {errors.tin && (
-                                    <p className="text-[10px]">
-                                        {errors.tin.message}
-                                    </p>
-                                )}
-                            </div>
-                            <div className=" w-[48%]">
-                                <label>Branch Code</label>
-                                <input
-                                    placeholder="00000"
-                                    {...register("branch_code", {
-                                        required: "Required",
-                                        minLength: {
-                                            value: 5,
-                                            message: "Must be 5 Number",
-                                        },
-                                        maxLength: {
-                                            value: 5,
-                                            message: "Must be 5 Number",
-                                        },
-                                    })}
-                                    type="number"
-                                />
-                                {errors.branch_code && (
-                                    <p className="text-[10px]">
-                                        {errors.branch_code.message}
-                                    </p>
-                                )}
-                            </div>
-                        </div>
+            {validateTransaction && (
+                <ul className={style.ThreeRows}>
+                    <li>
+                        <label>*TIN Number</label>
+                        <input
+                            type="number"
+                            {...register("tin", {
+                                required: "Required",
+                                minLength: {
+                                    value: 9,
+                                    message: "Must be 9 numbers only",
+                                },
+                                maxLength: {
+                                    value: 9,
+                                    message: "Must be 9 numbers only",
+                                },
+                            })}
+                        />
+                        {errors.tin && (
+                            <p className="text-[10px]">{errors.tin.message}</p>
+                        )}
                     </li>
-                )}
-
+                    <li>
+                        <label>*Branch Code</label>
+                        <input
+                            placeholder="00000"
+                            {...register("branch_code", {
+                                required: "Required",
+                                minLength: {
+                                    value: 5,
+                                    message: "Must be 5 Number",
+                                },
+                                maxLength: {
+                                    value: 5,
+                                    message: "Must be 5 Number",
+                                },
+                            })}
+                            type="number"
+                        />
+                        {errors.branch_code && (
+                            <p className="text-[10px]">
+                                {errors.branch_code.message}
+                            </p>
+                        )}
+                    </li>
+                </ul>
+            )}
+            <ul className={style.ThreeRows}>
                 <li>
                     <label>RDO NO.</label>
                     <input
                         type="number"
                         placeholder="000"
                         {...register("rdo_no", {
-                            required: "Required",
                             minLength: {
                                 value: 3,
                                 message: "Must be 3 Number",
@@ -285,29 +288,34 @@ const PrimaryInformation = ({ setToggleModify, setNewActive, Logo }: Props) => {
                     )}
                 </li>
                 <li>
-                    <label>GST TYPE.</label>
+                    <label>*GST TYPE.</label>
                     <select
                         {...register("gst_type", {
                             required: true,
                         })}
                         id=""
+                        defaultValue={modifyCorporate.gst_type}
                         required
                     >
+                        <option
+                            className={style.disabled}
+                            value={modifyCorporate.gst_type}
+                            disabled
+                        >
+                            {modifyCorporate.gst_type}
+                        </option>
                         <option value="VAT">VAT</option>
-                        <option value="NON-VATA">NON-VAT</option>
+                        <option value="NON-VAT">NON-VAT</option>
                     </select>
                     {errors.gst_type && <p>{errors.gst_type.message}</p>}
                 </li>
-            </ul>
-            {validateTransaction && (
-                <ul className={style.ThreeRows}>
+                {validateTransaction && (
                     <li>
                         <label>SEC. Registration</label>
                         <input
                             type="number"
                             placeholder="000"
                             {...register("sec_registration_no", {
-                                required: "Required",
                                 minLength: {
                                     value: 3,
                                     message: "Must be 3 Number",
@@ -324,10 +332,8 @@ const PrimaryInformation = ({ setToggleModify, setNewActive, Logo }: Props) => {
                             </p>
                         )}
                     </li>
-                    <li></li>
-                    <li></li>
-                </ul>
-            )}
+                )}
+            </ul>
 
             <div className={style.button_container}>
                 <button
@@ -370,17 +376,12 @@ const PrimaryInformation = ({ setToggleModify, setNewActive, Logo }: Props) => {
     );
 };
 
-const Contact = ({ setNewActive, setToggleModify }: Props) => {
+const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
     const router = useRouter();
     const [isSave, setSave] = useState(false);
     const [ErrorContact, setErrorContact] = useState(false);
     const [ErrorAddress, setErrorAddress] = useState(false);
-    const {
-        modifyCorporate,
-        setModifyCorporate,
-        setToggleNewForm,
-        emptyCorporate,
-    } = useContext(AppContext);
+    const { modifyCorporate, setModifyCorporate } = useContext(AppContext);
     // true for save, false for save and new
     const [whatClickedButon, setWhatClickedButton] = useState(true);
 
@@ -404,12 +405,7 @@ const Contact = ({ setNewActive, setToggleModify }: Props) => {
         },
     });
     const queryClient = useQueryClient();
-    const {
-        isLoading: MutateLoading,
-        mutate,
-        isError,
-        error,
-    } = useMutation(
+    const { isLoading: MutateLoading, mutate } = useMutation(
         (data: FormData) => {
             return api.post(`/project/corporate/${router.query.id}`, data, {
                 headers: {
@@ -446,20 +442,34 @@ const Contact = ({ setNewActive, setToggleModify }: Props) => {
         const keys = Object.keys(modifyCorporate);
 
         await keys.forEach((key) => {
-            arrayData.push({
-                key: key,
-                keyData: modifyCorporate[key],
-            });
-        });
-        arrayData.map(({ key, keyData }: any) => {
-            if (keyData === undefined || keyData === "" || keyData === null) {
-                console.log("di kasama");
+            if (key === "logo") {
+                if (modifyCorporate[key]) {
+                    arrayData.push({
+                        key: key,
+                        keyData: modifyCorporate[key],
+                    });
+                }
             } else {
-                formData.append(key, keyData);
+                if (
+                    modifyCorporate[key] === null ||
+                    modifyCorporate[key] === undefined
+                ) {
+                    arrayData.push({
+                        key: key,
+                        keyData: "",
+                    });
+                } else {
+                    arrayData.push({
+                        key: key,
+                        keyData: modifyCorporate[key],
+                    });
+                }
             }
         });
+        arrayData.map(({ key, keyData }: any) => {
+            formData.append(key, keyData);
+        });
         mutate(formData);
-        // console.log(arrayData);
     };
     return (
         <motion.div
@@ -467,6 +477,7 @@ const Contact = ({ setNewActive, setToggleModify }: Props) => {
             initial="initial"
             animate="animate"
             exit="exit"
+            className={`${isNewActive[1] ? "" : "hidden"}`}
         >
             <form onSubmit={handleSubmit(Submit)}>
                 <h1 className={style.modal_label_primary}>
@@ -478,6 +489,7 @@ const Contact = ({ setNewActive, setToggleModify }: Props) => {
                         <aside>
                             <input
                                 type="text"
+                                placeholder="09"
                                 {...register("contact_no", {
                                     required: "Required",
                                     minLength: {
@@ -500,7 +512,7 @@ const Contact = ({ setNewActive, setToggleModify }: Props) => {
                                     })
                                 }
                             />
-                            <span>Official</span>
+                            <span>*Official</span>
                         </aside>
                         {errors.contact_no && (
                             <p className="text-[10px]">
@@ -509,6 +521,7 @@ const Contact = ({ setNewActive, setToggleModify }: Props) => {
                         )}
                         <input
                             type="text"
+                            placeholder="09"
                             {...register("alt_contact_no", {
                                 minLength: {
                                     value: 11,
@@ -517,6 +530,10 @@ const Contact = ({ setNewActive, setToggleModify }: Props) => {
                                 maxLength: {
                                     value: 11,
                                     message: "Must be 11 Number",
+                                },
+                                pattern: {
+                                    value: /^(09)\d{9}$/,
+                                    message: "Invalid Contact Number",
                                 },
                             })}
                             onChange={(e) =>
@@ -553,7 +570,7 @@ const Contact = ({ setNewActive, setToggleModify }: Props) => {
                                     })
                                 }
                             />
-                            <span>Official</span>
+                            <span>*Official</span>
                         </aside>
                         {errors.contact_no && (
                             <p className="text-[10px]">
@@ -585,7 +602,7 @@ const Contact = ({ setNewActive, setToggleModify }: Props) => {
                 <p className="text-[14px] font-bold mb-2">ADDRESS</p>
                 <ul className={style.ThreeRows}>
                     <li>
-                        <label>UNIT/FLOOR/HOUSE NO.</label>
+                        <label>*UNIT/FLOOR/HOUSE NO.</label>
                         <input
                             type="text"
                             {...register("address_unit_floor", {
@@ -605,7 +622,7 @@ const Contact = ({ setNewActive, setToggleModify }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>BUILDING</label>
+                        <label>*BUILDING</label>
                         <input
                             type="text"
                             {...register("address_building", {
@@ -625,7 +642,7 @@ const Contact = ({ setNewActive, setToggleModify }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>STREET</label>
+                        <label>*STREET</label>
                         <input
                             type="text"
                             {...register("address_street", {
@@ -645,7 +662,7 @@ const Contact = ({ setNewActive, setToggleModify }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>DISTRICT</label>
+                        <label>*DISTRICT</label>
                         <input
                             type="text"
                             {...register("address_district", {
@@ -665,7 +682,7 @@ const Contact = ({ setNewActive, setToggleModify }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>MUNICIPALITY</label>
+                        <label>*MUNICIPALITY</label>
                         <input
                             type="text"
                             {...register("address_municipal_city", {
@@ -685,7 +702,7 @@ const Contact = ({ setNewActive, setToggleModify }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>PROVINCE</label>
+                        <label>*PROVINCE</label>
                         <input
                             type="text"
                             {...register("address_province", {
@@ -705,7 +722,7 @@ const Contact = ({ setNewActive, setToggleModify }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>ZIP CODE</label>
+                        <label>*ZIP CODE</label>
                         <input
                             type="text"
                             {...register("address_zip_code", {

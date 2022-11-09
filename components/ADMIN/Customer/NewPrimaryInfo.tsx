@@ -1,24 +1,28 @@
-import React, { useState } from "react";
+import React from "react";
 import NewDefault from "./NewDefault";
 import NewIndividual from "./NewIndividual";
 import NewCompany from "./NewCompany";
-import { AnimatePresence } from "framer-motion";
 import style from "../../../styles/Popup_Modal.module.scss";
 
 type NewPrimaryInfo = {
     setActiveForm: Function;
     isType: string;
     setType: Function;
+    isActiveForm: any;
+    setStatus: Function;
+    status: any;
 };
 
 export default function NewPrimaryInfo({
     setActiveForm,
     isType,
     setType,
+    isActiveForm,
+    setStatus,
+    status,
 }: NewPrimaryInfo) {
-    const [status, setStatus] = useState(true);
     return (
-        <>
+        <div className={`${isActiveForm[0] ? "" : "hidden"}`}>
             <h1 className={style.modal_label_primary}>Primary Informations</h1>
             <div className=" w-[95%] text-[12px] flex items-center justify-between mb-5">
                 <aside className=" w-4/12 480px:w-2/4">
@@ -29,14 +33,17 @@ export default function NewPrimaryInfo({
                     <select
                         name=""
                         id=""
-                        value={isType}
+                        defaultValue={isType}
                         onChange={(e) => setType(e.target.value)}
                         className="uppercase rounded-md px-2 py-[2px] border-none text-black outline-none w-[90%] 480px:w-full"
                     >
                         <option
-                            value=""
-                            className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
-                        ></option>
+                            value={isType}
+                            className="text-[12px] text-white bg-ThemeRed"
+                            disabled
+                        >
+                            {isType}
+                        </option>
                         <option
                             value="individual"
                             className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
@@ -68,25 +75,15 @@ export default function NewPrimaryInfo({
                 </aside>
             </div>
 
-            <AnimatePresence mode="wait">
-                {isType === "" && <NewDefault key={1} />}
-                {isType === "individual" && (
-                    <NewIndividual
-                        key={2}
-                        setActiveForm={setActiveForm}
-                        isType={isType}
-                        status={status}
-                    />
-                )}
-                {isType === "company" && (
-                    <NewCompany
-                        key={3}
-                        setActiveForm={setActiveForm}
-                        isType={isType}
-                        status={status}
-                    />
-                )}
-            </AnimatePresence>
-        </>
+            {isType === "" && <NewDefault key={1} />}
+            {isType !== "" && (
+                <NewIndividual
+                    key={2}
+                    setActiveForm={setActiveForm}
+                    isType={isType}
+                    status={status}
+                />
+            )}
+        </div>
     );
 }

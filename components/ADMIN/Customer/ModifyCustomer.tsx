@@ -3,7 +3,7 @@ import { AiFillCamera } from "react-icons/ai";
 import Image from "next/image";
 import style from "../../../styles/Popup_Modal.module.scss";
 import { RiArrowDownSFill } from "react-icons/ri";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { ModalSideFade } from "../../Animation/SimpleAnimation";
 import AppContext from "../../Context/AppContext";
 import { useForm } from "react-hook-form";
@@ -15,31 +15,33 @@ import { useQueryClient } from "react-query";
 
 type ModifyCustomer = {
     setToggleModify: Function;
+    isDraft: any;
 };
 
-export default function ModifyCustomer({ setToggleModify }: ModifyCustomer) {
+export default function ModifyCustomer({
+    setToggleModify,
+    isDraft,
+}: ModifyCustomer) {
     const [isActiveForm, setActiveForm] = useState([true, false, false]);
+    const { isModifyCustomer } = useContext(AppContext);
 
     return (
         <div className={style.container}>
             <section className=" p-10 bg-[#e2e3e4] rounded-lg w-[90%] max-w-[800px] text-ThemeRed shadow-lg">
                 <p className=" text-[16px] mb-3 font-bold">Modify Customer</p>
-                <AnimatePresence mode="wait">
-                    {isActiveForm[0] && (
-                        <Primary
-                            key={1}
-                            setToggleModify={setToggleModify}
-                            setActiveForm={setActiveForm}
-                        />
-                    )}
-                    {isActiveForm[1] && (
-                        <Contact
-                            key={2}
-                            setToggleModify={setToggleModify}
-                            setActiveForm={setActiveForm}
-                        />
-                    )}
-                </AnimatePresence>
+
+                <Primary
+                    setToggleModify={setToggleModify}
+                    setActiveForm={setActiveForm}
+                    isActiveForm={isActiveForm}
+                />
+
+                <Contact
+                    setToggleModify={setToggleModify}
+                    setActiveForm={setActiveForm}
+                    isActiveForm={isActiveForm}
+                    isDraft={isDraft}
+                />
             </section>
         </div>
     );
@@ -47,14 +49,34 @@ export default function ModifyCustomer({ setToggleModify }: ModifyCustomer) {
 type Props = {
     setToggleModify: Function;
     setActiveForm: Function;
+    isActiveForm: any;
+    isDraft?: any;
 };
-const Primary = ({ setToggleModify, setActiveForm }: Props) => {
-    const [isProfileUrl, setProfileUrl] = useState("");
-    const [isValidIDUrl, setValidIDUrl] = useState("");
+const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
     const { isModifyCustomer, ImgUrl, setModifyCustomer } =
         useContext(AppContext);
     const [isType, setType] = useState(isModifyCustomer.type);
     const [isStatus, setStatus] = useState(isModifyCustomer.status);
+
+    const [isSignature, setSignature] = useState(false);
+    const [isProfileUrl, setProfileUrl] = useState("/Images/sampleProfile.png");
+    const [isValidIDUrl, setValidIDUrl] = useState("/Images/id-sample.png");
+
+    useEffect(() => {
+        if (isModifyCustomer.image_signature !== null) {
+            setSignature(true);
+        }
+        if (isModifyCustomer.image_photo !== null) {
+            setProfileUrl(ImgUrl + isModifyCustomer.image_photo);
+        }
+        if (isModifyCustomer.image_valid_id !== null) {
+            setValidIDUrl(ImgUrl + isModifyCustomer.image_valid_id);
+        }
+    }, []);
+
+    const typeHandler = (e: any) => {
+        setType(e.target.value);
+    };
 
     const {
         register,
@@ -83,6 +105,7 @@ const Primary = ({ setToggleModify, setActiveForm }: Props) => {
             image_signature: data.image_signature[0],
             image_valid_id: data.image_valid_id[0],
             status: isStatus,
+            class: data.class,
         });
         setActiveForm((item: boolean[]) => [
             (item[0] = false),
@@ -92,6 +115,10 @@ const Primary = ({ setToggleModify, setActiveForm }: Props) => {
     };
 
     const DisplayImage = (e: any) => {
+        if (e.target.files[0]?.size > 2000000) {
+            alert("Image must be 2mb only");
+            return;
+        }
         if (e.target.files.length > 0) {
             let selectedImage = e.target.files[0];
             if (
@@ -124,6 +151,7 @@ const Primary = ({ setToggleModify, setActiveForm }: Props) => {
             initial="initial"
             animate="animate"
             exit="exit"
+            className={`${isActiveForm[0] ? "" : "hidden"}`}
         >
             <form onSubmit={handleSubmit(NextFormValidation)}>
                 <h1 className=" w-full text-[24px] mb-3">
@@ -136,12 +164,12 @@ const Primary = ({ setToggleModify, setActiveForm }: Props) => {
                         </p>
                         <select
                             name=""
-                            defaultValue="default"
+                            defaultValue={isType}
                             id=""
                             className="rounded-md text-black px-2 py-[2px] outline-none w-[90%] 480px:w-full"
-                            onChange={(e) => setType(e.target.value)}
+                            onChange={typeHandler}
                         >
-                            <option value="default" disabled>
+                            <option value={isType} disabled>
                                 {isType}
                             </option>
                             <option
@@ -185,12 +213,7 @@ const Primary = ({ setToggleModify, setActiveForm }: Props) => {
                         <aside className="w-20 h-20 relative flex mr-4">
                             <aside className=" bg-white h-full w-full text-[12px] rounded-full object-cover shadow-lg relative">
                                 <Image
-                                    src={
-                                        isProfileUrl
-                                            ? isProfileUrl
-                                            : ImgUrl +
-                                              isModifyCustomer.image_photo
-                                    }
+                                    src={isProfileUrl}
                                     alt="Sample Profile"
                                     layout="fill"
                                 />
@@ -200,7 +223,7 @@ const Primary = ({ setToggleModify, setActiveForm }: Props) => {
                                 type="file"
                                 {...register("image_photo")}
                                 id="image"
-                                className="absolute z-[-99] top-[-100px]"
+                                className="absolute z-[-99] top-[-500px]"
                                 data-type="profile"
                                 onChange={DisplayImage}
                             />
@@ -216,7 +239,7 @@ const Primary = ({ setToggleModify, setActiveForm }: Props) => {
                         <input
                             type="file"
                             id="validid"
-                            className="absolute z-[-99]  top-[-100px]"
+                            className="absolute z-[-99] top-[-500px]"
                             data-type="validID"
                             {...register("image_valid_id")}
                             onChange={DisplayImage}
@@ -227,12 +250,7 @@ const Primary = ({ setToggleModify, setActiveForm }: Props) => {
                         >
                             <aside className=" w-24 h-16 mr-2 relative">
                                 <Image
-                                    src={
-                                        isValidIDUrl
-                                            ? isProfileUrl
-                                            : ImgUrl +
-                                              isModifyCustomer.image_valid_id
-                                    }
+                                    src={isValidIDUrl}
                                     alt="sample id"
                                     layout="fill"
                                 />
@@ -241,17 +259,31 @@ const Primary = ({ setToggleModify, setActiveForm }: Props) => {
                         </label>
                     </li>
                     <li className="  flex flex-col  w-4/12 820px:w-2/4 480px:w-full mb-5 justify-center items-end">
-                        <label
-                            className=" text-[12px] font-NHU-medium mb-1 uppercase cursor-pointer w-[90%] 480px:w-full"
-                            htmlFor="file"
-                        >
-                            Upload Signature
-                        </label>
+                        {isSignature ? (
+                            <label
+                                className=" text-[12px] text-[#19d142] font-NHU-medium mb-1 uppercase cursor-pointer w-[90%] 480px:w-full"
+                                htmlFor="file"
+                            >
+                                Upload Signature
+                            </label>
+                        ) : (
+                            <label
+                                className=" text-[12px] font-NHU-medium mb-1 uppercase cursor-pointer w-[90%] 480px:w-full"
+                                htmlFor="file"
+                            >
+                                Upload Signature
+                            </label>
+                        )}
                         <input
                             id="file"
                             type="file"
-                            className="absolute z-[-99] top-[-100px]"
+                            className="absolute z-[-99] top-[-500px]"
                             {...register("image_signature")}
+                            onChange={(e) => {
+                                e.target.files
+                                    ? setSignature(true)
+                                    : setSignature(false);
+                            }}
                         />
                     </li>
                 </ul>
@@ -266,7 +298,7 @@ const Primary = ({ setToggleModify, setActiveForm }: Props) => {
                         </p>
                     </li>
                     <li>
-                        <label>CLASS</label>
+                        <label>*CLASS</label>
                         <select
                             id=""
                             defaultValue={isModifyCustomer.class}
@@ -287,6 +319,7 @@ const Primary = ({ setToggleModify, setActiveForm }: Props) => {
                     </li>
                     <li>
                         <label>
+                            *
                             {(isType === "Company" || isType === "company") &&
                                 "COMPANY"}{" "}
                             NAME
@@ -307,9 +340,7 @@ const Primary = ({ setToggleModify, setActiveForm }: Props) => {
                                 <input
                                     type="text"
                                     className="bg-white"
-                                    {...register("individual_co_owner", {
-                                        required: "Required",
-                                    })}
+                                    {...register("individual_co_owner")}
                                 />
                                 {errors.individual_co_owner && (
                                     <p className="text-[10px]">
@@ -319,7 +350,7 @@ const Primary = ({ setToggleModify, setActiveForm }: Props) => {
                             </li>
 
                             <li>
-                                <label>CITIZENSHIP</label>
+                                <label>*CITIZENSHIP</label>
                                 <input
                                     type="text"
                                     className="bg-white"
@@ -351,58 +382,47 @@ const Primary = ({ setToggleModify, setActiveForm }: Props) => {
                             </li>
                         </>
                     )}
-                    <li className={style.twoRows}>
-                        <div className={style.wrapper}>
-                            <div className=" w-[48%]">
-                                <label>TIN Number</label>
-                                <input
-                                    type="text"
-                                    placeholder="000-000-000"
-                                    {...register("tin", {
-                                        required: "Required",
-                                        minLength: {
-                                            value: 11,
-                                            message: "Must be 11 Characters",
-                                        },
-                                        maxLength: {
-                                            value: 11,
-                                            message: "Must be 11 Characters",
-                                        },
-                                        pattern: {
-                                            value: /^[0-9,-]+$/i,
-                                            message: "Only number and Hyphen",
-                                        },
-                                    })}
-                                />
-                                {errors.tin && (
-                                    <p className="text-[10px]">
-                                        {errors.tin.message}
-                                    </p>
-                                )}
-                            </div>
-                            <div className=" w-[48%]">
-                                <label>Branch Code</label>
-                                <input
-                                    type="number"
-                                    {...register("branch_code", {
-                                        required: "Required",
-                                        minLength: {
-                                            value: 5,
-                                            message: "Must be 5 Number",
-                                        },
-                                        maxLength: {
-                                            value: 5,
-                                            message: "Must be 5 Number",
-                                        },
-                                    })}
-                                />
-                                {errors.branch_code && (
-                                    <p className="text-[10px]">
-                                        {errors.branch_code.message}
-                                    </p>
-                                )}
-                            </div>
-                        </div>
+                    <li>
+                        <label>*TIN Number</label>
+                        <input
+                            type="number"
+                            {...register("tin", {
+                                required: "Required",
+                                minLength: {
+                                    value: 9,
+                                    message: "Must be 9 numbers only",
+                                },
+                                maxLength: {
+                                    value: 9,
+                                    message: "Must be 9 numbers only",
+                                },
+                            })}
+                        />
+                        {errors.tin && (
+                            <p className="text-[10px]">{errors.tin.message}</p>
+                        )}
+                    </li>
+                    <li>
+                        <label>*Branch Code</label>
+                        <input
+                            type="number"
+                            {...register("branch_code", {
+                                required: "Required",
+                                minLength: {
+                                    value: 5,
+                                    message: "Must be 5 Number",
+                                },
+                                maxLength: {
+                                    value: 5,
+                                    message: "Must be 5 Number",
+                                },
+                            })}
+                        />
+                        {errors.branch_code && (
+                            <p className="text-[10px]">
+                                {errors.branch_code.message}
+                            </p>
+                        )}
                     </li>
                 </ul>
                 <div className=" w-full flex justify-end items-center">
@@ -424,7 +444,12 @@ const Primary = ({ setToggleModify, setActiveForm }: Props) => {
     );
 };
 
-const Contact = ({ setActiveForm, setToggleModify }: Props) => {
+const Contact = ({
+    setActiveForm,
+    setToggleModify,
+    isActiveForm,
+    isDraft,
+}: Props) => {
     const { isModifyCustomer, setModifyCustomer } = useContext(AppContext);
     const [isSameEmail, setSameEmail] = useState(false);
     const [isSameAddress, setSameAddress] = useState(false);
@@ -439,7 +464,7 @@ const Contact = ({ setActiveForm, setToggleModify }: Props) => {
         ]);
     };
     const onSuccess = () => {
-        if (whatClickedButon === "save") {
+        if (whatClickedButon === "save" || whatClickedButon === "draft") {
             queryClient.invalidateQueries([
                 "get-customer-detail",
                 router.query.id,
@@ -447,7 +472,10 @@ const Contact = ({ setActiveForm, setToggleModify }: Props) => {
             setToggleModify(false);
         }
         if (whatClickedButon === "new") {
-            router.push("/admin/cusomter?new");
+            router.push("/admin/customer?new");
+        }
+        if (whatClickedButon === "draft") {
+            router.reload();
         }
     };
 
@@ -455,14 +483,13 @@ const Contact = ({ setActiveForm, setToggleModify }: Props) => {
         onSuccess,
         router.query.id
     );
-    const {
-        isLoading: DraftLoading,
-        isError: DraftError,
-        mutate: DraftMutate,
-    } = SaveDraftUpdate(onSuccess, router.query.id);
+    const { isLoading: DraftLoading, mutate: DraftMutate } = SaveDraftUpdate(
+        onSuccess,
+        router.query.id
+    );
 
     const NextFormValidation = async (data: any) => {
-        setModifyCustomer({
+        let Payload = {
             ...isModifyCustomer,
             contact_no: data.contact_no,
             registered_email: data.registered_email,
@@ -482,34 +509,61 @@ const Contact = ({ setActiveForm, setToggleModify }: Props) => {
             mailing_address_municipal_city: data.mailing_address_municipal_city,
             mailing_address_province: data.mailing_address_province,
             mailing_address_zip_code: data.mailing_address_zip_code,
-        });
+        };
+
+        delete Payload["updated_at"];
+        delete Payload["created_at"];
+        delete Payload["portal_id"];
+        delete Payload["assigned_customer_id"];
+        delete Payload["deleted_at"];
+        delete Payload["id"];
+        delete Payload["properties"];
+
+        if (Payload.type === "Company" || Payload.type === "company") {
+            Payload = {
+                ...Payload,
+                individual_birth_date: "",
+                individual_citizenship: "",
+                individual_co_owner: "",
+            };
+        }
+        if (Payload.type === "individual" || Payload.type === "Individual") {
+            Payload = { ...Payload, company_contact_person: "" };
+        }
+
         const formData = new FormData();
         const arrayData: any = [];
-        const keys = Object.keys(isModifyCustomer);
+        const keys = Object.keys(Payload);
 
         await keys.forEach((key) => {
             if (
-                isModifyCustomer[key] === null ||
-                isModifyCustomer[key] === undefined ||
-                isModifyCustomer[key] === ""
+                key === "image_photo" ||
+                key === "image_signature" ||
+                key === "image_valid_id"
             ) {
-                return;
+                if (Payload[key]) {
+                    arrayData.push({
+                        key: key,
+                        keyData: Payload[key],
+                    });
+                }
             } else {
                 arrayData.push({
                     key: key,
-                    keyData: isModifyCustomer[key],
+                    keyData: Payload[key],
                 });
             }
         });
         arrayData.map(({ key, keyData }: any) => {
             formData.append(key, keyData);
         });
-        console.log(arrayData);
+
         if (whatClickedButon === "save" || whatClickedButon === "new") {
             mutate(formData);
         }
         if (whatClickedButon === "draft") {
-            console.log(arrayData);
+            // DraftMutate(formData);
+            alert("Unavailable for now!");
         }
     };
 
@@ -525,6 +579,7 @@ const Contact = ({ setActiveForm, setToggleModify }: Props) => {
             initial="initial"
             animate="animate"
             exit="exit"
+            className={`${isActiveForm[1] ? "" : "hidden"}`}
         >
             <form onSubmit={handleSubmit(NextFormValidation)}>
                 <h1 className={style.modal_label_primary}>
@@ -533,7 +588,7 @@ const Contact = ({ setActiveForm, setToggleModify }: Props) => {
                 <p className="text-[14px] font-bold mb-2">ADDRESS</p>
                 <ul className={style.ThreeRows}>
                     <li>
-                        <label>MOBILE</label>
+                        <label>*MOBILE</label>
                         <input
                             type="text"
                             {...register("contact_no", {
@@ -566,7 +621,7 @@ const Contact = ({ setActiveForm, setToggleModify }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>REGISTERED-EMAIL</label>
+                        <label>*REGISTERED-EMAIL</label>
                         <input
                             type="email"
                             {...register("registered_email", {
@@ -587,7 +642,7 @@ const Contact = ({ setActiveForm, setToggleModify }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>PREFERED EMAIL</label>
+                        <label>*PREFERED EMAIL</label>
                         <input
                             type="email"
                             {...register("preferred_email", {
@@ -626,7 +681,7 @@ const Contact = ({ setActiveForm, setToggleModify }: Props) => {
                     </li>
                     {isModifyCustomer.type === "company" && (
                         <li>
-                            <label>CONTACT PERSON</label>
+                            <label>*CONTACT PERSON</label>
                             <input
                                 type="text"
                                 {...register("company_contact_person", {
@@ -653,7 +708,7 @@ const Contact = ({ setActiveForm, setToggleModify }: Props) => {
                 <p className="text-[14px] font-bold mb-2">REGISTERED ADDRESS</p>
                 <ul className={style.ThreeRows}>
                     <li>
-                        <label>UNIT/FLOOR/HOUSE NO.</label>
+                        <label>*UNIT/FLOOR/HOUSE NO.</label>
                         <input
                             type="text"
                             {...register("registered_address_unit_floor", {
@@ -677,7 +732,7 @@ const Contact = ({ setActiveForm, setToggleModify }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>BUILDING</label>
+                        <label>*BUILDING</label>
                         <input
                             type="text"
                             {...register("registered_address_building", {
@@ -698,7 +753,7 @@ const Contact = ({ setActiveForm, setToggleModify }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>STREET</label>
+                        <label>*STREET</label>
                         <input
                             type="text"
                             {...register("registered_address_street", {
@@ -719,7 +774,7 @@ const Contact = ({ setActiveForm, setToggleModify }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>DISTRICT</label>
+                        <label>*DISTRICT</label>
                         <input
                             type="text"
                             {...register("registered_address_district", {
@@ -740,7 +795,7 @@ const Contact = ({ setActiveForm, setToggleModify }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>MUNICIPALITY CITY</label>
+                        <label>*MUNICIPALITY CITY</label>
                         <input
                             type="text"
                             {...register("registered_address_municipal_city", {
@@ -767,7 +822,7 @@ const Contact = ({ setActiveForm, setToggleModify }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>PROVINCE</label>
+                        <label>*PROVINCE</label>
                         <input
                             type="text"
                             {...register("registered_address_province", {
@@ -788,7 +843,7 @@ const Contact = ({ setActiveForm, setToggleModify }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>ZIP CODE</label>
+                        <label>*ZIP CODE</label>
                         <input
                             type="number"
                             {...register("registered_address_zip_code", {
@@ -818,7 +873,7 @@ const Contact = ({ setActiveForm, setToggleModify }: Props) => {
                     </li>
                 </ul>
 
-                <p className="text-[14px] font-bold mb-2">MAILING ADDRESS</p>
+                <p className="text-[14px] font-bold mb-2">*MAILING ADDRESS</p>
                 <aside className={style.checkboxContainer}>
                     <input
                         type="checkbox"
@@ -828,13 +883,13 @@ const Contact = ({ setActiveForm, setToggleModify }: Props) => {
                         onChange={() => setSameAddress(!isSameAddress)}
                     />
                     <label htmlFor="sameAddress">
-                        SAME AS REGISTER ADDRESS
+                        *SAME AS REGISTER ADDRESS
                     </label>
                 </aside>
 
                 <ul className={style.ThreeRows}>
                     <li>
-                        <label>UNIT/FLOOR/HOUSE NO.</label>
+                        <label>*UNIT/FLOOR/HOUSE NO.</label>
                         <input
                             type="text"
                             {...register("mailing_address_unit_floor", {
@@ -859,7 +914,7 @@ const Contact = ({ setActiveForm, setToggleModify }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>BUILDING</label>
+                        <label>*BUILDING</label>
                         <input
                             type="text"
                             {...register("mailing_address_building", {
@@ -884,7 +939,7 @@ const Contact = ({ setActiveForm, setToggleModify }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>STREET</label>
+                        <label>*STREET</label>
                         <input
                             type="text"
                             {...register("mailing_address_street", {
@@ -909,7 +964,7 @@ const Contact = ({ setActiveForm, setToggleModify }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>DISTRICT</label>
+                        <label>*DISTRICT</label>
                         <input
                             type="text"
                             {...register("mailing_address_district", {
@@ -934,7 +989,7 @@ const Contact = ({ setActiveForm, setToggleModify }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>MUNICIPALITY CITY</label>
+                        <label>*MUNICIPALITY CITY</label>
                         <input
                             type="text"
                             {...register("mailing_address_municipal_city", {
@@ -960,7 +1015,7 @@ const Contact = ({ setActiveForm, setToggleModify }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>PROVINCE</label>
+                        <label>*PROVINCE</label>
                         <input
                             type="text"
                             {...register("mailing_address_province", {
@@ -985,7 +1040,7 @@ const Contact = ({ setActiveForm, setToggleModify }: Props) => {
                         )}
                     </li>
                     <li>
-                        <label>ZIP CODE</label>
+                        <label>*ZIP CODE</label>
                         <input
                             type="text"
                             {...register("mailing_address_zip_code", {
@@ -1072,6 +1127,9 @@ const Contact = ({ setActiveForm, setToggleModify }: Props) => {
                                         <button
                                             type="submit"
                                             name="save-draft"
+                                            className={
+                                                isDraft ? style.disabled : ""
+                                            }
                                             onClick={() =>
                                                 setWhatClickedButton("draft")
                                             }

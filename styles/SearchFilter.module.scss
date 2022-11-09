@@ -1,5 +1,5 @@
 .page_title {
-    @apply font-bold mb-10 text-[24px] 480px:mb-5 capitalize;
+    @apply font-bold mb-10 text-[24px] 1550px:mb-5 capitalize;
 }
 
 .container {
@@ -33,7 +33,7 @@
         .filter {
             @apply flex items-center cursor-pointer relative;
             .button {
-                @apply w-6 h-5 relative;
+                @apply w-8 h-9 relative;
             }
             .column {
                 @apply z-50 origin-top absolute top-[180%] right-0 border border-ThemeRed bg-white p-2 pb-10 text-[14px] text-ThemeRed font-bold w-[200px];

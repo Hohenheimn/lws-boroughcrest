@@ -2,8 +2,6 @@ import React, { useState, useContext, useRef, useEffect } from "react";
 import AppContext from "../../Context/AppContext";
 import { RiArrowDownSFill } from "react-icons/ri";
 import { ScaleLoader } from "react-spinners";
-import { motion } from "framer-motion";
-import { ModalSideFade } from "../../Animation/SimpleAnimation";
 import style from "../../../styles/Popup_Modal.module.scss";
 import { useRouter } from "next/router";
 import {
@@ -14,12 +12,18 @@ import {
 
 type NewPropertyInfo = {
     setActiveForm: Function;
+    isActiveForm: any;
+    DraftImageFile: any;
 };
 
-export default function NewPropertyInfo({ setActiveForm }: NewPropertyInfo) {
+export default function NewPropertyInfo({
+    setActiveForm,
+    isActiveForm,
+    DraftImageFile,
+}: NewPropertyInfo) {
     const router = useRouter();
     const [whichSaveBtn, setWhichSaveBtn] = useState("");
-    const { isNewCustomer, setNewCustomer, emptyCustomer } =
+    const { isNewCustomer, setNewCustomer, isDraft, emptyCustomer } =
         useContext(AppContext);
     const [isProperty, setProperty] = useState<any>([
         {
@@ -28,6 +32,13 @@ export default function NewPropertyInfo({ setActiveForm }: NewPropertyInfo) {
             project: "",
         },
     ]);
+
+    useEffect(() => {
+        if (isNewCustomer.unit_codes.length > 0) {
+            setProperty([...isNewCustomer.unit_codes]);
+        }
+    }, []);
+
     const Back = () => {
         setActiveForm((item: boolean[]) => [
             (item[0] = false),
@@ -45,42 +56,64 @@ export default function NewPropertyInfo({ setActiveForm }: NewPropertyInfo) {
             router.push("");
         }
         if (whichSaveBtn === "savenew") {
-            // empty Field
-            emptyCustomer();
-            // Go to first form
-            setActiveForm((item: boolean[]) => [
-                (item[0] = true),
-                (item[1] = false),
-                (item[2] = false),
-            ]);
+            router.reload();
+            // // refetch Draft
+            // refetch();
+            // // empty Field
+            // emptyCustomer();
+            // // Go to first form
+            // setActiveForm((item: boolean[]) => [
+            //     (item[0] = true),
+            //     (item[1] = false),
+            //     (item[2] = false),
+            // ]);
         }
     };
-    const {
-        isLoading: MutateLoading,
-        mutate,
-        isError,
-        error,
-    } = PostCustomerSave(Success);
+    const { isLoading: MutateLoading, mutate } = PostCustomerSave(Success);
 
     const SaveMutation = async () => {
         const ArrayPropertyID = isProperty.map((item: any) => {
             return item.unitCode;
         });
-        const sample = { ...isNewCustomer, unit_codes: ArrayPropertyID };
 
         if (ArrayPropertyID.includes("")) {
             alert("Cannot proceed, one of unit code is empty");
             return;
         }
 
+        let newData = { ...isNewCustomer, unit_codes: ArrayPropertyID };
+
+        // if Type is company, empty the field of not for company
+        if (newData.type === "Company" || newData.type === "company") {
+            newData = {
+                ...newData,
+                individual_birth_date: "",
+                individual_citizenship: "",
+                individual_co_owner: "",
+            };
+        }
+        // if Type is individual, empty the field of not for individual
+        if (newData.type === "individual" || newData.type === "Individual") {
+            newData = { ...newData, company_contact_person: "" };
+        }
+
+        if (isDraft) {
+            newData = {
+                ...newData,
+                image_photo: DraftImageFile.profile_file,
+                image_valid_id: DraftImageFile.valid_file,
+                image_signature: DraftImageFile.signature,
+            };
+        }
+
         const formData = new FormData();
         const arrayData: any = [];
-        const keys = Object.keys(sample);
+        const keys = Object.keys(newData);
 
         await keys.forEach((key) => {
             arrayData.push({
                 key: key,
-                keyData: sample[key],
+                keyData: newData[key],
             });
         });
         arrayData.map(({ key, keyData }: any) => {
@@ -95,20 +128,6 @@ export default function NewPropertyInfo({ setActiveForm }: NewPropertyInfo) {
         mutate(formData);
     };
 
-    // SAVE DRAFT MUTATION
-    const SuccessDraft = () => {
-        router.push("");
-    };
-    const {
-        isLoading: DraftLoading,
-        mutate: DraftMutate,
-        isError: DraftError,
-    } = PostCustomerDraft(SuccessDraft);
-
-    if (isError) {
-        console.log(error);
-    }
-
     // SAVE BUTTONS
     const Save = () => {
         setWhichSaveBtn("save");
@@ -118,20 +137,38 @@ export default function NewPropertyInfo({ setActiveForm }: NewPropertyInfo) {
         setWhichSaveBtn("savenew");
         SaveMutation();
     };
+
+    // SAVE DRAFT MUTATION
+    const SuccessDraft = () => {
+        emptyCustomer();
+        router.push("");
+    };
+    const { isLoading: DraftLoading, mutate: DraftMutate } =
+        PostCustomerDraft(SuccessDraft);
+
     const SaveDraft = async () => {
-        const ArrayPropertyID = isProperty.map((item: any) => {
-            return item.unitCode;
-        });
-        const sample = { ...isNewCustomer, unit_codes: ArrayPropertyID };
+        let newData = { ...isNewCustomer, unit_codes: isProperty };
+
+        if (newData.type === "Company" || newData.type === "company") {
+            newData = {
+                ...newData,
+                individual_birth_date: "",
+                individual_citizenship: "",
+                individual_co_owner: "",
+            };
+        }
+        if (newData.type === "individual" || newData.type === "Individual") {
+            newData = { ...newData, company_contact_person: "" };
+        }
 
         const formData = new FormData();
         const arrayData: any = [];
-        const keys = Object.keys(sample);
+        const keys = Object.keys(newData);
 
         await keys.forEach((key) => {
             arrayData.push({
                 key: key,
-                keyData: sample[key],
+                keyData: newData[key],
             });
         });
         arrayData.map(({ key, keyData }: any) => {
@@ -142,16 +179,12 @@ export default function NewPropertyInfo({ setActiveForm }: NewPropertyInfo) {
                 formData.append(key, keyData);
             }
         });
-        DraftMutate(formData);
+        // DraftMutate(formData);
+        alert("Unavailable for now!");
     };
 
     return (
-        <motion.div
-            variants={ModalSideFade}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-        >
+        <div className={`${isActiveForm[2] ? "" : "hidden"}`}>
             <h1 className=" w-full text-[24px] mb-3">Property Information</h1>
 
             <table className="w-full mb-20">
@@ -238,7 +271,7 @@ export default function NewPropertyInfo({ setActiveForm }: NewPropertyInfo) {
                     </div>
                 )}
             </div>
-        </motion.div>
+        </div>
     );
 }
 type List = {
@@ -372,7 +405,7 @@ const Select = ({ setSelect, updateValue }: any) => {
                 data?.data.map((item: any, index: number) => (
                     <li
                         key={index}
-                        data-projname={item.type}
+                        data-projname={item.project.name}
                         onClick={updateValue}
                     >
                         {item.unit_code}

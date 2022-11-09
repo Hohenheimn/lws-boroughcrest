@@ -5,11 +5,12 @@ import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 
 export default function CustomerProperty({ data }: any) {
-    console.log(data);
     const [isToggle, setToggle] = useState(false);
     return (
         <div>
-            {isToggle && <ModifyProperty setToggle={setToggle} />}
+            {isToggle && (
+                <ModifyProperty setToggle={setToggle} properties={data} />
+            )}
             <header className=" flex w-full justify-between items-center mb-5">
                 <h1 className=" w-full text-[24px] mb-3 480px:text-[16px]">
                     Property Information
@@ -62,7 +63,6 @@ export default function CustomerProperty({ data }: any) {
 }
 
 const List = ({ item }: any) => {
-    console.log(item);
     return (
         <tr>
             <td className=" text-gray-500 mb-5 1024px:text-[14px] font-bold py-2 px-2">

@@ -13,12 +13,13 @@ import { useRouter } from "next/router";
 import BeatLoader from "react-spinners/BeatLoader";
 import { customer } from "../../../types/customerList";
 
-export default function CustomerDetail() {
-    const { ImgUrl, isModifyCustomer, setModifyCustomer } =
+export default function CustomerDetail({ Draft }: any) {
+    const { ImgUrl, setModifyCustomer, isModifyCustomer } =
         useContext(AppContext);
     const [toggleModify, setToggleModify] = useState(false);
     const [isToggleInfoRole, setToggleInfoRole] = useState<boolean>(false);
     const [isView, setView] = useState("");
+    const [isDraft, setDraft] = useState(false);
 
     const router = useRouter();
     const id = router.query.id;
@@ -28,6 +29,16 @@ export default function CustomerDetail() {
         data: DetailData,
         isError: DetailError,
     } = GetCustomer(id);
+
+    useEffect(() => {
+        if (Draft) {
+            setDraft(true);
+            setModifyCustomer({
+                ...Draft.values,
+                id: router.query.id,
+            });
+        }
+    }, []);
 
     if (DetailLoading || DetailError) {
         return (
@@ -41,14 +52,16 @@ export default function CustomerDetail() {
             </div>
         );
     }
-
-    const data: customer = DetailData?.data;
+    let data: customer = DetailData?.data;
 
     return (
         <div>
             {isView !== "" && <Modal_Image setView={setView} isView={isView} />}
             {toggleModify && (
-                <ModifyCustomer setToggleModify={setToggleModify} />
+                <ModifyCustomer
+                    setToggleModify={setToggleModify}
+                    isDraft={isDraft}
+                />
             )}
             <h1 className=" font-bold mb-10 text-[24px] 480px:mb-5">
                 Customer Details
@@ -66,13 +79,21 @@ export default function CustomerDetail() {
                         <div>
                             <HiPencil
                                 className=" text-ThemeRed font-bold text-[32px] 480px:text-[24px] cursor-pointer"
+                                // If theres a draft, draft data will be restore on the modifyfields else its customer data
                                 onClick={() => {
-                                    setModifyCustomer({
-                                        ...data,
-                                        _method: "PUT",
-                                    });
+                                    Draft
+                                        ? setModifyCustomer({
+                                              ...Draft.values,
+                                              tin: data.tin.replaceAll("-", ""),
+                                              id: router.query.id,
+                                              _method: "PUT",
+                                          })
+                                        : setModifyCustomer({
+                                              ...data,
+                                              tin: data.tin.replaceAll("-", ""),
+                                              _method: "PUT",
+                                          });
                                     setToggleModify(true);
-                                    console.log(isModifyCustomer);
                                 }}
                             />
                         </div>
@@ -86,7 +107,7 @@ export default function CustomerDetail() {
                             layout="fill"
                         />
                     </aside>
-                    {data.type ? (
+                    {data.status ? (
                         <div
                             className=" h-5 w-5 rounded-full border-4 border-[#19d142] cursor-pointer my-3"
                             style={{ boxShadow: "0 0 15px 0 #19d142" }}

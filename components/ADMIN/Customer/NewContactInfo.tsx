@@ -8,8 +8,12 @@ import { customer } from "../../../types/customerList";
 
 type NewContactInfo = {
     setActiveForm: Function;
+    isActiveForm: any;
 };
-export default function NewContactInfo({ setActiveForm }: NewContactInfo) {
+export default function NewContactInfo({
+    setActiveForm,
+    isActiveForm,
+}: NewContactInfo) {
     const { isNewCustomer, setNewCustomer } = useContext(AppContext);
     const [isSameEmail, setSameEmail] = useState(false);
     const [isSameAddress, setSameAddress] = useState(false);
@@ -58,12 +62,7 @@ export default function NewContactInfo({ setActiveForm }: NewContactInfo) {
     } = useForm<customer>();
 
     return (
-        <motion.div
-            variants={ModalSideFade}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-        >
+        <div className={`${isActiveForm[1] ? "" : "hidden"}`}>
             <form onSubmit={handleSubmit(NextFormValidation)}>
                 <h1 className={style.modal_label_primary}>
                     Contact Informations
@@ -570,6 +569,6 @@ export default function NewContactInfo({ setActiveForm }: NewContactInfo) {
                     </button>
                 </div>
             </form>
-        </motion.div>
+        </div>
     );
 }
