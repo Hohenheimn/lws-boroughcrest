@@ -33,7 +33,7 @@ export default function Table({ isSearchTable }: Props) {
     return (
         <div className=" w-full overflow-x-auto">
             <div className="table_container">
-                <table className="table_list">
+                <table className="table_list corp">
                     <thead>
                         <tr>
                             {corpColumn.map((item: any, index: number) => (
@@ -80,21 +80,7 @@ export default function Table({ isSearchTable }: Props) {
 }
 
 const List = ({ itemDetail }: any) => {
-    const [isEdit, setEdit] = useState(false);
-    const [isEdit1, setEdit1] = useState(false);
     const { corpColumn } = useContext(AppContext);
-    const MouseEnter = () => {
-        setEdit(true);
-    };
-    const MouseLeave = () => {
-        setEdit(false);
-    };
-    const MouseEnter1 = () => {
-        setEdit1(true);
-    };
-    const MouseLeave1 = () => {
-        setEdit1(false);
-    };
 
     let Logo: any;
     if (itemDetail.logo) {
@@ -104,17 +90,12 @@ const List = ({ itemDetail }: any) => {
     } else {
         Logo = "/Images/sampleProfile.png";
     }
-    const Address = `${itemDetail.address_unit_floor} ${itemDetail.address_building} ${itemDetail.address_building} ${itemDetail.address_district} ${itemDetail.address_municipal_city} ${itemDetail.address_province} ${itemDetail.address_zip_code}`;
+    const Address = `${itemDetail.address_unit_floor} ${itemDetail.address_building} ${itemDetail.address_district} ${itemDetail.address_municipal_city} ${itemDetail.address_province} ${itemDetail.address_zip_code}`;
     return (
         <>
-            <tr onMouseEnter={MouseEnter} onMouseLeave={MouseLeave}>
+            <tr>
                 {corpColumn.map((item: any, index: number) => (
-                    <td
-                        key={index}
-                        className={`${
-                            item === "Address" ? "xLarge" : "normal"
-                        }`}
-                    >
+                    <td key={index}>
                         {item === "ID" && (
                             <Link href={`/project/corporate/${itemDetail.id}`}>
                                 <a className="item">

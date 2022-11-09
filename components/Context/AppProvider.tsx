@@ -212,6 +212,21 @@ export default function AppProvider({ children }: AppProvider) {
         "Role",
         "Status",
     ]);
+    const [propTableRows, userPropTableRows] = useState<number>(10);
+    const [propTableColumn, setPropTableColumn] = useState([
+        "Unit Code",
+        "Project",
+        "Developer",
+        "Tower",
+        "Floor",
+        "Class",
+        "Type",
+        "Turn Over",
+        "Owner",
+    ]);
+    const propList = {
+        ...propTableColumn,
+    };
 
     const ImgUrl = "https://boroughcrest-api.lws.codes/get-img?image=";
 

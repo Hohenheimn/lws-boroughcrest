@@ -152,13 +152,14 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
                         <Tippy content="Filter" theme="ThemeRed">
                             <button
                                 onClick={() => setFilter(true)}
-                                className={`${style.button} ${
+                                className={`mt-[2px] ${style.button} ${
                                     isFilter === true && "pointer-events-none"
                                 }`}
                             >
                                 <Image
                                     src="/Images/New_Filter.png"
-                                    layout="fill"
+                                    width={29}
+                                    height={34}
                                     alt=""
                                 />
                             </button>

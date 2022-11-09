@@ -111,10 +111,28 @@ export default function NewPropertyInfo({
         const keys = Object.keys(newData);
 
         await keys.forEach((key) => {
-            arrayData.push({
-                key: key,
-                keyData: newData[key],
-            });
+            if (
+                key === "image_photo" ||
+                key === "image_valid_id" ||
+                key === "image_signature"
+            ) {
+                if (newData[key] === undefined) {
+                    arrayData.push({
+                        key: key,
+                        keyData: "",
+                    });
+                } else {
+                    arrayData.push({
+                        key: key,
+                        keyData: newData[key],
+                    });
+                }
+            } else {
+                arrayData.push({
+                    key: key,
+                    keyData: newData[key],
+                });
+            }
         });
         arrayData.map(({ key, keyData }: any) => {
             if (key === "unit_codes") {
@@ -124,7 +142,6 @@ export default function NewPropertyInfo({
                 formData.append(key, keyData);
             }
         });
-
         mutate(formData);
     };
 
