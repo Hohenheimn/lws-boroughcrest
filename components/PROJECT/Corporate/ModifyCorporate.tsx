@@ -347,7 +347,7 @@ const PrimaryInformation = ({
                     <>
                         {!DeleteLoading && (
                             <aside
-                                className="buttonRed mr-5 cursor-point"
+                                className="buttonRed mr-5 cursor-pointer"
                                 onClick={DeleteHandler}
                             >
                                 DELETE
@@ -381,7 +381,14 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
     const [isSave, setSave] = useState(false);
     const [ErrorContact, setErrorContact] = useState(false);
     const [ErrorAddress, setErrorAddress] = useState(false);
-    const { modifyCorporate, setModifyCorporate } = useContext(AppContext);
+    const {
+        modifyCorporate,
+        setModifyCorporate,
+        setPrompt,
+        DefaultCorporate,
+        togglePrompt,
+        setCorpToggle,
+    } = useContext(AppContext);
     // true for save, false for save and new
     const [whatClickedButon, setWhatClickedButton] = useState(true);
 
@@ -414,16 +421,50 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
             });
         },
         {
-            onSuccess: () => {
+            onSuccess: async () => {
                 if (whatClickedButon) {
                     queryClient.invalidateQueries([
                         "Corporate-detail",
                         router.query.id,
                     ]);
+                    await setModifyCorporate({
+                        id: 0,
+                        ...DefaultCorporate,
+                        _method: "PUT",
+                    });
+
+                    setPrompt((prev: any) => ({
+                        ...prev,
+                        type: "success",
+                        message: "Corporate successfully updated!",
+                        toggle: true,
+                    }));
+
                     setToggleModify(false);
                 } else {
-                    router.push("/project/corporate?new");
+                    await setModifyCorporate({
+                        id: 0,
+                        ...DefaultCorporate,
+                        _method: "PUT",
+                    });
+
+                    setPrompt((prev: any) => ({
+                        ...prev,
+                        type: "success",
+                        message: "Corporate successfully updated! Create new",
+                        toggle: true,
+                    }));
+                    setCorpToggle((prev: any) => (prev = true));
+                    router.push("/project/corporate");
                 }
+            },
+            onError: (error: any) => {
+                setPrompt((prev: any) => ({
+                    ...prev,
+                    type: "error",
+                    message: `Something is wrong!, ${error.message}`,
+                    toggle: true,
+                }));
             },
         }
     );
@@ -779,23 +820,17 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                                 onClick={() => setSave(!isSave)}
                                 className="cursor-pointer"
                             >
-                                SAVE{" "}
+                                <button
+                                    type="submit"
+                                    name="save"
+                                    onClick={() => setWhatClickedButton(true)}
+                                >
+                                    SAVE{" "}
+                                </button>
                                 <RiArrowDownSFill className=" ml-1 text-[24px]" />
                             </div>
                             {isSave && (
                                 <ul>
-                                    <li>
-                                        <button
-                                            type="submit"
-                                            name="save"
-                                            onClick={() =>
-                                                setWhatClickedButton(true)
-                                            }
-                                        >
-                                            SAVE
-                                        </button>
-                                    </li>
-
                                     <li>
                                         <button
                                             type="submit"

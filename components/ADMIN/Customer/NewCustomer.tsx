@@ -6,11 +6,21 @@ import NewContactInfo from "./NewContactInfo";
 import NewPropertyInfo from "./NewPropertyInfo";
 
 export default function NewCustomer({ Draft, DraftImageFile }: any) {
-    const { setDraft, isNewCustomer, setNewCustomer, ImgUrl } =
-        useContext(AppContext);
+    const {
+        setDraft,
+        isNewCustomer,
+        setNewCustomer,
+        ImgUrl,
+        NewCustomerDefault,
+    } = useContext(AppContext);
     const [isActiveForm, setActiveForm] = useState([true, false, false]);
     const [isType, setType] = useState<string>("");
     const [status, setStatus] = useState(true);
+
+    useEffect(() => {
+        setNewCustomer({ ...NewCustomerDefault });
+        console.log(isNewCustomer);
+    }, []);
 
     const DraftData = Draft?.values;
     const image_photo_PathName = DraftData?.image_photo;

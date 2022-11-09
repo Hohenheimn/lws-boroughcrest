@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import AppContext from "../../../components/Context/AppContext";
 import SearchFilter from "../../../components/SearchFilterNew/SearchFilter";
 import CustomerTable from "../../../components/ADMIN/Customer/CustomerTable";
@@ -6,11 +6,10 @@ import NewCustomer from "../../../components/ADMIN/Customer/NewCustomer";
 import { useRouter } from "next/router";
 import { GetImage } from "../../../components/ReactQuery/CustomerMethod";
 import { BlobToFile } from "../../../components/BlobToFile";
-import { GetServerSideProps } from "next";
 import api from "../../../util/api";
 
 export default function Customer({ Draft }: any) {
-    const { setSearchBar } = useContext(AppContext);
+    const { setSearchBar, cusToggle } = useContext(AppContext);
     const router = useRouter();
     console.log(Draft);
 
@@ -36,7 +35,7 @@ export default function Customer({ Draft }: any) {
             DraftVal?.image_valid_id
         );
 
-        if (!isLoading1) {
+        if (!isLoading1 || !isLoading2 || isLoading3) {
             // Convert Blob to File
             const imgPathname0 = DraftVal.image_photo.split("/");
             const image_name0 = imgPathname0[imgPathname0.length - 1];
@@ -44,11 +43,15 @@ export default function Customer({ Draft }: any) {
 
             const imgPathname1 = DraftVal.image_valid_id.split("/");
             const image_name1 = imgPathname1[imgPathname1.length - 1];
-            var file1 = BlobToFile(imgPhoto?.data, image_name1, "image/png");
+            var file1 = BlobToFile(imgValid?.data, image_name1, "image/png");
 
             const imgPathname2 = DraftVal.image_signature.split("/");
             const image_name2 = imgPathname2[imgPathname2.length - 1];
-            var file2 = BlobToFile(imgPhoto?.data, image_name2, "image/png");
+            var file2 = BlobToFile(
+                imgSignature?.data,
+                image_name2,
+                "image/png"
+            );
 
             DraftImageFile = {
                 ...DraftImageFile,
@@ -64,7 +67,7 @@ export default function Customer({ Draft }: any) {
             <SearchFilter page="customer" setSearchTable={setSearchBar} />
             <CustomerTable />
 
-            {router.query.new !== undefined && (
+            {cusToggle && (
                 <NewCustomer Draft={Draft} DraftImageFile={DraftImageFile} />
             )}
         </div>

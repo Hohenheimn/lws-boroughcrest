@@ -23,7 +23,7 @@ export default function NewPropertyInfo({
 }: NewPropertyInfo) {
     const router = useRouter();
     const [whichSaveBtn, setWhichSaveBtn] = useState("");
-    const { isNewCustomer, setNewCustomer, isDraft, emptyCustomer } =
+    const { isNewCustomer, setNewCustomer, isDraft, NewCustomerDefault } =
         useContext(AppContext);
     const [isProperty, setProperty] = useState<any>([
         {
@@ -48,25 +48,23 @@ export default function NewPropertyInfo({
     };
     const [isSave, setSave] = useState(false);
 
+    const backTofirstPage = () => {
+        setActiveForm((item: boolean[]) => [
+            (item[0] = true),
+            (item[1] = false),
+            (item[2] = false),
+        ]);
+    };
+
     // MUTATION START HERE
     // Save Mutation
-    const Success = () => {
+    const Success = async () => {
         if (whichSaveBtn === "save") {
-            emptyCustomer();
+            await setNewCustomer({ ...NewCustomerDefault });
             router.push("");
         }
         if (whichSaveBtn === "savenew") {
-            router.reload();
-            // // refetch Draft
-            // refetch();
-            // // empty Field
-            // emptyCustomer();
-            // // Go to first form
-            // setActiveForm((item: boolean[]) => [
-            //     (item[0] = true),
-            //     (item[1] = false),
-            //     (item[2] = false),
-            // ]);
+            await setNewCustomer({ ...NewCustomerDefault });
         }
     };
     const { isLoading: MutateLoading, mutate } = PostCustomerSave(Success);
@@ -96,7 +94,7 @@ export default function NewPropertyInfo({
         if (newData.type === "individual" || newData.type === "Individual") {
             newData = { ...newData, company_contact_person: "" };
         }
-
+        // resave image file from draft
         if (isDraft) {
             newData = {
                 ...newData,
@@ -157,7 +155,6 @@ export default function NewPropertyInfo({
 
     // SAVE DRAFT MUTATION
     const SuccessDraft = () => {
-        emptyCustomer();
         router.push("");
     };
     const { isLoading: DraftLoading, mutate: DraftMutate } =

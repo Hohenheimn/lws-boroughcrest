@@ -26,7 +26,7 @@
         }
         .new {
             @apply relative mr-5 cursor-pointer;
-            a {
+            div {
                 @apply capitalize px-5 480px:text-[12px] 480px:px-2 text-[14px] py-3 rounded-lg bg-ThemeRed text-white leading-none duration-75 hover:bg-ThemeRed50;
             }
         }

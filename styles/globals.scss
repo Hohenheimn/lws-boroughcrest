@@ -26,7 +26,7 @@ h4,
 h5,
 h6 {
     font-family: "NHU-bold";
-    @apply text-[#2B2B2B];
+    @apply text-[#545454];
 }
 * {
     font-family: "NHU-regular";
@@ -87,7 +87,7 @@ h6 {
         tr {
             @apply border-b border-gray-300;
             th {
-                @apply text-start px-4 py-5 480px:py-3 480px:px-3 text-[#2B2B2B] 480px:text-[12px];
+                @apply text-start px-4 py-5 480px:py-3 480px:px-3 text-[#545454] 480px:text-[12px];
             }
             .status {
                 @apply text-center;
@@ -112,6 +112,9 @@ h6 {
                     h2 {
                         @apply text-[#2E4364] font-NHU-medium 480px:text-[12px];
                     }
+                    p {
+                        @apply text-[#2E4364] font-NHU-medium 480px:text-[12px];
+                    }
                 }
             }
             td.normal {
@@ -133,15 +136,16 @@ h6 {
 // Active Status
 .statusCircle {
     @apply h-5 w-5 rounded-full border-4 border-gray-500 cursor-pointer;
-    box-shadow: 0 0 15px 0 gray;
 
     &.active {
         @apply border-[#19d142];
         box-shadow: 0 0 15px 0 #19d142;
     }
     &.inactive {
-        @apply border-[#8f384d];
-        box-shadow: 0 0 15px 0 #8f384d;
+        @apply border-gray-500;
+    }
+    &.draft {
+        @apply border-[#f39304];
     }
 }
 

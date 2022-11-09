@@ -883,18 +883,16 @@ const Contact = ({
                         onChange={() => setSameAddress(!isSameAddress)}
                     />
                     <label htmlFor="sameAddress">
-                        *SAME AS REGISTER ADDRESS
+                        SAME AS REGISTER ADDRESS
                     </label>
                 </aside>
 
                 <ul className={style.ThreeRows}>
                     <li>
-                        <label>*UNIT/FLOOR/HOUSE NO.</label>
+                        <label>UNIT/FLOOR/HOUSE NO.</label>
                         <input
                             type="text"
-                            {...register("mailing_address_unit_floor", {
-                                required: "Required",
-                            })}
+                            {...register("mailing_address_unit_floor")}
                             value={
                                 isSameAddress
                                     ? isModifyCustomer.registered_address_unit_floor
@@ -914,12 +912,10 @@ const Contact = ({
                         )}
                     </li>
                     <li>
-                        <label>*BUILDING</label>
+                        <label>BUILDING</label>
                         <input
                             type="text"
-                            {...register("mailing_address_building", {
-                                required: "Required",
-                            })}
+                            {...register("mailing_address_building")}
                             value={
                                 isSameAddress
                                     ? isModifyCustomer.registered_address_building
@@ -939,12 +935,10 @@ const Contact = ({
                         )}
                     </li>
                     <li>
-                        <label>*STREET</label>
+                        <label>STREET</label>
                         <input
                             type="text"
-                            {...register("mailing_address_street", {
-                                required: "Required",
-                            })}
+                            {...register("mailing_address_street")}
                             value={
                                 isSameAddress
                                     ? isModifyCustomer.registered_address_street
@@ -964,12 +958,10 @@ const Contact = ({
                         )}
                     </li>
                     <li>
-                        <label>*DISTRICT</label>
+                        <label>DISTRICT</label>
                         <input
                             type="text"
-                            {...register("mailing_address_district", {
-                                required: "Required",
-                            })}
+                            {...register("mailing_address_district")}
                             value={
                                 isSameAddress
                                     ? isModifyCustomer.registered_address_district
@@ -989,12 +981,10 @@ const Contact = ({
                         )}
                     </li>
                     <li>
-                        <label>*MUNICIPALITY CITY</label>
+                        <label>MUNICIPALITY CITY</label>
                         <input
                             type="text"
-                            {...register("mailing_address_municipal_city", {
-                                required: "Required",
-                            })}
+                            {...register("mailing_address_municipal_city")}
                             value={
                                 isSameAddress
                                     ? isModifyCustomer.registered_address_municipal_city
@@ -1015,12 +1005,10 @@ const Contact = ({
                         )}
                     </li>
                     <li>
-                        <label>*PROVINCE</label>
+                        <label>PROVINCE</label>
                         <input
                             type="text"
-                            {...register("mailing_address_province", {
-                                required: "Required",
-                            })}
+                            {...register("mailing_address_province")}
                             value={
                                 isSameAddress
                                     ? isModifyCustomer.registered_address_province
@@ -1040,11 +1028,10 @@ const Contact = ({
                         )}
                     </li>
                     <li>
-                        <label>*ZIP CODE</label>
+                        <label>ZIP CODE</label>
                         <input
                             type="text"
                             {...register("mailing_address_zip_code", {
-                                required: "Required",
                                 maxLength: {
                                     value: 4,
                                     message: "Must be 4 number",

@@ -15,12 +15,13 @@ type Props = {
 };
 
 export default function CorporateDetails({ CorporateData }: Props) {
-    const { setModifyCorporate, modifyCorporate } = useContext(AppContext);
+    const { setModifyCorporate, modifyCorporate, setPrompt } =
+        useContext(AppContext);
     const [toggleModify, setToggleModify] = useState(false);
     const tin = CorporateData.tin?.replaceAll("-", "");
 
-    useEffect(() => {
-        setModifyCorporate({
+    const setFieldValue = async () => {
+        await setModifyCorporate({
             ...modifyCorporate,
             id: CorporateData.id,
             name: CorporateData.name,
@@ -41,7 +42,9 @@ export default function CorporateDetails({ CorporateData }: Props) {
             address_province: CorporateData.address_province,
             address_zip_code: CorporateData.address_zip_code,
         });
-    }, []);
+        setToggleModify(true);
+    };
+
     let Logo;
     if (CorporateData.logo) {
         Logo =
@@ -77,7 +80,7 @@ export default function CorporateDetails({ CorporateData }: Props) {
                         <div>
                             <HiPencil
                                 className={style.pencil}
-                                onClick={() => setToggleModify(true)}
+                                onClick={setFieldValue}
                             />
                         </div>
                     </Tippy>

@@ -14,7 +14,6 @@ import type { firstCorporateForm } from "../../../types/corporateList";
 import type { secondCorporateForm } from "../../../types/corporateList";
 import { ScaleLoader } from "react-spinners";
 import { getCookie } from "cookies-next";
-import Link from "next/link";
 
 export default function NewCorporate() {
     const [isNewActive, setNewActive] = useState([true, false]);
@@ -80,6 +79,8 @@ const Primary = ({
 }: Props) => {
     const [isLogoStatus, setLogoStatus] = useState("Upload Logo");
     const Next_ID = Current_id + 1;
+
+    const { setCorpToggle } = useContext(AppContext);
 
     const DisplayImage = (e: any) => {
         if (e.target.files[0]?.size > 2000000) {
@@ -341,9 +342,12 @@ const Primary = ({
                     <li></li>
                 </ul>
                 <div className={style.button_container}>
-                    <Link href="">
-                        <a className="button_cancel cursor-pointer">CANCEL</a>
-                    </Link>
+                    <aside
+                        className="button_cancel cursor-pointer"
+                        onClick={() => setCorpToggle(false)}
+                    >
+                        CANCEL
+                    </aside>
                     <button className="buttonRed" type="submit">
                         NEXT
                     </button>
@@ -357,12 +361,16 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
     // true for save, false for save and new
     const [whatClickedButon, setWhatClickedButton] = useState(true);
     const [isSave, setSave] = useState(false);
-    const { setCreateCorporate, createCorporate } = useContext(AppContext);
+    const {
+        setCreateCorporate,
+        createCorporate,
+        setPrompt,
+        DefaultCorporate,
+        setCorpToggle,
+    } = useContext(AppContext);
 
     const [ErrorContact, setErrorContact] = useState(false);
     const [ErrorAddress, setErrorAddress] = useState(false);
-
-    const router = useRouter();
 
     const {
         register,
@@ -399,21 +407,44 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
             });
         },
         {
-            onSuccess: () => {
-                // router.reload();
+            onSuccess: async () => {
                 clietQuery.invalidateQueries("get-corporate-list");
                 if (whatClickedButon) {
-                    // save
-                    router.push("");
+                    await setCreateCorporate({
+                        ...DefaultCorporate,
+                    });
+                    setPrompt((prev: any) => ({
+                        ...prev,
+                        type: "success",
+                        message: "Successfully Registered",
+                        toggle: true,
+                    }));
+                    setCorpToggle((prev: any) => (prev = false));
                 } else {
-                    alert("Corporate Successfully Registered!");
-                    router.reload();
+                    await setCreateCorporate({
+                        ...DefaultCorporate,
+                    });
+                    setPrompt((prev: any) => ({
+                        ...prev,
+                        type: "success",
+                        message: "Successfully Registered",
+                        toggle: true,
+                    }));
+                    setNewActive((item: any) => [
+                        (item[0] = true),
+                        (item[1] = false),
+                    ]);
                 }
             },
         }
     );
     if (isError) {
-        console.log(error);
+        setPrompt((prev: any) => ({
+            ...prev,
+            type: "error",
+            message: `Something is wrong!, ${error}`,
+            toggle: true,
+        }));
     }
 
     const Submit = async (data: any) => {
@@ -756,24 +787,21 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                     )}
                     {!MutateLoading && (
                         <div className={style.Save}>
-                            <div onClick={() => setSave(!isSave)}>
-                                SAVE{" "}
-                                <RiArrowDownSFill className=" ml-1 text-[24px]" />
+                            <div>
+                                <button
+                                    type="submit"
+                                    name="save"
+                                    onClick={() => setWhatClickedButton(true)}
+                                >
+                                    SAVE
+                                </button>
+                                <RiArrowDownSFill
+                                    className=" ml-1 text-[24px]"
+                                    onClick={() => setSave(!isSave)}
+                                />
                             </div>
                             {isSave && (
                                 <ul>
-                                    <li>
-                                        <button
-                                            type="submit"
-                                            name="save"
-                                            onClick={() =>
-                                                setWhatClickedButton(true)
-                                            }
-                                        >
-                                            SAVE
-                                        </button>
-                                    </li>
-
                                     <li>
                                         <button
                                             type="submit"

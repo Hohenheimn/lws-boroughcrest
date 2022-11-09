@@ -70,7 +70,7 @@ export default function NewContactInfo({
                 <p className="text-[14px] font-bold mb-2">ADDRESS</p>
                 <ul className={style.ThreeRows}>
                     <li>
-                        <label>MOBILE</label>
+                        <label>*MOBILE</label>
                         <input
                             type="text"
                             {...register("contact_no", {
@@ -103,7 +103,7 @@ export default function NewContactInfo({
                         )}
                     </li>
                     <li>
-                        <label>REGISTERED-EMAIL</label>
+                        <label>*REGISTERED-EMAIL</label>
                         <input
                             type="email"
                             {...register("registered_email", {
@@ -124,7 +124,7 @@ export default function NewContactInfo({
                         )}
                     </li>
                     <li>
-                        <label>PREFERED EMAIL</label>
+                        <label>*PREFERED EMAIL</label>
                         <input
                             type="email"
                             {...register("preferred_email", {
@@ -166,9 +166,7 @@ export default function NewContactInfo({
                             <label>CONTACT PERSON</label>
                             <input
                                 type="text"
-                                {...register("company_contact_person", {
-                                    required: "Required",
-                                })}
+                                {...register("company_contact_person")}
                                 // isNewCustomer.registered_email
                                 value={isNewCustomer.company_contact_person}
                                 onChange={(e) =>
@@ -190,7 +188,7 @@ export default function NewContactInfo({
                 <p className="text-[14px] font-bold mb-2">REGISTERED ADDRESS</p>
                 <ul className={style.ThreeRows}>
                     <li>
-                        <label>UNIT/FLOOR/HOUSE NO.</label>
+                        <label>*UNIT/FLOOR/HOUSE NO.</label>
                         <input
                             type="text"
                             {...register("registered_address_unit_floor", {
@@ -212,7 +210,7 @@ export default function NewContactInfo({
                         )}
                     </li>
                     <li>
-                        <label>BUILDING</label>
+                        <label>*BUILDING</label>
                         <input
                             type="text"
                             {...register("registered_address_building", {
@@ -233,7 +231,7 @@ export default function NewContactInfo({
                         )}
                     </li>
                     <li>
-                        <label>STREET</label>
+                        <label>*STREET</label>
                         <input
                             type="text"
                             {...register("registered_address_street", {
@@ -254,7 +252,7 @@ export default function NewContactInfo({
                         )}
                     </li>
                     <li>
-                        <label>DISTRICT</label>
+                        <label>*DISTRICT</label>
                         <input
                             type="text"
                             {...register("registered_address_district", {
@@ -275,7 +273,7 @@ export default function NewContactInfo({
                         )}
                     </li>
                     <li>
-                        <label>MUNICIPALITY CITY</label>
+                        <label>*MUNICIPALITY CITY</label>
                         <input
                             type="text"
                             {...register("registered_address_municipal_city", {
@@ -302,7 +300,7 @@ export default function NewContactInfo({
                         )}
                     </li>
                     <li>
-                        <label>PROVINCE</label>
+                        <label>*PROVINCE</label>
                         <input
                             type="text"
                             {...register("registered_address_province", {
@@ -323,7 +321,7 @@ export default function NewContactInfo({
                         )}
                     </li>
                     <li>
-                        <label>ZIP CODE</label>
+                        <label>*ZIP CODE</label>
                         <input
                             type="number"
                             {...register("registered_address_zip_code", {
@@ -372,9 +370,7 @@ export default function NewContactInfo({
                         <label>UNIT/FLOOR/HOUSE NO.</label>
                         <input
                             type="text"
-                            {...register("mailing_address_unit_floor", {
-                                required: "Required",
-                            })}
+                            {...register("mailing_address_unit_floor")}
                             value={
                                 isSameAddress
                                     ? isNewCustomer.registered_address_unit_floor
@@ -397,9 +393,7 @@ export default function NewContactInfo({
                         <label>BUILDING</label>
                         <input
                             type="text"
-                            {...register("mailing_address_building", {
-                                required: "Required",
-                            })}
+                            {...register("mailing_address_building")}
                             value={
                                 isSameAddress
                                     ? isNewCustomer.registered_address_building
@@ -422,9 +416,7 @@ export default function NewContactInfo({
                         <label>STREET</label>
                         <input
                             type="text"
-                            {...register("mailing_address_street", {
-                                required: "Required",
-                            })}
+                            {...register("mailing_address_street")}
                             value={
                                 isSameAddress
                                     ? isNewCustomer.registered_address_street
@@ -447,9 +439,7 @@ export default function NewContactInfo({
                         <label>DISTRICT</label>
                         <input
                             type="text"
-                            {...register("mailing_address_district", {
-                                required: "Required",
-                            })}
+                            {...register("mailing_address_district")}
                             value={
                                 isSameAddress
                                     ? isNewCustomer.registered_address_district
@@ -472,9 +462,7 @@ export default function NewContactInfo({
                         <label>MUNICIPALITY CITY</label>
                         <input
                             type="text"
-                            {...register("mailing_address_municipal_city", {
-                                required: "Required",
-                            })}
+                            {...register("mailing_address_municipal_city")}
                             value={
                                 isSameAddress
                                     ? isNewCustomer.registered_address_municipal_city
@@ -498,9 +486,7 @@ export default function NewContactInfo({
                         <label>PROVINCE</label>
                         <input
                             type="text"
-                            {...register("mailing_address_province", {
-                                required: "Required",
-                            })}
+                            {...register("mailing_address_province")}
                             value={
                                 isSameAddress
                                     ? isNewCustomer.registered_address_province
@@ -524,7 +510,6 @@ export default function NewContactInfo({
                         <input
                             type="text"
                             {...register("mailing_address_zip_code", {
-                                required: "Required",
                                 maxLength: {
                                     value: 4,
                                     message: "Must be 4 number",

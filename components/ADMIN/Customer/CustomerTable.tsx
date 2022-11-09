@@ -98,9 +98,19 @@ const List = ({ itemDetail }: customerItemDetail) => {
         setEdit(false);
     };
 
-    const Logo =
-        "https://boroughcrest-api.lws.codes/get-img?image=" +
-        itemDetail?.image_photo;
+    let Logo;
+
+    if (
+        itemDetail?.image_photo !== "" ||
+        itemDetail?.image_photo !== null ||
+        itemDetail?.image_photo !== ""
+    ) {
+        Logo =
+            "https://boroughcrest-api.lws.codes/get-img?image=" +
+            itemDetail?.image_photo;
+    } else {
+        Logo = "/Images/sampleProfile.png";
+    }
     return (
         <tr onMouseEnter={MouseEnter} onMouseLeave={MouseLeave}>
             <td className="normal">
@@ -110,7 +120,7 @@ const List = ({ itemDetail }: customerItemDetail) => {
                             <Image src={Logo} alt="profile" layout="fill" />
                         </aside>
                         <div>
-                            <h2>{itemDetail?.id}</h2>
+                            <p>{itemDetail?.id}</p>
                         </div>
                     </a>
                 </Link>
@@ -119,7 +129,7 @@ const List = ({ itemDetail }: customerItemDetail) => {
                 <Link href={`/admin/customer/${itemDetail?.id}`}>
                     <a className="item">
                         <div>
-                            <h2>{itemDetail?.name}</h2>
+                            <p>{itemDetail?.name}</p>
                         </div>
                     </a>
                 </Link>
@@ -131,7 +141,7 @@ const List = ({ itemDetail }: customerItemDetail) => {
                             <Link href={`/admin/customer/${itemDetail?.id}`}>
                                 <a className="item">
                                     <div>
-                                        <h2>{itemDetail?.class}</h2>
+                                        <p>{itemDetail?.class}</p>
                                     </div>
                                 </a>
                             </Link>
@@ -142,7 +152,7 @@ const List = ({ itemDetail }: customerItemDetail) => {
                             <Link href={`/admin/customer/${itemDetail?.id}`}>
                                 <a className="item">
                                     <div>
-                                        <h2>{itemDetail?.contact_no}</h2>
+                                        <p>{itemDetail?.contact_no}</p>
                                     </div>
                                 </a>
                             </Link>
@@ -176,7 +186,7 @@ const List = ({ itemDetail }: customerItemDetail) => {
                             <Link href={`/admin/customer/${itemDetail?.id}`}>
                                 <a className="item">
                                     <div>
-                                        <h2>{itemDetail?.type}</h2>
+                                        <p>{itemDetail?.type}</p>
                                     </div>
                                 </a>
                             </Link>
@@ -187,7 +197,7 @@ const List = ({ itemDetail }: customerItemDetail) => {
                             <Link href={`/admin/customer/${itemDetail?.id}`}>
                                 <a className="item">
                                     <div>
-                                        <h2>{itemDetail?.preferred_email}</h2>
+                                        <p>{itemDetail?.preferred_email}</p>
                                     </div>
                                 </a>
                             </Link>
@@ -199,11 +209,11 @@ const List = ({ itemDetail }: customerItemDetail) => {
                             <Link href={`/admin/customer/${itemDetail?.id}`}>
                                 <a className="item">
                                     <div>
-                                        <h2>
+                                        <p>
                                             {itemDetail?.individual_co_owner
                                                 ? itemDetail?.individual_co_owner
                                                 : "N/A"}
-                                        </h2>
+                                        </p>
                                     </div>
                                 </a>
                             </Link>
@@ -214,11 +224,11 @@ const List = ({ itemDetail }: customerItemDetail) => {
                             <Link href={`/admin/customer/${itemDetail?.id}`}>
                                 <a className="item">
                                     <div>
-                                        <h2>
+                                        <p>
                                             {itemDetail?.individual_citizenship
                                                 ? itemDetail?.individual_citizenship
                                                 : "N/A"}
-                                        </h2>
+                                        </p>
                                     </div>
                                 </a>
                             </Link>
@@ -229,11 +239,11 @@ const List = ({ itemDetail }: customerItemDetail) => {
                             <Link href={`/admin/customer/${itemDetail?.id}`}>
                                 <a className="item">
                                     <div>
-                                        <h2>
+                                        <p>
                                             {itemDetail?.individual_birth_date
                                                 ? itemDetail?.individual_birth_date
                                                 : "N/A"}
-                                        </h2>
+                                        </p>
                                     </div>
                                 </a>
                             </Link>
@@ -244,11 +254,11 @@ const List = ({ itemDetail }: customerItemDetail) => {
                             <Link href={`/admin/customer/${itemDetail?.id}`}>
                                 <a className="item">
                                     <div>
-                                        <h2>
+                                        <p>
                                             {itemDetail?.company_contact_person
                                                 ? itemDetail?.company_contact_person
                                                 : "N/A"}
-                                        </h2>
+                                        </p>
                                     </div>
                                 </a>
                             </Link>
@@ -259,7 +269,7 @@ const List = ({ itemDetail }: customerItemDetail) => {
                             <Link href={`/admin/customer/${itemDetail?.id}`}>
                                 <a className="item">
                                     <div>
-                                        <h2>{itemDetail?.tin}</h2>
+                                        <p>{itemDetail?.tin}</p>
                                     </div>
                                 </a>
                             </Link>
@@ -270,7 +280,7 @@ const List = ({ itemDetail }: customerItemDetail) => {
                             <Link href={`/admin/customer/${itemDetail?.id}`}>
                                 <a className="item">
                                     <div>
-                                        <h2>{itemDetail?.branch_code}</h2>
+                                        <p>{itemDetail?.branch_code}</p>
                                     </div>
                                 </a>
                             </Link>
@@ -286,9 +296,9 @@ const List = ({ itemDetail }: customerItemDetail) => {
                                         <div>
                                             {itemDetail?.properties?.map(
                                                 (item: any, index: number) => (
-                                                    <h2 key={index}>
+                                                    <p key={index}>
                                                         {item.unit_code}
-                                                    </h2>
+                                                    </p>
                                                 )
                                             )}
                                         </div>
@@ -303,9 +313,9 @@ const List = ({ itemDetail }: customerItemDetail) => {
                                         <div>
                                             {itemDetail?.properties?.map(
                                                 (item: any, index: number) => (
-                                                    <h2 key={index}>
+                                                    <p key={index}>
                                                         {item.tower.name}
-                                                    </h2>
+                                                    </p>
                                                 )
                                             )}
                                         </div>

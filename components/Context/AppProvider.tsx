@@ -7,51 +7,42 @@ type AppProvider = {
 };
 
 export default function AppProvider({ children }: AppProvider) {
-    const [createCorporate, setCreateCorporate] = useState({
-        logo: undefined,
+    const [togglePrompt, setPrompt] = useState({
+        message: "",
+        type: "",
+        toggle: false,
+    });
+    const [corpToggle, setCorpToggle] = useState(false);
+    const DefaultCorporate = {
+        logo: "",
         name: "",
         tin: "",
-        branch_code: undefined,
+        branch_code: "",
         gst_type: "VAT",
-        rdo_no: undefined,
-        sec_registration_no: undefined,
+        rdo_no: "",
+        sec_registration_no: "",
         email: "",
-        contact_no: undefined,
+        contact_no: "",
         alt_email: "",
-        alt_contact_no: undefined,
-        address_unit_floor: undefined,
+        alt_contact_no: "",
+        address_unit_floor: "",
         address_building: "",
         address_street: "",
-        address_district: undefined,
+        address_district: "",
         address_municipal_city: "",
         address_province: "",
-        address_zip_code: undefined,
+        address_zip_code: "",
+    };
+    const [createCorporate, setCreateCorporate] = useState({
+        ...DefaultCorporate,
     });
-
     const [modifyCorporate, setModifyCorporate] = useState({
         id: 0,
-        logo: undefined,
-        name: "",
-        tin: "",
-        branch_code: undefined,
-        gst_type: "VAT",
-        rdo_no: undefined,
-        sec_registration_no: undefined,
-        email: "",
-        contact_no: undefined,
-        alt_email: "",
-        alt_contact_no: undefined,
-        address_unit_floor: undefined,
-        address_building: "",
-        address_street: "",
-        address_district: undefined,
-        address_municipal_city: "",
-        address_province: "",
-        address_zip_code: undefined,
+        ...DefaultCorporate,
         _method: "PUT",
     });
-
-    const [isNewCustomer, setNewCustomer] = useState<customer>({
+    const [cusToggle, setCusToggle] = useState(false);
+    const NewCustomerDefault: customer = {
         assigned_customer_id: "",
         portal_id: "",
         class: "",
@@ -85,56 +76,14 @@ export default function AppProvider({ children }: AppProvider) {
         preferred_email: "",
         status: "",
         unit_codes: [],
+    };
+    const [isNewCustomer, setNewCustomer] = useState<customer>({
+        ...NewCustomerDefault,
     });
     const [isModifyCustomer, setModifyCustomer] = useState<customer>({
-        ...isNewCustomer,
+        ...NewCustomerDefault,
         _method: "PUT",
     });
-
-    const emptyCorporate = () => {
-        setCreateCorporate({
-            logo: undefined,
-            name: "",
-            tin: "",
-            branch_code: undefined,
-            gst_type: "VAT",
-            rdo_no: undefined,
-            sec_registration_no: undefined,
-            email: "",
-            contact_no: undefined,
-            alt_email: "",
-            alt_contact_no: undefined,
-            address_unit_floor: undefined,
-            address_building: "",
-            address_street: "",
-            address_district: undefined,
-            address_municipal_city: "",
-            address_province: "",
-            address_zip_code: undefined,
-        });
-        setModifyCorporate({
-            id: 0,
-            logo: undefined,
-            name: "",
-            tin: "",
-            branch_code: undefined,
-            gst_type: "VAT",
-            rdo_no: undefined,
-            sec_registration_no: undefined,
-            email: "",
-            contact_no: undefined,
-            alt_email: "",
-            alt_contact_no: undefined,
-            address_unit_floor: undefined,
-            address_building: "",
-            address_street: "",
-            address_district: undefined,
-            address_municipal_city: "",
-            address_province: "",
-            address_zip_code: undefined,
-            _method: "PUT",
-        });
-    };
 
     const emptyCustomer = () => {
         setNewCustomer({
@@ -242,7 +191,9 @@ export default function AppProvider({ children }: AppProvider) {
                 setCorpTableRows,
                 TableRows,
                 setTableRows,
-                emptyCorporate,
+                DefaultCorporate,
+                corpToggle,
+                setCorpToggle,
                 modifyCorporate,
                 setModifyCorporate,
                 corpColumn,
@@ -254,6 +205,7 @@ export default function AppProvider({ children }: AppProvider) {
                 setNewCustomer,
                 isNewCustomer,
                 emptyCustomer,
+                NewCustomerDefault,
                 cusFilterColumn,
                 setCusFilterColumn,
                 ImgUrl,
@@ -265,6 +217,10 @@ export default function AppProvider({ children }: AppProvider) {
                 usersetTableRows,
                 userTableColumn,
                 setUserTableColumn,
+                togglePrompt,
+                setPrompt,
+                cusToggle,
+                setCusToggle,
             }}
         >
             {children}

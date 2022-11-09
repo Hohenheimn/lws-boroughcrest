@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import AppContext from "../Context/AppContext";
 import Image from "next/image";
 import { BsSearch } from "react-icons/bs";
 import { AnimatePresence } from "framer-motion";
@@ -22,12 +23,29 @@ type SearchFilter = {
 };
 
 export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
+    const { setCorpToggle, setCusToggle, setPrompt } = useContext(AppContext);
+
     const [isFilter, setFilter] = useState(false);
     const router = useRouter();
     const ValidatePathName = router.pathname.split("/")[2];
 
+    const openNew = () => {
+        if (router.pathname.includes("project/corporate")) {
+            setCorpToggle(true);
+        }
+        if (router.pathname.includes("admin/customer")) {
+            setCusToggle(true);
+        }
+    };
+
     const CustomerImportSuccess = () => {
-        alert("Successfully imported!");
+        setPrompt((msg: any) => {
+            msg = {
+                type: "success",
+                message: "Successfully imported!",
+                toggle: true,
+            };
+        });
     };
 
     const { isLoading: CusLoading, mutate: CusMutate } = CustomerImport(
@@ -67,6 +85,13 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
                 }
             } else {
                 alert("Invalid file, must be XLSX or CSV only!");
+                setPrompt((msg: any) => {
+                    msg = {
+                        type: "error",
+                        message: "Invalid file, must be XLSX or CSV only!",
+                        toggle: true,
+                    };
+                });
             }
         }
     };
@@ -143,16 +168,17 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
                     )}
 
                     <li className={style.new}>
-                        <Link href="?new">
+                        <div onClick={openNew}>New {page}</div>
+                        {/* <Link href="?new">
                             <a>New {page}</a>
-                        </Link>
+                        </Link> */}
                     </li>
 
                     <li className={style.filter}>
                         <Tippy content="Filter" theme="ThemeRed">
                             <button
                                 onClick={() => setFilter(true)}
-                                className={`mt-[2px] ${style.button} ${
+                                className={`${style.button} ${
                                     isFilter === true && "pointer-events-none"
                                 }`}
                             >

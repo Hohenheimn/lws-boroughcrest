@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import AppContext from "../Context/AppContext";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import Sidebar from "./Sidebar";
@@ -11,12 +12,14 @@ import Image from "next/image";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 import SignOut from "./SignOut";
+import PrompMessage from "../PrompMessage";
 
 type Layout = {
     children: React.ReactNode;
 };
 
 export default function Layout({ children }: Layout) {
+    const { togglePrompt } = useContext(AppContext);
     const [isProfileSearch, setProfileSearch] = useState(false);
     const [isPathName, setPathName] = useState<any>();
     const [toggleProfileMenu, setToggleProfileMenu] = useState(false);
@@ -69,6 +72,10 @@ export default function Layout({ children }: Layout) {
             </Head>
 
             <div className="flex bg-MainBG bg-no-repeat bg-cover min-h-screen bg-Gray bg-blend-multiply">
+                <AnimatePresence>
+                    {togglePrompt.toggle && <PrompMessage />}
+                </AnimatePresence>
+
                 <AnimatePresence>
                     {!isHide && (
                         <Sidebar
