@@ -451,12 +451,12 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                 }
             } else {
                 if (
-                    modifyCorporate[key] === "" ||
+                    modifyCorporate[key] === null ||
                     modifyCorporate[key] === undefined
                 ) {
                     arrayData.push({
                         key: key,
-                        keyData: null,
+                        keyData: "",
                     });
                 } else {
                     arrayData.push({
