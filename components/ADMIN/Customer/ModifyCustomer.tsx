@@ -562,7 +562,8 @@ const Contact = ({
             mutate(formData);
         }
         if (whatClickedButon === "draft") {
-            DraftMutate(formData);
+            // DraftMutate(formData);
+            alert("Unavailable for now!");
         }
     };
 

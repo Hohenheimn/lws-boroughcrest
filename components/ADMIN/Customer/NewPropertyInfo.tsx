@@ -179,7 +179,8 @@ export default function NewPropertyInfo({
                 formData.append(key, keyData);
             }
         });
-        DraftMutate(formData);
+        // DraftMutate(formData);
+        alert("Unavailable for now!");
     };
 
     return (
