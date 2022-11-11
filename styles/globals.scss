@@ -61,10 +61,31 @@ h6 {
 }
 // Table
 .table_container {
-    @apply w-full overflow-x-auto;
+    @apply w-full overflow-x-auto mb-10 480px:mb-5 overflow-y-auto h-[600px] relative;
+
+    @media (max-height: 1180px) {
+        @apply h-[750px];
+    }
+    @media (max-height: 1080px) {
+        @apply h-[600px];
+    }
+    @media (max-height: 1000px) {
+        @apply h-[500px];
+    }
+    @media (max-height: 820px) {
+        @apply h-[450px];
+    }
+    @media (max-height: 768px) {
+        @apply h-[400px];
+    }
+    @media (max-width: 480px) {
+        height: auto !important;
+        max-height: 400px;
+    }
 
     &::-webkit-scrollbar {
         height: 5px;
+        width: 5px;
         &:hover {
             height: 10px;
         }
@@ -84,6 +105,7 @@ h6 {
 .table_list {
     @apply min-w-full;
     thead {
+        @apply shadow-md sticky top-0 bg-[#fbfbfb] z-10;
         tr {
             @apply border-b border-gray-300;
             th {
@@ -135,16 +157,16 @@ h6 {
 }
 // Active Status
 .statusCircle {
-    @apply h-5 w-5 rounded-full border-4 border-gray-500 cursor-pointer;
+    @apply h-5 w-5 rounded-full border-4 border-gray-500 cursor-pointer hover:scale-[1.3] transition duration-75;
 
-    &.active {
+    &.Active {
         @apply border-[#19d142];
         box-shadow: 0 0 15px 0 #19d142;
     }
-    &.inactive {
+    &.Inactive {
         @apply border-gray-500;
     }
-    &.draft {
+    &.Draft {
         @apply border-[#f39304];
     }
 }
@@ -189,4 +211,10 @@ input[type="number"] {
 }
 .tippy-tooltip.ThemeRed-theme[data-placement^="right"] .tippy-arrow {
     border-right-color: #8f384d;
+}
+.collapse {
+    width: 65px !important;
+}
+.collapse_container {
+    padding-left: 65px !important;
 }

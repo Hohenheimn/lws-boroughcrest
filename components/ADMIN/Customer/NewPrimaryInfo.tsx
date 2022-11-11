@@ -1,7 +1,6 @@
 import React from "react";
 import NewDefault from "./NewDefault";
 import NewIndividual from "./NewIndividual";
-import NewCompany from "./NewCompany";
 import style from "../../../styles/Popup_Modal.module.scss";
 
 type NewPrimaryInfo = {
@@ -21,6 +20,10 @@ export default function NewPrimaryInfo({
     setStatus,
     status,
 }: NewPrimaryInfo) {
+    const Status = () => {
+        setStatus(!status);
+    };
+
     return (
         <div className={`${isActiveForm[0] ? "" : "hidden"}`}>
             <h1 className={style.modal_label_primary}>Primary Informations</h1>
@@ -62,15 +65,10 @@ export default function NewPrimaryInfo({
                     <span className="mr-2 font-bold">STATUS</span>
 
                     <div
-                        onClick={() => setStatus(!status)}
-                        className={`h-5 w-5 rounded-full cursor-pointer border-4 ${
-                            status ? "border-[#19d142]" : "border-[#8f384d]"
+                        onClick={Status}
+                        className={`statusCircle ${
+                            status ? "active" : "inactive"
                         }`}
-                        style={
-                            status
-                                ? { boxShadow: "0 0 15px 0 #19d142" }
-                                : { boxShadow: "0 0 15px 0 #8f384d" }
-                        }
                     ></div>
                 </aside>
             </div>

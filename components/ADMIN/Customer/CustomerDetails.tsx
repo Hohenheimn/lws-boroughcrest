@@ -54,6 +54,17 @@ export default function CustomerDetail({ Draft }: any) {
     }
     let data: customer = DetailData?.data;
 
+    let Logo;
+    if (
+        data.image_photo === undefined ||
+        data.image_photo === null ||
+        data.image_photo === ""
+    ) {
+        Logo = "/Images/sampleProfile.png";
+    } else {
+        Logo = ImgUrl + data.image_photo;
+    }
+
     return (
         <div>
             {isView !== "" && <Modal_Image setView={setView} isView={isView} />}
@@ -99,32 +110,23 @@ export default function CustomerDetail({ Draft }: any) {
                         </div>
                     </Tippy>
                 </li>
-                <li className="w-3/12 flex-col 480px:w-full p-5 flex justify-center items-center">
+                <li className="w-3/12 1280px:w-4/12 flex-col 480px:w-full p-5 flex justify-center items-center">
                     <aside className=" w-6/12 820px:w-10/12 rounded-full overflow-hidden 480px:w-5/12 aspect-square relative shadow-xl">
-                        <Image
-                            src={ImgUrl + data.image_photo}
-                            alt="profile"
-                            layout="fill"
-                        />
+                        <Image src={Logo} alt="profile" layout="fill" />
                     </aside>
-                    {data.status ? (
+                    <Tippy content={`${data?.status}`} theme="ThemeRed">
                         <div
-                            className=" h-5 w-5 rounded-full border-4 border-[#19d142] cursor-pointer my-3"
-                            style={{ boxShadow: "0 0 15px 0 #19d142" }}
+                            className={"my-2 statusCircle " + data.status}
                         ></div>
-                    ) : (
-                        <div
-                            className=" h-5 w-5 rounded-full border-4 border-[#8f384d] cursor-pointer my-3"
-                            style={{ boxShadow: "0 0 15px 0 #8f384d" }}
-                        ></div>
-                    )}
-                    <button className=" text-white h-8 px-2 flex justify-center items-center duration-75 hover:bg-ThemeRed50 leading-none bg-ThemeRed rounded-md text-[14px]">
+                    </Tippy>
+
+                    <button className=" text-white py-3 px-3 flex justify-center items-center duration-75 hover:bg-ThemeRed50 leading-none bg-ThemeRed rounded-md text-[14px]">
                         SEND PORTAL ACCESS
                     </button>
                 </li>
-                <li className=" w-9/12  480px:w-full flex flex-wrap items-start">
+                <li className=" w-9/12 1280px:w-8/12  480px:w-full flex flex-wrap items-start">
                     <ul className="flex flex-wrap">
-                        <li className=" w-4/12 mb-5 820px:w-2/4 480px:w-full 480px:mb-3">
+                        <li className=" w-4/12 mb-5 1280px:w-2/4 480px:w-full 480px:mb-3">
                             <p className=" text-gray-400 1024px:text-[14px]">
                                 ID
                             </p>
@@ -132,7 +134,7 @@ export default function CustomerDetail({ Draft }: any) {
                                 {data.id}
                             </h4>
                         </li>
-                        <li className=" w-4/12 mb-5 820px:w-2/4 480px:w-full 480px:mb-3">
+                        <li className=" w-4/12 mb-5 1280px:w-2/4 480px:w-full 480px:mb-3">
                             <p className=" text-gray-400 1024px:text-[14px]">
                                 {data.type == "Company" ? "COMPANY" : ""} NAME
                             </p>
@@ -140,7 +142,7 @@ export default function CustomerDetail({ Draft }: any) {
                                 {data.name}
                             </h4>
                         </li>
-                        <li className=" w-4/12 mb-5 820px:w-2/4 480px:w-full 480px:mb-3">
+                        <li className=" w-4/12 mb-5 1280px:w-2/4 480px:w-full 480px:mb-3">
                             <p className=" text-gray-400 1024px:text-[14px]">
                                 CLASS
                             </p>
@@ -148,7 +150,7 @@ export default function CustomerDetail({ Draft }: any) {
                                 {data.class}
                             </h4>
                         </li>
-                        <li className=" w-4/12 mb-5 820px:w-2/4 480px:w-full 480px:mb-3">
+                        <li className=" w-4/12 mb-5 1280px:w-2/4 480px:w-full 480px:mb-3">
                             <p className=" text-gray-400 1024px:text-[14px]">
                                 TYPE
                             </p>
@@ -156,7 +158,7 @@ export default function CustomerDetail({ Draft }: any) {
                                 {data.type}
                             </h4>
                         </li>
-                        <li className=" w-4/12 mb-5 820px:w-2/4 480px:w-full 480px:mb-3">
+                        <li className=" w-4/12 mb-5 1280px:w-2/4 480px:w-full 480px:mb-3">
                             <p className=" text-gray-400 1024px:text-[14px]">
                                 TIN
                             </p>
@@ -164,7 +166,7 @@ export default function CustomerDetail({ Draft }: any) {
                                 {data.tin}
                             </h4>
                         </li>
-                        <li className=" w-4/12 mb-5 820px:w-2/4 480px:w-full 480px:mb-3">
+                        <li className=" w-4/12 mb-5 1280px:w-2/4 480px:w-full 480px:mb-3">
                             <p className=" text-gray-400 1024px:text-[14px]">
                                 PORTAL ID
                             </p>
@@ -173,7 +175,7 @@ export default function CustomerDetail({ Draft }: any) {
                             </h4>
                         </li>
                         {data.type !== "Company" && (
-                            <li className=" w-4/12 mb-5 820px:w-2/4 480px:w-full 480px:mb-3">
+                            <li className=" w-4/12 mb-5 1280px:w-2/4 480px:w-full 480px:mb-3">
                                 <p className=" text-gray-400 1024px:text-[14px]">
                                     CITIZENSHIP
                                 </p>
@@ -182,7 +184,7 @@ export default function CustomerDetail({ Draft }: any) {
                                 </h4>
                             </li>
                         )}
-                        <li className=" w-4/12 mb-5 820px:w-2/4 480px:w-full 480px:mb-3">
+                        <li className=" w-4/12 mb-5 1280px:w-2/4 480px:w-full 480px:mb-3">
                             <p className=" text-gray-400 1024px:text-[14px]">
                                 VALID ID
                             </p>
@@ -191,15 +193,14 @@ export default function CustomerDetail({ Draft }: any) {
                                 onClick={() =>
                                     setView(
                                         (imgPass) =>
-                                            (imgPass =
-                                                ImgUrl + data.image_valid_id)
+                                            (imgPass = data.image_valid_id)
                                     )
                                 }
                             >
                                 VIEW
                             </button>
                         </li>
-                        <li className=" w-4/12 mb-5 820px:w-2/4 480px:w-full 480px:mb-3">
+                        <li className=" w-4/12 mb-5 1280px:w-2/4 480px:w-full 480px:mb-3">
                             <p className=" text-gray-400 1024px:text-[14px]">
                                 SIGNATURE
                             </p>
@@ -208,8 +209,7 @@ export default function CustomerDetail({ Draft }: any) {
                                 onClick={() =>
                                     setView(
                                         (imgPass) =>
-                                            (imgPass =
-                                                ImgUrl + data.image_signature)
+                                            (imgPass = data.image_signature)
                                     )
                                 }
                             >

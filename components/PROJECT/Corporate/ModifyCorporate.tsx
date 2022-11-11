@@ -110,7 +110,8 @@ const PrimaryInformation = ({
             setLogo("Please Select an Image");
         }
     };
-    const { modifyCorporate, setModifyCorporate } = useContext(AppContext);
+    const { modifyCorporate, setModifyCorporate, setPrompt } =
+        useContext(AppContext);
     const {
         register,
         handleSubmit,
@@ -154,6 +155,12 @@ const PrimaryInformation = ({
         },
         {
             onSuccess: () => {
+                setPrompt((prev: any) => ({
+                    ...prev,
+                    type: "success",
+                    message: "Corporate successfully Deleted!",
+                    toggle: true,
+                }));
                 router.push("/project/corporate");
             },
         }

@@ -1,18 +1,20 @@
 import AppContext from "./AppContext";
-import { useState } from "react";
-import type { customer } from "../../types/customerList";
+import { useState, useReducer } from "react";
 
 type AppProvider = {
     children: React.ReactNode;
 };
 
 export default function AppProvider({ children }: AppProvider) {
+    const [collapseSide, setCollapseSide] = useState(false);
     const [togglePrompt, setPrompt] = useState({
         message: "",
         type: "",
         toggle: false,
     });
+
     const [corpToggle, setCorpToggle] = useState(false);
+    const [corpReset, setCorpReset] = useState(false);
     const DefaultCorporate = {
         logo: "",
         name: "",
@@ -41,8 +43,18 @@ export default function AppProvider({ children }: AppProvider) {
         ...DefaultCorporate,
         _method: "PUT",
     });
+
+    // Customer Context
+    const [isType, setType] = useState<string>("");
+    const [cusProfileUrl, setCusProfileUrl] = useState(
+        "/Images/sampleProfile.png"
+    );
+    const [cusValidIDUrl, setCusValidIDUrl] = useState("/Images/id-sample.png");
+    const [cusSignature, setCusSignature] = useState(false);
+
     const [cusToggle, setCusToggle] = useState(false);
-    const NewCustomerDefault: customer = {
+    const [cusReset, setCusReset] = useState(false);
+    const NewCustomerDefault = {
         assigned_customer_id: "",
         portal_id: "",
         class: "",
@@ -77,51 +89,14 @@ export default function AppProvider({ children }: AppProvider) {
         status: "",
         unit_codes: [],
     };
-    const [isNewCustomer, setNewCustomer] = useState<customer>({
+    const [isNewCustomer, setNewCustomer] = useState({
         ...NewCustomerDefault,
     });
-    const [isModifyCustomer, setModifyCustomer] = useState<customer>({
+    const [isModifyCustomer, setModifyCustomer] = useState({
         ...NewCustomerDefault,
         _method: "PUT",
     });
 
-    const emptyCustomer = () => {
-        setNewCustomer({
-            assigned_customer_id: "",
-            portal_id: "",
-            class: "",
-            type: "",
-            name: "",
-            individual_co_owner: "",
-            individual_citizenship: "",
-            individual_birth_date: "",
-            company_contact_person: "",
-            tin: "",
-            branch_code: "",
-            registered_address_unit_floor: "",
-            registered_address_building: "",
-            registered_address_street: "",
-            registered_address_district: "",
-            registered_address_municipal_city: "",
-            registered_address_province: "",
-            registered_address_zip_code: "",
-            mailing_address_unit_floor: "",
-            mailing_address_building: "",
-            mailing_address_street: "",
-            mailing_address_district: "",
-            mailing_address_municipal_city: "",
-            mailing_address_province: "",
-            mailing_address_zip_code: "",
-            image_photo: "",
-            image_valid_id: "",
-            image_signature: "",
-            contact_no: "",
-            registered_email: "",
-            preferred_email: "",
-            status: "",
-            unit_codes: [],
-        });
-    };
     const [CorpTableRows, setCorpTableRows] = useState<number>(10);
     const [corpColumn, setCorpColumn] = useState([
         "ID",
@@ -187,6 +162,8 @@ export default function AppProvider({ children }: AppProvider) {
             value={{
                 createCorporate,
                 setCreateCorporate,
+                corpReset,
+                setCorpReset,
                 CorpTableRows,
                 setCorpTableRows,
                 TableRows,
@@ -204,7 +181,6 @@ export default function AppProvider({ children }: AppProvider) {
                 setSearchBar,
                 setNewCustomer,
                 isNewCustomer,
-                emptyCustomer,
                 NewCustomerDefault,
                 cusFilterColumn,
                 setCusFilterColumn,
@@ -221,6 +197,18 @@ export default function AppProvider({ children }: AppProvider) {
                 setPrompt,
                 cusToggle,
                 setCusToggle,
+                cusReset,
+                setCusReset,
+                cusProfileUrl,
+                setCusProfileUrl,
+                cusValidIDUrl,
+                setCusValidIDUrl,
+                cusSignature,
+                setCusSignature,
+                isType,
+                setType,
+                collapseSide,
+                setCollapseSide,
             }}
         >
             {children}

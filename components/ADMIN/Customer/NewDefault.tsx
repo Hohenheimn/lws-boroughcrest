@@ -60,7 +60,7 @@ export default function NewDefault() {
                 </li>
                 <li className="  flex flex-col  w-4/12 820px:w-2/4 480px:w-full mb-5 justify-center items-end">
                     <label
-                        className=" pointer-events-none text-[12px] font-NHU-medium mb-1 uppercase cursor-pointer w-[90%] 480px:w-full"
+                        className=" pointer-events-none text-[12px] font-NHU-medium uppercase cursor-pointer w-[90%] 480px:w-full"
                         htmlFor="file"
                     >
                         Upload Signature

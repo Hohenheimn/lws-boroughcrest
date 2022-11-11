@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useContext } from "react";
+import AppContext from "../Context/AppContext";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Tippy from "@tippy.js/react";
@@ -25,6 +26,7 @@ export default function MenuLink({
     children,
     closeOnClick,
 }: MenuLink) {
+    const { collapseSide, setCollapseSide } = useContext(AppContext);
     const router = useRouter();
     const ValidateUrl = router.pathname.split("/")[1];
     return (
@@ -46,7 +48,7 @@ export default function MenuLink({
                         theme="ThemeRed"
                         content={<span className="capitalize">{urlName}</span>}
                     >
-                        <aside className="mx-5 h-5 w-5  my-3 1550px:my-2 relative">
+                        <aside className="mx-5 h-5 w-5 hover:scale-[1.3] transition duration-75 my-2 1550px:my-2 relative">
                             <Image
                                 src={`/Images/${
                                     ValidateUrl === ActiveUrl ? "Active" : ""
@@ -56,7 +58,7 @@ export default function MenuLink({
                             />
                         </aside>
                     </Tippy>
-                    {!isProfileSearch && (
+                    {!isProfileSearch && !collapseSide && (
                         <p
                             className={`${
                                 ValidateUrl === ActiveUrl
@@ -69,7 +71,7 @@ export default function MenuLink({
                     )}
                 </a>
             </Link>
-            {!isProfileSearch && children}
+            {!isProfileSearch && !collapseSide && children}
         </motion.li>
     );
 }

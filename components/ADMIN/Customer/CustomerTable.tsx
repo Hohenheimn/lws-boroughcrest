@@ -30,7 +30,7 @@ export default function CustomerTable() {
     );
 
     return (
-        <div className="w-full">
+        <>
             <div className="table_container">
                 <table className="table_list">
                     <thead>
@@ -84,12 +84,12 @@ export default function CustomerTable() {
                 PageNumber={data?.data.last_page}
                 CurrentPage={data?.data.current_page}
             />
-        </div>
+        </>
     );
 }
 
 const List = ({ itemDetail }: customerItemDetail) => {
-    const { TableRows, cusTableColumn, isSearchBar } = useContext(AppContext);
+    const { cusTableColumn } = useContext(AppContext);
     const [isEdit, setEdit] = useState(false);
     const MouseEnter = () => {
         setEdit(true);
@@ -98,18 +98,11 @@ const List = ({ itemDetail }: customerItemDetail) => {
         setEdit(false);
     };
 
-    let Logo;
-
-    if (
-        itemDetail?.image_photo !== "" ||
-        itemDetail?.image_photo !== null ||
-        itemDetail?.image_photo !== ""
-    ) {
+    let Logo = "/Images/sampleProfile.png";
+    if (itemDetail?.image_photo !== null) {
         Logo =
             "https://boroughcrest-api.lws.codes/get-img?image=" +
             itemDetail?.image_photo;
-    } else {
-        Logo = "/Images/sampleProfile.png";
     }
     return (
         <tr onMouseEnter={MouseEnter} onMouseLeave={MouseLeave}>
@@ -163,19 +156,11 @@ const List = ({ itemDetail }: customerItemDetail) => {
                         <td className="normal">
                             <div className="w-full flex px-5">
                                 <Tippy
-                                    content={`${
-                                        itemDetail?.status
-                                            ? "Active"
-                                            : "Inactive"
-                                    }`}
+                                    content={`${itemDetail?.status}`}
                                     theme="ThemeRed"
                                 >
                                     <div
-                                        className={`statusCircle ${
-                                            itemDetail?.status
-                                                ? "active"
-                                                : "inactive"
-                                        }`}
+                                        className={`statusCircle ${itemDetail?.status}`}
                                     ></div>
                                 </Tippy>
                             </div>

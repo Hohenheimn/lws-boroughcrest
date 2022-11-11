@@ -1,6 +1,5 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import AppContext from "../../Context/AppContext";
-import { useRouter } from "next/router";
 import style from "../../../styles/Popup_Modal.module.scss";
 import { motion } from "framer-motion";
 import { ModalSideFade } from "../../../components/Animation/SimpleAnimation";
@@ -80,7 +79,28 @@ const Primary = ({
     const [isLogoStatus, setLogoStatus] = useState("Upload Logo");
     const Next_ID = Current_id + 1;
 
-    const { setCorpToggle } = useContext(AppContext);
+    const { setCorpToggle, setCreateCorporate, createCorporate, corpReset } =
+        useContext(AppContext);
+
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+        reset,
+    } = useForm<firstCorporateForm>();
+
+    useEffect(() => {
+        reset();
+    }, [corpReset]);
+
+    const Submit = (data: any) => {
+        setCreateCorporate({
+            ...createCorporate,
+            logo: data.logo[0],
+        });
+
+        setNewActive((item: any) => [(item[0] = false), (item[1] = true)]);
+    };
 
     const DisplayImage = (e: any) => {
         if (e.target.files[0]?.size > 2000000) {
@@ -88,7 +108,6 @@ const Primary = ({
             return;
         } else {
             setLogoStatus("");
-            console.log(e.target.files[0]);
         }
         if (e.target.files.length > 0) {
             let selectedImage = e.target.files[0];
@@ -106,30 +125,6 @@ const Primary = ({
         } else {
             setLogoStatus("Nothing Happens");
         }
-    };
-
-    const { setCreateCorporate, createCorporate } = useContext(AppContext);
-
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-    } = useForm<firstCorporateForm>();
-
-    const Submit = (data: any) => {
-        if (
-            isLogoStatus === "File is too large" ||
-            isLogoStatus === "Invalid Image File" ||
-            isLogoStatus === "Please Select an Image"
-        ) {
-            return;
-        }
-        setCreateCorporate({
-            ...createCorporate,
-            logo: data.logo[0],
-        });
-
-        setNewActive((item: any) => [(item[0] = false), (item[1] = true)]);
     };
 
     return (
@@ -218,10 +213,11 @@ const Primary = ({
                             })}
                             value={createCorporate.tin}
                             onChange={(e) => {
-                                setCreateCorporate({
-                                    ...createCorporate,
-                                    tin: e.target.value,
-                                });
+                                e.target.value.length <= 9 &&
+                                    setCreateCorporate({
+                                        ...createCorporate,
+                                        tin: e.target.value,
+                                    });
                             }}
                         />
                         {errors.tin && (
@@ -246,10 +242,11 @@ const Primary = ({
                             type="number"
                             value={createCorporate.branch_code}
                             onChange={(e) => {
-                                setCreateCorporate({
-                                    ...createCorporate,
-                                    branch_code: e.target.value,
-                                });
+                                e.target.value.length <= 5 &&
+                                    setCreateCorporate({
+                                        ...createCorporate,
+                                        branch_code: e.target.value,
+                                    });
                             }}
                         />
                         {errors.branch_code && (
@@ -277,10 +274,11 @@ const Primary = ({
                             })}
                             value={createCorporate.rdo_no}
                             onChange={(e) => {
-                                setCreateCorporate({
-                                    ...createCorporate,
-                                    rdo_no: e.target.value,
-                                });
+                                e.target.value.length <= 3 &&
+                                    setCreateCorporate({
+                                        ...createCorporate,
+                                        rdo_no: e.target.value,
+                                    });
                             }}
                         />
                         {errors.rdo_no && (
@@ -326,10 +324,11 @@ const Primary = ({
                             })}
                             value={createCorporate.sec_registration_no}
                             onChange={(e) => {
-                                setCreateCorporate({
-                                    ...createCorporate,
-                                    sec_registration_no: e.target.value,
-                                });
+                                e.target.value.length <= 3 &&
+                                    setCreateCorporate({
+                                        ...createCorporate,
+                                        sec_registration_no: e.target.value,
+                                    });
                             }}
                         />
                         {errors.sec_registration_no && (
@@ -359,6 +358,7 @@ const Primary = ({
 
 const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
     // true for save, false for save and new
+    const { corpReset, setCorpReset } = useContext(AppContext);
     const [whatClickedButon, setWhatClickedButton] = useState(true);
     const [isSave, setSave] = useState(false);
     const {
@@ -371,10 +371,11 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
 
     const [ErrorContact, setErrorContact] = useState(false);
     const [ErrorAddress, setErrorAddress] = useState(false);
-
+    const clietQuery = useQueryClient();
     const {
         register,
         handleSubmit,
+        reset: ResetContactForm,
         formState: { errors },
     } = useForm<secondCorporateForm>({
         defaultValues: {
@@ -392,7 +393,10 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
         },
     });
 
-    const clietQuery = useQueryClient();
+    useEffect(() => {
+        ResetContactForm();
+    }, [corpReset]);
+
     const {
         isLoading: MutateLoading,
         mutate,
@@ -409,6 +413,8 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
         {
             onSuccess: async () => {
                 clietQuery.invalidateQueries("get-corporate-list");
+                clietQuery.invalidateQueries("get-id");
+                setCorpReset(!corpReset);
                 if (whatClickedButon) {
                     await setCreateCorporate({
                         ...DefaultCorporate,
@@ -442,7 +448,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
         setPrompt((prev: any) => ({
             ...prev,
             type: "error",
-            message: `Something is wrong!, ${error}`,
+            message: `Something is wrong!`,
             toggle: true,
         }));
     }
@@ -512,6 +518,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                                 })}
                                 value={createCorporate.contact_no}
                                 onChange={(e) =>
+                                    e.target.value.length <= 11 &&
                                     setCreateCorporate({
                                         ...createCorporate,
                                         contact_no: e.target.value,
@@ -540,6 +547,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                             })}
                             value={createCorporate.alt_contact_no}
                             onChange={(e) =>
+                                e.target.value.length <= 11 &&
                                 setCreateCorporate({
                                     ...createCorporate,
                                     alt_contact_no: e.target.value,

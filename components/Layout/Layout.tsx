@@ -19,7 +19,7 @@ type Layout = {
 };
 
 export default function Layout({ children }: Layout) {
-    const { togglePrompt } = useContext(AppContext);
+    const { togglePrompt, collapseSide } = useContext(AppContext);
     const [isProfileSearch, setProfileSearch] = useState(false);
     const [isPathName, setPathName] = useState<any>();
     const [toggleProfileMenu, setToggleProfileMenu] = useState(false);
@@ -27,6 +27,7 @@ export default function Layout({ children }: Layout) {
     const router = useRouter();
 
     // toggle for responsive sidebar
+    const [isWide, setWide] = useState(false);
     const [isHide, setHide] = useState<boolean>(false);
     const [isWindow, setWindow] = useState<any>();
 
@@ -54,6 +55,11 @@ export default function Layout({ children }: Layout) {
         } else {
             setProfileSearch(false);
         }
+        if (router.query.id !== undefined) {
+            setWide(true);
+        } else {
+            setWide(false);
+        }
     }, [router.asPath]);
 
     return (
@@ -71,7 +77,7 @@ export default function Layout({ children }: Layout) {
                 />
             </Head>
 
-            <div className="flex bg-MainBG bg-no-repeat bg-cover min-h-screen bg-Gray bg-blend-multiply">
+            <div className="flex min-h-screen bg-blend-multiply">
                 <AnimatePresence>
                     {togglePrompt.toggle && <PrompMessage />}
                 </AnimatePresence>
@@ -79,24 +85,30 @@ export default function Layout({ children }: Layout) {
                 <AnimatePresence>
                     {!isHide && (
                         <Sidebar
-                            isWindow={isWindow}
                             isProfileSearch={isProfileSearch}
                             setProfileSearch={setProfileSearch}
                             isPathName={isPathName}
                             setHide={setHide}
+                            isWide={isWide}
                         />
                     )}
                 </AnimatePresence>
 
-                <section className="flex flex-col w-full pl-[400px] 1920px:pl-[350px] 1550px:pl-[230px] 1024px:pl-0">
-                    <div className="h-full w-full 1550px:p-5 1024px:py-10  p-10 relative ">
+                <section
+                    className={` transition-all duration-150 flex flex-col w-full bg-MainBG bg-no-repeat bg-cover h-screen overflow-auto  pl-[300px] 1920px:pl-[${
+                        isWide ? "350px" : "258px"
+                    }] ${
+                        collapseSide && !isWide && "collapse_container"
+                    } 1550px:pl-[220px] 1024px:pl-0`}
+                >
+                    <div className="flex-1 flex flex-col w-full 1550px:p-5 1024px:py-10 480px:pb-0 max  p-10 relative ">
                         {isWindow <= 1024 && (
                             <button
                                 onClick={() => setHide(!isHide)}
                                 className={`absolute z-[99]  right-5 top-3 text-[16px] duration-75 ease-in-out p-1 px-5 shadow-lg rounded-full ${
                                     isHide
                                         ? "bg-ThemeRed text-white"
-                                        : "bg-white text-ThemeRed"
+                                        : "bg-white text-ThemeRed pointer-events-none"
                                 }`}
                             >
                                 <BiMenuAltRight />
@@ -107,7 +119,7 @@ export default function Layout({ children }: Layout) {
                                 router.pathname === "/"
                                     ? "justify-between"
                                     : "justify-end"
-                            } items-center mb-10 1550px:mb-5 480px:flex-wrap 480px:justify-end`}
+                            } items-center mb-5 640px:mb-0 480px:flex-wrap 480px:justify-end`}
                         >
                             {router.pathname === "/" && (
                                 <div
@@ -122,7 +134,7 @@ export default function Layout({ children }: Layout) {
                                     <BsSearch className=" mr-2 text-gray-500 text-[18px]" />
                                 </div>
                             )}
-                            <ul className=" flex items-center ml-5  480px:my-5">
+                            <ul className=" flex items-center ml-5  480px:my-2">
                                 <li className=" relative mr-5 cursor-pointer">
                                     <Tippy
                                         theme="ThemeRed"
@@ -133,7 +145,7 @@ export default function Layout({ children }: Layout) {
                                         }
                                     >
                                         <div>
-                                            <IoNotificationsSharp className=" text-ThemeRed text-[32px]" />
+                                            <IoNotificationsSharp className=" text-ThemeRed text-[32px] hover:scale-[1.3] transition duration-75" />
                                         </div>
                                     </Tippy>
 
@@ -166,11 +178,11 @@ export default function Layout({ children }: Layout) {
                                 </li>
                             </ul>
                         </header>
-                        <main className="relative min-h-[100%]">
+                        <main className="relative flex-1 flex flex-col">
                             {children}
                         </main>
                     </div>
-                    <footer className="w-full h-14 flex justify-end items-center px-10 1024px:px-5">
+                    <footer className="w-full py-5 flex justify-end items-center px-10 1024px:px-5">
                         <p className=" text-ThemeRed text-sm 480px:text-[11px] font-medium">
                             2022 Boroughcrest Property Management Systems Corp.
                             All rights reserved.

@@ -95,8 +95,11 @@
                 @apply text-[12px] font-bold p-0 mb-0;
             }
         }
+        .ErrorMsg {
+            @apply text-[14px];
+        }
         .SaveButton {
-            @apply w-full flex justify-end items-center  mb-16;
+            @apply w-full flex justify-end items-center  mb-16 mt-20;
             .Save {
                 @apply cursor-pointer relative text-white flex justify-center items-center py-2 duration-75 hover:bg-ThemeRed50 leading-none bg-ThemeRed rounded-md text-[14px] mr-5;
                 div {

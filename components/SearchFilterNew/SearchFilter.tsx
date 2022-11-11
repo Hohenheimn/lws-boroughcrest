@@ -39,12 +39,10 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
     };
 
     const CustomerImportSuccess = () => {
-        setPrompt((msg: any) => {
-            msg = {
-                type: "success",
-                message: "Successfully imported!",
-                toggle: true,
-            };
+        setPrompt({
+            type: "success",
+            message: "Successfully imported!",
+            toggle: true,
         });
     };
 
@@ -85,12 +83,10 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
                 }
             } else {
                 alert("Invalid file, must be XLSX or CSV only!");
-                setPrompt((msg: any) => {
-                    msg = {
-                        type: "error",
-                        message: "Invalid file, must be XLSX or CSV only!",
-                        toggle: true,
-                    };
+                setPrompt({
+                    type: "error",
+                    message: "Invalid file, must be XLSX or CSV only!",
+                    toggle: true,
                 });
             }
         }
@@ -103,7 +99,7 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
     };
 
     return (
-        <div>
+        <>
             <h1 className={style.page_title}>{page}</h1>
             <section className={style.container}>
                 <div className={style.searchBar}>
@@ -126,8 +122,7 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
                                 >
                                     <Image
                                         src="/Images/Export.png"
-                                        width={30}
-                                        height={30}
+                                        layout="fill"
                                         alt="Export"
                                     />
                                 </div>
@@ -140,8 +135,7 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
                                         <label htmlFor="import">
                                             <Image
                                                 src="/Images/Import.png"
-                                                width={30}
-                                                height={30}
+                                                layout="fill"
                                                 alt="Import"
                                             />
                                         </label>
@@ -158,8 +152,7 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
                                 <div className={style.icon}>
                                     <Image
                                         src="/Images/Print.png"
-                                        width={27}
-                                        height={27}
+                                        layout="fill"
                                         alt="Print"
                                     />
                                 </div>
@@ -169,9 +162,6 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
 
                     <li className={style.new}>
                         <div onClick={openNew}>New {page}</div>
-                        {/* <Link href="?new">
-                            <a>New {page}</a>
-                        </Link> */}
                     </li>
 
                     <li className={style.filter}>
@@ -184,8 +174,7 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
                             >
                                 <Image
                                     src="/Images/New_Filter.png"
-                                    width={29}
-                                    height={34}
+                                    layout="fill"
                                     alt=""
                                 />
                             </button>
@@ -219,6 +208,6 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
                     </li>
                 </ul>
             </section>
-        </div>
+        </>
     );
 }

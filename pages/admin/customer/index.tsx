@@ -10,9 +10,6 @@ import api from "../../../util/api";
 
 export default function Customer({ Draft }: any) {
     const { setSearchBar, cusToggle } = useContext(AppContext);
-    const router = useRouter();
-    console.log(Draft);
-
     // Draft File
     let DraftImageFile: any = {
         profile_file: "",
@@ -63,14 +60,12 @@ export default function Customer({ Draft }: any) {
     }
 
     return (
-        <div>
+        <>
             <SearchFilter page="customer" setSearchTable={setSearchBar} />
             <CustomerTable />
 
-            {cusToggle && (
-                <NewCustomer Draft={Draft} DraftImageFile={DraftImageFile} />
-            )}
-        </div>
+            {cusToggle && <NewCustomer />}
+        </>
     );
 }
 

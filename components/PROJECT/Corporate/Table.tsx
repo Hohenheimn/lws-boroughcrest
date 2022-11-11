@@ -31,7 +31,7 @@ export default function Table({ isSearchTable }: Props) {
         }
     );
     return (
-        <div className=" w-full overflow-x-auto">
+        <>
             <div className="table_container">
                 <table className="table_list corp">
                     <thead>
@@ -75,7 +75,7 @@ export default function Table({ isSearchTable }: Props) {
                 PageNumber={data?.data.last_page}
                 CurrentPage={data?.data.current_page}
             />
-        </div>
+        </>
     );
 }
 

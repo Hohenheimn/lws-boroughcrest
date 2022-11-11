@@ -10,11 +10,11 @@ export default function Corporate() {
     const { corpToggle, setCorpToggle } = useContext(AppContext);
     const router = useRouter();
     return (
-        <div>
+        <>
             <SearchFilter page="corporate" setSearchTable={setSearchTable} />
             <Table isSearchTable={isSearchTable} />
 
             {corpToggle && <NewCorporate />}
-        </div>
+        </>
     );
 }

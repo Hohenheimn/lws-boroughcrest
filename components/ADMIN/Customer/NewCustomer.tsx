@@ -5,42 +5,20 @@ import NewPrimaryInfo from "./NewPrimaryInfo";
 import NewContactInfo from "./NewContactInfo";
 import NewPropertyInfo from "./NewPropertyInfo";
 
-export default function NewCustomer({ Draft, DraftImageFile }: any) {
-    const {
-        setDraft,
-        isNewCustomer,
-        setNewCustomer,
-        ImgUrl,
-        NewCustomerDefault,
-    } = useContext(AppContext);
+export default function NewCustomer() {
+    const { setNewCustomer, NewCustomerDefault, cusReset, isType, setType } =
+        useContext(AppContext);
     const [isActiveForm, setActiveForm] = useState([true, false, false]);
-    const [isType, setType] = useState<string>("");
     const [status, setStatus] = useState(true);
 
     useEffect(() => {
         setNewCustomer({ ...NewCustomerDefault });
-        console.log(isNewCustomer);
-    }, []);
-
-    const DraftData = Draft?.values;
-    const image_photo_PathName = DraftData?.image_photo;
-    const image_valid_id_PathName = DraftData?.image_valid_id;
-    const image_signature_Pathname = DraftData?.image_signature;
+        setStatus(true);
+    }, [cusReset]);
 
     useEffect(() => {
-        // Check there is draft
-        if (DraftData) {
-            setNewCustomer({
-                ...DraftData,
-                image_photo: ImgUrl + image_photo_PathName,
-                image_valid_id: ImgUrl + image_valid_id_PathName,
-                image_signature: ImgUrl + image_signature_Pathname,
-            });
-            setType(DraftData.type);
-            setDraft(true);
-
-            // convert source to file
-        }
+        setNewCustomer({ ...NewCustomerDefault });
+        setType("");
     }, []);
 
     return (
@@ -67,7 +45,6 @@ export default function NewCustomer({ Draft, DraftImageFile }: any) {
                     key={3}
                     setActiveForm={setActiveForm}
                     isActiveForm={isActiveForm}
-                    DraftImageFile={DraftImageFile}
                 />
             </section>
         </div>

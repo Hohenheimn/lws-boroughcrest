@@ -21,7 +21,7 @@ export default function Pagination({
         setTablePage(SelectedPage);
     };
     return (
-        <div className=" w-full flex justify-end mt-32">
+        <div className=" w-full flex justify-end">
             <ul className=" flex items-center">
                 <Tippy
                     theme="ThemeRed"

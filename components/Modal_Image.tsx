@@ -1,4 +1,5 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useContext } from "react";
+import AppContext from "./Context/AppContext";
 import Image from "next/image";
 
 type Modal_Image = {
@@ -8,6 +9,8 @@ type Modal_Image = {
 
 export default function Modal_Image({ setView, isView }: Modal_Image) {
     const modal = useRef<any>();
+
+    const { ImgUrl } = useContext(AppContext);
 
     useEffect(() => {
         const clickOutSide = (e: any) => {
@@ -27,8 +30,14 @@ export default function Modal_Image({ setView, isView }: Modal_Image) {
                 ref={modal}
                 className=" p-10 bg-[#e2e3e4ef] rounded-lg w-[90%] max-w-[700px] text-ThemeRed shadow-lg"
             >
-                <aside className="w-full aspect-[1.8/1] relative">
-                    <Image src={isView} layout="fill" alt="" />
+                <aside className="w-full aspect-[1.8/1] relative flex justify-center items-center">
+                    {isView === undefined ||
+                    isView === null ||
+                    isView === "" ? (
+                        <h2>No Image Registered</h2>
+                    ) : (
+                        <Image src={ImgUrl + isView} layout="fill" alt="" />
+                    )}
                 </aside>
             </section>
         </div>
