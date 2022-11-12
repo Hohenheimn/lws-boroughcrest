@@ -19,6 +19,7 @@ type SidebarType = {
     isPathName: string;
     setHide: Function;
     isWide: boolean;
+    isWindow: any;
 };
 
 export default function Sidebar({
@@ -27,6 +28,7 @@ export default function Sidebar({
     isPathName,
     setHide,
     isWide,
+    isWindow,
 }: SidebarType) {
     const router = useRouter();
     const ValidateParentUrl = router.pathname.split("/")[1];
@@ -52,22 +54,24 @@ export default function Sidebar({
                 initial="initial"
                 animate="animate"
                 exit="exit"
-                className={` transition-all duration-200 ease-linear fixed h-screen overflow-y-auto overflow-x-hidden left-0 top-0 bg-[#fcfcff] w-[300px] 1920px:w-[${
+                className={` transition-all duration-200 ease-linear fixed h-screen overflow-y-auto overflow-x-hidden left-0 top-0 bg-[#fcfcff] w-[${
                     isWide ? "350px" : "258px"
                 }] 1550px:w-[220px] ${
                     collapseSide && !isWide && "collapse"
                 } border-r-2 border-white min-h-full flex flex-col z-50`}
             >
-                <div className="flex justify-center mt-5 1550px:mt-0">
-                    <Image
-                        src="/Images/deus.png"
-                        width={250}
-                        height={100}
-                        alt=""
-                    />
-                </div>
+                {!collapseSide && (
+                    <div className="absolute top-0 left-0 w-full flex justify-center mt-5 h-32 items-center 1550px:mt-0">
+                        <Image
+                            src="/Images/deus.png"
+                            width={250}
+                            height={100}
+                            alt=""
+                        />
+                    </div>
+                )}
 
-                <div className="w-full h-full flex">
+                <div className="w-full h-full flex mt-28">
                     <ul
                         className={` self-start pt-5 ${
                             !isProfileSearch && "w-full"
@@ -88,7 +92,7 @@ export default function Sidebar({
                                 )}
                             </AnimatePresence>
                             {/* Collapse Arrow */}
-                            {window.innerWidth > 1024
+                            {isWindow > 820
                                 ? router.query.id === undefined && (
                                       <MdArrowForwardIos
                                           className={`cursor-pointer text-[24px] duration-100 ease-out text-ThemeRed ${

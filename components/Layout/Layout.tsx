@@ -19,7 +19,8 @@ type Layout = {
 };
 
 export default function Layout({ children }: Layout) {
-    const { togglePrompt, collapseSide } = useContext(AppContext);
+    const { togglePrompt, collapseSide, setCollapseSide } =
+        useContext(AppContext);
     const [isProfileSearch, setProfileSearch] = useState(false);
     const [isPathName, setPathName] = useState<any>();
     const [toggleProfileMenu, setToggleProfileMenu] = useState(false);
@@ -32,14 +33,18 @@ export default function Layout({ children }: Layout) {
     const [isWindow, setWindow] = useState<any>();
 
     useEffect(() => {
-        window.innerWidth <= 1024 ? setHide(true) : setHide(false);
         const updateSize = () => {
-            window.innerWidth <= 1024 ? setHide(true) : setHide(false);
+            window.innerWidth <= 820 ? setHide(true) : setHide(false);
+            window.innerWidth <= 1024
+                ? window.innerWidth <= 820
+                    ? setCollapseSide(false)
+                    : setCollapseSide(true)
+                : setCollapseSide(false);
             setWindow(window.innerWidth);
         };
         window.addEventListener("resize", updateSize);
         setWindow(window.innerWidth);
-    }, []);
+    }, [window.innerWidth]);
 
     // run this code when the URL change
     // it opens the sidebar search when following asPath
@@ -90,12 +95,13 @@ export default function Layout({ children }: Layout) {
                             isPathName={isPathName}
                             setHide={setHide}
                             isWide={isWide}
+                            isWindow={isWindow}
                         />
                     )}
                 </AnimatePresence>
 
                 <section
-                    className={` transition-all duration-150 flex flex-col w-full bg-MainBG bg-no-repeat bg-cover h-screen overflow-auto  pl-[300px] 1920px:pl-[${
+                    className={` transition-all duration-150 flex flex-col w-full bg-MainBG bg-no-repeat bg-cover h-screen overflow-auto pl-[${
                         isWide ? "350px" : "258px"
                     }] ${
                         collapseSide && !isWide && "collapse_container"
@@ -119,8 +125,19 @@ export default function Layout({ children }: Layout) {
                                 router.pathname === "/"
                                     ? "justify-between"
                                     : "justify-end"
-                            } items-center mb-5 640px:mb-0 480px:flex-wrap 480px:justify-end`}
+                            } items-center justify-between mb-5 640px:mb-0 480px:flex-wrap 480px:justify-end`}
                         >
+                            {collapseSide ? (
+                                <div className="relative h-20 w-48">
+                                    <Image
+                                        src="/Images/deus.png"
+                                        layout="fill"
+                                        alt=""
+                                    />
+                                </div>
+                            ) : (
+                                <p className="h-20"></p>
+                            )}
                             {router.pathname === "/" && (
                                 <div
                                     className=" flex items-center px-8 py-4 bg-white flex-1 max-w-[600px] rounded-lg shadow-lg 640px:px-4 640px:py-2 480px:order-2
