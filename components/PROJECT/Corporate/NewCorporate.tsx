@@ -1,6 +1,5 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import AppContext from "../../Context/AppContext";
-import { useRouter } from "next/router";
 import style from "../../../styles/Popup_Modal.module.scss";
 import { motion } from "framer-motion";
 import { ModalSideFade } from "../../../components/Animation/SimpleAnimation";
@@ -14,7 +13,6 @@ import type { firstCorporateForm } from "../../../types/corporateList";
 import type { secondCorporateForm } from "../../../types/corporateList";
 import { ScaleLoader } from "react-spinners";
 import { getCookie } from "cookies-next";
-import Link from "next/link";
 
 export default function NewCorporate() {
     const [isNewActive, setNewActive] = useState([true, false]);
@@ -81,13 +79,35 @@ const Primary = ({
     const [isLogoStatus, setLogoStatus] = useState("Upload Logo");
     const Next_ID = Current_id + 1;
 
+    const { setCorpToggle, setCreateCorporate, createCorporate, corpReset } =
+        useContext(AppContext);
+
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+        reset,
+    } = useForm<firstCorporateForm>();
+
+    useEffect(() => {
+        reset();
+    }, [corpReset]);
+
+    const Submit = (data: any) => {
+        setCreateCorporate({
+            ...createCorporate,
+            logo: data.logo[0],
+        });
+
+        setNewActive((item: any) => [(item[0] = false), (item[1] = true)]);
+    };
+
     const DisplayImage = (e: any) => {
         if (e.target.files[0]?.size > 2000000) {
             setLogoStatus("Image must be 2mb only");
             return;
         } else {
             setLogoStatus("");
-            console.log(e.target.files[0]);
         }
         if (e.target.files.length > 0) {
             let selectedImage = e.target.files[0];
@@ -105,30 +125,6 @@ const Primary = ({
         } else {
             setLogoStatus("Nothing Happens");
         }
-    };
-
-    const { setCreateCorporate, createCorporate } = useContext(AppContext);
-
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-    } = useForm<firstCorporateForm>();
-
-    const Submit = (data: any) => {
-        if (
-            isLogoStatus === "File is too large" ||
-            isLogoStatus === "Invalid Image File" ||
-            isLogoStatus === "Please Select an Image"
-        ) {
-            return;
-        }
-        setCreateCorporate({
-            ...createCorporate,
-            logo: data.logo[0],
-        });
-
-        setNewActive((item: any) => [(item[0] = false), (item[1] = true)]);
     };
 
     return (
@@ -217,10 +213,11 @@ const Primary = ({
                             })}
                             value={createCorporate.tin}
                             onChange={(e) => {
-                                setCreateCorporate({
-                                    ...createCorporate,
-                                    tin: e.target.value,
-                                });
+                                e.target.value.length <= 9 &&
+                                    setCreateCorporate({
+                                        ...createCorporate,
+                                        tin: e.target.value,
+                                    });
                             }}
                         />
                         {errors.tin && (
@@ -245,10 +242,11 @@ const Primary = ({
                             type="number"
                             value={createCorporate.branch_code}
                             onChange={(e) => {
-                                setCreateCorporate({
-                                    ...createCorporate,
-                                    branch_code: e.target.value,
-                                });
+                                e.target.value.length <= 5 &&
+                                    setCreateCorporate({
+                                        ...createCorporate,
+                                        branch_code: e.target.value,
+                                    });
                             }}
                         />
                         {errors.branch_code && (
@@ -276,10 +274,11 @@ const Primary = ({
                             })}
                             value={createCorporate.rdo_no}
                             onChange={(e) => {
-                                setCreateCorporate({
-                                    ...createCorporate,
-                                    rdo_no: e.target.value,
-                                });
+                                e.target.value.length <= 3 &&
+                                    setCreateCorporate({
+                                        ...createCorporate,
+                                        rdo_no: e.target.value,
+                                    });
                             }}
                         />
                         {errors.rdo_no && (
@@ -325,10 +324,11 @@ const Primary = ({
                             })}
                             value={createCorporate.sec_registration_no}
                             onChange={(e) => {
-                                setCreateCorporate({
-                                    ...createCorporate,
-                                    sec_registration_no: e.target.value,
-                                });
+                                e.target.value.length <= 3 &&
+                                    setCreateCorporate({
+                                        ...createCorporate,
+                                        sec_registration_no: e.target.value,
+                                    });
                             }}
                         />
                         {errors.sec_registration_no && (
@@ -341,9 +341,12 @@ const Primary = ({
                     <li></li>
                 </ul>
                 <div className={style.button_container}>
-                    <Link href="">
-                        <a className="button_cancel cursor-pointer">CANCEL</a>
-                    </Link>
+                    <aside
+                        className="button_cancel cursor-pointer"
+                        onClick={() => setCorpToggle(false)}
+                    >
+                        CANCEL
+                    </aside>
                     <button className="buttonRed" type="submit">
                         NEXT
                     </button>
@@ -355,18 +358,24 @@ const Primary = ({
 
 const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
     // true for save, false for save and new
+    const { corpReset, setCorpReset } = useContext(AppContext);
     const [whatClickedButon, setWhatClickedButton] = useState(true);
     const [isSave, setSave] = useState(false);
-    const { setCreateCorporate, createCorporate } = useContext(AppContext);
+    const {
+        setCreateCorporate,
+        createCorporate,
+        setPrompt,
+        DefaultCorporate,
+        setCorpToggle,
+    } = useContext(AppContext);
 
     const [ErrorContact, setErrorContact] = useState(false);
     const [ErrorAddress, setErrorAddress] = useState(false);
-
-    const router = useRouter();
-
+    const clietQuery = useQueryClient();
     const {
         register,
         handleSubmit,
+        reset: ResetContactForm,
         formState: { errors },
     } = useForm<secondCorporateForm>({
         defaultValues: {
@@ -384,7 +393,10 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
         },
     });
 
-    const clietQuery = useQueryClient();
+    useEffect(() => {
+        ResetContactForm();
+    }, [corpReset]);
+
     const {
         isLoading: MutateLoading,
         mutate,
@@ -399,21 +411,46 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
             });
         },
         {
-            onSuccess: () => {
-                // router.reload();
+            onSuccess: async () => {
                 clietQuery.invalidateQueries("get-corporate-list");
+                clietQuery.invalidateQueries("get-id");
+                setCorpReset(!corpReset);
                 if (whatClickedButon) {
-                    // save
-                    router.push("");
+                    await setCreateCorporate({
+                        ...DefaultCorporate,
+                    });
+                    setPrompt((prev: any) => ({
+                        ...prev,
+                        type: "success",
+                        message: "Successfully Registered",
+                        toggle: true,
+                    }));
+                    setCorpToggle((prev: any) => (prev = false));
                 } else {
-                    alert("Corporate Successfully Registered!");
-                    router.reload();
+                    await setCreateCorporate({
+                        ...DefaultCorporate,
+                    });
+                    setPrompt((prev: any) => ({
+                        ...prev,
+                        type: "success",
+                        message: "Successfully Registered",
+                        toggle: true,
+                    }));
+                    setNewActive((item: any) => [
+                        (item[0] = true),
+                        (item[1] = false),
+                    ]);
                 }
             },
         }
     );
     if (isError) {
-        console.log(error);
+        setPrompt((prev: any) => ({
+            ...prev,
+            type: "error",
+            message: `Something is wrong!`,
+            toggle: true,
+        }));
     }
 
     const Submit = async (data: any) => {
@@ -481,6 +518,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                                 })}
                                 value={createCorporate.contact_no}
                                 onChange={(e) =>
+                                    e.target.value.length <= 11 &&
                                     setCreateCorporate({
                                         ...createCorporate,
                                         contact_no: e.target.value,
@@ -509,6 +547,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                             })}
                             value={createCorporate.alt_contact_no}
                             onChange={(e) =>
+                                e.target.value.length <= 11 &&
                                 setCreateCorporate({
                                     ...createCorporate,
                                     alt_contact_no: e.target.value,
@@ -756,24 +795,21 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                     )}
                     {!MutateLoading && (
                         <div className={style.Save}>
-                            <div onClick={() => setSave(!isSave)}>
-                                SAVE{" "}
-                                <RiArrowDownSFill className=" ml-1 text-[24px]" />
+                            <div>
+                                <button
+                                    type="submit"
+                                    name="save"
+                                    onClick={() => setWhatClickedButton(true)}
+                                >
+                                    SAVE
+                                </button>
+                                <RiArrowDownSFill
+                                    className=" ml-1 text-[24px]"
+                                    onClick={() => setSave(!isSave)}
+                                />
                             </div>
                             {isSave && (
                                 <ul>
-                                    <li>
-                                        <button
-                                            type="submit"
-                                            name="save"
-                                            onClick={() =>
-                                                setWhatClickedButton(true)
-                                            }
-                                        >
-                                            SAVE
-                                        </button>
-                                    </li>
-
                                     <li>
                                         <button
                                             type="submit"

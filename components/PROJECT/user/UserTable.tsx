@@ -11,7 +11,7 @@ export default function UserTable() {
     return (
         <div className=" w-full overflow-x-auto">
             <div className="table_container">
-                <table className=" table_list">
+                <table className=" table_list user">
                     <thead>
                         <tr>
                             <th>ID</th>

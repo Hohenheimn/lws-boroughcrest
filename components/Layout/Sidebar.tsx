@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import { MdArrowForwardIos } from "react-icons/md";
 import { motion, AnimatePresence } from "framer-motion";
 import MenuLink from "./MenuLink";
@@ -11,25 +11,28 @@ import CustomerSearch from "../Search/CustomerSearch";
 import { useRouter } from "next/router";
 import { SidebarLinks } from "./PagesUrl";
 import PropertySearch from "../Search/PropertySearch";
+import AppContext from "../Context/AppContext";
 
 type SidebarType = {
-    isWindow: number;
     isProfileSearch: boolean;
     setProfileSearch: Function;
     isPathName: string;
     setHide: Function;
+    isWide: boolean;
+    isWindow: any;
 };
 
 export default function Sidebar({
     isProfileSearch,
-    isWindow,
     setProfileSearch,
     isPathName,
     setHide,
+    isWide,
+    isWindow,
 }: SidebarType) {
     const router = useRouter();
     const ValidateParentUrl = router.pathname.split("/")[1];
-
+    const { collapseSide, setCollapseSide } = useContext(AppContext);
     // click outside close sidebar
     const modal = useRef<any>();
     useEffect(() => {
@@ -51,26 +54,40 @@ export default function Sidebar({
                 initial="initial"
                 animate="animate"
                 exit="exit"
-                className="absolute left-0 top-0 w-[400px] 1920px:w-[350px] 1550px:w-[230px] border-r-2 border-white min-h-full flex flex-col"
+                className={` transition-all duration-200 ease-linear fixed h-screen overflow-y-auto overflow-x-hidden left-0 top-0 bg-[#fcfcff] ${
+                    isWide ? "w-wide" : "w-no-wide"
+                } ${
+                    collapseSide && !isWide && "collapse"
+                } border-r-2 border-white min-h-full flex flex-col z-50`}
             >
-                <div className=" w-full flex justify-center mt-5 1550px:mt-0">
-                    <Image
-                        src="/Images/deus.png"
-                        width={250}
-                        height={100}
-                        alt=""
-                    />
-                </div>
+                <AnimatePresence>
+                    {!collapseSide && (
+                        <motion.div
+                            variants={FadeSide}
+                            initial="initial"
+                            animate="animate"
+                            exit="exit"
+                            className="absolute top-0 left-0 w-full flex justify-center mt-5 h-28 items-center 1550px:mt-0"
+                        >
+                            <Image
+                                src="/Images/deus.png"
+                                width={250}
+                                height={100}
+                                alt=""
+                            />
+                        </motion.div>
+                    )}
+                </AnimatePresence>
 
-                <div className="w-full h-full flex">
+                <div className="w-full h-full flex mt-28">
                     <ul
-                        className={` self-start pt-8 ${
+                        className={` self-start pt-5 ${
                             !isProfileSearch && "w-full"
                         }`}
                     >
                         <div className=" flex justify-between items-center px-5 mb-5 duration-75">
                             <AnimatePresence>
-                                {!isProfileSearch && (
+                                {!isProfileSearch && !collapseSide && (
                                     <motion.h1
                                         variants={FadeSide}
                                         initial="initial"
@@ -82,6 +99,20 @@ export default function Sidebar({
                                     </motion.h1>
                                 )}
                             </AnimatePresence>
+                            {/* Collapse Arrow */}
+                            {isWindow > 820
+                                ? router.query.id === undefined && (
+                                      <MdArrowForwardIos
+                                          className={`cursor-pointer text-[24px] duration-100 ease-out text-ThemeRed ${
+                                              !collapseSide && "rotate-180"
+                                          }`}
+                                          onClick={() =>
+                                              setCollapseSide(!collapseSide)
+                                          }
+                                      />
+                                  )
+                                : ""}
+
                             {/* Show the toggle arrow icon */}
                             {router.query.id !== undefined && (
                                 <motion.div

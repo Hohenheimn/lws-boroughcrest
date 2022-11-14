@@ -19,6 +19,8 @@ module.exports = {
             },
             width: {
                 "300px": "300px",
+                "350px": "350px",
+                "258px": "258px",
             },
             backgroundColor: {
                 DarkBlue: "#2e4364",
@@ -67,6 +69,10 @@ module.exports = {
                 "NHU-medium": "NHU-medium",
                 "NHU-regular": "NHU-regular",
                 "NHU-light": "NHU-thin",
+            },
+            padding: {
+                "350px": "350px",
+                "258px": "258px",
             },
         },
     },

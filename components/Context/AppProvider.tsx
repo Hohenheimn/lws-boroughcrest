@@ -1,57 +1,60 @@
 import AppContext from "./AppContext";
-import { useState } from "react";
-import type { customer } from "../../types/customerList";
+import { useState, useReducer } from "react";
 
 type AppProvider = {
     children: React.ReactNode;
 };
 
 export default function AppProvider({ children }: AppProvider) {
-    const [createCorporate, setCreateCorporate] = useState({
-        logo: undefined,
-        name: "",
-        tin: "",
-        branch_code: undefined,
-        gst_type: "VAT",
-        rdo_no: undefined,
-        sec_registration_no: undefined,
-        email: "",
-        contact_no: undefined,
-        alt_email: "",
-        alt_contact_no: undefined,
-        address_unit_floor: undefined,
-        address_building: "",
-        address_street: "",
-        address_district: undefined,
-        address_municipal_city: "",
-        address_province: "",
-        address_zip_code: undefined,
+    const [collapseSide, setCollapseSide] = useState(false);
+    const [togglePrompt, setPrompt] = useState({
+        message: "",
+        type: "",
+        toggle: false,
     });
 
-    const [modifyCorporate, setModifyCorporate] = useState({
-        id: 0,
-        logo: undefined,
+    const [corpToggle, setCorpToggle] = useState(false);
+    const [corpReset, setCorpReset] = useState(false);
+    const DefaultCorporate = {
+        logo: "",
         name: "",
         tin: "",
-        branch_code: undefined,
+        branch_code: "",
         gst_type: "VAT",
-        rdo_no: undefined,
-        sec_registration_no: undefined,
+        rdo_no: "",
+        sec_registration_no: "",
         email: "",
-        contact_no: undefined,
+        contact_no: "",
         alt_email: "",
-        alt_contact_no: undefined,
-        address_unit_floor: undefined,
+        alt_contact_no: "",
+        address_unit_floor: "",
         address_building: "",
         address_street: "",
-        address_district: undefined,
+        address_district: "",
         address_municipal_city: "",
         address_province: "",
-        address_zip_code: undefined,
+        address_zip_code: "",
+    };
+    const [createCorporate, setCreateCorporate] = useState({
+        ...DefaultCorporate,
+    });
+    const [modifyCorporate, setModifyCorporate] = useState({
+        id: 0,
+        ...DefaultCorporate,
         _method: "PUT",
     });
 
-    const [isNewCustomer, setNewCustomer] = useState<customer>({
+    // Customer Context
+    const [isType, setType] = useState<string>("");
+    const [cusProfileUrl, setCusProfileUrl] = useState(
+        "/Images/sampleProfile.png"
+    );
+    const [cusValidIDUrl, setCusValidIDUrl] = useState("/Images/id-sample.png");
+    const [cusSignature, setCusSignature] = useState(false);
+
+    const [cusToggle, setCusToggle] = useState(false);
+    const [cusReset, setCusReset] = useState(false);
+    const NewCustomerDefault = {
         assigned_customer_id: "",
         portal_id: "",
         class: "",
@@ -85,94 +88,15 @@ export default function AppProvider({ children }: AppProvider) {
         preferred_email: "",
         status: "",
         unit_codes: [],
+    };
+    const [isNewCustomer, setNewCustomer] = useState({
+        ...NewCustomerDefault,
     });
-    const [isModifyCustomer, setModifyCustomer] = useState<customer>({
-        ...isNewCustomer,
+    const [isModifyCustomer, setModifyCustomer] = useState({
+        ...NewCustomerDefault,
         _method: "PUT",
     });
 
-    const emptyCorporate = () => {
-        setCreateCorporate({
-            logo: undefined,
-            name: "",
-            tin: "",
-            branch_code: undefined,
-            gst_type: "VAT",
-            rdo_no: undefined,
-            sec_registration_no: undefined,
-            email: "",
-            contact_no: undefined,
-            alt_email: "",
-            alt_contact_no: undefined,
-            address_unit_floor: undefined,
-            address_building: "",
-            address_street: "",
-            address_district: undefined,
-            address_municipal_city: "",
-            address_province: "",
-            address_zip_code: undefined,
-        });
-        setModifyCorporate({
-            id: 0,
-            logo: undefined,
-            name: "",
-            tin: "",
-            branch_code: undefined,
-            gst_type: "VAT",
-            rdo_no: undefined,
-            sec_registration_no: undefined,
-            email: "",
-            contact_no: undefined,
-            alt_email: "",
-            alt_contact_no: undefined,
-            address_unit_floor: undefined,
-            address_building: "",
-            address_street: "",
-            address_district: undefined,
-            address_municipal_city: "",
-            address_province: "",
-            address_zip_code: undefined,
-            _method: "PUT",
-        });
-    };
-
-    const emptyCustomer = () => {
-        setNewCustomer({
-            assigned_customer_id: "",
-            portal_id: "",
-            class: "",
-            type: "",
-            name: "",
-            individual_co_owner: "",
-            individual_citizenship: "",
-            individual_birth_date: "",
-            company_contact_person: "",
-            tin: "",
-            branch_code: "",
-            registered_address_unit_floor: "",
-            registered_address_building: "",
-            registered_address_street: "",
-            registered_address_district: "",
-            registered_address_municipal_city: "",
-            registered_address_province: "",
-            registered_address_zip_code: "",
-            mailing_address_unit_floor: "",
-            mailing_address_building: "",
-            mailing_address_street: "",
-            mailing_address_district: "",
-            mailing_address_municipal_city: "",
-            mailing_address_province: "",
-            mailing_address_zip_code: "",
-            image_photo: "",
-            image_valid_id: "",
-            image_signature: "",
-            contact_no: "",
-            registered_email: "",
-            preferred_email: "",
-            status: "",
-            unit_codes: [],
-        });
-    };
     const [CorpTableRows, setCorpTableRows] = useState<number>(10);
     const [corpColumn, setCorpColumn] = useState([
         "ID",
@@ -212,6 +136,21 @@ export default function AppProvider({ children }: AppProvider) {
         "Role",
         "Status",
     ]);
+    const [propTableRows, userPropTableRows] = useState<number>(10);
+    const [propTableColumn, setPropTableColumn] = useState([
+        "Unit Code",
+        "Project",
+        "Developer",
+        "Tower",
+        "Floor",
+        "Class",
+        "Type",
+        "Turn Over",
+        "Owner",
+    ]);
+    const propList = {
+        ...propTableColumn,
+    };
 
     const ImgUrl = "https://boroughcrest-api.lws.codes/get-img?image=";
 
@@ -223,11 +162,15 @@ export default function AppProvider({ children }: AppProvider) {
             value={{
                 createCorporate,
                 setCreateCorporate,
+                corpReset,
+                setCorpReset,
                 CorpTableRows,
                 setCorpTableRows,
                 TableRows,
                 setTableRows,
-                emptyCorporate,
+                DefaultCorporate,
+                corpToggle,
+                setCorpToggle,
                 modifyCorporate,
                 setModifyCorporate,
                 corpColumn,
@@ -238,7 +181,7 @@ export default function AppProvider({ children }: AppProvider) {
                 setSearchBar,
                 setNewCustomer,
                 isNewCustomer,
-                emptyCustomer,
+                NewCustomerDefault,
                 cusFilterColumn,
                 setCusFilterColumn,
                 ImgUrl,
@@ -250,6 +193,22 @@ export default function AppProvider({ children }: AppProvider) {
                 usersetTableRows,
                 userTableColumn,
                 setUserTableColumn,
+                togglePrompt,
+                setPrompt,
+                cusToggle,
+                setCusToggle,
+                cusReset,
+                setCusReset,
+                cusProfileUrl,
+                setCusProfileUrl,
+                cusValidIDUrl,
+                setCusValidIDUrl,
+                cusSignature,
+                setCusSignature,
+                isType,
+                setType,
+                collapseSide,
+                setCollapseSide,
             }}
         >
             {children}

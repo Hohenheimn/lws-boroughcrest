@@ -1,7 +1,5 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import AppContext from "../../Context/AppContext";
-import { motion } from "framer-motion";
-import { ModalSideFade } from "../../../components/Animation/SimpleAnimation";
 import style from "../../../styles/Popup_Modal.module.scss";
 import { useForm } from "react-hook-form";
 import { customer } from "../../../types/customerList";
@@ -14,9 +12,100 @@ export default function NewContactInfo({
     setActiveForm,
     isActiveForm,
 }: NewContactInfo) {
-    const { isNewCustomer, setNewCustomer } = useContext(AppContext);
+    const { isNewCustomer, setNewCustomer, cusReset } = useContext(AppContext);
     const [isSameEmail, setSameEmail] = useState(false);
     const [isSameAddress, setSameAddress] = useState(false);
+
+    const {
+        register,
+        handleSubmit,
+        setValue,
+        reset,
+        formState: { errors },
+    } = useForm<customer>({
+        defaultValues: {
+            contact_no: "",
+            registered_email: "",
+            company_contact_person: "",
+            preferred_email: "",
+            registered_address_unit_floor: "",
+            registered_address_building: "",
+            registered_address_street: "",
+            registered_address_district: "",
+            registered_address_municipal_city: "",
+            registered_address_province: "",
+            registered_address_zip_code: "",
+            MA: {
+                mailing_address_unit_floor: "",
+                mailing_address_building: "",
+                mailing_address_street: "",
+                mailing_address_district: "",
+                mailing_address_municipal_city: "",
+                mailing_address_province: "",
+                mailing_address_zip_code: "",
+            },
+        },
+    });
+
+    useEffect(() => {
+        reset();
+        setSameEmail(false);
+        setSameAddress(false);
+    }, [cusReset]);
+
+    const sameEmail = () => {
+        setSameEmail(!isSameEmail);
+        if (!isSameEmail) {
+            setValue("preferred_email", isNewCustomer.registered_email, {
+                shouldValidate: true,
+            });
+        } else {
+            setValue("preferred_email", "", {
+                shouldValidate: true,
+            });
+        }
+    };
+
+    const sameAddress = () => {
+        setSameAddress(!isSameAddress);
+        if (!isSameAddress) {
+            setValue(
+                "MA",
+                {
+                    mailing_address_unit_floor:
+                        isNewCustomer.registered_address_unit_floor,
+                    mailing_address_building:
+                        isNewCustomer.registered_address_building,
+                    mailing_address_street:
+                        isNewCustomer.registered_address_street,
+                    mailing_address_district:
+                        isNewCustomer.registered_address_district,
+                    mailing_address_municipal_city:
+                        isNewCustomer.registered_address_municipal_city,
+                    mailing_address_province:
+                        isNewCustomer.registered_address_province,
+                    mailing_address_zip_code:
+                        isNewCustomer.registered_address_zip_code,
+                },
+                { shouldValidate: true }
+            );
+        } else {
+            setValue(
+                "MA",
+                {
+                    mailing_address_unit_floor: "",
+                    mailing_address_building: "",
+                    mailing_address_street: "",
+                    mailing_address_district: "",
+                    mailing_address_municipal_city: "",
+                    mailing_address_province: "",
+                    mailing_address_zip_code: "",
+                },
+                { shouldValidate: true }
+            );
+        }
+    };
+
     const Back = () => {
         setActiveForm((item: boolean[]) => [
             (item[0] = true),
@@ -28,24 +117,15 @@ export default function NewContactInfo({
     const NextFormValidation = (data: any) => {
         setNewCustomer({
             ...isNewCustomer,
-            contact_no: data.contact_no,
-            registered_email: data.registered_email,
             preferred_email: data.preferred_email,
-            registered_address_unit_floor: data.registered_address_unit_floor,
-            registered_address_building: data.registered_address_building,
-            registered_address_street: data.registered_address_street,
-            registered_address_district: data.registered_address_district,
-            registered_address_municipal_city:
-                data.registered_address_municipal_city,
-            registered_address_province: data.registered_address_province,
-            registered_address_zip_code: data.registered_address_zip_code,
-            mailing_address_unit_floor: data.mailing_address_unit_floor,
-            mailing_address_building: data.mailing_address_building,
-            mailing_address_street: data.mailing_address_street,
-            mailing_address_district: data.mailing_address_district,
-            mailing_address_municipal_city: data.mailing_address_municipal_city,
-            mailing_address_province: data.mailing_address_province,
-            mailing_address_zip_code: data.mailing_address_zip_code,
+            mailing_address_unit_floor: data.MA.mailing_address_unit_floor,
+            mailing_address_building: data.MA.mailing_address_building,
+            mailing_address_street: data.MA.mailing_address_street,
+            mailing_address_district: data.MA.mailing_address_district,
+            mailing_address_municipal_city:
+                data.MA.mailing_address_municipal_city,
+            mailing_address_province: data.MA.mailing_address_province,
+            mailing_address_zip_code: data.MA.mailing_address_zip_code,
         });
 
         setActiveForm((item: boolean[]) => [
@@ -55,24 +135,17 @@ export default function NewContactInfo({
         ]);
     };
 
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-    } = useForm<customer>();
-
     return (
         <div className={`${isActiveForm[1] ? "" : "hidden"}`}>
             <form onSubmit={handleSubmit(NextFormValidation)}>
                 <h1 className={style.modal_label_primary}>
                     Contact Informations
                 </h1>
-                <p className="text-[14px] font-bold mb-2">ADDRESS</p>
                 <ul className={style.ThreeRows}>
                     <li>
-                        <label>MOBILE</label>
+                        <label>*MOBILE</label>
                         <input
-                            type="text"
+                            type="number"
                             {...register("contact_no", {
                                 required: "Required",
                                 minLength: {
@@ -90,6 +163,7 @@ export default function NewContactInfo({
                             })}
                             value={isNewCustomer.contact_no}
                             onChange={(e) =>
+                                e.target.value.length <= 11 &&
                                 setNewCustomer({
                                     ...isNewCustomer,
                                     contact_no: e.target.value,
@@ -103,7 +177,7 @@ export default function NewContactInfo({
                         )}
                     </li>
                     <li>
-                        <label>REGISTERED-EMAIL</label>
+                        <label>*REGISTERED-EMAIL</label>
                         <input
                             type="email"
                             {...register("registered_email", {
@@ -124,24 +198,12 @@ export default function NewContactInfo({
                         )}
                     </li>
                     <li>
-                        <label>PREFERED EMAIL</label>
+                        <label>*PREFERED EMAIL</label>
                         <input
                             type="email"
                             {...register("preferred_email", {
                                 required: "Required",
                             })}
-                            // isNewCustomer.registered_email
-                            value={
-                                isSameEmail === true
-                                    ? isNewCustomer.registered_email
-                                    : isNewCustomer.preferred_email
-                            }
-                            onChange={(e) =>
-                                setNewCustomer({
-                                    ...isNewCustomer,
-                                    preferred_email: e.target.value,
-                                })
-                            }
                         />
                         {errors.preferred_email && (
                             <p className="text-[10px]">
@@ -154,7 +216,7 @@ export default function NewContactInfo({
                                 id="sameEmail"
                                 className={style.same}
                                 checked={isSameEmail}
-                                onChange={() => setSameEmail(!isSameEmail)}
+                                onChange={sameEmail}
                             />
                             <label htmlFor="sameEmail">
                                 SAME AS REGISTER EMAIL
@@ -166,9 +228,7 @@ export default function NewContactInfo({
                             <label>CONTACT PERSON</label>
                             <input
                                 type="text"
-                                {...register("company_contact_person", {
-                                    required: "Required",
-                                })}
+                                {...register("company_contact_person")}
                                 // isNewCustomer.registered_email
                                 value={isNewCustomer.company_contact_person}
                                 onChange={(e) =>
@@ -190,7 +250,7 @@ export default function NewContactInfo({
                 <p className="text-[14px] font-bold mb-2">REGISTERED ADDRESS</p>
                 <ul className={style.ThreeRows}>
                     <li>
-                        <label>UNIT/FLOOR/HOUSE NO.</label>
+                        <label>*UNIT/FLOOR/HOUSE NO.</label>
                         <input
                             type="text"
                             {...register("registered_address_unit_floor", {
@@ -212,7 +272,7 @@ export default function NewContactInfo({
                         )}
                     </li>
                     <li>
-                        <label>BUILDING</label>
+                        <label>*BUILDING</label>
                         <input
                             type="text"
                             {...register("registered_address_building", {
@@ -233,7 +293,7 @@ export default function NewContactInfo({
                         )}
                     </li>
                     <li>
-                        <label>STREET</label>
+                        <label>*STREET</label>
                         <input
                             type="text"
                             {...register("registered_address_street", {
@@ -254,7 +314,7 @@ export default function NewContactInfo({
                         )}
                     </li>
                     <li>
-                        <label>DISTRICT</label>
+                        <label>*DISTRICT</label>
                         <input
                             type="text"
                             {...register("registered_address_district", {
@@ -275,7 +335,7 @@ export default function NewContactInfo({
                         )}
                     </li>
                     <li>
-                        <label>MUNICIPALITY CITY</label>
+                        <label>*MUNICIPALITY CITY</label>
                         <input
                             type="text"
                             {...register("registered_address_municipal_city", {
@@ -302,7 +362,7 @@ export default function NewContactInfo({
                         )}
                     </li>
                     <li>
-                        <label>PROVINCE</label>
+                        <label>*PROVINCE</label>
                         <input
                             type="text"
                             {...register("registered_address_province", {
@@ -323,7 +383,7 @@ export default function NewContactInfo({
                         )}
                     </li>
                     <li>
-                        <label>ZIP CODE</label>
+                        <label>*ZIP CODE</label>
                         <input
                             type="number"
                             {...register("registered_address_zip_code", {
@@ -360,7 +420,7 @@ export default function NewContactInfo({
                         id="sameAddress"
                         className={style.same}
                         checked={isSameAddress}
-                        onChange={() => setSameAddress(!isSameAddress)}
+                        onChange={sameAddress}
                     />
                     <label htmlFor="sameAddress">
                         SAME AS REGISTER ADDRESS
@@ -372,24 +432,11 @@ export default function NewContactInfo({
                         <label>UNIT/FLOOR/HOUSE NO.</label>
                         <input
                             type="text"
-                            {...register("mailing_address_unit_floor", {
-                                required: "Required",
-                            })}
-                            value={
-                                isSameAddress
-                                    ? isNewCustomer.registered_address_unit_floor
-                                    : isNewCustomer.mailing_address_unit_floor
-                            }
-                            onChange={(e) =>
-                                setNewCustomer({
-                                    ...isNewCustomer,
-                                    mailing_address_unit_floor: e.target.value,
-                                })
-                            }
+                            {...register("MA.mailing_address_unit_floor")}
                         />
-                        {errors.mailing_address_unit_floor && (
+                        {errors.MA?.mailing_address_unit_floor && (
                             <p className="text-[10px]">
-                                {errors.mailing_address_unit_floor.message}
+                                {errors.MA?.mailing_address_unit_floor.message}
                             </p>
                         )}
                     </li>
@@ -397,24 +444,11 @@ export default function NewContactInfo({
                         <label>BUILDING</label>
                         <input
                             type="text"
-                            {...register("mailing_address_building", {
-                                required: "Required",
-                            })}
-                            value={
-                                isSameAddress
-                                    ? isNewCustomer.registered_address_building
-                                    : isNewCustomer.mailing_address_building
-                            }
-                            onChange={(e) =>
-                                setNewCustomer({
-                                    ...isNewCustomer,
-                                    mailing_address_building: e.target.value,
-                                })
-                            }
+                            {...register("MA.mailing_address_building")}
                         />
-                        {errors.mailing_address_building && (
+                        {errors.MA?.mailing_address_building && (
                             <p className="text-[10px]">
-                                {errors.mailing_address_building.message}
+                                {errors.MA?.mailing_address_building.message}
                             </p>
                         )}
                     </li>
@@ -422,24 +456,11 @@ export default function NewContactInfo({
                         <label>STREET</label>
                         <input
                             type="text"
-                            {...register("mailing_address_street", {
-                                required: "Required",
-                            })}
-                            value={
-                                isSameAddress
-                                    ? isNewCustomer.registered_address_street
-                                    : isNewCustomer.mailing_address_street
-                            }
-                            onChange={(e) =>
-                                setNewCustomer({
-                                    ...isNewCustomer,
-                                    mailing_address_street: e.target.value,
-                                })
-                            }
+                            {...register("MA.mailing_address_street")}
                         />
-                        {errors.mailing_address_street && (
+                        {errors.MA?.mailing_address_street && (
                             <p className="text-[10px]">
-                                {errors.mailing_address_street.message}
+                                {errors.MA?.mailing_address_street.message}
                             </p>
                         )}
                     </li>
@@ -447,24 +468,11 @@ export default function NewContactInfo({
                         <label>DISTRICT</label>
                         <input
                             type="text"
-                            {...register("mailing_address_district", {
-                                required: "Required",
-                            })}
-                            value={
-                                isSameAddress
-                                    ? isNewCustomer.registered_address_district
-                                    : isNewCustomer.mailing_address_district
-                            }
-                            onChange={(e) =>
-                                setNewCustomer({
-                                    ...isNewCustomer,
-                                    mailing_address_district: e.target.value,
-                                })
-                            }
+                            {...register("MA.mailing_address_district")}
                         />
-                        {errors.mailing_address_district && (
+                        {errors.MA?.mailing_address_district && (
                             <p className="text-[10px]">
-                                {errors.mailing_address_district.message}
+                                {errors.MA?.mailing_address_district.message}
                             </p>
                         )}
                     </li>
@@ -472,25 +480,14 @@ export default function NewContactInfo({
                         <label>MUNICIPALITY CITY</label>
                         <input
                             type="text"
-                            {...register("mailing_address_municipal_city", {
-                                required: "Required",
-                            })}
-                            value={
-                                isSameAddress
-                                    ? isNewCustomer.registered_address_municipal_city
-                                    : isNewCustomer.mailing_address_municipal_city
-                            }
-                            onChange={(e) =>
-                                setNewCustomer({
-                                    ...isNewCustomer,
-                                    mailing_address_municipal_city:
-                                        e.target.value,
-                                })
-                            }
+                            {...register("MA.mailing_address_municipal_city")}
                         />
-                        {errors.mailing_address_municipal_city && (
+                        {errors.MA?.mailing_address_municipal_city && (
                             <p className="text-[10px]">
-                                {errors.mailing_address_municipal_city.message}
+                                {
+                                    errors.MA?.mailing_address_municipal_city
+                                        .message
+                                }
                             </p>
                         )}
                     </li>
@@ -498,24 +495,11 @@ export default function NewContactInfo({
                         <label>PROVINCE</label>
                         <input
                             type="text"
-                            {...register("mailing_address_province", {
-                                required: "Required",
-                            })}
-                            value={
-                                isSameAddress
-                                    ? isNewCustomer.registered_address_province
-                                    : isNewCustomer.mailing_address_province
-                            }
-                            onChange={(e) =>
-                                setNewCustomer({
-                                    ...isNewCustomer,
-                                    mailing_address_province: e.target.value,
-                                })
-                            }
+                            {...register("MA.mailing_address_province")}
                         />
-                        {errors.mailing_address_province && (
+                        {errors.MA?.mailing_address_province && (
                             <p className="text-[10px]">
-                                {errors.mailing_address_province.message}
+                                {errors.MA?.mailing_address_province.message}
                             </p>
                         )}
                     </li>
@@ -523,8 +507,7 @@ export default function NewContactInfo({
                         <label>ZIP CODE</label>
                         <input
                             type="text"
-                            {...register("mailing_address_zip_code", {
-                                required: "Required",
+                            {...register("MA.mailing_address_zip_code", {
                                 maxLength: {
                                     value: 4,
                                     message: "Must be 4 number",
@@ -534,21 +517,10 @@ export default function NewContactInfo({
                                     message: "Must be 4 number",
                                 },
                             })}
-                            value={
-                                isSameAddress
-                                    ? isNewCustomer.registered_address_zip_code
-                                    : isNewCustomer.mailing_address_zip_code
-                            }
-                            onChange={(e) =>
-                                setNewCustomer({
-                                    ...isNewCustomer,
-                                    mailing_address_zip_code: e.target.value,
-                                })
-                            }
                         />
-                        {errors.mailing_address_zip_code && (
+                        {errors.MA?.mailing_address_zip_code && (
                             <p className="text-[10px]">
-                                {errors.mailing_address_zip_code.message}
+                                {errors.MA?.mailing_address_zip_code.message}
                             </p>
                         )}
                     </li>

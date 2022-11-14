@@ -40,4 +40,13 @@ export type customer = {
     unit_codes: [];
     properties?: [];
     _method?: "PUT";
+    MA?: {
+        mailing_address_unit_floor: string;
+        mailing_address_building: string;
+        mailing_address_street: string;
+        mailing_address_district: string;
+        mailing_address_municipal_city: string;
+        mailing_address_province: string;
+        mailing_address_zip_code: string;
+    };
 };

@@ -3,7 +3,7 @@
 }
 
 .container {
-    @apply flex justify-between items-center mb-10 640px:flex-wrap 640px:justify-end;
+    @apply flex justify-between items-center mb-10 640px:flex-wrap 640px:justify-end 640px:mb-0;
     .searchBar {
         @apply flex items-center shadow-lg px-4 py-2 bg-white flex-1 max-w-[500px] 640px:max-w-[unset] rounded-lg;
         input {
@@ -18,7 +18,10 @@
         .importExportPrint {
             @apply flex items-center;
             .icon {
-                @apply mr-5 text-ThemeRed text-[30px] font-bold cursor-pointer flex hover:text-ThemeRed50;
+                @apply mr-5 transition duration-75 text-ThemeRed text-[30px] font-bold cursor-pointer flex hover:text-ThemeRed50 w-8 h-8 relative;
+                &:hover {
+                    @apply scale-[1.2];
+                }
                 label {
                     @apply flex;
                 }
@@ -26,14 +29,17 @@
         }
         .new {
             @apply relative mr-5 cursor-pointer;
-            a {
+            div {
                 @apply capitalize px-5 480px:text-[12px] 480px:px-2 text-[14px] py-3 rounded-lg bg-ThemeRed text-white leading-none duration-75 hover:bg-ThemeRed50;
             }
         }
         .filter {
             @apply flex items-center cursor-pointer relative;
             .button {
-                @apply w-8 h-9 relative;
+                @apply w-7 h-[31px] relative flex items-center;
+                &:hover {
+                    @apply scale-[1.2];
+                }
             }
             .column {
                 @apply z-50 origin-top absolute top-[180%] right-0 border border-ThemeRed bg-white p-2 pb-10 text-[14px] text-ThemeRed font-bold w-[200px];

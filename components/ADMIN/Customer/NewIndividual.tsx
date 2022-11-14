@@ -3,7 +3,6 @@ import AppContext from "../../Context/AppContext";
 import style from "../../../styles/Popup_Modal.module.scss";
 import { useForm } from "react-hook-form";
 import { customer } from "../../../types/customerList";
-import Link from "next/link";
 import Image from "next/image";
 import { AiFillCamera } from "react-icons/ai";
 
@@ -21,23 +20,49 @@ export default function NewIndividual({
     const [isProfileUrl, setProfileUrl] = useState("/Images/sampleProfile.png");
     const [isValidIDUrl, setValidIDUrl] = useState("/Images/id-sample.png");
     const [isSignature, setSignature] = useState(false);
-    const { isDraft } = useContext(AppContext);
+    const { setCusToggle, isNewCustomer, setNewCustomer, cusReset } =
+        useContext(AppContext);
+    const [imgError, setImgError] = useState({
+        img1: "",
+        img2: "",
+        img3: "",
+    });
+
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { errors },
+    } = useForm<customer>();
 
     useEffect(() => {
-        if (isNewCustomer.image_photo !== "") {
-            setProfileUrl(isNewCustomer.image_photo);
-        }
-        if (isNewCustomer.image_valid_id !== "") {
-            setValidIDUrl(isNewCustomer.image_valid_id);
-        }
-        if (isNewCustomer.image_signature !== "") {
-            setSignature(true);
-        }
-    }, []);
+        setProfileUrl((prev) => (prev = "/Images/sampleProfile.png"));
+        setValidIDUrl((prev) => (prev = "/Images/id-sample.png"));
+        setSignature(false);
+        reset();
+    }, [cusReset]);
 
+    // IMAGE VALIDATION
     const DisplayImage = (e: any) => {
         if (e.target.files[0]?.size > 2000000) {
-            alert("Image must be 2mb only");
+            if (e.target.getAttribute("data-type") === "profile") {
+                setImgError({
+                    ...imgError,
+                    img1: "Image must be 2mb only",
+                });
+            }
+            if (e.target.getAttribute("data-type") === "validID") {
+                setImgError({
+                    ...imgError,
+                    img2: "Image must be 2mb only",
+                });
+            }
+            if (e.target.getAttribute("data-type") === "signature") {
+                setImgError({
+                    ...imgError,
+                    img3: "Image must be 2mb only",
+                });
+            }
             return;
         }
         if (e.target.files.length > 0) {
@@ -53,90 +78,83 @@ export default function NewIndividual({
                 ImageReader.addEventListener("load", (event: any) => {
                     if (e.target.getAttribute("data-type") === "profile") {
                         setProfileUrl(event.target.result);
+                        setImgError({
+                            ...imgError,
+                            img1: "",
+                        });
                     }
                     if (e.target.getAttribute("data-type") === "validID") {
                         setValidIDUrl(event.target.result);
+                        setImgError({
+                            ...imgError,
+                            img2: "",
+                        });
                     }
                     if (e.target.getAttribute("data-type") === "signature") {
                         setSignature(true);
+                        setImgError({
+                            ...imgError,
+                            img3: "",
+                        });
                     }
                 });
             } else {
                 if (e.target.getAttribute("data-type") === "profile") {
                     setProfileUrl("/Images/sampleProfile.png");
+                    setImgError({
+                        ...imgError,
+                        img1: "Invalid Image File",
+                    });
                 }
                 if (e.target.getAttribute("data-type") === "validID") {
                     setValidIDUrl("/Images/id-sample.png");
+                    setImgError({
+                        ...imgError,
+                        img2: "Invalid Image File",
+                    });
                 }
                 if (e.target.getAttribute("data-type") === "signature") {
+                    setImgError({
+                        ...imgError,
+                        img3: "Invalid Image File",
+                    });
                     setSignature(false);
                 }
-                alert("Invalid Image File");
             }
         } else {
             if (e.target.getAttribute("data-type") === "profile") {
                 setProfileUrl("/Images/sampleProfile.png");
+                setImgError({
+                    ...imgError,
+                    img1: "Image file removed",
+                });
             }
             if (e.target.getAttribute("data-type") === "validID") {
                 setValidIDUrl("/Images/id-sample.png");
+                setImgError({
+                    ...imgError,
+                    img2: "Image file removed",
+                });
             }
             if (e.target.getAttribute("data-type") === "signature") {
+                setImgError({
+                    ...imgError,
+                    img3: "Image file removed",
+                });
                 setSignature(false);
             }
-            alert("Nothing Happens");
         }
     };
 
-    const { setNewCustomer, isNewCustomer } = useContext(AppContext);
-
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-    } = useForm<customer>({
-        defaultValues: {
-            class: isNewCustomer.class,
-            name: isNewCustomer.name,
-            individual_co_owner: isNewCustomer.individual_co_owner,
-            individual_citizenship: isNewCustomer.individual_citizenship,
-            individual_birth_date: isNewCustomer.individual_birth_date,
-            tin: isNewCustomer.tin,
-            branch_code: isNewCustomer.branch_code,
-        },
-    });
-
     const Submit = (data: any) => {
-        if (isDraft) {
-            setNewCustomer({
-                ...isNewCustomer,
-                class: data.class,
-                name: data.name,
-                individual_co_owner: data.individual_co_owner,
-                individual_citizenship: data.individual_citizenship,
-                individual_birth_date: data.individual_birth_date,
-                tin: data.tin,
-                branch_code: data.branch_code,
-                type: isType,
-                status: status ? 1 : 0,
-            });
-        } else {
-            setNewCustomer({
-                ...isNewCustomer,
-                class: data.class,
-                name: data.name,
-                individual_co_owner: data.individual_co_owner,
-                individual_citizenship: data.individual_citizenship,
-                individual_birth_date: data.individual_birth_date,
-                tin: data.tin,
-                branch_code: data.branch_code,
-                image_photo: data.image_photo[0],
-                image_valid_id: data.image_valid_id[0],
-                image_signature: data.image_signature[0],
-                type: isType,
-                status: status ? 1 : 0,
-            });
-        }
-
+        setNewCustomer({
+            ...isNewCustomer,
+            image_photo: data.image_photo[0],
+            image_valid_id: data.image_valid_id[0],
+            image_signature: data.image_signature[0],
+            type: isType,
+            status: status ? "active" : "inactive",
+        });
         setActiveForm((item: boolean[]) => [
             (item[0] = false),
             (item[1] = true),
@@ -173,10 +191,8 @@ export default function NewIndividual({
                                 <AiFillCamera />
                             </label>
                         </aside>
-                        {errors.image_photo && (
-                            <p className="text-[10px]">
-                                {errors.image_photo.message}
-                            </p>
+                        {imgError.img1 !== "" && (
+                            <p className="text-[12px]">{imgError.img1}</p>
                         )}
                     </li>
                     <li className=" flex flex-col items-center justify-center w-4/12 820px:w-2/4 480px:w-full mb-5">
@@ -201,31 +217,27 @@ export default function NewIndividual({
                                         layout="fill"
                                     />
                                 </aside>
-                                UPLOAD VALID ID
+                                <div>
+                                    UPLOAD VALID ID
+                                    {imgError.img2 !== "" && (
+                                        <p className="text-[12px]">
+                                            {imgError.img2}
+                                        </p>
+                                    )}
+                                </div>
                             </label>
                         </div>
-                        {errors.image_valid_id && (
-                            <p className="text-[10px]">
-                                {errors.image_valid_id.message}
-                            </p>
-                        )}
                     </li>
                     <li className="  flex flex-col  w-4/12 820px:w-2/4 480px:w-full mb-5 justify-center items-center">
                         <div>
-                            {isSignature ? (
-                                <label
-                                    className=" text-[12px] text-[#19d142] font-NHU-medium mb-1 uppercase cursor-pointer w-[90%] 480px:w-full"
-                                    htmlFor="file"
-                                >
-                                    Upload Signature
-                                </label>
-                            ) : (
-                                <label
-                                    className=" text-[12px] font-NHU-medium mb-1 uppercase cursor-pointer w-[90%] 480px:w-full"
-                                    htmlFor="file"
-                                >
-                                    Upload Signature
-                                </label>
+                            <label
+                                className=" text-[12px] font-NHU-medium uppercase cursor-pointer w-[90%] 480px:w-full"
+                                htmlFor="file"
+                            >
+                                Upload Signature
+                            </label>
+                            {imgError.img3 !== "" && (
+                                <p className="text-[12px]">{imgError.img3}</p>
                             )}
                             <input
                                 id="file"
@@ -236,20 +248,22 @@ export default function NewIndividual({
                                 data-type="signature"
                             />
                         </div>
-                        {errors.image_signature && (
-                            <p className="text-[10px]">
-                                {errors.image_signature.message}
-                            </p>
-                        )}
                     </li>
                 </ul>
                 <ul className={style.ThreeRows}>
                     <li>
-                        <label>CLASS</label>
+                        <label>*CLASS</label>
                         <select
                             id=""
                             {...register("class", { required: "Required" })}
                             defaultValue={isNewCustomer.class}
+                            value={isNewCustomer.class}
+                            onChange={(e) =>
+                                setNewCustomer({
+                                    ...isNewCustomer,
+                                    class: e.target.value,
+                                })
+                            }
                         >
                             <option
                                 value={isNewCustomer.class}
@@ -269,11 +283,18 @@ export default function NewIndividual({
                         )}
                     </li>
                     <li>
-                        <label>NAME</label>
+                        <label>*NAME</label>
                         <input
                             type="text"
                             className="bg-white"
                             {...register("name", { required: "Required" })}
+                            value={isNewCustomer.name}
+                            onChange={(e) =>
+                                setNewCustomer({
+                                    ...isNewCustomer,
+                                    name: e.target.value,
+                                })
+                            }
                         />
                         {errors.name && (
                             <p className="text-[10px]">{errors.name.message}</p>
@@ -286,9 +307,14 @@ export default function NewIndividual({
                                 <input
                                     type="text"
                                     className="bg-white"
-                                    {...register("individual_co_owner", {
-                                        required: "Required",
-                                    })}
+                                    {...register("individual_co_owner")}
+                                    value={isNewCustomer.individual_co_owner}
+                                    onChange={(e) =>
+                                        setNewCustomer({
+                                            ...isNewCustomer,
+                                            individual_co_owner: e.target.value,
+                                        })
+                                    }
                                 />
                                 {errors.individual_co_owner && (
                                     <p className="text-[10px]">
@@ -298,13 +324,21 @@ export default function NewIndividual({
                             </li>
 
                             <li>
-                                <label>CITIZENSHIP</label>
+                                <label>*CITIZENSHIP</label>
                                 <input
                                     type="text"
                                     className="bg-white"
                                     {...register("individual_citizenship", {
                                         required: "Required",
                                     })}
+                                    value={isNewCustomer.individual_citizenship}
+                                    onChange={(e) =>
+                                        setNewCustomer({
+                                            ...isNewCustomer,
+                                            individual_citizenship:
+                                                e.target.value,
+                                        })
+                                    }
                                 />
                                 {errors.individual_citizenship && (
                                     <p className="text-[10px]">
@@ -318,9 +352,15 @@ export default function NewIndividual({
                                 <input
                                     type="date"
                                     className="bg-white"
-                                    {...register("individual_birth_date", {
-                                        required: "Required",
-                                    })}
+                                    {...register("individual_birth_date")}
+                                    value={isNewCustomer.individual_birth_date}
+                                    onChange={(e) =>
+                                        setNewCustomer({
+                                            ...isNewCustomer,
+                                            individual_birth_date:
+                                                e.target.value,
+                                        })
+                                    }
                                 />
                                 {errors.individual_birth_date && (
                                     <p className="text-[10px]">
@@ -331,30 +371,40 @@ export default function NewIndividual({
                         </>
                     )}
                     <li>
-                        <label>TIN Number</label>
+                        <label>*TIN Number</label>
                         <input
-                            type="text"
+                            type="number"
                             placeholder="000000000"
                             {...register("tin", {
                                 required: "Required",
                                 minLength: {
                                     value: 9,
-                                    message: "Must be 9 numbers only",
+                                    message: "Must be 9 numbers",
                                 },
                                 maxLength: {
-                                    value: 11,
-                                    message: "Must be 9 numbers only",
+                                    value: 9,
+                                    message: "Must be 9 numbers",
                                 },
                             })}
+                            value={isNewCustomer.tin}
+                            onChange={(e) => {
+                                if (e.target.value.length <= 9) {
+                                    setNewCustomer({
+                                        ...isNewCustomer,
+                                        tin: e.target.value,
+                                    });
+                                }
+                            }}
                         />
                         {errors.tin && (
                             <p className="text-[10px]">{errors.tin.message}</p>
                         )}
                     </li>
                     <li>
-                        <label>Branch Code</label>
+                        <label>*Branch Code</label>
                         <input
                             type="number"
+                            placeholder="00000"
                             {...register("branch_code", {
                                 required: "Required",
                                 minLength: {
@@ -366,6 +416,15 @@ export default function NewIndividual({
                                     message: "Must be 5 Number",
                                 },
                             })}
+                            value={isNewCustomer.branch_code}
+                            onChange={(e) => {
+                                if (e.target.value.length <= 5) {
+                                    setNewCustomer({
+                                        ...isNewCustomer,
+                                        branch_code: e.target.value,
+                                    });
+                                }
+                            }}
                         />
                         {errors.branch_code && (
                             <p className="text-[10px]">
@@ -376,11 +435,12 @@ export default function NewIndividual({
                 </ul>
 
                 <div className=" w-full flex justify-end items-center">
-                    <Link href="">
-                        <a className=" text-ThemeRed font-semibold text-[14px] mr-5 cursor-pointer">
-                            CANCEL
-                        </a>
-                    </Link>
+                    <aside
+                        onClick={() => setCusToggle(false)}
+                        className=" text-ThemeRed font-semibold text-[14px] mr-5 cursor-pointer"
+                    >
+                        CANCEL
+                    </aside>
                     <button
                         type="submit"
                         className=" text-white h-8 w-20 flex justify-center items-center duration-75 hover:bg-ThemeRed50 leading-none bg-ThemeRed rounded-md text-[14px] mr-5"

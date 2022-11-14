@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import AppContext from "../Context/AppContext";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import Sidebar from "./Sidebar";
 import { BiMenuAltRight } from "react-icons/bi";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { BsSearch } from "react-icons/bs";
 import { IoNotificationsSharp } from "react-icons/io5";
 import { IoIosArrowDown } from "react-icons/io";
@@ -11,12 +12,16 @@ import Image from "next/image";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 import SignOut from "./SignOut";
+import PrompMessage from "../PrompMessage";
+import { FadeSide } from "../Animation/SimpleAnimation";
 
 type Layout = {
     children: React.ReactNode;
 };
 
 export default function Layout({ children }: Layout) {
+    const { togglePrompt, collapseSide, setCollapseSide } =
+        useContext(AppContext);
     const [isProfileSearch, setProfileSearch] = useState(false);
     const [isPathName, setPathName] = useState<any>();
     const [toggleProfileMenu, setToggleProfileMenu] = useState(false);
@@ -24,18 +29,23 @@ export default function Layout({ children }: Layout) {
     const router = useRouter();
 
     // toggle for responsive sidebar
+    const [isWide, setWide] = useState(false);
     const [isHide, setHide] = useState<boolean>(false);
     const [isWindow, setWindow] = useState<any>();
 
     useEffect(() => {
-        window.innerWidth <= 1024 ? setHide(true) : setHide(false);
         const updateSize = () => {
-            window.innerWidth <= 1024 ? setHide(true) : setHide(false);
+            window.innerWidth <= 820 ? setHide(true) : setHide(false);
+            window.innerWidth <= 1024
+                ? window.innerWidth <= 820
+                    ? setCollapseSide(false)
+                    : setCollapseSide(true)
+                : setCollapseSide(false);
             setWindow(window.innerWidth);
         };
         window.addEventListener("resize", updateSize);
         setWindow(window.innerWidth);
-    }, []);
+    }, [isWindow]);
 
     // run this code when the URL change
     // it opens the sidebar search when following asPath
@@ -51,7 +61,14 @@ export default function Layout({ children }: Layout) {
         } else {
             setProfileSearch(false);
         }
+        if (router.query.id !== undefined) {
+            setWide(true);
+        } else {
+            setWide(false);
+        }
     }, [router.asPath]);
+
+    console.log(isWide);
 
     return (
         <>
@@ -68,28 +85,37 @@ export default function Layout({ children }: Layout) {
                 />
             </Head>
 
-            <div className="flex bg-MainBG bg-no-repeat bg-cover min-h-screen bg-Gray bg-blend-multiply">
+            <div className="flex min-h-screen bg-blend-multiply">
+                <AnimatePresence>
+                    {togglePrompt.toggle && <PrompMessage />}
+                </AnimatePresence>
+
                 <AnimatePresence>
                     {!isHide && (
                         <Sidebar
-                            isWindow={isWindow}
                             isProfileSearch={isProfileSearch}
                             setProfileSearch={setProfileSearch}
                             isPathName={isPathName}
                             setHide={setHide}
+                            isWide={isWide}
+                            isWindow={isWindow}
                         />
                     )}
                 </AnimatePresence>
 
-                <section className="flex flex-col w-full pl-[400px] 1920px:pl-[350px] 1550px:pl-[230px] 1024px:pl-0">
-                    <div className="h-full w-full 1550px:p-5 1024px:py-10  p-10 relative ">
+                <section
+                    className={` transition-all duration-150 flex flex-col w-full bg-MainBG bg-no-repeat bg-cover h-screen overflow-auto ${
+                        isWide === true ? "pl-wide" : "pl-no-wide"
+                    } ${collapseSide && !isWide && "collapse_container"}`}
+                >
+                    <div className="flex-1 flex flex-col w-full 1550px:p-5 1550px:px-10 1024px:py-10 480px:pb-0 max  p-10 relative ">
                         {isWindow <= 1024 && (
                             <button
                                 onClick={() => setHide(!isHide)}
                                 className={`absolute z-[99]  right-5 top-3 text-[16px] duration-75 ease-in-out p-1 px-5 shadow-lg rounded-full ${
                                     isHide
                                         ? "bg-ThemeRed text-white"
-                                        : "bg-white text-ThemeRed"
+                                        : "bg-white text-ThemeRed pointer-events-none"
                                 }`}
                             >
                                 <BiMenuAltRight />
@@ -100,8 +126,27 @@ export default function Layout({ children }: Layout) {
                                 router.pathname === "/"
                                     ? "justify-between"
                                     : "justify-end"
-                            } items-center mb-10 1550px:mb-5 480px:flex-wrap 480px:justify-end`}
+                            } items-center justify-between mb-5 640px:mb-0 480px:flex-wrap 480px:justify-end`}
                         >
+                            <AnimatePresence>
+                                {collapseSide ? (
+                                    <motion.div
+                                        variants={FadeSide}
+                                        initial="initial"
+                                        animate="animate"
+                                        exit="exit"
+                                        className="relative h-20 w-48"
+                                    >
+                                        <Image
+                                            src="/Images/deus.png"
+                                            layout="fill"
+                                            alt=""
+                                        />
+                                    </motion.div>
+                                ) : (
+                                    <p className="h-20"></p>
+                                )}
+                            </AnimatePresence>
                             {router.pathname === "/" && (
                                 <div
                                     className=" flex items-center px-8 py-4 bg-white flex-1 max-w-[600px] rounded-lg shadow-lg 640px:px-4 640px:py-2 480px:order-2
@@ -115,7 +160,7 @@ export default function Layout({ children }: Layout) {
                                     <BsSearch className=" mr-2 text-gray-500 text-[18px]" />
                                 </div>
                             )}
-                            <ul className=" flex items-center ml-5  480px:my-5">
+                            <ul className=" flex items-center ml-5  480px:my-2">
                                 <li className=" relative mr-5 cursor-pointer">
                                     <Tippy
                                         theme="ThemeRed"
@@ -126,7 +171,7 @@ export default function Layout({ children }: Layout) {
                                         }
                                     >
                                         <div>
-                                            <IoNotificationsSharp className=" text-ThemeRed text-[32px]" />
+                                            <IoNotificationsSharp className=" text-ThemeRed text-[32px] hover:scale-[1.3] transition duration-75" />
                                         </div>
                                     </Tippy>
 
@@ -159,11 +204,11 @@ export default function Layout({ children }: Layout) {
                                 </li>
                             </ul>
                         </header>
-                        <main className="relative min-h-[100%]">
+                        <main className="relative flex-1 flex flex-col">
                             {children}
                         </main>
                     </div>
-                    <footer className="w-full h-14 flex justify-end items-center px-10 1024px:px-5">
+                    <footer className="w-full py-5 flex justify-end items-center px-10 1024px:px-5">
                         <p className=" text-ThemeRed text-sm 480px:text-[11px] font-medium">
                             2022 Boroughcrest Property Management Systems Corp.
                             All rights reserved.

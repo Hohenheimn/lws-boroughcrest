@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import AppContext from "../../Context/AppContext";
 import style from "../../../styles/Popup_Modal.module.scss";
 import { ModalSideFade } from "../../Animation/SimpleAnimation";
 import { motion } from "framer-motion";
@@ -9,6 +10,7 @@ import { AiFillCamera } from "react-icons/ai";
 export default function NewDefault() {
     const [isProfileUrl, setProfileUrl] = useState("/Images/sampleProfile.png");
     const [isValidIDUrl, setValidIDUrl] = useState("/Images/id-sample.png");
+    const { setCusToggle } = useContext(AppContext);
     return (
         <>
             <ul className=" flex mb-5 flex-wrap 480px:mb-2">
@@ -58,7 +60,7 @@ export default function NewDefault() {
                 </li>
                 <li className="  flex flex-col  w-4/12 820px:w-2/4 480px:w-full mb-5 justify-center items-end">
                     <label
-                        className=" pointer-events-none text-[12px] font-NHU-medium mb-1 uppercase cursor-pointer w-[90%] 480px:w-full"
+                        className=" pointer-events-none text-[12px] font-NHU-medium uppercase cursor-pointer w-[90%] 480px:w-full"
                         htmlFor="file"
                     >
                         Upload Signature
@@ -127,11 +129,12 @@ export default function NewDefault() {
                 </li>
             </ul>
             <div className=" w-full flex justify-end items-center">
-                <Link href="">
-                    <a className=" text-ThemeRed font-semibold text-[14px] mr-5 cursor-pointer">
-                        CANCEL
-                    </a>
-                </Link>
+                <aside
+                    onClick={() => setCusToggle(false)}
+                    className=" text-ThemeRed font-semibold text-[14px] mr-5 cursor-pointer"
+                >
+                    CANCEL
+                </aside>
             </div>
         </>
     );

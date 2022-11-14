@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import AppContext from "../Context/AppContext";
 import Image from "next/image";
 import { BsSearch } from "react-icons/bs";
 import { AnimatePresence } from "framer-motion";
@@ -22,12 +23,27 @@ type SearchFilter = {
 };
 
 export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
+    const { setCorpToggle, setCusToggle, setPrompt } = useContext(AppContext);
+
     const [isFilter, setFilter] = useState(false);
     const router = useRouter();
     const ValidatePathName = router.pathname.split("/")[2];
 
+    const openNew = () => {
+        if (router.pathname.includes("project/corporate")) {
+            setCorpToggle(true);
+        }
+        if (router.pathname.includes("admin/customer")) {
+            setCusToggle(true);
+        }
+    };
+
     const CustomerImportSuccess = () => {
-        alert("Successfully imported!");
+        setPrompt({
+            type: "success",
+            message: "Successfully imported!",
+            toggle: true,
+        });
     };
 
     const { isLoading: CusLoading, mutate: CusMutate } = CustomerImport(
@@ -67,6 +83,11 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
                 }
             } else {
                 alert("Invalid file, must be XLSX or CSV only!");
+                setPrompt({
+                    type: "error",
+                    message: "Invalid file, must be XLSX or CSV only!",
+                    toggle: true,
+                });
             }
         }
     };
@@ -78,7 +99,7 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
     };
 
     return (
-        <div>
+        <>
             <h1 className={style.page_title}>{page}</h1>
             <section className={style.container}>
                 <div className={style.searchBar}>
@@ -101,8 +122,7 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
                                 >
                                     <Image
                                         src="/Images/Export.png"
-                                        width={30}
-                                        height={30}
+                                        layout="fill"
                                         alt="Export"
                                     />
                                 </div>
@@ -115,8 +135,7 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
                                         <label htmlFor="import">
                                             <Image
                                                 src="/Images/Import.png"
-                                                width={30}
-                                                height={30}
+                                                layout="fill"
                                                 alt="Import"
                                             />
                                         </label>
@@ -133,8 +152,7 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
                                 <div className={style.icon}>
                                     <Image
                                         src="/Images/Print.png"
-                                        width={27}
-                                        height={27}
+                                        layout="fill"
                                         alt="Print"
                                     />
                                 </div>
@@ -143,9 +161,7 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
                     )}
 
                     <li className={style.new}>
-                        <Link href="?new">
-                            <a>New {page}</a>
-                        </Link>
+                        <div onClick={openNew}>New {page}</div>
                     </li>
 
                     <li className={style.filter}>
@@ -192,6 +208,6 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
                     </li>
                 </ul>
             </section>
-        </div>
+        </>
     );
 }

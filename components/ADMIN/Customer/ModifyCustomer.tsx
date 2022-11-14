@@ -61,6 +61,11 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
     const [isSignature, setSignature] = useState(false);
     const [isProfileUrl, setProfileUrl] = useState("/Images/sampleProfile.png");
     const [isValidIDUrl, setValidIDUrl] = useState("/Images/id-sample.png");
+    const [imgError, setImgError] = useState({
+        img1: "",
+        img2: "",
+        img3: "",
+    });
 
     useEffect(() => {
         if (isModifyCustomer.image_signature !== null) {
@@ -104,7 +109,7 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
             image_photo: data.image_photo[0],
             image_signature: data.image_signature[0],
             image_valid_id: data.image_valid_id[0],
-            status: isStatus,
+            status: isStatus ? "active" : "inactive",
             class: data.class,
         });
         setActiveForm((item: boolean[]) => [
@@ -116,7 +121,24 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
 
     const DisplayImage = (e: any) => {
         if (e.target.files[0]?.size > 2000000) {
-            alert("Image must be 2mb only");
+            if (e.target.getAttribute("data-type") === "profile") {
+                setImgError({
+                    ...imgError,
+                    img1: "Image must be 2mb only",
+                });
+            }
+            if (e.target.getAttribute("data-type") === "validID") {
+                setImgError({
+                    ...imgError,
+                    img2: "Image must be 2mb only",
+                });
+            }
+            if (e.target.getAttribute("data-type") === "signature") {
+                setImgError({
+                    ...imgError,
+                    img3: "Image must be 2mb only",
+                });
+            }
             return;
         }
         if (e.target.files.length > 0) {
@@ -132,16 +154,71 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
                 ImageReader.addEventListener("load", (event: any) => {
                     if (e.target.getAttribute("data-type") === "profile") {
                         setProfileUrl(event.target.result);
+                        setImgError({
+                            ...imgError,
+                            img1: "",
+                        });
                     }
                     if (e.target.getAttribute("data-type") === "validID") {
                         setValidIDUrl(event.target.result);
+                        setImgError({
+                            ...imgError,
+                            img2: "",
+                        });
+                    }
+                    if (e.target.getAttribute("data-type") === "signature") {
+                        setSignature(true);
+                        setImgError({
+                            ...imgError,
+                            img3: "",
+                        });
                     }
                 });
             } else {
-                alert("Invalid Image File");
+                if (e.target.getAttribute("data-type") === "profile") {
+                    setProfileUrl("/Images/sampleProfile.png");
+                    setImgError({
+                        ...imgError,
+                        img1: "Invalid Image File",
+                    });
+                }
+                if (e.target.getAttribute("data-type") === "validID") {
+                    setValidIDUrl("/Images/id-sample.png");
+                    setImgError({
+                        ...imgError,
+                        img2: "Invalid Image File",
+                    });
+                }
+                if (e.target.getAttribute("data-type") === "signature") {
+                    setImgError({
+                        ...imgError,
+                        img3: "Invalid Image File",
+                    });
+                    setSignature(false);
+                }
             }
         } else {
-            alert("Nothing Happens");
+            if (e.target.getAttribute("data-type") === "profile") {
+                setProfileUrl("/Images/sampleProfile.png");
+                setImgError({
+                    ...imgError,
+                    img1: "Image file removed",
+                });
+            }
+            if (e.target.getAttribute("data-type") === "validID") {
+                setValidIDUrl("/Images/id-sample.png");
+                setImgError({
+                    ...imgError,
+                    img2: "Image file removed",
+                });
+            }
+            if (e.target.getAttribute("data-type") === "signature") {
+                setImgError({
+                    ...imgError,
+                    img3: "Image file removed",
+                });
+                setSignature(false);
+            }
         }
     };
 
@@ -190,19 +267,12 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
                         <span className="mr-2 font-bold">STATUS</span>
 
                         <div
-                            className={`h-5 w-5 rounded-full border-4 border-[#${
-                                isStatus === 1 ? "19d142" : "8f384d"
-                            }] cursor-pointer`}
-                            style={{
-                                boxShadow: `0 0 15px 0 #${
-                                    isStatus === 1 ? "19d142" : "8f384d"
-                                }`,
-                            }}
+                            className={`statusCircle cursor-pointer ${isStatus}`}
                             onClick={() => {
-                                if (isStatus === 1) {
-                                    setStatus(0);
+                                if (isStatus === "Active") {
+                                    setStatus("Inactive");
                                 } else {
-                                    setStatus(1);
+                                    setStatus("Active");
                                 }
                             }}
                         ></div>
@@ -234,6 +304,9 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
                                 <AiFillCamera />
                             </label>
                         </aside>
+                        {imgError.img1 !== "" && (
+                            <p className="text-[12px]">{imgError.img1}</p>
+                        )}
                     </li>
                     <li className="  flex items-center w-4/12 820px:w-2/4 480px:w-full mb-5">
                         <input
@@ -255,25 +328,27 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
                                     layout="fill"
                                 />
                             </aside>
-                            UPLOAD VALID ID
+                            <div>
+                                UPLOAD VALID ID
+                                {imgError.img2 !== "" && (
+                                    <p className="text-[12px]">
+                                        {imgError.img2}
+                                    </p>
+                                )}
+                            </div>
                         </label>
                     </li>
                     <li className="  flex flex-col  w-4/12 820px:w-2/4 480px:w-full mb-5 justify-center items-end">
-                        {isSignature ? (
-                            <label
-                                className=" text-[12px] text-[#19d142] font-NHU-medium mb-1 uppercase cursor-pointer w-[90%] 480px:w-full"
-                                htmlFor="file"
-                            >
-                                Upload Signature
-                            </label>
-                        ) : (
-                            <label
-                                className=" text-[12px] font-NHU-medium mb-1 uppercase cursor-pointer w-[90%] 480px:w-full"
-                                htmlFor="file"
-                            >
-                                Upload Signature
-                            </label>
+                        <label
+                            className=" text-[12px] font-NHU-medium uppercase cursor-pointer w-[90%] 480px:w-full"
+                            htmlFor="file"
+                        >
+                            Upload Signature
+                        </label>
+                        {imgError.img3 !== "" && (
+                            <p className="text-[12px]">{imgError.img3}</p>
                         )}
+
                         <input
                             id="file"
                             type="file"
@@ -397,6 +472,14 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
                                     message: "Must be 9 numbers only",
                                 },
                             })}
+                            value={isModifyCustomer.tin}
+                            onChange={(e) => {
+                                e.target.value.length <= 9 &&
+                                    setModifyCustomer({
+                                        ...isModifyCustomer,
+                                        tin: e.target.value,
+                                    });
+                            }}
                         />
                         {errors.tin && (
                             <p className="text-[10px]">{errors.tin.message}</p>
@@ -417,6 +500,14 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
                                     message: "Must be 5 Number",
                                 },
                             })}
+                            value={isModifyCustomer.branch_code}
+                            onChange={(e) => {
+                                e.target.value.length <= 5 &&
+                                    setModifyCustomer({
+                                        ...isModifyCustomer,
+                                        branch_code: e.target.value,
+                                    });
+                            }}
                         />
                         {errors.branch_code && (
                             <p className="text-[10px]">
@@ -450,13 +541,55 @@ const Contact = ({
     isActiveForm,
     isDraft,
 }: Props) => {
-    const { isModifyCustomer, setModifyCustomer } = useContext(AppContext);
+    const { isModifyCustomer, setModifyCustomer, setPrompt, setCusToggle } =
+        useContext(AppContext);
     const [isSameEmail, setSameEmail] = useState(false);
     const [isSameAddress, setSameAddress] = useState(false);
     const router = useRouter();
     const [whatClickedButon, setWhatClickedButton] = useState("");
     const [isSave, setSave] = useState(false);
     const queryClient = useQueryClient();
+
+    const {
+        register,
+        handleSubmit,
+        setValue,
+        formState: { errors },
+    } = useForm<customer>({
+        defaultValues: {
+            preferred_email: isModifyCustomer.preferred_email,
+            MA: {
+                mailing_address_unit_floor:
+                    isModifyCustomer.mailing_address_unit_floor
+                        ? ""
+                        : isModifyCustomer.mailing_address_unit_floor,
+                mailing_address_building:
+                    isModifyCustomer.mailing_address_building
+                        ? ""
+                        : isModifyCustomer.mailing_address_building,
+                mailing_address_street: isModifyCustomer.mailing_address_street
+                    ? ""
+                    : isModifyCustomer.mailing_address_street,
+                mailing_address_district:
+                    isModifyCustomer.mailing_address_district
+                        ? ""
+                        : isModifyCustomer.mailing_address_district,
+                mailing_address_municipal_city:
+                    isModifyCustomer.mailing_address_municipal_city
+                        ? ""
+                        : isModifyCustomer.mailing_address_municipal_city,
+                mailing_address_province:
+                    isModifyCustomer.mailing_address_province
+                        ? ""
+                        : isModifyCustomer.mailing_address_province,
+                mailing_address_zip_code:
+                    isModifyCustomer.mailing_address_zip_code
+                        ? ""
+                        : isModifyCustomer.mailing_address_zip_code,
+            },
+        },
+    });
+
     const Back = () => {
         setActiveForm((item: boolean[]) => [
             (item[0] = true),
@@ -464,29 +597,32 @@ const Contact = ({
         ]);
     };
     const onSuccess = () => {
+        setPrompt({
+            message: `Customer successfully ${
+                whatClickedButon === "save" || whatClickedButon === "new"
+                    ? "updated"
+                    : "saved as draft"
+            }!`,
+            type: `${
+                whatClickedButon === "save" || whatClickedButon === "new"
+                    ? "success"
+                    : "draft"
+            }`,
+            toggle: true,
+        });
+        setSave(false);
+        queryClient.invalidateQueries(["get-customer-detail", router.query.id]);
         if (whatClickedButon === "save" || whatClickedButon === "draft") {
-            queryClient.invalidateQueries([
-                "get-customer-detail",
-                router.query.id,
-            ]);
             setToggleModify(false);
         }
         if (whatClickedButon === "new") {
-            router.push("/admin/customer?new");
-        }
-        if (whatClickedButon === "draft") {
-            router.reload();
+            setCusToggle(true);
+            setToggleModify(false);
+            router.push("/admin/customer");
         }
     };
 
-    const { isLoading, isError, mutate } = PutCustomer(
-        onSuccess,
-        router.query.id
-    );
-    const { isLoading: DraftLoading, mutate: DraftMutate } = SaveDraftUpdate(
-        onSuccess,
-        router.query.id
-    );
+    const { isLoading, mutate } = PutCustomer(onSuccess, router.query.id);
 
     const NextFormValidation = async (data: any) => {
         let Payload = {
@@ -502,13 +638,14 @@ const Contact = ({
                 data.registered_address_municipal_city,
             registered_address_province: data.registered_address_province,
             registered_address_zip_code: data.registered_address_zip_code,
-            mailing_address_unit_floor: data.mailing_address_unit_floor,
-            mailing_address_building: data.mailing_address_building,
-            mailing_address_street: data.mailing_address_street,
-            mailing_address_district: data.mailing_address_district,
-            mailing_address_municipal_city: data.mailing_address_municipal_city,
-            mailing_address_province: data.mailing_address_province,
-            mailing_address_zip_code: data.mailing_address_zip_code,
+            mailing_address_unit_floor: data.MA.mailing_address_unit_floor,
+            mailing_address_building: data.MA.mailing_address_building,
+            mailing_address_street: data.MA.mailing_address_street,
+            mailing_address_district: data.MA.mailing_address_district,
+            mailing_address_municipal_city:
+                data.MA.mailing_address_municipal_city,
+            mailing_address_province: data.MA.mailing_address_province,
+            mailing_address_zip_code: data.MA.mailing_address_zip_code,
         };
 
         delete Payload["updated_at"];
@@ -529,6 +666,19 @@ const Contact = ({
         }
         if (Payload.type === "individual" || Payload.type === "Individual") {
             Payload = { ...Payload, company_contact_person: "" };
+        }
+
+        // Draft button clicked, change status to draft
+        if (whatClickedButon === "draft") {
+            Payload = {
+                ...Payload,
+                status: "draft",
+            };
+        } else {
+            Payload = {
+                ...Payload,
+                status: isModifyCustomer.status,
+            };
         }
 
         const formData = new FormData();
@@ -557,22 +707,68 @@ const Contact = ({
         arrayData.map(({ key, keyData }: any) => {
             formData.append(key, keyData);
         });
+        mutate(formData);
+    };
+    const sameEmail = () => {
+        setSameEmail(!isSameEmail);
 
-        if (whatClickedButon === "save" || whatClickedButon === "new") {
-            mutate(formData);
-        }
-        if (whatClickedButon === "draft") {
-            // DraftMutate(formData);
-            alert("Unavailable for now!");
+        if (!isSameEmail) {
+            setValue("preferred_email", isModifyCustomer.registered_email, {
+                shouldValidate: true,
+            });
+        } else {
+            setValue("preferred_email", isModifyCustomer.mailing_email, {
+                shouldValidate: true,
+            });
         }
     };
-
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-    } = useForm<customer>();
-
+    const sameAddress = () => {
+        setSameAddress(!isSameAddress);
+        console.log(isModifyCustomer.mailing_address_building);
+        if (!isSameAddress) {
+            setValue(
+                "MA",
+                {
+                    mailing_address_unit_floor:
+                        isModifyCustomer.registered_address_unit_floor,
+                    mailing_address_building:
+                        isModifyCustomer.registered_address_building,
+                    mailing_address_street:
+                        isModifyCustomer.registered_address_street,
+                    mailing_address_district:
+                        isModifyCustomer.registered_address_district,
+                    mailing_address_municipal_city:
+                        isModifyCustomer.registered_address_municipal_city,
+                    mailing_address_province:
+                        isModifyCustomer.registered_address_province,
+                    mailing_address_zip_code:
+                        isModifyCustomer.registered_address_zip_code,
+                },
+                { shouldValidate: true }
+            );
+        } else {
+            setValue(
+                "MA",
+                {
+                    mailing_address_unit_floor:
+                        isModifyCustomer.mailing_address_unit_floor,
+                    mailing_address_building:
+                        isModifyCustomer.mailing_address_building,
+                    mailing_address_street:
+                        isModifyCustomer.mailing_address_street,
+                    mailing_address_district:
+                        isModifyCustomer.mailing_address_district,
+                    mailing_address_municipal_city:
+                        isModifyCustomer.mailing_address_municipal_city,
+                    mailing_address_province:
+                        isModifyCustomer.mailing_address_province,
+                    mailing_address_zip_code:
+                        isModifyCustomer.mailing_address_zip_code,
+                },
+                { shouldValidate: true }
+            );
+        }
+    };
     return (
         <motion.div
             variants={ModalSideFade}
@@ -608,6 +804,7 @@ const Contact = ({
                             })}
                             value={isModifyCustomer.contact_no}
                             onChange={(e) =>
+                                e.target.value.length <= 11 &&
                                 setModifyCustomer({
                                     ...isModifyCustomer,
                                     contact_no: e.target.value,
@@ -648,18 +845,6 @@ const Contact = ({
                             {...register("preferred_email", {
                                 required: "Required",
                             })}
-                            // isNewCustomer.registered_email
-                            value={
-                                isSameEmail === true
-                                    ? isModifyCustomer.registered_email
-                                    : isModifyCustomer.preferred_email
-                            }
-                            onChange={(e) =>
-                                setModifyCustomer({
-                                    ...isModifyCustomer,
-                                    preferred_email: e.target.value,
-                                })
-                            }
                         />
                         {errors.preferred_email && (
                             <p className="text-[10px]">
@@ -672,7 +857,7 @@ const Contact = ({
                                 id="sameEmail"
                                 className={style.same}
                                 checked={isSameEmail}
-                                onChange={() => setSameEmail(!isSameEmail)}
+                                onChange={sameEmail}
                             />
                             <label htmlFor="sameEmail">
                                 SAME AS REGISTER EMAIL
@@ -880,10 +1065,10 @@ const Contact = ({
                         id="sameAddress"
                         className={style.same}
                         checked={isSameAddress}
-                        onChange={() => setSameAddress(!isSameAddress)}
+                        onChange={sameAddress}
                     />
                     <label htmlFor="sameAddress">
-                        *SAME AS REGISTER ADDRESS
+                        SAME AS REGISTER ADDRESS
                     </label>
                 </aside>
 
@@ -892,24 +1077,11 @@ const Contact = ({
                         <label>*UNIT/FLOOR/HOUSE NO.</label>
                         <input
                             type="text"
-                            {...register("mailing_address_unit_floor", {
-                                required: "Required",
-                            })}
-                            value={
-                                isSameAddress
-                                    ? isModifyCustomer.registered_address_unit_floor
-                                    : isModifyCustomer.mailing_address_unit_floor
-                            }
-                            onChange={(e) =>
-                                setModifyCustomer({
-                                    ...isModifyCustomer,
-                                    mailing_address_unit_floor: e.target.value,
-                                })
-                            }
+                            {...register("MA.mailing_address_unit_floor")}
                         />
-                        {errors.mailing_address_unit_floor && (
+                        {errors.MA?.mailing_address_unit_floor && (
                             <p className="text-[10px]">
-                                {errors.mailing_address_unit_floor.message}
+                                {errors.MA?.mailing_address_unit_floor.message}
                             </p>
                         )}
                     </li>
@@ -917,24 +1089,11 @@ const Contact = ({
                         <label>*BUILDING</label>
                         <input
                             type="text"
-                            {...register("mailing_address_building", {
-                                required: "Required",
-                            })}
-                            value={
-                                isSameAddress
-                                    ? isModifyCustomer.registered_address_building
-                                    : isModifyCustomer.mailing_address_building
-                            }
-                            onChange={(e) =>
-                                setModifyCustomer({
-                                    ...isModifyCustomer,
-                                    mailing_address_building: e.target.value,
-                                })
-                            }
+                            {...register("MA.mailing_address_building")}
                         />
-                        {errors.mailing_address_building && (
+                        {errors.MA?.mailing_address_building && (
                             <p className="text-[10px]">
-                                {errors.mailing_address_building.message}
+                                {errors.MA?.mailing_address_building.message}
                             </p>
                         )}
                     </li>
@@ -942,24 +1101,11 @@ const Contact = ({
                         <label>*STREET</label>
                         <input
                             type="text"
-                            {...register("mailing_address_street", {
-                                required: "Required",
-                            })}
-                            value={
-                                isSameAddress
-                                    ? isModifyCustomer.registered_address_street
-                                    : isModifyCustomer.mailing_address_street
-                            }
-                            onChange={(e) =>
-                                setModifyCustomer({
-                                    ...isModifyCustomer,
-                                    mailing_address_street: e.target.value,
-                                })
-                            }
+                            {...register("MA.mailing_address_street")}
                         />
-                        {errors.mailing_address_street && (
+                        {errors.MA?.mailing_address_street && (
                             <p className="text-[10px]">
-                                {errors.mailing_address_street.message}
+                                {errors.MA?.mailing_address_street.message}
                             </p>
                         )}
                     </li>
@@ -967,24 +1113,11 @@ const Contact = ({
                         <label>*DISTRICT</label>
                         <input
                             type="text"
-                            {...register("mailing_address_district", {
-                                required: "Required",
-                            })}
-                            value={
-                                isSameAddress
-                                    ? isModifyCustomer.registered_address_district
-                                    : isModifyCustomer.mailing_address_district
-                            }
-                            onChange={(e) =>
-                                setModifyCustomer({
-                                    ...isModifyCustomer,
-                                    mailing_address_district: e.target.value,
-                                })
-                            }
+                            {...register("MA.mailing_address_district")}
                         />
-                        {errors.mailing_address_district && (
+                        {errors.MA?.mailing_address_district && (
                             <p className="text-[10px]">
-                                {errors.mailing_address_district.message}
+                                {errors.MA?.mailing_address_district.message}
                             </p>
                         )}
                     </li>
@@ -992,25 +1125,14 @@ const Contact = ({
                         <label>*MUNICIPALITY CITY</label>
                         <input
                             type="text"
-                            {...register("mailing_address_municipal_city", {
-                                required: "Required",
-                            })}
-                            value={
-                                isSameAddress
-                                    ? isModifyCustomer.registered_address_municipal_city
-                                    : isModifyCustomer.mailing_address_municipal_city
-                            }
-                            onChange={(e) =>
-                                setModifyCustomer({
-                                    ...isModifyCustomer,
-                                    mailing_address_municipal_city:
-                                        e.target.value,
-                                })
-                            }
+                            {...register("MA.mailing_address_municipal_city")}
                         />
-                        {errors.mailing_address_municipal_city && (
+                        {errors.MA?.mailing_address_municipal_city && (
                             <p className="text-[10px]">
-                                {errors.mailing_address_municipal_city.message}
+                                {
+                                    errors.MA?.mailing_address_municipal_city
+                                        .message
+                                }
                             </p>
                         )}
                     </li>
@@ -1018,24 +1140,11 @@ const Contact = ({
                         <label>*PROVINCE</label>
                         <input
                             type="text"
-                            {...register("mailing_address_province", {
-                                required: "Required",
-                            })}
-                            value={
-                                isSameAddress
-                                    ? isModifyCustomer.registered_address_province
-                                    : isModifyCustomer.mailing_address_province
-                            }
-                            onChange={(e) =>
-                                setModifyCustomer({
-                                    ...isModifyCustomer,
-                                    mailing_address_province: e.target.value,
-                                })
-                            }
+                            {...register("MA.mailing_address_province")}
                         />
-                        {errors.mailing_address_province && (
+                        {errors.MA?.mailing_address_province && (
                             <p className="text-[10px]">
-                                {errors.mailing_address_province.message}
+                                {errors.MA?.mailing_address_province.message}
                             </p>
                         )}
                     </li>
@@ -1043,8 +1152,7 @@ const Contact = ({
                         <label>*ZIP CODE</label>
                         <input
                             type="text"
-                            {...register("mailing_address_zip_code", {
-                                required: "Required",
+                            {...register("MA.mailing_address_zip_code", {
                                 maxLength: {
                                     value: 4,
                                     message: "Must be 4 number",
@@ -1054,34 +1162,23 @@ const Contact = ({
                                     message: "Must be 4 number",
                                 },
                             })}
-                            value={
-                                isSameAddress
-                                    ? isModifyCustomer.registered_address_zip_code
-                                    : isModifyCustomer.mailing_address_zip_code
-                            }
-                            onChange={(e) =>
-                                setModifyCustomer({
-                                    ...isModifyCustomer,
-                                    mailing_address_zip_code: e.target.value,
-                                })
-                            }
                         />
-                        {errors.mailing_address_zip_code && (
+                        {errors.MA?.mailing_address_zip_code && (
                             <p className="text-[10px]">
-                                {errors.mailing_address_zip_code.message}
+                                {errors.MA?.mailing_address_zip_code.message}
                             </p>
                         )}
                     </li>
                 </ul>
 
                 <div className={style.SaveButton}>
-                    <button
-                        className=" text-ThemeRed font-semibold text-[14px] mr-5"
+                    <aside
+                        className=" text-ThemeRed font-semibold text-[14px] mr-5 cursor-pointer"
                         onClick={Back}
                     >
                         BACK
-                    </button>
-                    {(isLoading || DraftLoading) && (
+                    </aside>
+                    {isLoading && (
                         <div className={style.Save}>
                             <div>
                                 <ScaleLoader
@@ -1092,26 +1189,23 @@ const Contact = ({
                             </div>
                         </div>
                     )}
-                    {!isLoading && !DraftLoading && (
+                    {!isLoading && (
                         <div className={style.Save}>
-                            <div onClick={() => setSave(!isSave)}>
-                                SAVE{" "}
-                                <RiArrowDownSFill className=" ml-1 text-[24px]" />
+                            <div>
+                                <button
+                                    type="submit"
+                                    name="save"
+                                    onClick={() => setWhatClickedButton("save")}
+                                >
+                                    SAVE
+                                </button>
+                                <RiArrowDownSFill
+                                    className=" ml-1 text-[24px]"
+                                    onClick={() => setSave(!isSave)}
+                                />
                             </div>
                             {isSave && (
                                 <ul>
-                                    <li>
-                                        <button
-                                            type="submit"
-                                            name="save"
-                                            onClick={() =>
-                                                setWhatClickedButton("save")
-                                            }
-                                        >
-                                            SAVE
-                                        </button>
-                                    </li>
-
                                     <li>
                                         <button
                                             type="submit"

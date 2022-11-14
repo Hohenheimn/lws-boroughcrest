@@ -3,7 +3,7 @@ import api from "../../util/api";
 import { getCookie } from "cookies-next";
 import axios from "axios";
 
-export const PostCustomerSave = (Success: any) => {
+export const PostCustomerSave = (Success: any, onError: any) => {
     const queryClient = useQueryClient();
     return useMutation(
         (data: FormData) => {
@@ -17,6 +17,9 @@ export const PostCustomerSave = (Success: any) => {
             onSuccess: () => {
                 queryClient.invalidateQueries("get-customer-list");
                 Success();
+            },
+            onError: (e) => {
+                onError(e);
             },
         }
     );
