@@ -120,12 +120,6 @@ h6 {
         tr {
             @apply border-b border-gray-300 cursor-pointer relative;
             td {
-                .edit {
-                    @apply absolute z-0 w-full h-[60%] bg-[#7f7f7f5a] top-[20%] left-0 flex justify-center items-center;
-                    aside {
-                        @apply text-white flex items-center;
-                    }
-                }
                 .item {
                     @apply flex items-center px-4 py-4 480px:py-2 480px:px-2;
                     aside {
@@ -148,6 +142,12 @@ h6 {
             td.xLarge {
                 @apply min-w-[500px] 480px:min-w-[350px];
             }
+            td.Draft {
+                @apply bg-gray-200;
+                .item {
+                    @apply py-1;
+                }
+            }
         }
     }
 }
@@ -159,14 +159,17 @@ h6 {
 .statusCircle {
     @apply h-5 w-5 rounded-full border-4 border-gray-500 cursor-pointer hover:scale-[1.3] transition duration-75;
 
-    &.Active {
+    &.Active,
+    &.active {
         @apply border-[#19d142];
         box-shadow: 0 0 15px 0 #19d142;
     }
-    &.Inactive {
+    &.Inactive,
+    &.inactive {
         @apply border-gray-500;
     }
-    &.Draft {
+    &.Draft,
+    &.draft {
         @apply border-[#f39304];
     }
 }
@@ -217,4 +220,17 @@ input[type="number"] {
 }
 .collapse_container {
     padding-left: 65px !important;
+}
+// Sidebar and Layout spacing
+.w-no-wide {
+    @apply w-[258px] 1550px:w-[220px];
+}
+.w-wide {
+    @apply w-[350px] 1550px:w-[220px];
+}
+.pl-wide {
+    @apply pl-[350px] 1550px:pl-[220px] 1024px:pl-0;
+}
+.pl-no-wide {
+    @apply pl-[258px] 1550px:pl-[220px] 1024px:pl-0;
 }

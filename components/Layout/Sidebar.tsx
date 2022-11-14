@@ -54,22 +54,30 @@ export default function Sidebar({
                 initial="initial"
                 animate="animate"
                 exit="exit"
-                className={` transition-all duration-200 ease-linear fixed h-screen overflow-y-auto overflow-x-hidden left-0 top-0 bg-[#fcfcff] w-[${
-                    isWide ? "350px" : "258px"
-                }] 1550px:w-[220px] ${
+                className={` transition-all duration-200 ease-linear fixed h-screen overflow-y-auto overflow-x-hidden left-0 top-0 bg-[#fcfcff] ${
+                    isWide ? "w-wide" : "w-no-wide"
+                } ${
                     collapseSide && !isWide && "collapse"
                 } border-r-2 border-white min-h-full flex flex-col z-50`}
             >
-                {!collapseSide && (
-                    <div className="absolute top-0 left-0 w-full flex justify-center mt-5 h-32 items-center 1550px:mt-0">
-                        <Image
-                            src="/Images/deus.png"
-                            width={250}
-                            height={100}
-                            alt=""
-                        />
-                    </div>
-                )}
+                <AnimatePresence>
+                    {!collapseSide && (
+                        <motion.div
+                            variants={FadeSide}
+                            initial="initial"
+                            animate="animate"
+                            exit="exit"
+                            className="absolute top-0 left-0 w-full flex justify-center mt-5 h-28 items-center 1550px:mt-0"
+                        >
+                            <Image
+                                src="/Images/deus.png"
+                                width={250}
+                                height={100}
+                                alt=""
+                            />
+                        </motion.div>
+                    )}
+                </AnimatePresence>
 
                 <div className="w-full h-full flex mt-28">
                     <ul

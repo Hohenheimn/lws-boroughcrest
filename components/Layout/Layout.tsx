@@ -4,7 +4,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import Sidebar from "./Sidebar";
 import { BiMenuAltRight } from "react-icons/bi";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { BsSearch } from "react-icons/bs";
 import { IoNotificationsSharp } from "react-icons/io5";
 import { IoIosArrowDown } from "react-icons/io";
@@ -13,6 +13,7 @@ import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 import SignOut from "./SignOut";
 import PrompMessage from "../PrompMessage";
+import { FadeSide } from "../Animation/SimpleAnimation";
 
 type Layout = {
     children: React.ReactNode;
@@ -44,7 +45,7 @@ export default function Layout({ children }: Layout) {
         };
         window.addEventListener("resize", updateSize);
         setWindow(window.innerWidth);
-    }, [window.innerWidth]);
+    }, [isWindow]);
 
     // run this code when the URL change
     // it opens the sidebar search when following asPath
@@ -66,6 +67,8 @@ export default function Layout({ children }: Layout) {
             setWide(false);
         }
     }, [router.asPath]);
+
+    console.log(isWide);
 
     return (
         <>
@@ -101,13 +104,11 @@ export default function Layout({ children }: Layout) {
                 </AnimatePresence>
 
                 <section
-                    className={` transition-all duration-150 flex flex-col w-full bg-MainBG bg-no-repeat bg-cover h-screen overflow-auto pl-[${
-                        isWide ? "350px" : "258px"
-                    }] ${
-                        collapseSide && !isWide && "collapse_container"
-                    } 1550px:pl-[220px] 1024px:pl-0`}
+                    className={` transition-all duration-150 flex flex-col w-full bg-MainBG bg-no-repeat bg-cover h-screen overflow-auto ${
+                        isWide === true ? "pl-wide" : "pl-no-wide"
+                    } ${collapseSide && !isWide && "collapse_container"}`}
                 >
-                    <div className="flex-1 flex flex-col w-full 1550px:p-5 1024px:py-10 480px:pb-0 max  p-10 relative ">
+                    <div className="flex-1 flex flex-col w-full 1550px:p-5 1550px:px-10 1024px:py-10 480px:pb-0 max  p-10 relative ">
                         {isWindow <= 1024 && (
                             <button
                                 onClick={() => setHide(!isHide)}
@@ -127,17 +128,25 @@ export default function Layout({ children }: Layout) {
                                     : "justify-end"
                             } items-center justify-between mb-5 640px:mb-0 480px:flex-wrap 480px:justify-end`}
                         >
-                            {collapseSide ? (
-                                <div className="relative h-20 w-48">
-                                    <Image
-                                        src="/Images/deus.png"
-                                        layout="fill"
-                                        alt=""
-                                    />
-                                </div>
-                            ) : (
-                                <p className="h-20"></p>
-                            )}
+                            <AnimatePresence>
+                                {collapseSide ? (
+                                    <motion.div
+                                        variants={FadeSide}
+                                        initial="initial"
+                                        animate="animate"
+                                        exit="exit"
+                                        className="relative h-20 w-48"
+                                    >
+                                        <Image
+                                            src="/Images/deus.png"
+                                            layout="fill"
+                                            alt=""
+                                        />
+                                    </motion.div>
+                                ) : (
+                                    <p className="h-20"></p>
+                                )}
+                            </AnimatePresence>
                             {router.pathname === "/" && (
                                 <div
                                     className=" flex items-center px-8 py-4 bg-white flex-1 max-w-[600px] rounded-lg shadow-lg 640px:px-4 640px:py-2 480px:order-2

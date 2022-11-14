@@ -7,8 +7,10 @@ import { useRouter } from "next/router";
 import { GetImage } from "../../../components/ReactQuery/CustomerMethod";
 import { BlobToFile } from "../../../components/BlobToFile";
 import api from "../../../util/api";
+import UpdateDraft from "../../../components/ADMIN/Customer/UpdateDraft";
 
 export default function Customer({ Draft }: any) {
+    const router = useRouter();
     const { setSearchBar, cusToggle } = useContext(AppContext);
     // Draft File
     let DraftImageFile: any = {
@@ -65,6 +67,7 @@ export default function Customer({ Draft }: any) {
             <CustomerTable />
 
             {cusToggle && <NewCustomer />}
+            {router.query.draft !== undefined && <UpdateDraft />}
         </>
     );
 }
