@@ -622,7 +622,20 @@ const Contact = ({
         }
     };
 
-    const { isLoading, mutate } = PutCustomer(onSuccess, router.query.id);
+    const onError = (e: any) => {
+        setPrompt((prev: any) => ({
+            ...prev,
+            message: "Something is wrong!",
+            type: "error",
+            toggle: true,
+        }));
+    };
+
+    const { isLoading, mutate } = PutCustomer(
+        onSuccess,
+        onError,
+        router.query.id
+    );
 
     const NextFormValidation = async (data: any) => {
         let Payload = {
@@ -654,7 +667,7 @@ const Contact = ({
         delete Payload["assigned_customer_id"];
         delete Payload["deleted_at"];
         delete Payload["id"];
-        delete Payload["properties"];
+        delete Payload["audits"];
 
         if (Payload.type === "Company" || Payload.type === "company") {
             Payload = {

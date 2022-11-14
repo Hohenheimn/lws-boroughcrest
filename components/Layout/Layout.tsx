@@ -68,8 +68,6 @@ export default function Layout({ children }: Layout) {
         }
     }, [router.asPath]);
 
-    console.log(isWide);
-
     return (
         <>
             <Head>

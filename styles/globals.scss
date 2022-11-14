@@ -142,12 +142,12 @@ h6 {
             td.xLarge {
                 @apply min-w-[500px] 480px:min-w-[350px];
             }
-            td.Draft {
-                @apply bg-gray-200;
-                .item {
-                    @apply py-1;
-                }
-            }
+            // td.Draft {
+            //     @apply bg-gray-200;
+            //     .item {
+            //         @apply py-1;
+            //     }
+            // }
         }
     }
 }

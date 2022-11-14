@@ -97,6 +97,11 @@ export default function AppProvider({ children }: AppProvider) {
         _method: "PUT",
     });
 
+    const [isDraft, setDraft] = useState({
+        ...NewCustomerDefault,
+        _method: "PUT",
+    });
+
     const [CorpTableRows, setCorpTableRows] = useState<number>(10);
     const [corpColumn, setCorpColumn] = useState([
         "ID",
@@ -153,8 +158,6 @@ export default function AppProvider({ children }: AppProvider) {
     };
 
     const ImgUrl = "https://boroughcrest-api.lws.codes/get-img?image=";
-
-    const [isDraft, setDraft] = useState(false);
 
     const [isSearchBar, setSearchBar] = useState("");
     return (

@@ -1,20 +1,11 @@
-type Props = {
-    setImgError: any;
-    imgError: any;
-    setProfileUrl: any;
-    setSignature: any;
-    setValidIDUrl: any;
-    e: any;
-};
-
-const ImageVerication = ({
-    e,
-    setImgError,
-    imgError,
-    setProfileUrl,
-    setSignature,
-    setValidIDUrl,
-}: Props) => {
+const ImageVerication = (
+    e: any,
+    setImgError: any,
+    imgError: any,
+    setProfileUrl: any,
+    setSignature: any,
+    setValidIDUrl: any
+) => {
     if (e.target.files[0]?.size > 2000000) {
         if (e.target.getAttribute("data-type") === "profile") {
             setImgError({
