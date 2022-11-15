@@ -111,6 +111,12 @@ export default function CorporateDetails({ CorporateData }: Props) {
                             <h4 className="main_text">{CorporateData.tin}</h4>
                         </li>
                         <li>
+                            <p className="label_text">BRANCH CODE</p>
+                            <h4 className="main_text">
+                                {CorporateData.branch_code}
+                            </h4>
+                        </li>
+                        <li>
                             <p className="label_text">RDO NUMBER:</p>
                             <h4 className="main_text">
                                 {CorporateData.rdo_no

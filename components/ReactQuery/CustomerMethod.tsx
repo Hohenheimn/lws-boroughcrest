@@ -71,6 +71,7 @@ export const GetUnitCode = () => {
         });
     });
 };
+
 export const PutCustomer = (onSuccess: any, onError: any, id: any) => {
     return useMutation(
         (data: FormData) => {
@@ -101,7 +102,7 @@ export const SaveDraftUpdate = (onSuccess: any, id: any) => {
     );
 };
 
-export const CustomerImport = (onSuccess: any) => {
+export const CustomerImport = (onSuccess: any, ImportError: any) => {
     return useMutation(
         (data: FormData) => {
             return api.post(`/admin/customer/import`, data, {
@@ -112,6 +113,7 @@ export const CustomerImport = (onSuccess: any) => {
         },
         {
             onSuccess: onSuccess,
+            onError: ImportError,
         }
     );
 };

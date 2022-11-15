@@ -1,21 +1,21 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import AppContext from "../../../components/Context/AppContext";
 import SearchFilter from "../../../components/SearchFilterNew/SearchFilter";
 import PropertyTable from "../../../components/ADMIN/Property/PropertyTable";
-import NewProperty from "../../../components/ADMIN/Property/NewProperty";
-import { useRouter } from "next/router";
+import Form from "../../../components/ADMIN/Property/Form";
 
 export default function Property() {
-    const router = useRouter();
+    const { newPropToggle } = useContext(AppContext);
     const [isSearchTable, setSearchTable] = useState("");
+
     return (
         <div>
             <SearchFilter
                 page="property unit"
                 setSearchTable={setSearchTable}
             />
-            <PropertyTable />
-            {router.query.new !== undefined && <NewProperty />}
+            <PropertyTable isSearchTable={isSearchTable} />
+            {newPropToggle && <Form />}
         </div>
     );
 }

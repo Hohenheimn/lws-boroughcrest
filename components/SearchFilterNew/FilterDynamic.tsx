@@ -1,15 +1,25 @@
-import React, { useEffect, useRef, useContext } from "react";
-import AppContext from "../Context/AppContext";
+import React, { useEffect, useRef } from "react";
 import style from "../../styles/SearchFilter.module.scss";
 import { flip } from "../Animation/SimpleAnimation";
 import { motion } from "framer-motion";
 
-type setFilter = {
+type FilterProps = {
     setFilter: Function;
-    isFilter: boolean;
+    TableRows: any;
+    setTableRows: Function;
+    TableColumn: any;
+    setTableColumn: Function;
+    ColumnList: any;
 };
 
-export default function FilterUser({ setFilter, isFilter }: setFilter) {
+export default function FilterDynamic({
+    setFilter,
+    TableRows,
+    setTableRows,
+    TableColumn,
+    setTableColumn,
+    ColumnList,
+}: FilterProps) {
     const modal = useRef<any>();
     useEffect(() => {
         const clickOutSide = (e: any) => {
@@ -22,51 +32,30 @@ export default function FilterUser({ setFilter, isFilter }: setFilter) {
             document.removeEventListener("mousedown", clickOutSide);
         };
     });
-    const ColumnList = [
-        "Department",
-        "Employee ID",
-        "Email",
-        "Mobile",
-        "Role",
-        "Status",
-    ];
-    const {
-        userTableRows,
-        usersetTableRows,
-        userTableColumn,
-        setUserTableColumn,
-    } = useContext(AppContext);
 
     const OnChangeHandler = (e: any) => {
         const name = e.target.id;
 
-        if (userTableColumn.length === 6) {
-            setUserTableColumn([`${name}`]);
+        if (TableColumn?.length === ColumnList?.length) {
+            setTableColumn([`${name}`]);
             return;
         }
-        if (userTableColumn.includes(name)) {
-            setUserTableColumn((col: any) =>
+        if (TableColumn.includes(name)) {
+            setTableColumn((col: any) =>
                 col.filter((item: any) => {
                     return item !== name;
                 })
             );
             return;
         }
-        if (userTableColumn.length < 6) {
-            setUserTableColumn([...userTableColumn, `${name}`]);
+        if (TableColumn?.length < ColumnList?.length) {
+            setTableColumn([...TableColumn, `${name}`]);
             return;
         }
     };
 
     const AllHandler = () => {
-        setUserTableColumn([
-            "Department",
-            "Employee ID",
-            "Email",
-            "Mobile",
-            "Role",
-            "Status",
-        ]);
+        setTableColumn(ColumnList);
     };
     return (
         <motion.ul
@@ -78,20 +67,37 @@ export default function FilterUser({ setFilter, isFilter }: setFilter) {
             className={style.column}
         >
             <li className="font-medium">Columns</li>
-            <FilterList name="All" onChangeHandler={AllHandler} />
+            {/* All */}
+            <li className={style.column_item}>
+                <input
+                    type="checkbox"
+                    name=""
+                    id="All"
+                    checked={
+                        TableColumn?.length === ColumnList?.length
+                            ? true
+                            : false
+                    }
+                    onChange={AllHandler}
+                />
+                <label htmlFor="All">All</label>
+            </li>
+            {/* Other Columns */}
             {ColumnList.map((item: string, index: number) => (
                 <FilterList
                     name={item}
                     key={index}
                     onChangeHandler={OnChangeHandler}
+                    ColumnList={ColumnList}
+                    TableColumn={TableColumn}
                 />
             ))}
             <li>
                 <p className=" font-medium text-[12px]">Rows</p>
                 <select
                     className="border border-ThemeRed px-[5px] py-[1px]"
-                    onChange={(e) => usersetTableRows(e.target.value)}
-                    value={userTableRows}
+                    onChange={(e) => setTableRows(e.target.value)}
+                    value={TableRows}
                 >
                     <option value="10">10</option>
                     <option value="20">20</option>
@@ -104,8 +110,12 @@ export default function FilterUser({ setFilter, isFilter }: setFilter) {
     );
 }
 
-const FilterList = ({ name, onChangeHandler }: any) => {
-    const { userTableColumn } = useContext(AppContext);
+const FilterList = ({
+    name,
+    onChangeHandler,
+    ColumnList,
+    TableColumn,
+}: any) => {
     return (
         <li className={style.column_item}>
             <input
@@ -113,8 +123,8 @@ const FilterList = ({ name, onChangeHandler }: any) => {
                 name=""
                 id={name}
                 checked={
-                    userTableColumn.includes(`${name}`) ||
-                    userTableColumn.length === 6
+                    TableColumn?.includes(`${name}`) ||
+                    TableColumn?.length === ColumnList?.length
                         ? true
                         : false
                 }

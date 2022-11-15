@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { AiFillCamera } from "react-icons/ai";
 import Link from "next/link";
 import Image from "next/image";
 import style from "../../../styles/Popup_Modal.module.scss";
 import { RiArrowDownSFill } from "react-icons/ri";
 import { useForm } from "react-hook-form";
+import AppContext from "../../Context/AppContext";
 
 export default function NewUser() {
+    const { setNewUserToggle } = useContext(AppContext);
     const [userForm, setUserForm] = useState([true, false]);
     const [isLogoStatus, setLogoStatus] = useState("Upload Logo");
     const [isStatus, setStatus] = useState(true);
@@ -36,6 +38,10 @@ export default function NewUser() {
         } else {
             setLogoStatus("Nothing Happens");
         }
+    };
+
+    const cancel = () => {
+        setNewUserToggle(false);
     };
 
     const {
@@ -143,9 +149,12 @@ export default function NewUser() {
                         </li>
                     </ul>
                     <div className={style.button_container}>
-                        <Link href="">
-                            <a className="button_cancel">CANCEL</a>
-                        </Link>
+                        <aside
+                            className="button_cancel cursor-pointer"
+                            onClick={cancel}
+                        >
+                            CANCEL
+                        </aside>
                         <button className="buttonRed" type="submit">
                             NEXT
                         </button>
