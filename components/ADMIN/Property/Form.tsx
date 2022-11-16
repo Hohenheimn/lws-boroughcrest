@@ -6,9 +6,10 @@ import { RiArrowDownSFill } from "react-icons/ri";
 import AppContext from "../../Context/AppContext";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
-import { BiEdit } from "react-icons/bi";
 import { useRouter } from "next/router";
-import { MdDeleteOutline } from "react-icons/md";
+import Floor from "./Floor";
+import Tower from "./Tower";
+import Project from "./Project";
 
 export default function Form() {
     const router = useRouter();
@@ -79,7 +80,7 @@ export default function Form() {
                         <li>
                             <label>PROJECT</label>
                             <Tippy
-                                content={<CRUD_table />}
+                                content={<Project />}
                                 trigger="click"
                                 theme="ThemeWhite"
                                 interactive={true}
@@ -90,7 +91,7 @@ export default function Form() {
                         <li>
                             <label>TOWER</label>
                             <Tippy
-                                content={<CRUD_table />}
+                                content={<Tower />}
                                 trigger="click"
                                 theme="ThemeWhite"
                                 interactive={true}
@@ -101,7 +102,7 @@ export default function Form() {
                         <li>
                             <label>FLOOR</label>
                             <Tippy
-                                content={<CRUD_table />}
+                                content={<Floor />}
                                 trigger="click"
                                 theme="ThemeWhite"
                                 interactive={true}
@@ -156,58 +157,3 @@ export default function Form() {
         </div>
     );
 }
-const CRUD_table = () => {
-    return (
-        <div>
-            <table className="crud-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>NAME</th>
-                        <th>ACTION</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <List />
-                </tbody>
-            </table>
-            <h1 className="cursor-pointer text-ThemeRed text-[16px] py-2">
-                ADD
-            </h1>
-        </div>
-    );
-};
-
-const List = () => {
-    const [isModify, setModify] = useState(false);
-    const Selected = () => {
-        alert("Selected");
-    };
-    return (
-        <tr className="cursor-pointer">
-            <td onClick={() => !isModify && Selected()}>
-                <input
-                    type="text"
-                    placeholder="adad"
-                    className={`${!isModify && "disabled"}`}
-                />
-            </td>
-            <td onClick={() => !isModify && Selected()}>
-                <input
-                    type="text"
-                    placeholder="adad"
-                    className={`${!isModify && "disabled"}`}
-                />
-            </td>
-            <td className="action">
-                <div>
-                    <BiEdit
-                        className="icon"
-                        onClick={() => setModify(!isModify)}
-                    />
-                    <MdDeleteOutline className="icon" />
-                </div>
-            </td>
-        </tr>
-    );
-};
