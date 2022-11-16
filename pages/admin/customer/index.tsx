@@ -12,12 +12,6 @@ import UpdateDraft from "../../../components/ADMIN/Customer/UpdateDraft";
 export default function Customer({ Draft }: any) {
     const router = useRouter();
     const { setSearchBar, cusToggle } = useContext(AppContext);
-    // Draft File
-    let DraftImageFile: any = {
-        profile_file: "",
-        valid_file: "",
-        signature: "",
-    };
     // Process Draft Data
     if (Draft) {
         const DraftVal = Draft?.values;
@@ -52,12 +46,12 @@ export default function Customer({ Draft }: any) {
                 "image/png"
             );
 
-            DraftImageFile = {
-                ...DraftImageFile,
-                profile_file: file,
-                valid_file: file1,
-                signature: file2,
-            };
+            // DraftImageFile = {
+            //     ...DraftImageFile,
+            //     profile_file: file,
+            //     valid_file: file1,
+            //     signature: file2,
+            // };
         }
     }
 

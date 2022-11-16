@@ -50,19 +50,23 @@
                 }
             }
             li {
-                @apply flex flex-col  w-4/12 820px:w-2/4 480px:w-full mb-3 pr-2;
+                @apply flex flex-col relative w-4/12 820px:w-2/4 480px:w-full mb-3 pr-2;
                 .image_label {
                     @apply text-[12px] font-semibold;
                     p {
-                        @apply ml-4 border  break-all max-w-[140px] 480px:max-w-none 480px:m-0;
+                        @apply ml-4 border max-w-[140px] 480px:max-w-none 480px:m-0;
                     }
                 }
                 label {
                     @apply text-[12px] font-semibold uppercase mb-1;
                 }
+                .id-disabled {
+                    @apply rounded-md text-black px-2 py-[2px] outline-none w-[100%] 480px:w-full bg-[#cdb8be];
+                }
                 input {
                     @apply rounded-md text-black px-2 py-[2px] outline-none w-[100%] 480px:w-full;
                 }
+
                 select {
                     @apply w-full rounded-md text-black px-2 py-[2px] outline-none 480px:w-full;
                     option {

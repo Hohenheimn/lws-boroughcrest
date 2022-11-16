@@ -37,8 +37,11 @@ export default function Login() {
             router.push("/dashboard");
             router.reload();
         } catch (error: any) {
-            console.log(error);
-            setInvalid("Invalid Username or Password");
+            if (error.response.status === 401) {
+                setInvalid("Invalid Username or Password");
+            } else {
+                setInvalid("Connection timeout, Please check your internet");
+            }
             setLoading(false);
         }
     };

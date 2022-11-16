@@ -17,25 +17,6 @@ import { getCookie } from "cookies-next";
 export default function NewCorporate() {
     const [isNewActive, setNewActive] = useState([true, false]);
     const [isProfileUrl, setProfileUrl] = useState("/Images/sampleProfile.png");
-    const { isLoading, isError, data } = useQuery("get-id", () => {
-        return api.get("project/corporate", {
-            headers: {
-                Authorization: "Bearer " + getCookie("user"),
-            },
-        });
-    });
-    if (isLoading || isError) {
-        return <></>;
-    }
-    let Current_id: any;
-    if (data?.data.length === 0) {
-        Current_id = 0;
-    } else {
-        for (let index = 0; index < data?.data.length; index++) {
-            const id = data?.data[index];
-            Current_id = id.id;
-        }
-    }
 
     return (
         <div className={style.container}>
@@ -45,7 +26,6 @@ export default function NewCorporate() {
                 <Primary
                     key={1}
                     setNewActive={setNewActive}
-                    Current_id={Current_id}
                     isNewActive={isNewActive}
                     setProfileUrl={setProfileUrl}
                     isProfileUrl={isProfileUrl}
@@ -64,23 +44,25 @@ export default function NewCorporate() {
 
 type Props = {
     setNewActive: Function;
-    Current_id?: any;
     isNewActive: any;
     isProfileUrl: any;
     setProfileUrl: Function;
 };
 const Primary = ({
     setNewActive,
-    Current_id,
     isNewActive,
     isProfileUrl,
     setProfileUrl,
 }: Props) => {
     const [isLogoStatus, setLogoStatus] = useState("Upload Logo");
-    const Next_ID = Current_id + 1;
 
-    const { setCorpToggle, setCreateCorporate, createCorporate, corpReset } =
-        useContext(AppContext);
+    const {
+        setCorpToggle,
+        setCreateCorporate,
+        createCorporate,
+        corpReset,
+        DefaultCorporate,
+    } = useContext(AppContext);
 
     const {
         register,
@@ -91,6 +73,11 @@ const Primary = ({
 
     useEffect(() => {
         reset();
+        setCreateCorporate({
+            ...DefaultCorporate,
+        });
+        setProfileUrl("/Images/sampleProfile.png");
+        setLogoStatus("Upload Logo");
     }, [corpReset]);
 
     const Submit = (data: any) => {
@@ -117,8 +104,8 @@ const Primary = ({
                 ImageReader.addEventListener("load", (event: any) => {
                     setProfileUrl(event.target.result);
                 });
-                const file = e.target.files;
-                setLogoStatus(file[0].name);
+                // const file = e.target.files;
+                // setLogoStatus(file[0].name);
             } else {
                 setLogoStatus("Invalid Image File");
             }
@@ -164,15 +151,7 @@ const Primary = ({
                             <p>{isLogoStatus}</p>
                         </label>
                     </li>
-                    <li>
-                        <label>ID</label>
-                        <input
-                            type="text"
-                            value={Next_ID}
-                            disabled={true}
-                            className=" bg-[#cdb8be]"
-                        />
-                    </li>
+
                     <li>
                         <label>*Corporate Name</label>
                         <input
@@ -192,9 +171,6 @@ const Primary = ({
                             <p className="text-[10px]">{errors.name.message}</p>
                         )}
                     </li>
-                </ul>
-                <p className="text-[16px]">TIN</p>
-                <ul className={style.ThreeRows}>
                     <li>
                         <label>*TIN Number</label>
                         <input
@@ -224,6 +200,9 @@ const Primary = ({
                             <p className="text-[10px]">{errors.tin.message}</p>
                         )}
                     </li>
+                </ul>
+
+                <ul className={style.ThreeRows}>
                     <li>
                         <label>*Branch Code</label>
                         <input
@@ -255,8 +234,6 @@ const Primary = ({
                             </p>
                         )}
                     </li>
-                </ul>
-                <ul className={style.ThreeRows}>
                     <li>
                         <label>RDO NO.</label>
                         <input
@@ -413,7 +390,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
         {
             onSuccess: async () => {
                 clietQuery.invalidateQueries("get-corporate-list");
-                clietQuery.invalidateQueries("get-id");
+                setSave(false);
                 setCorpReset(!corpReset);
                 if (whatClickedButon) {
                     await setCreateCorporate({

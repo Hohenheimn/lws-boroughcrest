@@ -52,6 +52,15 @@ export const GetCustomer = (id: any) => {
         });
     });
 };
+export const GetCustomerDraft = (id: any) => {
+    return useQuery(["get-customer-draft", id], () => {
+        return api.get(`/admin/customer/${id}`, {
+            headers: {
+                Authorization: "Bearer " + getCookie("user"),
+            },
+        });
+    });
+};
 
 export const GetUnitCode = () => {
     return useQuery("get-unitcode", () => {
@@ -62,7 +71,8 @@ export const GetUnitCode = () => {
         });
     });
 };
-export const PutCustomer = (onSuccess: any, id: any) => {
+
+export const PutCustomer = (onSuccess: any, onError: any, id: any) => {
     return useMutation(
         (data: FormData) => {
             return api.post(`/admin/customer/${id}?save=1`, data, {
@@ -92,7 +102,7 @@ export const SaveDraftUpdate = (onSuccess: any, id: any) => {
     );
 };
 
-export const CustomerImport = (onSuccess: any) => {
+export const CustomerImport = (onSuccess: any, ImportError: any) => {
     return useMutation(
         (data: FormData) => {
             return api.post(`/admin/customer/import`, data, {
@@ -103,6 +113,7 @@ export const CustomerImport = (onSuccess: any) => {
         },
         {
             onSuccess: onSuccess,
+            onError: ImportError,
         }
     );
 };
@@ -132,17 +143,7 @@ export const UpdateProperties = (id: any, onSuccess: any) => {
     );
 };
 
-export const GetDraft = () => {
-    return useQuery("get-customer-draft", () => {
-        return api.get("/admin/customer/draft", {
-            headers: {
-                Authorization: "Bearer " + getCookie("user"),
-            },
-        });
-    });
-};
-
-export const GetImage = (pathName: any, wait: any) => {
+export const GetImage = (pathName: any, wait?: any) => {
     return useQuery(
         ["get-image", pathName],
         () => {

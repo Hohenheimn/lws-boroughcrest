@@ -4,18 +4,17 @@ import Image from "next/image";
 import { BsSearch } from "react-icons/bs";
 import { AnimatePresence } from "framer-motion";
 import FilterCorporate from "./FilterCorporate";
-import FilterUser from "./FilterUser";
+import FilterDynamic from "./FilterDynamic";
 import FilterCustomer from "./FilterCustomer";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 import { useRouter } from "next/router";
-import Link from "next/link";
 import style from "../../styles/SearchFilter.module.scss";
-import FilterProperty from "./FilterProperty";
-import { CustomerImport, CustomerExport } from "../ReactQuery/CustomerMethod";
+import { CustomerImport } from "../ReactQuery/CustomerMethod";
 import { MoonLoader } from "react-spinners";
 import axios from "axios";
 import { getCookie } from "cookies-next";
+import { PropertyImport } from "../ReactQuery/PropertyMethod";
 
 type SearchFilter = {
     page: string;
@@ -23,7 +22,25 @@ type SearchFilter = {
 };
 
 export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
-    const { setCorpToggle, setCusToggle, setPrompt } = useContext(AppContext);
+    const {
+        setCorpToggle,
+        setCusToggle,
+        setPrompt,
+        // user
+        userTableRows,
+        usersetTableRows,
+        userTableColumn,
+        setUserTableColumn,
+        userColumnList,
+        // Property
+        propTableRows,
+        setPropTableRows,
+        propTableColumn,
+        setPropTableColumn,
+        propList,
+        setNewUserToggle,
+        setNewPropToggle,
+    } = useContext(AppContext);
 
     const [isFilter, setFilter] = useState(false);
     const router = useRouter();
@@ -33,24 +50,44 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
         if (router.pathname.includes("project/corporate")) {
             setCorpToggle(true);
         }
+        if (router.pathname.includes("project/user")) {
+            setNewUserToggle(true);
+        }
         if (router.pathname.includes("admin/customer")) {
             setCusToggle(true);
         }
+        if (router.pathname.includes("admin/property")) {
+            setNewPropToggle(true);
+        }
     };
 
-    const CustomerImportSuccess = () => {
+    const ImportSuccess = () => {
         setPrompt({
             type: "success",
             message: "Successfully imported!",
             toggle: true,
         });
     };
-
+    const ImportError = () => {
+        setPrompt({
+            type: "error",
+            message: "The given data was invalid",
+            toggle: true,
+        });
+    };
+    // Imports
     const { isLoading: CusLoading, mutate: CusMutate } = CustomerImport(
-        CustomerImportSuccess
+        ImportSuccess,
+        ImportError
     );
-    //file download to excel
-    const handleExport = (endPoint: string) => {
+
+    const { isLoading: PropLoading, mutate: PropMutate } = PropertyImport(
+        ImportSuccess,
+        ImportError
+    );
+
+    //Exports
+    const handleExport = (endPoint: string, name: string) => {
         axios({
             url: `${process.env.NEXT_PUBLIC_API_URL}${endPoint}`,
             headers: {
@@ -62,12 +99,23 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
             const href = URL.createObjectURL(response.data);
             const link = document.createElement("a");
             link.href = href;
-            link.setAttribute("download", "customers.xlsx");
+            link.setAttribute("download", `${name}.xlsx`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
             URL.revokeObjectURL(href);
         });
+    };
+    const exportHandler = () => {
+        if (router.pathname.includes("admin/customer")) {
+            const endPoint = "/admin/customer/export?type={'csv' or 'xlsx'}";
+            handleExport(endPoint, "customer");
+        }
+        if (router.pathname.includes("admin/property")) {
+            const endPoint =
+                "/admin/property/unit/export?type={'csv' or 'xlsx'}";
+            handleExport(endPoint, "property");
+        }
     };
 
     const importHandler = (e: any) => {
@@ -81,6 +129,9 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
                 if (router.pathname.includes("admin/customer")) {
                     CusMutate(formData);
                 }
+                if (router.pathname.includes("admin/property")) {
+                    PropMutate(formData);
+                }
             } else {
                 alert("Invalid file, must be XLSX or CSV only!");
                 setPrompt({
@@ -89,12 +140,6 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
                     toggle: true,
                 });
             }
-        }
-    };
-    const exportHandler = () => {
-        if (router.pathname.includes("admin/customer")) {
-            const endPoint = "/admin/customer/export?type={'csv' or 'xlsx'}";
-            handleExport(endPoint);
         }
     };
 
@@ -129,7 +174,7 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
                             </Tippy>
                             <Tippy theme="ThemeRed" content="Import">
                                 <div className={style.icon}>
-                                    {CusLoading ? (
+                                    {CusLoading || PropLoading ? (
                                         <MoonLoader size={20} color="#8f384d" />
                                     ) : (
                                         <label htmlFor="import">
@@ -187,9 +232,13 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
                                 />
                             )}
                             {isFilter && page === "user" && (
-                                <FilterUser
+                                <FilterDynamic
                                     setFilter={setFilter}
-                                    isFilter={isFilter}
+                                    TableRows={userTableRows}
+                                    setTableRows={usersetTableRows}
+                                    TableColumn={userTableColumn}
+                                    setTableColumn={setUserTableColumn}
+                                    ColumnList={userColumnList}
                                 />
                             )}
                             {isFilter && page === "customer" && (
@@ -199,9 +248,13 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
                                 />
                             )}
                             {isFilter && page === "property unit" && (
-                                <FilterProperty
+                                <FilterDynamic
                                     setFilter={setFilter}
-                                    isFilter={isFilter}
+                                    TableRows={propTableRows}
+                                    setTableRows={setPropTableRows}
+                                    TableColumn={propTableColumn}
+                                    setTableColumn={setPropTableColumn}
+                                    ColumnList={propList}
                                 />
                             )}
                         </AnimatePresence>

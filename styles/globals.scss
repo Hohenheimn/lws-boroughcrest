@@ -61,22 +61,22 @@ h6 {
 }
 // Table
 .table_container {
-    @apply w-full overflow-x-auto mb-10 480px:mb-5 overflow-y-auto h-[600px] relative;
+    @apply w-full overflow-x-auto mb-10 480px:mb-5 overflow-y-auto max-h-[600px] relative;
 
     @media (max-height: 1180px) {
-        @apply h-[750px];
+        @apply max-h-[750px];
     }
     @media (max-height: 1080px) {
-        @apply h-[600px];
+        @apply max-h-[600px];
     }
     @media (max-height: 1000px) {
-        @apply h-[500px];
+        @apply max-h-[500px];
     }
     @media (max-height: 820px) {
-        @apply h-[450px];
+        @apply max-h-[450px];
     }
     @media (max-height: 768px) {
-        @apply h-[400px];
+        @apply max-h-[400px];
     }
     @media (max-width: 480px) {
         height: auto !important;
@@ -142,12 +142,12 @@ h6 {
             td.xLarge {
                 @apply min-w-[500px] 480px:min-w-[350px];
             }
-            td.Draft {
-                @apply bg-gray-200;
-                .item {
-                    @apply py-1;
-                }
-            }
+            // td.Draft {
+            //     @apply bg-gray-200;
+            //     .item {
+            //         @apply py-1;
+            //     }
+            // }
         }
     }
 }
@@ -203,6 +203,9 @@ input[type="number"] {
         color: white;
     }
 }
+.tippy-tooltip.ThemeWhite-theme {
+    background-color: #fff !important;
+}
 .tippy-tooltip.ThemeRed-theme[data-placement^="top"] .tippy-arrow {
     border-top-color: #8f384d;
 }
@@ -214,6 +217,19 @@ input[type="number"] {
 }
 .tippy-tooltip.ThemeRed-theme[data-placement^="right"] .tippy-arrow {
     border-right-color: #8f384d;
+}
+
+.tippy-tooltip.ThemeWhite-theme[data-placement^="top"] .tippy-arrow {
+    border-top-color: #fff;
+}
+.tippy-tooltip.ThemeWhite-theme[data-placement^="bottom"] .tippy-arrow {
+    border-bottom-color: #fff;
+}
+.tippy-tooltip.ThemeWhite-theme[data-placement^="left"] .tippy-arrow {
+    border-left-color: #fff;
+}
+.tippy-tooltip.ThemeWhite-theme[data-placement^="right"] .tippy-arrow {
+    border-right-color: #fff;
 }
 .collapse {
     width: 65px !important;
@@ -233,4 +249,31 @@ input[type="number"] {
 }
 .pl-no-wide {
     @apply pl-[258px] 1550px:pl-[220px] 1024px:pl-0;
+}
+
+.crud-table {
+    @apply w-[300px];
+    th {
+        @apply bg-ThemeRed px-3 py-2 text-[10px] font-NHU-regular font-light border border-gray-300;
+    }
+    td {
+        @apply border border-gray-300 px-2 py-1;
+        input {
+            @apply border border-gray-500 text-[12px] z-10;
+        }
+        input.disabled {
+            @apply border-none pointer-events-none;
+        }
+    }
+    td.action {
+        div {
+            @apply h-full flex justify-center items-center;
+            .icon {
+                @apply text-gray-500 cursor-pointer hover:text-black;
+            }
+            .icon:nth-child(1) {
+                @apply mr-2;
+            }
+        }
+    }
 }

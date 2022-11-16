@@ -1,36 +1,36 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import style from "../../../styles/Popup_Modal.module.scss";
 import { motion } from "framer-motion";
 import { ModalSideFade } from "../../Animation/SimpleAnimation";
-import { useRouter } from "next/router";
 import { RiArrowDownSFill } from "react-icons/ri";
-import Link from "next/link";
+import AppContext from "../../Context/AppContext";
+import Tippy from "@tippy.js/react";
+import "tippy.js/dist/tippy.css";
+import { useRouter } from "next/router";
+import Floor from "./Floor";
+import Tower from "./Tower";
+import Project from "./Project";
 
-type Props = {
-    setToggleModify: Function;
-};
-
-export default function ModifyProperty({ setToggleModify }: Props) {
-    const modal = useRef<any>();
+export default function Form() {
     const router = useRouter();
-
+    const { setNewPropToggle } = useContext(AppContext);
     const [isSave, setSave] = useState(false);
+    const [FormModify, setFormModify] = useState("New");
 
     useEffect(() => {
-        const clickOutSide = (e: any) => {
-            if (!modal.current.contains(e.target)) {
-                setToggleModify(false);
-            }
-        };
-        document.addEventListener("mousedown", clickOutSide);
-        return () => {
-            document.removeEventListener("mousedown", clickOutSide);
-        };
-    });
+        if (router.query.id !== undefined) {
+            setFormModify("Modify");
+        }
+    }, []);
+
+    const cancel = () => {
+        setNewPropToggle(false);
+    };
+
     return (
         <div className={style.container}>
-            <section ref={modal}>
-                <p className={style.modal_title}>New Property</p>
+            <section>
+                <p className={style.modal_title}>{FormModify} Property</p>
                 <motion.div
                     variants={ModalSideFade}
                     initial="initial"
@@ -41,19 +41,20 @@ export default function ModifyProperty({ setToggleModify }: Props) {
                         Primary Information
                     </h1>
                     <ul className={style.ThreeRows}>
-                        <li>
-                            <label>ID</label>
-                            <input
-                                type="text"
-                                value="123"
-                                disabled={true}
-                                className=" bg-[#cdb8be]"
-                            />
-                        </li>
+                        {FormModify === "Modify" && (
+                            <li>
+                                <label>ID</label>
+
+                                <p className="rounded-md text-black px-2 py-[2px] outline-none w-[100%] 480px:w-full bg-[#cdb8be]">
+                                    {router.query.id}
+                                </p>
+                            </li>
+                        )}
                         <li>
                             <label>TYPE</label>
                             <select name="" id="">
-                                <option value=""></option>
+                                <option value="active">Active</option>
+                                <option value="inactive">Inctive</option>
                             </select>
                         </li>
                         <li>
@@ -63,7 +64,9 @@ export default function ModifyProperty({ setToggleModify }: Props) {
                         <li>
                             <label>CLASS</label>
                             <select name="" id="">
-                                <option value=""></option>
+                                <option value="sample 1">Sample1</option>
+                                <option value="sample 2">Sample2</option>
+                                <option value="sample 3">Sample3</option>
                             </select>
                         </li>
                         <li>
@@ -76,21 +79,36 @@ export default function ModifyProperty({ setToggleModify }: Props) {
                         </li>
                         <li>
                             <label>PROJECT</label>
-                            <select name="" id="">
-                                <option value=""></option>
-                            </select>
+                            <Tippy
+                                content={<Project />}
+                                trigger="click"
+                                theme="ThemeWhite"
+                                interactive={true}
+                            >
+                                <input type="text" />
+                            </Tippy>
                         </li>
                         <li>
                             <label>TOWER</label>
-                            <select name="" id="">
-                                <option value=""></option>
-                            </select>
+                            <Tippy
+                                content={<Tower />}
+                                trigger="click"
+                                theme="ThemeWhite"
+                                interactive={true}
+                            >
+                                <input type="text" />
+                            </Tippy>
                         </li>
                         <li>
                             <label>FLOOR</label>
-                            <select name="" id="">
-                                <option value=""></option>
-                            </select>
+                            <Tippy
+                                content={<Floor />}
+                                trigger="click"
+                                theme="ThemeWhite"
+                                interactive={true}
+                            >
+                                <input type="text" />
+                            </Tippy>
                         </li>
                         <li>
                             <label>AREA</label>
@@ -106,12 +124,12 @@ export default function ModifyProperty({ setToggleModify }: Props) {
                         </li>
                     </ul>
                     <div className={style.SaveButton}>
-                        <a
+                        <aside
                             className="cancel_button mr-5 font-bold cursor-pointer"
-                            onClick={() => setToggleModify(false)}
+                            onClick={cancel}
                         >
-                            Cancel
-                        </a>
+                            CANCEL
+                        </aside>
 
                         <button className={style.Save}>
                             <div onClick={() => setSave(!isSave)}>
@@ -120,9 +138,16 @@ export default function ModifyProperty({ setToggleModify }: Props) {
                             </div>
                             {isSave && (
                                 <ul>
-                                    <li>SAVE</li>
+                                    <li>
+                                        <button>SAVE</button>
+                                    </li>
 
-                                    <li>SAVE & NEW</li>
+                                    <li>
+                                        <button>SAVE & NEW</button>
+                                    </li>
+                                    <li>
+                                        <button>SAVE AS DRAFT</button>
+                                    </li>
                                 </ul>
                             )}
                         </button>

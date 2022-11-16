@@ -97,6 +97,11 @@ export default function AppProvider({ children }: AppProvider) {
         _method: "PUT",
     });
 
+    const [isDraft, setDraft] = useState({
+        ...NewCustomerDefault,
+        _method: "PUT",
+    });
+
     const [CorpTableRows, setCorpTableRows] = useState<number>(10);
     const [corpColumn, setCorpColumn] = useState([
         "ID",
@@ -127,6 +132,8 @@ export default function AppProvider({ children }: AppProvider) {
         "Branch Code",
         "Type",
     ]);
+    // User
+    const [newUserToggle, setNewUserToggle] = useState(false);
     const [userTableRows, usersetTableRows] = useState<number>(10);
     const [userTableColumn, setUserTableColumn] = useState([
         "Department",
@@ -136,8 +143,18 @@ export default function AppProvider({ children }: AppProvider) {
         "Role",
         "Status",
     ]);
-    const [propTableRows, userPropTableRows] = useState<number>(10);
-    const [propTableColumn, setPropTableColumn] = useState([
+    const userColumnList = [
+        "Department",
+        "Employee ID",
+        "Email",
+        "Mobile",
+        "Role",
+        "Status",
+    ];
+    // Property
+    const [newPropToggle, setNewPropToggle] = useState(false);
+    const [propTableRows, setPropTableRows] = useState<number>(10);
+    const propList = [
         "Unit Code",
         "Project",
         "Developer",
@@ -147,14 +164,11 @@ export default function AppProvider({ children }: AppProvider) {
         "Type",
         "Turn Over",
         "Owner",
-    ]);
-    const propList = {
-        ...propTableColumn,
-    };
+    ];
+    const [propTableColumn, setPropTableColumn] = useState(propList);
 
+    // Img Base Url
     const ImgUrl = "https://boroughcrest-api.lws.codes/get-img?image=";
-
-    const [isDraft, setDraft] = useState(false);
 
     const [isSearchBar, setSearchBar] = useState("");
     return (
@@ -209,6 +223,16 @@ export default function AppProvider({ children }: AppProvider) {
                 setType,
                 collapseSide,
                 setCollapseSide,
+                propTableRows,
+                setPropTableRows,
+                setPropTableColumn,
+                propTableColumn,
+                userColumnList,
+                propList,
+                newUserToggle,
+                setNewUserToggle,
+                newPropToggle,
+                setNewPropToggle,
             }}
         >
             {children}
