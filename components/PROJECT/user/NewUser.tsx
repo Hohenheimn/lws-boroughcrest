@@ -247,35 +247,36 @@ const NewRolesPermission = ({ setUserForm, userForm }: any) => {
                 </tbody>
             </table>
 
-            <div className=" w-full flex justify-end items-center mb-10">
+            <div className={style.SaveButton}>
                 <aside
-                    className="cursor-pointer text-ThemeRed font-semibold text-[14px] mr-5"
+                    className={style.back}
                     onClick={() => setUserForm([true, false])}
                 >
                     BACK
                 </aside>
 
-                <button className=" relative text-white flex justify-center items-center duration-75 hover:bg-ThemeRed50 leading-none bg-ThemeRed rounded-md text-[14px] mr-5">
-                    <div
-                        className=" h-8 px-5 w-full flex justify-center items-center"
-                        onClick={() => setSave(!isSave)}
-                    >
-                        SAVE <RiArrowDownSFill className=" ml-1 text-[24px]" />
+                <button className={style.Save}>
+                    <div>
+                        <button
+                            type="submit"
+                            name="save"
+                            className={style.save_button}
+                        >
+                            Save
+                        </button>
+                        <aside className={style.Arrow}>
+                            <RiArrowDownSFill
+                                onClick={() => setSave(!isSave)}
+                            />
+                        </aside>
                     </div>
                     {isSave && (
-                        <ul className=" absolute top-full bg-white w-full">
-                            <a
-                                onClick={() => console.log(isTable)}
-                                className="text-ThemeRed inline-block py-2 w-full text-center hover:bg-ThemeRed hover:text-white duration-75"
-                            >
-                                SAVE
-                            </a>
-
-                            <Link href="/project/user?new">
-                                <a className="text-ThemeRed inline-block py-2 w-full text-center hover:bg-ThemeRed hover:text-white duration-75">
+                        <ul>
+                            <li>
+                                <button type="submit" name="save-new">
                                     SAVE & NEW
-                                </a>
-                            </Link>
+                                </button>
+                            </li>
                         </ul>
                     )}
                 </button>

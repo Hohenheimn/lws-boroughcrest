@@ -8,14 +8,13 @@ import CustomerProperty from "./CustomerProperty";
 import Modal_Image from "../../Modal_Image";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
-import { GetCustomer } from "../../ReactQuery/CustomerMethod";
+import { GetCustomer, SendPortal } from "../../ReactQuery/CustomerMethod";
 import { useRouter } from "next/router";
 import BeatLoader from "react-spinners/BeatLoader";
 import { customer } from "../../../types/customerList";
 
 export default function CustomerDetail({ Draft }: any) {
-    const { ImgUrl, setModifyCustomer, isModifyCustomer } =
-        useContext(AppContext);
+    const { ImgUrl, setModifyCustomer, setPrompt } = useContext(AppContext);
     const [toggleModify, setToggleModify] = useState(false);
     const [isToggleInfoRole, setToggleInfoRole] = useState<boolean>(false);
     const [isView, setView] = useState("");
@@ -23,6 +22,27 @@ export default function CustomerDetail({ Draft }: any) {
 
     const router = useRouter();
     const id = router.query.id;
+
+    // Send Portal
+    const onSuccess = () => {
+        setPrompt({
+            message: "Email Successfully Sent!",
+            type: "success",
+            toggle: true,
+        });
+    };
+    const onError = () => {
+        setPrompt({
+            message: "Something is wrong",
+            type: "error",
+            toggle: true,
+        });
+    };
+    const { mutate, isLoading } = SendPortal(id, onSuccess, onError);
+
+    const SendPortalHandler = () => {
+        mutate();
+    };
 
     const {
         isLoading: DetailLoading,
@@ -120,9 +140,23 @@ export default function CustomerDetail({ Draft }: any) {
                         ></div>
                     </Tippy>
 
-                    <button className=" text-white py-3 px-3 flex justify-center items-center duration-75 hover:bg-ThemeRed50 leading-none bg-ThemeRed rounded-md text-[14px]">
-                        SEND PORTAL ACCESS
-                    </button>
+                    {isLoading ? (
+                        <p className=" text-white py-2 px-3 flex justify-center items-center duration-75 leading-none bg-ThemeRed rounded-md text-[14px]">
+                            <BeatLoader
+                                color={"#fff"}
+                                size={10}
+                                aria-label="Loading Spinner"
+                                data-testid="loader"
+                            />
+                        </p>
+                    ) : (
+                        <button
+                            onClick={SendPortalHandler}
+                            className=" text-white py-3 px-3 flex justify-center items-center duration-75 hover:bg-ThemeRed50 leading-none bg-ThemeRed rounded-md text-[14px]"
+                        >
+                            SEND PORTAL ACCESS
+                        </button>
+                    )}
                 </li>
                 <li className=" w-9/12 1280px:w-8/12  480px:w-full flex flex-wrap items-start">
                     <ul className="flex flex-wrap">

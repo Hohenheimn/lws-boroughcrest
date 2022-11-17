@@ -159,3 +159,19 @@ export const GetImage = (pathName: any, wait?: any) => {
         }
     );
 };
+
+export const SendPortal = (id: any, onSuccess: any, onError: any) => {
+    return useMutation(
+        () => {
+            return api.post(`/admin/customer/${id}/send-portalid`, null, {
+                headers: {
+                    Authorization: "Bearer " + getCookie("user"),
+                },
+            });
+        },
+        {
+            onSuccess: onSuccess,
+            onError: onError,
+        }
+    );
+};

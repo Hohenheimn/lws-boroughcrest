@@ -38,7 +38,7 @@ export type customer = {
     preferred_email: string;
     status: string;
     unit_codes: [];
-    properties?: [];
+    properties?: [] | any;
     _method?: "PUT";
     MA?: {
         mailing_address_unit_floor: string;

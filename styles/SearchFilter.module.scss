@@ -30,7 +30,7 @@
         .new {
             @apply relative mr-5 cursor-pointer;
             div {
-                @apply capitalize px-5 480px:text-[12px] 480px:px-2 text-[14px] py-3 rounded-lg bg-ThemeRed text-white leading-none duration-75 hover:bg-ThemeRed50;
+                @apply capitalize px-5 text-center  480px:text-[12px] 480px:p-2 text-[14px] py-3 rounded-lg bg-ThemeRed text-white leading-none duration-75 hover:bg-ThemeRed50;
             }
         }
         .filter {
@@ -46,7 +46,7 @@
                 .column_item {
                     @apply flex items-center mb-1;
                     input {
-                        @apply relative after:text-white after:flex after:justify-center after:items-center mr-1 checked:after:bg-ThemeRed checked:after:content-['✓'] appearance-none w-4 h-4 border border-[#8F384D] after:w-full after:h-full after:absolute after:left-0 after:top-0;
+                        @apply relative after:text-white after:flex after:justify-center after:items-center mr-1 checked:after:bg-ThemeRed checked:after:content-['✓'] appearance-none w-4 h-4 overflow-hidden border-[#8F384D] after:w-full after:h-full after:absolute after:left-[0] border-none after:top-[0];
                     }
                 }
             }

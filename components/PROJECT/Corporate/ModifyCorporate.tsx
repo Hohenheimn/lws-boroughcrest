@@ -800,7 +800,7 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                 </ul>
                 <div className={style.SaveButton}>
                     <aside
-                        className="cancel_button mr-5 font-bold cursor-pointer"
+                        className={style.back}
                         onClick={() =>
                             setNewActive((item: any) => [
                                 (item[0] = true),
@@ -810,49 +810,49 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                     >
                         Back
                     </aside>
-                    {MutateLoading && (
-                        <div className={style.Save}>
-                            <div>
-                                <ScaleLoader
-                                    color="#fff"
-                                    height="10px"
-                                    width="2px"
-                                />
-                            </div>
-                        </div>
-                    )}
-                    {!MutateLoading && (
-                        <div className={style.Save}>
-                            <div
-                                onClick={() => setSave(!isSave)}
-                                className="cursor-pointer"
+                    <div className={style.Save}>
+                        <div
+                            onClick={() => setSave(!isSave)}
+                            className="cursor-pointer"
+                        >
+                            <button
+                                type="submit"
+                                name="save"
+                                onClick={() => setWhatClickedButton(true)}
+                                className={style.save_button}
                             >
-                                <button
-                                    type="submit"
-                                    name="save"
-                                    onClick={() => setWhatClickedButton(true)}
-                                >
-                                    SAVE{" "}
-                                </button>
-                                <RiArrowDownSFill className=" ml-1 text-[24px]" />
-                            </div>
-                            {isSave && (
-                                <ul>
-                                    <li>
-                                        <button
-                                            type="submit"
-                                            name="save-new"
-                                            onClick={() =>
-                                                setWhatClickedButton(false)
-                                            }
-                                        >
-                                            SAVE & NEW
-                                        </button>
-                                    </li>
-                                </ul>
-                            )}
+                                {MutateLoading ? (
+                                    <ScaleLoader
+                                        color="#fff"
+                                        height="10px"
+                                        width="2px"
+                                    />
+                                ) : (
+                                    "Save"
+                                )}
+                            </button>
+                            <aside className={style.Arrow}>
+                                <RiArrowDownSFill
+                                    onClick={() => setSave(!isSave)}
+                                />
+                            </aside>
                         </div>
-                    )}
+                        {isSave && (
+                            <ul>
+                                <li>
+                                    <button
+                                        type="submit"
+                                        name="save-new"
+                                        onClick={() =>
+                                            setWhatClickedButton(false)
+                                        }
+                                    >
+                                        SAVE & NEW
+                                    </button>
+                                </li>
+                            </ul>
+                        )}
+                    </div>
                 </div>
             </form>
         </motion.div>

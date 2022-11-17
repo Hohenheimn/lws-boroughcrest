@@ -572,7 +572,7 @@ export default function UpdateDraft() {
                         )}
                     </>
                 ) : (
-                    <div className="pageDetail">
+                    <div className="flex justify-center py-10">
                         <BeatLoader
                             color={"#8f384d"}
                             size={20}

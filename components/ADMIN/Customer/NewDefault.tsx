@@ -123,11 +123,7 @@ export default function NewDefault() {
                     <input disabled type="text" className="bg-white" />
                 </li>
             </motion.ul>
-            <ul>
-                <li>
-                    <label>Please Select a Type</label>
-                </li>
-            </ul>
+
             <div className=" w-full flex justify-end items-center">
                 <aside
                     onClick={() => setCusToggle(false)}

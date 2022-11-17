@@ -13,9 +13,45 @@ import Project from "./Project";
 
 export default function Form() {
     const router = useRouter();
+    const [isProject, setProject] = useState(false);
+    const [isTower, setTower] = useState(false);
+    const [isFloor, setFloor] = useState(false);
     const { setNewPropToggle } = useContext(AppContext);
     const [isSave, setSave] = useState(false);
     const [FormModify, setFormModify] = useState("New");
+
+    const [isProjectVal, setProjectVal] = useState({
+        id: 0,
+        value: "",
+    });
+    const [isTowerVal, setTowerVal] = useState({
+        id: 0,
+        value: "",
+    });
+    const [isFloorVal, setFloorVal] = useState({
+        id: 0,
+        value: "",
+    });
+
+    const updateProject = (value: any, id: any) => {
+        setProjectVal({
+            id: id,
+            value: value,
+        });
+    };
+
+    const updateTower = (value: any, id: any) => {
+        setTowerVal({
+            id: id,
+            value: value,
+        });
+    };
+    const updateFloor = (value: any, id: any) => {
+        setFloorVal({
+            id: id,
+            value: value,
+        });
+    };
 
     useEffect(() => {
         if (router.query.id !== undefined) {
@@ -80,34 +116,81 @@ export default function Form() {
                         <li>
                             <label>PROJECT</label>
                             <Tippy
-                                content={<Project />}
+                                content={
+                                    <>
+                                        {isProject && (
+                                            <Project
+                                                set={setProject}
+                                                update={updateProject}
+                                            />
+                                        )}
+                                    </>
+                                }
                                 trigger="click"
                                 theme="ThemeWhite"
-                                interactive={true}
+                                interactive={isProject ? true : false}
+                                arrow={false}
                             >
-                                <input type="text" />
+                                <input
+                                    type="text"
+                                    value={isProjectVal.value}
+                                    onFocus={() => setProject(true)}
+                                    onChange={() => {}}
+                                />
                             </Tippy>
                         </li>
                         <li>
                             <label>TOWER</label>
                             <Tippy
-                                content={<Tower />}
+                                content={
+                                    <>
+                                        {isTower && (
+                                            <Tower
+                                                set={setTower}
+                                                is={isTower}
+                                                update={updateTower}
+                                            />
+                                        )}
+                                    </>
+                                }
                                 trigger="click"
                                 theme="ThemeWhite"
-                                interactive={true}
+                                interactive={isTower ? true : false}
+                                arrow={false}
                             >
-                                <input type="text" />
+                                <input
+                                    type="text"
+                                    value={isTowerVal.value}
+                                    onFocus={() => setTower(true)}
+                                    onChange={() => {}}
+                                />
                             </Tippy>
                         </li>
                         <li>
                             <label>FLOOR</label>
                             <Tippy
-                                content={<Floor />}
+                                content={
+                                    <>
+                                        {isFloor && (
+                                            <Floor
+                                                set={setFloor}
+                                                is={isFloor}
+                                                update={updateFloor}
+                                            />
+                                        )}
+                                    </>
+                                }
                                 trigger="click"
                                 theme="ThemeWhite"
-                                interactive={true}
+                                interactive={isFloor ? true : false}
+                                arrow={false}
                             >
-                                <input type="text" />
+                                <input
+                                    type="text"
+                                    value={isFloorVal.value}
+                                    onFocus={() => setFloor(true)}
+                                    onChange={() => {}}
+                                />
                             </Tippy>
                         </li>
                         <li>

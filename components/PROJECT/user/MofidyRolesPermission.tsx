@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import { RiArrowDownSFill } from "react-icons/ri";
+import style from "../../../styles/Popup_Modal.module.scss";
 import Link from "next/link";
 
 type ModifyRolesPermission = {
@@ -34,7 +35,7 @@ export default function ModifyRolesPermission({
     });
 
     return (
-        <div className=" fixed top-0 left-0 h-screen overflow-auto w-full bg-[#00000040] p-10 z-50 flex justify-center items-center origin-top 480px:p-5">
+        <div className={style.container}>
             <section
                 ref={modal}
                 className=" p-10 bg-[#e2e3e4ef] rounded-lg w-[90%] max-w-[700px] text-ThemeRed shadow-lg"
@@ -110,36 +111,36 @@ export default function ModifyRolesPermission({
                     </tbody>
                 </table>
 
-                <div className=" w-full flex justify-end items-center">
-                    <button
-                        className=" text-ThemeRed font-semibold text-[14px] mr-5"
+                <div className={style.SaveButton}>
+                    <aside
+                        className={style.back}
                         onClick={() => setToggle(false)}
                     >
                         CANCEL
-                    </button>
+                    </aside>
 
-                    <button className=" relative text-white flex justify-center items-center duration-75 hover:bg-ThemeRed50 leading-none bg-ThemeRed rounded-md text-[14px] mr-5">
-                        <div
-                            className=" h-8 px-5 w-full flex justify-center items-center"
-                            onClick={() => setSave(!isSave)}
-                        >
-                            SAVE{" "}
-                            <RiArrowDownSFill className=" ml-1 text-[24px]" />
+                    <button className={style.Save}>
+                        <div>
+                            <button
+                                type="submit"
+                                name="save"
+                                className={style.save_button}
+                            >
+                                Save
+                            </button>
+                            <aside className={style.Arrow}>
+                                <RiArrowDownSFill
+                                    onClick={() => setSave(!isSave)}
+                                />
+                            </aside>
                         </div>
                         {isSave && (
-                            <ul className=" absolute top-full bg-white w-full">
-                                <a
-                                    onClick={() => console.log(isTable)}
-                                    className="text-ThemeRed inline-block py-2 w-full text-center hover:bg-ThemeRed hover:text-white duration-75"
-                                >
-                                    SAVE
-                                </a>
-                                {/* </Link> */}
-                                <Link href="/project/user?new">
-                                    <a className="text-ThemeRed inline-block py-2 w-full text-center hover:bg-ThemeRed hover:text-white duration-75">
+                            <ul>
+                                <li>
+                                    <button type="submit" name="save-new">
                                         SAVE & NEW
-                                    </a>
-                                </Link>
+                                    </button>
+                                </li>
                             </ul>
                         )}
                     </button>

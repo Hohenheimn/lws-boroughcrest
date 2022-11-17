@@ -42,14 +42,16 @@ export default function ModifyProperty({
     const { mutate, isLoading } = UpdateProperties(id, OnSuccess);
 
     useEffect(() => {
-        const existedProperties = properties.map((item: any) => {
-            return {
-                id: item.id,
-                unit_code: item.unit_code,
-                project: item.project.name,
-            };
-        });
-        setProperty(existedProperties);
+        if (properties.length !== 0) {
+            const existedProperties = properties.map((item: any) => {
+                return {
+                    id: item?.id,
+                    unit_code: item?.unit_code,
+                    project: item?.project?.name,
+                };
+            });
+            setProperty(existedProperties);
+        }
     }, []);
 
     const [isSave, setSave] = useState(false);
@@ -305,11 +307,11 @@ const Select = ({ setSelect, updateValue }: any) => {
                 data?.data.map((item: any, index: number) => (
                     <li
                         key={index}
-                        data-projname={item.project.name}
+                        data-projname={item?.project?.name}
                         onClick={updateValue}
                         className="cursor-pointer hover:bg-ThemeRed hover:text-white px-2 py-1"
                     >
-                        {item.unit_code}
+                        {item?.unit_code}
                     </li>
                 ))}
         </ul>

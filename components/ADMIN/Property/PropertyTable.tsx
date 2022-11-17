@@ -30,20 +30,21 @@ export default function PropertyTable({ isSearchTable }: any) {
                         ))}
                     </tbody>
                 </table>
+                {isLoading && (
+                    <div className="top-0 left-0 absolute w-full h-full flex justify-center items-center">
+                        <aside className="text-center flex justify-center py-5">
+                            <BarLoader
+                                color={"#8f384d"}
+                                height="10px"
+                                width="200px"
+                                aria-label="Loading Spinner"
+                                data-testid="loader"
+                            />
+                        </aside>
+                    </div>
+                )}
             </div>
-            {isLoading && (
-                <div>
-                    <aside className="text-center flex justify-center py-5">
-                        <BarLoader
-                            color={"#8f384d"}
-                            height="10px"
-                            width="200px"
-                            aria-label="Loading Spinner"
-                            data-testid="loader"
-                        />
-                    </aside>
-                </div>
-            )}
+
             <Pagination
                 setTablePage={setTablePage}
                 TablePage={TablePage}
@@ -79,7 +80,7 @@ const List = ({ itemDetail }: any) => {
                             )}
                             {item === "Project" && (
                                 <div>
-                                    <h2>{itemDetail?.project.name}</h2>
+                                    <h2>{itemDetail?.project?.name}</h2>
                                 </div>
                             )}
                             {item === "Developer" && (
@@ -89,12 +90,12 @@ const List = ({ itemDetail }: any) => {
                             )}
                             {item === "Tower" && (
                                 <div>
-                                    <h2>{itemDetail?.tower.name}</h2>
+                                    <h2>{itemDetail?.tower?.name}</h2>
                                 </div>
                             )}
                             {item === "Floor" && (
                                 <div>
-                                    <h2>{itemDetail?.floor.name}</h2>
+                                    <h2>{itemDetail?.floor?.name}</h2>
                                 </div>
                             )}
                             {item === "Class" && (
