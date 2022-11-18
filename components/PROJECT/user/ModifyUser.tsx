@@ -1,149 +1,181 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useContext } from "react";
 import { AiFillCamera } from "react-icons/ai";
+import style from "../../../styles/Popup_Modal.module.scss";
 import Image from "next/image";
+import { useForm } from "react-hook-form";
+import AppContext from "../../Context/AppContext";
+import { RiArrowDownSFill } from "react-icons/ri";
 
 type ModifyUser = {
     setToggleModify: Function;
 };
 
-export default function ModifyUser({ setToggleModify }: ModifyUser) {
-    const modal = useRef<any>();
-    useEffect(() => {
-        const clickOutSide = (e: any) => {
-            if (!modal.current.contains(e.target)) {
-                setToggleModify(false);
-            }
-        };
-        document.addEventListener("mousedown", clickOutSide);
-        return () => {
-            document.removeEventListener("mousedown", clickOutSide);
-        };
-    });
-
+export default function ModifyUser({ setToggleModify }: any) {
+    const [isLogoStatus, setLogoStatus] = useState("Upload Logo");
+    const [isStatus, setStatus] = useState(true);
+    const [isSave, setSave] = useState(false);
     const [isProfileUrl, setProfileUrl] = useState("/Images/sampleProfile.png");
     const DisplayImage = (e: any) => {
+        if (e.target.files[0]?.size > 2000000) {
+            setLogoStatus("Image must be 2mb only");
+            return;
+        } else {
+            setLogoStatus("");
+            console.log(e.target.files[0]);
+        }
         if (e.target.files.length > 0) {
             let selectedImage = e.target.files[0];
-            if (
-                ["image/jpeg", "image/png", "image/svg+xml"].includes(
-                    selectedImage.type
-                )
-            ) {
+            if (["image/jpeg", "image/png"].includes(selectedImage.type)) {
                 let ImageReader = new FileReader();
                 ImageReader.readAsDataURL(selectedImage);
-
                 ImageReader.addEventListener("load", (event: any) => {
                     setProfileUrl(event.target.result);
                 });
+                const file = e.target.files;
+                setLogoStatus(file[0].name);
             } else {
-                alert("Invalid Image File");
+                setLogoStatus("Invalid Image File");
             }
         } else {
-            alert("Nothing Happens");
+            setLogoStatus("Nothing Happens");
         }
     };
+
+    const cancel = () => {
+        setToggleModify(false);
+    };
+
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm();
+
+    const Save = () => {};
+
     return (
-        <div className=" fixed top-0 left-0 h-screen overflow-auto w-full bg-[#00000040] p-10 z-50 flex justify-center items-center origin-top 480px:p-5">
-            <section
-                ref={modal}
-                className=" p-10 bg-[#e2e3e4] rounded-lg w-[90%] max-w-[700px] text-ThemeRed shadow-lg"
-            >
-                <p className=" text-[16px] mb-3">Modify User</p>
-                <h1 className=" w-full text-[24px] mb-3">
-                    Primary Information
-                </h1>
-                <ul className=" flex mb-10 flex-wrap 480px:mb-2">
-                    <li className=" border flex items-center w-4/12 820px:w-2/4 480px:w-full mb-5">
-                        <aside className="w-10 h-10 relative flex mr-4">
-                            <aside className=" bg-white h-full w-full object-cover relative">
-                                <Image
-                                    src={`${isProfileUrl}`}
-                                    alt=""
-                                    layout="fill"
+        <div className={style.container}>
+            <section>
+                <form onSubmit={handleSubmit(Save)}>
+                    <p className={style.modal_title}>Create User</p>
+                    <h1 className={style.statusTitle}>
+                        <span>STATUS</span>
+
+                        <div
+                            className={`statusCircle ${
+                                isStatus ? "active" : "inactive"
+                            }`}
+                            onClick={() => setStatus(!isStatus)}
+                        ></div>
+                    </h1>
+
+                    <ul className={`${style.ThreeRows} items-center`}>
+                        <li className=" border flex items-center w-4/12 820px:w-2/4 480px:w-full mb-5">
+                            <aside className="w-20 h-20 relative flex mr-4">
+                                <aside className=" bg-white h-full w-full rounded-full object-cover shadow-lg relative">
+                                    <Image
+                                        src={isProfileUrl}
+                                        alt=""
+                                        layout="fill"
+                                    />
+                                </aside>
+                                <input
+                                    type="file"
+                                    id="image"
+                                    onChange={DisplayImage}
+                                    className="hidden"
                                 />
+                                <label
+                                    htmlFor="image"
+                                    className=" cursor-pointer hover:bg-ThemeRed50 p-1 rounded-full text-white bg-ThemeRed absolute text-[12px] right-[-10px] bottom-[-5px]"
+                                >
+                                    <AiFillCamera />
+                                </label>
                             </aside>
-
-                            <input
-                                type="file"
-                                id="image"
-                                className="hidden"
-                                onChange={DisplayImage}
-                            />
-                            <label
-                                htmlFor="image"
-                                className=" cursor-pointer hover:bg-ThemeRed50 p-1 rounded-full text-white bg-ThemeRed absolute text-[12px] right-[-10px] bottom-[-5px]"
-                            >
-                                <AiFillCamera />
+                            <p className="text-[12px] mt-1">{isLogoStatus}</p>
+                        </li>
+                        <li className="  flex flex-col w-4/12 820px:w-2/4 480px:w-full mb-5">
+                            <label className=" text-[12px] font-semibold mb-1 w-[90%]">
+                                *NAME
                             </label>
+                            <input
+                                type="text"
+                                className="rounded-md text-black px-2 py-[2px] outline-none w-[90%] 480px:w-full"
+                            />
+                        </li>
+                        <li className="  flex flex-col  w-4/12 820px:w-2/4 480px:w-full mb-5 justify-center items-end">
+                            <label
+                                className=" text-[12px] font-NHU-medium mb-1 uppercase cursor-pointer w-[90%] 480px:w-full"
+                                htmlFor="file"
+                            >
+                                *Upload Signature
+                            </label>
+                            <input id="file" type="file" className="hidden" />
+                        </li>
+                    </ul>
+                    <ul className={style.ThreeRows}>
+                        <li>
+                            <label>POSITION</label>
+                            <input type="text" />
+                        </li>
+                        <li>
+                            <label>EMPLOYEE ID</label>
+                            <input type="text" />
+                        </li>
+                        <li>
+                            <label>*DEPARTMENT</label>
+                            <select name="" id="">
+                                <option value=""></option>
+                            </select>
+                        </li>
+                        <li>
+                            <label>*EMAIL</label>
+                            <input type="email" />
+                        </li>
+
+                        <li>
+                            <label>*MOBILE</label>
+                            <input type="number" placeholder="+63" />
+                        </li>
+                        <li>
+                            <label>*CORPORATE</label>
+                            <select name="" id="">
+                                <option value=""></option>
+                            </select>
+                        </li>
+                    </ul>
+                    <div className={style.SaveButton}>
+                        <aside className={style.back} onClick={cancel}>
+                            CANCEL
                         </aside>
-                        <label
-                            htmlFor="image"
-                            className=" text-[12px] font-semibold"
-                        >
-                            UPLOAD LOGO
-                        </label>
-                    </li>
-                    <li className="  flex flex-col w-4/12 820px:w-2/4 480px:w-full mb-5">
-                        <label className=" text-[12px] font-semibold mb-1 w-[90%]">
-                            ID
-                        </label>
-                        <input
-                            type="text"
-                            value="123"
-                            disabled={true}
-                            className="rounded-md bg-[#cdb8be] text-black px-2 py-[2px]  w-[90%] 480px:w-full"
-                        />
-                    </li>
-                    <li className="  flex flex-col  w-4/12 820px:w-2/4 480px:w-full mb-5">
-                        <label className=" text-[12px] font-semibold mb-1 uppercase  w-[90%]">
-                            Corporate Name
-                        </label>
-                        <input
-                            type="text"
-                            className="rounded-md text-black px-2 py-[2px] outline-none  w-[90%]  480px:w-full"
-                        />
-                    </li>
-                </ul>
 
-                <ul className=" flex mb-10 flex-wrap 480px:mb-2">
-                    <li className="  flex flex-col  w-4/12 820px:w-2/4 480px:w-full mb-5">
-                        <label className=" text-[12px] font-semibold mb-1 uppercase">
-                            GST TYPE.
-                        </label>
-                        <select
-                            name=""
-                            id=""
-                            className="w-[90%] rounded-md text-black px-2 py-[2px] outline-none 480px:w-full"
-                        >
-                            <option
-                                value=""
-                                className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
-                            ></option>
-                        </select>
-                    </li>
-                    <li className="  flex flex-col  w-4/12 820px:w-2/4 480px:w-full mb-5">
-                        <label className=" text-[12px] font-semibold mb-1 uppercase w-[90%]">
-                            RDO NO.
-                        </label>
-                        <input
-                            type="text"
-                            className="rounded-md text-black px-2 py-[2px] outline-none w-[90%] 480px:w-full"
-                        />
-                    </li>
-                </ul>
-
-                <div className=" w-full flex justify-end items-center">
-                    <button
-                        className=" text-ThemeRed font-semibold text-[14px] mr-5"
-                        onClick={() => setToggleModify(false)}
-                    >
-                        CANCEL
-                    </button>
-
-                    <button className=" text-white h-8 w-20 flex justify-center items-center duration-75 hover:bg-ThemeRed50 leading-none bg-ThemeRed rounded-md text-[14px] mr-5">
-                        NEXT
-                    </button>
-                </div>
+                        <button className={style.Save}>
+                            <div>
+                                <button
+                                    type="submit"
+                                    name="save"
+                                    className={style.save_button}
+                                >
+                                    Save
+                                </button>
+                                <aside className={style.Arrow}>
+                                    <RiArrowDownSFill
+                                        onClick={() => setSave(!isSave)}
+                                    />
+                                </aside>
+                            </div>
+                            {isSave && (
+                                <ul>
+                                    <li>
+                                        <button type="submit" name="save-new">
+                                            SAVE & NEW
+                                        </button>
+                                    </li>
+                                </ul>
+                            )}
+                        </button>
+                    </div>
+                </form>
             </section>
         </div>
     );

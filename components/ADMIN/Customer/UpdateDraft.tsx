@@ -572,7 +572,7 @@ export default function UpdateDraft() {
                         )}
                     </>
                 ) : (
-                    <div className="pageDetail">
+                    <div className="flex justify-center py-10">
                         <BeatLoader
                             color={"#8f384d"}
                             size={20}
@@ -1125,14 +1125,16 @@ const Property = ({ isActiveForm, setActiveForm, status }: any) => {
     const [unitCodeError, setUnitCodeError] = useState("");
 
     useEffect(() => {
-        const existedProperties = isDraft.properties.map((item: any) => {
-            return {
-                id: item.id,
-                unitCode: item.unit_code,
-                project: item.project.name,
-            };
-        });
-        setProperty(existedProperties);
+        if (isDraft.properties.length !== 0) {
+            const existedProperties = isDraft.properties.map((item: any) => {
+                return {
+                    id: item?.id,
+                    unitCode: item?.unit_code,
+                    project: item?.project?.name,
+                };
+            });
+            setProperty(existedProperties);
+        }
     }, []);
 
     const Back = () => {
@@ -1182,7 +1184,7 @@ const Property = ({ isActiveForm, setActiveForm, status }: any) => {
 
     const Save = async () => {
         const ArrayPropertyID = isProperty.map((item: any) => {
-            return item.unitCode;
+            return item?.unitCode;
         });
         if (ArrayPropertyID.includes("")) {
             setUnitCodeError("Cannot proceed, one of unit code is empty");
@@ -1290,26 +1292,27 @@ const Property = ({ isActiveForm, setActiveForm, status }: any) => {
                 >
                     BACK
                 </button>
-                {MutateLoading && (
-                    <div className={style.Save}>
-                        <div>
-                            <ScaleLoader
-                                color="#fff"
-                                height="10px"
-                                width="2px"
-                            />
-                        </div>
+
+                <div className={style.Save}>
+                    <div>
+                        <button
+                            type="submit"
+                            name="save"
+                            onClick={Save}
+                            className="buttonRed"
+                        >
+                            {MutateLoading ? (
+                                <ScaleLoader
+                                    color="#fff"
+                                    height="10px"
+                                    width="2px"
+                                />
+                            ) : (
+                                "SAVE"
+                            )}
+                        </button>
                     </div>
-                )}
-                {!MutateLoading && (
-                    <div className={style.Save}>
-                        <div>
-                            <button type="submit" name="save" onClick={Save}>
-                                SAVE
-                            </button>
-                        </div>
-                    </div>
-                )}
+                </div>
             </div>
         </div>
     );
@@ -1328,7 +1331,7 @@ const List = ({
         const UnitCode = event.target.innerHTML;
         let validate = true;
         isProperty.map((item: any) => {
-            if (item.unitCode === UnitCode) {
+            if (item?.unitCode === UnitCode) {
                 setUnitCodeError("Selected Unit Code already in the list");
                 validate = false;
                 return;
@@ -1356,7 +1359,7 @@ const List = ({
                 <div className=" relative">
                     <input
                         type="text"
-                        value={detail.unitCode}
+                        value={detail?.unitCode}
                         onChange={(e) => updateValue(e)}
                         className="w-full rounded-md text-black px-2 text-[14px] py-[2px] outline-none"
                         onFocus={() => setSelect(true)}

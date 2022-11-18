@@ -45,7 +45,16 @@ export default function CustomerTable() {
                                             <th>Property (Tower)</th>
                                         </>
                                     ) : (
-                                        <th key={index}>{item}</th>
+                                        <th
+                                            key={index}
+                                            className={
+                                                item === "Status"
+                                                    ? "center"
+                                                    : ""
+                                            }
+                                        >
+                                            {item}
+                                        </th>
                                     )}
                                 </>
                             ))}
@@ -63,21 +72,21 @@ export default function CustomerTable() {
                         )}
                     </tbody>
                 </table>
+                {isLoading && (
+                    <div className="top-0 left-0 absolute w-full h-full flex justify-center items-center">
+                        <aside className="text-center flex justify-center py-5">
+                            <BarLoader
+                                color={"#8f384d"}
+                                height="10px"
+                                width="200px"
+                                aria-label="Loading Spinner"
+                                data-testid="loader"
+                            />
+                        </aside>
+                    </div>
+                )}
             </div>
 
-            {isLoading && (
-                <div>
-                    <aside className="text-center flex justify-center py-5">
-                        <BarLoader
-                            color={"#8f384d"}
-                            height="10px"
-                            width="200px"
-                            aria-label="Loading Spinner"
-                            data-testid="loader"
-                        />
-                    </aside>
-                </div>
-            )}
             <Pagination
                 setTablePage={setTablePage}
                 TablePage={TablePage}
@@ -178,7 +187,7 @@ const List = ({ itemDetail }: customerItemDetail) => {
 
                     {item === "Status" && (
                         <td className={`normal ${itemDetail?.status}`}>
-                            <div className="w-full flex px-5">
+                            <div className="w-full flex px-5 justify-center">
                                 <Tippy
                                     content={`${itemDetail?.status}`}
                                     theme="ThemeRed"
@@ -354,11 +363,17 @@ const List = ({ itemDetail }: customerItemDetail) => {
                                     }`}
                                 >
                                     <a className="item">
-                                        <div>
+                                        <div className="flex items-center">
                                             {itemDetail?.properties?.map(
                                                 (item: any, index: number) => (
                                                     <p key={index}>
                                                         {item.unit_code}
+                                                        {index ===
+                                                        itemDetail?.properties
+                                                            ?.length -
+                                                            1
+                                                            ? ""
+                                                            : " |"}
                                                     </p>
                                                 )
                                             )}
@@ -375,11 +390,17 @@ const List = ({ itemDetail }: customerItemDetail) => {
                                     }`}
                                 >
                                     <a className="item">
-                                        <div>
+                                        <div className="flex items-center">
                                             {itemDetail?.properties?.map(
                                                 (item: any, index: number) => (
                                                     <p key={index}>
                                                         {item.tower.name}
+                                                        {index ===
+                                                        itemDetail?.properties
+                                                            ?.length -
+                                                            1
+                                                            ? ""
+                                                            : " |"}
                                                     </p>
                                                 )
                                             )}

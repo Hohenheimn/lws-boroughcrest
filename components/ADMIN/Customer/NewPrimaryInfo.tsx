@@ -60,6 +60,11 @@ export default function NewPrimaryInfo({
                             Company
                         </option>
                     </select>
+                    {isType === "" && (
+                        <label className=" font-NHU-bold">
+                            Please Select a Type
+                        </label>
+                    )}
                 </aside>
                 <aside className=" flex w-4/12 justify-end 480px:w-2/5">
                     <span className="mr-2 font-bold">STATUS</span>

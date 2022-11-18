@@ -109,7 +109,7 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
             image_photo: data.image_photo[0],
             image_signature: data.image_signature[0],
             image_valid_id: data.image_valid_id[0],
-            status: isStatus ? "active" : "inactive",
+            status: isStatus,
             class: data.class,
         });
         setActiveForm((item: boolean[]) => [
@@ -549,6 +549,7 @@ const Contact = ({
     const [whatClickedButon, setWhatClickedButton] = useState("");
     const [isSave, setSave] = useState(false);
     const queryClient = useQueryClient();
+    const [isError, setError] = useState("");
 
     const {
         register,
@@ -610,6 +611,7 @@ const Contact = ({
             }`,
             toggle: true,
         });
+        setError("");
         setSave(false);
         queryClient.invalidateQueries(["get-customer-detail", router.query.id]);
         if (whatClickedButon === "save" || whatClickedButon === "draft") {
@@ -623,6 +625,13 @@ const Contact = ({
     };
 
     const onError = (e: any) => {
+        if (
+            e?.response?.data?.registered_email?.includes(
+                "Customer Already Exists!"
+            )
+        ) {
+            setError("Customer Email Already Registered!");
+        }
         setPrompt((prev: any) => ({
             ...prev,
             message: "Something is wrong!",
@@ -720,6 +729,7 @@ const Contact = ({
         arrayData.map(({ key, keyData }: any) => {
             formData.append(key, keyData);
         });
+
         mutate(formData);
     };
     const sameEmail = () => {
@@ -794,7 +804,6 @@ const Contact = ({
                 <h1 className={style.modal_label_primary}>
                     Contact Informations
                 </h1>
-                <p className="text-[14px] font-bold mb-2">ADDRESS</p>
                 <ul className={style.ThreeRows}>
                     <li>
                         <label>*MOBILE</label>
@@ -1184,70 +1193,67 @@ const Contact = ({
                     </li>
                 </ul>
 
+                {isError !== "" && <p>{isError}</p>}
+
                 <div className={style.SaveButton}>
-                    <aside
-                        className=" text-ThemeRed font-semibold text-[14px] mr-5 cursor-pointer"
-                        onClick={Back}
-                    >
+                    <aside className={style.back} onClick={Back}>
                         BACK
                     </aside>
-                    {isLoading && (
-                        <div className={style.Save}>
-                            <div>
-                                <ScaleLoader
-                                    color="#fff"
-                                    height="10px"
-                                    width="2px"
-                                />
-                            </div>
-                        </div>
-                    )}
-                    {!isLoading && (
-                        <div className={style.Save}>
-                            <div>
-                                <button
-                                    type="submit"
-                                    name="save"
-                                    onClick={() => setWhatClickedButton("save")}
-                                >
-                                    SAVE
-                                </button>
+
+                    <div className={style.Save}>
+                        <div>
+                            <button
+                                type="submit"
+                                name="save"
+                                onClick={() => setWhatClickedButton("save")}
+                                className={style.save_button}
+                            >
+                                {isLoading ? (
+                                    <ScaleLoader
+                                        color="#fff"
+                                        height="10px"
+                                        width="2px"
+                                    />
+                                ) : (
+                                    "Save"
+                                )}
+                            </button>
+                            <aside className={style.Arrow}>
                                 <RiArrowDownSFill
-                                    className=" ml-1 text-[24px]"
                                     onClick={() => setSave(!isSave)}
                                 />
-                            </div>
-                            {isSave && (
-                                <ul>
-                                    <li>
-                                        <button
-                                            type="submit"
-                                            name="save-new"
-                                            onClick={() =>
-                                                setWhatClickedButton("new")
-                                            }
-                                        >
-                                            SAVE & NEW
-                                        </button>
-                                    </li>
-                                    <li>
-                                        <button
-                                            type="submit"
-                                            name="save-draft"
-                                            className={
-                                                isDraft ? style.disabled : ""
-                                            }
-                                            onClick={() =>
-                                                setWhatClickedButton("draft")
-                                            }
-                                        >
-                                            SAVE AS DRAFT
-                                        </button>
-                                    </li>
-                                </ul>
-                            )}
+                            </aside>
                         </div>
-                    )}
+                        {isSave && (
+                            <ul>
+                                <li>
+                                    <button
+                                        type="submit"
+                                        name="save-new"
+                                        onClick={() =>
+                                            setWhatClickedButton("new")
+                                        }
+                                    >
+                                        SAVE & NEW
+                                    </button>
+                                </li>
+                                <li>
+                                    <button
+                                        type="submit"
+                                        name="save-draft"
+                                        className={
+                                            isDraft ? style.disabled : ""
+                                        }
+                                        onClick={() =>
+                                            setWhatClickedButton("draft")
+                                        }
+                                    >
+                                        SAVE AS DRAFT
+                                    </button>
+                                </li>
+                            </ul>
+                        )}
+                    </div>
                 </div>
             </form>
         </motion.div>

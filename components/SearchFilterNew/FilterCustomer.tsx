@@ -68,6 +68,10 @@ export default function FilterCustomer({ setFilter }: setFilter) {
         ]);
     };
 
+    const reset = () => {
+        setCusTableColumn(["Class", "Mobile", "Email", "Status"]);
+    };
+
     return (
         <motion.ul
             ref={modal}
@@ -86,7 +90,11 @@ export default function FilterCustomer({ setFilter }: setFilter) {
                     onChangeHandler={OnChangeHandler}
                 />
             ))}
-
+            <li>
+                <button className="hover:underline" onClick={reset}>
+                    Reset Column
+                </button>
+            </li>
             <li>
                 <p className=" font-medium text-[12px]">Rows</p>
 

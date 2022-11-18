@@ -74,6 +74,13 @@ export default function NewPropertyInfo({
     };
 
     const onError = (e: any) => {
+        if (
+            e?.response?.data?.registered_email?.includes(
+                "Customer Already Exists!"
+            )
+        ) {
+            setUnitCodeError("Customer Email Already Registered!");
+        }
         setPrompt((prev: any) => ({
             ...prev,
             message: "Something is wrong!",
@@ -108,13 +115,12 @@ export default function NewPropertyInfo({
 
     const SaveMutation = async (button: any) => {
         const ArrayPropertyID = isProperty.map((item: any) => {
-            return item.unitCode;
+            if (item.unitCode !== "") {
+                return item.unitCode;
+            } else {
+                return "";
+            }
         });
-
-        if (ArrayPropertyID.includes("")) {
-            setUnitCodeError("Cannot proceed, one of unit code is empty");
-            return;
-        }
 
         let newData = { ...isNewCustomer, unit_codes: ArrayPropertyID };
 
@@ -232,50 +238,49 @@ export default function NewPropertyInfo({
             )}
 
             <div className={style.SaveButton}>
-                <button
-                    className=" text-ThemeRed font-semibold text-[14px] mr-5"
-                    onClick={Back}
-                >
+                <button className={style.back} onClick={Back}>
                     BACK
                 </button>
-                {MutateLoading && (
-                    <div className={style.Save}>
-                        <div>
-                            <ScaleLoader
-                                color="#fff"
-                                height="10px"
-                                width="2px"
-                            />
-                        </div>
-                    </div>
-                )}
-                {!MutateLoading && (
-                    <div className={style.Save}>
-                        <div>
-                            <button type="submit" name="save" onClick={Save}>
-                                SAVE
-                            </button>
+
+                <div className={style.Save}>
+                    <div>
+                        <button
+                            type="submit"
+                            name="save"
+                            onClick={Save}
+                            className={style.save_button}
+                        >
+                            {MutateLoading ? (
+                                <ScaleLoader
+                                    color="#fff"
+                                    height="10px"
+                                    width="2px"
+                                />
+                            ) : (
+                                "Save"
+                            )}
+                        </button>
+                        <aside className={style.Arrow}>
                             <RiArrowDownSFill
-                                className=" ml-1 text-[24px]"
                                 onClick={() => setSave(!isSave)}
                             />
-                        </div>
-                        {isSave && (
-                            <ul>
-                                <li>
-                                    <button type="submit" onClick={SaveNew}>
-                                        SAVE & NEW
-                                    </button>
-                                </li>
-                                <li>
-                                    <button type="submit" onClick={Draft}>
-                                        SAVE AS DRAFT
-                                    </button>
-                                </li>
-                            </ul>
-                        )}
+                        </aside>
                     </div>
-                )}
+                    {isSave && (
+                        <ul>
+                            <li>
+                                <button type="submit" onClick={SaveNew}>
+                                    SAVE & NEW
+                                </button>
+                            </li>
+                            <li>
+                                <button type="submit" onClick={Draft}>
+                                    SAVE AS DRAFT
+                                </button>
+                            </li>
+                        </ul>
+                    )}
+                </div>
             </div>
         </div>
     );
@@ -418,11 +423,11 @@ const Select = ({ setSelect, updateValue }: any) => {
                 data?.data.map((item: any, index: number) => (
                     <li
                         key={index}
-                        data-projname={item.project.name}
+                        data-projname={item?.project?.name}
                         onClick={updateValue}
                         className="cursor-pointer"
                     >
-                        {item.unit_code}
+                        {item?.unit_code}
                     </li>
                 ))}
         </ul>

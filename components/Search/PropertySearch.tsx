@@ -11,7 +11,7 @@ import BeatLoader from "react-spinners/BeatLoader";
 
 export default function PropertySearch() {
     const [search, setSearch] = useState<string>("");
-    let dataSearch;
+
     const router = useRouter();
 
     const {
@@ -28,10 +28,6 @@ export default function PropertySearch() {
             }
         );
     });
-
-    if (!isLoading) {
-        dataSearch = RecentData?.data;
-    }
 
     return (
         <div className={style.container}>
@@ -70,7 +66,7 @@ export default function PropertySearch() {
                         />
                     </div>
                 ) : (
-                    dataSearch?.map((item: any, index: number) => (
+                    RecentData?.data.map((item: any, index: number) => (
                         <Link key={index} href={`/admin/property/${item.id}`}>
                             <a className={style.searchedItem}>
                                 <ul>

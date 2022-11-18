@@ -1,4 +1,5 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useContext } from "react";
+import style from "../../../styles/Popup_Modal.module.scss";
 import { RiArrowDownSFill } from "react-icons/ri";
 import { UpdateProperties } from "../../ReactQuery/CustomerMethod";
 import { motion } from "framer-motion";
@@ -6,6 +7,8 @@ import { ModalSideFade } from "../../Animation/SimpleAnimation";
 import { ScaleLoader } from "react-spinners";
 import { GetUnitCode } from "../../ReactQuery/CustomerMethod";
 import { useRouter } from "next/router";
+import AppContext from "../../Context/AppContext";
+import { useQueryClient } from "react-query";
 
 type ModifyRolesPermission = {
     setToggle: Function;
@@ -16,6 +19,8 @@ export default function ModifyProperty({
     setToggle,
     properties,
 }: ModifyRolesPermission) {
+    const queryClient = useQueryClient();
+    const { setPrompt } = useContext(AppContext);
     let buttonClick = "";
     const [isProperty, setProperty] = useState([
         {
@@ -28,13 +33,16 @@ export default function ModifyProperty({
     const id = router.query.id;
 
     const OnSuccess = () => {
-        console.log(buttonClick);
+        setPrompt({
+            message: "Property Successfully updated!",
+            type: "success",
+            toggle: true,
+        });
         if (buttonClick === "save") {
-            alert("Property Successfully updated!");
-            router.reload();
+            queryClient.invalidateQueries(["get-customer-detail", `${id}`]);
+            setToggle(false);
         }
         if (buttonClick === "saveNew") {
-            alert("Property Successfully updated!");
             router.push("/admin/customer?new");
         }
     };
@@ -42,14 +50,16 @@ export default function ModifyProperty({
     const { mutate, isLoading } = UpdateProperties(id, OnSuccess);
 
     useEffect(() => {
-        const existedProperties = properties.map((item: any) => {
-            return {
-                id: item.id,
-                unit_code: item.unit_code,
-                project: item.project.name,
-            };
-        });
-        setProperty(existedProperties);
+        if (properties.length !== 0) {
+            const existedProperties = properties.map((item: any) => {
+                return {
+                    id: item?.id,
+                    unit_code: item?.unit_code,
+                    project: item?.project?.name,
+                };
+            });
+            setProperty(existedProperties);
+        }
     }, []);
 
     const [isSave, setSave] = useState(false);
@@ -84,7 +94,7 @@ export default function ModifyProperty({
     };
 
     return (
-        <div className=" fixed top-0 left-0 h-screen overflow-auto w-full bg-[#00000040] p-10 z-50 flex justify-center items-center origin-top 480px:p-5">
+        <div className={style.container}>
             <section className=" p-10 bg-[#e2e3e4ef] rounded-lg w-[90%] max-w-[700px] text-ThemeRed shadow-lg">
                 <p className=" text-[16px] mb-3 font-bold">Create Customer</p>
 
@@ -123,7 +133,7 @@ export default function ModifyProperty({
                         </tbody>
                     </table>
 
-                    <div className=" w-full flex justify-end items-center mb-10">
+                    <div className={style.SaveButton}>
                         <button
                             className=" text-ThemeRed font-semibold text-[14px] mr-5"
                             onClick={() => setToggle(false)}
@@ -131,43 +141,39 @@ export default function ModifyProperty({
                             CANCEL
                         </button>
 
-                        {isLoading ? (
-                            <div className=" relative text-white flex justify-center items-center duration-75 hover:bg-ThemeRed50 leading-none bg-ThemeRed rounded-md text-[14px] mr-5">
-                                <div>
-                                    <ScaleLoader
-                                        color="#fff"
-                                        height="10px"
-                                        width="2px"
-                                    />
-                                </div>
-                            </div>
-                        ) : (
-                            <button className=" relative text-white flex justify-center items-center duration-75 hover:bg-ThemeRed50 leading-none bg-ThemeRed rounded-md text-[14px] mr-5">
-                                <div
-                                    className=" h-8 px-5 w-full flex justify-center items-center"
-                                    onClick={() => setSave(!isSave)}
+                        <button className={style.Save}>
+                            <div className={style.save_button}>
+                                <button
+                                    className={style.save_button}
+                                    onClick={save}
                                 >
-                                    SAVE
-                                    <RiArrowDownSFill className=" ml-1 text-[24px]" />
-                                </div>
-                                {isSave && (
-                                    <ul className=" absolute top-full bg-white w-full">
-                                        <aside
-                                            onClick={save}
-                                            className="text-ThemeRed inline-block py-2 w-full text-center hover:bg-ThemeRed hover:text-white duration-75"
-                                        >
-                                            SAVE
-                                        </aside>
-                                        <aside
-                                            onClick={saveNew}
-                                            className="text-ThemeRed inline-block py-2 w-full text-center hover:bg-ThemeRed hover:text-white duration-75"
-                                        >
-                                            SAVE & NEW
-                                        </aside>
-                                    </ul>
-                                )}
-                            </button>
-                        )}
+                                    {isLoading ? (
+                                        <ScaleLoader
+                                            color="#fff"
+                                            height="10px"
+                                            width="2px"
+                                        />
+                                    ) : (
+                                        "SAVE"
+                                    )}
+                                </button>
+                                <aside className={style.Arrow}>
+                                    <RiArrowDownSFill
+                                        onClick={() => setSave(!isSave)}
+                                    />
+                                </aside>
+                            </div>
+                            {isSave && (
+                                <ul className=" absolute top-full bg-white w-full">
+                                    <aside
+                                        onClick={saveNew}
+                                        className="text-ThemeRed inline-block py-2 w-full text-center hover:bg-ThemeRed hover:text-white duration-75"
+                                    >
+                                        SAVE & NEW
+                                    </aside>
+                                </ul>
+                            )}
+                        </button>
                     </div>
                 </motion.div>
             </section>
@@ -305,11 +311,11 @@ const Select = ({ setSelect, updateValue }: any) => {
                 data?.data.map((item: any, index: number) => (
                     <li
                         key={index}
-                        data-projname={item.project.name}
+                        data-projname={item?.project?.name}
                         onClick={updateValue}
                         className="cursor-pointer hover:bg-ThemeRed hover:text-white px-2 py-1"
                     >
-                        {item.unit_code}
+                        {item?.unit_code}
                     </li>
                 ))}
         </ul>
