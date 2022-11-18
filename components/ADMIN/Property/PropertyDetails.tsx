@@ -6,18 +6,79 @@ import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 import Form from "./Form";
 import AppContext from "../../Context/AppContext";
-import { property } from "../../../types/PropertyList";
+import { property, PropertyDefaultValue } from "../../../types/PropertyList";
+import {
+    PostDraftProperty,
+    PostProperty,
+} from "../../ReactQuery/PropertyMethod";
 
 type Props = {
     data: property;
 };
 
 export default function PropertyDetails({ data }: Props) {
-    const { newPropToggle, setNewPropToggle } = useContext(AppContext);
+    const { newPropToggle, setNewPropToggle, setPrompt } =
+        useContext(AppContext);
+
+    const DefaultFormData: PropertyDefaultValue = {
+        unit_code: "",
+        address: "",
+        area: "",
+        class: "",
+        type: "",
+        acceptance_date: "",
+        turnover_date: "",
+        status: "",
+        developer_id: "",
+        project_id: "",
+        tower_id: "",
+        floor_id: "",
+        project: "",
+        tower: "",
+        floor: "",
+        developer: "",
+    };
+
+    const onSuccess = () => {
+        setPrompt({
+            message: "Property Unit successfully registered!",
+            type: "success",
+            toggle: true,
+        });
+    };
+    const onError = () => {
+        setPrompt({
+            message: "Something is wrong!",
+            type: "error",
+            toggle: true,
+        });
+    };
+    const { mutate: SaveMutate, isLoading: SaveLoading } = PostProperty(
+        onSuccess,
+        onError
+    );
+    // Drafft
+    const onSuccessDraft = () => {
+        setPrompt({
+            message: "Property Unit successfully registered as draft!",
+            type: "draft",
+            toggle: true,
+        });
+    };
+    const { mutate: SaveDraftMutate, isLoading: SaveDraftLoading } =
+        PostDraftProperty(onSuccessDraft, onError);
 
     return (
         <div>
-            {newPropToggle && <Form />}
+            {newPropToggle && (
+                <Form
+                    DefaultFormData={DefaultFormData}
+                    saveHandler={SaveMutate}
+                    saveLoading={SaveLoading}
+                    draftHandler={SaveDraftMutate}
+                    draftLoading={SaveDraftLoading}
+                />
+            )}
             <h1 className="pageTitle mb-5">Property Details</h1>
             <ul className={style.FourRows}>
                 <aside>

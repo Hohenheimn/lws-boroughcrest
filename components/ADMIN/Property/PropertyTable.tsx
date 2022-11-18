@@ -8,7 +8,7 @@ import Pagination from "../../Pagination";
 export default function PropertyTable({ isSearchTable }: any) {
     const { propTableColumn, propTableRows } = useContext(AppContext);
     const { isLoading, data } = GetPropertyList(propTableRows, isSearchTable);
-    const PropertyData = data?.data.data;
+    const PropertyData = data?.data?.data;
     const [TablePage, setTablePage] = useState(1);
     return (
         <>
@@ -75,48 +75,82 @@ const List = ({ itemDetail }: any) => {
                         <a className="item">
                             {item === "Unit Code" && (
                                 <div>
-                                    <h2>{itemDetail?.unit_code}</h2>
+                                    <h2>
+                                        {itemDetail?.unit_code
+                                            ? itemDetail?.unit_code
+                                            : "N/A"}
+                                    </h2>
                                 </div>
                             )}
                             {item === "Project" && (
                                 <div>
-                                    <h2>{itemDetail?.project?.name}</h2>
+                                    <h2>
+                                        {itemDetail?.project?.name
+                                            ? itemDetail?.project?.name
+                                            : "N/A"}
+                                    </h2>
                                 </div>
                             )}
                             {item === "Developer" && (
                                 <div>
-                                    <h2>{itemDetail?.developer?.name}</h2>
+                                    <h2>
+                                        {itemDetail?.developer?.name
+                                            ? itemDetail?.developer?.name
+                                            : "N/A"}
+                                    </h2>
                                 </div>
                             )}
                             {item === "Tower" && (
                                 <div>
-                                    <h2>{itemDetail?.tower?.name}</h2>
+                                    <h2>
+                                        {itemDetail?.tower?.name
+                                            ? itemDetail?.tower?.name
+                                            : "N/A"}
+                                    </h2>
                                 </div>
                             )}
                             {item === "Floor" && (
                                 <div>
-                                    <h2>{itemDetail?.floor?.name}</h2>
+                                    <h2>
+                                        {itemDetail?.floor?.name
+                                            ? itemDetail?.floor?.name
+                                            : "N/A"}
+                                    </h2>
                                 </div>
                             )}
                             {item === "Class" && (
                                 <div>
-                                    <h2>{itemDetail?.class}</h2>
+                                    <h2>
+                                        {itemDetail?.class
+                                            ? itemDetail?.class
+                                            : "N/A"}
+                                    </h2>
                                 </div>
                             )}
                             {item === "Type" && (
                                 <div>
-                                    <h2>{itemDetail?.type}</h2>
+                                    <h2>
+                                        {itemDetail?.type
+                                            ? itemDetail?.type
+                                            : "N/A"}
+                                    </h2>
                                 </div>
                             )}
                             {item === "Turn Over" && (
                                 <div>
-                                    <h2>{itemDetail?.turnover_date}</h2>
+                                    <h2>
+                                        {itemDetail?.turnover_date
+                                            ? itemDetail?.turnover_date
+                                            : "N/A"}
+                                    </h2>
                                 </div>
                             )}
                             {item === "Owner" && (
                                 <div>
                                     <h2 key={index}>
-                                        {itemDetail?.owner?.name}
+                                        {itemDetail?.owner?.name
+                                            ? itemDetail?.owner?.name
+                                            : "N/A"}
                                     </h2>
                                 </div>
                             )}

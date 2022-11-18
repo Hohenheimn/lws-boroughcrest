@@ -16,9 +16,19 @@ import Developer from "./Developer";
 
 type Props = {
     DefaultFormData: PropertyDefaultValue;
+    saveHandler: any;
+    saveLoading: any;
+    draftHandler: any;
+    draftLoading: any;
 };
 
-export default function Form({ DefaultFormData }: Props) {
+export default function Form({
+    DefaultFormData,
+    saveHandler,
+    saveLoading,
+    draftHandler,
+    draftLoading,
+}: Props) {
     const router = useRouter();
     const [isButton, setButton] = useState("");
     const [isProject, setProject] = useState(false);
@@ -97,7 +107,6 @@ export default function Form({ DefaultFormData }: Props) {
     };
 
     useEffect(() => {
-        setValue("class", DefaultFormData.class, { shouldValidate: true });
         if (router.query.id !== undefined) {
             setFormModify("Modify");
         }
