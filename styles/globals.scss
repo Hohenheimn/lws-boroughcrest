@@ -255,7 +255,7 @@ input[type="number"] {
     td {
         @apply border border-gray-300 px-2 py-1;
         input {
-            @apply border border-gray-500 text-[12px] z-10;
+            @apply border border-gray-500 text-[12px] z-10 hover:text-white bg-transparent;
         }
         input.disabled {
             @apply border-none pointer-events-none;
@@ -271,6 +271,18 @@ input[type="number"] {
                     @apply text-[12px] border-b py-1 px-2 w-full mb-0 hover:bg-ThemeRed hover:text-white transition-all duration-75;
                 }
             }
+        }
+    }
+    tr:hover > .bg-hover {
+        @apply bg-ThemeRed50;
+        * {
+            @apply text-white;
+        }
+    }
+    tr.active > .bg-hover {
+        @apply bg-ThemeRed;
+        * {
+            @apply text-white;
         }
     }
     td.action {

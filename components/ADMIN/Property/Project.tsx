@@ -14,7 +14,7 @@ import {
 import { useQueryClient } from "react-query";
 import AppContext from "../../Context/AppContext";
 
-const Project = ({ set, update }: any) => {
+const Project = ({ set, update, isValID }: any) => {
     const modal = useRef<any>();
     // Click out side, remove empty array
     useEffect(() => {
@@ -85,6 +85,7 @@ const Project = ({ set, update }: any) => {
                                     setWarning={setWarning}
                                     set={set}
                                     update={update}
+                                    isValID={isValID}
                                 />
                             ))}
                         </>
@@ -122,6 +123,7 @@ type List = {
     setWarning: any;
     set: any;
     update: any;
+    isValID: any;
 };
 const List = ({
     itemDetail,
@@ -130,6 +132,7 @@ const List = ({
     setWarning,
     set,
     update,
+    isValID,
 }: List) => {
     const [isModify, setModify] = useState(false);
     const clientQuery = useQueryClient();
@@ -156,9 +159,7 @@ const List = ({
         setArray(newItems);
     };
     const Selected = (e: any) => {
-        const value = e.target.getAttribute("data-value");
-        const id = e.target.getAttribute("data-id");
-        update(value, id);
+        update(itemDetail.name, itemDetail.id);
         set(false);
     };
     const Edit = () => {
@@ -244,15 +245,15 @@ const List = ({
         }
     };
     return (
-        <tr className="cursor-pointer">
-            <td>
+        <tr
+            className={`cursor-pointer container ${
+                isValID === itemDetail.id ? "active" : ""
+            }`}
+        >
+            <td onClick={(e) => !isModify && Selected(e)} className="bg-hover">
                 <p>{itemDetail.displayId}</p>
             </td>
-            <td
-                onClick={(e) => !isModify && Selected(e)}
-                data-value={itemDetail.name}
-                data-id={itemDetail.id}
-            >
+            <td onClick={(e) => !isModify && Selected(e)} className="bg-hover">
                 <input
                     type="text"
                     className={`${!isModify && "disabled"}`}

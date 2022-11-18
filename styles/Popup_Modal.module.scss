@@ -82,6 +82,15 @@
                         @apply mb-0;
                     }
                 }
+                .developer {
+                    @apply w-[200px] max-h-[250px] overflow-auto text-ThemeRed;
+                    li {
+                        @apply w-full m-0 py-1 px-3 hover:bg-ThemeRed50 hover:text-white cursor-pointer;
+                    }
+                    li.active {
+                        @apply bg-ThemeRed text-white;
+                    }
+                }
             }
             li.twoRows {
                 @apply flex justify-between  w-4/12 820px:w-2/4 480px:w-full mb-5 -mt-1;
