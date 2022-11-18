@@ -21,22 +21,22 @@ export default function PropertyDetails({ data }: Props) {
         useContext(AppContext);
 
     const DefaultFormData: PropertyDefaultValue = {
-        unit_code: "",
-        address: "",
-        area: "",
-        class: "",
-        type: "",
-        acceptance_date: "",
-        turnover_date: "",
-        status: "",
-        developer_id: "",
-        project_id: "",
-        tower_id: "",
-        floor_id: "",
-        project: "",
-        tower: "",
-        floor: "",
-        developer: "",
+        unit_code: data?.unit_code,
+        address: data?.address,
+        area: data?.area,
+        class: data?.class,
+        type: data?.type,
+        acceptance_date: data?.acceptance_date,
+        turnover_date: data?.turnover_date,
+        status: data?.status,
+        developer_id: data?.developer?.id,
+        project_id: data?.project?.id,
+        tower_id: data?.tower?.id,
+        floor_id: data?.floor?.id,
+        project: data?.project?.name,
+        tower: data?.tower?.name,
+        floor: data?.floor?.name,
+        developer: data?.developer?.name,
     };
 
     const onSuccess = () => {
