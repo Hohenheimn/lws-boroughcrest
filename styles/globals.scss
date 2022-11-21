@@ -80,7 +80,7 @@ h6 {
 }
 // Table
 .table_container {
-    @apply w-full overflow-x-auto mb-10 480px:mb-5 overflow-y-auto h-[60vh] min-h-[600px] relative shadow-lg;
+    @apply w-full overflow-x-auto mb-10 480px:mb-5 overflow-y-auto h-[60vh] min-h-[600px] relative;
 }
 .table_list {
     @apply min-w-full;
