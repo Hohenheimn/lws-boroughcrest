@@ -71,7 +71,13 @@ const List = ({ itemDetail }: any) => {
             </td>
             {propTableColumn.map((item: any, index: number) => (
                 <td key={index}>
-                    <Link href={`/admin/property/${itemDetail.id}`}>
+                    <Link
+                        href={`${
+                            itemDetail.status === "Draft"
+                                ? `?draft=${itemDetail.id}`
+                                : `/admin/property/${itemDetail.id}`
+                        }`}
+                    >
                         <a className="item">
                             {item === "Unit Code" && (
                                 <div>

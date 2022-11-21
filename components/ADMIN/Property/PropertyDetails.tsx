@@ -4,7 +4,7 @@ import Image from "next/image";
 import style from "../../../styles/Project/PropertyDetails.module.scss";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
-import Form from "./Form";
+import PropertyForm from "./PropertyForm";
 import AppContext from "../../Context/AppContext";
 import { property, PropertyDefaultValue } from "../../../types/PropertyList";
 import {
@@ -39,45 +39,10 @@ export default function PropertyDetails({ data }: Props) {
         developer: data?.developer?.name,
     };
 
-    const onSuccess = () => {
-        setPrompt({
-            message: "Property Unit successfully registered!",
-            type: "success",
-            toggle: true,
-        });
-    };
-    const onError = () => {
-        setPrompt({
-            message: "Something is wrong!",
-            type: "error",
-            toggle: true,
-        });
-    };
-    const { mutate: SaveMutate, isLoading: SaveLoading } = PostProperty(
-        onSuccess,
-        onError
-    );
-    // Drafft
-    const onSuccessDraft = () => {
-        setPrompt({
-            message: "Property Unit successfully registered as draft!",
-            type: "draft",
-            toggle: true,
-        });
-    };
-    const { mutate: SaveDraftMutate, isLoading: SaveDraftLoading } =
-        PostDraftProperty(onSuccessDraft, onError);
-
     return (
         <div>
             {newPropToggle && (
-                <Form
-                    DefaultFormData={DefaultFormData}
-                    saveHandler={SaveMutate}
-                    saveLoading={SaveLoading}
-                    draftHandler={SaveDraftMutate}
-                    draftLoading={SaveDraftLoading}
-                />
+                <PropertyForm DefaultFormData={DefaultFormData} />
             )}
             <h1 className="pageTitle mb-5">Property Details</h1>
             <ul className={style.FourRows}>

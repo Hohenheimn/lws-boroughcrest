@@ -242,7 +242,7 @@ input[type="number"] {
 }
 
 .crud-container {
-    @apply overflow-y-auto max-h-[250px] p-2 pt-0 relative;
+    @apply overflow-y-auto max-h-[300px] p-2 pt-0 relative;
 }
 .crud-table {
     @apply w-[300px] static mt-2;

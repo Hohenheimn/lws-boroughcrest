@@ -13,43 +13,37 @@ import Project from "./Project";
 import { useForm } from "react-hook-form";
 import { PropertyDefaultValue } from "../../../types/PropertyList";
 import Developer from "./Developer";
+import { ScaleLoader } from "react-spinners";
+import { useQueryClient } from "react-query";
+import {
+    PostDraftProperty,
+    PostProperty,
+    UpdateDraftProperty,
+    UpdateProperty,
+} from "../../ReactQuery/PropertyMethod";
 
 type Props = {
     DefaultFormData: PropertyDefaultValue;
-    saveHandler: any;
-    saveLoading: any;
-    draftHandler: any;
-    draftLoading: any;
+    isSearchTable?: string;
 };
 
-export default function Form({
+export default function PropertyForm({
     DefaultFormData,
-    saveHandler,
-    saveLoading,
-    draftHandler,
-    draftLoading,
+    isSearchTable,
 }: Props) {
     const router = useRouter();
     const [isButton, setButton] = useState("");
+    const [isError, setError] = useState("");
     const [isProject, setProject] = useState(false);
     const [isTower, setTower] = useState(false);
     const [isFloor, setFloor] = useState(false);
     const [isDev, setDev] = useState(false);
-    const { setNewPropToggle } = useContext(AppContext);
     const [isSave, setSave] = useState(false);
+    const { setNewPropToggle, propTableRows, setPrompt } =
+        useContext(AppContext);
+
     const [FormModify, setFormModify] = useState("New");
-
     const [isUnitCode, setUnitCode] = useState(DefaultFormData.unit_code);
-
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-        reset,
-        setValue,
-    } = useForm<PropertyDefaultValue>({
-        defaultValues: DefaultFormData,
-    });
 
     const [isProjectVal, setProjectVal] = useState({
         id: DefaultFormData?.project_id,
@@ -115,7 +109,91 @@ export default function Form({
     const cancel = () => {
         reset();
         setNewPropToggle(false);
+        if (router.query.draft !== undefined) {
+            router.push("");
+        }
     };
+
+    // Mutation
+    const onSuccess = () => {
+        if (router.query.id !== undefined) {
+            // Update
+            queryClient.invalidateQueries([
+                "get-property-detail",
+                `${router.query.id}`,
+            ]);
+            setPrompt({
+                message: `Property Unit successfully ${
+                    isButton === "draft" ? "saved as draft" : "updated"
+                }!`,
+                type: `${isButton === "draft" ? "draft" : "success"}`,
+                toggle: true,
+            });
+        } else {
+            // Save
+            queryClient.invalidateQueries([
+                "Property-List",
+                propTableRows,
+                isSearchTable,
+            ]);
+            setPrompt({
+                message: `Property Unit successfully ${
+                    isButton === "draft" ? "saved as draft" : "saved"
+                }!`,
+                type: `${isButton === "draft" ? "draft" : "success"}`,
+                toggle: true,
+            });
+
+            // From draft to save
+            if (router.query.draft !== undefined) {
+                router.push("");
+                if (isButton === "new") {
+                    setNewPropToggle(true);
+                }
+            }
+        }
+        setUnitCode("");
+        reset();
+        if (isButton === "save" || isButton === "draft") {
+            setNewPropToggle(false);
+        }
+    };
+    const onError = () => {
+        setError("Unit code has already been registered!");
+        setPrompt({
+            message: "Something is wrong!",
+            type: "error",
+            toggle: true,
+        });
+    };
+
+    // Save Mutation
+    const { mutate: SaveMutate, isLoading: SaveLoading } = PostProperty(
+        onSuccess,
+        onError
+    );
+    const { mutate: SaveDraftMutate, isLoading: SaveDraftLoading } =
+        PostDraftProperty(onSuccess, onError);
+
+    // Update Mutation
+    const { mutate: UpdateMutate, isLoading: UpdateLoading } = UpdateProperty(
+        onSuccess,
+        onError,
+        router.query.id
+    );
+    const { mutate: UpdateDraftMutate, isLoading: UpdateDraftLoading } =
+        UpdateDraftProperty(onSuccess, onError, router.query.id);
+
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+        reset,
+        setValue,
+    } = useForm<PropertyDefaultValue>({
+        defaultValues: DefaultFormData,
+    });
+    const queryClient = useQueryClient();
 
     const submit = (data: any) => {
         let Payload = {
@@ -137,13 +215,25 @@ export default function Form({
                 ...Payload,
                 status: "Draft",
             };
+            if (router.query.id !== undefined) {
+                // Update
+                UpdateDraftMutate(Payload);
+            } else {
+                // Save
+                SaveDraftMutate(Payload);
+            }
         } else {
             Payload = {
                 ...Payload,
                 status: "Active",
             };
+            if (router.query.id !== undefined) {
+                UpdateMutate(Payload);
+            } else {
+                SaveMutate(Payload);
+            }
         }
-        console.log(Payload);
+        setSave(false);
     };
 
     return (
@@ -177,8 +267,9 @@ export default function Form({
                                     required: "Required",
                                 })}
                             >
-                                <option value="sample">Sample</option>
-                                <option value="sample 1">Sample 1</option>
+                                <option value="Parking">Parking</option>
+                                <option value="Unit">Unit</option>
+                                <option value="Commercial">Commercial</option>
                             </select>
                             {errors.type && (
                                 <p className="text-[10px]">
@@ -214,9 +305,8 @@ export default function Form({
                                     required: "Required",
                                 })}
                             >
-                                <option value="sample 1">Sample1</option>
-                                <option value="sample 2">Sample2</option>
-                                <option value="sample 3">Sample3</option>
+                                <option value="Saleable">Saleable</option>
+                                <option value="Leaseable">Leaseable</option>
                             </select>
                             {errors.class && (
                                 <p className="text-[10px]">
@@ -403,12 +493,13 @@ export default function Form({
                             <input type="date" {...register("turnover_date")} />
                         </li>
                     </ul>
+                    {isError !== "" && <p>{isError}</p>}
                     <div className={style.SaveButton}>
                         <aside className={style.back} onClick={cancel}>
                             CANCEL
                         </aside>
 
-                        <button className={style.Save}>
+                        <aside className={style.Save}>
                             <div>
                                 <button
                                     type="submit"
@@ -416,7 +507,18 @@ export default function Form({
                                     className={style.save_button}
                                     onClick={() => setButton("save")}
                                 >
-                                    Save
+                                    {SaveDraftLoading ||
+                                    SaveLoading ||
+                                    UpdateLoading ||
+                                    UpdateDraftLoading ? (
+                                        <ScaleLoader
+                                            color="#fff"
+                                            height="10px"
+                                            width="2px"
+                                        />
+                                    ) : (
+                                        "SAVE"
+                                    )}
                                 </button>
                                 <aside className={style.Arrow}>
                                     <RiArrowDownSFill
@@ -433,19 +535,26 @@ export default function Form({
                                             SAVE & NEW
                                         </button>
                                     </li>
-                                    <li>
-                                        <button
-                                            onClick={() => setButton("draft")}
-                                        >
-                                            SAVE AS DRAFT
-                                        </button>
-                                    </li>
+                                    {router.query.draft === undefined && (
+                                        <li>
+                                            <button
+                                                onClick={() =>
+                                                    setButton("draft")
+                                                }
+                                            >
+                                                SAVE AS DRAFT
+                                            </button>
+                                        </li>
+                                    )}
                                 </ul>
                             )}
-                        </button>
+                        </aside>
                     </div>
                 </motion.div>
             </section>
         </form>
     );
+}
+function setPrompt(arg0: { message: string; type: string; toggle: boolean }) {
+    throw new Error("Function not implemented.");
 }

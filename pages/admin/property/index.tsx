@@ -2,16 +2,21 @@ import React, { useContext, useState } from "react";
 import AppContext from "../../../components/Context/AppContext";
 import SearchFilter from "../../../components/SearchFilterNew/SearchFilter";
 import PropertyTable from "../../../components/ADMIN/Property/PropertyTable";
-import Form from "../../../components/ADMIN/Property/Form";
+import Form from "../../../components/ADMIN/Property/PropertyForm";
 import { PropertyDefaultValue } from "../../../types/PropertyList";
 import {
     PostDraftProperty,
     PostProperty,
 } from "../../../components/ReactQuery/PropertyMethod";
+import { useForm } from "react-hook-form";
+import { useQueryClient } from "react-query";
+import { useRouter } from "next/router";
+import Draft from "../../../components/ADMIN/Property/Draft";
 
 export default function Property() {
-    const { newPropToggle, setPrompt } = useContext(AppContext);
+    const { newPropToggle } = useContext(AppContext);
     const [isSearchTable, setSearchTable] = useState("");
+    const router = useRouter();
 
     const DefaultFormData: PropertyDefaultValue = {
         unit_code: "",
@@ -32,35 +37,6 @@ export default function Property() {
         developer: "",
     };
 
-    const onSuccess = () => {
-        setPrompt({
-            message: "Property Unit successfully registered!",
-            type: "success",
-            toggle: true,
-        });
-    };
-    const onError = () => {
-        setPrompt({
-            message: "Something is wrong!",
-            type: "error",
-            toggle: true,
-        });
-    };
-    const { mutate: SaveMutate, isLoading: SaveLoading } = PostProperty(
-        onSuccess,
-        onError
-    );
-    // Drafft
-    const onSuccessDraft = () => {
-        setPrompt({
-            message: "Property Unit successfully registered as draft!",
-            type: "draft",
-            toggle: true,
-        });
-    };
-    const { mutate: SaveDraftMutate, isLoading: SaveDraftLoading } =
-        PostDraftProperty(onSuccessDraft, onError);
-
     return (
         <div>
             <SearchFilter
@@ -71,12 +47,10 @@ export default function Property() {
             {newPropToggle && (
                 <Form
                     DefaultFormData={DefaultFormData}
-                    saveHandler={SaveMutate}
-                    saveLoading={SaveLoading}
-                    draftHandler={SaveDraftMutate}
-                    draftLoading={SaveDraftLoading}
+                    isSearchTable={isSearchTable}
                 />
             )}
+            {router.query.draft !== undefined && <Draft />}
         </div>
     );
 }

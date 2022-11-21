@@ -80,7 +80,7 @@ const Tower = ({ set, update, is, isValID }: any) => {
                 </thead>
                 <tbody>
                     {isLoading ? (
-                        ""
+                        <tr></tr>
                     ) : (
                         <>
                             {isArray.map((item: any, index: number) => (

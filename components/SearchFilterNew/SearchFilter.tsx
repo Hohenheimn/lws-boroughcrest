@@ -108,12 +108,11 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
     };
     const exportHandler = () => {
         if (router.pathname.includes("admin/customer")) {
-            const endPoint = "/admin/customer/export?type={'csv' or 'xlsx'}";
+            const endPoint = "/admin/customer/export";
             handleExport(endPoint, "customer");
         }
         if (router.pathname.includes("admin/property")) {
-            const endPoint =
-                "/admin/property/unit/export?type={'csv' or 'xlsx'}";
+            const endPoint = "/admin/property/unit/export";
             handleExport(endPoint, "property");
         }
     };
@@ -122,7 +121,7 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
         if (e.target.files.length > 0) {
             const fileArray = e.target.files[0].name.split(".");
             const extension = fileArray[fileArray.length - 1];
-            if (extension === "xlsx" || extension === "csv") {
+            if (extension === "xlsx") {
                 let selectedFile = e.target.files[0];
                 const formData = new FormData();
                 formData.append("file", selectedFile);
@@ -133,10 +132,9 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
                     PropMutate(formData);
                 }
             } else {
-                alert("Invalid file, must be XLSX or CSV only!");
                 setPrompt({
                     type: "error",
-                    message: "Invalid file, must be XLSX or CSV only!",
+                    message: "Invalid file, must be XLSX only!",
                     toggle: true,
                 });
             }

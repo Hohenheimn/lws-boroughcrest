@@ -78,7 +78,7 @@ export const PostDraftProperty = (success: any, error: any) => {
 export const UpdateProperty = (success: any, error: any, id: any) => {
     return useMutation(
         (Payload: any) => {
-            return api.post(`/admin/property/unit/${id}?save=1`, Payload, {
+            return api.put(`/admin/property/unit/${id}?save=1`, Payload, {
                 headers: {
                     Authorization: "Bearer " + getCookie("user"),
                 },
@@ -94,7 +94,7 @@ export const UpdateProperty = (success: any, error: any, id: any) => {
 export const UpdateDraftProperty = (success: any, error: any, id: any) => {
     return useMutation(
         (Payload: any) => {
-            return api.post(`/admin/property/unit/${id}?draft=1`, Payload, {
+            return api.put(`/admin/property/unit/${id}?draft=1`, Payload, {
                 headers: {
                     Authorization: "Bearer " + getCookie("user"),
                 },
