@@ -131,11 +131,6 @@ export default function PropertyForm({
             });
         } else {
             // Save
-            queryClient.invalidateQueries([
-                "Property-List",
-                propTableRows,
-                isSearchTable,
-            ]);
             setPrompt({
                 message: `Property Unit successfully ${
                     isButton === "draft" ? "saved as draft" : "saved"
@@ -152,14 +147,24 @@ export default function PropertyForm({
                 }
             }
         }
+        queryClient.invalidateQueries([
+            "Property-List",
+            propTableRows,
+            isSearchTable,
+        ]);
         setUnitCode("");
         reset();
         if (isButton === "save" || isButton === "draft") {
             setNewPropToggle(false);
         }
     };
-    const onError = () => {
-        setError("Unit code has already been registered!");
+    const onError = (e: any) => {
+        if (e?.response?.data?.registered_email) {
+            setError("Unit code has already been registered!");
+        } else {
+            setError("Please fill out all required field!");
+        }
+
         setPrompt({
             message: "Something is wrong!",
             type: "error",
@@ -180,6 +185,12 @@ export default function PropertyForm({
         onSuccess,
         onError,
         router.query.id
+    );
+    // Update Draft
+    const { mutate: UpdateDraft, isLoading: DraftLoading } = UpdateProperty(
+        onSuccess,
+        onError,
+        router.query.draft
     );
     const { mutate: UpdateDraftMutate, isLoading: UpdateDraftLoading } =
         UpdateDraftProperty(onSuccess, onError, router.query.id);
@@ -210,7 +221,9 @@ export default function PropertyForm({
             tower_id: isTowerVal.id,
             floor_id: isFloorVal.id,
         };
+
         if (isButton === "draft") {
+            // Draft
             Payload = {
                 ...Payload,
                 status: "Draft",
@@ -223,13 +236,23 @@ export default function PropertyForm({
                 SaveDraftMutate(Payload);
             }
         } else {
+            // Save
             Payload = {
                 ...Payload,
                 status: "Active",
             };
             if (router.query.id !== undefined) {
+                // Update
                 UpdateMutate(Payload);
-            } else {
+            } else if (router.query.draft !== undefined) {
+                // Update Draft
+                Payload = { ...Payload, status: "Active" };
+                UpdateDraft(Payload);
+            } else if (
+                router.query.draft === undefined &&
+                router.query.id === undefined
+            ) {
+                // Save
                 SaveMutate(Payload);
             }
         }
@@ -261,12 +284,7 @@ export default function PropertyForm({
                         )}
                         <li>
                             <label>*TYPE</label>
-                            <select
-                                id=""
-                                {...register("type", {
-                                    required: "Required",
-                                })}
-                            >
+                            <select id="" {...register("type")}>
                                 <option value="Parking">Parking</option>
                                 <option value="Unit">Unit</option>
                                 <option value="Commercial">Commercial</option>
@@ -283,9 +301,7 @@ export default function PropertyForm({
                                 type="text"
                                 placeholder="---"
                                 value={isUnitCode}
-                                {...register("unit_code", {
-                                    required: "Required",
-                                })}
+                                {...register("unit_code")}
                                 onChange={(e: any) =>
                                     e.target.value.length <= 3 &&
                                     setUnitCode(e.target.value)
@@ -299,12 +315,7 @@ export default function PropertyForm({
                         </li>
                         <li>
                             <label>*CLASS</label>
-                            <select
-                                id=""
-                                {...register("class", {
-                                    required: "Required",
-                                })}
-                            >
+                            <select id="" {...register("class")}>
                                 <option value="Saleable">Saleable</option>
                                 <option value="Leaseable">Leaseable</option>
                             </select>
@@ -316,12 +327,7 @@ export default function PropertyForm({
                         </li>
                         <li>
                             <label>*ADDRESS</label>
-                            <input
-                                type="text"
-                                {...register("address", {
-                                    required: "Required",
-                                })}
-                            />
+                            <input type="text" {...register("address")} />
                             {errors.address && (
                                 <p className="text-[10px]">
                                     {errors.address.message}
@@ -349,9 +355,7 @@ export default function PropertyForm({
                             >
                                 <input
                                     type="text"
-                                    {...register("developer", {
-                                        required: "Required",
-                                    })}
+                                    {...register("developer")}
                                     autoComplete="off"
                                     onFocus={() => setDev(true)}
                                 />
@@ -386,9 +390,7 @@ export default function PropertyForm({
                                     type="text"
                                     onFocus={() => setProject(true)}
                                     autoComplete="off"
-                                    {...register("project", {
-                                        required: "Required",
-                                    })}
+                                    {...register("project")}
                                 />
                             </Tippy>
                             {errors.project && (
@@ -421,9 +423,7 @@ export default function PropertyForm({
                                     type="text"
                                     onFocus={() => setTower(true)}
                                     autoComplete="off"
-                                    {...register("tower", {
-                                        required: "Required",
-                                    })}
+                                    {...register("tower")}
                                 />
                             </Tippy>
                             {errors.tower && (
@@ -456,9 +456,7 @@ export default function PropertyForm({
                                     type="text"
                                     autoComplete="off"
                                     onFocus={() => setFloor(true)}
-                                    {...register("floor", {
-                                        required: "Required",
-                                    })}
+                                    {...register("floor")}
                                 />
                             </Tippy>
                             {errors.floor && (
@@ -469,12 +467,7 @@ export default function PropertyForm({
                         </li>
                         <li>
                             <label>*AREA</label>
-                            <input
-                                type="text"
-                                {...register("area", {
-                                    required: "Required",
-                                })}
-                            />
+                            <input type="text" {...register("area")} />
                             {errors.area && (
                                 <p className="text-[10px]">
                                     {errors.area.message}
@@ -510,6 +503,7 @@ export default function PropertyForm({
                                     {SaveDraftLoading ||
                                     SaveLoading ||
                                     UpdateLoading ||
+                                    DraftLoading ||
                                     UpdateDraftLoading ? (
                                         <ScaleLoader
                                             color="#fff"

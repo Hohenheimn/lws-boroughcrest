@@ -4,12 +4,6 @@ import SearchFilter from "../../../components/SearchFilterNew/SearchFilter";
 import PropertyTable from "../../../components/ADMIN/Property/PropertyTable";
 import Form from "../../../components/ADMIN/Property/PropertyForm";
 import { PropertyDefaultValue } from "../../../types/PropertyList";
-import {
-    PostDraftProperty,
-    PostProperty,
-} from "../../../components/ReactQuery/PropertyMethod";
-import { useForm } from "react-hook-form";
-import { useQueryClient } from "react-query";
 import { useRouter } from "next/router";
 import Draft from "../../../components/ADMIN/Property/Draft";
 
@@ -50,7 +44,9 @@ export default function Property() {
                     isSearchTable={isSearchTable}
                 />
             )}
-            {router.query.draft !== undefined && <Draft />}
+            {router.query.draft !== undefined && (
+                <Draft isSearchTable={isSearchTable} />
+            )}
         </div>
     );
 }

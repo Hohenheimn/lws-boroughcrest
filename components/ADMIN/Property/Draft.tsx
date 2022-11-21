@@ -6,7 +6,11 @@ import { GetPropertyDetail } from "../../ReactQuery/PropertyMethod";
 import style from "../../../styles/Popup_Modal.module.scss";
 import PropertyForm from "./PropertyForm";
 
-export default function Draft() {
+type Props = {
+    isSearchTable: string;
+};
+
+export default function Draft({ isSearchTable }: Props) {
     const router = useRouter();
     const id = router.query.draft;
     const { isLoading, data: getData, isError } = GetPropertyDetail(id);
@@ -66,7 +70,10 @@ export default function Draft() {
     };
     return (
         <>
-            <PropertyForm DefaultFormData={DefaultFormData} />
+            <PropertyForm
+                DefaultFormData={DefaultFormData}
+                isSearchTable={isSearchTable}
+            />
         </>
     );
 }
