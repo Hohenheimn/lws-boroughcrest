@@ -13,33 +13,37 @@ import Project from "./Project";
 import { useForm } from "react-hook-form";
 import { PropertyDefaultValue } from "../../../types/PropertyList";
 import Developer from "./Developer";
+import { ScaleLoader } from "react-spinners";
+import { useQueryClient } from "react-query";
+import {
+    PostDraftProperty,
+    PostProperty,
+    UpdateDraftProperty,
+    UpdateProperty,
+} from "../../ReactQuery/PropertyMethod";
 
 type Props = {
     DefaultFormData: PropertyDefaultValue;
+    isSearchTable?: string;
 };
 
-export default function Form({ DefaultFormData }: Props) {
+export default function PropertyForm({
+    DefaultFormData,
+    isSearchTable,
+}: Props) {
     const router = useRouter();
     const [isButton, setButton] = useState("");
+    const [isError, setError] = useState("");
     const [isProject, setProject] = useState(false);
     const [isTower, setTower] = useState(false);
     const [isFloor, setFloor] = useState(false);
     const [isDev, setDev] = useState(false);
-    const { setNewPropToggle } = useContext(AppContext);
     const [isSave, setSave] = useState(false);
+    const { setNewPropToggle, propTableRows, setPrompt } =
+        useContext(AppContext);
+
     const [FormModify, setFormModify] = useState("New");
-
     const [isUnitCode, setUnitCode] = useState(DefaultFormData.unit_code);
-
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-        reset,
-        setValue,
-    } = useForm<PropertyDefaultValue>({
-        defaultValues: DefaultFormData,
-    });
 
     const [isProjectVal, setProjectVal] = useState({
         id: DefaultFormData?.project_id,
@@ -97,7 +101,6 @@ export default function Form({ DefaultFormData }: Props) {
     };
 
     useEffect(() => {
-        setValue("class", DefaultFormData.class, { shouldValidate: true });
         if (router.query.id !== undefined) {
             setFormModify("Modify");
         }
@@ -106,7 +109,102 @@ export default function Form({ DefaultFormData }: Props) {
     const cancel = () => {
         reset();
         setNewPropToggle(false);
+        if (router.query.draft !== undefined) {
+            router.push("");
+        }
     };
+
+    // Mutation
+    const onSuccess = () => {
+        if (router.query.id !== undefined) {
+            // Update
+            queryClient.invalidateQueries([
+                "get-property-detail",
+                `${router.query.id}`,
+            ]);
+            setPrompt({
+                message: `Property Unit successfully ${
+                    isButton === "draft" ? "saved as draft" : "updated"
+                }!`,
+                type: `${isButton === "draft" ? "draft" : "success"}`,
+                toggle: true,
+            });
+        } else {
+            // Save
+            setPrompt({
+                message: `Property Unit successfully ${
+                    isButton === "draft" ? "saved as draft" : "saved"
+                }!`,
+                type: `${isButton === "draft" ? "draft" : "success"}`,
+                toggle: true,
+            });
+
+            // From draft to save
+            if (router.query.draft !== undefined) {
+                router.push("");
+                if (isButton === "new") {
+                    setNewPropToggle(true);
+                }
+            }
+        }
+        queryClient.invalidateQueries([
+            "Property-List",
+            propTableRows,
+            isSearchTable,
+        ]);
+        setUnitCode("");
+        reset();
+        if (isButton === "save" || isButton === "draft") {
+            setNewPropToggle(false);
+        }
+    };
+    const onError = (e: any) => {
+        if (e?.response?.data?.registered_email) {
+            setError("Unit code has already been registered!");
+        } else {
+            setError("Please fill out all required field!");
+        }
+
+        setPrompt({
+            message: "Something is wrong!",
+            type: "error",
+            toggle: true,
+        });
+    };
+
+    // Save Mutation
+    const { mutate: SaveMutate, isLoading: SaveLoading } = PostProperty(
+        onSuccess,
+        onError
+    );
+    const { mutate: SaveDraftMutate, isLoading: SaveDraftLoading } =
+        PostDraftProperty(onSuccess, onError);
+
+    // Update Mutation
+    const { mutate: UpdateMutate, isLoading: UpdateLoading } = UpdateProperty(
+        onSuccess,
+        onError,
+        router.query.id
+    );
+    // Update Draft
+    const { mutate: UpdateDraft, isLoading: DraftLoading } = UpdateProperty(
+        onSuccess,
+        onError,
+        router.query.draft
+    );
+    const { mutate: UpdateDraftMutate, isLoading: UpdateDraftLoading } =
+        UpdateDraftProperty(onSuccess, onError, router.query.id);
+
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+        reset,
+        setValue,
+    } = useForm<PropertyDefaultValue>({
+        defaultValues: DefaultFormData,
+    });
+    const queryClient = useQueryClient();
 
     const submit = (data: any) => {
         let Payload = {
@@ -123,18 +221,42 @@ export default function Form({ DefaultFormData }: Props) {
             tower_id: isTowerVal.id,
             floor_id: isFloorVal.id,
         };
+
         if (isButton === "draft") {
+            // Draft
             Payload = {
                 ...Payload,
                 status: "Draft",
             };
+            if (router.query.id !== undefined) {
+                // Update
+                UpdateDraftMutate(Payload);
+            } else {
+                // Save
+                SaveDraftMutate(Payload);
+            }
         } else {
+            // Save
             Payload = {
                 ...Payload,
                 status: "Active",
             };
+            if (router.query.id !== undefined) {
+                // Update
+                UpdateMutate(Payload);
+            } else if (router.query.draft !== undefined) {
+                // Update Draft
+                Payload = { ...Payload, status: "Active" };
+                UpdateDraft(Payload);
+            } else if (
+                router.query.draft === undefined &&
+                router.query.id === undefined
+            ) {
+                // Save
+                SaveMutate(Payload);
+            }
         }
-        console.log(Payload);
+        setSave(false);
     };
 
     return (
@@ -162,14 +284,10 @@ export default function Form({ DefaultFormData }: Props) {
                         )}
                         <li>
                             <label>*TYPE</label>
-                            <select
-                                id=""
-                                {...register("type", {
-                                    required: "Required",
-                                })}
-                            >
-                                <option value="sample">Sample</option>
-                                <option value="sample 1">Sample 1</option>
+                            <select id="" {...register("type")}>
+                                <option value="Parking">Parking</option>
+                                <option value="Unit">Unit</option>
+                                <option value="Commercial">Commercial</option>
                             </select>
                             {errors.type && (
                                 <p className="text-[10px]">
@@ -183,9 +301,7 @@ export default function Form({ DefaultFormData }: Props) {
                                 type="text"
                                 placeholder="---"
                                 value={isUnitCode}
-                                {...register("unit_code", {
-                                    required: "Required",
-                                })}
+                                {...register("unit_code")}
                                 onChange={(e: any) =>
                                     e.target.value.length <= 3 &&
                                     setUnitCode(e.target.value)
@@ -199,15 +315,9 @@ export default function Form({ DefaultFormData }: Props) {
                         </li>
                         <li>
                             <label>*CLASS</label>
-                            <select
-                                id=""
-                                {...register("class", {
-                                    required: "Required",
-                                })}
-                            >
-                                <option value="sample 1">Sample1</option>
-                                <option value="sample 2">Sample2</option>
-                                <option value="sample 3">Sample3</option>
+                            <select id="" {...register("class")}>
+                                <option value="Saleable">Saleable</option>
+                                <option value="Leaseable">Leaseable</option>
                             </select>
                             {errors.class && (
                                 <p className="text-[10px]">
@@ -217,12 +327,7 @@ export default function Form({ DefaultFormData }: Props) {
                         </li>
                         <li>
                             <label>*ADDRESS</label>
-                            <input
-                                type="text"
-                                {...register("address", {
-                                    required: "Required",
-                                })}
-                            />
+                            <input type="text" {...register("address")} />
                             {errors.address && (
                                 <p className="text-[10px]">
                                     {errors.address.message}
@@ -250,9 +355,7 @@ export default function Form({ DefaultFormData }: Props) {
                             >
                                 <input
                                     type="text"
-                                    {...register("developer", {
-                                        required: "Required",
-                                    })}
+                                    {...register("developer")}
                                     autoComplete="off"
                                     onFocus={() => setDev(true)}
                                 />
@@ -287,9 +390,7 @@ export default function Form({ DefaultFormData }: Props) {
                                     type="text"
                                     onFocus={() => setProject(true)}
                                     autoComplete="off"
-                                    {...register("project", {
-                                        required: "Required",
-                                    })}
+                                    {...register("project")}
                                 />
                             </Tippy>
                             {errors.project && (
@@ -322,9 +423,7 @@ export default function Form({ DefaultFormData }: Props) {
                                     type="text"
                                     onFocus={() => setTower(true)}
                                     autoComplete="off"
-                                    {...register("tower", {
-                                        required: "Required",
-                                    })}
+                                    {...register("tower")}
                                 />
                             </Tippy>
                             {errors.tower && (
@@ -357,9 +456,7 @@ export default function Form({ DefaultFormData }: Props) {
                                     type="text"
                                     autoComplete="off"
                                     onFocus={() => setFloor(true)}
-                                    {...register("floor", {
-                                        required: "Required",
-                                    })}
+                                    {...register("floor")}
                                 />
                             </Tippy>
                             {errors.floor && (
@@ -370,12 +467,7 @@ export default function Form({ DefaultFormData }: Props) {
                         </li>
                         <li>
                             <label>*AREA</label>
-                            <input
-                                type="text"
-                                {...register("area", {
-                                    required: "Required",
-                                })}
-                            />
+                            <input type="text" {...register("area")} />
                             {errors.area && (
                                 <p className="text-[10px]">
                                     {errors.area.message}
@@ -394,12 +486,13 @@ export default function Form({ DefaultFormData }: Props) {
                             <input type="date" {...register("turnover_date")} />
                         </li>
                     </ul>
+                    {isError !== "" && <p>{isError}</p>}
                     <div className={style.SaveButton}>
                         <aside className={style.back} onClick={cancel}>
                             CANCEL
                         </aside>
 
-                        <button className={style.Save}>
+                        <aside className={style.Save}>
                             <div>
                                 <button
                                     type="submit"
@@ -407,7 +500,19 @@ export default function Form({ DefaultFormData }: Props) {
                                     className={style.save_button}
                                     onClick={() => setButton("save")}
                                 >
-                                    Save
+                                    {SaveDraftLoading ||
+                                    SaveLoading ||
+                                    UpdateLoading ||
+                                    DraftLoading ||
+                                    UpdateDraftLoading ? (
+                                        <ScaleLoader
+                                            color="#fff"
+                                            height="10px"
+                                            width="2px"
+                                        />
+                                    ) : (
+                                        "SAVE"
+                                    )}
                                 </button>
                                 <aside className={style.Arrow}>
                                     <RiArrowDownSFill
@@ -424,19 +529,26 @@ export default function Form({ DefaultFormData }: Props) {
                                             SAVE & NEW
                                         </button>
                                     </li>
-                                    <li>
-                                        <button
-                                            onClick={() => setButton("draft")}
-                                        >
-                                            SAVE AS DRAFT
-                                        </button>
-                                    </li>
+                                    {router.query.draft === undefined && (
+                                        <li>
+                                            <button
+                                                onClick={() =>
+                                                    setButton("draft")
+                                                }
+                                            >
+                                                SAVE AS DRAFT
+                                            </button>
+                                        </li>
+                                    )}
                                 </ul>
                             )}
-                        </button>
+                        </aside>
                     </div>
                 </motion.div>
             </section>
         </form>
     );
+}
+function setPrompt(arg0: { message: string; type: string; toggle: boolean }) {
+    throw new Error("Function not implemented.");
 }

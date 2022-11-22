@@ -42,6 +42,71 @@ export const GetPropertyDetail = (id: any) => {
     });
 };
 
+// Create Property
+export const PostProperty = (success: any, error: any) => {
+    return useMutation(
+        (Payload: any) => {
+            return api.post("/admin/property/unit?save=1", Payload, {
+                headers: {
+                    Authorization: "Bearer " + getCookie("user"),
+                },
+            });
+        },
+        {
+            onError: error,
+            onSuccess: success,
+        }
+    );
+};
+// save as draft
+export const PostDraftProperty = (success: any, error: any) => {
+    return useMutation(
+        (Payload: any) => {
+            return api.post("/admin/property/unit?draft=1", Payload, {
+                headers: {
+                    Authorization: "Bearer " + getCookie("user"),
+                },
+            });
+        },
+        {
+            onError: error,
+            onSuccess: success,
+        }
+    );
+};
+// Update Property
+export const UpdateProperty = (success: any, error: any, id: any) => {
+    return useMutation(
+        (Payload: any) => {
+            return api.put(`/admin/property/unit/${id}?save=1`, Payload, {
+                headers: {
+                    Authorization: "Bearer " + getCookie("user"),
+                },
+            });
+        },
+        {
+            onError: error,
+            onSuccess: success,
+        }
+    );
+};
+// update as draft Property
+export const UpdateDraftProperty = (success: any, error: any, id: any) => {
+    return useMutation(
+        (Payload: any) => {
+            return api.put(`/admin/property/unit/${id}?draft=1`, Payload, {
+                headers: {
+                    Authorization: "Bearer " + getCookie("user"),
+                },
+            });
+        },
+        {
+            onError: error,
+            onSuccess: success,
+        }
+    );
+};
+
 // Create Project
 export const PostProject = (success: any, error: any) => {
     return useMutation(

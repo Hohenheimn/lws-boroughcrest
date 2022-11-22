@@ -80,7 +80,7 @@ h6 {
 }
 // Table
 .table_container {
-    @apply w-full overflow-x-auto mb-10 480px:mb-5 overflow-y-auto h-[60vh] min-h-[600px] relative shadow-lg;
+    @apply w-full overflow-x-auto mb-10 480px:mb-5 overflow-y-auto h-[60vh] min-h-[600px] relative;
 }
 .table_list {
     @apply min-w-full;
@@ -242,7 +242,7 @@ input[type="number"] {
 }
 
 .crud-container {
-    @apply overflow-y-auto max-h-[250px] p-2 pt-0 relative;
+    @apply overflow-y-auto max-h-[300px] p-2 pt-0 relative;
 }
 .crud-table {
     @apply w-[300px] static mt-2;

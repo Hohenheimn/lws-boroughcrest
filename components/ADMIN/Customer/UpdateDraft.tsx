@@ -8,17 +8,13 @@ import Image from "next/image";
 import { AiFillCamera } from "react-icons/ai";
 import {
     GetCustomerDraft,
-    GetImage,
     GetUnitCode,
-    PostCustomerSave,
     PutCustomer,
 } from "../../ReactQuery/CustomerMethod";
 import ImageVerication from "./ImageVerication";
 import { useForm } from "react-hook-form";
 import { customer } from "../../../types/customerList";
-import { BlobToFile } from "../../BlobToFile";
 import { BeatLoader, ScaleLoader } from "react-spinners";
-import { RiArrowDownSFill } from "react-icons/ri";
 import { useQueryClient } from "react-query";
 
 export default function UpdateDraft() {
@@ -34,12 +30,6 @@ export default function UpdateDraft() {
         img2: "",
         img3: "",
     });
-    // Draft File
-    const [DraftImageFile, setDraftImageFile] = useState<any>({
-        profile_file: "",
-        valid_file: "",
-        signature: "",
-    });
 
     const [status, setStatus] = useState(true);
     const [isType, setType] = useState("");
@@ -48,9 +38,6 @@ export default function UpdateDraft() {
 
     const { data, isLoading } = GetCustomerDraft(id);
     const draft = data?.data;
-    const { data: Profile } = GetImage(draft?.image_photo, draft);
-    const { data: Valid } = GetImage(draft?.image_valid_id, draft);
-    const { data: Signature } = GetImage(draft?.image_signature, draft);
 
     let tin = draft?.tin.replaceAll("-", "");
 
@@ -112,56 +99,13 @@ export default function UpdateDraft() {
                         shouldValidate: true,
                     }
                 );
-
                 setDraft({
                     ...draft,
                     _method: "PUT",
                 });
-
-                if (
-                    draft?.image_photo !== null &&
-                    draft?.image_photo !== "" &&
-                    draft?.image_photo !== undefined
-                ) {
-                    setProfileUrl(ImgUrl + draft?.image_photo);
-                    var file = BlobToFile(
-                        Profile?.data,
-                        "Profile",
-                        "image/png"
-                    );
-
-                    setDraftImageFile({
-                        ...DraftImageFile,
-                        profile_file: file,
-                    });
-                }
-                if (
-                    draft?.image_valid_id !== null &&
-                    draft?.image_valid_id !== "" &&
-                    draft?.image_valid_id !== undefined
-                ) {
-                    setValidIDUrl(ImgUrl + draft?.image_valid_id);
-                    var file = BlobToFile(Valid?.data, "Valid-ID", "image/png");
-                    setDraftImageFile({
-                        ...DraftImageFile,
-                        valid_file: file,
-                    });
-                }
-                if (
-                    draft?.image_signature !== null &&
-                    draft?.image_signature !== "" &&
-                    draft?.image_signature !== undefined
-                ) {
-                    setSignature(true);
-                    var file = BlobToFile(
-                        Signature?.data,
-                        "Signature",
-                        "image/png"
-                    );
-                    setDraftImageFile({
-                        ...DraftImageFile,
-                        Signature: file,
-                    });
+                if (!isLoading) {
+                    setProfileUrl(`${ImgUrl}${draft.image_photo}`);
+                    setValidIDUrl(`${ImgUrl}${draft.image_valid_id}`);
                 }
             }
         }
@@ -180,17 +124,15 @@ export default function UpdateDraft() {
             individual_birth_date: data?.individual_birth_date,
             individual_co_owner: data?.individual_co_owner,
             image_photo:
-                data?.image_photo.length === 1
-                    ? data?.image_photo[0]
-                    : DraftImageFile.profile_file,
+                data?.image_photo.length === 1 ? data?.image_photo[0] : "",
             image_signature:
                 data?.image_signature.length === 1
                     ? data?.image_signature[0]
-                    : DraftImageFile.signature,
+                    : "",
             image_valid_id:
                 data?.image_valid_id.length === 1
                     ? data?.image_valid_id[0]
-                    : DraftImageFile.valid_file,
+                    : "",
         });
         setActiveForm((item: boolean[]) => [
             (item[0] = false),
@@ -566,7 +508,6 @@ export default function UpdateDraft() {
                             <Property
                                 isActiveForm={isActiveForm}
                                 setActiveForm={setActiveForm}
-                                DraftImageFile={DraftImageFile}
                                 status={status}
                             />
                         )}
@@ -1122,7 +1063,7 @@ const Property = ({ isActiveForm, setActiveForm, status }: any) => {
             project: "",
         },
     ]);
-    const [unitCodeError, setUnitCodeError] = useState("");
+    const [isError, setError] = useState("");
 
     useEffect(() => {
         if (isDraft.properties.length !== 0) {
@@ -1154,7 +1095,7 @@ const Property = ({ isActiveForm, setActiveForm, status }: any) => {
             type: "success",
             toggle: true,
         }));
-        setUnitCodeError("");
+        setError("");
 
         // Reset UnitCode Array
         setProperty([
@@ -1168,6 +1109,15 @@ const Property = ({ isActiveForm, setActiveForm, status }: any) => {
     };
 
     const onError = (e: any) => {
+        if (
+            e?.response?.data?.registered_email?.includes(
+                "Customer Already Exists!"
+            )
+        ) {
+            setError("Customer Email Already Registered!");
+        } else {
+            setError("Please fill out all required field!");
+        }
         setPrompt((prev: any) => ({
             ...prev,
             message: "Something is wrong!",
@@ -1186,10 +1136,6 @@ const Property = ({ isActiveForm, setActiveForm, status }: any) => {
         const ArrayPropertyID = isProperty.map((item: any) => {
             return item?.unitCode;
         });
-        if (ArrayPropertyID.includes("")) {
-            setUnitCodeError("Cannot proceed, one of unit code is empty");
-            return;
-        }
         let Payload = { ...isDraft, unit_codes: ArrayPropertyID };
         // if Type is company, empty the field of not for company
         if (Payload.type === "Company" || Payload.type === "company") {
@@ -1248,7 +1194,6 @@ const Property = ({ isActiveForm, setActiveForm, status }: any) => {
                 formData.append(key, keyData);
             }
         });
-
         mutate(formData);
     };
 
@@ -1276,14 +1221,12 @@ const Property = ({ isActiveForm, setActiveForm, status }: any) => {
                             id={index}
                             key={index}
                             isProperty={isProperty}
-                            setUnitCodeError={setUnitCodeError}
+                            setError={setError}
                         />
                     ))}
                 </tbody>
             </table>
-            {unitCodeError !== "" && (
-                <p className={style.ErrorMsg}>{unitCodeError}</p>
-            )}
+            {isError !== "" && <p className={style.ErrorMsg}>{isError}</p>}
 
             <div className={style.SaveButton}>
                 <button
@@ -1317,13 +1260,7 @@ const Property = ({ isActiveForm, setActiveForm, status }: any) => {
         </div>
     );
 };
-const List = ({
-    detail,
-    isProperty,
-    setProperty,
-    id,
-    setUnitCodeError,
-}: any) => {
+const List = ({ detail, isProperty, setProperty, id, setError }: any) => {
     const newID = Math.random();
     const [isSelect, setSelect] = useState(false);
 
@@ -1332,7 +1269,7 @@ const List = ({
         let validate = true;
         isProperty.map((item: any) => {
             if (item?.unitCode === UnitCode) {
-                setUnitCodeError("Selected Unit Code already in the list");
+                setError("Selected Unit Code already in the list");
                 validate = false;
                 return;
             }

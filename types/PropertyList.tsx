@@ -5,15 +5,19 @@ export type property = {
     class: string;
     address: string;
     developer: {
+        id: string;
         name: string;
     };
     project: {
+        id: string;
         name: string;
     };
     tower: {
+        id: string;
         name: string;
     };
     floor: {
+        id: string;
         name: string;
     };
     area: string;

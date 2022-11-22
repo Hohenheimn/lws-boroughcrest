@@ -255,7 +255,7 @@ export default function NewIndividual({
                         <label>*CLASS</label>
                         <select
                             id=""
-                            {...register("class", { required: "Required" })}
+                            {...register("class")}
                             defaultValue={isNewCustomer.class}
                             value={isNewCustomer.class}
                             onChange={(e) =>
@@ -287,7 +287,7 @@ export default function NewIndividual({
                         <input
                             type="text"
                             className="bg-white"
-                            {...register("name", { required: "Required" })}
+                            {...register("name")}
                             value={isNewCustomer.name}
                             onChange={(e) =>
                                 setNewCustomer({
@@ -328,9 +328,7 @@ export default function NewIndividual({
                                 <input
                                     type="text"
                                     className="bg-white"
-                                    {...register("individual_citizenship", {
-                                        required: "Required",
-                                    })}
+                                    {...register("individual_citizenship")}
                                     value={isNewCustomer.individual_citizenship}
                                     onChange={(e) =>
                                         setNewCustomer({
@@ -376,7 +374,6 @@ export default function NewIndividual({
                             type="number"
                             placeholder="000000000"
                             {...register("tin", {
-                                required: "Required",
                                 minLength: {
                                     value: 9,
                                     message: "Must be 9 numbers",
@@ -406,7 +403,6 @@ export default function NewIndividual({
                             type="number"
                             placeholder="00000"
                             {...register("branch_code", {
-                                required: "Required",
                                 minLength: {
                                     value: 5,
                                     message: "Must be 5 Number",

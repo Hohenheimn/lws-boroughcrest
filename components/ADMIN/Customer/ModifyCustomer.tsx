@@ -377,7 +377,7 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
                         <select
                             id=""
                             defaultValue={isModifyCustomer.class}
-                            {...register("class", { required: "Required" })}
+                            {...register("class")}
                         >
                             <option value={isModifyCustomer.class} disabled>
                                 {isModifyCustomer.class}
@@ -402,7 +402,7 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
                         <input
                             type="text"
                             className="bg-white"
-                            {...register("name", { required: "Required" })}
+                            {...register("name")}
                         />
                         {errors.name && (
                             <p className="text-[10px]">{errors.name.message}</p>
@@ -429,9 +429,7 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
                                 <input
                                     type="text"
                                     className="bg-white"
-                                    {...register("individual_citizenship", {
-                                        required: "Required",
-                                    })}
+                                    {...register("individual_citizenship")}
                                 />
                                 {errors.individual_citizenship && (
                                     <p className="text-[10px]">
@@ -445,9 +443,7 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
                                 <input
                                     type="date"
                                     className="bg-white"
-                                    {...register("individual_birth_date", {
-                                        required: "Required",
-                                    })}
+                                    {...register("individual_birth_date")}
                                 />
                                 {errors.individual_birth_date && (
                                     <p className="text-[10px]">
@@ -462,7 +458,6 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
                         <input
                             type="number"
                             {...register("tin", {
-                                required: "Required",
                                 minLength: {
                                     value: 9,
                                     message: "Must be 9 numbers only",
@@ -490,7 +485,6 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
                         <input
                             type="number"
                             {...register("branch_code", {
-                                required: "Required",
                                 minLength: {
                                     value: 5,
                                     message: "Must be 5 Number",
@@ -631,6 +625,8 @@ const Contact = ({
             )
         ) {
             setError("Customer Email Already Registered!");
+        } else {
+            setError("Please fill out all required field!");
         }
         setPrompt((prev: any) => ({
             ...prev,
@@ -810,7 +806,6 @@ const Contact = ({
                         <input
                             type="text"
                             {...register("contact_no", {
-                                required: "Required",
                                 minLength: {
                                     value: 11,
                                     message: "Must be 11 Numbers",
@@ -843,9 +838,7 @@ const Contact = ({
                         <label>*REGISTERED-EMAIL</label>
                         <input
                             type="email"
-                            {...register("registered_email", {
-                                required: "Required",
-                            })}
+                            {...register("registered_email")}
                             value={isModifyCustomer.registered_email}
                             onChange={(e) =>
                                 setModifyCustomer({
@@ -862,12 +855,7 @@ const Contact = ({
                     </li>
                     <li>
                         <label>*PREFERED EMAIL</label>
-                        <input
-                            type="email"
-                            {...register("preferred_email", {
-                                required: "Required",
-                            })}
-                        />
+                        <input type="email" {...register("preferred_email")} />
                         {errors.preferred_email && (
                             <p className="text-[10px]">
                                 {errors.preferred_email.message}
@@ -891,9 +879,7 @@ const Contact = ({
                             <label>*CONTACT PERSON</label>
                             <input
                                 type="text"
-                                {...register("company_contact_person", {
-                                    required: "Required",
-                                })}
+                                {...register("company_contact_person")}
                                 // isNewCustomer.registered_email
                                 value={isModifyCustomer.company_contact_person}
                                 onChange={(e) =>
@@ -918,9 +904,7 @@ const Contact = ({
                         <label>*UNIT/FLOOR/HOUSE NO.</label>
                         <input
                             type="text"
-                            {...register("registered_address_unit_floor", {
-                                required: "Required",
-                            })}
+                            {...register("registered_address_unit_floor")}
                             value={
                                 isModifyCustomer.registered_address_unit_floor
                             }
@@ -942,9 +926,7 @@ const Contact = ({
                         <label>*BUILDING</label>
                         <input
                             type="text"
-                            {...register("registered_address_building", {
-                                required: "Required",
-                            })}
+                            {...register("registered_address_building")}
                             value={isModifyCustomer.registered_address_building}
                             onChange={(e) =>
                                 setModifyCustomer({
@@ -963,9 +945,7 @@ const Contact = ({
                         <label>*STREET</label>
                         <input
                             type="text"
-                            {...register("registered_address_street", {
-                                required: "Required",
-                            })}
+                            {...register("registered_address_street")}
                             value={isModifyCustomer.registered_address_street}
                             onChange={(e) =>
                                 setModifyCustomer({
@@ -984,9 +964,7 @@ const Contact = ({
                         <label>*DISTRICT</label>
                         <input
                             type="text"
-                            {...register("registered_address_district", {
-                                required: "Required",
-                            })}
+                            {...register("registered_address_district")}
                             value={isModifyCustomer.registered_address_district}
                             onChange={(e) =>
                                 setModifyCustomer({
@@ -1005,9 +983,7 @@ const Contact = ({
                         <label>*MUNICIPALITY CITY</label>
                         <input
                             type="text"
-                            {...register("registered_address_municipal_city", {
-                                required: "Required",
-                            })}
+                            {...register("registered_address_municipal_city")}
                             value={
                                 isModifyCustomer.registered_address_municipal_city
                             }
@@ -1032,9 +1008,7 @@ const Contact = ({
                         <label>*PROVINCE</label>
                         <input
                             type="text"
-                            {...register("registered_address_province", {
-                                required: "Required",
-                            })}
+                            {...register("registered_address_province")}
                             value={isModifyCustomer.registered_address_province}
                             onChange={(e) =>
                                 setModifyCustomer({
@@ -1054,7 +1028,6 @@ const Contact = ({
                         <input
                             type="number"
                             {...register("registered_address_zip_code", {
-                                required: "Required",
                                 maxLength: {
                                     value: 4,
                                     message: "Must be 4 number",

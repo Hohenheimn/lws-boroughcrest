@@ -147,7 +147,6 @@ export default function NewContactInfo({
                         <input
                             type="number"
                             {...register("contact_no", {
-                                required: "Required",
                                 minLength: {
                                     value: 11,
                                     message: "Must be 11 Numbers",
@@ -180,9 +179,7 @@ export default function NewContactInfo({
                         <label>*REGISTERED-EMAIL</label>
                         <input
                             type="email"
-                            {...register("registered_email", {
-                                required: "Required",
-                            })}
+                            {...register("registered_email")}
                             value={isNewCustomer.registered_email}
                             onChange={(e) =>
                                 setNewCustomer({
@@ -199,12 +196,7 @@ export default function NewContactInfo({
                     </li>
                     <li>
                         <label>*PREFERED EMAIL</label>
-                        <input
-                            type="email"
-                            {...register("preferred_email", {
-                                required: "Required",
-                            })}
-                        />
+                        <input type="email" {...register("preferred_email")} />
                         {errors.preferred_email && (
                             <p className="text-[10px]">
                                 {errors.preferred_email.message}
@@ -253,9 +245,7 @@ export default function NewContactInfo({
                         <label>*UNIT/FLOOR/HOUSE NO.</label>
                         <input
                             type="text"
-                            {...register("registered_address_unit_floor", {
-                                required: "Required",
-                            })}
+                            {...register("registered_address_unit_floor")}
                             value={isNewCustomer.registered_address_unit_floor}
                             onChange={(e) =>
                                 setNewCustomer({
@@ -275,9 +265,7 @@ export default function NewContactInfo({
                         <label>*BUILDING</label>
                         <input
                             type="text"
-                            {...register("registered_address_building", {
-                                required: "Required",
-                            })}
+                            {...register("registered_address_building")}
                             value={isNewCustomer.registered_address_building}
                             onChange={(e) =>
                                 setNewCustomer({
@@ -296,9 +284,7 @@ export default function NewContactInfo({
                         <label>*STREET</label>
                         <input
                             type="text"
-                            {...register("registered_address_street", {
-                                required: "Required",
-                            })}
+                            {...register("registered_address_street")}
                             value={isNewCustomer.registered_address_street}
                             onChange={(e) =>
                                 setNewCustomer({
@@ -317,9 +303,7 @@ export default function NewContactInfo({
                         <label>*DISTRICT</label>
                         <input
                             type="text"
-                            {...register("registered_address_district", {
-                                required: "Required",
-                            })}
+                            {...register("registered_address_district")}
                             value={isNewCustomer.registered_address_district}
                             onChange={(e) =>
                                 setNewCustomer({
@@ -338,9 +322,7 @@ export default function NewContactInfo({
                         <label>*MUNICIPALITY CITY</label>
                         <input
                             type="text"
-                            {...register("registered_address_municipal_city", {
-                                required: "Required",
-                            })}
+                            {...register("registered_address_municipal_city")}
                             value={
                                 isNewCustomer.registered_address_municipal_city
                             }
@@ -365,9 +347,7 @@ export default function NewContactInfo({
                         <label>*PROVINCE</label>
                         <input
                             type="text"
-                            {...register("registered_address_province", {
-                                required: "Required",
-                            })}
+                            {...register("registered_address_province")}
                             value={isNewCustomer.registered_address_province}
                             onChange={(e) =>
                                 setNewCustomer({
@@ -387,7 +367,6 @@ export default function NewContactInfo({
                         <input
                             type="number"
                             {...register("registered_address_zip_code", {
-                                required: "Required",
                                 maxLength: {
                                     value: 4,
                                     message: "Must be 4 number",

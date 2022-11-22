@@ -4,20 +4,46 @@ import Image from "next/image";
 import style from "../../../styles/Project/PropertyDetails.module.scss";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
-import Form from "./Form";
+import PropertyForm from "./PropertyForm";
 import AppContext from "../../Context/AppContext";
-import { property } from "../../../types/PropertyList";
+import { property, PropertyDefaultValue } from "../../../types/PropertyList";
+import {
+    PostDraftProperty,
+    PostProperty,
+} from "../../ReactQuery/PropertyMethod";
 
 type Props = {
     data: property;
 };
 
 export default function PropertyDetails({ data }: Props) {
-    const { newPropToggle, setNewPropToggle } = useContext(AppContext);
+    const { newPropToggle, setNewPropToggle, setPrompt } =
+        useContext(AppContext);
+
+    const DefaultFormData: PropertyDefaultValue = {
+        unit_code: data?.unit_code,
+        address: data?.address,
+        area: data?.area,
+        class: data?.class,
+        type: data?.type,
+        acceptance_date: data?.acceptance_date,
+        turnover_date: data?.turnover_date,
+        status: data?.status,
+        developer_id: data?.developer?.id,
+        project_id: data?.project?.id,
+        tower_id: data?.tower?.id,
+        floor_id: data?.floor?.id,
+        project: data?.project?.name,
+        tower: data?.tower?.name,
+        floor: data?.floor?.name,
+        developer: data?.developer?.name,
+    };
 
     return (
         <div>
-            {newPropToggle && <Form />}
+            {newPropToggle && (
+                <PropertyForm DefaultFormData={DefaultFormData} />
+            )}
             <h1 className="pageTitle mb-5">Property Details</h1>
             <ul className={style.FourRows}>
                 <aside>

@@ -15,7 +15,8 @@ export default function NewPropertyInfo({
     isActiveForm,
 }: NewPropertyInfo) {
     const [whichSaveBtn, setWhichSaveBtn] = useState("");
-    const [unitCodeError, setUnitCodeError] = useState("");
+    const [isError, setError] = useState("");
+
     const {
         isNewCustomer,
         setNewCustomer,
@@ -54,7 +55,7 @@ export default function NewPropertyInfo({
         // Reset Customer Fields
         setNewCustomer({ ...NewCustomerDefault });
         // Reset Unicode Error
-        setUnitCodeError("");
+        setError("");
         // Close Save button
         setSave(false);
         // Reset UnitCode Array
@@ -79,7 +80,9 @@ export default function NewPropertyInfo({
                 "Customer Already Exists!"
             )
         ) {
-            setUnitCodeError("Customer Email Already Registered!");
+            setError("Customer Email Already Registered!");
+        } else {
+            setError("Please fill out all required field!");
         }
         setPrompt((prev: any) => ({
             ...prev,
@@ -228,14 +231,12 @@ export default function NewPropertyInfo({
                             id={index}
                             key={index}
                             isProperty={isProperty}
-                            setUnitCodeError={setUnitCodeError}
+                            setUnitCodeError={setError}
                         />
                     ))}
                 </tbody>
             </table>
-            {unitCodeError !== "" && (
-                <p className={style.ErrorMsg}>{unitCodeError}</p>
-            )}
+            {isError !== "" && <p className={style.ErrorMsg}>{isError}</p>}
 
             <div className={style.SaveButton}>
                 <button className={style.back} onClick={Back}>
