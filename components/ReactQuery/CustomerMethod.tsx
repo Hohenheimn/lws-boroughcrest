@@ -83,6 +83,7 @@ export const PutCustomer = (onSuccess: any, onError: any, id: any) => {
         },
         {
             onSuccess: onSuccess,
+            onError: onError,
         }
     );
 };

@@ -354,6 +354,8 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
         handleSubmit,
         reset: ResetContactForm,
         formState: { errors },
+        watch,
+        setValue,
     } = useForm<secondCorporateForm>({
         defaultValues: {
             email: createCorporate.email,
@@ -478,6 +480,8 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                             <input
                                 type="number"
                                 placeholder="09"
+                                maxLength={11}
+                                value={createCorporate.contact_no}
                                 {...register("contact_no", {
                                     required: "Required",
                                     minLength: {
@@ -492,16 +496,22 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                                         value: /^(09)\d{9}$/,
                                         message: "Invalid Contact Number",
                                     },
+
+                                    onChange: (e) => {
+                                        if (e.target.value.length <= 11) {
+                                            setValue(
+                                                "contact_no",
+                                                e.target.value
+                                            );
+                                            setCreateCorporate({
+                                                ...createCorporate,
+                                                contact_no: e.target.value,
+                                            });
+                                        }
+                                    },
                                 })}
-                                value={createCorporate.contact_no}
-                                onChange={(e) =>
-                                    e.target.value.length <= 11 &&
-                                    setCreateCorporate({
-                                        ...createCorporate,
-                                        contact_no: e.target.value,
-                                    })
-                                }
                             />
+
                             <span>*Official</span>
                         </aside>
                         {errors.contact_no && (
@@ -511,7 +521,8 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                         )}
                         <input
                             type="number"
-                            // placeholder="09"
+                            placeholder="09"
+                            value={createCorporate.alt_contact_no}
                             {...register("alt_contact_no", {
                                 minLength: {
                                     value: 11,
@@ -521,15 +532,19 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                                     value: 11,
                                     message: "Must be 11 Number",
                                 },
+                                onChange: (e) => {
+                                    if (e.target.value.length <= 11) {
+                                        setValue(
+                                            "alt_contact_no",
+                                            e.target.value
+                                        );
+                                        setCreateCorporate({
+                                            ...createCorporate,
+                                            alt_contact_no: e.target.value,
+                                        });
+                                    }
+                                },
                             })}
-                            value={createCorporate.alt_contact_no}
-                            onChange={(e) =>
-                                e.target.value.length <= 11 &&
-                                setCreateCorporate({
-                                    ...createCorporate,
-                                    alt_contact_no: e.target.value,
-                                })
-                            }
                         />
                         {errors.alt_contact_no && (
                             <p className="text-[10px]">
@@ -549,6 +564,13 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                                 type="email"
                                 {...register("email", {
                                     required: "Required",
+                                    onChange: (e) => {
+                                        setValue("email", e.target.value);
+                                        setCreateCorporate({
+                                            ...createCorporate,
+                                            email: e.target.value,
+                                        });
+                                    },
                                 })}
                                 required
                                 value={createCorporate.email}
@@ -568,14 +590,16 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                         )}
                         <input
                             type="email"
-                            {...register("alt_email", {})}
+                            {...register("alt_email", {
+                                onChange: (e) => {
+                                    setValue("alt_email", e.target.value);
+                                    setCreateCorporate({
+                                        ...createCorporate,
+                                        alt_email: e.target.value,
+                                    });
+                                },
+                            })}
                             value={createCorporate.alt_email}
-                            onChange={(e) =>
-                                setCreateCorporate({
-                                    ...createCorporate,
-                                    alt_email: e.target.value,
-                                })
-                            }
                         />
                         {errors.alt_email && (
                             <p className="text-[10px]">
@@ -597,14 +621,18 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                             type="text"
                             {...register("address_unit_floor", {
                                 required: "Required",
+                                onChange: (e) => {
+                                    setCreateCorporate({
+                                        ...createCorporate,
+                                        address_unit_floor: e.target.value,
+                                    });
+                                    setValue(
+                                        "address_unit_floor",
+                                        e.target.value
+                                    );
+                                },
                             })}
                             value={createCorporate.address_unit_floor}
-                            onChange={(e) =>
-                                setCreateCorporate({
-                                    ...createCorporate,
-                                    address_unit_floor: e.target.value,
-                                })
-                            }
                         />
                         {errors.address_unit_floor && (
                             <p className="text-[10px]">
@@ -618,14 +646,18 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                             type="text"
                             {...register("address_building", {
                                 required: "Required",
+                                onChange: (e) => {
+                                    setCreateCorporate({
+                                        ...createCorporate,
+                                        address_building: e.target.value,
+                                    });
+                                    setValue(
+                                        "address_building",
+                                        e.target.value
+                                    );
+                                },
                             })}
                             value={createCorporate.address_building}
-                            onChange={(e) =>
-                                setCreateCorporate({
-                                    ...createCorporate,
-                                    address_building: e.target.value,
-                                })
-                            }
                         />
                         {errors.address_building && (
                             <p className="text-[10px]">
@@ -639,14 +671,15 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                             type="text"
                             {...register("address_street", {
                                 required: "Required",
+                                onChange: (e) => {
+                                    setCreateCorporate({
+                                        ...createCorporate,
+                                        address_street: e.target.value,
+                                    });
+                                    setValue("address_street", e.target.value);
+                                },
                             })}
                             value={createCorporate.address_street}
-                            onChange={(e) =>
-                                setCreateCorporate({
-                                    ...createCorporate,
-                                    address_street: e.target.value,
-                                })
-                            }
                         />
                         {errors.address_street && (
                             <p className="text-[10px]">
@@ -660,14 +693,18 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                             type="text"
                             {...register("address_district", {
                                 required: "Required",
+                                onChange: (e) => {
+                                    setCreateCorporate({
+                                        ...createCorporate,
+                                        address_district: e.target.value,
+                                    });
+                                    setValue(
+                                        "address_district",
+                                        e.target.value
+                                    );
+                                },
                             })}
                             value={createCorporate.address_district}
-                            onChange={(e) =>
-                                setCreateCorporate({
-                                    ...createCorporate,
-                                    address_district: e.target.value,
-                                })
-                            }
                         />
                         {errors.address_district && (
                             <p className="text-[10px]">
@@ -681,14 +718,18 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                             type="text"
                             {...register("address_municipal_city", {
                                 required: "Required",
+                                onChange: (e) => {
+                                    setCreateCorporate({
+                                        ...createCorporate,
+                                        address_municipal_city: e.target.value,
+                                    });
+                                    setValue(
+                                        "address_municipal_city",
+                                        e.target.value
+                                    );
+                                },
                             })}
                             value={createCorporate.address_municipal_city}
-                            onChange={(e) =>
-                                setCreateCorporate({
-                                    ...createCorporate,
-                                    address_municipal_city: e.target.value,
-                                })
-                            }
                         />
                         {errors.address_municipal_city && (
                             <p className="text-[10px]">
@@ -702,14 +743,18 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                             type="text"
                             {...register("address_province", {
                                 required: "Required",
+                                onChange: (e) => {
+                                    setCreateCorporate({
+                                        ...createCorporate,
+                                        address_province: e.target.value,
+                                    });
+                                    setValue(
+                                        "address_province",
+                                        e.target.value
+                                    );
+                                },
                             })}
                             value={createCorporate.address_province}
-                            onChange={(e) =>
-                                setCreateCorporate({
-                                    ...createCorporate,
-                                    address_province: e.target.value,
-                                })
-                            }
                         />
                         {errors.address_province && (
                             <p className="text-[10px]">
@@ -731,14 +776,18 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                                     value: 4,
                                     message: "Must be 4 Numbers",
                                 },
+                                onChange: (e) => {
+                                    setCreateCorporate({
+                                        ...createCorporate,
+                                        address_zip_code: e.target.value,
+                                    });
+                                    setValue(
+                                        "address_zip_code",
+                                        e.target.value
+                                    );
+                                },
                             })}
                             value={createCorporate.address_zip_code}
-                            onChange={(e) =>
-                                setCreateCorporate({
-                                    ...createCorporate,
-                                    address_zip_code: e.target.value,
-                                })
-                            }
                         />
                         {errors.address_zip_code && (
                             <p className="text-[10px]">

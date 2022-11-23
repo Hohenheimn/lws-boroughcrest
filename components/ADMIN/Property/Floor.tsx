@@ -57,7 +57,6 @@ const Floor = ({ set, update, is, isValID }: any) => {
     useEffect(() => {
         if (data?.status === 200) {
             const cloneArray = data?.data.map((item: any) => {
-                console.log(item.tower.name);
                 return {
                     id: item.id,
                     displayId: item.assigned_floor_id,
@@ -181,7 +180,6 @@ const List = ({
     };
     // Second Field Dropdown Update Value base on selected item
     const updateVal = (value: any, id: any) => {
-        console.log(value + id);
         const newItems = isArray.map((item: any) => {
             if (itemDetail.id == item.id) {
                 return {

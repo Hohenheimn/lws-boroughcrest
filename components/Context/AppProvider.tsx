@@ -45,6 +45,23 @@ export default function AppProvider({ children }: AppProvider) {
     });
 
     // Customer Context
+    const ErrorDefault = {
+        class: "",
+        contact_no: "",
+        name: "",
+        registered_address_building: "",
+        registered_address_district: "",
+        registered_address_municipal_city: "",
+        registered_address_province: "",
+        registered_address_street: "",
+        registered_address_unit_floor: "",
+        registered_address_zip_code: "",
+        registered_email: "",
+        preferred_email: "",
+    };
+    const [CusError, setCusError] = useState({
+        ...ErrorDefault,
+    });
     const [isType, setType] = useState<string>("");
     const [cusProfileUrl, setCusProfileUrl] = useState(
         "/Images/sampleProfile.png"
@@ -233,6 +250,9 @@ export default function AppProvider({ children }: AppProvider) {
                 setNewUserToggle,
                 newPropToggle,
                 setNewPropToggle,
+                CusError,
+                setCusError,
+                ErrorDefault,
             }}
         >
             {children}

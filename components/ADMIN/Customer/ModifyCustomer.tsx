@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { AiFillCamera } from "react-icons/ai";
 import Image from "next/image";
 import style from "../../../styles/Popup_Modal.module.scss";
@@ -555,32 +555,18 @@ const Contact = ({
             preferred_email: isModifyCustomer.preferred_email,
             MA: {
                 mailing_address_unit_floor:
-                    isModifyCustomer.mailing_address_unit_floor
-                        ? ""
-                        : isModifyCustomer.mailing_address_unit_floor,
+                    isModifyCustomer.mailing_address_unit_floor,
                 mailing_address_building:
-                    isModifyCustomer.mailing_address_building
-                        ? ""
-                        : isModifyCustomer.mailing_address_building,
-                mailing_address_street: isModifyCustomer.mailing_address_street
-                    ? ""
-                    : isModifyCustomer.mailing_address_street,
+                    isModifyCustomer.mailing_address_building,
+                mailing_address_street: isModifyCustomer.mailing_address_street,
                 mailing_address_district:
-                    isModifyCustomer.mailing_address_district
-                        ? ""
-                        : isModifyCustomer.mailing_address_district,
+                    isModifyCustomer.mailing_address_district,
                 mailing_address_municipal_city:
-                    isModifyCustomer.mailing_address_municipal_city
-                        ? ""
-                        : isModifyCustomer.mailing_address_municipal_city,
+                    isModifyCustomer.mailing_address_municipal_city,
                 mailing_address_province:
-                    isModifyCustomer.mailing_address_province
-                        ? ""
-                        : isModifyCustomer.mailing_address_province,
+                    isModifyCustomer.mailing_address_province,
                 mailing_address_zip_code:
-                    isModifyCustomer.mailing_address_zip_code
-                        ? ""
-                        : isModifyCustomer.mailing_address_zip_code,
+                    isModifyCustomer.mailing_address_zip_code,
             },
         },
     });
@@ -630,7 +616,7 @@ const Contact = ({
         }
         setPrompt((prev: any) => ({
             ...prev,
-            message: "Something is wrong!",
+            message: isError === "" ? "Something is wrong!" : isError,
             type: "error",
             toggle: true,
         }));
@@ -743,7 +729,6 @@ const Contact = ({
     };
     const sameAddress = () => {
         setSameAddress(!isSameAddress);
-        console.log(isModifyCustomer.mailing_address_building);
         if (!isSameAddress) {
             setValue(
                 "MA",

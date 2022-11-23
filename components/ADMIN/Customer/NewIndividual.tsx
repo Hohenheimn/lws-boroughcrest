@@ -20,8 +20,15 @@ export default function NewIndividual({
     const [isProfileUrl, setProfileUrl] = useState("/Images/sampleProfile.png");
     const [isValidIDUrl, setValidIDUrl] = useState("/Images/id-sample.png");
     const [isSignature, setSignature] = useState(false);
-    const { setCusToggle, isNewCustomer, setNewCustomer, cusReset } =
-        useContext(AppContext);
+    const {
+        setCusToggle,
+        isNewCustomer,
+        setNewCustomer,
+        cusReset,
+        CusError,
+        setCusError,
+        ErrorDefault,
+    } = useContext(AppContext);
     const [imgError, setImgError] = useState({
         img1: "",
         img2: "",
@@ -276,10 +283,8 @@ export default function NewIndividual({
                             <option value="owner">Owner</option>
                             <option value="tenant">Tenant</option>
                         </select>
-                        {errors.class && (
-                            <p className="text-[10px]">
-                                {errors.class.message}
-                            </p>
+                        {CusError?.class !== "" && (
+                            <p className="text-[10px]">{CusError?.class}</p>
                         )}
                     </li>
                     <li>
@@ -296,8 +301,8 @@ export default function NewIndividual({
                                 })
                             }
                         />
-                        {errors.name && (
-                            <p className="text-[10px]">{errors.name.message}</p>
+                        {CusError?.name !== "" && (
+                            <p className="text-[10px]">{CusError?.name}</p>
                         )}
                     </li>
                     {(isType === "individual" || isType === "Individual") && (
@@ -316,11 +321,6 @@ export default function NewIndividual({
                                         })
                                     }
                                 />
-                                {errors.individual_co_owner && (
-                                    <p className="text-[10px]">
-                                        {errors.individual_co_owner.message}
-                                    </p>
-                                )}
                             </li>
 
                             <li>
@@ -338,9 +338,9 @@ export default function NewIndividual({
                                         })
                                     }
                                 />
-                                {errors.individual_citizenship && (
+                                {CusError?.individual_citizenship !== "" && (
                                     <p className="text-[10px]">
-                                        {errors.individual_citizenship.message}
+                                        {CusError?.individual_citizenship}
                                     </p>
                                 )}
                             </li>
@@ -360,16 +360,13 @@ export default function NewIndividual({
                                         })
                                     }
                                 />
-                                {errors.individual_birth_date && (
-                                    <p className="text-[10px]">
-                                        {errors.individual_birth_date.message}
-                                    </p>
-                                )}
                             </li>
                         </>
                     )}
                     <li>
-                        <label>*TIN Number</label>
+                        <label>
+                            {isType === "company" ? "*" : ""}TIN Number
+                        </label>
                         <input
                             type="number"
                             placeholder="000000000"
@@ -396,9 +393,14 @@ export default function NewIndividual({
                         {errors.tin && (
                             <p className="text-[10px]">{errors.tin.message}</p>
                         )}
+                        {CusError?.tin !== "" && (
+                            <p className="text-[10px]">{CusError?.tin}</p>
+                        )}
                     </li>
                     <li>
-                        <label>*Branch Code</label>
+                        <label>
+                            {isType === "company" ? "*" : ""}Branch Code
+                        </label>
                         <input
                             type="number"
                             placeholder="00000"
@@ -427,12 +429,20 @@ export default function NewIndividual({
                                 {errors.branch_code.message}
                             </p>
                         )}
+                        {CusError?.branch_code !== "" && (
+                            <p className="text-[10px]">
+                                {CusError?.branch_code}
+                            </p>
+                        )}
                     </li>
                 </ul>
 
                 <div className=" w-full flex justify-end items-center">
                     <aside
-                        onClick={() => setCusToggle(false)}
+                        onClick={() => {
+                            setCusToggle(false);
+                            setCusError({ ...ErrorDefault });
+                        }}
                         className=" text-ThemeRed font-semibold text-[14px] mr-5 cursor-pointer"
                     >
                         CANCEL

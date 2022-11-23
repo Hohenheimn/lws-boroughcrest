@@ -36,7 +36,6 @@ export default function Developer({ set, update, isValID }: any) {
                         className={`${isValID == item.id ? style.active : ""}`}
                     >
                         {item.name}
-                        {console.log(isValID + " " + item.id)}
                     </li>
                 ))}
             </ul>

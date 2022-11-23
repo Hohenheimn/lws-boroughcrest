@@ -166,7 +166,7 @@ export default function PropertyForm({
         }
 
         setPrompt({
-            message: "Something is wrong!",
+            message: isError === "" ? "Something is wrong!" : isError,
             type: "error",
             toggle: true,
         });
