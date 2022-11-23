@@ -102,19 +102,42 @@ h6 {
         tr {
             @apply border-b border-gray-300 cursor-pointer relative;
             td {
+                @apply py-1;
                 .item {
                     @apply flex items-center px-4 py-4 480px:py-2 480px:px-2;
                     aside {
                         @apply w-10 h-10 480px:w-8 480px:h-8 rounded-full overflow-hidden relative shadow-lg mr-3;
                     }
                     h2 {
-                        @apply text-[#2E4364] font-NHU-medium 480px:text-[12px] border-r-2 border-[#2E4364] pr-1 mr-1 mb-1;
-                    }
-                    h2:nth-last-child(1) {
-                        @apply border-none  pr-0 mr-0 mb-0;
+                        @apply text-[#2E4364] font-NHU-medium  480px:text-[12px] pr-1 mr-1;
+                        line-height: 70%;
                     }
                     p {
                         @apply text-[#2E4364] font-NHU-medium 480px:text-[12px];
+                    }
+                }
+                .property {
+                    @apply flex flex-wrap text-[#2e4364];
+                    .property-container {
+                        @apply flex w-full mb-3;
+                        .half {
+                            @apply w-2/4;
+                            div {
+                                h2 {
+                                    @apply text-[#2E4364] font-NHU-medium  480px:text-[12px] pr-1 mr-1;
+                                    line-height: 70%;
+                                }
+                                h2.unitCode {
+                                    @apply w-10 text-center border-r-[1px] border-gray-400;
+                                }
+                                h2.unitCode:nth-last-child(1) {
+                                    @apply border-none;
+                                }
+                            }
+                        }
+                    }
+                    .property-container:nth-last-child(1) {
+                        @apply mb-0;
                     }
                 }
             }

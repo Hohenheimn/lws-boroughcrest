@@ -293,10 +293,10 @@ export default function UpdateDraft() {
                                 </li>
                                 <li className="  flex flex-col  w-4/12 820px:w-2/4 480px:w-full mb-5 justify-center items-end">
                                     <label
-                                        className="text-[12px] font-NHU-medium uppercase cursor-pointer w-[90%] 480px:w-full"
+                                        className="text-[12px] font-NHU-regular uppercase cursor-pointer w-[90%] 480px:w-full"
                                         htmlFor="file"
                                     >
-                                        Upload Signature
+                                        <div>Upload Signature</div>
                                     </label>
                                     {imgError.img3 !== "" && (
                                         <p className="text-[12px]">
@@ -1309,6 +1309,7 @@ const Property = ({ isActiveForm, setActiveForm, status }: any) => {
 };
 const List = ({ detail, isProperty, setProperty, id, setError }: any) => {
     const newID = Math.random();
+    const { setPrompt } = useContext(AppContext);
     const [isSelect, setSelect] = useState(false);
 
     const updateValue = (event: any) => {
@@ -1316,7 +1317,11 @@ const List = ({ detail, isProperty, setProperty, id, setError }: any) => {
         let validate = true;
         isProperty.map((item: any) => {
             if (item?.unitCode === UnitCode) {
-                setError("Selected Unit Code already in the list");
+                setPrompt({
+                    message: "Selected Unit Code already in the list!",
+                    type: "error",
+                    toggle: true,
+                });
                 validate = false;
                 return;
             }

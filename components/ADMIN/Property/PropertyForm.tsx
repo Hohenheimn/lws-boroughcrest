@@ -33,7 +33,20 @@ export default function PropertyForm({
 }: Props) {
     const router = useRouter();
     const [isButton, setButton] = useState("");
-    const [isError, setError] = useState("");
+    const ErrorDefault = {
+        area: "",
+        class: "",
+        developer_id: "",
+        floor_id: "",
+        project_id: "",
+        tower_id: "",
+        type: "",
+        unit_code: "",
+        address: "",
+    };
+    const [isError, setError] = useState({
+        ...ErrorDefault,
+    });
     const [isProject, setProject] = useState(false);
     const [isTower, setTower] = useState(false);
     const [isFloor, setFloor] = useState(false);
@@ -108,6 +121,7 @@ export default function PropertyForm({
 
     const cancel = () => {
         reset();
+        setError({ ...ErrorDefault });
         setNewPropToggle(false);
         if (router.query.draft !== undefined) {
             router.push("");
@@ -116,6 +130,14 @@ export default function PropertyForm({
 
     // Mutation
     const onSuccess = () => {
+        queryClient.invalidateQueries([
+            "Property-List",
+            propTableRows,
+            isSearchTable,
+        ]);
+        setError({ ...ErrorDefault });
+        setUnitCode("");
+        reset();
         if (router.query.id !== undefined) {
             // Update
             queryClient.invalidateQueries([
@@ -147,29 +169,25 @@ export default function PropertyForm({
                 }
             }
         }
-        queryClient.invalidateQueries([
-            "Property-List",
-            propTableRows,
-            isSearchTable,
-        ]);
-        setUnitCode("");
-        reset();
         if (isButton === "save" || isButton === "draft") {
             setNewPropToggle(false);
         }
     };
     const onError = (e: any) => {
-        if (e?.response?.data?.registered_email) {
-            setError("Unit code has already been registered!");
+        const ErrorField = e.response.data;
+        let message: any;
+        if (ErrorField > 0 || ErrorField !== null || ErrorField !== undefined) {
+            setError({ ...ErrorField });
+            message = "Please check all the fields!";
         } else {
-            setError("Please fill out all required field!");
+            message = "Something is wrong!";
         }
-
-        setPrompt({
-            message: isError === "" ? "Something is wrong!" : isError,
+        setPrompt((prev: any) => ({
+            ...prev,
+            message: message,
             type: "error",
             toggle: true,
-        });
+        }));
     };
 
     // Save Mutation
@@ -294,6 +312,9 @@ export default function PropertyForm({
                                     {errors.type.message}
                                 </p>
                             )}
+                            {isError.type !== "" && (
+                                <p className="text-[10px]">{isError.type}</p>
+                            )}
                         </li>
                         <li>
                             <label>*UNIT CODE</label>
@@ -312,6 +333,11 @@ export default function PropertyForm({
                                     {errors.unit_code.message}
                                 </p>
                             )}
+                            {isError.unit_code !== "" && (
+                                <p className="text-[10px]">
+                                    {isError.unit_code}
+                                </p>
+                            )}
                         </li>
                         <li>
                             <label>*CLASS</label>
@@ -324,6 +350,9 @@ export default function PropertyForm({
                                     {errors.class.message}
                                 </p>
                             )}
+                            {isError.class !== "" && (
+                                <p className="text-[10px]">{isError.class}</p>
+                            )}
                         </li>
                         <li>
                             <label>*ADDRESS</label>
@@ -332,6 +361,9 @@ export default function PropertyForm({
                                 <p className="text-[10px]">
                                     {errors.address.message}
                                 </p>
+                            )}
+                            {isError.address !== "" && (
+                                <p className="text-[10px]">{isError.address}</p>
                             )}
                         </li>
                         <li>
@@ -366,6 +398,11 @@ export default function PropertyForm({
                                     {errors.developer.message}
                                 </p>
                             )}
+                            {isError.developer_id !== "" && (
+                                <p className="text-[10px]">
+                                    {isError.developer_id}
+                                </p>
+                            )}
                         </li>
                         <li>
                             <label>*PROJECT</label>
@@ -396,6 +433,11 @@ export default function PropertyForm({
                             {errors.project && (
                                 <p className="text-[10px]">
                                     {errors.project.message}
+                                </p>
+                            )}
+                            {isError.project_id !== "" && (
+                                <p className="text-[10px]">
+                                    {isError.project_id}
                                 </p>
                             )}
                         </li>
@@ -431,6 +473,11 @@ export default function PropertyForm({
                                     {errors.tower.message}
                                 </p>
                             )}
+                            {isError.tower_id !== "" && (
+                                <p className="text-[10px]">
+                                    {isError.tower_id}
+                                </p>
+                            )}
                         </li>
                         <li>
                             <label>*FLOOR</label>
@@ -464,6 +511,11 @@ export default function PropertyForm({
                                     {errors.floor.message}
                                 </p>
                             )}
+                            {isError.floor_id !== "" && (
+                                <p className="text-[10px]">
+                                    {isError.floor_id}
+                                </p>
+                            )}
                         </li>
                         <li>
                             <label>*AREA</label>
@@ -472,6 +524,9 @@ export default function PropertyForm({
                                 <p className="text-[10px]">
                                     {errors.area.message}
                                 </p>
+                            )}
+                            {isError.area !== "" && (
+                                <p className="text-[10px]">{isError.area}</p>
                             )}
                         </li>
                         <li>
@@ -486,7 +541,6 @@ export default function PropertyForm({
                             <input type="date" {...register("turnover_date")} />
                         </li>
                     </ul>
-                    {isError !== "" && <p>{isError}</p>}
                     <div className={style.SaveButton}>
                         <aside className={style.back} onClick={cancel}>
                             CANCEL

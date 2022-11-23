@@ -238,10 +238,10 @@ export default function NewIndividual({
                     <li className="  flex flex-col  w-4/12 820px:w-2/4 480px:w-full mb-5 justify-center items-center">
                         <div>
                             <label
-                                className=" text-[12px] font-NHU-medium uppercase cursor-pointer w-[90%] 480px:w-full"
+                                className="text-[12px] font-NHU-regular uppercase cursor-pointer w-[90%] 480px:w-full"
                                 htmlFor="file"
                             >
-                                Upload Signature
+                                <div>Upload Signature</div>
                             </label>
                             {imgError.img3 !== "" && (
                                 <p className="text-[12px]">{imgError.img3}</p>

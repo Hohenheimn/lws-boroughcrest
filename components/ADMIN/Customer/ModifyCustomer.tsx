@@ -53,7 +53,7 @@ type Props = {
     isDraft?: any;
 };
 const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
-    const { isModifyCustomer, ImgUrl, setModifyCustomer } =
+    const { isModifyCustomer, ImgUrl, setModifyCustomer, CusError } =
         useContext(AppContext);
     const [isType, setType] = useState(isModifyCustomer.type);
     const [isStatus, setStatus] = useState(isModifyCustomer.status);
@@ -241,22 +241,19 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
                         </p>
                         <select
                             name=""
-                            defaultValue={isType}
                             id=""
                             className="rounded-md text-black px-2 py-[2px] outline-none w-[90%] 480px:w-full"
+                            value={isType}
                             onChange={typeHandler}
                         >
-                            <option value={isType} disabled>
-                                {isType}
-                            </option>
                             <option
-                                value="individual"
+                                value="Individual"
                                 className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
                             >
                                 Individual
                             </option>
                             <option
-                                value="company"
+                                value="Company"
                                 className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
                             >
                                 Company
@@ -340,10 +337,10 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
                     </li>
                     <li className="  flex flex-col  w-4/12 820px:w-2/4 480px:w-full mb-5 justify-center items-end">
                         <label
-                            className=" text-[12px] font-NHU-medium uppercase cursor-pointer w-[90%] 480px:w-full"
+                            className="text-[12px] font-NHU-regular uppercase cursor-pointer w-[90%] 480px:w-full"
                             htmlFor="file"
                         >
-                            Upload Signature
+                            <div>Upload Signature</div>
                         </label>
                         {imgError.img3 !== "" && (
                             <p className="text-[12px]">{imgError.img3}</p>
@@ -391,6 +388,9 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
                                 {errors.class.message}
                             </p>
                         )}
+                        {CusError?.class !== "" && (
+                            <p className="text-[10px]">{CusError?.class}</p>
+                        )}
                     </li>
                     <li>
                         <label>
@@ -406,6 +406,9 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
                         />
                         {errors.name && (
                             <p className="text-[10px]">{errors.name.message}</p>
+                        )}
+                        {CusError?.name !== "" && (
+                            <p className="text-[10px]">{CusError?.name}</p>
                         )}
                     </li>
                     {(isType === "individual" || isType === "Individual") && (
@@ -434,6 +437,11 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
                                 {errors.individual_citizenship && (
                                     <p className="text-[10px]">
                                         {errors.individual_citizenship.message}
+                                    </p>
+                                )}
+                                {CusError?.individual_citizenship !== "" && (
+                                    <p className="text-[10px]">
+                                        {CusError?.individual_citizenship}
                                     </p>
                                 )}
                             </li>
@@ -479,6 +487,9 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
                         {errors.tin && (
                             <p className="text-[10px]">{errors.tin.message}</p>
                         )}
+                        {CusError?.tin !== "" && (
+                            <p className="text-[10px]">{CusError?.tin}</p>
+                        )}
                     </li>
                     <li>
                         <label>*Branch Code</label>
@@ -508,6 +519,11 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
                                 {errors.branch_code.message}
                             </p>
                         )}
+                        {CusError?.branch_code !== "" && (
+                            <p className="text-[10px]">
+                                {CusError?.branch_code}
+                            </p>
+                        )}
                     </li>
                 </ul>
                 <div className=" w-full flex justify-end items-center">
@@ -535,8 +551,14 @@ const Contact = ({
     isActiveForm,
     isDraft,
 }: Props) => {
-    const { isModifyCustomer, setModifyCustomer, setPrompt, setCusToggle } =
-        useContext(AppContext);
+    const {
+        isModifyCustomer,
+        setModifyCustomer,
+        setPrompt,
+        setCusToggle,
+        setCusError,
+        CusError,
+    } = useContext(AppContext);
     const [isSameEmail, setSameEmail] = useState(false);
     const [isSameAddress, setSameAddress] = useState(false);
     const router = useRouter();
@@ -605,18 +627,17 @@ const Contact = ({
     };
 
     const onError = (e: any) => {
-        if (
-            e?.response?.data?.registered_email?.includes(
-                "Customer Already Exists!"
-            )
-        ) {
-            setError("Customer Email Already Registered!");
+        const ErrorField = e.response.data;
+        let message: any;
+        if (ErrorField > 0 || ErrorField !== null || ErrorField !== undefined) {
+            setCusError({ ...ErrorField });
+            message = "Please check all the fields!";
         } else {
-            setError("Please fill out all required field!");
+            message = "Something is wrong!";
         }
         setPrompt((prev: any) => ({
             ...prev,
-            message: isError === "" ? "Something is wrong!" : isError,
+            message: message,
             type: "error",
             toggle: true,
         }));
@@ -818,6 +839,11 @@ const Contact = ({
                                 {errors.contact_no.message}
                             </p>
                         )}
+                        {CusError?.contact_no !== "" && (
+                            <p className="text-[10px]">
+                                {CusError?.contact_no}
+                            </p>
+                        )}
                     </li>
                     <li>
                         <label>*REGISTERED-EMAIL</label>
@@ -837,6 +863,11 @@ const Contact = ({
                                 {errors.registered_email.message}
                             </p>
                         )}
+                        {CusError?.registered_email !== "" && (
+                            <p className="text-[10px]">
+                                {CusError?.registered_email}
+                            </p>
+                        )}
                     </li>
                     <li>
                         <label>*PREFERED EMAIL</label>
@@ -844,6 +875,11 @@ const Contact = ({
                         {errors.preferred_email && (
                             <p className="text-[10px]">
                                 {errors.preferred_email.message}
+                            </p>
+                        )}
+                        {CusError?.preferred_email !== "" && (
+                            <p className="text-[10px]">
+                                {CusError?.preferred_email}
                             </p>
                         )}
                         <aside className={style.checkboxContainer}>
@@ -879,6 +915,11 @@ const Contact = ({
                                     {errors.company_contact_person.message}
                                 </p>
                             )}
+                            {CusError?.company_contact_person !== "" && (
+                                <p className="text-[10px]">
+                                    {CusError?.company_contact_person}
+                                </p>
+                            )}
                         </li>
                     )}
                 </ul>
@@ -906,6 +947,11 @@ const Contact = ({
                                 {errors.registered_address_unit_floor.message}
                             </p>
                         )}
+                        {CusError?.registered_address_unit_floor !== "" && (
+                            <p className="text-[10px]">
+                                {CusError?.registered_address_unit_floor}
+                            </p>
+                        )}
                     </li>
                     <li>
                         <label>*BUILDING</label>
@@ -923,6 +969,11 @@ const Contact = ({
                         {errors.registered_address_building && (
                             <p className="text-[10px]">
                                 {errors.registered_address_building.message}
+                            </p>
+                        )}
+                        {CusError?.registered_address_building !== "" && (
+                            <p className="text-[10px]">
+                                {CusError?.registered_address_building}
                             </p>
                         )}
                     </li>
@@ -944,6 +995,11 @@ const Contact = ({
                                 {errors.registered_address_street.message}
                             </p>
                         )}
+                        {CusError?.registered_address_street !== "" && (
+                            <p className="text-[10px]">
+                                {CusError?.registered_address_street}
+                            </p>
+                        )}
                     </li>
                     <li>
                         <label>*DISTRICT</label>
@@ -961,6 +1017,11 @@ const Contact = ({
                         {errors.registered_address_district && (
                             <p className="text-[10px]">
                                 {errors.registered_address_district.message}
+                            </p>
+                        )}
+                        {CusError?.registered_address_district !== "" && (
+                            <p className="text-[10px]">
+                                {CusError?.registered_address_district}
                             </p>
                         )}
                     </li>
@@ -988,6 +1049,11 @@ const Contact = ({
                                 }
                             </p>
                         )}
+                        {CusError?.registered_address_municipal_city !== "" && (
+                            <p className="text-[10px]">
+                                {CusError?.registered_address_municipal_city}
+                            </p>
+                        )}
                     </li>
                     <li>
                         <label>*PROVINCE</label>
@@ -1005,6 +1071,11 @@ const Contact = ({
                         {errors.registered_address_province && (
                             <p className="text-[10px]">
                                 {errors.registered_address_province.message}
+                            </p>
+                        )}
+                        {CusError?.registered_address_province !== "" && (
+                            <p className="text-[10px]">
+                                {CusError?.registered_address_province}
                             </p>
                         )}
                     </li>
@@ -1033,6 +1104,11 @@ const Contact = ({
                         {errors.registered_address_zip_code && (
                             <p className="text-[10px]">
                                 {errors.registered_address_zip_code.message}
+                            </p>
+                        )}
+                        {CusError?.registered_address_zip_code !== "" && (
+                            <p className="text-[10px]">
+                                {CusError?.registered_address_zip_code}
                             </p>
                         )}
                     </li>

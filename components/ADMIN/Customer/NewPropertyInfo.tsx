@@ -83,13 +83,17 @@ export default function NewPropertyInfo({
     };
 
     const onError = (e: any) => {
-        const FieldsError: any = e.response.data;
-        setCusError({
-            ...FieldsError,
-        });
+        const ErrorField = e.response.data;
+        let message: any;
+        if (ErrorField > 0 || ErrorField !== null || ErrorField !== undefined) {
+            setCusError({ ...ErrorField });
+            message = "Please check all the fields!";
+        } else {
+            message = "Something is wrong!";
+        }
         setPrompt((prev: any) => ({
             ...prev,
-            message: "Please check all required fields!",
+            message: message,
             type: "error",
             toggle: true,
         }));
@@ -302,22 +306,21 @@ type List = {
     id: number;
     setUnitCodeError: any;
 };
-const List = ({
-    detail,
-    isProperty,
-    setProperty,
-    id,
-    setUnitCodeError,
-}: List) => {
+const List = ({ detail, isProperty, setProperty, id }: List) => {
     const newID = Math.random();
     const [isSelect, setSelect] = useState(false);
+    const { setPrompt } = useContext(AppContext);
 
     const updateValue = (event: any) => {
         const UnitCode = event.target.innerHTML;
         let validate = true;
         isProperty.map((item: any) => {
             if (item.unitCode === UnitCode) {
-                setUnitCodeError("Selected Unit Code already in the list");
+                setPrompt({
+                    message: "Selected Unit Code already in the list!",
+                    type: "error",
+                    toggle: true,
+                });
                 validate = false;
                 return;
             }

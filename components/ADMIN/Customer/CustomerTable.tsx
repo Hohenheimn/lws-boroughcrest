@@ -365,17 +365,20 @@ const List = ({ itemDetail }: customerItemDetail) => {
                                         : `/admin/customer/${itemDetail?.id}`
                                 }`}
                             >
-                                <a className="item flex">
-                                    <div className="w-2/4">
-                                        {itemDetail?.properties.map(
-                                            (item: any) => (
+                                <a className="property">
+                                    {itemDetail?.properties.map((item: any) => (
+                                        <div className="property-container">
+                                            <div className="half">
                                                 <div className="flex flex-wrap">
                                                     {item.map(
                                                         (
                                                             item1: any,
                                                             index: number
                                                         ) => (
-                                                            <h2 key={index}>
+                                                            <h2
+                                                                key={index}
+                                                                className="unitCode"
+                                                            >
                                                                 {
                                                                     item1.unit_code
                                                                 }
@@ -383,10 +386,21 @@ const List = ({ itemDetail }: customerItemDetail) => {
                                                         )
                                                     )}
                                                 </div>
-                                            )
-                                        )}
-                                    </div>
-                                    <div className="w-2/4">
+                                            </div>
+                                            <div className="half">
+                                                <div
+                                                    className="flex"
+                                                    key={index}
+                                                >
+                                                    <h2 key={index}>
+                                                        {item[0].tower.name}
+                                                    </h2>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+
+                                    {/* <div className="half">
                                         {itemDetail?.properties.map(
                                             (item: any, index: number) => (
                                                 <div
@@ -399,7 +413,7 @@ const List = ({ itemDetail }: customerItemDetail) => {
                                                 </div>
                                             )
                                         )}
-                                    </div>
+                                    </div> */}
                                 </a>
                             </Link>
                         </td>
