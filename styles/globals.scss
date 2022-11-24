@@ -28,8 +28,33 @@ h6 {
     font-family: "NHU-bold";
     @apply text-[#545454];
 }
+input {
+    @apply text-[#545454];
+}
 * {
     font-family: "NHU-regular";
+}
+
+.calendar {
+    @apply relative;
+    .cal {
+        @apply absolute translate-y-[45%] top-0 right-[10px] bg-white pointer-events-none;
+    }
+    // input[type="date"]::-webkit-inner-spin-button,
+    // input[type="date"]::-webkit-calendar-picker-indicator {
+    //     color: white;
+    // }
+    input[type="date"]::-webkit-calendar-picker-indicator {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: auto;
+        height: auto;
+        color: transparent;
+        background: transparent;
+    }
 }
 
 // Page Loading
@@ -117,7 +142,7 @@ h6 {
                     }
                 }
                 .property {
-                    @apply flex flex-wrap text-[#2e4364];
+                    @apply flex flex-wrap text-[#2e4364] px-4 py-4 480px:py-2 480px:px-2;
                     .property-container {
                         @apply flex w-full mb-3;
                         .half {
@@ -139,6 +164,9 @@ h6 {
                     .property-container:nth-last-child(1) {
                         @apply mb-0;
                     }
+                }
+                .pencil {
+                    @apply flex justify-center text-[20px] text-ThemeRed;
                 }
             }
             td.normal {
@@ -342,4 +370,34 @@ input[type="number"] {
 }
 .crud-table.wide {
     @apply w-[400px];
+}
+// Save Drop Down Button
+.DropDownSave {
+    @apply w-full flex justify-end mt-14 480px:mt-10;
+    .ddback {
+        @apply text-ThemeRed font-semibold text-[14px] h-8 mr-5 cursor-pointer flex items-center;
+    }
+    .ddSave {
+        @apply cursor-pointer relative text-white h-auto duration-75 overflow-hidden rounded-md text-[14px];
+        div {
+            @apply w-[100px] flex;
+            .ddsave_button {
+                @apply w-[70%] bg-ThemeRed hover:bg-ThemeRed50  text-white flex items-center justify-center h-8;
+            }
+            .ddArrow {
+                @apply w-[30%] text-[24px] hover:bg-ThemeRed50 cursor-pointer  bg-ThemeRed text-white border-l h-8 border-white flex justify-center items-center;
+            }
+        }
+        ul {
+            @apply static top-full left-0 bg-white w-full z-50;
+            li {
+                button {
+                    @apply cursor-pointer text-ThemeRed inline-block text-[12px] py-2 w-full text-center hover:bg-ThemeRed hover:text-white duration-75;
+                }
+                .disabled {
+                    @apply pointer-events-none bg-ThemeRed text-white;
+                }
+            }
+        }
+    }
 }

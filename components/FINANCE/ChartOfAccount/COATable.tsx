@@ -8,6 +8,9 @@ import { useQuery } from "react-query";
 import Pagination from "../../Pagination";
 import BarLoader from "react-spinners/BarLoader";
 import { getCookie } from "cookies-next";
+import { HiPencil } from "react-icons/hi";
+import Tippy from "@tippy.js/react";
+import "tippy.js/dist/tippy.css";
 
 type Props = {
     isSearchTable: string;
@@ -40,6 +43,7 @@ export default function COATable({ isSearchTable }: Props) {
                             <th>Category</th>
                             <th>Description</th>
                             <th>Default Account</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -85,7 +89,9 @@ const List = ({ itemDetail }: any) => {
         <>
             <tr>
                 <td>
-                    <Link href={`/project/corporate/${itemDetail.id}`}>
+                    <Link
+                        href={`/finance/general-ledger/chart-of-account?modify=${itemDetail.id}`}
+                    >
                         <a className="item">
                             <div>
                                 <h2>Lorem, ipsum.</h2>
@@ -94,7 +100,9 @@ const List = ({ itemDetail }: any) => {
                     </Link>
                 </td>
                 <td>
-                    <Link href={`/project/corporate/${itemDetail.id}`}>
+                    <Link
+                        href={`/finance/general-ledger/chart-of-account?modify=${itemDetail.id}`}
+                    >
                         <a className="item">
                             <div>
                                 <h2>Lorem, ipsum.</h2>
@@ -103,7 +111,9 @@ const List = ({ itemDetail }: any) => {
                     </Link>
                 </td>
                 <td>
-                    <Link href={`/project/corporate/${itemDetail.id}`}>
+                    <Link
+                        href={`/finance/general-ledger/chart-of-account?modify=${itemDetail.id}`}
+                    >
                         <a className="item">
                             <div>
                                 <h2>Lorem, ipsum.</h2>
@@ -112,7 +122,9 @@ const List = ({ itemDetail }: any) => {
                     </Link>
                 </td>
                 <td>
-                    <Link href={`/project/corporate/${itemDetail.id}`}>
+                    <Link
+                        href={`/finance/general-ledger/chart-of-account?modify=${itemDetail.id}`}
+                    >
                         <a className="item">
                             <div>
                                 <h2>Lorem, ipsum.</h2>
@@ -121,11 +133,26 @@ const List = ({ itemDetail }: any) => {
                     </Link>
                 </td>
                 <td>
-                    <Link href={`/project/corporate/${itemDetail.id}`}>
+                    <Link
+                        href={`/finance/general-ledger/chart-of-account?modify=${itemDetail.id}`}
+                    >
                         <a className="item">
                             <div>
                                 <h2>Lorem, ipsum.</h2>
                             </div>
+                        </a>
+                    </Link>
+                </td>
+                <td>
+                    <Link
+                        href={`/finance/general-ledger/chart-of-account?modify=${itemDetail.id}`}
+                    >
+                        <a>
+                            <Tippy theme="ThemeRed" content={"Modify"}>
+                                <div className="pencil">
+                                    <HiPencil />
+                                </div>
+                            </Tippy>
                         </a>
                     </Link>
                 </td>

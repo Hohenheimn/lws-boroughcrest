@@ -159,10 +159,10 @@
                 div {
                     @apply w-[100px] flex;
                     .save_button {
-                        @apply w-3/5 bg-ThemeRed hover:bg-ThemeRed50  text-white flex items-center justify-center h-8;
+                        @apply w-[70%] bg-ThemeRed hover:bg-ThemeRed50  text-white flex items-center justify-center h-8;
                     }
                     .Arrow {
-                        @apply text-[24px] hover:bg-ThemeRed50 cursor-pointer w-2/5 bg-ThemeRed text-white border-l h-8 border-white flex justify-center items-center;
+                        @apply w-[30%] text-[24px] hover:bg-ThemeRed50 cursor-pointer bg-ThemeRed text-white border-l h-8 border-white flex justify-center items-center;
                     }
                 }
                 ul {

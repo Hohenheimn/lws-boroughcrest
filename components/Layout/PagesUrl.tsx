@@ -65,7 +65,7 @@ export const SidebarLinks = [
         SubMenu: [
             {
                 name: "general ledger",
-                url: "/admin/general-ledger",
+                url: "/finance/general-ledger/chart-of-account",
                 ActiveName: "general-ledger",
             },
         ],

@@ -175,7 +175,10 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
                                     {CusLoading || PropLoading ? (
                                         <MoonLoader size={20} color="#8f384d" />
                                     ) : (
-                                        <label htmlFor="import">
+                                        <label
+                                            htmlFor="import"
+                                            className="relative h-full w-full"
+                                        >
                                             <Image
                                                 src="/Images/Import.png"
                                                 layout="fill"

@@ -1,0 +1,29 @@
+.crudTable {
+    @apply w-full 640px:min-w-[700px];
+    th {
+        @apply text-start text-[16px] text-ThemeRed pb-1;
+    }
+    td {
+        @apply pb-2 pr-10 1366px:pr-5 1024px:pr-2;
+        input {
+            @apply w-full p-1 h-10 px-3 rounded-md outline-none shadow-md;
+        }
+    }
+    tr.total {
+        .label {
+            @apply text-end;
+        }
+        td {
+            @apply pt-5 h-10;
+            div {
+                @apply w-full p-1 h-10 px-3 rounded-md outline-none shadow-md bg-ThemeRed50;
+            }
+        }
+    }
+    td.action {
+        @apply pr-0 pb-0 flex w-[100%] h-10 items-center;
+        div {
+            @apply text-ThemeRed font-NHU-black cursor-pointer h-5 w-5 flex justify-center items-center;
+        }
+    }
+}
