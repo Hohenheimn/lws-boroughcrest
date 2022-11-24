@@ -179,7 +179,6 @@ const List = ({
     };
     // Second Field Dropdown Update Value base on selected item
     const updateVal = (value: any, id: any) => {
-        console.log(value + id);
         const newItems = isArray.map((item: any) => {
             if (itemDetail.id == item.id) {
                 return {

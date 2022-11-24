@@ -14,6 +14,7 @@ import "tippy.js/dist/tippy.css";
 import SignOut from "./SignOut";
 import PrompMessage from "../PrompMessage";
 import { FadeSide } from "../Animation/SimpleAnimation";
+import UpperMenu from "../FINANCE/UpperMenu";
 
 type Layout = {
     children: React.ReactNode;
@@ -25,6 +26,7 @@ export default function Layout({ children }: Layout) {
     const [isProfileSearch, setProfileSearch] = useState(false);
     const [isPathName, setPathName] = useState<any>();
     const [toggleProfileMenu, setToggleProfileMenu] = useState(false);
+    const [financeMenu, setFinanceMenu] = useState(false);
 
     const router = useRouter();
 
@@ -47,8 +49,7 @@ export default function Layout({ children }: Layout) {
         setWindow(window.innerWidth);
     }, [isWindow]);
 
-    // run this code when the URL change
-    // it opens the sidebar search when following asPath
+    // it opens the sidebar search when depending on following asPath
     useEffect(() => {
         setPathName(router.asPath);
         if (
@@ -65,6 +66,12 @@ export default function Layout({ children }: Layout) {
             setWide(true);
         } else {
             setWide(false);
+        }
+        // Show finance Upper Menu
+        if (router.asPath.includes("/finance")) {
+            setFinanceMenu(true);
+        } else {
+            setFinanceMenu(false);
         }
     }, [router.asPath]);
 
@@ -106,7 +113,7 @@ export default function Layout({ children }: Layout) {
                         isWide === true ? "pl-wide" : "pl-no-wide"
                     } ${collapseSide && !isWide && "collapse_container"}`}
                 >
-                    <div className="flex-1 flex flex-col w-full 1550px:p-5 1550px:px-10 1024px:py-10 480px:px-5 480px:pb-0 max  p-10 relative ">
+                    <div className="flex-1 flex flex-col w-full 1024px:py-10 480px:pb-0 py-10 relative ">
                         {isWindow <= 1024 && (
                             <button
                                 onClick={() => setHide(!isHide)}
@@ -124,7 +131,7 @@ export default function Layout({ children }: Layout) {
                                 router.pathname === "/"
                                     ? "justify-between"
                                     : "justify-end"
-                            } items-center justify-between mb-5 640px:mb-0 480px:flex-wrap 480px:justify-end`}
+                            } items-center justify-between px-14 1550px:px-10 mb-5 640px:mb-0 480px:flex-wrap 480px:justify-end`}
                         >
                             <AnimatePresence>
                                 {collapseSide ? (
@@ -169,11 +176,11 @@ export default function Layout({ children }: Layout) {
                                         }
                                     >
                                         <div>
-                                            <IoNotificationsSharp className=" text-ThemeRed text-[32px] hover:scale-[1.3] transition duration-75" />
+                                            <IoNotificationsSharp className=" text-ThemeRed text-[28px] hover:scale-[1.3] transition duration-75" />
                                         </div>
                                     </Tippy>
 
-                                    <div className="absolute w-4 h-4 text-[11px] top-[-5%] right-[-8%] flex justify-center items-start rounded-full bg-Green text-white">
+                                    <div className="absolute w-[15px] h-[15px] text-[11px] top-[-5%] right-[-8%] flex justify-center items-start rounded-full bg-Green text-white">
                                         1
                                     </div>
                                 </li>
@@ -202,7 +209,8 @@ export default function Layout({ children }: Layout) {
                                 </li>
                             </ul>
                         </header>
-                        <main className="relative flex-1 flex flex-col">
+                        {financeMenu && <UpperMenu />}
+                        <main className="relative flex-1 flex flex-col px-14 1550px:px-10">
                             {children}
                         </main>
                     </div>

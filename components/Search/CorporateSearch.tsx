@@ -29,10 +29,6 @@ export default function CorporateSearch() {
         );
     });
 
-    if (!isLoading) {
-        dataSearch = RecentData?.data;
-    }
-
     return (
         <div className={style.container}>
             <div className={style.header}>
@@ -70,7 +66,7 @@ export default function CorporateSearch() {
                         />
                     </div>
                 ) : (
-                    dataSearch?.map((item: any, index: number) => (
+                    RecentData?.data.map((item: any, index: number) => (
                         <Link
                             key={index}
                             href={`/project/corporate/${item.id}`}

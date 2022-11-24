@@ -18,8 +18,15 @@ import { BeatLoader, ScaleLoader } from "react-spinners";
 import { useQueryClient } from "react-query";
 
 export default function UpdateDraft() {
-    const { ImgUrl, isDraft, setDraft, NewCustomerDefault } =
-        useContext(AppContext);
+    const {
+        ImgUrl,
+        isDraft,
+        setDraft,
+        NewCustomerDefault,
+        CusError,
+        setCusError,
+        ErrorDefault,
+    } = useContext(AppContext);
     const [isActiveForm, setActiveForm] = useState([true, false, false]);
     const [isProfileUrl, setProfileUrl] = useState("/Images/sampleProfile.png");
     const [isValidIDUrl, setValidIDUrl] = useState("/Images/id-sample.png");
@@ -69,6 +76,7 @@ export default function UpdateDraft() {
             ...NewCustomerDefault,
             _method: "PUT",
         });
+        setCusError({ ...ErrorDefault });
         router.push("");
     };
 
@@ -103,8 +111,13 @@ export default function UpdateDraft() {
                     ...draft,
                     _method: "PUT",
                 });
-                if (!isLoading) {
+                if (draft.image_photo !== "" && draft.image_photo !== null) {
                     setProfileUrl(`${ImgUrl}${draft.image_photo}`);
+                }
+                if (
+                    draft.image_valid_id !== "" &&
+                    draft.image_valid_id !== null
+                ) {
                     setValidIDUrl(`${ImgUrl}${draft.image_valid_id}`);
                 }
             }
@@ -163,30 +176,24 @@ export default function UpdateDraft() {
 
                                     <select
                                         id=""
-                                        defaultValue={draft?.type}
                                         {...register("type", {
                                             required: "Required",
                                         })}
+                                        value={isType}
                                         onChange={(e) =>
                                             setType(e.target.value)
                                         }
                                         className="uppercase rounded-md px-2 py-[2px] border-none text-black outline-none w-[90%] 480px:w-full"
                                     >
                                         <option
-                                            value={draft?.type}
-                                            className={style.disabled}
-                                        >
-                                            {draft?.type}
-                                        </option>
-                                        <option
-                                            value="individual"
+                                            value="Individual"
                                             className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
                                         >
                                             Individual
                                         </option>
                                         <option
                                             className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
-                                            value="company"
+                                            value="Company"
                                         >
                                             Company
                                         </option>
@@ -286,10 +293,10 @@ export default function UpdateDraft() {
                                 </li>
                                 <li className="  flex flex-col  w-4/12 820px:w-2/4 480px:w-full mb-5 justify-center items-end">
                                     <label
-                                        className="text-[12px] font-NHU-medium uppercase cursor-pointer w-[90%] 480px:w-full"
+                                        className="text-[12px] font-NHU-regular uppercase cursor-pointer w-[90%] 480px:w-full"
                                         htmlFor="file"
                                     >
-                                        Upload Signature
+                                        <div>Upload Signature</div>
                                     </label>
                                     {imgError.img3 !== "" && (
                                         <p className="text-[12px]">
@@ -326,9 +333,7 @@ export default function UpdateDraft() {
                                     <select
                                         id=""
                                         defaultValue={draft?.class}
-                                        {...register("class", {
-                                            required: "Required",
-                                        })}
+                                        {...register("class")}
                                     >
                                         <option value={draft?.class}>
                                             {draft?.class}
@@ -339,33 +344,31 @@ export default function UpdateDraft() {
                                         <option value="owner">Owner</option>
                                         <option value="tenant">Tenant</option>
                                     </select>
-                                    {errors.class && (
-                                        <p className="text-[10px]">
-                                            {errors.class.message}
-                                        </p>
-                                    )}
                                 </li>
                                 <li>
                                     <label>*NAME</label>
                                     <input
                                         type="text"
                                         className="bg-white"
-                                        {...register("name", {
-                                            required: "Required",
-                                        })}
+                                        {...register("name")}
                                     />
                                     {errors.name && (
                                         <p className="text-[10px]">
                                             {errors.name.message}
                                         </p>
                                     )}
+                                    {CusError.name !== "" && (
+                                        <p className="text-[10px]">
+                                            {CusError.name}
+                                        </p>
+                                    )}
                                 </li>
-                                {(isType === "individual" || isType === "") && (
+                                {(isType === "Individual" || isType === "") && (
                                     <>
                                         <li>
                                             <label>CO-OWNER</label>
                                             <input
-                                                type="email"
+                                                type="text"
                                                 className="bg-white"
                                                 {...register(
                                                     "individual_co_owner"
@@ -385,13 +388,10 @@ export default function UpdateDraft() {
                                         <li>
                                             <label>*CITIZENSHIP</label>
                                             <input
-                                                type="number"
+                                                type="text"
                                                 className="bg-white"
                                                 {...register(
-                                                    "individual_citizenship",
-                                                    {
-                                                        required: "Required",
-                                                    }
+                                                    "individual_citizenship"
                                                 )}
                                             />
                                             {errors.individual_citizenship && (
@@ -400,6 +400,14 @@ export default function UpdateDraft() {
                                                         errors
                                                             .individual_citizenship
                                                             .message
+                                                    }
+                                                </p>
+                                            )}
+                                            {CusError?.individual_citizenship !==
+                                                "" && (
+                                                <p className="text-[10px]">
+                                                    {
+                                                        CusError?.individual_citizenship
                                                     }
                                                 </p>
                                             )}
@@ -433,7 +441,6 @@ export default function UpdateDraft() {
                                         className="bg-white"
                                         placeholder="000000000"
                                         {...register("tin", {
-                                            required: "Required",
                                             minLength: {
                                                 value: 9,
                                                 message: "Must be 9 numbers",
@@ -449,6 +456,11 @@ export default function UpdateDraft() {
                                             {errors.tin.message}
                                         </p>
                                     )}
+                                    {CusError?.tin !== "" && (
+                                        <p className="text-[10px]">
+                                            {CusError?.tin}
+                                        </p>
+                                    )}
                                 </li>
                                 <li>
                                     <label>*BRANCH CODE</label>
@@ -457,7 +469,6 @@ export default function UpdateDraft() {
                                         className="bg-white"
                                         placeholder="00000"
                                         {...register("branch_code", {
-                                            required: "Required",
                                             minLength: {
                                                 value: 5,
                                                 message: "Must be 5 Number",
@@ -471,6 +482,11 @@ export default function UpdateDraft() {
                                     {errors.branch_code && (
                                         <p className="text-[10px]">
                                             {errors.branch_code.message}
+                                        </p>
+                                    )}
+                                    {CusError?.branch_code !== "" && (
+                                        <p className="text-[10px]">
+                                            {CusError?.branch_code}
                                         </p>
                                     )}
                                 </li>
@@ -528,7 +544,7 @@ export default function UpdateDraft() {
 }
 
 const Contact = ({ setActiveForm, isActiveForm, draft }: any) => {
-    const { setDraft, isDraft } = useContext(AppContext);
+    const { setDraft, isDraft, CusError } = useContext(AppContext);
     const [isSameEmail, setSameEmail] = useState(false);
     const [isSameAddress, setSameAddress] = useState(false);
     const {
@@ -656,7 +672,6 @@ const Contact = ({ setActiveForm, isActiveForm, draft }: any) => {
                         <input
                             type="number"
                             {...register("contact_no", {
-                                required: "Required",
                                 minLength: {
                                     value: 11,
                                     message: "Must be 11 Numbers",
@@ -684,14 +699,18 @@ const Contact = ({ setActiveForm, isActiveForm, draft }: any) => {
                                 {errors.contact_no.message}
                             </p>
                         )}
+
+                        {CusError?.contact_no !== "" && (
+                            <p className="text-[10px]">
+                                {CusError?.contact_no}
+                            </p>
+                        )}
                     </li>
                     <li>
                         <label>*REGISTERED-EMAIL</label>
                         <input
                             type="email"
-                            {...register("registered_email", {
-                                required: "Required",
-                            })}
+                            {...register("registered_email")}
                             value={isDraft.registered_email}
                             onChange={(e) =>
                                 setDraft({
@@ -705,18 +724,23 @@ const Contact = ({ setActiveForm, isActiveForm, draft }: any) => {
                                 {errors.registered_email.message}
                             </p>
                         )}
+                        {CusError?.registered_email !== "" && (
+                            <p className="text-[10px]">
+                                {CusError?.registered_email}
+                            </p>
+                        )}
                     </li>
                     <li>
                         <label>*PREFERED EMAIL</label>
-                        <input
-                            type="email"
-                            {...register("preferred_email", {
-                                required: "Required",
-                            })}
-                        />
+                        <input type="email" {...register("preferred_email")} />
                         {errors.preferred_email && (
                             <p className="text-[10px]">
                                 {errors.preferred_email.message}
+                            </p>
+                        )}
+                        {CusError?.preferred_email !== "" && (
+                            <p className="text-[10px]">
+                                {CusError?.preferred_email}
                             </p>
                         )}
                         <aside className={style.checkboxContainer}>
@@ -762,9 +786,7 @@ const Contact = ({ setActiveForm, isActiveForm, draft }: any) => {
                         <label>*UNIT/FLOOR/HOUSE NO.</label>
                         <input
                             type="text"
-                            {...register("registered_address_unit_floor", {
-                                required: "Required",
-                            })}
+                            {...register("registered_address_unit_floor")}
                             value={isDraft.registered_address_unit_floor}
                             onChange={(e) =>
                                 setDraft({
@@ -779,14 +801,17 @@ const Contact = ({ setActiveForm, isActiveForm, draft }: any) => {
                                 {errors.registered_address_unit_floor.message}
                             </p>
                         )}
+                        {CusError?.registered_address_unit_floor !== "" && (
+                            <p className="text-[10px]">
+                                {CusError?.registered_address_unit_floor}
+                            </p>
+                        )}
                     </li>
                     <li>
                         <label>*BUILDING</label>
                         <input
                             type="text"
-                            {...register("registered_address_building", {
-                                required: "Required",
-                            })}
+                            {...register("registered_address_building")}
                             value={isDraft.registered_address_building}
                             onChange={(e) =>
                                 setDraft({
@@ -800,14 +825,17 @@ const Contact = ({ setActiveForm, isActiveForm, draft }: any) => {
                                 {errors.registered_address_building.message}
                             </p>
                         )}
+                        {CusError?.registered_address_building !== "" && (
+                            <p className="text-[10px]">
+                                {CusError?.registered_address_building}
+                            </p>
+                        )}
                     </li>
                     <li>
                         <label>*STREET</label>
                         <input
                             type="text"
-                            {...register("registered_address_street", {
-                                required: "Required",
-                            })}
+                            {...register("registered_address_street")}
                             value={isDraft.registered_address_street}
                             onChange={(e) =>
                                 setDraft({
@@ -821,14 +849,17 @@ const Contact = ({ setActiveForm, isActiveForm, draft }: any) => {
                                 {errors.registered_address_street.message}
                             </p>
                         )}
+                        {CusError?.registered_address_street !== "" && (
+                            <p className="text-[10px]">
+                                {CusError?.registered_address_street}
+                            </p>
+                        )}
                     </li>
                     <li>
                         <label>*DISTRICT</label>
                         <input
                             type="text"
-                            {...register("registered_address_district", {
-                                required: "Required",
-                            })}
+                            {...register("registered_address_district")}
                             value={isDraft.registered_address_district}
                             onChange={(e) =>
                                 setDraft({
@@ -842,14 +873,17 @@ const Contact = ({ setActiveForm, isActiveForm, draft }: any) => {
                                 {errors.registered_address_district.message}
                             </p>
                         )}
+                        {CusError?.registered_address_district !== "" && (
+                            <p className="text-[10px]">
+                                {CusError?.registered_address_district}
+                            </p>
+                        )}
                     </li>
                     <li>
                         <label>*MUNICIPALITY CITY</label>
                         <input
                             type="text"
-                            {...register("registered_address_municipal_city", {
-                                required: "Required",
-                            })}
+                            {...register("registered_address_municipal_city")}
                             value={isDraft.registered_address_municipal_city}
                             onChange={(e) =>
                                 setDraft({
@@ -867,14 +901,17 @@ const Contact = ({ setActiveForm, isActiveForm, draft }: any) => {
                                 }
                             </p>
                         )}
+                        {CusError?.registered_address_municipal_city !== "" && (
+                            <p className="text-[10px]">
+                                {CusError?.registered_address_municipal_city}
+                            </p>
+                        )}
                     </li>
                     <li>
                         <label>*PROVINCE</label>
                         <input
                             type="text"
-                            {...register("registered_address_province", {
-                                required: "Required",
-                            })}
+                            {...register("registered_address_province")}
                             value={isDraft.registered_address_province}
                             onChange={(e) =>
                                 setDraft({
@@ -888,13 +925,17 @@ const Contact = ({ setActiveForm, isActiveForm, draft }: any) => {
                                 {errors.registered_address_province.message}
                             </p>
                         )}
+                        {CusError?.registered_address_province !== "" && (
+                            <p className="text-[10px]">
+                                {CusError?.registered_address_province}
+                            </p>
+                        )}
                     </li>
                     <li>
                         <label>*ZIP CODE</label>
                         <input
                             type="number"
                             {...register("registered_address_zip_code", {
-                                required: "Required",
                                 maxLength: {
                                     value: 4,
                                     message: "Must be 4 number",
@@ -915,6 +956,11 @@ const Contact = ({ setActiveForm, isActiveForm, draft }: any) => {
                         {errors.registered_address_zip_code && (
                             <p className="text-[10px]">
                                 {errors.registered_address_zip_code.message}
+                            </p>
+                        )}
+                        {CusError?.registered_address_zip_code !== "" && (
+                            <p className="text-[10px]">
+                                {CusError?.registered_address_zip_code}
                             </p>
                         )}
                     </li>
@@ -1055,7 +1101,8 @@ const Contact = ({ setActiveForm, isActiveForm, draft }: any) => {
 const Property = ({ isActiveForm, setActiveForm, status }: any) => {
     const queryClient = useQueryClient();
     const router = useRouter();
-    const { setPrompt, isDraft } = useContext(AppContext);
+    const { setPrompt, isDraft, setCusError, ErrorDefault } =
+        useContext(AppContext);
     const [isProperty, setProperty] = useState<any>([
         {
             id: 1,
@@ -1096,6 +1143,7 @@ const Property = ({ isActiveForm, setActiveForm, status }: any) => {
             toggle: true,
         }));
         setError("");
+        setCusError({ ...ErrorDefault });
 
         // Reset UnitCode Array
         setProperty([
@@ -1109,18 +1157,17 @@ const Property = ({ isActiveForm, setActiveForm, status }: any) => {
     };
 
     const onError = (e: any) => {
-        if (
-            e?.response?.data?.registered_email?.includes(
-                "Customer Already Exists!"
-            )
-        ) {
-            setError("Customer Email Already Registered!");
+        const ErrorField = e.response.data;
+        let message: any;
+        if (ErrorField > 0 || ErrorField !== null || ErrorField !== undefined) {
+            setCusError({ ...ErrorField });
+            message = "Please check all the fields!";
         } else {
-            setError("Please fill out all required field!");
+            message = "Something is wrong!";
         }
         setPrompt((prev: any) => ({
             ...prev,
-            message: "Something is wrong!",
+            message: message,
             type: "error",
             toggle: true,
         }));
@@ -1262,6 +1309,7 @@ const Property = ({ isActiveForm, setActiveForm, status }: any) => {
 };
 const List = ({ detail, isProperty, setProperty, id, setError }: any) => {
     const newID = Math.random();
+    const { setPrompt } = useContext(AppContext);
     const [isSelect, setSelect] = useState(false);
 
     const updateValue = (event: any) => {
@@ -1269,7 +1317,11 @@ const List = ({ detail, isProperty, setProperty, id, setError }: any) => {
         let validate = true;
         isProperty.map((item: any) => {
             if (item?.unitCode === UnitCode) {
-                setError("Selected Unit Code already in the list");
+                setPrompt({
+                    message: "Selected Unit Code already in the list!",
+                    type: "error",
+                    toggle: true,
+                });
                 validate = false;
                 return;
             }
@@ -1385,7 +1437,7 @@ const Select = ({ setSelect, updateValue }: any) => {
                 data?.data.map((item: any, index: number) => (
                     <li
                         key={index}
-                        data-projname={item.project.name}
+                        data-projname={item?.project?.name}
                         onClick={updateValue}
                         className="cursor-pointer"
                     >

@@ -132,8 +132,51 @@ export default function ModifyProperty({
                             ))}
                         </tbody>
                     </table>
-
                     <div className={style.SaveButton}>
+                        <button
+                            className={style.back}
+                            onClick={() => setToggle(false)}
+                        >
+                            CANCEL
+                        </button>
+
+                        <div className={style.Save}>
+                            <div>
+                                <button
+                                    type="submit"
+                                    name="save"
+                                    onClick={save}
+                                    className={style.save_button}
+                                >
+                                    {isLoading ? (
+                                        <ScaleLoader
+                                            color="#fff"
+                                            height="10px"
+                                            width="2px"
+                                        />
+                                    ) : (
+                                        "SAVE"
+                                    )}
+                                </button>
+                                <aside className={style.Arrow}>
+                                    <RiArrowDownSFill
+                                        onClick={() => setSave(!isSave)}
+                                    />
+                                </aside>
+                            </div>
+                            {isSave && (
+                                <ul>
+                                    <li>
+                                        <button type="submit" onClick={saveNew}>
+                                            SAVE & NEW
+                                        </button>
+                                    </li>
+                                </ul>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* <div className={style.SaveButton}>
                         <button
                             className=" text-ThemeRed font-semibold text-[14px] mr-5"
                             onClick={() => setToggle(false)}
@@ -174,7 +217,7 @@ export default function ModifyProperty({
                                 </ul>
                             )}
                         </button>
-                    </div>
+                    </div> */}
                 </motion.div>
             </section>
         </div>
@@ -189,13 +232,18 @@ type List = {
 const List = ({ detail, setProperty, isProperty, id }: List) => {
     const newID = Math.random();
     const [isSelect, setSelect] = useState(false);
+    const { setPrompt } = useContext(AppContext);
 
     const updateValue = (event: any) => {
         const unit_code = event.target.innerHTML;
         let validate = true;
         isProperty.map((item: any) => {
             if (item.unit_code === unit_code) {
-                alert("Selected Unit Code already in the list");
+                setPrompt({
+                    message: "Selected Unit Code already in the list!",
+                    type: "error",
+                    toggle: true,
+                });
                 validate = false;
                 return;
             }
@@ -303,7 +351,7 @@ const Select = ({ setSelect, updateValue }: any) => {
             className=" absolute top-full left-0 w-full bg-white z-10"
         >
             {isLoading && (
-                <div className="flex justify-center">
+                <div className="flex justify-center py-2">
                     <ScaleLoader color="#8f384d" height="10px" width="2px" />
                 </div>
             )}

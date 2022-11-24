@@ -72,29 +72,29 @@ export default function CustomerInformation({
                     MAILING ADDRESS
                 </p>
                 <h4 className=" text-gray-500 mb-5 1024px:text-[14px]">
-                    {itemDetail?.mailing_address_street !== "null"
+                    {itemDetail?.mailing_address_street !== null
                         ? itemDetail?.mailing_address_street + ", "
-                        : ""}
+                        : "--"}
 
-                    {itemDetail?.mailing_address_building !== "null"
+                    {itemDetail?.mailing_address_building !== null
                         ? itemDetail?.mailing_address_building + ", "
-                        : ""}
+                        : "--"}
 
-                    {itemDetail?.mailing_address_district !== "null"
+                    {itemDetail?.mailing_address_district !== null
                         ? itemDetail?.mailing_address_district + ", "
-                        : ""}
+                        : "--"}
 
-                    {itemDetail?.mailing_address_municipal_city !== "null"
+                    {itemDetail?.mailing_address_municipal_city !== null
                         ? itemDetail?.mailing_address_municipal_city + ", "
-                        : ""}
+                        : "--"}
 
-                    {itemDetail?.mailing_address_province !== "null"
+                    {itemDetail?.mailing_address_province !== null
                         ? itemDetail?.mailing_address_province + ", "
-                        : ""}
+                        : "--"}
 
-                    {itemDetail?.mailing_address_zip_code !== "null"
+                    {itemDetail?.mailing_address_zip_code !== null
                         ? itemDetail?.mailing_address_zip_code
-                        : ""}
+                        : "--"}
                 </h4>
             </li>
         </ul>

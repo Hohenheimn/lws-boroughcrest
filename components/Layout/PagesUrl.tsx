@@ -59,9 +59,15 @@ export const SidebarLinks = [
     },
     {
         name: "finance",
-        url: "/finance",
+        url: "/finance/general-ledger/chart-of-account",
         iconUrl: "Finance.png",
         ActiveUrl: "finance",
-        SubMenu: [],
+        SubMenu: [
+            {
+                name: "general ledger",
+                url: "/admin/general-ledger",
+                ActiveName: "general-ledger",
+            },
+        ],
     },
 ];

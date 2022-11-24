@@ -1,5 +1,5 @@
 .container {
-    @apply overflow-hidden fixed top-0 left-0 h-screen w-full bg-[#00000040] p-10 z-50 flex justify-center items-center 820px:items-center 375px:items-start 480px:p-5;
+    @apply overflow-hidden fixed top-0 left-0 h-screen w-full bg-[#00000040] p-10 z-50 flex justify-center items-center 820px:items-center 375px:items-start 640px:p-0;
     section {
         @apply p-10 bg-[#e2e3e4] rounded-lg w-[90%] max-w-[700px] max-h-[95vh] overflow-auto text-ThemeRed shadow-lg;
         .modal_title {
@@ -7,6 +7,9 @@
         }
         .modal_label_primary {
             @apply w-full text-[24px] mb-3;
+        }
+        .modal_label_primaryRed {
+            @apply w-full text-[20px] text-ThemeRed mb-3;
         }
         .statusTitle {
             @apply w-[95%] text-[12px] flex items-center justify-end mb-5;
@@ -29,6 +32,41 @@
                 }
                 label {
                     @apply text-[12px] font-semibold uppercase;
+                }
+            }
+        }
+        .FinanceTwoRows {
+            @apply flex flex-wrap w-full justify-between mb-5;
+            li {
+                @apply w-[48%] 640px:w-full mb-5 flex flex-col;
+                aside {
+                    @apply mb-2;
+                }
+                input,
+                select {
+                    @apply w-3/5 mr-1 w-full rounded-md text-black px-2 py-[2px] outline-none 480px:w-full;
+                }
+                span {
+                    @apply text-[12px] text-gray-500;
+                }
+                label {
+                    @apply text-[12px] font-semibold uppercase;
+                }
+            }
+            li.twoField {
+                @apply flex flex-row flex-wrap justify-between mb-0;
+                li {
+                    @apply w-[48%] 480px:w-full 480px:mb-5;
+                    input,
+                    select {
+                        @apply w-full;
+                    }
+                }
+            }
+            li.status {
+                @apply flex-row justify-between items-center;
+                label {
+                    @apply text-[14px];
                 }
             }
         }
@@ -112,7 +150,7 @@
             @apply text-[14px];
         }
         .SaveButton {
-            @apply w-full flex justify-end mt-20;
+            @apply w-full flex justify-end mt-14 480px:mt-10;
             .back {
                 @apply text-ThemeRed font-semibold text-[14px] h-8 mr-5 cursor-pointer flex items-center;
             }

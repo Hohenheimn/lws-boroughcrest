@@ -3,7 +3,11 @@ import AppContext from "../../Context/AppContext";
 import { RiArrowDownSFill } from "react-icons/ri";
 import { ScaleLoader } from "react-spinners";
 import style from "../../../styles/Popup_Modal.module.scss";
-import { PostCustomerSave, GetUnitCode } from "../../ReactQuery/CustomerMethod";
+import {
+    PostCustomerSave,
+    GetUnitCode,
+    PostCustomerDraft,
+} from "../../ReactQuery/CustomerMethod";
 
 type NewPropertyInfo = {
     setActiveForm: Function;
@@ -25,6 +29,9 @@ export default function NewPropertyInfo({
         setCusToggle,
         cusReset,
         setPrompt,
+        CusError,
+        setCusError,
+        ErrorDefault,
     } = useContext(AppContext);
 
     const [isProperty, setProperty] = useState<any>([
@@ -56,6 +63,7 @@ export default function NewPropertyInfo({
         setNewCustomer({ ...NewCustomerDefault });
         // Reset Unicode Error
         setError("");
+        setCusError({ ...ErrorDefault });
         // Close Save button
         setSave(false);
         // Reset UnitCode Array
@@ -75,18 +83,17 @@ export default function NewPropertyInfo({
     };
 
     const onError = (e: any) => {
-        if (
-            e?.response?.data?.registered_email?.includes(
-                "Customer Already Exists!"
-            )
-        ) {
-            setError("Customer Email Already Registered!");
+        const ErrorField = e.response.data;
+        let message: any;
+        if (ErrorField > 0 || ErrorField !== null || ErrorField !== undefined) {
+            setCusError({ ...ErrorField });
+            message = "Please check all the fields!";
         } else {
-            setError("Please fill out all required field!");
+            message = "Something is wrong!";
         }
         setPrompt((prev: any) => ({
             ...prev,
-            message: "Something is wrong!",
+            message: message,
             type: "error",
             toggle: true,
         }));
@@ -115,6 +122,8 @@ export default function NewPropertyInfo({
         Success,
         onError
     );
+    const { isLoading: MutateDraftLoading, mutate: DraftSave } =
+        PostCustomerDraft(Success);
 
     const SaveMutation = async (button: any) => {
         const ArrayPropertyID = isProperty.map((item: any) => {
@@ -190,7 +199,11 @@ export default function NewPropertyInfo({
             }
         });
 
-        mutate(formData);
+        if (button === "draft") {
+            DraftSave(formData);
+        } else {
+            mutate(formData);
+        }
     };
 
     // SAVE BUTTONS
@@ -251,7 +264,7 @@ export default function NewPropertyInfo({
                             onClick={Save}
                             className={style.save_button}
                         >
-                            {MutateLoading ? (
+                            {MutateLoading || MutateDraftLoading ? (
                                 <ScaleLoader
                                     color="#fff"
                                     height="10px"
@@ -293,22 +306,21 @@ type List = {
     id: number;
     setUnitCodeError: any;
 };
-const List = ({
-    detail,
-    isProperty,
-    setProperty,
-    id,
-    setUnitCodeError,
-}: List) => {
+const List = ({ detail, isProperty, setProperty, id }: List) => {
     const newID = Math.random();
     const [isSelect, setSelect] = useState(false);
+    const { setPrompt } = useContext(AppContext);
 
     const updateValue = (event: any) => {
         const UnitCode = event.target.innerHTML;
         let validate = true;
         isProperty.map((item: any) => {
             if (item.unitCode === UnitCode) {
-                setUnitCodeError("Selected Unit Code already in the list");
+                setPrompt({
+                    message: "Selected Unit Code already in the list!",
+                    type: "error",
+                    toggle: true,
+                });
                 validate = false;
                 return;
             }

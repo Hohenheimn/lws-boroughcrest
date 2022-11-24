@@ -113,6 +113,7 @@ const List = ({ itemDetail }: customerItemDetail) => {
             "https://boroughcrest-api.lws.codes/get-img?image=" +
             itemDetail?.image_photo;
     }
+
     return (
         <tr onMouseEnter={MouseEnter} onMouseLeave={MouseLeave}>
             <td className={`normal ${itemDetail?.status}`}>
@@ -353,62 +354,69 @@ const List = ({ itemDetail }: customerItemDetail) => {
                         </td>
                     )}
                     {item === "Property" && (
-                        <>
-                            <td className={`large ${itemDetail?.status}`}>
-                                <Link
-                                    href={`${
-                                        itemDetail?.status === "Draft"
-                                            ? `/admin/customer?draft=${itemDetail.id}`
-                                            : `/admin/customer/${itemDetail?.id}`
-                                    }`}
-                                >
-                                    <a className="item">
-                                        <div className="flex items-center">
-                                            {itemDetail?.properties?.map(
-                                                (item: any, index: number) => (
-                                                    <p key={index}>
-                                                        {item.unit_code}
-                                                        {index ===
-                                                        itemDetail?.properties
-                                                            ?.length -
-                                                            1
-                                                            ? ""
-                                                            : " |"}
-                                                    </p>
-                                                )
-                                            )}
+                        <td
+                            className={`x2large ${itemDetail?.status}`}
+                            colSpan={2}
+                        >
+                            <Link
+                                href={`${
+                                    itemDetail?.status === "Draft"
+                                        ? `/admin/customer?draft=${itemDetail.id}`
+                                        : `/admin/customer/${itemDetail?.id}`
+                                }`}
+                            >
+                                <a className="property">
+                                    {itemDetail?.properties.map((item: any) => (
+                                        <div className="property-container">
+                                            <div className="half">
+                                                <div className="flex flex-wrap">
+                                                    {item.map(
+                                                        (
+                                                            item1: any,
+                                                            index: number
+                                                        ) => (
+                                                            <h2
+                                                                key={index}
+                                                                className="unitCode"
+                                                            >
+                                                                {
+                                                                    item1.unit_code
+                                                                }
+                                                            </h2>
+                                                        )
+                                                    )}
+                                                </div>
+                                            </div>
+                                            <div className="half">
+                                                <div
+                                                    className="flex"
+                                                    key={index}
+                                                >
+                                                    <h2 key={index}>
+                                                        {item[0].tower.name}
+                                                    </h2>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </a>
-                                </Link>
-                            </td>
-                            <td className={`large ${itemDetail?.status}`}>
-                                <Link
-                                    href={`${
-                                        itemDetail?.status === "Draft"
-                                            ? `/admin/customer?draft=${itemDetail.id}`
-                                            : `/admin/customer/${itemDetail?.id}`
-                                    }`}
-                                >
-                                    <a className="item">
-                                        <div className="flex items-center">
-                                            {itemDetail?.properties?.map(
-                                                (item: any, index: number) => (
-                                                    <p key={index}>
-                                                        {item.tower.name}
-                                                        {index ===
-                                                        itemDetail?.properties
-                                                            ?.length -
-                                                            1
-                                                            ? ""
-                                                            : " |"}
-                                                    </p>
-                                                )
-                                            )}
-                                        </div>
-                                    </a>
-                                </Link>
-                            </td>
-                        </>
+                                    ))}
+
+                                    {/* <div className="half">
+                                        {itemDetail?.properties.map(
+                                            (item: any, index: number) => (
+                                                <div
+                                                    className="flex"
+                                                    key={index}
+                                                >
+                                                    <h2 key={index}>
+                                                        {item[0].tower.name}
+                                                    </h2>
+                                                </div>
+                                            )
+                                        )}
+                                    </div> */}
+                                </a>
+                            </Link>
+                        </td>
                     )}
                 </>
             ))}
