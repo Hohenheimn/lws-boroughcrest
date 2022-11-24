@@ -177,7 +177,7 @@ export default function Layout({ children }: Layout) {
                                         }
                                     >
                                         <div>
-                                            <IoNotificationsSharp className=" text-ThemeRed text-[28px] hover:scale-[1.3] transition duration-75" />
+                                            <IoNotificationsSharp className=" text-ThemeRed text-[24px] hover:scale-[1.3] transition duration-75" />
                                         </div>
                                     </Tippy>
 
