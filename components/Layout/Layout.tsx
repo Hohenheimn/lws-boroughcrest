@@ -21,6 +21,7 @@ type Layout = {
 };
 
 export default function Layout({ children }: Layout) {
+    const [title, setTitle] = useState<string>("");
     const { togglePrompt, collapseSide, setCollapseSide } =
         useContext(AppContext);
     const [isProfileSearch, setProfileSearch] = useState(false);
@@ -51,12 +52,16 @@ export default function Layout({ children }: Layout) {
 
     // it opens the sidebar search when depending on following asPath
     useEffect(() => {
+        router.pathname.split("/")[1]
+            ? setTitle(router.pathname.split("/")[1])
+            : setTitle("Dashboard");
         setPathName(router.asPath);
         if (
             router.asPath.includes("corporate/") ||
             router.asPath.includes("user/") ||
             router.asPath.includes("customer/") ||
-            router.asPath.includes("property/")
+            router.asPath.includes("property/") ||
+            router.pathname.includes("journal/[id]")
         ) {
             setProfileSearch(true);
         } else {
@@ -79,12 +84,7 @@ export default function Layout({ children }: Layout) {
     return (
         <>
             <Head>
-                <title>
-                    Boroughcrest{" "}
-                    {router.pathname.split("/")[1]
-                        ? `- ${router.pathname.split("/")[1]}`
-                        : "- dashboard"}
-                </title>
+                <title>Boroughcrest- {title}</title>
                 <meta
                     name="viewport"
                     content="initial-scale=1.0, width=device-width"
@@ -211,7 +211,7 @@ export default function Layout({ children }: Layout) {
                             </ul>
                         </header>
                         {financeMenu && <UpperMenu />}
-                        <main className="relative flex-1 flex flex-col px-14 1550px:px-10">
+                        <main className="relative flex-1 flex flex-col px-14 1550px:px-10 480px:px-5">
                             {children}
                         </main>
                     </div>

@@ -36,7 +36,7 @@ input {
 }
 
 .calendar {
-    @apply relative;
+    @apply relative inline-block;
     .cal {
         @apply absolute translate-y-[45%] top-0 right-[10px] bg-white pointer-events-none;
     }
@@ -168,6 +168,22 @@ input {
                 .pencil {
                     @apply flex justify-center text-[20px] text-ThemeRed;
                 }
+                .icon {
+                    @apply flex justify-center text-[20px] text-ThemeRed;
+                }
+            }
+            td.checkbox {
+                @apply w-5;
+                input[type="checkbox"] {
+                    border: 1px solid rgb(216, 216, 216) !important;
+                    @apply relative h-5 w-5 after:text-white after:flex after:justify-center after:items-center mr-1 checked:after:bg-ThemeRed checked:after:content-['✓'] appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
+                    &:checked {
+                        border: none !important;
+                    }
+                }
+            }
+            td.icon {
+                @apply w-[50px];
             }
             td.normal {
                 @apply min-w-[150px] 480px:min-w-[100px];
@@ -181,18 +197,15 @@ input {
             td.xLarge {
                 @apply min-w-[500px] 480px:min-w-[350px];
             }
-            // td.Draft {
-            //     @apply bg-gray-200;
-            //     .item {
-            //         @apply py-1;
-            //     }
-            // }
         }
     }
 }
 .table_list.corp,
 .table_list.user {
     @apply 1024px:w-[1000px];
+}
+.table_list.journal {
+    @apply 1024px:w-[800px];
 }
 // Active Status
 .statusCircle {
@@ -398,6 +411,29 @@ input[type="number"] {
                     @apply pointer-events-none bg-ThemeRed text-white;
                 }
             }
+        }
+    }
+}
+.SimpleTab {
+    @apply flex mb-5;
+    li {
+        @apply font-NHU-medium text-ThemeRed50 cursor-pointer mr-5 relative hover:text-ThemeRed;
+        &::after {
+            @apply absolute content-[''] w-full top-full left-0 h-[0px] bg-ThemeRed;
+        }
+        &:hover {
+            &::after {
+                @apply h-[2px];
+            }
+        }
+    }
+    li:nth-last-child(1) {
+        @apply mr-0;
+    }
+    li.Active {
+        @apply text-ThemeRed;
+        &::after {
+            @apply h-[2px];
         }
     }
 }

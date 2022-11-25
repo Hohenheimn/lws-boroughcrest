@@ -26,6 +26,14 @@
                     @apply flex;
                 }
             }
+            .noFill {
+                &:hover {
+                    @apply scale-[1.2];
+                }
+                label {
+                    @apply flex;
+                }
+            }
             .filter2 {
                 @apply mr-5 transition duration-75 text-ThemeRed text-[24px] font-bold cursor-pointer flex hover:text-ThemeRed50 w-7 h-7 relative;
                 &:hover {

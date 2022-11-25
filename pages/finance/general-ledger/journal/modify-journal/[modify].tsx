@@ -1,7 +1,7 @@
 import React from "react";
-import JournalForm from "../../../../components/FINANCE/Journal/JournalForm";
+import JournalForm from "../../../../../components/FINANCE/Journal/JournalForm";
 
-export default function CreateJournal() {
+export default function Modify() {
     const Value = [
         {
             id: 1,
@@ -13,7 +13,7 @@ export default function CreateJournal() {
     ];
     return (
         <>
-            <JournalForm DefaultValue={Value} type="create" />
+            <JournalForm DefaultValue={Value} type="modify" />
         </>
     );
 }
