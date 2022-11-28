@@ -35,3 +35,31 @@ export const GeneralLedger = [
         ],
     },
 ];
+
+export const CustomerFacility = [
+    {
+        name: "Charge",
+        activeUrl: "charge",
+        url: "/finance/customer-facility/charge",
+    },
+    {
+        name: "Billing",
+        activeUrl: "billing",
+        url: "/finance/customer-facility/billing",
+    },
+    {
+        name: "Collection",
+        activeUrl: "collection",
+        url: "/finance/customer-facility/collection",
+    },
+    {
+        name: "Deposit Counter",
+        activeUrl: "deposit-counter",
+        url: "/finance/customer-facility/deposit-counter",
+    },
+    {
+        name: "Adjustment",
+        activeUrl: "adjustment",
+        url: "/finance/customer-facility/adjustment",
+    },
+];

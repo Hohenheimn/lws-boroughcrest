@@ -68,6 +68,11 @@ export const SidebarLinks = [
                 url: "/finance/general-ledger/chart-of-account",
                 ActiveName: "general-ledger",
             },
+            {
+                name: "Customer Facility",
+                url: "/finance/customer-facility/charge",
+                ActiveName: "customer-facility",
+            },
         ],
     },
 ];
