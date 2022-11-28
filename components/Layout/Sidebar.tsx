@@ -12,6 +12,7 @@ import { useRouter } from "next/router";
 import { SidebarLinks } from "./PagesUrl";
 import PropertySearch from "../Search/PropertySearch";
 import AppContext from "../Context/AppContext";
+import JournalSearch from "../Search/JournalSearch";
 
 type SidebarType = {
     isProfileSearch: boolean;
@@ -159,7 +160,7 @@ export default function Sidebar({
                             </MenuLink>
                         ))}
                     </ul>
-                    {/* Pages, the Search will show */}
+                    {/* Pages, where the Search will show */}
                     <div className="shadow-2xl flex-1">
                         <AnimatePresence>
                             {isProfileSearch && (
@@ -179,6 +180,9 @@ export default function Sidebar({
                                     {isPathName.includes("property/") && (
                                         <PropertySearch />
                                     )}
+                                    {router.pathname.includes(
+                                        "journal/[id]"
+                                    ) && <JournalSearch />}
                                 </motion.ul>
                             )}
                         </AnimatePresence>

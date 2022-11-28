@@ -154,15 +154,18 @@
             .back {
                 @apply text-ThemeRed font-semibold text-[14px] h-8 mr-5 cursor-pointer flex items-center;
             }
+            .next {
+                @apply text-white h-8 w-20 flex justify-center items-center duration-75 hover:bg-ThemeRed50 leading-none bg-ThemeRed rounded-md text-[14px];
+            }
             .Save {
                 @apply cursor-pointer relative text-white h-auto duration-75 overflow-hidden rounded-md text-[14px];
                 div {
                     @apply w-[100px] flex;
                     .save_button {
-                        @apply w-3/5 bg-ThemeRed hover:bg-ThemeRed50  text-white flex items-center justify-center h-8;
+                        @apply w-[70%] bg-ThemeRed hover:bg-ThemeRed50  text-white flex items-center justify-center h-8;
                     }
                     .Arrow {
-                        @apply text-[24px] hover:bg-ThemeRed50 cursor-pointer w-2/5 bg-ThemeRed text-white border-l h-8 border-white flex justify-center items-center;
+                        @apply w-[30%] text-[24px] hover:bg-ThemeRed50 cursor-pointer bg-ThemeRed text-white border-l h-8 border-white flex justify-center items-center;
                     }
                 }
                 ul {

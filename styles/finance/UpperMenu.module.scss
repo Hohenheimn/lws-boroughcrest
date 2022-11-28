@@ -1,12 +1,18 @@
-.container {
-    @apply flex w-full mb-10 480px:mb-5 640px:flex-wrap;
-    li {
-        @apply w-full flex items-center border-r border-gray-200 text-center bg-[#fbfcfe] text-ThemeRed transition-all duration-75 hover:bg-ThemeRed hover:text-white;
-        a {
-            @apply w-full inline-block py-1 px-2 1024px:text-[12px] 640px:text-[14px];
+.wrapper {
+    @apply mb-10 480px:mb-5;
+    .container {
+        @apply flex w-full 640px:flex-wrap;
+        li {
+            @apply w-full flex items-center border-r border-gray-200 text-center bg-[#fbfcfe] text-ThemeRed transition-all duration-75 hover:bg-ThemeRed hover:text-white;
+            a {
+                @apply w-full inline-block py-1 px-2 1024px:text-[12px] 640px:text-[14px];
+            }
         }
-    }
-    li.active {
-        @apply bg-ThemeRed text-white;
+        li.active {
+            @apply bg-ThemeRed text-white;
+        }
+        li.subBorder {
+            @apply border border-gray-200;
+        }
     }
 }

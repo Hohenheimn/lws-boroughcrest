@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { RiArrowDownSFill } from "react-icons/ri";
 import { ScaleLoader } from "react-spinners";
@@ -8,9 +9,11 @@ type Props = {
 };
 
 export default function COAForm({ setCreate }: Props) {
+    const router = useRouter();
     const [isSave, setSave] = useState(false);
     const cancel = () => {
         setCreate(false);
+        router.push("");
     };
     return (
         <div className={style.container}>

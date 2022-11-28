@@ -38,25 +38,26 @@ export default function CustomerTable() {
                             <th>ID</th>
                             <th>Name</th>
                             {cusTableColumn.map((item: any, index: number) => (
-                                <>
+                                <th
+                                    key={index}
+                                    className={
+                                        item === "Status" ? "center" : ""
+                                    }
+                                    colSpan={item === "Property" ? 2 : 1}
+                                >
                                     {item === "Property" ? (
-                                        <>
-                                            <th>Property (Unit Code)</th>
-                                            <th>Property (Tower)</th>
-                                        </>
+                                        <div className="flex">
+                                            <div className="w-2/4">
+                                                Property (Unit Code)
+                                            </div>
+                                            <div className="w-2/4">
+                                                Property (Tower)
+                                            </div>
+                                        </div>
                                     ) : (
-                                        <th
-                                            key={index}
-                                            className={
-                                                item === "Status"
-                                                    ? "center"
-                                                    : ""
-                                            }
-                                        >
-                                            {item}
-                                        </th>
+                                        item
                                     )}
-                                </>
+                                </th>
                             ))}
                         </tr>
                     </thead>
@@ -150,224 +151,206 @@ const List = ({ itemDetail }: customerItemDetail) => {
                 </Link>
             </td>
             {cusTableColumn.map((item: string, index: number) => (
-                <>
+                <td
+                    key={index}
+                    className={`${item === "Property" ? "x2large" : "normal"}`}
+                    colSpan={item === "Property" ? 2 : 1}
+                >
                     {item === "Class" && (
-                        <td className={`normal ${itemDetail?.status}`}>
-                            <Link
-                                href={`${
-                                    itemDetail?.status === "Draft"
-                                        ? `/admin/customer?draft=${itemDetail.id}`
-                                        : `/admin/customer/${itemDetail?.id}`
-                                }`}
-                            >
-                                <a className="item">
-                                    <div>
-                                        <p>{itemDetail?.class}</p>
-                                    </div>
-                                </a>
-                            </Link>
-                        </td>
+                        <Link
+                            href={`${
+                                itemDetail?.status === "Draft"
+                                    ? `/admin/customer?draft=${itemDetail.id}`
+                                    : `/admin/customer/${itemDetail?.id}`
+                            }`}
+                        >
+                            <a className="item">
+                                <div>
+                                    <p>{itemDetail?.class}</p>
+                                </div>
+                            </a>
+                        </Link>
                     )}
                     {item === "Mobile" && (
-                        <td className={`normal ${itemDetail?.status}`}>
-                            <Link
-                                href={`${
-                                    itemDetail?.status === "Draft"
-                                        ? `/admin/customer?draft=${itemDetail.id}`
-                                        : `/admin/customer/${itemDetail?.id}`
-                                }`}
-                            >
-                                <a className="item">
-                                    <div>
-                                        <p>{itemDetail?.contact_no}</p>
-                                    </div>
-                                </a>
-                            </Link>
-                        </td>
+                        <Link
+                            href={`${
+                                itemDetail?.status === "Draft"
+                                    ? `/admin/customer?draft=${itemDetail.id}`
+                                    : `/admin/customer/${itemDetail?.id}`
+                            }`}
+                        >
+                            <a className="item">
+                                <div>
+                                    <p>{itemDetail?.contact_no}</p>
+                                </div>
+                            </a>
+                        </Link>
                     )}
 
                     {item === "Status" && (
-                        <td className={`normal ${itemDetail?.status}`}>
-                            <div className="w-full flex px-5 justify-center">
-                                <Tippy
-                                    content={`${itemDetail?.status}`}
-                                    theme="ThemeRed"
-                                >
-                                    <div
-                                        className={`statusCircle ${itemDetail?.status}`}
-                                    ></div>
-                                </Tippy>
-                            </div>
-                        </td>
+                        <div className="w-full flex px-5 justify-center">
+                            <Tippy
+                                content={`${itemDetail?.status}`}
+                                theme="ThemeRed"
+                            >
+                                <div
+                                    className={`statusCircle ${itemDetail?.status}`}
+                                ></div>
+                            </Tippy>
+                        </div>
                     )}
                     {item === "Type" && (
-                        <td className={`normal ${itemDetail?.status}`}>
-                            <Link
-                                href={`${
-                                    itemDetail?.status === "Draft"
-                                        ? `/admin/customer?draft=${itemDetail.id}`
-                                        : `/admin/customer/${itemDetail?.id}`
-                                }`}
-                            >
-                                <a className="item">
-                                    <div>
-                                        <p>{itemDetail?.type}</p>
-                                    </div>
-                                </a>
-                            </Link>
-                        </td>
+                        <Link
+                            href={`${
+                                itemDetail?.status === "Draft"
+                                    ? `/admin/customer?draft=${itemDetail.id}`
+                                    : `/admin/customer/${itemDetail?.id}`
+                            }`}
+                        >
+                            <a className="item">
+                                <div>
+                                    <p>{itemDetail?.type}</p>
+                                </div>
+                            </a>
+                        </Link>
                     )}
                     {item === "Email" && (
-                        <td className={`normal ${itemDetail?.status}`}>
-                            <Link
-                                href={`${
-                                    itemDetail?.status === "Draft"
-                                        ? `/admin/customer?draft=${itemDetail.id}`
-                                        : `/admin/customer/${itemDetail?.id}`
-                                }`}
-                            >
-                                <a className="item">
-                                    <div>
-                                        <p>{itemDetail?.preferred_email}</p>
-                                    </div>
-                                </a>
-                            </Link>
-                        </td>
+                        <Link
+                            href={`${
+                                itemDetail?.status === "Draft"
+                                    ? `/admin/customer?draft=${itemDetail.id}`
+                                    : `/admin/customer/${itemDetail?.id}`
+                            }`}
+                        >
+                            <a className="item">
+                                <div>
+                                    <p>{itemDetail?.preferred_email}</p>
+                                </div>
+                            </a>
+                        </Link>
                     )}
 
                     {item === "Spouse" && (
-                        <td className={`normal ${itemDetail?.status}`}>
-                            <Link
-                                href={`${
-                                    itemDetail?.status === "Draft"
-                                        ? `/admin/customer?draft=${itemDetail.id}`
-                                        : `/admin/customer/${itemDetail?.id}`
-                                }`}
-                            >
-                                <a className="item">
-                                    <div>
-                                        <p>
-                                            {itemDetail?.individual_co_owner
-                                                ? itemDetail?.individual_co_owner
-                                                : "N/A"}
-                                        </p>
-                                    </div>
-                                </a>
-                            </Link>
-                        </td>
+                        <Link
+                            href={`${
+                                itemDetail?.status === "Draft"
+                                    ? `/admin/customer?draft=${itemDetail.id}`
+                                    : `/admin/customer/${itemDetail?.id}`
+                            }`}
+                        >
+                            <a className="item">
+                                <div>
+                                    <p>
+                                        {itemDetail?.individual_co_owner
+                                            ? itemDetail?.individual_co_owner
+                                            : "N/A"}
+                                    </p>
+                                </div>
+                            </a>
+                        </Link>
                     )}
                     {item === "Citizenship" && (
-                        <td className={`normal ${itemDetail?.status}`}>
-                            <Link
-                                href={`${
-                                    itemDetail?.status === "Draft"
-                                        ? `/admin/customer?draft=${itemDetail.id}`
-                                        : `/admin/customer/${itemDetail?.id}`
-                                }`}
-                            >
-                                <a className="item">
-                                    <div>
-                                        <p>
-                                            {itemDetail?.individual_citizenship
-                                                ? itemDetail?.individual_citizenship
-                                                : "N/A"}
-                                        </p>
-                                    </div>
-                                </a>
-                            </Link>
-                        </td>
+                        <Link
+                            href={`${
+                                itemDetail?.status === "Draft"
+                                    ? `/admin/customer?draft=${itemDetail.id}`
+                                    : `/admin/customer/${itemDetail?.id}`
+                            }`}
+                        >
+                            <a className="item">
+                                <div>
+                                    <p>
+                                        {itemDetail?.individual_citizenship
+                                            ? itemDetail?.individual_citizenship
+                                            : "N/A"}
+                                    </p>
+                                </div>
+                            </a>
+                        </Link>
                     )}
                     {item === "Birth Date" && (
-                        <td className={`normal ${itemDetail?.status}`}>
-                            <Link
-                                href={`${
-                                    itemDetail?.status === "Draft"
-                                        ? `/admin/customer?draft=${itemDetail.id}`
-                                        : `/admin/customer/${itemDetail?.id}`
-                                }`}
-                            >
-                                <a className="item">
-                                    <div>
-                                        <p>
-                                            {itemDetail?.individual_birth_date
-                                                ? itemDetail?.individual_birth_date
-                                                : "N/A"}
-                                        </p>
-                                    </div>
-                                </a>
-                            </Link>
-                        </td>
+                        <Link
+                            href={`${
+                                itemDetail?.status === "Draft"
+                                    ? `/admin/customer?draft=${itemDetail.id}`
+                                    : `/admin/customer/${itemDetail?.id}`
+                            }`}
+                        >
+                            <a className="item">
+                                <div>
+                                    <p>
+                                        {itemDetail?.individual_birth_date
+                                            ? itemDetail?.individual_birth_date
+                                            : "N/A"}
+                                    </p>
+                                </div>
+                            </a>
+                        </Link>
                     )}
                     {item === "Contact Person" && (
-                        <td className={`normal ${itemDetail?.status}`}>
-                            <Link
-                                href={`${
-                                    itemDetail?.status === "Draft"
-                                        ? `/admin/customer?draft=${itemDetail.id}`
-                                        : `/admin/customer/${itemDetail?.id}`
-                                }`}
-                            >
-                                <a className="item">
-                                    <div>
-                                        <p>
-                                            {itemDetail?.company_contact_person
-                                                ? itemDetail?.company_contact_person
-                                                : "N/A"}
-                                        </p>
-                                    </div>
-                                </a>
-                            </Link>
-                        </td>
+                        <Link
+                            href={`${
+                                itemDetail?.status === "Draft"
+                                    ? `/admin/customer?draft=${itemDetail.id}`
+                                    : `/admin/customer/${itemDetail?.id}`
+                            }`}
+                        >
+                            <a className="item">
+                                <div>
+                                    <p>
+                                        {itemDetail?.company_contact_person
+                                            ? itemDetail?.company_contact_person
+                                            : "N/A"}
+                                    </p>
+                                </div>
+                            </a>
+                        </Link>
                     )}
                     {item === "TIN" && (
-                        <td className={`normal ${itemDetail?.status}`}>
-                            <Link
-                                href={`${
-                                    itemDetail?.status === "Draft"
-                                        ? `/admin/customer?draft=${itemDetail.id}`
-                                        : `/admin/customer/${itemDetail?.id}`
-                                }`}
-                            >
-                                <a className="item">
-                                    <div>
-                                        <p>{itemDetail?.tin}</p>
-                                    </div>
-                                </a>
-                            </Link>
-                        </td>
+                        <Link
+                            href={`${
+                                itemDetail?.status === "Draft"
+                                    ? `/admin/customer?draft=${itemDetail.id}`
+                                    : `/admin/customer/${itemDetail?.id}`
+                            }`}
+                        >
+                            <a className="item">
+                                <div>
+                                    <p>{itemDetail?.tin}</p>
+                                </div>
+                            </a>
+                        </Link>
                     )}
                     {item === "Branch Code" && (
-                        <td className={`normal ${itemDetail?.status}`}>
-                            <Link
-                                href={`${
-                                    itemDetail?.status === "Draft"
-                                        ? `/admin/customer?draft=${itemDetail.id}`
-                                        : `/admin/customer/${itemDetail?.id}`
-                                }`}
-                            >
-                                <a className="item">
-                                    <div>
-                                        <p>{itemDetail?.branch_code}</p>
-                                    </div>
-                                </a>
-                            </Link>
-                        </td>
+                        <Link
+                            href={`${
+                                itemDetail?.status === "Draft"
+                                    ? `/admin/customer?draft=${itemDetail.id}`
+                                    : `/admin/customer/${itemDetail?.id}`
+                            }`}
+                        >
+                            <a className="item">
+                                <div>
+                                    <p>{itemDetail?.branch_code}</p>
+                                </div>
+                            </a>
+                        </Link>
                     )}
                     {item === "Property" && (
-                        <td
-                            className={`x2large ${itemDetail?.status}`}
-                            colSpan={2}
+                        <Link
+                            href={`${
+                                itemDetail?.status === "Draft"
+                                    ? `/admin/customer?draft=${itemDetail.id}`
+                                    : `/admin/customer/${itemDetail?.id}`
+                            }`}
                         >
-                            <Link
-                                href={`${
-                                    itemDetail?.status === "Draft"
-                                        ? `/admin/customer?draft=${itemDetail.id}`
-                                        : `/admin/customer/${itemDetail?.id}`
-                                }`}
-                            >
-                                <a className="property">
-                                    {itemDetail?.properties.map((item: any) => (
-                                        <div className="property-container">
+                            <a className="property">
+                                {itemDetail?.properties.map(
+                                    (item: any, index: number) => (
+                                        <div
+                                            className="property-container"
+                                            key={index}
+                                        >
                                             <div className="half">
                                                 <div className="flex flex-wrap">
                                                     {item.map(
@@ -398,27 +381,12 @@ const List = ({ itemDetail }: customerItemDetail) => {
                                                 </div>
                                             </div>
                                         </div>
-                                    ))}
-
-                                    {/* <div className="half">
-                                        {itemDetail?.properties.map(
-                                            (item: any, index: number) => (
-                                                <div
-                                                    className="flex"
-                                                    key={index}
-                                                >
-                                                    <h2 key={index}>
-                                                        {item[0].tower.name}
-                                                    </h2>
-                                                </div>
-                                            )
-                                        )}
-                                    </div> */}
-                                </a>
-                            </Link>
-                        </td>
+                                    )
+                                )}
+                            </a>
+                        </Link>
                     )}
-                </>
+                </td>
             ))}
         </tr>
     );

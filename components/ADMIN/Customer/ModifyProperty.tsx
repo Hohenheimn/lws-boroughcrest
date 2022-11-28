@@ -175,49 +175,6 @@ export default function ModifyProperty({
                             )}
                         </div>
                     </div>
-
-                    {/* <div className={style.SaveButton}>
-                        <button
-                            className=" text-ThemeRed font-semibold text-[14px] mr-5"
-                            onClick={() => setToggle(false)}
-                        >
-                            CANCEL
-                        </button>
-
-                        <button className={style.Save}>
-                            <div className={style.save_button}>
-                                <button
-                                    className={style.save_button}
-                                    onClick={save}
-                                >
-                                    {isLoading ? (
-                                        <ScaleLoader
-                                            color="#fff"
-                                            height="10px"
-                                            width="2px"
-                                        />
-                                    ) : (
-                                        "SAVE"
-                                    )}
-                                </button>
-                                <aside className={style.Arrow}>
-                                    <RiArrowDownSFill
-                                        onClick={() => setSave(!isSave)}
-                                    />
-                                </aside>
-                            </div>
-                            {isSave && (
-                                <ul className=" absolute top-full bg-white w-full">
-                                    <aside
-                                        onClick={saveNew}
-                                        className="text-ThemeRed inline-block py-2 w-full text-center hover:bg-ThemeRed hover:text-white duration-75"
-                                    >
-                                        SAVE & NEW
-                                    </aside>
-                                </ul>
-                            )}
-                        </button>
-                    </div> */}
                 </motion.div>
             </section>
         </div>
