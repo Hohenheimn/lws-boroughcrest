@@ -1,27 +1,31 @@
 import React, { useContext } from "react";
-import AppContext from "../Context/AppContext";
+import AppContext from "../../Context/AppContext";
 import Image from "next/image";
 import { BsSearch } from "react-icons/bs";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 import { useRouter } from "next/router";
-import style from "../../styles/SearchFilter.module.scss";
-import { CustomerImport } from "../ReactQuery/CustomerMethod";
+import style from "../../../styles/SearchFilter.module.scss";
+import { CustomerImport } from "../../ReactQuery/CustomerMethod";
 import { MoonLoader } from "react-spinners";
 import axios from "axios";
 import { getCookie } from "cookies-next";
-import { PropertyImport } from "../ReactQuery/PropertyMethod";
+import { PropertyImport } from "../../ReactQuery/PropertyMethod";
 
 type SearchFilter = {
     page: string;
     setSearchTable: Function;
     setCreate: Function;
+    isFilterTable: boolean;
+    setFilterTable: Function;
 };
 
 export default function FinanceSearchFilter({
     page,
     setSearchTable,
     setCreate,
+    isFilterTable,
+    setFilterTable,
 }: SearchFilter) {
     const { setPrompt } = useContext(AppContext);
     const router = useRouter();
@@ -110,6 +114,9 @@ export default function FinanceSearchFilter({
             }
         }
     };
+    const FilterFunc = () => {
+        setFilterTable(!isFilterTable);
+    };
 
     return (
         <>
@@ -156,7 +163,7 @@ export default function FinanceSearchFilter({
                             className="hidden"
                         />
                         <Tippy theme="ThemeRed" content="Filter">
-                            <div className={style.filter2}>
+                            <div className={style.filter2} onClick={FilterFunc}>
                                 <Image
                                     src="/Images/Filter2.png"
                                     layout="fill"

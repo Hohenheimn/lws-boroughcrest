@@ -42,7 +42,7 @@ export default function ChargeTable({
             </section>
 
             <div className="table_container">
-                <table className="table_list journal">
+                <table className="table_list corp">
                     <thead>
                         <tr>
                             <th>Code</th>

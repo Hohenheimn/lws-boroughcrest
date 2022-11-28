@@ -3,6 +3,12 @@
 }
 .container {
     @apply bg-white px-20 py-10 1366px:px-10;
+    .pencilCon {
+        @apply flex justify-end;
+        .pencil {
+            @apply text-ThemeRed font-bold text-[32px] 480px:text-[24px] cursor-pointer;
+        }
+    }
     aside {
         @apply w-full overflow-auto;
         table {

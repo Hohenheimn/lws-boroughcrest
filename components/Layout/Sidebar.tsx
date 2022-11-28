@@ -13,6 +13,7 @@ import { SidebarLinks } from "./PagesUrl";
 import PropertySearch from "../Search/PropertySearch";
 import AppContext from "../Context/AppContext";
 import JournalSearch from "../Search/JournalSearch";
+import RoleSearch from "../Search/RolesSearch";
 
 type SidebarType = {
     isProfileSearch: boolean;
@@ -183,6 +184,9 @@ export default function Sidebar({
                                     {router.pathname.includes(
                                         "journal/[id]"
                                     ) && <JournalSearch />}
+                                    {router.pathname.includes("/roles") && (
+                                        <RoleSearch />
+                                    )}
                                 </motion.ul>
                             )}
                         </AnimatePresence>

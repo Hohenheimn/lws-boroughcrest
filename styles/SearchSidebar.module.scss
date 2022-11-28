@@ -27,7 +27,7 @@
     .searchedItem {
         @apply w-full;
         ul {
-            @apply w-full flex p-5 1550px:px-3 border-b border-gray-300 flex-wrap;
+            @apply w-full flex p-5 1550px:px-3 border-b border-gray-300 flex-wrap  hover:bg-gray-200;
             li {
                 @apply w-full flex flex-wrap;
                 h4 {
@@ -35,6 +35,9 @@
                 }
                 p {
                     @apply text-[13px] text-gray-400 w-2/4  1550px:w-full;
+                }
+                .roleText {
+                    @apply text-[16px] text-[#545454] w-full  1550px:w-full;
                 }
             }
         }

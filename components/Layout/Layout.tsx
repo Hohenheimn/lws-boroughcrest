@@ -61,13 +61,18 @@ export default function Layout({ children }: Layout) {
             router.asPath.includes("user/") ||
             router.asPath.includes("customer/") ||
             router.asPath.includes("property/") ||
-            router.pathname.includes("journal/[id]")
+            router.pathname.includes("journal/[id]") ||
+            router.pathname.includes("/roles")
         ) {
             setProfileSearch(true);
         } else {
             setProfileSearch(false);
         }
-        if (router.query.id !== undefined) {
+        // Wide the sidebar
+        if (
+            router.query.id !== undefined ||
+            router.pathname.includes("/roles")
+        ) {
             setWide(true);
         } else {
             setWide(false);

@@ -14,9 +14,10 @@ import "tippy.js/dist/tippy.css";
 
 type Props = {
     isSearchTable: string;
+    isFilterTable: boolean;
 };
 
-export default function COATable({ isSearchTable }: Props) {
+export default function COATable({ isSearchTable, isFilterTable }: Props) {
     const [TablePage, setTablePage] = useState(1);
 
     const { data, isLoading, isError } = useQuery(
@@ -38,12 +39,24 @@ export default function COATable({ isSearchTable }: Props) {
                 <table className="table_list corp">
                     <thead>
                         <tr>
-                            <th>Chart Code</th>
-                            <th>Account Name</th>
-                            <th>Category</th>
-                            <th>Description</th>
-                            <th>Default Account</th>
-                            <th></th>
+                            {isFilterTable ? (
+                                <>
+                                    <th>Chart Code</th>
+                                    <th>Primary</th>
+                                    <th>Secondary</th>
+                                    <th>Tertiary</th>
+                                    <th>Account</th>
+                                </>
+                            ) : (
+                                <>
+                                    <th>Chart Code</th>
+                                    <th>Account Name</th>
+                                    <th>Category</th>
+                                    <th>Description</th>
+                                    <th>Default Account</th>
+                                    <th></th>
+                                </>
+                            )}
                         </tr>
                     </thead>
                     <tbody>
@@ -55,7 +68,11 @@ export default function COATable({ isSearchTable }: Props) {
                             </tr>
                         )}
                         {data?.data.data.map((item: any, index: number) => (
-                            <List key={index} itemDetail={item} />
+                            <List
+                                key={index}
+                                itemDetail={item}
+                                isFilterTable={isFilterTable}
+                            />
                         ))}
                     </tbody>
                 </table>
@@ -83,8 +100,11 @@ export default function COATable({ isSearchTable }: Props) {
         </>
     );
 }
-
-const List = ({ itemDetail }: any) => {
+type ListProps = {
+    itemDetail: any;
+    isFilterTable: boolean;
+};
+const List = ({ itemDetail, isFilterTable }: ListProps) => {
     return (
         <>
             <tr>
@@ -143,19 +163,21 @@ const List = ({ itemDetail }: any) => {
                         </a>
                     </Link>
                 </td>
-                <td>
-                    <Link
-                        href={`/finance/general-ledger/chart-of-account?modify=${itemDetail.id}`}
-                    >
-                        <a>
-                            <Tippy theme="ThemeRed" content={"Modify"}>
-                                <div className="pencil">
-                                    <HiPencil />
-                                </div>
-                            </Tippy>
-                        </a>
-                    </Link>
-                </td>
+                {!isFilterTable && (
+                    <td>
+                        <Link
+                            href={`/finance/general-ledger/chart-of-account?modify=${itemDetail.id}`}
+                        >
+                            <a>
+                                <Tippy theme="ThemeRed" content={"Modify"}>
+                                    <div className="pencil">
+                                        <HiPencil />
+                                    </div>
+                                </Tippy>
+                            </a>
+                        </Link>
+                    </td>
+                )}
             </tr>
         </>
     );
