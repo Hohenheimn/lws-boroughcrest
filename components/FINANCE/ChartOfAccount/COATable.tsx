@@ -1,8 +1,5 @@
-import React, { useState, useContext } from "react";
-import AppContext from "../../Context/AppContext";
-import Image from "next/image";
+import React, { useState } from "react";
 import Link from "next/link";
-import { GoPencil } from "react-icons/go";
 import api from "../../../util/api";
 import { useQuery } from "react-query";
 import Pagination from "../../Pagination";
@@ -21,10 +18,10 @@ export default function COATable({ isSearchTable, isFilterTable }: Props) {
     const [TablePage, setTablePage] = useState(1);
 
     const { data, isLoading, isError } = useQuery(
-        ["get-corporate-list", TablePage, isSearchTable],
+        ["COA-list", TablePage, isSearchTable],
         () => {
             return api.get(
-                `/project/corporate?keywords=${isSearchTable}&paginate=20&page=${TablePage}`,
+                `/finance/general-ledger/chart-of-accounts?keywords=${isSearchTable}&paginate=20&page=${TablePage}`,
                 {
                     headers: {
                         Authorization: "Bearer " + getCookie("user"),
@@ -33,6 +30,7 @@ export default function COATable({ isSearchTable, isFilterTable }: Props) {
             );
         }
     );
+
     return (
         <>
             <div className="table_container">
@@ -105,16 +103,23 @@ type ListProps = {
     isFilterTable: boolean;
 };
 const List = ({ itemDetail, isFilterTable }: ListProps) => {
+    const [isHover, setHover] = useState(false);
+    const MouseEnter = () => {
+        setHover(true);
+    };
+    const MouseLeave = () => {
+        setHover(false);
+    };
     return (
         <>
-            <tr>
+            <tr onMouseEnter={MouseEnter} onMouseLeave={MouseLeave}>
                 <td>
                     <Link
                         href={`/finance/general-ledger/chart-of-account?modify=${itemDetail.id}`}
                     >
                         <a className="item">
                             <div>
-                                <h2>Lorem, ipsum.</h2>
+                                <h2>{itemDetail?.chart_code}</h2>
                             </div>
                         </a>
                     </Link>
@@ -125,7 +130,13 @@ const List = ({ itemDetail, isFilterTable }: ListProps) => {
                     >
                         <a className="item">
                             <div>
-                                <h2>Lorem, ipsum.</h2>
+                                {!isFilterTable ? (
+                                    <h2>{itemDetail?.account_name}</h2>
+                                ) : itemDetail.header === "Primary" ? (
+                                    <h2>{itemDetail.header}</h2>
+                                ) : (
+                                    <h2></h2>
+                                )}
                             </div>
                         </a>
                     </Link>
@@ -136,7 +147,13 @@ const List = ({ itemDetail, isFilterTable }: ListProps) => {
                     >
                         <a className="item">
                             <div>
-                                <h2>Lorem, ipsum.</h2>
+                                {!isFilterTable ? (
+                                    <h2>{itemDetail?.category}</h2>
+                                ) : itemDetail.header === "Secondary" ? (
+                                    <h2>{itemDetail.header}</h2>
+                                ) : (
+                                    <h2></h2>
+                                )}
                             </div>
                         </a>
                     </Link>
@@ -147,7 +164,13 @@ const List = ({ itemDetail, isFilterTable }: ListProps) => {
                     >
                         <a className="item">
                             <div>
-                                <h2>Lorem, ipsum.</h2>
+                                {!isFilterTable ? (
+                                    <h2>{itemDetail?.description}</h2>
+                                ) : itemDetail.header === "Tertiary" ? (
+                                    <h2>{itemDetail.header}</h2>
+                                ) : (
+                                    <h2></h2>
+                                )}
                             </div>
                         </a>
                     </Link>
@@ -158,24 +181,26 @@ const List = ({ itemDetail, isFilterTable }: ListProps) => {
                     >
                         <a className="item">
                             <div>
-                                <h2>Lorem, ipsum.</h2>
+                                <h2>{itemDetail?.default_account?.name}</h2>
                             </div>
                         </a>
                     </Link>
                 </td>
                 {!isFilterTable && (
                     <td>
-                        <Link
-                            href={`/finance/general-ledger/chart-of-account?modify=${itemDetail.id}`}
-                        >
-                            <a>
-                                <Tippy theme="ThemeRed" content={"Modify"}>
-                                    <div className="pencil">
-                                        <HiPencil />
-                                    </div>
-                                </Tippy>
-                            </a>
-                        </Link>
+                        {isHover && (
+                            <Link
+                                href={`/finance/general-ledger/chart-of-account?modify=${itemDetail.id}`}
+                            >
+                                <a>
+                                    <Tippy theme="ThemeRed" content={"Modify"}>
+                                        <div className="pencil">
+                                            <HiPencil />
+                                        </div>
+                                    </Tippy>
+                                </a>
+                            </Link>
+                        )}
                     </td>
                 )}
             </tr>

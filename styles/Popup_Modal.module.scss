@@ -52,6 +52,33 @@
                 label {
                     @apply text-[12px] font-semibold uppercase;
                 }
+                .Dropdown {
+                    @apply relative z-30;
+                    ul {
+                        @apply absolute bg-white w-[300px] max-h-[300px] 480px:w-full overflow-y-auto;
+                        li {
+                            @apply flex flex-row w-full m-0 cursor-pointer border-b border-gray-300;
+                            span {
+                                @apply w-2/4 py-2 px-3 text-[13px] text-ThemeRed;
+                            }
+                            p {
+                                @apply py-2 px-3 text-[13px];
+                            }
+                            span:nth-child(1) {
+                                @apply border-r border-gray-300;
+                            }
+                        }
+                        li:hover {
+                            @apply bg-ThemeRed;
+                            span {
+                                @apply text-white;
+                            }
+                            p {
+                                @apply text-white;
+                            }
+                        }
+                    }
+                }
             }
             li.twoField {
                 @apply flex flex-row flex-wrap justify-between mb-0;

@@ -1,13 +1,8 @@
-import React, { useState, useEffect, useContext } from "react";
-import AppContext from "../../../components/Context/AppContext";
+import React from "react";
 import CustomerDetail from "../../../components/ADMIN/Customer/CustomerDetails";
 import api from "../../../util/api";
-import { useRouter } from "next/router";
 
 export default function CustomerID({ Draft }: any) {
-    const router = useRouter();
-    const { setModifyCustomer, isModifyCustomer } = useContext(AppContext);
-
     return (
         <div>
             <CustomerDetail Draft={Draft} />

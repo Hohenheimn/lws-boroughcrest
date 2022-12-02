@@ -437,3 +437,57 @@ input[type="number"] {
         }
     }
 }
+// Finance Status Style
+.finance_status {
+    .status {
+        @apply relative;
+        div {
+            @apply w-[30px] h-[30px] relative flex justify-center items-center rounded-[50%] z-[99];
+            span {
+                @apply relative z-10;
+            }
+        }
+        &::after {
+            @apply transition-all duration-100 ease-in-out content-[''] overflow-hidden text-[12px] w-full rounded-[50px] bg-white flex items-center absolute h-full left-0 top-0;
+        }
+    }
+    .draft {
+        div {
+            @apply bg-[#ffb85f];
+        }
+        &::after {
+            @apply bg-[#fdd19ba4];
+        }
+    }
+    .draft:hover {
+        &::after {
+            @apply content-['Draft'] w-[80px] pl-[35px];
+        }
+    }
+    .process {
+        div {
+            @apply bg-[#56c6f6];
+        }
+        &::after {
+            @apply bg-[#88d5f6];
+        }
+    }
+    .process:hover {
+        &::after {
+            @apply content-['In_process'] w-[105px] pl-[35px];
+        }
+    }
+    .pending {
+        div {
+            @apply bg-[#ff737d];
+        }
+        &::after {
+            @apply bg-[#faa8ad];
+        }
+    }
+    .pending:hover {
+        &::after {
+            @apply content-['Pending'] w-[95px] pl-[35px];
+        }
+    }
+}
