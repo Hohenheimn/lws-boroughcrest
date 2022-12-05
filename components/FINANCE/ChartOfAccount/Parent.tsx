@@ -1,5 +1,5 @@
 import { getCookie } from "cookies-next";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useQuery } from "react-query";
 import { BarLoader } from "react-spinners";
 import api from "../../../util/api";
@@ -13,12 +13,26 @@ const Parent = ({ setParent, isParent }: ParentProps) => {
     const modal = useRef<any>();
 
     const clickHandler = (e: any) => {
-        const code = e.target.getAttribute("data-ChartCode");
+        const code = e.target.getAttribute("data-chartcode");
+        const id = e.target.getAttribute("data-id");
         setParent({
             toggle: false,
             value: code,
+            id: id,
         });
     };
+
+    useEffect(() => {
+        const clickOutSide = (e: any) => {
+            if (!modal?.current?.contains(e.target)) {
+                setParent(false);
+            }
+        };
+        document.addEventListener("mousedown", clickOutSide);
+        return () => {
+            document.removeEventListener("mousedown", clickOutSide);
+        };
+    });
 
     const { data, isLoading, isError } = useQuery(
         ["COA-Parent-list", isParent.value],
@@ -53,7 +67,7 @@ const Parent = ({ setParent, isParent }: ParentProps) => {
         return (
             <ul>
                 <p className="py-2 px-3 text-center text-[12px]">
-                    Chard code cannot be found!
+                    Chart code cannot be found!
                 </p>
             </ul>
         );
@@ -63,7 +77,8 @@ const Parent = ({ setParent, isParent }: ParentProps) => {
             {data?.data.map((item: any, index: number) => (
                 <li
                     key={index}
-                    data-ChartCode={item?.chart_code}
+                    data-chartcode={item?.chart_code}
+                    data-id={item?.id}
                     onClick={clickHandler}
                 >
                     <span className=" pointer-events-none">

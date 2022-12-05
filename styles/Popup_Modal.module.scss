@@ -1,7 +1,12 @@
 .container {
-    @apply overflow-hidden fixed top-0 left-0 h-screen w-full bg-[#00000040] p-10 z-50 flex justify-center items-center 820px:items-center 375px:items-start 640px:p-0;
+    @apply overflow-auto fixed top-0 left-0 h-screen w-full bg-[#00000040] p-10 z-50 flex justify-center items-center  820px:items-center 480px:items-start 480px:py-10 640px:p-0;
+    @media (max-height: 550px) {
+        @apply items-start;
+    }
+
     section {
-        @apply p-10 bg-[#e2e3e4] rounded-lg w-[90%] max-w-[700px] max-h-[95vh] overflow-auto text-ThemeRed shadow-lg;
+        @apply p-10 bg-[#e2e3e4] rounded-lg w-[90%] max-w-[700px] text-ThemeRed shadow-lg;
+
         .modal_title {
             @apply text-[16px] mb-3;
         }
@@ -82,10 +87,11 @@
             }
             li.twoField {
                 @apply flex flex-row flex-wrap justify-between mb-0;
-                li {
+                div {
                     @apply w-[48%] 480px:w-full 480px:mb-5;
                     input,
-                    select {
+                    select,
+                    div {
                         @apply w-full;
                     }
                 }

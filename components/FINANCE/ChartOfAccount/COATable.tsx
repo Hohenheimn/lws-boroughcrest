@@ -30,7 +30,6 @@ export default function COATable({ isSearchTable, isFilterTable }: Props) {
             );
         }
     );
-
     return (
         <>
             <div className="table_container">

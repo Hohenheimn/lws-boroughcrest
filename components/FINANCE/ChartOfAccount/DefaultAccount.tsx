@@ -1,5 +1,5 @@
 import { getCookie } from "cookies-next";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useQuery } from "react-query";
 import { BarLoader } from "react-spinners";
 import api from "../../../util/api";
@@ -21,6 +21,18 @@ const DefaultAccount = ({ setValue, isValue }: DefaultAccountProps) => {
             id: id,
         });
     };
+
+    useEffect(() => {
+        const clickOutSide = (e: any) => {
+            if (!modal?.current?.contains(e.target)) {
+                setValue(false);
+            }
+        };
+        document.addEventListener("mousedown", clickOutSide);
+        return () => {
+            document.removeEventListener("mousedown", clickOutSide);
+        };
+    });
 
     const { data, isLoading } = useQuery(
         ["COA-DefaultAccount-list", isValue.value],
