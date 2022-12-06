@@ -13,7 +13,7 @@ const DefaultAccount = ({ setValue, isValue }: DefaultAccountProps) => {
     const modal = useRef<any>();
 
     const clickHandler = (e: any) => {
-        const code = e.target.getAttribute("data-ChartCode");
+        const code = e.target.getAttribute("data-chartcode");
         const id = e.target.getAttribute("data-id");
         setValue({
             toggle: false,
@@ -77,7 +77,7 @@ const DefaultAccount = ({ setValue, isValue }: DefaultAccountProps) => {
             {data?.data.map((item: any, index: number) => (
                 <li
                     key={index}
-                    data-ChartCode={item?.name}
+                    data-chartcode={item?.name}
                     data-id={item?.id}
                     onClick={clickHandler}
                 >

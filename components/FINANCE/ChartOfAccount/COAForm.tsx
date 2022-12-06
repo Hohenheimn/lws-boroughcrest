@@ -18,16 +18,30 @@ import Parent from "./Parent";
 type Props = {
     setCreate: Function;
     DefaultFormData: any;
+    transaction: boolean;
 };
 
-export default function COAForm({ setCreate, DefaultFormData }: Props) {
+export default function COAForm({
+    setCreate,
+    DefaultFormData,
+    transaction,
+}: Props) {
     const { setPrompt } = useContext(AppContext);
     const [saveButton, setSaveButton] = useState("");
     const queryClient = useQueryClient();
     const router = useRouter();
     const [isSave, setSave] = useState(false);
     const [isStatus, setStatus] = useState(true);
-    const [isError, setError] = useState({});
+    const ErrorDefault = {
+        account_name: "",
+        chart_code: "",
+        coa_default_account_id: "",
+        code_suffix: "",
+        parent_id: "",
+    };
+    const [isError, setError] = useState({
+        ...ErrorDefault,
+    });
     const [isParent, setParent] = useState<any>({
         toggle: false,
         value: "",
@@ -47,6 +61,11 @@ export default function COAForm({ setCreate, DefaultFormData }: Props) {
         setValue,
     } = useForm<ChartofAccountPayload>({
         defaultValues: DefaultFormData,
+    });
+
+    const [isChartCode, setChartcode] = useState({
+        parent: "",
+        suffix: "",
     });
 
     const cancel = () => {
@@ -105,13 +124,21 @@ export default function COAForm({ setCreate, DefaultFormData }: Props) {
             setStatus(true);
         }
         queryClient.invalidateQueries("COA-list");
-    };
-    const onError = () => {
-        setPrompt({
-            message: "Something is wrong!",
-            toggle: true,
-            type: "error",
+        setError({
+            ...ErrorDefault,
         });
+    };
+    const onError = (e: any) => {
+        setError({
+            ...e.response?.data,
+        });
+        if (!e.response?.data) {
+            setPrompt({
+                message: "Something is wrong!",
+                toggle: true,
+                type: "error",
+            });
+        }
     };
 
     const delSuccess = () => {
@@ -153,25 +180,33 @@ export default function COAForm({ setCreate, DefaultFormData }: Props) {
     };
 
     const Submit = (data: ChartofAccountPayload) => {
+        const chartCode = data.chart_code + data.code_suffix;
         const Payload = {
             chart_code: data.chart_code,
-            parent_id: parseInt(isParent.id),
+            parent_id:
+                isParent.id === 0 || isParent.id === undefined
+                    ? ""
+                    : isParent.id,
             code_suffix: data.code_suffix,
             account_name: data.account_name,
             description: data.description,
-            coa_default_account_id: isDefaultAccount.id,
+            coa_default_account_id:
+                isDefaultAccount.id === 0 || isDefaultAccount.id === undefined
+                    ? ""
+                    : isDefaultAccount.id,
             apply_to_sub_acc: isStatus,
             bank_acc_no: data.bank_acc_no,
             bank_branch: data.bank_branch,
         };
 
-        if (router.query.modify === undefined) {
-            // Save
-            Save(Payload);
-        } else {
-            // Update
-            Update(Payload);
-        }
+        // if (router.query.modify === undefined) {
+        //     // Save
+        //     Save(Payload);
+        // } else {
+        //     // Update
+        //     Update(Payload);
+        // }
+        console.log(Payload);
     };
 
     return (
@@ -188,16 +223,14 @@ export default function COAForm({ setCreate, DefaultFormData }: Props) {
                     <li>
                         <label htmlFor="">*CHART CODE</label>
                         <input
-                            type="number"
-                            {...register("chart_code", {
-                                required: "Required!",
-                            })}
+                            type="text"
+                            disabled
+                            value={isChartCode.parent + isChartCode.suffix}
+                            onChange={() => {}}
                             className=" bg-ThemeRed50"
                         />
-                        {errors.chart_code && (
-                            <p className="text-[10px]">
-                                {errors.chart_code.message}
-                            </p>
+                        {isError.chart_code !== "" && (
+                            <p className="text-[10px]">{isError.chart_code}</p>
                         )}
                     </li>
                     <li className={style.twoField}>
@@ -214,12 +247,16 @@ export default function COAForm({ setCreate, DefaultFormData }: Props) {
                                             });
                                         },
                                     })}
-                                    onChange={(e: any) =>
+                                    onChange={(e: any) => {
                                         setParent({
                                             ...isParent,
                                             value: e.target.value,
-                                        })
-                                    }
+                                        });
+                                        setChartcode({
+                                            ...isChartCode,
+                                            parent: e.target.value,
+                                        });
+                                    }}
                                     onFocus={() =>
                                         setParent({
                                             ...isParent,
@@ -230,53 +267,52 @@ export default function COAForm({ setCreate, DefaultFormData }: Props) {
                                 {isParent.toggle && (
                                     <Parent
                                         setParent={setParent}
+                                        setChartcode={setChartcode}
+                                        isChartcode={isChartCode}
                                         isParent={isParent}
                                     />
+                                )}
+                                {isError.parent_id && (
+                                    <p className="text-[10px]">
+                                        {isError.parent_id}
+                                    </p>
                                 )}
                             </div>
                         </div>
                         <div>
                             <label>*CODE SUFFIX</label>
                             <input
-                                type="text"
-                                {...register("code_suffix", {
-                                    required: "Required!",
-                                })}
+                                type="number"
+                                {...register("code_suffix")}
+                                value={isChartCode.suffix}
+                                onChange={(e) => {
+                                    if (e.target.value.length <= 2) {
+                                        setChartcode({
+                                            ...isChartCode,
+                                            suffix: e.target.value,
+                                        });
+                                    }
+                                }}
                             />
-                            {errors.code_suffix && (
+                            {isError.code_suffix && (
                                 <p className="text-[10px]">
-                                    {errors.code_suffix.message}
+                                    {isError.code_suffix}
                                 </p>
                             )}
                         </div>
                     </li>
                     <li>
                         <label htmlFor="">*ACCOUNT NAME</label>
-                        <input
-                            type="text"
-                            {...register("account_name", {
-                                required: "Required!",
-                            })}
-                        />
-                        {errors.account_name && (
+                        <input type="text" {...register("account_name")} />
+                        {isError.account_name && (
                             <p className="text-[10px]">
-                                {errors.account_name.message}
+                                {isError.account_name}
                             </p>
                         )}
                     </li>
                     <li>
                         <label htmlFor="">DESCRIPTION</label>
-                        <input
-                            type="text"
-                            {...register("description", {
-                                required: "Required!",
-                            })}
-                        />
-                        {errors.description && (
-                            <p className="text-[10px]">
-                                {errors.description.message}
-                            </p>
-                        )}
+                        <input type="text" {...register("description")} />
                     </li>
                     <li>
                         <label htmlFor="">*DEFAULT ACCOUNT</label>
@@ -312,9 +348,9 @@ export default function COAForm({ setCreate, DefaultFormData }: Props) {
                                     isValue={isDefaultAccount}
                                 />
                             )}
-                            {errors.defaultAccount && (
+                            {isError.coa_default_account_id && (
                                 <p className="text-[10px]">
-                                    {errors.defaultAccount.message}
+                                    {isError.coa_default_account_id}
                                 </p>
                             )}
                         </div>
@@ -330,21 +366,11 @@ export default function COAForm({ setCreate, DefaultFormData }: Props) {
                     </li>
                     <li>
                         <label htmlFor="">BANK ACCOUNT NO.</label>
-                        <input
-                            type="text"
-                            {...register("bank_acc_no", {
-                                required: "Required!",
-                            })}
-                        />
+                        <input type="text" {...register("bank_acc_no")} />
                     </li>
                     <li>
                         <label htmlFor="">BANK AND BRANCH</label>
-                        <input
-                            type="text"
-                            {...register("bank_branch", {
-                                required: "Required!",
-                            })}
-                        />
+                        <input type="text" {...register("bank_branch")} />
                     </li>
                 </ul>
                 <div className={style.SaveButton}>
@@ -353,20 +379,26 @@ export default function COAForm({ setCreate, DefaultFormData }: Props) {
                     </aside>
 
                     {router.query.modify !== undefined && (
-                        <aside
-                            className={`mr-5 ${style.next}`}
-                            onClick={deleteHandler}
-                        >
-                            {DeleteLoading ? (
-                                <ScaleLoader
-                                    color="#fff"
-                                    height="10px"
-                                    width="2px"
-                                />
+                        <>
+                            {transaction ? (
+                                <aside
+                                    className={`mr-5 ${style.next}`}
+                                    onClick={deleteHandler}
+                                >
+                                    {DeleteLoading ? (
+                                        <ScaleLoader
+                                            color="#fff"
+                                            height="10px"
+                                            width="2px"
+                                        />
+                                    ) : (
+                                        "DELETE"
+                                    )}
+                                </aside>
                             ) : (
-                                "DELETE"
+                                ""
                             )}
-                        </aside>
+                        </>
                     )}
 
                     <div className={style.Save}>

@@ -57,5 +57,11 @@ export default function Modify({ setCreate }: any) {
             </div>
         );
     }
-    return <COAForm setCreate={setCreate} DefaultFormData={DefaultFormData} />;
+    return (
+        <COAForm
+            setCreate={setCreate}
+            DefaultFormData={DefaultFormData}
+            transaction={data?.data.modifiable}
+        />
+    );
 }

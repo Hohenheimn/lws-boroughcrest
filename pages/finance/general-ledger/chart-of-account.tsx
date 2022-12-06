@@ -40,6 +40,7 @@ export default function ChartOfAccount() {
                 <COAForm
                     DefaultFormData={DefaultFormData}
                     setCreate={setCreate}
+                    transaction={false}
                 />
             )}
             {router.query.modify !== undefined && (

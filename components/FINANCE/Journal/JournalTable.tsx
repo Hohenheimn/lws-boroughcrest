@@ -117,6 +117,7 @@ export default function JournalTable({ type }: Props) {
                                 src="/Images/calendar.png"
                                 width={15}
                                 height={15}
+                                alt="Calendar"
                             />
                         </span>
                         <input
@@ -130,6 +131,7 @@ export default function JournalTable({ type }: Props) {
                                 src="/Images/calendar.png"
                                 width={15}
                                 height={15}
+                                alt="Calendar"
                             />
                         </span>
                         <input
@@ -235,6 +237,7 @@ const List = ({ itemDetail, type }: ListProps) => {
                                         src="/Images/f_draft.png"
                                         width={10}
                                         height={10}
+                                        alt="Draft"
                                     />
                                 </div>
                             </div>
@@ -253,6 +256,7 @@ const List = ({ itemDetail, type }: ListProps) => {
                                     src="/Images/f_modify.png"
                                     height={15}
                                     width={15}
+                                    alt="Modify"
                                 />
                             </div>
                         </Tippy>

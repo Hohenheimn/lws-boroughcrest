@@ -7,9 +7,16 @@ import api from "../../../util/api";
 type ParentProps = {
     setParent: Function;
     isParent: any;
+    setChartcode: Function;
+    isChartcode: any;
 };
 
-const Parent = ({ setParent, isParent }: ParentProps) => {
+const Parent = ({
+    setParent,
+    isParent,
+    setChartcode,
+    isChartcode,
+}: ParentProps) => {
     const modal = useRef<any>();
 
     const clickHandler = (e: any) => {
@@ -19,6 +26,10 @@ const Parent = ({ setParent, isParent }: ParentProps) => {
             toggle: false,
             value: code,
             id: id,
+        });
+        setChartcode({
+            ...isChartcode,
+            parent: code,
         });
     };
 
