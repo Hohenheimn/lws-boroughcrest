@@ -117,6 +117,7 @@ export default function JournalTable({ type }: Props) {
                                 src="/Images/calendar.png"
                                 width={15}
                                 height={15}
+                                alt="Calendar"
                             />
                         </span>
                         <input
@@ -130,6 +131,7 @@ export default function JournalTable({ type }: Props) {
                                 src="/Images/calendar.png"
                                 width={15}
                                 height={15}
+                                alt="Calendar"
                             />
                         </span>
                         <input
@@ -228,8 +230,17 @@ const List = ({ itemDetail, type }: ListProps) => {
             <td>
                 <Link href={`/finance/general-ledger/journal/${itemDetail.id}`}>
                     <a className="item">
-                        <div>
-                            <h2>Lorem, ipsum.</h2>
+                        <div className="finance_status">
+                            <div className="status draft">
+                                <div>
+                                    <Image
+                                        src="/Images/f_draft.png"
+                                        width={10}
+                                        height={10}
+                                        alt="Draft"
+                                    />
+                                </div>
+                            </div>
                         </div>
                     </a>
                 </Link>
@@ -245,6 +256,7 @@ const List = ({ itemDetail, type }: ListProps) => {
                                     src="/Images/f_modify.png"
                                     height={15}
                                     width={15}
+                                    alt="Modify"
                                 />
                             </div>
                         </Tippy>

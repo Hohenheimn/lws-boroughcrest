@@ -6,7 +6,7 @@ export default function JournalList() {
 
     return (
         <>
-            <ul className="SimpleTab">
+            {/* <ul className="SimpleTab">
                 <li
                     className={`${isJounalType === "Unposted" && "Active"}`}
                     onClick={() => setJournalType("Unposted")}
@@ -19,8 +19,8 @@ export default function JournalList() {
                 >
                     Posted Journal
                 </li>
-            </ul>
-            <JournalTable type={isJounalType} />
+            </ul> */}
+            {/* <JournalTable type={isJounalType} /> */}
         </>
     );
 }

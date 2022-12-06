@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useRouter } from "next/router";
 import { getCookie, deleteCookie } from "cookies-next";
 import api from "../../util/api";
+import AppContext from "../Context/AppContext";
 export default function SignOut() {
-    console.log(localStorage.username);
+    const { setPrompt } = useContext(AppContext);
     const router = useRouter();
     const SignOutHandler = async () => {
         try {
@@ -18,10 +19,20 @@ export default function SignOut() {
                 deleteCookie("user");
                 router.push("/login");
             } else if (response.status === 401) {
-                console.log("Unauthorize!");
+                setPrompt({
+                    message: "Unauthorized!",
+                    type: "error",
+                    toggle: true,
+                });
             }
         } catch (error) {
-            console.error(error);
+            setPrompt({
+                message: "Unauthorized!",
+                type: "error",
+                toggle: true,
+            });
+            deleteCookie("user");
+            router.push("/login");
         }
     };
     return (

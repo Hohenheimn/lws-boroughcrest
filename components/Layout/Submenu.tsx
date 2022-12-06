@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -15,7 +15,11 @@ export default function Submenu({
     closeOnClick,
 }: SubmenuDetail) {
     const router = useRouter();
-    const innerUrl = router.pathname.split("/")[2];
+    const [hoverNumber, setHoverNumber] = useState(0);
+    const [isHover, setHover] = useState(false);
+    const [activePage, setActivePage] = useState(0);
+    const Length = SubmenuDetail.length;
+
     return (
         <ul className=" text-ThemeRed50 font-medium pt-2 overflow-hidden mt-2">
             {SubmenuDetail.map(
@@ -29,6 +33,13 @@ export default function Submenu({
                         SubmenuDetail={SubmenuDetail}
                         closeOnClick={closeOnClick}
                         item={item}
+                        isHover={isHover}
+                        setHover={setHover}
+                        ArrayLength={Length}
+                        hoverNumber={hoverNumber}
+                        setHoverNumber={setHoverNumber}
+                        activePage={activePage}
+                        setActivePage={setActivePage}
                     />
                 )
             )}
@@ -40,17 +51,49 @@ type List = {
     closeOnClick: () => void;
     index: number;
     item: any;
+    setHover: Function;
+    isHover: any;
+    ArrayLength: number;
+    setHoverNumber: Function;
+    hoverNumber: number;
+    setActivePage: Function;
+    activePage: number;
 };
-const List = ({ closeOnClick, SubmenuDetail, index, item }: List) => {
+const List = ({
+    closeOnClick,
+    SubmenuDetail,
+    index,
+    item,
+    isHover,
+    setHover,
+    ArrayLength,
+    setHoverNumber,
+    hoverNumber,
+    activePage,
+    setActivePage,
+}: List) => {
     const router = useRouter();
     const innerUrl = router.pathname.split("/")[2];
-    const [isHover, setHover] = useState(false);
+    const [selfHover, setSelfHover] = useState(false);
     const EnterHandler = () => {
         setHover(true);
+        setSelfHover(true);
+        setHoverNumber(index);
     };
     const LeaveHandler = () => {
         setHover(false);
+        setSelfHover(false);
+        setHoverNumber(0);
     };
+
+    useEffect(() => {
+        if (innerUrl === item.ActiveName) {
+            setActivePage(index);
+        }
+    });
+
+    // const DelayForward = index * 300;
+    // const DelayBackward = (ArrayLength - index) * 300;
     return (
         <li
             className=" pl-16 flex items-center mb-2"
@@ -63,15 +106,27 @@ const List = ({ closeOnClick, SubmenuDetail, index, item }: List) => {
             >
                 <div className=" w-[15px] h-[50px] bg-gray-300 rounded-bl-[10px] relative overflow-hidden ">
                     <div
-                        className={`absolute bg-ThemeRed w-[80px] h-[80px] left-[3px] bottom-[10px] rounded-[6px] origin-left transition-all duration-1000 ${
-                            isHover && "rotate-[-270deg]"
+                        className={` duration-[400ms] delay-${
+                            isHover ? ArrayLength - index : index
+                        }00 ease-linear first:absolute bg-ThemeRed w-[80px] h-[80px] left-[3px] bottom-[10px] rounded-[6px] origin-left transition-all ${
+                            (hoverNumber >= index || activePage >= index) &&
+                            "rotate-[-270deg]"
                         } ${
                             innerUrl === item.ActiveName
                                 ? "rotate-[-270deg]"
                                 : ""
                         }`}
                     ></div>
-                    <div className="absolute right-0 top-0 w-[12px] h-[46px] bg-[#fcfcff] rounded-bl-[6px]"></div>
+                    <div className="absolute right-0 top-0 w-[12px] h-[46px] bg-[#fcfcff] rounded-bl-[6px] z-10"></div>
+
+                    <div
+                        className={`absolute bottom-0 right-0 transition-all duration-300 h-[8px] ${
+                            !selfHover ? "w-[12px]" : "w-[0]"
+                        }
+                        ${innerUrl === item.ActiveName ? "w-[0]" : ""}
+                       
+                         bg-gray-300`}
+                    ></div>
                 </div>
             </div>
             <Link href={`${item.url}`}>

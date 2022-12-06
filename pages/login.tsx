@@ -33,9 +33,8 @@ export default function Login() {
                 localStorage.setItem("password", isPassword);
             }
             setCookie("user", token);
-            console.log(token);
             router.push("/dashboard");
-            router.reload();
+            // router.reload();
         } catch (error: any) {
             if (error.response.status === 401) {
                 setInvalid("Invalid Username or Password");
