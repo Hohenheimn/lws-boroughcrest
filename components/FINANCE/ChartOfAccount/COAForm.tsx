@@ -32,6 +32,10 @@ export default function COAForm({
     const router = useRouter();
     const [isSave, setSave] = useState(false);
     const [isStatus, setStatus] = useState(true);
+    const [isChartCode, setChartcode] = useState({
+        parent: "",
+        suffix: "",
+    });
     const ErrorDefault = {
         account_name: "",
         chart_code: "",
@@ -63,11 +67,6 @@ export default function COAForm({
         defaultValues: DefaultFormData,
     });
 
-    const [isChartCode, setChartcode] = useState({
-        parent: "",
-        suffix: "",
-    });
-
     const cancel = () => {
         reset();
         setCreate(false);
@@ -86,6 +85,13 @@ export default function COAForm({
             value: !DefaultFormData.parent ? "" : DefaultFormData.parent,
         });
         setStatus(DefaultFormData.apply_to_sub_acc);
+        setChartcode({
+            parent:
+                DefaultFormData.parent === undefined
+                    ? ""
+                    : DefaultFormData.parent,
+            suffix: DefaultFormData.code_suffix,
+        });
     }, []);
 
     const onSuccess = () => {
@@ -121,9 +127,14 @@ export default function COAForm({
                 id: "",
                 value: "",
             });
+            setChartcode({
+                parent: "",
+                suffix: "",
+            });
             setStatus(true);
         }
         queryClient.invalidateQueries("COA-list");
+        queryClient.invalidateQueries(["COA-detail", router.query.modify]);
         setError({
             ...ErrorDefault,
         });
@@ -180,18 +191,21 @@ export default function COAForm({
     };
 
     const Submit = (data: ChartofAccountPayload) => {
-        const chartCode = data.chart_code + data.code_suffix;
         const Payload = {
-            chart_code: data.chart_code,
+            chart_code: isChartCode.parent + isChartCode.suffix,
             parent_id:
-                isParent.id === 0 || isParent.id === undefined
+                isParent.id === 0 ||
+                isParent.id === undefined ||
+                isParent.id === null
                     ? ""
                     : isParent.id,
             code_suffix: data.code_suffix,
             account_name: data.account_name,
             description: data.description,
             coa_default_account_id:
-                isDefaultAccount.id === 0 || isDefaultAccount.id === undefined
+                isDefaultAccount.id === 0 ||
+                isDefaultAccount.id === undefined ||
+                isDefaultAccount.id === null
                     ? ""
                     : isDefaultAccount.id,
             apply_to_sub_acc: isStatus,
@@ -199,14 +213,13 @@ export default function COAForm({
             bank_branch: data.bank_branch,
         };
 
-        // if (router.query.modify === undefined) {
-        //     // Save
-        //     Save(Payload);
-        // } else {
-        //     // Update
-        //     Update(Payload);
-        // }
-        console.log(Payload);
+        if (router.query.modify === undefined) {
+            // Save
+            Save(Payload);
+        } else {
+            // Update
+            Update(Payload);
+        }
     };
 
     return (

@@ -36,10 +36,10 @@ export default function Login() {
             router.push("/dashboard");
             // router.reload();
         } catch (error: any) {
-            if (error.response.status === 401) {
+            if (error?.response?.status === 401) {
                 setInvalid("Invalid Username or Password");
             } else {
-                setInvalid("Connection timeout, Please check your internet");
+                setInvalid(error?.message);
             }
             setLoading(false);
         }

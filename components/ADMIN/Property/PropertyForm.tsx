@@ -382,6 +382,7 @@ export default function PropertyForm({
                                 }
                                 trigger="click"
                                 theme="ThemeWhite"
+                                placement="bottom"
                                 interactive={isDev ? true : false}
                                 arrow={false}
                             >
@@ -420,6 +421,7 @@ export default function PropertyForm({
                                 }
                                 trigger="click"
                                 theme="ThemeWhite"
+                                placement="bottom"
                                 interactive={isProject ? true : false}
                                 arrow={false}
                             >
@@ -458,6 +460,7 @@ export default function PropertyForm({
                                 }
                                 trigger="click"
                                 theme="ThemeWhite"
+                                placement="bottom"
                                 interactive={isTower ? true : false}
                                 arrow={false}
                             >
@@ -496,6 +499,7 @@ export default function PropertyForm({
                                 }
                                 trigger="click"
                                 theme="ThemeWhite"
+                                placement="bottom"
                                 interactive={isFloor ? true : false}
                                 arrow={false}
                             >

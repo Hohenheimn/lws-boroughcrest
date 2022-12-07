@@ -92,8 +92,8 @@ const List = ({
         }
     });
 
-    // const DelayForward = index * 300;
-    // const DelayBackward = (ArrayLength - index) * 300;
+    const DelayForward = index * 50;
+    const DelayBackward = (ArrayLength - index) * 50;
     return (
         <li
             className=" pl-16 flex items-center mb-2"
@@ -106,9 +106,12 @@ const List = ({
             >
                 <div className=" w-[15px] h-[50px] bg-gray-300 rounded-bl-[10px] relative overflow-hidden ">
                     <div
-                        className={` duration-[400ms] delay-${
-                            isHover ? ArrayLength - index : index
-                        }00 ease-linear first:absolute bg-ThemeRed w-[80px] h-[80px] left-[3px] bottom-[10px] rounded-[6px] origin-left transition-all ${
+                        style={{
+                            transitionDelay: `${
+                                isHover ? DelayForward : DelayBackward
+                            }ms`,
+                        }}
+                        className={` duration-[1s] ease-linear first:absolute bg-ThemeRed w-[80px] h-[80px] left-[3px] bottom-[10px] rounded-[6px] origin-left transition-all ${
                             (hoverNumber >= index || activePage >= index) &&
                             "rotate-[-270deg]"
                         } ${
@@ -120,7 +123,7 @@ const List = ({
                     <div className="absolute right-0 top-0 w-[12px] h-[46px] bg-[#fcfcff] rounded-bl-[6px] z-10"></div>
 
                     <div
-                        className={`absolute bottom-0 right-0 transition-all duration-300 h-[8px] ${
+                        className={`absolute bottom-0 right-0 transition-all duration-200 h-[8px] ${
                             !selfHover ? "w-[12px]" : "w-[0]"
                         }
                         ${innerUrl === item.ActiveName ? "w-[0]" : ""}
