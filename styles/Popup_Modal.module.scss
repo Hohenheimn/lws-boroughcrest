@@ -162,6 +162,42 @@
                         @apply bg-ThemeRed text-white;
                     }
                 }
+                .Dropdown {
+                    @apply relative z-30;
+                    ul {
+                        @apply absolute bg-white w-[300px] max-h-[300px] 480px:w-full overflow-y-auto;
+                        li {
+                            @apply flex flex-row w-full m-0 cursor-pointer border-b border-gray-300;
+                            span {
+                                @apply w-2/4 py-2 px-3 text-[13px] text-ThemeRed;
+                            }
+                            p {
+                                @apply py-2 px-3 text-[13px];
+                            }
+                            span:nth-child(1) {
+                                @apply border-r border-gray-300;
+                            }
+                        }
+                        li:hover {
+                            @apply bg-ThemeRed text-white;
+                            span {
+                                @apply text-white;
+                            }
+                            p {
+                                @apply text-white;
+                            }
+                        }
+                    }
+                }
+                .Dropdown.full {
+                    @apply w-full;
+                    ul {
+                        @apply w-full;
+                        li {
+                            @apply py-2 px-3 text-[12px];
+                        }
+                    }
+                }
             }
             li.twoRows {
                 @apply flex justify-between  w-4/12 820px:w-2/4 480px:w-full mb-5 -mt-1;

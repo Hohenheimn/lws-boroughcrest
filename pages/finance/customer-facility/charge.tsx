@@ -4,31 +4,16 @@ import React, { useState } from "react";
 import { useQuery } from "react-query";
 import ChargeForm from "../../../components/FINANCE/CustomerFacility/Charge/ChargeForm";
 import ChargeTable from "../../../components/FINANCE/CustomerFacility/Charge/ChargeTable";
+import { ChargePayload } from "../../../components/FINANCE/CustomerFacility/Charge/Type";
 import api from "../../../util/api";
 
 export default function Charge() {
-    const router = useRouter();
     const [create, setCreate] = useState(false);
-    const { data, isLoading, isError } = useQuery(
-        ["get-corporate-list"],
-        () => {
-            return api.get(`/project/corporate`, {
-                headers: {
-                    Authorization: "Bearer " + getCookie("user"),
-                },
-            });
-        }
-    );
+    const router = useRouter();
+
     return (
         <>
-            <ChargeTable
-                page="charge"
-                data={data}
-                column="asd"
-                isError={isError}
-                isLoading={isLoading}
-                setCreate={setCreate}
-            />
+            <ChargeTable page="charge" setCreate={setCreate} />
             {create && <ChargeForm setCreate={setCreate} />}
             {router.query.modify !== undefined && (
                 <ChargeForm setCreate={setCreate} />

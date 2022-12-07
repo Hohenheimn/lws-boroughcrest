@@ -1,6 +1,6 @@
 import { getCookie } from "cookies-next";
 import { useEffect, useRef } from "react";
-import { useQuery } from "react-query";
+import { isError, useQuery } from "react-query";
 import { BarLoader } from "react-spinners";
 import api from "../../../util/api";
 
@@ -25,7 +25,11 @@ const DefaultAccount = ({ setValue, isValue }: DefaultAccountProps) => {
     useEffect(() => {
         const clickOutSide = (e: any) => {
             if (!modal?.current?.contains(e.target)) {
-                setValue(false);
+                setValue({
+                    toggle: false,
+                    value: "",
+                    id: "",
+                });
             }
         };
         document.addEventListener("mousedown", clickOutSide);
@@ -34,7 +38,7 @@ const DefaultAccount = ({ setValue, isValue }: DefaultAccountProps) => {
         };
     });
 
-    const { data, isLoading } = useQuery(
+    const { data, isLoading, isError } = useQuery(
         ["COA-DefaultAccount-list", isValue.value],
         () => {
             return api.get(
@@ -68,6 +72,15 @@ const DefaultAccount = ({ setValue, isValue }: DefaultAccountProps) => {
             <ul>
                 <p className="py-2 px-3 text-center text-[12px]">
                     Default Account cannot be found!
+                </p>
+            </ul>
+        );
+    }
+    if (isError) {
+        return (
+            <ul>
+                <p className="py-2 px-3 text-center text-[12px]">
+                    Something is wrong!
                 </p>
             </ul>
         );

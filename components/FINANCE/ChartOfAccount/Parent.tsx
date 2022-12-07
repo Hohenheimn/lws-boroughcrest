@@ -37,6 +37,15 @@ const Parent = ({
         const clickOutSide = (e: any) => {
             if (!modal?.current?.contains(e.target)) {
                 setParent(false);
+                setParent({
+                    toggle: false,
+                    value: "",
+                    id: "",
+                });
+                setChartcode({
+                    ...isChartcode,
+                    parent: "",
+                });
             }
         };
         document.addEventListener("mousedown", clickOutSide);
@@ -71,6 +80,15 @@ const Parent = ({
                         data-testid="loader"
                     />
                 </div>
+            </ul>
+        );
+    }
+    if (isError) {
+        return (
+            <ul>
+                <p className="py-2 px-3 text-center text-[12px]">
+                    Something is wrong!
+                </p>
             </ul>
         );
     }
