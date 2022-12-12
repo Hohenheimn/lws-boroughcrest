@@ -15,7 +15,7 @@ import {
 import { useQueryClient } from "react-query";
 import AppContext from "../../Context/AppContext";
 
-const Tower = ({ set, update, is, isValID }: any) => {
+const Tower = ({ set, update, is, isValID, isObject, setObject }: any) => {
     const modal = useRef<any>();
     // Click out side, remove empty array
     useEffect(() => {
@@ -26,6 +26,11 @@ const Tower = ({ set, update, is, isValID }: any) => {
                 );
                 set(false);
                 setWarning("");
+                setObject({
+                    ...isObject,
+                    value: isObject.firstVal,
+                    id: isObject.firstID,
+                });
             }
         };
         document.addEventListener("mousedown", clickOutSide);
@@ -50,7 +55,7 @@ const Tower = ({ set, update, is, isValID }: any) => {
         ]);
     };
 
-    const { isLoading, data } = GetTower();
+    const { isLoading, data, isError } = GetTower(isObject.value);
 
     useEffect(() => {
         if (data?.status === 200) {
@@ -112,6 +117,12 @@ const Tower = ({ set, update, is, isValID }: any) => {
                     />
                 </div>
             )}
+            {isError ||
+                (data?.data.length <= 0 && (
+                    <div className="w-full flex justify-center py-3">
+                        <h1>Tower cannot be found!</h1>
+                    </div>
+                ))}
             {isWarning !== "" && (
                 <p className="text-[12px] text-ThemeRed">{isWarning}</p>
             )}
@@ -241,6 +252,13 @@ const List = ({
         onError,
         itemDetail.id
     );
+    const [isProject, setProject] = useState({
+        value: itemDetail.project,
+        firstVal: itemDetail.project,
+        id: itemDetail.project_id,
+        firstID: itemDetail.project_id,
+    });
+
     const Save = () => {
         // prevent here the function if field is empty
         if (itemDetail.name === "" && itemDetail.project === "") {
@@ -251,7 +269,7 @@ const List = ({
         setWarning("");
         const Payload = {
             name: itemDetail.name,
-            project_id: itemDetail.project_id,
+            project_id: isProject.id,
         };
 
         if (itemDetail.displayId === "----") {
@@ -278,7 +296,8 @@ const List = ({
             }`}
         >
             <td onClick={(e) => !isModify && Selected(e)} className="bg-hover">
-                <p>{itemDetail.displayId}</p>
+                {/* <p>{itemDetail.displayId}</p> */}
+                <p>{itemDetail.project_id}</p>
             </td>
             <td onClick={(e) => !isModify && Selected(e)} className="bg-hover">
                 <input
@@ -293,14 +312,21 @@ const List = ({
                     <input
                         type="text"
                         className={`${!isModify && "disabled"}`}
-                        value={itemDetail.project}
-                        onChange={() => {}}
+                        value={isProject.value}
+                        onChange={(e: any) => {
+                            setProject({
+                                ...isProject,
+                                value: e.target.value,
+                            });
+                        }}
                         onFocus={() => setProjectList(true)}
                     />
                     {isProjectList && (
                         <ListDropdown
                             set={setProjectList}
                             updateVal={updateVal}
+                            isProject={isProject}
+                            setProject={setProject}
                         />
                     )}
                 </div>
@@ -359,17 +385,37 @@ export default Tower;
 type ListDropdown = {
     set: any;
     updateVal: any;
+    isProject: {
+        value: string;
+        firstVal: string;
+        firstID: string;
+    };
+    setProject: Function;
 };
 
-const ListDropdown = ({ set, updateVal }: ListDropdown) => {
-    const { data } = GetProject();
+const ListDropdown = ({
+    set,
+    updateVal,
+    isProject,
+    setProject,
+}: ListDropdown) => {
+    const { data, isLoading, isError } = GetProject(isProject.value);
 
     const modal = useRef<any>();
+
+    const reset = () => {
+        set(false);
+        setProject({
+            ...isProject,
+            value: isProject.firstVal,
+            id: isProject.firstID,
+        });
+    };
 
     useEffect(() => {
         const clickOutSide = (e: any) => {
             if (!modal.current.contains(e.target)) {
-                set(false);
+                reset();
             }
         };
         document.addEventListener("mousedown", clickOutSide);
@@ -382,8 +428,36 @@ const ListDropdown = ({ set, updateVal }: ListDropdown) => {
         const id = e.target.getAttribute("data-id");
         const value = e.target.innerHTML;
         updateVal(value, id);
+        setProject({
+            value: value,
+            firstVal: value,
+            firstID: id,
+            id: id,
+        });
         set(false);
     };
+
+    if (isLoading) {
+        return (
+            <ul ref={modal} className="w-full flex justify-center py-3">
+                <BarLoader
+                    color={"#8f384d"}
+                    height="5px"
+                    width="100px"
+                    aria-label="Loading Spinner"
+                    data-testid="loader"
+                />
+            </ul>
+        );
+    }
+
+    if (isError || data?.data.length <= 0) {
+        return (
+            <ul ref={modal} className="w-full flex justify-center py-3">
+                <li onClick={reset}>Project Can't found!</li>
+            </ul>
+        );
+    }
 
     return (
         <ul ref={modal}>

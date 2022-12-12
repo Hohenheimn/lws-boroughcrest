@@ -1,20 +1,22 @@
 import { motion } from "framer-motion";
 import { useRouter } from "next/router";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { RiArrowDownSFill } from "react-icons/ri";
 import { useQueryClient } from "react-query";
 import { ScaleLoader } from "react-spinners";
 import style from "../../../../styles/Popup_Modal.module.scss";
 import { ModalSideFade } from "../../../Animation/SimpleAnimation";
 import AppContext from "../../../Context/AppContext";
-import { ChargeCreate } from "../../../ReactQuery/Charge";
+import { ChargeCreate, ChargeUpdate } from "../../../ReactQuery/Charge";
 import Dropdown from "./Dropdown";
-import { ChargePayload } from "./Type";
+import { ChargePayload, IDstate } from "./Type";
 
 type Props = {
     setCreate: Function;
+    isDefaultValue: ChargePayload;
+    type: string;
 };
-export default function ChargeForm({ setCreate }: Props) {
+export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
     const { setPrompt } = useContext(AppContext);
     const queryClient = useQueryClient();
     const router = useRouter();
@@ -45,51 +47,55 @@ export default function ChargeForm({ setCreate }: Props) {
     const [isError, setError] = useState({
         ...ErrorDefault,
     });
-    const isDefaultValue = {
-        code: "",
-        type: "",
-        name: "",
-        description: "",
-        base_rate: 0,
-        uom: "",
-        vat_percent: 0,
-        minimum: 0,
-        interest: "",
-        payment_heirarchy: 0,
-        soa_sort_order: 0,
-    };
 
     const [fieldValue, setFieldValue] = useState<ChargePayload>({
         ...isDefaultValue,
     });
-    const [isDiscount, setDiscount] = useState({
-        value: "",
-        id: "",
+    const [isDiscount, setDiscount] = useState<IDstate>({
+        value: isDefaultValue.discounts_coa_value,
+        id: isDefaultValue.discounts_coa_id,
         toggle: false,
+        firstVal: isDefaultValue.discounts_coa_value,
+        firstID: isDefaultValue.discounts_coa_id,
     });
-    const [isRevenue, setRevenue] = useState({
-        value: "",
-        id: "",
+    const [isRevenue, setRevenue] = useState<IDstate>({
+        value: isDefaultValue.revenue_coa_value,
+        id: isDefaultValue.revenue_coa_id,
         toggle: false,
+        firstVal: isDefaultValue.revenue_coa_value,
+        firstID: isDefaultValue.revenue_coa_id,
     });
-    const [isAdvance, setAdvance] = useState({
-        value: "",
-        id: "",
+    const [isAdvance, setAdvance] = useState<IDstate>({
+        value: isDefaultValue.advances_coa_value,
+        id: isDefaultValue.advances_coa_id,
         toggle: false,
+        firstVal: isDefaultValue.advances_coa_value,
+        firstID: isDefaultValue.advances_coa_id,
     });
-    const [isReceivable, setReceivable] = useState({
-        value: "",
-        id: "",
+    const [isReceivable, setReceivable] = useState<IDstate>({
+        value: isDefaultValue.receivable_coa_value,
+        id: isDefaultValue.receivable_coa_id,
         toggle: false,
+        firstVal: isDefaultValue.receivable_coa_value,
+        firstID: isDefaultValue.receivable_coa_id,
     });
 
     const onSuccess = () => {
         queryClient.invalidateQueries("charge-list");
-        setPrompt({
-            message: "Charge successfully registered!",
-            type: "success",
-            toggle: true,
-        });
+        queryClient.invalidateQueries(["Charge-detail", router.query.modify]);
+        if (type === "Modify") {
+            setPrompt({
+                message: "Charge successfully updated!",
+                type: "success",
+                toggle: true,
+            });
+        } else {
+            setPrompt({
+                message: "Charge successfully registered!",
+                type: "success",
+                toggle: true,
+            });
+        }
         setError({ ...ErrorDefault });
         if (ButtonType === "new") {
             // Clear Field
@@ -100,29 +106,37 @@ export default function ChargeForm({ setCreate }: Props) {
                 value: "",
                 id: "",
                 toggle: false,
+                firstVal: "",
+                firstID: "",
             });
             setDiscount({
                 value: "",
                 id: "",
                 toggle: false,
+                firstVal: "",
+                firstID: "",
             });
             setRevenue({
                 value: "",
                 id: "",
                 toggle: false,
+                firstVal: "",
+                firstID: "",
             });
             setReceivable({
                 value: "",
                 id: "",
                 toggle: false,
+                firstVal: "",
+                firstID: "",
             });
             // back to front form
             setForm([true, false]);
             // Go to create
             router.push("");
             setCreate(true);
-        }
-        if (ButtonType === "save") {
+        } else {
+            router.push("");
             setCreate(false);
         }
     };
@@ -150,9 +164,10 @@ export default function ChargeForm({ setCreate }: Props) {
         onSuccess,
         onError
     );
-    const { mutate: Update, isLoading: UpdateLoading } = ChargeCreate(
+    const { mutate: Update, isLoading: UpdateLoading } = ChargeUpdate(
         onSuccess,
-        onError
+        onError,
+        router.query.modify
     );
 
     const SubmitHandler = (typeButton: string) => {
@@ -160,10 +175,14 @@ export default function ChargeForm({ setCreate }: Props) {
         setSave(false);
         const Payload: ChargePayload = {
             ...fieldValue,
-            receivable_coa_id: parseInt(isReceivable.id),
-            discounts_coa_id: parseInt(isDiscount.id),
-            revenue_coa_id: parseInt(isRevenue.id),
-            advances_coa_id: parseInt(isAdvance.id),
+            receivable_coa_id:
+                isReceivable === undefined ? "" : parseInt(isReceivable.id),
+            discounts_coa_id:
+                isDiscount === undefined ? "" : parseInt(isDiscount.id),
+            revenue_coa_id:
+                isRevenue === undefined ? "" : parseInt(isRevenue.id),
+            advances_coa_id:
+                isAdvance === undefined ? "" : parseInt(isAdvance.id),
         };
         if (router.query.modify === undefined) {
             Save(Payload);
@@ -175,7 +194,7 @@ export default function ChargeForm({ setCreate }: Props) {
     return (
         <div className={style.container}>
             <section>
-                <p className={style.modal_title}>Create Charge</p>
+                <p className={style.modal_title}>{type} Charge</p>
                 <motion.div
                     variants={ModalSideFade}
                     initial="initial"
@@ -188,7 +207,7 @@ export default function ChargeForm({ setCreate }: Props) {
                         </h1>
                         <ul className={style.ThreeRows}>
                             <li>
-                                <label>DISCOUNTS</label>
+                                <label>*DISCOUNTS</label>
                                 <div
                                     className={`${style.Dropdown} ${style.full}`}
                                 >
@@ -220,7 +239,7 @@ export default function ChargeForm({ setCreate }: Props) {
                                 </div>
                             </li>
                             <li>
-                                <label>REVENUE</label>
+                                <label>*REVENUE</label>
                                 <div
                                     className={`${style.Dropdown} ${style.full}`}
                                 >
@@ -252,7 +271,7 @@ export default function ChargeForm({ setCreate }: Props) {
                                 </div>
                             </li>
                             <li>
-                                <label>ADVANCES</label>
+                                <label>*ADVANCES</label>
                                 <div
                                     className={`${style.Dropdown} ${style.full}`}
                                 >
@@ -297,7 +316,7 @@ export default function ChargeForm({ setCreate }: Props) {
                                 />
                             </li>
                             <li>
-                                <label>INTEREST</label>
+                                <label>*INTEREST</label>
 
                                 <select
                                     value={fieldValue.interest}
@@ -321,7 +340,7 @@ export default function ChargeForm({ setCreate }: Props) {
                                 )}
                             </li>
                             <li>
-                                <label>PAYMENT HEIRARCHY</label>
+                                <label>*PAYMENT HEIRARCHY</label>
                                 <input
                                     type="number"
                                     value={fieldValue.payment_heirarchy}
@@ -341,7 +360,7 @@ export default function ChargeForm({ setCreate }: Props) {
                                 )}
                             </li>
                             <li>
-                                <label>SOA SORT ORDER</label>
+                                <label>*SOA SORT ORDER</label>
                                 <input
                                     type="number"
                                     value={fieldValue.soa_sort_order}
@@ -378,7 +397,7 @@ export default function ChargeForm({ setCreate }: Props) {
                         </h1>
                         <ul className={style.ThreeRows}>
                             <li>
-                                <label>CODE</label>
+                                <label>*CODE</label>
                                 <input
                                     type="text"
                                     value={fieldValue.code}
@@ -397,7 +416,7 @@ export default function ChargeForm({ setCreate }: Props) {
                                 )}
                             </li>
                             <li>
-                                <label>TYPE</label>
+                                <label>*TYPE</label>
                                 <select
                                     id=""
                                     value={fieldValue.type}
@@ -419,7 +438,7 @@ export default function ChargeForm({ setCreate }: Props) {
                                 )}
                             </li>
                             <li>
-                                <label>NAME</label>
+                                <label>*NAME</label>
                                 <input
                                     type="text"
                                     value={fieldValue.name}
@@ -450,7 +469,7 @@ export default function ChargeForm({ setCreate }: Props) {
                                 />
                             </li>
                             <li>
-                                <label>BASE RATE</label>
+                                <label>*BASE RATE</label>
                                 <input
                                     type="number"
                                     value={fieldValue.base_rate}
@@ -465,7 +484,7 @@ export default function ChargeForm({ setCreate }: Props) {
                                 />
                             </li>
                             <li>
-                                <label>UOM</label>
+                                <label>*UOM</label>
                                 <input
                                     type="text"
                                     value={fieldValue.uom}
@@ -483,7 +502,7 @@ export default function ChargeForm({ setCreate }: Props) {
                                 )}
                             </li>
                             <li>
-                                <label>VAT%</label>
+                                <label>*VAT%</label>
                                 <input
                                     type="number"
                                     value={fieldValue.vat_percent}
@@ -498,7 +517,7 @@ export default function ChargeForm({ setCreate }: Props) {
                                 />
                             </li>
                             <li>
-                                <label>RECEIVABLE</label>
+                                <label>*RECEIVABLE</label>
                                 <div
                                     className={`${style.Dropdown} ${style.full}`}
                                 >

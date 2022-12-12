@@ -3,17 +3,14 @@ import React, { useContext, useEffect, useRef } from "react";
 import { useQuery } from "react-query";
 import { BarLoader } from "react-spinners";
 import api from "../../../../util/api";
-import AppContext from "../../../Context/AppContext";
+import { IDstate } from "./Type";
 
 type Props = {
     endpoint: string;
     name: string;
     searchValue: string;
     setFunction: Function;
-    fieldObject: {
-        value: string;
-        toggle: boolean;
-    };
+    fieldObject: IDstate;
 };
 
 export default function Dropdown({
@@ -36,14 +33,12 @@ export default function Dropdown({
     useEffect(() => {
         const clickOutSide = (e: any) => {
             if (!modal?.current?.contains(e.target)) {
-                if (isLoading || isError) {
-                    setFunction({
-                        ...fieldObject,
-                        toggle: false,
-                        value: "",
-                        id: "",
-                    });
-                }
+                setFunction({
+                    ...fieldObject,
+                    toggle: false,
+                    value: fieldObject.firstVal,
+                    id: fieldObject.firstID,
+                });
             }
         };
         document.addEventListener("mousedown", clickOutSide);
@@ -60,6 +55,8 @@ export default function Dropdown({
             toggle: false,
             value: value,
             id: id,
+            firstVal: value,
+            firstID: id,
         });
     };
 

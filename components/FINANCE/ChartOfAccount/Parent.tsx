@@ -23,9 +23,12 @@ const Parent = ({
         const code = e.target.getAttribute("data-chartcode");
         const id = e.target.getAttribute("data-id");
         setParent({
+            ...isParent,
             toggle: false,
             value: code,
             id: id,
+            firstVal: code,
+            firstID: id,
         });
         setChartcode({
             ...isChartcode,
@@ -36,15 +39,15 @@ const Parent = ({
     useEffect(() => {
         const clickOutSide = (e: any) => {
             if (!modal?.current?.contains(e.target)) {
-                setParent(false);
                 setParent({
+                    ...isParent,
                     toggle: false,
-                    value: "",
-                    id: "",
+                    value: isParent.firstVal,
+                    id: isParent.firstVal,
                 });
                 setChartcode({
                     ...isChartcode,
-                    parent: "",
+                    parent: isParent.firstVal,
                 });
             }
         };

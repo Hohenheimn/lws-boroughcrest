@@ -19,6 +19,8 @@ const DefaultAccount = ({ setValue, isValue }: DefaultAccountProps) => {
             toggle: false,
             value: code,
             id: id,
+            firstVal: code,
+            firstID: id,
         });
     };
 
@@ -26,9 +28,10 @@ const DefaultAccount = ({ setValue, isValue }: DefaultAccountProps) => {
         const clickOutSide = (e: any) => {
             if (!modal?.current?.contains(e.target)) {
                 setValue({
+                    ...isValue,
                     toggle: false,
-                    value: "",
-                    id: "",
+                    value: isValue.firstVal,
+                    id: isValue.firstVal,
                 });
             }
         };

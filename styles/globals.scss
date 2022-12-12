@@ -334,8 +334,9 @@ input[type="number"] {
         }
         .dropdown {
             @apply relative;
+
             ul {
-                @apply absolute top-full left-0 w-full text-ThemeRed z-10 bg-white border;
+                @apply absolute top-full left-0 w-full text-ThemeRed z-10 bg-white border max-h-[200px] overflow-auto;
                 li {
                     @apply text-[12px] border-b py-1 px-2 w-full mb-0 hover:bg-ThemeRed hover:text-white transition-all duration-75;
                 }
