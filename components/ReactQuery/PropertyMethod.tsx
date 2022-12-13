@@ -284,12 +284,15 @@ export const UpdateFloor = (success: any, error: any, id: any) => {
 };
 
 // Get Developer
-export const GetDeveloper = () => {
-    return useQuery("get-developer", () => {
-        return api.get("/admin/property/unit/developer-options", {
-            headers: {
-                Authorization: "Bearer " + getCookie("user"),
-            },
-        });
+export const GetDeveloper = (Keyword: string) => {
+    return useQuery(["get-developer", Keyword], () => {
+        return api.get(
+            `/admin/property/unit/developer-options?keywords=${Keyword}`,
+            {
+                headers: {
+                    Authorization: "Bearer " + getCookie("user"),
+                },
+            }
+        );
     });
 };

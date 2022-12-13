@@ -392,6 +392,8 @@ export default function PropertyForm({
                                                 set={setDev}
                                                 update={updateDeveloper}
                                                 isValID={isDevVal.id}
+                                                isObject={isDevVal}
+                                                setObject={setDevVal}
                                             />
                                         )}
                                     </>
@@ -407,6 +409,14 @@ export default function PropertyForm({
                                     {...register("developer")}
                                     autoComplete="off"
                                     onFocus={() => setDev(true)}
+                                    onClick={() => setDev(true)}
+                                    value={isDevVal.value}
+                                    onChange={(e: any) =>
+                                        setDevVal({
+                                            ...isDevVal,
+                                            value: e.target.value,
+                                        })
+                                    }
                                 />
                             </Tippy>
 

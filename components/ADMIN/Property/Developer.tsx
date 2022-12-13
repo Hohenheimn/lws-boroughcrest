@@ -3,13 +3,24 @@ import { BarLoader } from "react-spinners";
 import { GetDeveloper } from "../../ReactQuery/PropertyMethod";
 import style from "../../../styles/Popup_Modal.module.scss";
 
-export default function Developer({ set, update, isValID }: any) {
+export default function Developer({
+    set,
+    update,
+    isValID,
+    isObject,
+    setObject,
+}: any) {
     const modal = useRef<any>();
 
     useEffect(() => {
         const clickOutSide = (e: any) => {
             if (!modal.current.contains(e.target)) {
                 set(false);
+                setObject({
+                    ...isObject,
+                    value: isObject.firstVal,
+                    id: isObject.firstID,
+                });
             }
         };
         document.addEventListener("mousedown", clickOutSide);
@@ -17,7 +28,7 @@ export default function Developer({ set, update, isValID }: any) {
             document.removeEventListener("mousedown", clickOutSide);
         };
     });
-    const { data, isLoading } = GetDeveloper();
+    const { data, isLoading, isError } = GetDeveloper(isObject.value);
     const updateVal = (e: any) => {
         const id = e.target.getAttribute("data-id");
         const value = e.target.getAttribute("data-value");
@@ -50,6 +61,12 @@ export default function Developer({ set, update, isValID }: any) {
                     />
                 </div>
             )}
+            {isError ||
+                (data?.data.length <= 0 && (
+                    <div className="w-full flex justify-center py-3">
+                        <h1>Developer cannot be found!</h1>
+                    </div>
+                ))}
         </>
     );
 }
