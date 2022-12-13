@@ -454,7 +454,7 @@ const ListDropdown = ({
     if (isError || data?.data.length <= 0) {
         return (
             <ul ref={modal} className="w-full flex justify-center py-3">
-                <li onClick={reset}>Project Can't found!</li>
+                <li onClick={reset}>Project Can&apos;t found!</li>
             </ul>
         );
     }
