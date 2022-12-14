@@ -49,7 +49,7 @@ export default function JournalForm({ DefaultValue, type }: Props) {
                             />
                         </div>
                     </li>
-                    <li className="w-[75%] 1366px:w-[65%] 640px:w-full flex items-center">
+                    <li className="w-[75%] max-w-[500px] 1366px:w-[65%] 640px:w-full flex items-center">
                         <p className=" text-ThemeRed mr-3 font-NHU-bold">
                             PARTICULARS
                         </p>
@@ -85,12 +85,28 @@ export default function JournalForm({ DefaultValue, type }: Props) {
                                 <h1>TOTAL</h1>
                             </td>
                             <td>
-                                <div></div>
+                                <div className={style.peso}>
+                                    <aside>
+                                        <Image
+                                            src="/Images/peso.png"
+                                            height={13}
+                                            width={10}
+                                        />
+                                    </aside>
+                                    <p>-</p>
+                                </div>
                             </td>
                             <td>
-                                <div
-                                    className={`${style.NonStyle} ${style.peso}`}
-                                ></div>
+                                <div className={style.peso}>
+                                    <aside>
+                                        <Image
+                                            src="/Images/peso.png"
+                                            height={13}
+                                            width={10}
+                                        />
+                                    </aside>
+                                    <p>-</p>
+                                </div>
                             </td>
                         </tr>
                     </tbody>
@@ -200,6 +216,9 @@ const List = ({ itemList, setJournal, isJournal, index }: List) => {
             </td>
             <td className="w-[20%]">
                 <div className={style.peso}>
+                    <aside>
+                        <Image src="/Images/peso.png" height={13} width={10} />
+                    </aside>
                     <input
                         type="number"
                         value={itemList.debit}
@@ -210,6 +229,9 @@ const List = ({ itemList, setJournal, isJournal, index }: List) => {
             </td>
             <td className="w-[20%]">
                 <div className={style.peso}>
+                    <aside>
+                        <Image src="/Images/peso.png" height={13} width={10} />
+                    </aside>
                     <input
                         type="number"
                         value={itemList.credit}

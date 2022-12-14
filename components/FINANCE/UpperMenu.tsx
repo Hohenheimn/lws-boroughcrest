@@ -20,11 +20,11 @@ export default function UpperMenu() {
             <ul className={style.container}>
                 {isUrlData?.map((item: any, index: number) => (
                     <li
-                        className={
+                        className={`${
                             router.pathname.includes(item.activeUrl)
                                 ? style.active
                                 : ""
-                        }
+                        } ${item.type === "disabled" && style.inactive}`}
                         key={index}
                     >
                         <Link href={item.url}>

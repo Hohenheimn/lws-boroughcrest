@@ -11,25 +11,25 @@
         td {
             @apply pt-5 h-10;
             div {
-                @apply w-full p-1 h-10 px-5 rounded-md outline-none shadow-md bg-ThemeRed50 relative;
-                &::after {
-                    @apply content-['₱'] absolute top-[0%] h-full flex items-center left-2;
-                }
+                @apply w-full p-1 h-10 px-5 rounded-md outline-none relative text-end;
             }
         }
     }
     td {
         @apply pb-2 pr-10 1366px:pr-5 1024px:pr-2;
         input {
-            @apply w-full p-1 h-10 px-3 rounded-md outline-none shadow-md;
+            @apply w-full p-1 h-10 px-3 rounded-md outline-none shadow-md text-[#757575] font-NHU-bold text-end;
         }
         .peso {
-            @apply relative;
-            &::after {
-                @apply content-['₱'] absolute top-[0%] h-full flex items-center left-2;
+            @apply relative flex items-center text-[#757575] font-NHU-bold;
+            aside {
+                @apply content-['₱'] absolute top-[0%] h-full flex items-center left-2 z-10;
             }
             input {
-                @apply px-5;
+                @apply px-6;
+            }
+            p {
+                @apply text-end w-full text-[#757575] font-NHU-bold;
             }
         }
     }

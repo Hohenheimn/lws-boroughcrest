@@ -110,7 +110,7 @@ input {
 .table_list {
     @apply min-w-full;
     thead {
-        @apply shadow-md sticky top-0 bg-[#fbfbfb] z-10;
+        @apply shadow-md sticky top-0 bg-[#fbfbfb] z-[999];
         tr {
             th {
                 @apply text-start px-4 py-5 480px:py-3 480px:px-3 text-[#545454] 480px:text-[12px];
@@ -194,7 +194,10 @@ input {
                 @apply min-w-[400px] 480px:min-w-[300px];
             }
             td.xLarge {
-                @apply min-w-[500px] 480px:min-w-[350px];
+                @apply min-w-[300px] 480px:min-w-[350px];
+            }
+            .td.wid20 {
+                width: 500px;
             }
         }
     }

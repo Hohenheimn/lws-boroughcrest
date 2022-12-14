@@ -43,6 +43,9 @@ export default function COATable({ isSearchTable, isFilterTable }: Props) {
                                     <th>Secondary</th>
                                     <th>Tertiary</th>
                                     <th>Account</th>
+                                    <th>Sub Account</th>
+                                    <th>Description</th>
+                                    <th>Default Account</th>
                                 </>
                             ) : (
                                 <>
@@ -112,7 +115,7 @@ const List = ({ itemDetail, isFilterTable }: ListProps) => {
     return (
         <>
             <tr onMouseEnter={MouseEnter} onMouseLeave={MouseLeave}>
-                <td>
+                <td className="normal">
                     <Link
                         href={`/finance/general-ledger/chart-of-account?modify=${itemDetail.id}`}
                     >
@@ -123,7 +126,7 @@ const List = ({ itemDetail, isFilterTable }: ListProps) => {
                         </a>
                     </Link>
                 </td>
-                <td>
+                <td className="xLarge">
                     <Link
                         href={`/finance/general-ledger/chart-of-account?modify=${itemDetail.id}`}
                     >
@@ -132,7 +135,7 @@ const List = ({ itemDetail, isFilterTable }: ListProps) => {
                                 {!isFilterTable ? (
                                     <h2>{itemDetail?.account_name}</h2>
                                 ) : itemDetail.header === "Primary" ? (
-                                    <h2>{itemDetail.header}</h2>
+                                    <h2>{itemDetail.account_name}</h2>
                                 ) : (
                                     <h2></h2>
                                 )}
@@ -140,7 +143,7 @@ const List = ({ itemDetail, isFilterTable }: ListProps) => {
                         </a>
                     </Link>
                 </td>
-                <td>
+                <td className="xLarge">
                     <Link
                         href={`/finance/general-ledger/chart-of-account?modify=${itemDetail.id}`}
                     >
@@ -149,7 +152,7 @@ const List = ({ itemDetail, isFilterTable }: ListProps) => {
                                 {!isFilterTable ? (
                                     <h2>{itemDetail?.category}</h2>
                                 ) : itemDetail.header === "Secondary" ? (
-                                    <h2>{itemDetail.header}</h2>
+                                    <h2>{itemDetail.account_name}</h2>
                                 ) : (
                                     <h2></h2>
                                 )}
@@ -157,7 +160,7 @@ const List = ({ itemDetail, isFilterTable }: ListProps) => {
                         </a>
                     </Link>
                 </td>
-                <td>
+                <td className="xLarge">
                     <Link
                         href={`/finance/general-ledger/chart-of-account?modify=${itemDetail.id}`}
                     >
@@ -166,7 +169,7 @@ const List = ({ itemDetail, isFilterTable }: ListProps) => {
                                 {!isFilterTable ? (
                                     <h2>{itemDetail?.description}</h2>
                                 ) : itemDetail.header === "Tertiary" ? (
-                                    <h2>{itemDetail.header}</h2>
+                                    <h2>{itemDetail.account_name}</h2>
                                 ) : (
                                     <h2></h2>
                                 )}
@@ -174,7 +177,57 @@ const List = ({ itemDetail, isFilterTable }: ListProps) => {
                         </a>
                     </Link>
                 </td>
-                <td>
+                {/* Account */}
+                {isFilterTable && (
+                    <td className="xLarge">
+                        <Link
+                            href={`/finance/general-ledger/chart-of-account?modify=${itemDetail.id}`}
+                        >
+                            <a className="item">
+                                <div>
+                                    <h2>
+                                        {itemDetail.header === "Header 1"
+                                            ? itemDetail?.account_name
+                                            : ""}
+                                    </h2>
+                                </div>
+                            </a>
+                        </Link>
+                    </td>
+                )}
+                {/* Sub Account */}
+                {isFilterTable && (
+                    <td className="xLarge">
+                        <Link
+                            href={`/finance/general-ledger/chart-of-account?modify=${itemDetail.id}`}
+                        >
+                            <a className="item">
+                                <div>
+                                    <h2>
+                                        {itemDetail.header === "Header 2"
+                                            ? itemDetail?.account_name
+                                            : ""}
+                                    </h2>
+                                </div>
+                            </a>
+                        </Link>
+                    </td>
+                )}
+                {/* DesCription */}
+                {isFilterTable && (
+                    <td className="xLarge">
+                        <Link
+                            href={`/finance/general-ledger/chart-of-account?modify=${itemDetail.id}`}
+                        >
+                            <a className="item">
+                                <div>
+                                    <h2>{itemDetail?.description}</h2>
+                                </div>
+                            </a>
+                        </Link>
+                    </td>
+                )}
+                <td className={`${isFilterTable ? "xLarge" : "large"}`}>
                     <Link
                         href={`/finance/general-ledger/chart-of-account?modify=${itemDetail.id}`}
                     >
@@ -185,8 +238,9 @@ const List = ({ itemDetail, isFilterTable }: ListProps) => {
                         </a>
                     </Link>
                 </td>
+
                 {!isFilterTable && (
-                    <td>
+                    <td className="large">
                         {isHover && (
                             <Link
                                 href={`/finance/general-ledger/chart-of-account?modify=${itemDetail.id}`}

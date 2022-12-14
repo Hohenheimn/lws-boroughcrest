@@ -5,7 +5,7 @@
         li {
             @apply w-full flex items-center border-r border-gray-200 text-center bg-[#fbfcfe] text-ThemeRed transition-all duration-75 hover:bg-ThemeRed hover:text-white;
             a {
-                @apply w-full inline-block py-1 px-2 1024px:text-[12px] 640px:text-[14px];
+                @apply w-full inline-block py-1 px-2 1550px:py-0 1550px:text-[13px] 1024px:text-[12px] 640px:text-[14px];
             }
         }
         li.active {
@@ -13,6 +13,12 @@
         }
         li.subBorder {
             @apply border border-gray-200;
+        }
+        li.inactive {
+            @apply pointer-events-none bg-[#e3e3e3] text-ThemeRed50;
+            a {
+                @apply pointer-events-none;
+            }
         }
     }
 }
