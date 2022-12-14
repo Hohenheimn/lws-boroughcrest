@@ -126,7 +126,7 @@ const List = ({ itemDetail, isFilterTable }: ListProps) => {
                         </a>
                     </Link>
                 </td>
-                <td className={`${isFilterTable ? "normal" : "large"}`}>
+                <td className="xLarge">
                     <Link
                         href={`/finance/general-ledger/chart-of-account?modify=${itemDetail.id}`}
                     >
@@ -135,7 +135,7 @@ const List = ({ itemDetail, isFilterTable }: ListProps) => {
                                 {!isFilterTable ? (
                                     <h2>{itemDetail?.account_name}</h2>
                                 ) : itemDetail.header === "Primary" ? (
-                                    <h2>{itemDetail.header}</h2>
+                                    <h2>{itemDetail.account_name}</h2>
                                 ) : (
                                     <h2></h2>
                                 )}
@@ -143,7 +143,7 @@ const List = ({ itemDetail, isFilterTable }: ListProps) => {
                         </a>
                     </Link>
                 </td>
-                <td className={`${isFilterTable ? "normal" : "large"}`}>
+                <td className="xLarge">
                     <Link
                         href={`/finance/general-ledger/chart-of-account?modify=${itemDetail.id}`}
                     >
@@ -152,7 +152,7 @@ const List = ({ itemDetail, isFilterTable }: ListProps) => {
                                 {!isFilterTable ? (
                                     <h2>{itemDetail?.category}</h2>
                                 ) : itemDetail.header === "Secondary" ? (
-                                    <h2>{itemDetail.header}</h2>
+                                    <h2>{itemDetail.account_name}</h2>
                                 ) : (
                                     <h2></h2>
                                 )}
@@ -160,7 +160,7 @@ const List = ({ itemDetail, isFilterTable }: ListProps) => {
                         </a>
                     </Link>
                 </td>
-                <td className={`${isFilterTable ? "normal" : "large"}`}>
+                <td className="xLarge">
                     <Link
                         href={`/finance/general-ledger/chart-of-account?modify=${itemDetail.id}`}
                     >
@@ -169,7 +169,7 @@ const List = ({ itemDetail, isFilterTable }: ListProps) => {
                                 {!isFilterTable ? (
                                     <h2>{itemDetail?.description}</h2>
                                 ) : itemDetail.header === "Tertiary" ? (
-                                    <h2>{itemDetail.header}</h2>
+                                    <h2>{itemDetail.account_name}</h2>
                                 ) : (
                                     <h2></h2>
                                 )}
@@ -185,7 +185,11 @@ const List = ({ itemDetail, isFilterTable }: ListProps) => {
                         >
                             <a className="item">
                                 <div>
-                                    <h2>{itemDetail?.account_name}</h2>
+                                    <h2>
+                                        {itemDetail.header === "Header 1"
+                                            ? itemDetail?.account_name
+                                            : ""}
+                                    </h2>
                                 </div>
                             </a>
                         </Link>
@@ -193,13 +197,17 @@ const List = ({ itemDetail, isFilterTable }: ListProps) => {
                 )}
                 {/* Sub Account */}
                 {isFilterTable && (
-                    <td className="large">
+                    <td className="xLarge">
                         <Link
                             href={`/finance/general-ledger/chart-of-account?modify=${itemDetail.id}`}
                         >
                             <a className="item">
                                 <div>
-                                    <h2>Sub Account</h2>
+                                    <h2>
+                                        {itemDetail.header === "Header 2"
+                                            ? itemDetail?.account_name
+                                            : ""}
+                                    </h2>
                                 </div>
                             </a>
                         </Link>
@@ -230,9 +238,6 @@ const List = ({ itemDetail, isFilterTable }: ListProps) => {
                         </a>
                     </Link>
                 </td>
-                {/* <th>Sub Account</th>
-                                    <th>Description</th>
-                                    <th>Default Account</th> */}
 
                 {!isFilterTable && (
                     <td className="large">

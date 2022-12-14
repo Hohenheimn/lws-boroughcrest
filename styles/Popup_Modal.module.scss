@@ -1,5 +1,5 @@
 .container {
-    @apply overflow-auto fixed top-0 left-0 h-screen w-full bg-[#00000040] p-10 z-50 flex justify-center items-center  820px:items-center 480px:items-start 480px:py-10 640px:p-0;
+    @apply overflow-auto fixed top-0 left-0 h-screen w-full bg-[#00000040] p-10 z-[99999] flex justify-center items-center  820px:items-center 480px:items-start 480px:py-10 640px:p-0;
     @media (max-height: 550px) {
         @apply items-start;
     }
