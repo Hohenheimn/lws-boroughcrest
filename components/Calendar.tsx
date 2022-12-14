@@ -3,7 +3,6 @@ import {
     endOfMonth,
     format,
     startOfDay,
-    startOfMonth,
     isToday,
     isSameMonth,
     isEqual,
@@ -11,8 +10,8 @@ import {
     startOfWeek,
     parse,
     add,
-    startOfYear,
 } from "date-fns";
+import { eachYearOfInterval } from "date-fns/esm";
 import React, { useState } from "react";
 
 type Props = {
@@ -25,6 +24,24 @@ const sameMonth = "font-bold";
 const selectedDay = "bg-black text-white font-bold";
 
 export default function Calendar({ Value, setValue }: Props) {
+    const Months = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+    ];
+    const [toggleButton, setToggleButton] = useState({
+        month: false,
+        year: false,
+    });
     const date = new Date();
     // get date today
     let today = startOfDay(date);
@@ -38,6 +55,11 @@ export default function Calendar({ Value, setValue }: Props) {
     let days = eachDayOfInterval({
         start: startOfWeek(firstDayofMonthYear),
         end: endOfWeek(endOfMonth(firstDayofMonthYear)),
+    });
+
+    let Years = eachYearOfInterval({
+        start: new Date(1989, 6, 10),
+        end: today,
     });
 
     const SelectedDateHandler = (day: any) => {
@@ -80,16 +102,13 @@ export default function Calendar({ Value, setValue }: Props) {
 
     return (
         <div className="flex items-center justify-center py-8 px-4">
+            {/* Ask kung pano naka infinite ung year tas naka focus agad ung year sa current yr */}
             <div
                 className="max-w-sm w-full shadow-lg"
                 style={{ backgroundColor: "#f5f5f5" }}
             >
                 <div className="md:p-8 p-5 bg-[#f5f5f5] rounded-t">
                     <div className="mb-5 flex items-center justify-between">
-                        {/* <span
-                            tabIndex={0}
-                            className="focus:outline-none  text-base font-bold dark:text-gray-100 text-gray-800"
-                        ></span> */}
                         <div className="flex items-center w-full justify-between">
                             <button
                                 aria-label="calendar backward"
@@ -117,17 +136,88 @@ export default function Calendar({ Value, setValue }: Props) {
                                 </svg>
                             </button>
                             <ul className="flex">
-                                <li className="mr-2 py-2 px-3 bg-white rounded-lg font-bold">
-                                    {currentMonth}
+                                <li className="relative mr-2  w-[100px] cursor-pointer text-center bg-white rounded-lg font-bold">
+                                    <span
+                                        className=" py-2 px-3 inline-block"
+                                        onClick={() =>
+                                            setToggleButton({
+                                                ...toggleButton,
+                                                month: !toggleButton.month,
+                                            })
+                                        }
+                                    >
+                                        {currentMonth}
+                                    </span>
+                                    {toggleButton.month && (
+                                        <ul className="absolute top-full left-0 w-full bg-white shadow-md max-h-[200px] overflow-auto">
+                                            {Months.map((month, index) => (
+                                                <li
+                                                    key={index}
+                                                    className={`py-2 px-3 text-[14px] cursor-pointer hover:bg-ThemeRed50 ${
+                                                        currentMonth ===
+                                                            month &&
+                                                        " bg-ThemeRed text-white"
+                                                    }`}
+                                                    onClick={() => {
+                                                        setCurrentMonth(month);
+                                                        setToggleButton({
+                                                            ...toggleButton,
+                                                            month: false,
+                                                        });
+                                                    }}
+                                                >
+                                                    {month}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    )}
                                 </li>
-                                <li className=" py-2 px-3 bg-white rounded-lg font-bold">
-                                    {currenYear}
+                                <li className=" relative cursor-pointer bg-white rounded-lg font-bold">
+                                    <span
+                                        className=" py-2 px-3 inline-block"
+                                        onClick={() =>
+                                            setToggleButton({
+                                                ...toggleButton,
+                                                year: !toggleButton.year,
+                                            })
+                                        }
+                                    >
+                                        {currenYear}
+                                    </span>
+                                    {toggleButton.year && (
+                                        <ul className="absolute top-full left-0 w-full bg-white shadow-md max-h-[200px] overflow-auto">
+                                            {Years.map((year, index) => (
+                                                <li
+                                                    key={index}
+                                                    className={`py-2 px-3 text-[14px] cursor-pointer hover:bg-ThemeRed50 ${
+                                                        currenYear ===
+                                                            format(
+                                                                year,
+                                                                "yyyy"
+                                                            ) &&
+                                                        " bg-ThemeRed text-white"
+                                                    }`}
+                                                    onClick={() => {
+                                                        setCurrentYear(
+                                                            format(year, "yyyy")
+                                                        );
+                                                        setToggleButton({
+                                                            ...toggleButton,
+                                                            year: false,
+                                                        });
+                                                    }}
+                                                >
+                                                    {format(year, "yyyy")}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    )}
                                 </li>
                             </ul>
                             <button
                                 aria-label="calendar forward"
                                 onClick={nextMonthHandler}
-                                className="focus:text-gray-400 focus:bg-ThemeRed hover:text-white hover:bg-ThemeRed ml-3 text-gray-800 dark:text-gray-100 border flex justify-center items-center bg-white rounded-full font-NHU-black w-10 h-10 "
+                                className="focus:text-gray-400 relative focus:bg-ThemeRed hover:text-white hover:bg-ThemeRed ml-3 text-gray-800 dark:text-gray-100 border flex justify-center items-center bg-white rounded-full font-NHU-black w-10 h-10 "
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -180,11 +270,11 @@ export default function Calendar({ Value, setValue }: Props) {
                                 key={index}
                                 className={` ${
                                     isSameMonth(day, today) && "bg-white"
-                                } cursor-pointe py-2 flex justify-center items-center text-base font-medium text-center text-gray-800 dark:text-gray-100 w-[14.28%]`}
+                                } cursor-pointer py-2 flex justify-center items-center text-base font-medium text-center text-gray-800 dark:text-gray-100 w-[14.28%]`}
                             >
                                 <button
                                     onClick={() => SelectedDateHandler(day)}
-                                    className={` hover:bg-black w-8 m-0 pb-5 text-[14px] aspect-square rounded-full ${
+                                    className={` hover:bg-gray-300 w-8 h-8 flex justify-center items-center m-0 aspect-square text-[14px] rounded-full ${
                                         isToday(day) && todayStyle
                                     } ${isSameMonth(day, today) && sameMonth} ${
                                         isEqual(day, isSelected) &&
