@@ -23,7 +23,7 @@ const todayStyle = "bg-ThemeRed text-white font-bold";
 const sameMonth = "font-bold";
 const selectedDay = "bg-black text-white font-bold";
 
-export default function Calendar({ Value, setValue }: Props) {
+export default function Calendar() {
     const Months = [
         "January",
         "February",
@@ -63,7 +63,6 @@ export default function Calendar({ Value, setValue }: Props) {
     });
 
     const SelectedDateHandler = (day: any) => {
-        setValue(format(day, "MM-d-yyyy"));
         setSelect(day);
     };
 
