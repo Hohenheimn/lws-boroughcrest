@@ -60,19 +60,27 @@ export default function PropertyForm({
 
     const [isProjectVal, setProjectVal] = useState({
         id: DefaultFormData?.project_id,
-        value: "",
+        value: DefaultFormData?.project,
+        firstVal: DefaultFormData?.project,
+        firstID: DefaultFormData?.project_id,
     });
     const [isTowerVal, setTowerVal] = useState({
         id: DefaultFormData?.tower_id,
-        value: "",
+        value: DefaultFormData?.tower,
+        firstVal: DefaultFormData?.tower,
+        firstID: DefaultFormData?.tower_id,
     });
     const [isFloorVal, setFloorVal] = useState({
         id: DefaultFormData?.floor_id,
-        value: "",
+        value: DefaultFormData?.floor,
+        firstVal: DefaultFormData?.floor,
+        firstID: DefaultFormData?.floor_id,
     });
     const [isDevVal, setDevVal] = useState({
         id: DefaultFormData?.developer_id,
-        value: "",
+        value: DefaultFormData?.developer,
+        firstVal: DefaultFormData?.developer,
+        firstID: DefaultFormData?.developer_id,
     });
 
     const updateProject = (value: any, id: any) => {
@@ -82,6 +90,8 @@ export default function PropertyForm({
         setProjectVal({
             id: id,
             value: value,
+            firstVal: value,
+            firstID: id,
         });
     };
 
@@ -92,6 +102,8 @@ export default function PropertyForm({
         setTowerVal({
             id: id,
             value: value,
+            firstVal: value,
+            firstID: id,
         });
     };
     const updateFloor = (value: any, id: any) => {
@@ -101,6 +113,8 @@ export default function PropertyForm({
         setFloorVal({
             id: id,
             value: value,
+            firstVal: value,
+            firstID: id,
         });
     };
     const updateDeveloper = (value: any, id: any) => {
@@ -110,6 +124,8 @@ export default function PropertyForm({
         setDevVal({
             id: id,
             value: value,
+            firstVal: value,
+            firstID: id,
         });
     };
 
@@ -376,6 +392,8 @@ export default function PropertyForm({
                                                 set={setDev}
                                                 update={updateDeveloper}
                                                 isValID={isDevVal.id}
+                                                isObject={isDevVal}
+                                                setObject={setDevVal}
                                             />
                                         )}
                                     </>
@@ -391,6 +409,14 @@ export default function PropertyForm({
                                     {...register("developer")}
                                     autoComplete="off"
                                     onFocus={() => setDev(true)}
+                                    onClick={() => setDev(true)}
+                                    value={isDevVal.value}
+                                    onChange={(e: any) =>
+                                        setDevVal({
+                                            ...isDevVal,
+                                            value: e.target.value,
+                                        })
+                                    }
                                 />
                             </Tippy>
 
@@ -415,6 +441,8 @@ export default function PropertyForm({
                                                 set={setProject}
                                                 update={updateProject}
                                                 isValID={isProjectVal.id}
+                                                isObject={isProjectVal}
+                                                setObject={setProjectVal}
                                             />
                                         )}
                                     </>
@@ -428,8 +456,16 @@ export default function PropertyForm({
                                 <input
                                     type="text"
                                     onFocus={() => setProject(true)}
+                                    onClick={() => setProject(true)}
                                     autoComplete="off"
                                     {...register("project")}
+                                    value={isProjectVal.value}
+                                    onChange={(e: any) =>
+                                        setProjectVal({
+                                            ...isProjectVal,
+                                            value: e.target.value,
+                                        })
+                                    }
                                 />
                             </Tippy>
                             {errors.project && (
@@ -454,6 +490,8 @@ export default function PropertyForm({
                                                 is={isTower}
                                                 update={updateTower}
                                                 isValID={isTowerVal.id}
+                                                isObject={isTowerVal}
+                                                setObject={setTowerVal}
                                             />
                                         )}
                                     </>
@@ -467,8 +505,16 @@ export default function PropertyForm({
                                 <input
                                     type="text"
                                     onFocus={() => setTower(true)}
+                                    onClick={() => setTower(true)}
                                     autoComplete="off"
                                     {...register("tower")}
+                                    value={isTowerVal.value}
+                                    onChange={(e: any) =>
+                                        setTowerVal({
+                                            ...isTowerVal,
+                                            value: e.target.value,
+                                        })
+                                    }
                                 />
                             </Tippy>
                             {errors.tower && (
@@ -493,6 +539,8 @@ export default function PropertyForm({
                                                 is={isFloor}
                                                 update={updateFloor}
                                                 isValID={isFloorVal.id}
+                                                isObject={isFloorVal}
+                                                setObject={setFloorVal}
                                             />
                                         )}
                                     </>
@@ -507,7 +555,15 @@ export default function PropertyForm({
                                     type="text"
                                     autoComplete="off"
                                     onFocus={() => setFloor(true)}
+                                    onClick={() => setFloor(true)}
                                     {...register("floor")}
+                                    value={isFloorVal.value}
+                                    onChange={(e: any) =>
+                                        setFloorVal({
+                                            ...isFloorVal,
+                                            value: e.target.value,
+                                        })
+                                    }
                                 />
                             </Tippy>
                             {errors.floor && (

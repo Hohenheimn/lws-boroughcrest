@@ -15,7 +15,7 @@ import {
 import { useQueryClient } from "react-query";
 import AppContext from "../../Context/AppContext";
 
-const Floor = ({ set, update, is, isValID }: any) => {
+const Floor = ({ set, update, is, isValID, isObject, setObject }: any) => {
     const modal = useRef<any>();
     // Click out side, remove empty array
     useEffect(() => {
@@ -24,6 +24,10 @@ const Floor = ({ set, update, is, isValID }: any) => {
                 setArray((itemList: any) =>
                     itemList.filter((item: any) => item.name !== "")
                 );
+                setObject({
+                    ...isObject,
+                    value: isObject.firstVal,
+                });
                 set(false);
                 setWarning("");
             }
@@ -49,10 +53,8 @@ const Floor = ({ set, update, is, isValID }: any) => {
             },
         ]);
     };
-    const onSuccess = () => {};
-    const onError = () => {};
 
-    const { isLoading, data } = GetFloor(onSuccess, onError);
+    const { isLoading, data, isError } = GetFloor(isObject.value);
 
     useEffect(() => {
         if (data?.status === 200) {
@@ -113,6 +115,12 @@ const Floor = ({ set, update, is, isValID }: any) => {
                     />
                 </div>
             )}
+            {isError ||
+                (data?.data.length <= 0 && (
+                    <div className="w-full flex justify-center py-3">
+                        <h1>Floor cannot be found!</h1>
+                    </div>
+                ))}
             {isWarning !== "" && (
                 <p className="text-[12px] text-ThemeRed">{isWarning}</p>
             )}
@@ -242,6 +250,13 @@ const List = ({
         onError,
         itemDetail.id
     );
+    const [isTower, setTower] = useState({
+        value: itemDetail.tower,
+        firstVal: itemDetail.tower,
+        id: itemDetail.tower_id,
+        firstID: itemDetail.id,
+    });
+
     const Save = () => {
         // prevent here the function if field is empty
         if (itemDetail.name === "" && itemDetail.tower === "") {
@@ -252,7 +267,7 @@ const List = ({
         setWarning("");
         const Payload = {
             name: itemDetail.name,
-            tower_id: itemDetail.tower_id,
+            tower_id: isTower.id,
         };
 
         if (itemDetail.displayId === "----") {
@@ -294,14 +309,22 @@ const List = ({
                     <input
                         type="text"
                         className={`${!isModify && "disabled"}`}
-                        value={itemDetail.tower}
-                        onChange={() => {}}
+                        value={isTower.value}
+                        onChange={(e: any) => {
+                            setTower({
+                                ...isTower,
+                                value: e.target.value,
+                            });
+                        }}
                         onFocus={() => setProjectList(true)}
+                        onClick={() => setProjectList(true)}
                     />
                     {isProjectList && (
                         <ListDropdown
                             set={setProjectList}
                             updateVal={updateVal}
+                            isTower={isTower}
+                            setTower={setTower}
                         />
                     )}
                 </div>
@@ -360,17 +383,32 @@ export default Floor;
 type ListDropdown = {
     set: any;
     updateVal: any;
+    isTower: {
+        value: string;
+        firstVal: string;
+        firstID: string;
+    };
+    setTower: Function;
 };
 
-const ListDropdown = ({ set, updateVal }: ListDropdown) => {
-    const { data } = GetTower();
+const ListDropdown = ({ set, updateVal, isTower, setTower }: ListDropdown) => {
+    const { data, isLoading, isError } = GetTower(isTower.value);
 
     const modal = useRef<any>();
+
+    const reset = () => {
+        set(false);
+        setTower({
+            ...isTower,
+            value: isTower.firstVal,
+            id: isTower.firstID,
+        });
+    };
 
     useEffect(() => {
         const clickOutSide = (e: any) => {
             if (!modal.current.contains(e.target)) {
-                set(false);
+                reset();
             }
         };
         document.addEventListener("mousedown", clickOutSide);
@@ -383,8 +421,36 @@ const ListDropdown = ({ set, updateVal }: ListDropdown) => {
         const id = e.target.getAttribute("data-id");
         const value = e.target.innerHTML;
         updateVal(value, id);
+        setTower({
+            value: value,
+            firstVal: value,
+            id: id,
+            firstID: id,
+        });
         set(false);
     };
+
+    if (isLoading) {
+        return (
+            <ul ref={modal} className="w-full flex justify-center py-3">
+                <BarLoader
+                    color={"#8f384d"}
+                    height="5px"
+                    width="100px"
+                    aria-label="Loading Spinner"
+                    data-testid="loader"
+                />
+            </ul>
+        );
+    }
+
+    if (isError || data?.data.length <= 0) {
+        return (
+            <ul ref={modal} className="w-full flex justify-center py-3">
+                <li onClick={reset}>Project Can&apos;t found!</li>
+            </ul>
+        );
+    }
 
     return (
         <ul ref={modal}>

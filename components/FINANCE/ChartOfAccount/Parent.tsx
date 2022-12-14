@@ -23,9 +23,12 @@ const Parent = ({
         const code = e.target.getAttribute("data-chartcode");
         const id = e.target.getAttribute("data-id");
         setParent({
+            ...isParent,
             toggle: false,
             value: code,
             id: id,
+            firstVal: code,
+            firstID: id,
         });
         setChartcode({
             ...isChartcode,
@@ -36,7 +39,16 @@ const Parent = ({
     useEffect(() => {
         const clickOutSide = (e: any) => {
             if (!modal?.current?.contains(e.target)) {
-                setParent(false);
+                setParent({
+                    ...isParent,
+                    toggle: false,
+                    value: isParent.firstVal,
+                    id: isParent.firstVal,
+                });
+                setChartcode({
+                    ...isChartcode,
+                    parent: isParent.firstVal,
+                });
             }
         };
         document.addEventListener("mousedown", clickOutSide);
@@ -71,6 +83,15 @@ const Parent = ({
                         data-testid="loader"
                     />
                 </div>
+            </ul>
+        );
+    }
+    if (isError) {
+        return (
+            <ul>
+                <p className="py-2 px-3 text-center text-[12px]">
+                    Something is wrong!
+                </p>
             </ul>
         );
     }

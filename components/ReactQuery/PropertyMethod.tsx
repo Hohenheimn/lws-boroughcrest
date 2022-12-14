@@ -124,9 +124,9 @@ export const PostProject = (success: any, error: any) => {
     );
 };
 // Get Project
-export const GetProject = () => {
-    return useQuery("get-project", () => {
-        return api.get("/admin/property/project", {
+export const GetProject = (Keyword: string) => {
+    return useQuery(["get-project", Keyword], () => {
+        return api.get(`/admin/property/project?keywords=${Keyword}`, {
             headers: {
                 Authorization: "Bearer " + getCookie("user"),
             },
@@ -182,9 +182,9 @@ export const PostTower = (success: any, error: any) => {
     );
 };
 // Get Tower
-export const GetTower = () => {
-    return useQuery("get-tower", () => {
-        return api.get("/admin/property/tower", {
+export const GetTower = (Keyword: string) => {
+    return useQuery(["get-tower", Keyword], () => {
+        return api.get(`/admin/property/tower?keywords=${Keyword}`, {
             headers: {
                 Authorization: "Bearer " + getCookie("user"),
             },
@@ -241,21 +241,14 @@ export const PostFloor = (success: any, error: any) => {
     );
 };
 // Get Floor
-export const GetFloor = (success: any, error: any) => {
-    return useQuery(
-        "get-floor",
-        () => {
-            return api.get("/admin/property/floor", {
-                headers: {
-                    Authorization: "Bearer " + getCookie("user"),
-                },
-            });
-        },
-        {
-            onError: error,
-            onSuccess: success,
-        }
-    );
+export const GetFloor = (Keyword: string) => {
+    return useQuery(["get-floor", Keyword], () => {
+        return api.get(`/admin/property/floor?keywords=${Keyword}`, {
+            headers: {
+                Authorization: "Bearer " + getCookie("user"),
+            },
+        });
+    });
 };
 // Delete Floor
 export const DeleteFloor = (success: any, error: any) => {
@@ -291,12 +284,15 @@ export const UpdateFloor = (success: any, error: any, id: any) => {
 };
 
 // Get Developer
-export const GetDeveloper = () => {
-    return useQuery("get-developer", () => {
-        return api.get("/admin/property/unit/developer-options", {
-            headers: {
-                Authorization: "Bearer " + getCookie("user"),
-            },
-        });
+export const GetDeveloper = (Keyword: string) => {
+    return useQuery(["get-developer", Keyword], () => {
+        return api.get(
+            `/admin/property/unit/developer-options?keywords=${Keyword}`,
+            {
+                headers: {
+                    Authorization: "Bearer " + getCookie("user"),
+                },
+            }
+        );
     });
 };

@@ -1,37 +1,48 @@
-import { getCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
-import { useQuery } from "react-query";
 import ChargeForm from "../../../components/FINANCE/CustomerFacility/Charge/ChargeForm";
 import ChargeTable from "../../../components/FINANCE/CustomerFacility/Charge/ChargeTable";
-import api from "../../../util/api";
+import Modify from "../../../components/FINANCE/CustomerFacility/Charge/Modify";
+import { ChargePayload } from "../../../components/FINANCE/CustomerFacility/Charge/Type";
 
 export default function Charge() {
-    const router = useRouter();
     const [create, setCreate] = useState(false);
-    const { data, isLoading, isError } = useQuery(
-        ["get-corporate-list"],
-        () => {
-            return api.get(`/project/corporate`, {
-                headers: {
-                    Authorization: "Bearer " + getCookie("user"),
-                },
-            });
-        }
-    );
+    const router = useRouter();
+
+    const isDefaultValue: ChargePayload = {
+        code: "",
+        type: "",
+        name: "",
+        description: "",
+        base_rate: 0,
+        uom: "",
+        vat_percent: 0,
+        minimum: 0,
+        interest: "",
+        payment_heirarchy: 0,
+        soa_sort_order: 0,
+        advances_coa_value: "",
+        advances_coa_id: "",
+        discounts_coa_value: "",
+        discounts_coa_id: "",
+        receivable_coa_value: "",
+        receivable_coa_id: "",
+        revenue_coa_value: "",
+        revenue_coa_id: "",
+    };
+
     return (
         <>
-            <ChargeTable
-                page="charge"
-                data={data}
-                column="asd"
-                isError={isError}
-                isLoading={isLoading}
-                setCreate={setCreate}
-            />
-            {create && <ChargeForm setCreate={setCreate} />}
+            <ChargeTable page="charge" setCreate={setCreate} />
+            {create && (
+                <ChargeForm
+                    setCreate={setCreate}
+                    isDefaultValue={isDefaultValue}
+                    type="Create"
+                />
+            )}
             {router.query.modify !== undefined && (
-                <ChargeForm setCreate={setCreate} />
+                <Modify setCreate={setCreate} />
             )}
         </>
     );

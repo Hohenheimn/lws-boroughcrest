@@ -14,7 +14,7 @@ import {
 import { useQueryClient } from "react-query";
 import AppContext from "../../Context/AppContext";
 
-const Project = ({ set, update, isValID }: any) => {
+const Project = ({ set, update, isValID, isObject, setObject }: any) => {
     const modal = useRef<any>();
     // Click out side, remove empty array
     useEffect(() => {
@@ -23,6 +23,11 @@ const Project = ({ set, update, isValID }: any) => {
                 setArray((itemList: any) =>
                     itemList.filter((item: any) => item.name !== "")
                 );
+                setObject({
+                    ...isObject,
+                    value: isObject.firstVal,
+                    id: isObject.firstID,
+                });
                 set(false);
                 setWarning("");
             }
@@ -46,7 +51,7 @@ const Project = ({ set, update, isValID }: any) => {
             },
         ]);
     };
-    const { isLoading, data } = GetProject();
+    const { isLoading, data } = GetProject(isObject.value);
 
     useEffect(() => {
         if (data?.status === 200) {

@@ -124,7 +124,7 @@ export default function FinanceSearchFilter({
                 <div className={style.searchBar}>
                     <input
                         type="text"
-                        placeholder="Search anything here..."
+                        placeholder="Search"
                         onChange={(e) => setSearchTable(e.target.value)}
                     />
                     <BsSearch className={style.searchIcon} />

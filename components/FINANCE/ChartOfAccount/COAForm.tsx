@@ -31,10 +31,10 @@ export default function COAForm({
     const queryClient = useQueryClient();
     const router = useRouter();
     const [isSave, setSave] = useState(false);
-    const [isStatus, setStatus] = useState(true);
     const [isChartCode, setChartcode] = useState({
-        parent: "",
-        suffix: "",
+        parent:
+            DefaultFormData.parent === undefined ? "" : DefaultFormData.parent,
+        suffix: DefaultFormData.code_suffix,
     });
     const ErrorDefault = {
         account_name: "",
@@ -46,15 +46,22 @@ export default function COAForm({
     const [isError, setError] = useState({
         ...ErrorDefault,
     });
+    const [isStatus, setStatus] = useState(DefaultFormData.apply_to_sub_acc);
     const [isParent, setParent] = useState<any>({
         toggle: false,
-        value: "",
-        id: 0,
+        id: DefaultFormData.parent_id,
+        value: !DefaultFormData.parent ? "" : DefaultFormData.parent,
+        firstVal: !DefaultFormData.parent ? "" : DefaultFormData.parent,
+        firstID: DefaultFormData.parent_id,
     });
     const [isDefaultAccount, setDefaultAccount] = useState<any>({
         toggle: false,
-        value: "",
-        id: 0,
+        id: DefaultFormData.coa_default_account_id,
+        value: DefaultFormData.defaultAccount,
+        firstVal: !DefaultFormData.defaultAccount
+            ? ""
+            : DefaultFormData.defaultAccount,
+        firstID: DefaultFormData.coa_default_account_id,
     });
 
     const {
@@ -72,27 +79,6 @@ export default function COAForm({
         setCreate(false);
         router.push("");
     };
-
-    useEffect(() => {
-        setDefaultAccount({
-            ...isDefaultAccount,
-            id: DefaultFormData.coa_default_account_id,
-            value: DefaultFormData.defaultAccount,
-        });
-        setParent({
-            ...isParent,
-            id: DefaultFormData.parent_id,
-            value: !DefaultFormData.parent ? "" : DefaultFormData.parent,
-        });
-        setStatus(DefaultFormData.apply_to_sub_acc);
-        setChartcode({
-            parent:
-                DefaultFormData.parent === undefined
-                    ? ""
-                    : DefaultFormData.parent,
-            suffix: DefaultFormData.code_suffix,
-        });
-    }, []);
 
     const onSuccess = () => {
         if (router.query.modify === undefined) {
