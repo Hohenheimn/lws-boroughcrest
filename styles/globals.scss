@@ -196,6 +196,9 @@ input {
             td.xLarge {
                 @apply min-w-[500px] 480px:min-w-[350px];
             }
+            .td.wid20 {
+                width: 500px;
+            }
         }
     }
 }
