@@ -71,3 +71,17 @@ export const COADelete = (onSuccess: any, onError: any, id: any) => {
         }
     );
 };
+
+export const COAExport = () => {
+    return useQuery("export-AOC", () => {
+        return api.get(
+            "/finance/general-ledger/chart-of-accounts/export-list",
+            {
+                headers: {
+                    Authorization: "Bearer " + getCookie("user"),
+                    "Content-Type": "application/xlsx",
+                },
+            }
+        );
+    });
+};

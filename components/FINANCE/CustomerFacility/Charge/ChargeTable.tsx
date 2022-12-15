@@ -36,7 +36,7 @@ export default function ChargeTable({ page, setCreate }: Props) {
                 <div className={style.searchBar}>
                     <input
                         type="text"
-                        placeholder="Search anything here..."
+                        placeholder="Search"
                         value={isSearch}
                         onChange={(e) => setSearch(e.target.value)}
                     />

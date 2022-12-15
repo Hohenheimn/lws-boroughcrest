@@ -13,6 +13,15 @@
             @apply mr-2 text-gray-500 text-[18px];
         }
     }
+    .period {
+        @apply flex items-center 640px:w-full flex-wrap;
+        p {
+            @apply text-ThemeRed mr-3 font-NHU-bold 640px:text-[12px] 480px:w-full;
+        }
+        input {
+            @apply mr-2;
+        }
+    }
     .navigation {
         @apply flex items-center ml-5 640px:ml-0 640px:justify-end 640px:my-10 640px:w-full;
         .importExportPrint {

@@ -1,5 +1,6 @@
 import {
     eachDayOfInterval,
+    eachYearOfInterval,
     endOfMonth,
     format,
     startOfDay,
@@ -11,11 +12,14 @@ import {
     parse,
     add,
 } from "date-fns";
-import { eachYearOfInterval } from "date-fns/esm";
-import React, { useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import AppContext from "./Context/AppContext";
 
 type Props = {
-    Value: string;
+    value: {
+        value: string;
+        toggle: boolean;
+    };
     setValue: Function;
 };
 
@@ -23,7 +27,23 @@ const todayStyle = "bg-ThemeRed text-white font-bold";
 const sameMonth = "font-bold";
 const selectedDay = "bg-black text-white font-bold";
 
-export default function Calendar({ Value, setValue }: Props) {
+export default function Calendar({ value, setValue }: Props) {
+    const modal = useRef<any>();
+
+    useEffect(() => {
+        const clickOutSide = (e: any) => {
+            if (!modal.current.contains(e.target)) {
+                setValue({
+                    ...value,
+                    toggle: false,
+                });
+            }
+        };
+        document.addEventListener("mousedown", clickOutSide);
+        return () => {
+            document.removeEventListener("mousedown", clickOutSide);
+        };
+    });
     const Months = [
         "January",
         "February",
@@ -58,13 +78,16 @@ export default function Calendar({ Value, setValue }: Props) {
     });
 
     let Years = eachYearOfInterval({
-        start: new Date(1989, 6, 10),
-        end: today,
+        start: new Date(1970, 6, 10),
+        end: new Date(5000, 6, 10),
     });
 
     const SelectedDateHandler = (day: any) => {
-        setValue(format(day, "MM-d-yyyy"));
         setSelect(day);
+        setValue({
+            value: format(day, "dd/MM/yyyy"),
+            toggle: false,
+        });
     };
 
     const PrevNext = (button: string) => {
@@ -101,18 +124,24 @@ export default function Calendar({ Value, setValue }: Props) {
     };
 
     return (
-        <div className="flex items-center justify-center py-8 px-4">
+        <div className=" absolute top-full left-0" ref={modal}>
             {/* Ask kung pano naka infinite ung year tas naka focus agad ung year sa current yr */}
             <div
                 className="max-w-sm w-full shadow-lg"
                 style={{ backgroundColor: "#f5f5f5" }}
             >
-                <div className="md:p-8 p-5 bg-[#f5f5f5] rounded-t">
+                <div className="p-3 bg-[#f5f5f5] rounded-t">
                     <div className="mb-5 flex items-center justify-between">
                         <div className="flex items-center w-full justify-between">
                             <button
                                 aria-label="calendar backward"
                                 onClick={prevMonthHandler}
+                                disabled={
+                                    currenYear === "1970" &&
+                                    currentMonth === "January"
+                                        ? true
+                                        : false
+                                }
                                 className="focus:text-gray-400 focus:bg-ThemeRed hover:text-white hover:bg-ThemeRed ml-3 text-gray-800 dark:text-gray-100 border flex justify-center items-center bg-white rounded-full font-NHU-black w-10 h-10 "
                             >
                                 <svg
@@ -217,6 +246,12 @@ export default function Calendar({ Value, setValue }: Props) {
                             <button
                                 aria-label="calendar forward"
                                 onClick={nextMonthHandler}
+                                disabled={
+                                    currenYear === "5000" &&
+                                    currentMonth === "December"
+                                        ? true
+                                        : false
+                                }
                                 className="focus:text-gray-400 relative focus:bg-ThemeRed hover:text-white hover:bg-ThemeRed ml-3 text-gray-800 dark:text-gray-100 border flex justify-center items-center bg-white rounded-full font-NHU-black w-10 h-10 "
                             >
                                 <svg
@@ -268,18 +303,20 @@ export default function Calendar({ Value, setValue }: Props) {
                         {days.map((day, index) => (
                             <div
                                 key={index}
-                                className={` ${
-                                    isSameMonth(day, today) && "bg-white"
-                                } cursor-pointer py-2 flex justify-center items-center text-base font-medium text-center text-gray-800 dark:text-gray-100 w-[14.28%]`}
+                                className={` cursor-pointer aspect-square flex justify-center items-center text-base font-medium text-center text-gray-800 dark:text-gray-100 w-[14.28%]`}
                             >
                                 <button
                                     onClick={() => SelectedDateHandler(day)}
-                                    className={` hover:bg-gray-300 w-8 h-8 flex justify-center items-center m-0 aspect-square text-[14px] rounded-full ${
+                                    className={` hover:bg-gray-300 w-[90%] flex justify-center items-center m-0 aspect-square text-[14px] rounded-lg ${
                                         isToday(day) && todayStyle
                                     } ${isSameMonth(day, today) && sameMonth} ${
                                         isEqual(day, isSelected) &&
                                         !isToday(day) &&
                                         selectedDay
+                                    } ${
+                                        isSameMonth(day, today) &&
+                                        !isToday(day) &&
+                                        "bg-white"
                                     }`}
                                 >
                                     <time dateTime={format(day, "yyyy-MM-dd")}>

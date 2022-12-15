@@ -55,11 +55,6 @@ export default function FinanceSearchFilter({
         ImportError
     );
 
-    const { isLoading: PropLoading, mutate: PropMutate } = PropertyImport(
-        ImportSuccess,
-        ImportError
-    );
-
     //Exports
     const handleExport = (endPoint: string, name: string) => {
         axios({
@@ -81,13 +76,10 @@ export default function FinanceSearchFilter({
         });
     };
     const exportHandler = () => {
-        if (router.pathname.includes("admin/customer")) {
-            const endPoint = "/admin/customer/export";
-            handleExport(endPoint, "customer");
-        }
-        if (router.pathname.includes("admin/property")) {
-            const endPoint = "/admin/property/unit/export";
-            handleExport(endPoint, "property");
+        if (router.pathname.includes("/general-ledger/chart-of-account")) {
+            const endPoint =
+                "/finance/general-ledger/chart-of-accounts/export-list";
+            handleExport(endPoint, "chart-of-accounts-list");
         }
     };
 
@@ -101,9 +93,6 @@ export default function FinanceSearchFilter({
                 formData.append("file", selectedFile);
                 if (router.pathname.includes("admin/customer")) {
                     CusMutate(formData);
-                }
-                if (router.pathname.includes("admin/property")) {
-                    PropMutate(formData);
                 }
             } else {
                 setPrompt({
@@ -143,7 +132,7 @@ export default function FinanceSearchFilter({
                         </Tippy>
                         <Tippy theme="ThemeRed" content="Import">
                             <div className={style.icon}>
-                                {CusLoading || PropLoading ? (
+                                {CusLoading ? (
                                     <MoonLoader size={20} color="#8f384d" />
                                 ) : (
                                     <label htmlFor="import">

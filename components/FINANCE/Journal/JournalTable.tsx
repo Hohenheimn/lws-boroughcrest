@@ -30,7 +30,7 @@ export default function JournalTable({ type }: Props) {
         <>
             <section className={style.container}>
                 <div className={style.searchBar}>
-                    <input type="text" placeholder="Search anything here..." />
+                    <input type="text" placeholder="Search" />
                     <BsSearch className={style.searchIcon} />
                 </div>
 

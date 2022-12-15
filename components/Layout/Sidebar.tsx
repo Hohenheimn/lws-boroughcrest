@@ -56,7 +56,7 @@ export default function Sidebar({
                 initial="initial"
                 animate="animate"
                 exit="exit"
-                className={` transition-all duration-200 ease-linear fixed h-screen overflow-y-auto overflow-x-hidden left-0 top-0 bg-[#fcfcff] ${
+                className={`z-[99999] transition-all duration-200 ease-linear fixed h-screen overflow-y-auto overflow-x-hidden left-0 top-0 bg-[#fcfcff] ${
                     isWide ? "w-wide" : "w-no-wide"
                 } ${
                     collapseSide && !isWide && "collapse"
