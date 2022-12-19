@@ -142,7 +142,7 @@ export default function Calendar({ value, setValue }: Props) {
                                         ? true
                                         : false
                                 }
-                                className="focus:text-gray-400 focus:bg-ThemeRed hover:text-white hover:bg-ThemeRed ml-3 text-gray-800 dark:text-gray-100 border flex justify-center items-center bg-white rounded-full font-NHU-black w-10 h-10 "
+                                className="focus:text-gray-400 focus:bg-ThemeRed hover:text-white mr-3 hover:bg-ThemeRed text-gray-800 dark:text-gray-100 border flex justify-center items-center bg-white rounded-full font-NHU-black w-8 h-8 "
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -252,7 +252,7 @@ export default function Calendar({ value, setValue }: Props) {
                                         ? true
                                         : false
                                 }
-                                className="focus:text-gray-400 relative focus:bg-ThemeRed hover:text-white hover:bg-ThemeRed ml-3 text-gray-800 dark:text-gray-100 border flex justify-center items-center bg-white rounded-full font-NHU-black w-10 h-10 "
+                                className="focus:text-gray-400 relative focus:bg-ThemeRed hover:text-white hover:bg-ThemeRed ml-3 text-gray-800 dark:text-gray-100 border flex justify-center items-center bg-white rounded-full font-NHU-black w-8 h-8"
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"

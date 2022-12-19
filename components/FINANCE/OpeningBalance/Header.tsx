@@ -63,26 +63,35 @@ export default function Header() {
         <>
             <section className={style.container}>
                 <div className={style.period}>
-                    <p>DATE</p>
-                    <div className="calendar">
-                        <span className="cal">
-                            <Image
-                                src="/Images/calendar.png"
-                                width={15}
-                                height={15}
-                            />
-                        </span>
-                        <input
-                            type="text"
-                            value={isDate.value}
-                            onChange={() => {}}
-                            onClick={() => setDate({ ...isDate, toggle: true })}
-                            className="p-2 outline-none rounded-md shadow-md"
-                        />
-                        {isDate.toggle && (
-                            <Calendar value={isDate} setValue={setDate} />
-                        )}
-                    </div>
+                    {!router.asPath.includes("subledger") && (
+                        <>
+                            <p>DATE</p>
+                            <div className="calendar">
+                                <span className="cal">
+                                    <Image
+                                        src="/Images/calendar.png"
+                                        width={15}
+                                        height={15}
+                                    />
+                                </span>
+                                <input
+                                    type="text"
+                                    value={isDate.value}
+                                    onChange={() => {}}
+                                    onClick={() =>
+                                        setDate({ ...isDate, toggle: true })
+                                    }
+                                    className="p-2 outline-none rounded-md shadow-md"
+                                />
+                                {isDate.toggle && (
+                                    <Calendar
+                                        value={isDate}
+                                        setValue={setDate}
+                                    />
+                                )}
+                            </div>
+                        </>
+                    )}
                 </div>
 
                 <ul className={style.navigation}>
