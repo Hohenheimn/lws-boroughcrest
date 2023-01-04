@@ -38,7 +38,7 @@ input {
 .calendar {
     @apply relative inline-block;
     .cal {
-        @apply absolute translate-y-[45%] top-0 right-[10px] bg-white pointer-events-none;
+        @apply absolute translate-y-[45%] top-0 right-[15px] bg-white pointer-events-none;
     }
     // input[type="date"]::-webkit-inner-spin-button,
     // input[type="date"]::-webkit-calendar-picker-indicator {

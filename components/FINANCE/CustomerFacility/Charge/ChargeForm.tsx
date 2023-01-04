@@ -220,7 +220,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                                 value: e.target.value,
                                             })
                                         }
-                                        onFocus={() =>
+                                        onClick={() =>
                                             setDiscount({
                                                 ...isDiscount,
                                                 toggle: true,
@@ -252,7 +252,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                                 value: e.target.value,
                                             })
                                         }
-                                        onFocus={() =>
+                                        onClick={() =>
                                             setRevenue({
                                                 ...isRevenue,
                                                 toggle: true,
@@ -284,7 +284,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                                 value: e.target.value,
                                             })
                                         }
-                                        onFocus={() =>
+                                        onClick={() =>
                                             setAdvance({
                                                 ...isAdvance,
                                                 toggle: true,
@@ -530,7 +530,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                                 value: e.target.value,
                                             })
                                         }
-                                        onFocus={() =>
+                                        onClick={() =>
                                             setReceivable({
                                                 ...isReceivable,
                                                 toggle: true,

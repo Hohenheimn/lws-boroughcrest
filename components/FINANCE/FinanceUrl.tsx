@@ -8,8 +8,18 @@ export const GeneralLedger = [
     {
         name: "Opening Balance",
         activeUrl: "opening-balance",
-        url: "/finance/general-ledger/opening-balance",
+        url: "/finance/general-ledger/opening-balance/general-ledger",
         type: "",
+        submenu: [
+            {
+                name: "General Ledger Opening Balance",
+                url: "/finance/general-ledger/opening-balance/general-ledger",
+            },
+            {
+                name: "Subledger Opening Balance",
+                url: "/finance/general-ledger/opening-balance/subledger",
+            },
+        ],
     },
     {
         name: "Bank Reconciliation",
