@@ -9,12 +9,22 @@ import { getCookie } from "cookies-next";
 import { useQuery } from "react-query";
 import api from "../../../util/api";
 import { BarLoader } from "react-spinners";
+import Calendar from "../../Calendar";
 
 type Props = {
     type: string;
 };
 
 export default function JournalTable({ type }: Props) {
+    const [isDate, setDate] = useState({
+        value: "",
+        toggle: false,
+    });
+    const [isDate2, setDate2] = useState({
+        value: "",
+        toggle: false,
+    });
+
     const { data, isLoading, isError } = useQuery(
         ["get-corporate-list"],
         () => {
@@ -121,9 +131,16 @@ export default function JournalTable({ type }: Props) {
                             />
                         </span>
                         <input
-                            type="date"
+                            type="text"
+                            value={isDate.value}
+                            onChange={() => {}}
+                            placeholder="dd/mm/yyyy"
+                            onClick={() => setDate({ ...isDate, toggle: true })}
                             className="p-2 outline-none rounded-md shadow-md"
                         />
+                        {isDate.toggle && (
+                            <Calendar value={isDate} setValue={setDate} />
+                        )}
                     </div>
                     <div className="calendar">
                         <span className="cal">
@@ -135,9 +152,18 @@ export default function JournalTable({ type }: Props) {
                             />
                         </span>
                         <input
-                            type="date"
+                            type="text"
+                            value={isDate2.value}
+                            onChange={() => {}}
+                            placeholder="dd/mm/yyyy"
+                            onClick={() =>
+                                setDate2({ ...isDate2, toggle: true })
+                            }
                             className="p-2 outline-none rounded-md shadow-md"
                         />
+                        {isDate2.toggle && (
+                            <Calendar value={isDate2} setValue={setDate2} />
+                        )}
                     </div>
                 </div>
             )}

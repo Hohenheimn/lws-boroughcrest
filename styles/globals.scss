@@ -110,7 +110,7 @@ input {
 .table_list {
     @apply min-w-full;
     thead {
-        @apply shadow-md sticky top-0 bg-[#fbfbfb] z-[999];
+        @apply shadow-md sticky top-0 bg-[#fbfbfb] z-[50];
         tr {
             th {
                 @apply text-start px-4 py-5 480px:py-3 480px:px-3 text-[#545454] 480px:text-[12px];
@@ -445,7 +445,7 @@ input[type="number"] {
     .status {
         @apply relative;
         div {
-            @apply w-[30px] h-[30px] relative flex justify-center items-center rounded-[50%] z-[99];
+            @apply w-[30px] h-[30px] relative flex justify-center items-center rounded-[50%] z-10;
             span {
                 @apply relative z-10;
             }

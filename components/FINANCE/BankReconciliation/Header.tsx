@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import Image from "next/image";
 import { BsSearch } from "react-icons/bs";
 import Tippy from "@tippy.js/react";
@@ -10,10 +10,19 @@ import axios from "axios";
 import { getCookie } from "cookies-next";
 import AppContext from "../../../components/Context/AppContext";
 import { CustomerImport } from "../../../components/ReactQuery/CustomerMethod";
+import Calendar from "../../Calendar";
 
 export default function Header() {
     const { setPrompt } = useContext(AppContext);
     const router = useRouter();
+    const [isDate, setDate] = useState({
+        value: "",
+        toggle: false,
+    });
+    const [isDate2, setDate2] = useState({
+        value: "",
+        toggle: false,
+    });
 
     const ImportSuccess = () => {
         setPrompt({
@@ -94,9 +103,16 @@ export default function Header() {
                             />
                         </span>
                         <input
-                            type="date"
+                            type="text"
+                            value={isDate.value}
+                            onChange={() => {}}
+                            placeholder="dd/mm/yyyy"
+                            onClick={() => setDate({ ...isDate, toggle: true })}
                             className="p-2 outline-none rounded-md shadow-md"
                         />
+                        {isDate.toggle && (
+                            <Calendar value={isDate} setValue={setDate} />
+                        )}
                     </div>
                     <div className="calendar">
                         <span className="cal">
@@ -107,9 +123,18 @@ export default function Header() {
                             />
                         </span>
                         <input
-                            type="date"
+                            type="text"
+                            value={isDate2.value}
+                            onChange={() => {}}
+                            placeholder="dd/mm/yyyy"
+                            onClick={() =>
+                                setDate2({ ...isDate2, toggle: true })
+                            }
                             className="p-2 outline-none rounded-md shadow-md"
                         />
+                        {isDate2.toggle && (
+                            <Calendar value={isDate2} setValue={setDate2} />
+                        )}
                     </div>
                 </div>
 

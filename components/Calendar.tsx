@@ -124,7 +124,7 @@ export default function Calendar({ value, setValue }: Props) {
     };
 
     return (
-        <div className=" absolute top-full left-0" ref={modal}>
+        <div className=" absolute top-full left-0 z-[60]" ref={modal}>
             {/* Ask kung pano naka infinite ung year tas naka focus agad ung year sa current yr */}
             <div
                 className="max-w-sm w-full shadow-lg"

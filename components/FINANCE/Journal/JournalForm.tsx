@@ -4,6 +4,7 @@ import { BsPlusLg } from "react-icons/bs";
 import { HiMinus } from "react-icons/hi";
 import { RiArrowDownSFill } from "react-icons/ri";
 import style from "../../../styles/finance/Crud-table.module.scss";
+import Calendar from "../../Calendar";
 
 type journalArray = {
     id: number;
@@ -26,10 +27,15 @@ type Props = {
 
 export default function JournalForm({ DefaultValue, type }: Props) {
     const [isSave, setSave] = useState(false);
+    const [isDate, setDate] = useState({
+        value: "",
+        toggle: false,
+    });
+
     const [isJournal, setJournal] = useState<journalArray>(DefaultValue);
     return (
         <>
-            <div className=" overflow-x-auto">
+            <div>
                 <ul className="flex flex-wrap justify-between pb-8 mb-8 border-b border-gray-300">
                     <li className="w-[20%] 1366px:w-[30%] 640px:w-full 640px:mb-5 flex items-center">
                         <p className=" text-ThemeRed mr-3 font-NHU-bold">
@@ -44,9 +50,18 @@ export default function JournalForm({ DefaultValue, type }: Props) {
                                 />
                             </span>
                             <input
-                                type="date"
+                                type="text"
+                                value={isDate.value}
+                                onChange={() => {}}
+                                placeholder="dd/mm/yyyy"
+                                onClick={() =>
+                                    setDate({ ...isDate, toggle: true })
+                                }
                                 className="p-2 outline-none rounded-md shadow-md"
                             />
+                            {isDate.toggle && (
+                                <Calendar value={isDate} setValue={setDate} />
+                            )}
                         </div>
                     </li>
                     <li className="w-[75%] max-w-[500px] 1366px:w-[65%] 640px:w-full flex items-center">
