@@ -11,9 +11,14 @@ import { getCookie } from "cookies-next";
 import AppContext from "../../../components/Context/AppContext";
 import { CustomerImport } from "../../../components/ReactQuery/CustomerMethod";
 import Calendar from "../../Calendar";
+import PeriodCalendar from "../../PeriodCalendar";
 
 export default function Header() {
     const { setPrompt } = useContext(AppContext);
+    const [isPeriod, setPeriod] = useState({
+        from: "",
+        to: "",
+    });
     const router = useRouter();
     const [isDate, setDate] = useState({
         value: "",
@@ -93,49 +98,7 @@ export default function Header() {
         <>
             <section className={style.container}>
                 <div className={style.period}>
-                    <p>PERIOD</p>
-                    <div className="calendar">
-                        <span className="cal">
-                            <Image
-                                src="/Images/calendar.png"
-                                width={15}
-                                height={15}
-                            />
-                        </span>
-                        <input
-                            type="text"
-                            value={isDate.value}
-                            onChange={() => {}}
-                            placeholder="dd/mm/yyyy"
-                            onClick={() => setDate({ ...isDate, toggle: true })}
-                            className="p-2 outline-none rounded-md shadow-md"
-                        />
-                        {isDate.toggle && (
-                            <Calendar value={isDate} setValue={setDate} />
-                        )}
-                    </div>
-                    <div className="calendar">
-                        <span className="cal">
-                            <Image
-                                src="/Images/calendar.png"
-                                width={15}
-                                height={15}
-                            />
-                        </span>
-                        <input
-                            type="text"
-                            value={isDate2.value}
-                            onChange={() => {}}
-                            placeholder="dd/mm/yyyy"
-                            onClick={() =>
-                                setDate2({ ...isDate2, toggle: true })
-                            }
-                            className="p-2 outline-none rounded-md shadow-md"
-                        />
-                        {isDate2.toggle && (
-                            <Calendar value={isDate2} setValue={setDate2} />
-                        )}
-                    </div>
+                    <PeriodCalendar value={isPeriod} setValue={setPeriod} />
                 </div>
 
                 <ul className={style.navigation}>

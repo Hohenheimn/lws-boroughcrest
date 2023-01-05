@@ -15,12 +15,14 @@ import { PropertyDefaultValue } from "../../../types/PropertyList";
 import Developer from "./Developer";
 import { ScaleLoader } from "react-spinners";
 import { useQueryClient } from "react-query";
+import Image from "next/image";
 import {
     PostDraftProperty,
     PostProperty,
     UpdateDraftProperty,
     UpdateProperty,
 } from "../../ReactQuery/PropertyMethod";
+import Calendar from "../../Calendar";
 
 type Props = {
     DefaultFormData: PropertyDefaultValue;
@@ -31,6 +33,23 @@ export default function PropertyForm({
     DefaultFormData,
     isSearchTable,
 }: Props) {
+    const [acceptanceDate, setAcceptanceDate] = useState({
+        value: DefaultFormData.acceptance_date,
+        toggle: false,
+    });
+    const [turnoverDate, setTurnoverDate] = useState({
+        value: DefaultFormData.turnover_date,
+        toggle: false,
+    });
+    useEffect(() => {
+        setValue("acceptance_date", acceptanceDate.value, {
+            shouldValidate: true,
+        });
+        setValue("turnover_date", turnoverDate.value, {
+            shouldValidate: true,
+        });
+    }, [acceptanceDate.value, turnoverDate.value]);
+
     const router = useRouter();
     const [isButton, setButton] = useState("");
     const ErrorDefault = {
@@ -591,14 +610,66 @@ export default function PropertyForm({
                         </li>
                         <li>
                             <label>ACCEPTANCE DATE</label>
-                            <input
-                                type="date"
-                                {...register("acceptance_date")}
-                            />
+
+                            <div className="calendar">
+                                <span className="cal">
+                                    <Image
+                                        src="/Images/calendar.png"
+                                        width={15}
+                                        height={15}
+                                    />
+                                </span>
+                                <input
+                                    type="text"
+                                    {...register("acceptance_date")}
+                                    autoComplete="off"
+                                    placeholder="dd/mm/yyyy"
+                                    onClick={() =>
+                                        setAcceptanceDate({
+                                            ...acceptanceDate,
+                                            toggle: true,
+                                        })
+                                    }
+                                    className="p-2 outline-none rounded-md shadow-md"
+                                />
+                                {acceptanceDate.toggle && (
+                                    <Calendar
+                                        value={acceptanceDate}
+                                        setValue={setAcceptanceDate}
+                                    />
+                                )}
+                            </div>
                         </li>
                         <li>
                             <label>TURNOVER DATE</label>
-                            <input type="date" {...register("turnover_date")} />
+                            <div className="calendar">
+                                <span className="cal">
+                                    <Image
+                                        src="/Images/calendar.png"
+                                        width={15}
+                                        height={15}
+                                    />
+                                </span>
+                                <input
+                                    type="text"
+                                    {...register("turnover_date")}
+                                    placeholder="dd/mm/yyyy"
+                                    autoComplete="off"
+                                    onClick={() =>
+                                        setTurnoverDate({
+                                            ...turnoverDate,
+                                            toggle: true,
+                                        })
+                                    }
+                                    className="p-2 outline-none rounded-md shadow-md"
+                                />
+                                {turnoverDate.toggle && (
+                                    <Calendar
+                                        value={turnoverDate}
+                                        setValue={setTurnoverDate}
+                                    />
+                                )}
+                            </div>
                         </li>
                     </ul>
                     <div className={style.SaveButton}>

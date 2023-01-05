@@ -37,7 +37,7 @@ export default function JournalForm({ DefaultValue, type }: Props) {
         <>
             <div>
                 <ul className="flex flex-wrap justify-between pb-8 mb-8 border-b border-gray-300">
-                    <li className="w-[20%] 1366px:w-[30%] 640px:w-full 640px:mb-5 flex items-center">
+                    <li className="w-[20%] 1366px:w-[30%] 820px:w-full 820px:mb-5 flex items-center">
                         <p className=" text-ThemeRed mr-3 font-NHU-bold">
                             DATE
                         </p>
@@ -64,7 +64,7 @@ export default function JournalForm({ DefaultValue, type }: Props) {
                             )}
                         </div>
                     </li>
-                    <li className="w-[75%] max-w-[500px] 1366px:w-[65%] 640px:w-full flex items-center">
+                    <li className="w-[75%] max-w-[850px] 1366px:w-[65%] 820px:w-full flex items-center">
                         <p className=" text-ThemeRed mr-3 font-NHU-bold">
                             PARTICULARS
                         </p>

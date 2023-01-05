@@ -32,6 +32,7 @@ module.exports = {
                 Green: "#1C9F11",
                 LightRed: "#8F384D40",
                 LiteBlack: "#2B2B2B",
+                GrayLight: "#f5f5f5",
             },
             backgroundImage: {
                 YellowOrange: "linear-gradient(#ff626d, #ffc271)",
@@ -60,6 +61,7 @@ module.exports = {
                 "820px": { max: "820px" },
                 "640px": { max: "640px" },
                 "480px": { max: "480px" },
+                "390px": { max: "390px" },
                 "375px": { max: "375px" },
                 "320px": { max: "320px" },
             },

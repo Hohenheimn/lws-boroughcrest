@@ -12,6 +12,7 @@ import { PutCustomer, SaveDraftUpdate } from "../../ReactQuery/CustomerMethod";
 import { useRouter } from "next/router";
 import { ScaleLoader } from "react-spinners";
 import { useQueryClient } from "react-query";
+import Calendar from "../../Calendar";
 
 type ModifyCustomer = {
     setToggleModify: Function;
@@ -55,6 +56,19 @@ type Props = {
 const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
     const { isModifyCustomer, ImgUrl, setModifyCustomer, CusError } =
         useContext(AppContext);
+
+    // Birth Date Field with custom Calendar
+    const [isDate, setDate] = useState({
+        value: isModifyCustomer.individual_birth_date,
+        toggle: false,
+    });
+    useEffect(() => {
+        setModifyCustomer({
+            ...isModifyCustomer,
+            individual_birth_date: isDate.value,
+        });
+    }, [isDate.value]);
+    // end
     const [isType, setType] = useState(isModifyCustomer.type);
     const [isStatus, setStatus] = useState(isModifyCustomer.status);
 
@@ -97,6 +111,7 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
             branch_code: isModifyCustomer.branch_code,
         },
     });
+
     const NextFormValidation = (data: any) => {
         setModifyCustomer({
             ...isModifyCustomer,
@@ -448,11 +463,38 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
                             <li>
                                 <label>BIRTH DATE</label>
 
-                                <input
+                                {/* <input
                                     type="date"
                                     className="bg-white"
                                     {...register("individual_birth_date")}
-                                />
+                                /> */}
+                                <div className="calendar">
+                                    <span className="cal">
+                                        <Image
+                                            src="/Images/calendar.png"
+                                            width={15}
+                                            height={15}
+                                        />
+                                    </span>
+                                    <input
+                                        {...register("individual_birth_date")}
+                                        autoComplete="off"
+                                        type="text"
+                                        value={isDate.value}
+                                        onChange={() => {}}
+                                        placeholder="dd/mm/yyyy"
+                                        onClick={() =>
+                                            setDate({ ...isDate, toggle: true })
+                                        }
+                                        className="p-2 outline-none rounded-md shadow-md"
+                                    />
+                                    {isDate.toggle && (
+                                        <Calendar
+                                            value={isDate}
+                                            setValue={setDate}
+                                        />
+                                    )}
+                                </div>
                                 {errors.individual_birth_date && (
                                     <p className="text-[10px]">
                                         {errors.individual_birth_date.message}
