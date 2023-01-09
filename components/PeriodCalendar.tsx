@@ -28,7 +28,7 @@ export default function PeriodCalendar({ value, setValue }: Props) {
     return (
         <div className="relative">
             <aside className="flex items-center 480px:flex-wrap">
-                <p>PERIOD</p>
+                <p className=" text-ThemeRed font-NHU-medium mr-2">PERIOD</p>
                 <div className="flex bg-white px-2 py-1 rounded-md shadow-md border">
                     <input
                         type="text"

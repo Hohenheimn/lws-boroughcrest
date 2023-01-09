@@ -3,102 +3,95 @@ import Image from "next/image";
 import { BsPlusLg } from "react-icons/bs";
 import { HiMinus } from "react-icons/hi";
 import { RiArrowDownSFill } from "react-icons/ri";
-import style from "../../../styles/finance/Crud-table.module.scss";
-import Calendar from "../../Calendar";
+import style from "../../../../styles/finance/Crud-table.module.scss";
+import Calendar from "../../../Calendar";
 
-type journalArray = {
+type billingArray = {
     id: number;
-    code: number;
-    accountName: string;
-    debit: string;
-    credit: string;
+    charge: any;
+    description: string;
+    unit_price: number;
+    quantity: number;
+    uom: any;
+    vat: number;
+    amount: number;
 }[];
-type journalObject = {
+type billingObject = {
     id: number;
-    code: number;
-    accountName: string;
-    debit: string;
-    credit: string;
+    charge: any;
+    description: string;
+    unit_price: number;
+    quantity: number;
+    uom: any;
+    vat: number;
+    amount: number;
 };
 type Props = {
-    DefaultValue: journalArray;
+    DefaultValue: billingArray;
     type: string;
 };
 
 export default function JournalForm({ DefaultValue, type }: Props) {
     const [isSave, setSave] = useState(false);
-    const [isDate, setDate] = useState({
-        value: "",
-        toggle: false,
-    });
 
-    const [isJournal, setJournal] = useState<journalArray>(DefaultValue);
+    const [isBilling, setBilling] = useState<billingArray>(DefaultValue);
     return (
         <>
             <div>
                 <ul className="flex flex-wrap justify-between pb-8 mb-8 border-b border-gray-300">
-                    <li className="w-[20%] 1366px:w-[30%] 820px:w-full 820px:mb-5 flex items-center">
+                    <li className="w-[32%] 820px:w-2/4 820px:mb-2 480px:w-full">
                         <p className=" text-ThemeRed mr-3 font-NHU-bold 820px:text-[13px]">
-                            DATE
-                        </p>
-                        <div className="calendar">
-                            <span className="cal">
-                                <Image
-                                    src="/Images/calendar.png"
-                                    width={15}
-                                    height={15}
-                                />
-                            </span>
-                            <input
-                                type="text"
-                                value={isDate.value}
-                                onChange={() => {}}
-                                placeholder="dd/mm/yyyy"
-                                onClick={() =>
-                                    setDate({ ...isDate, toggle: true })
-                                }
-                                className="p-2 outline-none rounded-md shadow-md"
-                            />
-                            {isDate.toggle && (
-                                <Calendar value={isDate} setValue={setDate} />
-                            )}
-                        </div>
-                    </li>
-                    <li className="w-[75%] max-w-[850px] 1366px:w-[65%] 820px:w-full flex items-center">
-                        <p className=" text-ThemeRed mr-3 font-NHU-bold">
-                            PARTICULARS
+                            CUSTOMER
                         </p>
                         <input
                             type="text"
-                            className="p-2 outline-none rounded-md shadow-md w-full"
+                            className="p-2 820px:p-1 outline-none rounded-md shadow-md"
                         />
+                    </li>
+                    <li className="w-[32%] 820px:w-2/4 820px:mb-2">
+                        <p className=" text-ThemeRed mr-3 font-NHU-bold 820px:text-[13px]">
+                            CLASS
+                        </p>
+                        <h1>Lorem ipsum</h1>
+                    </li>
+                    <li className="w-[32%] 820px:w-2/4 820px:mb-2">
+                        <p className=" text-ThemeRed mr-3 font-NHU-bold 820px:text-[13px]">
+                            PROPERTY
+                        </p>
+                        <h1>Lorem ipsum</h1>
                     </li>
                 </ul>
                 <div className="w-full overflow-auto">
                     <table className={style.crudTable}>
                         <thead>
                             <tr>
-                                <th>CODE</th>
-                                <th>ACCOUNT NAME</th>
-                                <th>DEBIT</th>
-                                <th>CREDIT</th>
+                                <th>CHARGE</th>
+                                <th>DESCRIPTION</th>
+                                <th>UNIT PRICE</th>
+                                <th>QUANTITY</th>
+                                <th>UOM</th>
+                                <th>VAT</th>
+                                <th>AMOUNT</th>
                                 <th></th>
                             </tr>
                         </thead>
                         <tbody>
-                            {isJournal?.map((item: any, index: number) => (
+                            {isBilling?.map((item: any, index: number) => (
                                 <List
                                     key={index}
                                     index={index}
-                                    setJournal={setJournal}
+                                    setState={setBilling}
                                     itemList={item}
-                                    isJournal={isJournal}
+                                    isState={isBilling}
                                 />
                             ))}
                             <tr className={style.total}>
                                 <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
                                 <td className={style.label}>
-                                    <h1>TOTAL</h1>
+                                    <h1 className=" text-ThemeRed">TOTAL</h1>
                                 </td>
                                 <td>
                                     <div className={style.peso}>
@@ -129,6 +122,7 @@ export default function JournalForm({ DefaultValue, type }: Props) {
                     </table>
                 </div>
             </div>
+
             <div className="DropDownSave">
                 <button className="ddback">CANCEL</button>
 
@@ -162,108 +156,135 @@ export default function JournalForm({ DefaultValue, type }: Props) {
 
 type List = {
     index: number;
-    itemList: journalObject;
-    setJournal: Function;
-    isJournal: journalArray;
+    itemList: billingObject;
+    setState: Function;
+    isState: billingArray;
 };
 
-const List = ({ itemList, setJournal, isJournal, index }: List) => {
+const List = ({ itemList, setState, isState, index }: List) => {
     const AddJournal = () => {
         const random = Math.random();
-        setJournal((temp: any) => [
+        setState((temp: any) => [
             ...temp,
             {
                 id: random,
-                code: 0,
-                accountName: "",
-                debit: "",
-                credit: "",
+                charge: "",
+                description: "",
+                unit_price: 0,
+                quantity: 0,
+                uom: "",
+                vat: 0,
+                amount: 0,
             },
         ]);
     };
     const RemoveJournal = () => {
-        setJournal((item: any[]) =>
+        setState((item: any[]) =>
             item.filter((x: any) => x.id !== itemList.id)
         );
     };
     const updateValue = (key: string, e: any) => {
-        const newItems = isJournal.map((item: any) => {
+        const newItems = isState.map((item: any) => {
             if (itemList.id == item.id) {
-                if (key === "debit") {
+                if (key === "charge") {
                     return {
                         ...item,
-                        debit: e.target.value,
+                        charge: e.target.value,
                     };
-                } else if (key === "credit") {
+                } else if (key === "description") {
                     return {
                         ...item,
-                        credit: e.target.value,
+                        description: e.target.value,
                     };
-                } else if (key === "accountName") {
+                } else if (key === "unit_price") {
                     return {
                         ...item,
-                        accountName: e.target.value,
+                        unit_price: e.target.value,
                     };
-                } else if (key === "code") {
+                } else if (key === "quantity") {
                     return {
                         ...item,
-                        code: e.target.value,
+                        quantity: e.target.value,
+                    };
+                } else if (key === "uom") {
+                    return {
+                        ...item,
+                        uom: e.target.value,
+                    };
+                } else if (key === "vat") {
+                    return {
+                        ...item,
+                        vat: e.target.value,
+                    };
+                } else if (key === "amount") {
+                    return {
+                        ...item,
+                        amount: e.target.value,
                     };
                 }
             }
             return item;
         });
-        setJournal(newItems);
+        setState(newItems);
     };
     return (
         <tr>
-            <td className="w-[20%]">
+            <td>
                 <input
                     type="number"
-                    value={itemList.code}
-                    onChange={(e) => updateValue("code", e)}
+                    value={itemList.charge}
+                    onChange={(e) => updateValue("charge", e)}
                 />
             </td>
-            <td className="w-[30%]">
+            <td>
                 <input
                     type="text"
-                    value={itemList.accountName}
-                    onChange={(e) => updateValue("accountName", e)}
+                    value={itemList.description}
+                    onChange={(e) => updateValue("description", e)}
                 />
             </td>
-            <td className="w-[20%]">
-                <div className={style.peso}>
-                    <aside>
-                        <Image src="/Images/peso.png" height={13} width={10} />
-                    </aside>
-                    <input
-                        type="number"
-                        value={itemList.debit}
-                        className={style.peso}
-                        onChange={(e) => updateValue("debit", e)}
-                    />
-                </div>
+            <td>
+                <input
+                    type="number"
+                    value={itemList.unit_price}
+                    onChange={(e) => updateValue("unit_price", e)}
+                />
             </td>
-            <td className="w-[20%]">
-                <div className={style.peso}>
-                    <aside>
-                        <Image src="/Images/peso.png" height={13} width={10} />
-                    </aside>
-                    <input
-                        type="number"
-                        value={itemList.credit}
-                        className={style.peso}
-                        onChange={(e) => updateValue("credit", e)}
-                    />
-                </div>
+            <td>
+                <input
+                    type="number"
+                    value={itemList.quantity}
+                    onChange={(e) => updateValue("quantity", e)}
+                />
+            </td>
+            <td>
+                <input
+                    type="number"
+                    value={itemList.uom}
+                    onChange={(e) => updateValue("uom", e)}
+                />
+            </td>
+            <td>
+                <input
+                    type="number"
+                    value={itemList.vat}
+                    onChange={(e) => updateValue("vat", e)}
+                />
+            </td>
+            <td>
+                <input
+                    type="number"
+                    value={itemList.amount}
+                    onChange={(e) => updateValue("amount", e)}
+                />
             </td>
             <td className={`${style.action}`}>
-                {isJournal.length > 1 && (
+                {isState.length > 1 && (
                     <div onClick={RemoveJournal}>
                         <HiMinus />
                     </div>
                 )}
-                {isJournal.length - 1 === index && (
+                {isState.length - 1 === index && (
                     <div className="ml-5 1024px:ml-2" onClick={AddJournal}>
                         <BsPlusLg />
                     </div>
