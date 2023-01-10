@@ -48,7 +48,7 @@ export default function MenuLink({
                         theme="ThemeRed"
                         content={<span className="capitalize">{urlName}</span>}
                     >
-                        <aside className="mx-5 h-5 w-5 hover:scale-[1.3] transition duration-75 my-2 1550px:my-2 relative">
+                        <aside className="mx-5 h-5 w-5 1550px:h-4 1550px:w-4 hover:scale-[1.3] transition duration-75 my-2 1550px:my-2 relative">
                             <Image
                                 src={`/Images/${
                                     ValidateUrl === ActiveUrl ? "Active" : ""
@@ -64,7 +64,7 @@ export default function MenuLink({
                                 ValidateUrl === ActiveUrl
                                     ? "text-white"
                                     : "text-ThemeRed"
-                            } font-medium capitalize`}
+                            } font-medium capitalize text-[16px] 1550px:text-[14px]`}
                         >
                             {urlName}
                         </p>

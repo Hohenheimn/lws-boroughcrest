@@ -16,6 +16,10 @@ module.exports = {
                 Green: "#1C9F11",
                 ThemeRed50: "#8F384D8F",
                 LiteBlack: "#2B2B2B",
+                Gray: "#ECECEC",
+                Gray_5: "#d9d9d9",
+                Gray1: "#9F9F9F",
+                Gray2: "#626262",
             },
             width: {
                 "300px": "300px",

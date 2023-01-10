@@ -12,9 +12,16 @@ import { BarLoader } from "react-spinners";
 import PeriodCalendar from "../../../PeriodCalendar";
 import { FaRegEye } from "react-icons/fa";
 import { HiPencil } from "react-icons/hi";
+import { AdvanceFilter, DisplayAdvFilter } from "../../../AdvanceFilter";
 
 export default function BillingList() {
     const [isType, setType] = useState("Unposted");
+    const [isAdvFilter, setAdvFilter] = useState([
+        {
+            name: "Jomari Tiu",
+            subName: "Developer",
+        },
+    ]);
     const [isPeriod, setPeriod] = useState({
         from: "",
         to: "",
@@ -53,7 +60,10 @@ export default function BillingList() {
                         <input type="text" placeholder="Search" />
                         <BsSearch className={style.searchIcon} />
                     </div>
-                    <div className={style.advFilter}>ADVANCE FILTER</div>
+                    <AdvanceFilter
+                        setAdvFilter={setAdvFilter}
+                        isAdvFilter={isAdvFilter}
+                    />
                 </div>
 
                 <ul className={style.navigation}>
@@ -119,6 +129,10 @@ export default function BillingList() {
                     )}
                 </ul>
             </section>
+            {isAdvFilter.length > 0 && (
+                <DisplayAdvFilter isAdvFilter={isAdvFilter} />
+            )}
+
             {isType === "Posted" && (
                 <div className="w-full mb-5">
                     <PeriodCalendar value={isPeriod} setValue={setPeriod} />

@@ -236,7 +236,9 @@ const List = ({ itemDetail, type }: ListProps) => {
                 </td>
             )}
             <td>
-                <Link href={`/finance/general-ledger/journal/${itemDetail.id}`}>
+                <Link
+                    href={`/finance/general-ledger/journal/journal-list/${itemDetail.id}`}
+                >
                     <a className="item">
                         <div>
                             <h2>Lorem, ipsum.</h2>
@@ -245,7 +247,9 @@ const List = ({ itemDetail, type }: ListProps) => {
                 </Link>
             </td>
             <td>
-                <Link href={`/finance/general-ledger/journal/${itemDetail.id}`}>
+                <Link
+                    href={`/finance/general-ledger/journal/journal-list/${itemDetail.id}`}
+                >
                     <a className="item">
                         <div>
                             <h2>Lorem, ipsum.</h2>
@@ -254,7 +258,9 @@ const List = ({ itemDetail, type }: ListProps) => {
                 </Link>
             </td>
             <td>
-                <Link href={`/finance/general-ledger/journal/${itemDetail.id}`}>
+                <Link
+                    href={`/finance/general-ledger/journal/journal-list/${itemDetail.id}`}
+                >
                     <a className="item">
                         {type !== "Posted" ? (
                             <div className="finance_status">

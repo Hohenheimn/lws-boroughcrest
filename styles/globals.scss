@@ -107,6 +107,9 @@ input {
 .table_container {
     @apply w-full overflow-x-auto mb-10 480px:mb-5 overflow-y-auto h-[60vh] min-h-[600px] relative;
 }
+.table_container.hAuto {
+    @apply h-auto min-h-0 max-h-[300px];
+}
 .table_list {
     @apply min-w-full;
     thead {
@@ -120,6 +123,13 @@ input {
             }
             .center {
                 @apply text-center;
+            }
+        }
+    }
+    thead.textRed {
+        tr {
+            th {
+                @apply text-ThemeRed;
             }
         }
     }
@@ -181,6 +191,11 @@ input {
                     }
                 }
             }
+            td.action {
+                .item {
+                    @apply flex text-ThemeRed;
+                }
+            }
             td.icon {
                 @apply w-[50px];
             }
@@ -200,6 +215,11 @@ input {
                 width: 500px;
             }
         }
+    }
+}
+.table_list.headNoBg {
+    thead {
+        @apply shadow-none;
     }
 }
 .table_list.corp,

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import JournalTable from "../../../../components/FINANCE/Journal/JournalTable";
+import JournalTable from "../../../../../components/FINANCE/Journal/JournalTable";
 
-export default function JournalList() {
+export default function Index() {
     const [isJounalType, setJournalType] = useState("Unposted");
 
     return (

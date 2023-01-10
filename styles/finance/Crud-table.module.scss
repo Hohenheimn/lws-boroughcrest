@@ -39,9 +39,22 @@
         h2 {
             @apply text-[#757575];
         }
+        .SelectModal {
+            @apply bg-ThemeRed text-white text-center px-3 py-1 cursor-pointer rounded-md;
+        }
+    }
+    td.checkbox {
+        @apply w-5;
+        input[type="checkbox"] {
+            border: 1px solid rgb(216, 216, 216) !important;
+            @apply relative h-5 w-5 after:text-white after:flex after:justify-center after:items-center mr-1 checked:after:bg-ThemeRed checked:after:content-['✓'] appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
+            &:checked {
+                border: none !important;
+            }
+        }
     }
     td.action {
-        @apply pr-0 pb-0 flex w-[100%] h-10 items-center;
+        @apply pr-0 pb-0 flex w-[100%] h-10 items-center max-w-[100px];
         div {
             @apply text-ThemeRed font-NHU-black cursor-pointer h-5 w-5 flex justify-center items-center;
         }

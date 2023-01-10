@@ -6,14 +6,14 @@ import { RiArrowDownSFill } from "react-icons/ri";
 import style from "../../../styles/finance/Crud-table.module.scss";
 import Calendar from "../../Calendar";
 
-type journalArray = {
+type defaultArray = {
     id: number;
     code: number;
     accountName: string;
     debit: string;
     credit: string;
 }[];
-type journalObject = {
+type defaultObject = {
     id: number;
     code: number;
     accountName: string;
@@ -21,18 +21,18 @@ type journalObject = {
     credit: string;
 };
 type Props = {
-    DefaultValue: journalArray;
+    DefaultValue: defaultArray;
     type: string;
 };
 
-export default function JournalForm({ DefaultValue, type }: Props) {
+export default function BatchForm({ DefaultValue, type }: Props) {
     const [isSave, setSave] = useState(false);
     const [isDate, setDate] = useState({
         value: "",
         toggle: false,
     });
 
-    const [isJournal, setJournal] = useState<journalArray>(DefaultValue);
+    const [isDefault, setDefault] = useState<defaultArray>(DefaultValue);
     return (
         <>
             <div>
@@ -86,13 +86,13 @@ export default function JournalForm({ DefaultValue, type }: Props) {
                             </tr>
                         </thead>
                         <tbody>
-                            {isJournal?.map((item: any, index: number) => (
+                            {isDefault?.map((item: any, index: number) => (
                                 <List
                                     key={index}
                                     index={index}
-                                    setJournal={setJournal}
+                                    setDefault={setDefault}
                                     itemList={item}
-                                    isJournal={isJournal}
+                                    isDefault={isDefault}
                                 />
                             ))}
                             <tr className={style.total}>
@@ -162,15 +162,15 @@ export default function JournalForm({ DefaultValue, type }: Props) {
 
 type List = {
     index: number;
-    itemList: journalObject;
-    setJournal: Function;
-    isJournal: journalArray;
+    itemList: defaultObject;
+    setDefault: Function;
+    isDefault: defaultArray;
 };
 
-const List = ({ itemList, setJournal, isJournal, index }: List) => {
+const List = ({ itemList, setDefault, isDefault, index }: List) => {
     const AddJournal = () => {
         const random = Math.random();
-        setJournal((temp: any) => [
+        setDefault((temp: any) => [
             ...temp,
             {
                 id: random,
@@ -182,12 +182,12 @@ const List = ({ itemList, setJournal, isJournal, index }: List) => {
         ]);
     };
     const RemoveJournal = () => {
-        setJournal((item: any[]) =>
+        setDefault((item: any[]) =>
             item.filter((x: any) => x.id !== itemList.id)
         );
     };
     const updateValue = (key: string, e: any) => {
-        const newItems = isJournal.map((item: any) => {
+        const newItems = isDefault.map((item: any) => {
             if (itemList.id == item.id) {
                 if (key === "debit") {
                     return {
@@ -213,7 +213,7 @@ const List = ({ itemList, setJournal, isJournal, index }: List) => {
             }
             return item;
         });
-        setJournal(newItems);
+        setDefault(newItems);
     };
     return (
         <tr>
@@ -258,12 +258,12 @@ const List = ({ itemList, setJournal, isJournal, index }: List) => {
                 </div>
             </td>
             <td className={`${style.action}`}>
-                {isJournal.length > 1 && (
+                {isDefault.length > 1 && (
                     <div onClick={RemoveJournal}>
                         <HiMinus />
                     </div>
                 )}
-                {isJournal.length - 1 === index && (
+                {isDefault.length - 1 === index && (
                     <div className="ml-5 1024px:ml-2" onClick={AddJournal}>
                         <BsPlusLg />
                     </div>

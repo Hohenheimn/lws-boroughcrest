@@ -96,7 +96,7 @@ export default function Sidebar({
                                         initial="initial"
                                         animate="animate"
                                         exit="exit"
-                                        className="h1-text"
+                                        className="h1-text "
                                     >
                                         OVERVIEW
                                     </motion.h1>
