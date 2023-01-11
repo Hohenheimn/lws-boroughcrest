@@ -116,7 +116,7 @@ input {
         @apply shadow-md sticky top-0 bg-[#fbfbfb] z-[40];
         tr {
             th {
-                @apply text-start px-4 py-5 480px:py-3 480px:px-3 text-[#545454] 480px:text-[12px];
+                @apply text-start px-4 py-5 480px:py-3 1550px:px-3 text-[#545454] 1550px:text-[12px];
             }
             .status {
                 @apply text-center;
@@ -144,10 +144,13 @@ input {
                         @apply w-10 h-10 480px:w-8 480px:h-8 rounded-full overflow-hidden relative shadow-lg mr-3;
                     }
                     h2 {
-                        @apply text-[#2E4364] font-NHU-medium  480px:text-[12px] pr-1 mr-1;
+                        @apply text-[#2E4364] font-NHU-medium  1550px:text-[14px] 480px:text-[12px] pr-1 mr-1;
                     }
                     p {
-                        @apply text-[#2E4364] font-NHU-medium 480px:text-[12px];
+                        @apply text-[#2E4364] font-NHU-medium  1550px:text-[14px] 480px:text-[12px];
+                    }
+                    input {
+                        @apply rounded-md shadow-md 480px:text-[12px] outline-none px-2 py-1;
                     }
                 }
                 .property {
@@ -522,6 +525,16 @@ input[type="number"] {
     .sent:hover {
         &::after {
             @apply content-['Sent'] w-[95px] pl-[35px] bg-ThemeRed50;
+        }
+    }
+    .posted {
+        &::after {
+            @apply bg-transparent;
+        }
+    }
+    .posted:hover {
+        &::after {
+            @apply content-['Posted'] w-[95px] pl-[35px] bg-ThemeRed50;
         }
     }
 }

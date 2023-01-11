@@ -104,6 +104,7 @@ export const SaveDraftUpdate = (onSuccess: any, id: any) => {
 };
 
 export const CustomerImport = (onSuccess: any, ImportError: any) => {
+    const queryClient = useQueryClient();
     return useMutation(
         (data: FormData) => {
             return api.post(`/admin/customer/import`, data, {
@@ -113,7 +114,10 @@ export const CustomerImport = (onSuccess: any, ImportError: any) => {
             });
         },
         {
-            onSuccess: onSuccess,
+            onSuccess: () => {
+                queryClient.invalidateQueries("get-customer-list");
+                onSuccess();
+            },
             onError: ImportError,
         }
     );

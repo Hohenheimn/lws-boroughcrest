@@ -47,7 +47,7 @@ const List = () => {
                 <aside className="calendar relative w-[200px]">
                     <span className="cal ">
                         <Image
-                            src="/Images/calendar.png"
+                            src="/Images/CalendarMini.png"
                             width={15}
                             height={15}
                         />

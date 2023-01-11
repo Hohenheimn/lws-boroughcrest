@@ -614,7 +614,7 @@ export default function PropertyForm({
                             <div className="calendar">
                                 <span className="cal">
                                     <Image
-                                        src="/Images/calendar.png"
+                                        src="/Images/CalendarMini.png"
                                         width={15}
                                         height={15}
                                     />
@@ -645,7 +645,7 @@ export default function PropertyForm({
                             <div className="calendar">
                                 <span className="cal">
                                     <Image
-                                        src="/Images/calendar.png"
+                                        src="/Images/CalendarMini.png"
                                         width={15}
                                         height={15}
                                     />

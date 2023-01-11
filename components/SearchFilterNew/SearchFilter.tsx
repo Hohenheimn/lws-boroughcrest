@@ -16,6 +16,8 @@ import axios from "axios";
 import { getCookie } from "cookies-next";
 import { PropertyImport } from "../ReactQuery/PropertyMethod";
 import { format } from "date-fns";
+import { DynamicExportHandler } from "../DynamicExport";
+import { DynamicImport } from "../DynamicImport";
 
 type SearchFilter = {
     page: string;
@@ -81,64 +83,31 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
         ImportSuccess,
         ImportError
     );
-
     const { isLoading: PropLoading, mutate: PropMutate } = PropertyImport(
         ImportSuccess,
         ImportError
     );
+    const ImportMutate = (PayLoad: any) => {
+        if (router.pathname.includes("admin/customer")) {
+            CusMutate(PayLoad);
+        }
+        if (router.pathname.includes("admin/property")) {
+            PropMutate(PayLoad);
+        }
+    };
+    const importHandler = (e: any) => {
+        DynamicImport(e, setPrompt, ImportMutate);
+    };
 
     //Exports
-    const handleExport = (endPoint: string, name: string) => {
-        axios({
-            url: `${process.env.NEXT_PUBLIC_API_URL}${endPoint}`,
-            headers: {
-                Authorization: "Bearer " + getCookie("user"),
-            },
-            method: "get",
-            responseType: "blob",
-        }).then((response) => {
-            const href = URL.createObjectURL(response.data);
-            const link = document.createElement("a");
-            link.href = href;
-            link.setAttribute("download", `${name}-${date}.xlsx`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(href);
-        });
-    };
     const exportHandler = () => {
         if (router.pathname.includes("admin/customer")) {
             const endPoint = "/admin/customer/export";
-            handleExport(endPoint, "customer");
+            DynamicExportHandler(endPoint, "customer");
         }
         if (router.pathname.includes("admin/property")) {
             const endPoint = "/admin/property/unit/export";
-            handleExport(endPoint, "property");
-        }
-    };
-
-    const importHandler = (e: any) => {
-        if (e.target.files.length > 0) {
-            const fileArray = e.target.files[0].name.split(".");
-            const extension = fileArray[fileArray.length - 1];
-            if (extension === "xlsx") {
-                let selectedFile = e.target.files[0];
-                const formData = new FormData();
-                formData.append("file", selectedFile);
-                if (router.pathname.includes("admin/customer")) {
-                    CusMutate(formData);
-                }
-                if (router.pathname.includes("admin/property")) {
-                    PropMutate(formData);
-                }
-            } else {
-                setPrompt({
-                    type: "error",
-                    message: "Invalid file, must be XLSX only!",
-                    toggle: true,
-                });
-            }
+            DynamicExportHandler(endPoint, "property");
         }
     };
 

@@ -1,41 +1,18 @@
 import React, { useContext } from "react";
-import AppContext from "../../Context/AppContext";
+import AppContext from "../../../../Context/AppContext";
 import Image from "next/image";
-import { BsSearch } from "react-icons/bs";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 import { useRouter } from "next/router";
-import style from "../../../styles/SearchFilter.module.scss";
-import { CustomerImport } from "../../ReactQuery/CustomerMethod";
+import style from "../../../../../styles/SearchFilter.module.scss";
+import { CustomerImport } from "../../../../ReactQuery/CustomerMethod";
 import { MoonLoader } from "react-spinners";
-import axios from "axios";
-import { getCookie } from "cookies-next";
-import { PropertyImport } from "../../ReactQuery/PropertyMethod";
-import { format } from "date-fns";
-import { DynamicExportHandler } from "../../DynamicExport";
-import { DynamicImport } from "../../DynamicImport";
+import { DynamicExportHandler } from "../../../../DynamicExport";
+import { DynamicImport } from "../../../../DynamicImport";
 
-type SearchFilter = {
-    page: string;
-    setSearchTable: Function;
-    setCreate: Function;
-    isFilterTable: boolean;
-    setFilterTable: Function;
-};
-
-export default function FinanceSearchFilter({
-    page,
-    setSearchTable,
-    setCreate,
-    isFilterTable,
-    setFilterTable,
-}: SearchFilter) {
+export default function Header() {
     const { setPrompt } = useContext(AppContext);
     const router = useRouter();
-
-    const openNew = () => {
-        setCreate(true);
-    };
 
     const ImportSuccess = () => {
         setPrompt({
@@ -51,8 +28,8 @@ export default function FinanceSearchFilter({
             toggle: true,
         });
     };
+
     // Imports
-    // used as example
     const { isLoading: CusLoading, mutate: CusMutate } = CustomerImport(
         ImportSuccess,
         ImportError
@@ -63,32 +40,27 @@ export default function FinanceSearchFilter({
     const importHandler = (e: any) => {
         // DynamicImport(e, setPrompt, ImportMutate);
     };
-    // Export
+
+    //Exports
     const exportHandler = () => {
         if (router.pathname.includes("/general-ledger/chart-of-account")) {
             const endPoint =
                 "/finance/general-ledger/chart-of-accounts/export-list";
-            DynamicExportHandler(endPoint, "chart-of-accounts-list");
+            DynamicExportHandler(endPoint, "record-meter-reading");
         }
-    };
-
-    const FilterFunc = () => {
-        setFilterTable(!isFilterTable);
     };
 
     return (
         <>
             <section className={style.container}>
-                <div className={style.searchBar}>
-                    <input
-                        type="text"
-                        placeholder="Search"
-                        onChange={(e) => setSearchTable(e.target.value)}
-                    />
-                    <BsSearch className={style.searchIcon} />
+                <div className=" flex items-center">
+                    <h1 className=" text-[24px]">Water</h1>
+                    <h1 className=" text-[24px] ml-5">Electric</h1>
+                    <span className=" font-NHU-bold text-[24px] text-ThemeRed ml-5 cursor-pointer">
+                        +
+                    </span>
                 </div>
-
-                <ul className={style.navigation}>
+                <ul className={`${style.navigation}`}>
                     <li className={style.importExportPrint}>
                         <Tippy theme="ThemeRed" content="Export">
                             <div className={style.icon} onClick={exportHandler}>
@@ -120,19 +92,13 @@ export default function FinanceSearchFilter({
                             onChange={importHandler}
                             className="hidden"
                         />
-                        <Tippy theme="ThemeRed" content="Filter">
-                            <div className={style.filter2} onClick={FilterFunc}>
-                                <Image
-                                    src="/Images/Filter2.png"
-                                    layout="fill"
-                                    alt="Print"
-                                />
-                            </div>
-                        </Tippy>
                     </li>
 
                     <li className={`${style.new} mr-0`}>
-                        <div onClick={openNew}>Create {page}</div>
+                        <div>NEW READING</div>
+                    </li>
+                    <li className={`${style.new} mr-0`}>
+                        <div>PROPERTY</div>
                     </li>
                 </ul>
             </section>

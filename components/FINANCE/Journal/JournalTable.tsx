@@ -124,7 +124,7 @@ export default function JournalTable({ type }: Props) {
                     <div className="calendar mr-5 480px:mb-1">
                         <span className="cal">
                             <Image
-                                src="/Images/calendar.png"
+                                src="/Images/CalendarMini.png"
                                 width={15}
                                 height={15}
                                 alt="Calendar"
@@ -145,7 +145,7 @@ export default function JournalTable({ type }: Props) {
                     <div className="calendar">
                         <span className="cal">
                             <Image
-                                src="/Images/calendar.png"
+                                src="/Images/CalendarMini.png"
                                 width={15}
                                 height={15}
                                 alt="Calendar"
