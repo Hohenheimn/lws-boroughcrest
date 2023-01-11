@@ -25,7 +25,7 @@ type Props = {
 
 const todayStyle = "bg-ThemeRed text-white font-bold";
 const sameMonth = "font-bold";
-const selectedDay = "bg-black text-white font-bold";
+const selectedDay = "bg-[#545454] text-white font-bold";
 
 export default function Calendar({ value, setValue }: Props) {
     const modal = useRef<any>();
@@ -124,10 +124,10 @@ export default function Calendar({ value, setValue }: Props) {
     };
 
     return (
-        <div className=" absolute top-full left-0" ref={modal}>
+        <div className=" absolute top-full left-0 z-[60]" ref={modal}>
             {/* Ask kung pano naka infinite ung year tas naka focus agad ung year sa current yr */}
             <div
-                className="max-w-sm w-full shadow-lg"
+                className="max-w-[250px] w-full shadow-lg"
                 style={{ backgroundColor: "#f5f5f5" }}
             >
                 <div className="p-3 bg-[#f5f5f5] rounded-t">
@@ -142,7 +142,7 @@ export default function Calendar({ value, setValue }: Props) {
                                         ? true
                                         : false
                                 }
-                                className="focus:text-gray-400 focus:bg-ThemeRed hover:text-white mr-3 hover:bg-ThemeRed text-gray-800 dark:text-gray-100 border flex justify-center items-center bg-white rounded-full font-NHU-black w-8 h-8 "
+                                className="focus:text-gray-400 focus:bg-ThemeRed hover:text-white mr-3 hover:bg-ThemeRed text-gray-800 border flex justify-center items-center bg-white rounded-full font-NHU-black w-5 h-5 "
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -167,7 +167,7 @@ export default function Calendar({ value, setValue }: Props) {
                             <ul className="flex">
                                 <li className="relative mr-2  w-[100px] cursor-pointer text-center bg-white rounded-lg font-bold">
                                     <span
-                                        className=" py-2 px-3 inline-block"
+                                        className=" py-1 px-2 inline-block text-[14px]"
                                         onClick={() =>
                                             setToggleButton({
                                                 ...toggleButton,
@@ -182,7 +182,7 @@ export default function Calendar({ value, setValue }: Props) {
                                             {Months.map((month, index) => (
                                                 <li
                                                     key={index}
-                                                    className={`py-2 px-3 text-[14px] cursor-pointer hover:bg-ThemeRed50 ${
+                                                    className={`py-1 px-2 text-[12px] cursor-pointer hover:bg-ThemeRed50 ${
                                                         currentMonth ===
                                                             month &&
                                                         " bg-ThemeRed text-white"
@@ -203,7 +203,7 @@ export default function Calendar({ value, setValue }: Props) {
                                 </li>
                                 <li className=" relative cursor-pointer bg-white rounded-lg font-bold">
                                     <span
-                                        className=" py-2 px-3 inline-block"
+                                        className=" py-1 px-2 text-[14px] inline-block"
                                         onClick={() =>
                                             setToggleButton({
                                                 ...toggleButton,
@@ -218,7 +218,7 @@ export default function Calendar({ value, setValue }: Props) {
                                             {Years.map((year, index) => (
                                                 <li
                                                     key={index}
-                                                    className={`py-2 px-3 text-[14px] cursor-pointer hover:bg-ThemeRed50 ${
+                                                    className={`py-1 px-2 text-[12px] cursor-pointer hover:bg-ThemeRed50 ${
                                                         currenYear ===
                                                             format(
                                                                 year,
@@ -252,7 +252,7 @@ export default function Calendar({ value, setValue }: Props) {
                                         ? true
                                         : false
                                 }
-                                className="focus:text-gray-400 relative focus:bg-ThemeRed hover:text-white hover:bg-ThemeRed ml-3 text-gray-800 dark:text-gray-100 border flex justify-center items-center bg-white rounded-full font-NHU-black w-8 h-8"
+                                className="focus:text-gray-400 relative focus:bg-ThemeRed hover:text-white hover:bg-ThemeRed ml-3 text-gray-800 border flex justify-center items-center bg-white rounded-full font-NHU-black w-5 h-5"
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -277,33 +277,33 @@ export default function Calendar({ value, setValue }: Props) {
                         </div>
                     </div>
                     <div className=" flex flex-wrap mb-2">
-                        <div className=" text-base font-bold text-center text-gray-800 dark:text-gray-100 w-[14.28%]">
-                            Sun
+                        <div className=" text-[14px] font-medium text-center text-gray-800  w-[14.28%]">
+                            S
                         </div>
-                        <div className="text-base font-bold text-center text-gray-800 dark:text-gray-100 w-[14.28%]">
-                            Mon
+                        <div className="text-[14px] font-medium text-center text-gray-800  w-[14.28%]">
+                            M
                         </div>
-                        <div className="text-base font-bold text-center text-gray-800 dark:text-gray-100 w-[14.28%]">
-                            Tue
+                        <div className="text-[14px] font-medium text-center text-gray-800  w-[14.28%]">
+                            T
                         </div>
-                        <div className="text-base font-bold text-center text-gray-800 dark:text-gray-100 w-[14.28%]">
-                            Wed
+                        <div className="text-[14px] font-medium text-center text-gray-800  w-[14.28%]">
+                            W
                         </div>
-                        <div className="text-base font-bold text-center text-gray-800 dark:text-gray-100 w-[14.28%]">
-                            Thu
+                        <div className="text-[14px] font-medium text-center text-gray-800 w-[14.28%]">
+                            T
                         </div>
-                        <div className="text-base font-bold text-center text-gray-800 dark:text-gray-100 w-[14.28%]">
-                            Fri
+                        <div className="text-[14px] font-medium text-center text-gray-800 w-[14.28%]">
+                            F
                         </div>
-                        <div className="text-base font-bold text-center text-gray-800 dark:text-gray-100 w-[14.28%]">
-                            Sat
+                        <div className="text-[14px] font-medium text-center text-gray-800 w-[14.28%]">
+                            S
                         </div>
                     </div>
                     <div className=" flex flex-wrap">
                         {days.map((day, index) => (
                             <div
                                 key={index}
-                                className={` cursor-pointer aspect-square flex justify-center items-center text-base font-medium text-center text-gray-800 dark:text-gray-100 w-[14.28%]`}
+                                className={` cursor-pointer aspect-square flex justify-center items-center text-base font-medium text-center text-gray-800 w-[14.28%]`}
                             >
                                 <button
                                     onClick={() => SelectedDateHandler(day)}

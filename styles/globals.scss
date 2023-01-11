@@ -38,7 +38,7 @@ input {
 .calendar {
     @apply relative inline-block;
     .cal {
-        @apply absolute translate-y-[45%] top-0 right-[15px] bg-white pointer-events-none;
+        @apply absolute translate-y-[-50%] top-[50%] right-[15px] bg-white pointer-events-none;
     }
     // input[type="date"]::-webkit-inner-spin-button,
     // input[type="date"]::-webkit-calendar-picker-indicator {
@@ -76,10 +76,10 @@ input {
     @apply text-[24px] 480px:text-[18px];
 }
 .label_text {
-    @apply text-start text-gray-400 1024px:text-[14px] font-medium;
+    @apply text-start text-gray-400 text-[14px] 1024px:text-[14px] font-medium;
 }
 .main_text {
-    @apply text-gray-500 mb-5 1024px:text-[14px];
+    @apply text-[#6b7280] mb-5 1024px:text-[14px];
     span {
         @apply text-gray-400 text-[12px];
     }
@@ -107,10 +107,13 @@ input {
 .table_container {
     @apply w-full overflow-x-auto mb-10 480px:mb-5 overflow-y-auto h-[60vh] min-h-[600px] relative;
 }
+.table_container.hAuto {
+    @apply h-auto min-h-0 max-h-[300px];
+}
 .table_list {
     @apply min-w-full;
     thead {
-        @apply shadow-md sticky top-0 bg-[#fbfbfb] z-[999];
+        @apply shadow-md sticky top-0 bg-[#fbfbfb] z-[40];
         tr {
             th {
                 @apply text-start px-4 py-5 480px:py-3 480px:px-3 text-[#545454] 480px:text-[12px];
@@ -120,6 +123,13 @@ input {
             }
             .center {
                 @apply text-center;
+            }
+        }
+    }
+    thead.textRed {
+        tr {
+            th {
+                @apply text-ThemeRed;
             }
         }
     }
@@ -181,6 +191,11 @@ input {
                     }
                 }
             }
+            td.action {
+                .item {
+                    @apply flex text-ThemeRed;
+                }
+            }
             td.icon {
                 @apply w-[50px];
             }
@@ -200,6 +215,11 @@ input {
                 width: 500px;
             }
         }
+    }
+}
+.table_list.headNoBg {
+    thead {
+        @apply shadow-none;
     }
 }
 .table_list.corp,
@@ -445,7 +465,7 @@ input[type="number"] {
     .status {
         @apply relative;
         div {
-            @apply w-[30px] h-[30px] relative flex justify-center items-center rounded-[50%] z-[99];
+            @apply w-[30px] h-[30px] relative flex justify-center items-center rounded-[50%] z-10;
             span {
                 @apply relative z-10;
             }
@@ -491,6 +511,17 @@ input[type="number"] {
     .pending:hover {
         &::after {
             @apply content-['Pending'] w-[95px] pl-[35px];
+        }
+    }
+
+    .sent {
+        &::after {
+            @apply bg-transparent;
+        }
+    }
+    .sent:hover {
+        &::after {
+            @apply content-['Sent'] w-[95px] pl-[35px] bg-ThemeRed50;
         }
     }
 }

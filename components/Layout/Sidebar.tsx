@@ -14,6 +14,7 @@ import PropertySearch from "../Search/PropertySearch";
 import AppContext from "../Context/AppContext";
 import JournalSearch from "../Search/JournalSearch";
 import RoleSearch from "../Search/RolesSearch";
+import BillingSearch from "../Search/BillingSearch";
 
 type SidebarType = {
     isProfileSearch: boolean;
@@ -95,7 +96,7 @@ export default function Sidebar({
                                         initial="initial"
                                         animate="animate"
                                         exit="exit"
-                                        className="h1-text"
+                                        className="h1-text "
                                     >
                                         OVERVIEW
                                     </motion.h1>
@@ -184,6 +185,9 @@ export default function Sidebar({
                                     {router.pathname.includes(
                                         "journal/[id]"
                                     ) && <JournalSearch />}
+                                    {router.pathname.includes(
+                                        "invoice-list/[id]"
+                                    ) && <BillingSearch />}
                                     {router.pathname.includes("/roles") && (
                                         <RoleSearch />
                                     )}

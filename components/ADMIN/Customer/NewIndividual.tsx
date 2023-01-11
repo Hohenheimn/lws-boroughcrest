@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { customer } from "../../../types/customerList";
 import Image from "next/image";
 import { AiFillCamera } from "react-icons/ai";
+import Calendar from "../../Calendar";
 
 type Props = {
     setActiveForm: Function;
@@ -29,6 +30,20 @@ export default function NewIndividual({
         setCusError,
         ErrorDefault,
     } = useContext(AppContext);
+
+    // Birth Date Field with custom Calendar
+    const [isDate, setDate] = useState({
+        value: isNewCustomer.individual_birth_date,
+        toggle: false,
+    });
+    useEffect(() => {
+        setNewCustomer({
+            ...isNewCustomer,
+            individual_birth_date: isDate.value,
+        });
+    }, [isDate.value]);
+    // end
+
     const [imgError, setImgError] = useState({
         img1: "",
         img2: "",
@@ -39,6 +54,7 @@ export default function NewIndividual({
         register,
         handleSubmit,
         reset,
+        setValue,
         formState: { errors },
     } = useForm<customer>();
 
@@ -347,7 +363,7 @@ export default function NewIndividual({
                             <li>
                                 <label>BIRTH DATE</label>
 
-                                <input
+                                {/* <input
                                     type="date"
                                     className="bg-white"
                                     {...register("individual_birth_date")}
@@ -359,7 +375,34 @@ export default function NewIndividual({
                                                 e.target.value,
                                         })
                                     }
-                                />
+                                /> */}
+                                <div className="calendar">
+                                    <span className="cal">
+                                        <Image
+                                            src="/Images/calendar.png"
+                                            width={15}
+                                            height={15}
+                                        />
+                                    </span>
+                                    <input
+                                        {...register("individual_birth_date")}
+                                        autoComplete="off"
+                                        type="text"
+                                        value={isDate.value}
+                                        onChange={() => {}}
+                                        placeholder="dd/mm/yyyy"
+                                        onClick={() =>
+                                            setDate({ ...isDate, toggle: true })
+                                        }
+                                        className="p-2 outline-none rounded-md shadow-md"
+                                    />
+                                    {isDate.toggle && (
+                                        <Calendar
+                                            value={isDate}
+                                            setValue={setDate}
+                                        />
+                                    )}
+                                </div>
                             </li>
                         </>
                     )}

@@ -19,8 +19,29 @@
         @apply mb-0;
     }
 }
+.ThreeRows {
+    @apply flex relative w-full shadow-lg p-10 bg-white rounded-2xl mb-10 flex-wrap  480px:p-8;
+    aside {
+        @apply absolute top-5 right-5 text-ThemeRed font-bold text-[28px] 480px:text-[24px] cursor-pointer;
+    }
+    li {
+        @apply w-[33.3%] pr-2 mb-10 640px:mb-5 480px:w-2/4;
+        h4 {
+            @apply mb-0;
+        }
+        .row {
+            @apply flex;
+            p {
+                @apply mr-2;
+            }
+        }
+    }
+    li.noMb {
+        @apply mb-0;
+    }
+}
 .OneRow {
-    @apply flex relative w-full shadow-lg p-10  bg-white rounded-2xl mb-10 flex-wrap  480px:p-8;
+    @apply flex relative w-full shadow-lg py-10 bg-white rounded-2xl mb-10 flex-wrap  480px:p-8;
     li {
         @apply w-full overflow-auto;
         table {
@@ -57,4 +78,7 @@
 }
 .narrow {
     @apply px-20 1024px:px-14 480px:px-8;
+}
+.wide {
+    @apply px-10 1024px:px-8 480px:px-8;
 }

@@ -16,6 +16,10 @@ module.exports = {
                 Green: "#1C9F11",
                 ThemeRed50: "#8F384D8F",
                 LiteBlack: "#2B2B2B",
+                Gray: "#ECECEC",
+                Gray_5: "#d9d9d9",
+                Gray1: "#9F9F9F",
+                Gray2: "#626262",
             },
             width: {
                 "300px": "300px",
@@ -32,6 +36,7 @@ module.exports = {
                 Green: "#1C9F11",
                 LightRed: "#8F384D40",
                 LiteBlack: "#2B2B2B",
+                GrayLight: "#f5f5f5",
             },
             backgroundImage: {
                 YellowOrange: "linear-gradient(#ff626d, #ffc271)",
@@ -60,6 +65,7 @@ module.exports = {
                 "820px": { max: "820px" },
                 "640px": { max: "640px" },
                 "480px": { max: "480px" },
+                "390px": { max: "390px" },
                 "375px": { max: "375px" },
                 "320px": { max: "320px" },
             },

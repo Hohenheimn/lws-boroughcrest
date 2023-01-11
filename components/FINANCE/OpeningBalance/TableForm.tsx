@@ -35,6 +35,41 @@ export default function TableForm() {
                     </tr>
                 </tbody>
             </table>
+            <div className="mt-10 border-b border-ThemeRed"></div>
+            <table className={style.crudTable}>
+                <tbody>
+                    <tr className={style.total}>
+                        <td></td>
+                        <td className={style.label}>
+                            <h1>TOTAL</h1>
+                        </td>
+                        <td>
+                            <div className={style.peso}>
+                                <aside>
+                                    <Image
+                                        src="/Images/peso.png"
+                                        height={13}
+                                        width={10}
+                                    />
+                                </aside>
+                                <p>-</p>
+                            </div>
+                        </td>
+                        <td>
+                            <div className={style.peso}>
+                                <aside>
+                                    <Image
+                                        src="/Images/peso.png"
+                                        height={13}
+                                        width={10}
+                                    />
+                                </aside>
+                                <p>-</p>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
             <div className="flex justify-end py-5 mt-20">
                 <button className="buttonRed">SUM OF SELECTED</button>
             </div>

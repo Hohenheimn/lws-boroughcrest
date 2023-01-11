@@ -15,6 +15,7 @@ import { MoonLoader } from "react-spinners";
 import axios from "axios";
 import { getCookie } from "cookies-next";
 import { PropertyImport } from "../ReactQuery/PropertyMethod";
+import { format } from "date-fns";
 
 type SearchFilter = {
     page: string;
@@ -41,7 +42,7 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
         setNewUserToggle,
         setNewPropToggle,
     } = useContext(AppContext);
-
+    const date = format(new Date(), "dd/MM/yyyy");
     const [isFilter, setFilter] = useState(false);
     const router = useRouter();
     const ValidatePathName = router.pathname.split("/")[2];
@@ -99,7 +100,7 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
             const href = URL.createObjectURL(response.data);
             const link = document.createElement("a");
             link.href = href;
-            link.setAttribute("download", `${name}.xlsx`);
+            link.setAttribute("download", `${name}-${date}.xlsx`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);

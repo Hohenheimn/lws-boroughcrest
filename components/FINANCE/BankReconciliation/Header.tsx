@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import Image from "next/image";
 import { BsSearch } from "react-icons/bs";
 import Tippy from "@tippy.js/react";
@@ -10,10 +10,24 @@ import axios from "axios";
 import { getCookie } from "cookies-next";
 import AppContext from "../../../components/Context/AppContext";
 import { CustomerImport } from "../../../components/ReactQuery/CustomerMethod";
+import Calendar from "../../Calendar";
+import PeriodCalendar from "../../PeriodCalendar";
 
 export default function Header() {
     const { setPrompt } = useContext(AppContext);
+    const [isPeriod, setPeriod] = useState({
+        from: "",
+        to: "",
+    });
     const router = useRouter();
+    const [isDate, setDate] = useState({
+        value: "",
+        toggle: false,
+    });
+    const [isDate2, setDate2] = useState({
+        value: "",
+        toggle: false,
+    });
 
     const ImportSuccess = () => {
         setPrompt({
@@ -84,33 +98,7 @@ export default function Header() {
         <>
             <section className={style.container}>
                 <div className={style.period}>
-                    <p>PERIOD</p>
-                    <div className="calendar">
-                        <span className="cal">
-                            <Image
-                                src="/Images/calendar.png"
-                                width={15}
-                                height={15}
-                            />
-                        </span>
-                        <input
-                            type="date"
-                            className="p-2 outline-none rounded-md shadow-md"
-                        />
-                    </div>
-                    <div className="calendar">
-                        <span className="cal">
-                            <Image
-                                src="/Images/calendar.png"
-                                width={15}
-                                height={15}
-                            />
-                        </span>
-                        <input
-                            type="date"
-                            className="p-2 outline-none rounded-md shadow-md"
-                        />
-                    </div>
+                    <PeriodCalendar value={isPeriod} setValue={setPeriod} />
                 </div>
 
                 <ul className={style.navigation}>

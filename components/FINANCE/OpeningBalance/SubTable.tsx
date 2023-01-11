@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import style from "../../../styles/finance/Crud-table.module.scss";
-import { Switch } from "@headlessui/react";
+import Image from "next/image";
+import Calendar from "../../Calendar";
 
 export default function SubTable() {
     return (
@@ -30,6 +31,10 @@ export default function SubTable() {
 const List = () => {
     // true is advnace false is received
     const [isTab, setTab] = useState(true);
+    const [isDate, setDate] = useState({
+        value: "",
+        toggle: false,
+    });
     return (
         <tr className={`${style.total} ${style.total1}`}>
             <td>
@@ -39,7 +44,27 @@ const List = () => {
                 <input type="text" />
             </td>
             <td>
-                <input type="text" />
+                <aside className="calendar relative w-[200px]">
+                    <span className="cal ">
+                        <Image
+                            src="/Images/calendar.png"
+                            width={15}
+                            height={15}
+                        />
+                    </span>
+                    <input
+                        type="text"
+                        value={isDate.value}
+                        onChange={() => {}}
+                        placeholder="dd/mm/yyyy"
+                        onClick={() => setDate({ ...isDate, toggle: true })}
+                        className="p-2 outline-none rounded-md shadow-md"
+                    />
+
+                    {isDate.toggle && (
+                        <Calendar value={isDate} setValue={setDate} />
+                    )}
+                </aside>
             </td>
             <td>
                 <input type="text" />

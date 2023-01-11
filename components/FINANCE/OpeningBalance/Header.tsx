@@ -78,6 +78,7 @@ export default function Header() {
                                     type="text"
                                     value={isDate.value}
                                     onChange={() => {}}
+                                    placeholder="dd/mm/yyyy"
                                     onClick={() =>
                                         setDate({ ...isDate, toggle: true })
                                     }

@@ -6,7 +6,7 @@ export default function Modify() {
         {
             id: 1,
             code: 0,
-            accountName: "",
+            accountName: "Jomari",
             debit: "",
             credit: "",
         },

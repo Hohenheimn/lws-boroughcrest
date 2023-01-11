@@ -60,7 +60,25 @@ export const CustomerFacility = [
     {
         name: "Billing",
         activeUrl: "billing",
-        url: "/finance/customer-facility/billing",
+        url: "/finance/customer-facility/billing/create-invoice",
+        submenu: [
+            {
+                name: "Create Invoice",
+                url: "/finance/customer-facility/billing/create-invoice",
+            },
+            {
+                name: "Record Meter Reading",
+                url: "/finance/customer-facility/billing/record-meter-reading",
+            },
+            {
+                name: "Batch Invoice",
+                url: "/finance/customer-facility/billing/batch-invoice",
+            },
+            {
+                name: "Invoice List",
+                url: "/finance/customer-facility/billing/invoice-list",
+            },
+        ],
     },
     {
         name: "Collection",

@@ -141,7 +141,9 @@ const List = ({
                             : "hover:border-r-8 hover:border-Green text-ThemeRed50 duration-75 after:bg-GradientGreen after:w-0 hover:after:w-full after:h-full after:absolute after:right-0 after:top-0 after:duration-[500ms]"
                     }`}
                 >
-                    <p className=" z-10 relative text-[16px]">{item.name}</p>
+                    <p className=" z-10 relative text-[16px] 1550px:text-[14px]">
+                        {item.name}
+                    </p>
                 </a>
             </Link>
         </li>
