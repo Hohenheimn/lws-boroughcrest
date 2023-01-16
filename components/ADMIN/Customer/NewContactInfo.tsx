@@ -144,6 +144,7 @@ export default function NewContactInfo({
             registered_address_province: data.registered_address_province,
             registered_address_zip_code: data.registered_address_zip_code,
         });
+
         setActiveForm((item: boolean[]) => [
             (item[0] = false),
             (item[1] = false),
@@ -176,8 +177,6 @@ export default function NewContactInfo({
                                     value: /^(09)\d{9}$/,
                                     message: "Invalid Contact Number",
                                 },
-                                onChange: (e) =>
-                                    setValue("contact_no", `${e.target.value}`),
                             })}
                             value={isNewCustomer.contact_no}
                             onChange={(e) =>
@@ -339,13 +338,7 @@ export default function NewContactInfo({
                         <label>*STREET</label>
                         <input
                             type="text"
-                            {...register("registered_address_street", {
-                                onChange: (e) =>
-                                    setValue(
-                                        "registered_address_street",
-                                        `${e.target.value}`
-                                    ),
-                            })}
+                            {...register("registered_address_street", {})}
                         />
                         {errors.registered_address_street && (
                             <p className="text-[10px]">
@@ -363,13 +356,7 @@ export default function NewContactInfo({
                         <label>*DISTRICT</label>
                         <input
                             type="text"
-                            {...register("registered_address_district", {
-                                onChange: (e) =>
-                                    setValue(
-                                        "registered_address_district",
-                                        `${e.target.value}`
-                                    ),
-                            })}
+                            {...register("registered_address_district")}
                         />
                         {errors.registered_address_district && (
                             <p className="text-[10px]">
@@ -386,13 +373,7 @@ export default function NewContactInfo({
                         <label>*MUNICIPALITY CITY</label>
                         <input
                             type="text"
-                            {...register("registered_address_municipal_city", {
-                                onChange: (e) =>
-                                    setValue(
-                                        "registered_address_municipal_city",
-                                        `${e.target.value}`
-                                    ),
-                            })}
+                            {...register("registered_address_municipal_city")}
                         />
                         {errors.registered_address_municipal_city && (
                             <p className="text-[10px]">
@@ -412,13 +393,7 @@ export default function NewContactInfo({
                         <label>*PROVINCE</label>
                         <input
                             type="text"
-                            {...register("registered_address_province", {
-                                onChange: (e) =>
-                                    setValue(
-                                        "registered_address_province",
-                                        `${e.target.value}`
-                                    ),
-                            })}
+                            {...register("registered_address_province")}
                         />
                         {errors.registered_address_province && (
                             <p className="text-[10px]">
@@ -444,11 +419,6 @@ export default function NewContactInfo({
                                     value: 4,
                                     message: "Must be 4 number",
                                 },
-                                onChange: (e) =>
-                                    setValue(
-                                        "registered_address_zip_code",
-                                        `${e.target.value}`
-                                    ),
                             })}
                         />
                         {errors.registered_address_zip_code && (
