@@ -103,7 +103,8 @@ export default function TableForm() {
                 </table>
             </div>
             <div className="flex justify-end py-5 mt-20">
-                <button className="buttonRed">SUM OF SELECTED</button>
+                <button className="button_cancel">Cancel</button>
+                <button className="buttonRed">SAVE</button>
             </div>
         </>
     );

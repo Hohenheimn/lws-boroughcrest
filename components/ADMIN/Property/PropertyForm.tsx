@@ -23,6 +23,7 @@ import {
     UpdateProperty,
 } from "../../ReactQuery/PropertyMethod";
 import Calendar from "../../Calendar";
+import DynamicPopOver from "../../DynamicPopOver";
 
 type Props = {
     DefaultFormData: PropertyDefaultValue;
@@ -403,8 +404,24 @@ export default function PropertyForm({
                         </li>
                         <li>
                             <label>*DEVELOPER</label>
-                            <Tippy
-                                content={
+                            <DynamicPopOver
+                                toRef={
+                                    <input
+                                        type="text"
+                                        {...register("developer")}
+                                        autoComplete="off"
+                                        onFocus={() => setDev(true)}
+                                        onClick={() => setDev(true)}
+                                        value={isDevVal.value}
+                                        onChange={(e: any) =>
+                                            setDevVal({
+                                                ...isDevVal,
+                                                value: e.target.value,
+                                            })
+                                        }
+                                    />
+                                }
+                                toPop={
                                     <>
                                         {isDev && (
                                             <Developer
@@ -417,27 +434,7 @@ export default function PropertyForm({
                                         )}
                                     </>
                                 }
-                                trigger="click"
-                                theme="ThemeWhite"
-                                placement="bottom"
-                                interactive={isDev ? true : false}
-                                arrow={false}
-                            >
-                                <input
-                                    type="text"
-                                    {...register("developer")}
-                                    autoComplete="off"
-                                    onFocus={() => setDev(true)}
-                                    onClick={() => setDev(true)}
-                                    value={isDevVal.value}
-                                    onChange={(e: any) =>
-                                        setDevVal({
-                                            ...isDevVal,
-                                            value: e.target.value,
-                                        })
-                                    }
-                                />
-                            </Tippy>
+                            />
 
                             {errors.developer && (
                                 <p className="text-[10px]">
@@ -452,8 +449,24 @@ export default function PropertyForm({
                         </li>
                         <li>
                             <label>*PROJECT</label>
-                            <Tippy
-                                content={
+                            <DynamicPopOver
+                                toRef={
+                                    <input
+                                        type="text"
+                                        onFocus={() => setProject(true)}
+                                        onClick={() => setProject(true)}
+                                        autoComplete="off"
+                                        {...register("project")}
+                                        value={isProjectVal.value}
+                                        onChange={(e: any) =>
+                                            setProjectVal({
+                                                ...isProjectVal,
+                                                value: e.target.value,
+                                            })
+                                        }
+                                    />
+                                }
+                                toPop={
                                     <>
                                         {isProject && (
                                             <Project
@@ -466,27 +479,8 @@ export default function PropertyForm({
                                         )}
                                     </>
                                 }
-                                trigger="click"
-                                theme="ThemeWhite"
-                                placement="bottom"
-                                interactive={isProject ? true : false}
-                                arrow={false}
-                            >
-                                <input
-                                    type="text"
-                                    onFocus={() => setProject(true)}
-                                    onClick={() => setProject(true)}
-                                    autoComplete="off"
-                                    {...register("project")}
-                                    value={isProjectVal.value}
-                                    onChange={(e: any) =>
-                                        setProjectVal({
-                                            ...isProjectVal,
-                                            value: e.target.value,
-                                        })
-                                    }
-                                />
-                            </Tippy>
+                            />
+
                             {errors.project && (
                                 <p className="text-[10px]">
                                     {errors.project.message}
@@ -500,8 +494,24 @@ export default function PropertyForm({
                         </li>
                         <li>
                             <label>*TOWER</label>
-                            <Tippy
-                                content={
+                            <DynamicPopOver
+                                toRef={
+                                    <input
+                                        type="text"
+                                        onFocus={() => setTower(true)}
+                                        onClick={() => setTower(true)}
+                                        autoComplete="off"
+                                        {...register("tower")}
+                                        value={isTowerVal.value}
+                                        onChange={(e: any) =>
+                                            setTowerVal({
+                                                ...isTowerVal,
+                                                value: e.target.value,
+                                            })
+                                        }
+                                    />
+                                }
+                                toPop={
                                     <>
                                         {isTower && (
                                             <Tower
@@ -515,27 +525,8 @@ export default function PropertyForm({
                                         )}
                                     </>
                                 }
-                                trigger="click"
-                                theme="ThemeWhite"
-                                placement="bottom"
-                                interactive={isTower ? true : false}
-                                arrow={false}
-                            >
-                                <input
-                                    type="text"
-                                    onFocus={() => setTower(true)}
-                                    onClick={() => setTower(true)}
-                                    autoComplete="off"
-                                    {...register("tower")}
-                                    value={isTowerVal.value}
-                                    onChange={(e: any) =>
-                                        setTowerVal({
-                                            ...isTowerVal,
-                                            value: e.target.value,
-                                        })
-                                    }
-                                />
-                            </Tippy>
+                            />
+
                             {errors.tower && (
                                 <p className="text-[10px]">
                                     {errors.tower.message}
@@ -549,8 +540,24 @@ export default function PropertyForm({
                         </li>
                         <li>
                             <label>*FLOOR</label>
-                            <Tippy
-                                content={
+                            <DynamicPopOver
+                                toRef={
+                                    <input
+                                        type="text"
+                                        autoComplete="off"
+                                        onFocus={() => setFloor(true)}
+                                        onClick={() => setFloor(true)}
+                                        {...register("floor")}
+                                        value={isFloorVal.value}
+                                        onChange={(e: any) =>
+                                            setFloorVal({
+                                                ...isFloorVal,
+                                                value: e.target.value,
+                                            })
+                                        }
+                                    />
+                                }
+                                toPop={
                                     <>
                                         {isFloor && (
                                             <Floor
@@ -564,27 +571,8 @@ export default function PropertyForm({
                                         )}
                                     </>
                                 }
-                                trigger="click"
-                                theme="ThemeWhite"
-                                placement="bottom"
-                                interactive={isFloor ? true : false}
-                                arrow={false}
-                            >
-                                <input
-                                    type="text"
-                                    autoComplete="off"
-                                    onFocus={() => setFloor(true)}
-                                    onClick={() => setFloor(true)}
-                                    {...register("floor")}
-                                    value={isFloorVal.value}
-                                    onChange={(e: any) =>
-                                        setFloorVal({
-                                            ...isFloorVal,
-                                            value: e.target.value,
-                                        })
-                                    }
-                                />
-                            </Tippy>
+                            />
+
                             {errors.floor && (
                                 <p className="text-[10px]">
                                     {errors.floor.message}

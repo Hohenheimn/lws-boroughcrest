@@ -76,10 +76,10 @@ const Floor = ({ set, update, is, isValID, isObject, setObject }: any) => {
             <table className="crud-table wide">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>NAME</th>
-                        <th>TOWER</th>
-                        <th>ACTION</th>
+                        <th className="text-white">ID</th>
+                        <th className="text-white">NAME</th>
+                        <th className="text-white">TOWER</th>
+                        <th className="text-white">ACTION</th>
                     </tr>
                 </thead>
                 <tbody>

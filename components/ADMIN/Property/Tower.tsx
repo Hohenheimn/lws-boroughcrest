@@ -77,10 +77,10 @@ const Tower = ({ set, update, is, isValID, isObject, setObject }: any) => {
             <table className="crud-table wide">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>NAME</th>
-                        <th>PROJECT</th>
-                        <th>ACTION</th>
+                        <th className="text-white">ID</th>
+                        <th className="text-white">NAME</th>
+                        <th className="text-white">PROJECT</th>
+                        <th className="text-white">ACTION</th>
                     </tr>
                 </thead>
                 <tbody>

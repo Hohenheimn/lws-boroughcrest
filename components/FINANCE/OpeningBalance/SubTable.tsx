@@ -13,6 +13,7 @@ export default function SubTable() {
                         <th>CUSTOMER NAME</th>
                         <th>DATE</th>
                         <th>REFERENCE NO.</th>
+                        <th>CHARGE</th>
                         <th>ACCOUNT</th>
                         <th>AMOUNT</th>
                     </tr>
@@ -21,8 +22,34 @@ export default function SubTable() {
                     <List />
                 </tbody>
             </table>
+            <div className="mt-10 border-b border-ThemeRed"></div>
+            <table className={style.crudTable}>
+                <tbody>
+                    <tr className={style.total}>
+                        <td></td>
+                        <td></td>
+                        <td className={style.label}>
+                            <h1>SUBTOTAL</h1>
+                        </td>
+
+                        <td>
+                            <div className={style.peso}>
+                                <aside>
+                                    <Image
+                                        src="/Images/peso.png"
+                                        height={13}
+                                        width={10}
+                                    />
+                                </aside>
+                                <p>-</p>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
             <div className="flex justify-end py-5 mt-20">
-                <button className="buttonRed">SUM OF SELECTED</button>
+                <button className="button_cancel">Cancel</button>
+                <button className="buttonRed">SAVE</button>
             </div>
         </>
     );
@@ -65,6 +92,9 @@ const List = () => {
                         <Calendar value={isDate} setValue={setDate} />
                     )}
                 </aside>
+            </td>
+            <td>
+                <input type="text" />
             </td>
             <td>
                 <input type="text" />

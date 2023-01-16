@@ -408,7 +408,7 @@ input[type="number"] {
     }
 }
 .crud-table.wide {
-    @apply w-[400px];
+    @apply w-[400px] 390px:w-[300px];
 }
 // Save Drop Down Button
 .DropDownSave {

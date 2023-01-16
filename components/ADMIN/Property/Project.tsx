@@ -71,9 +71,9 @@ const Project = ({ set, update, isValID, isObject, setObject }: any) => {
             <table className="crud-table">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>NAME</th>
-                        <th>ACTION</th>
+                        <th className="text-white">ID</th>
+                        <th className="text-white">NAME</th>
+                        <th className="text-white">ACTION</th>
                     </tr>
                 </thead>
                 <tbody>
