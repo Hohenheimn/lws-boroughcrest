@@ -17,7 +17,7 @@ export default function ChartOfAccount() {
         description: "",
         apply_to_sub_acc: true,
         bank_acc_no: "",
-        bank_branch: "",
+        // bank_branch: "",
         coa_default_account_id: 0,
         defaultAccount: "",
         parent_id: 0,
