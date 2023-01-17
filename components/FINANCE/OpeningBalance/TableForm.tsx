@@ -41,7 +41,7 @@ export default function TableForm() {
                     <tr className={style.total}>
                         <td></td>
                         <td className={style.label}>
-                            <h1>TOTAL</h1>
+                            <h1>SUBTOTAL</h1>
                         </td>
                         <td>
                             <div className={style.peso}>
@@ -71,7 +71,8 @@ export default function TableForm() {
                 </tbody>
             </table>
             <div className="flex justify-end py-5 mt-20">
-                <button className="buttonRed">SUM OF SELECTED</button>
+                <button className="button_cancel">Cancel</button>
+                <button className="buttonRed">SAVE</button>
             </div>
         </>
     );

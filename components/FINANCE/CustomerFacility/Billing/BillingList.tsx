@@ -67,7 +67,7 @@ export default function BillingList() {
                 </div>
 
                 <ul className={style.navigation}>
-                    {isType === "Unposted" ? (
+                    {isType === "Unposted" && (
                         <>
                             <li className={style.importExportPrint}>
                                 <Tippy theme="ThemeRed" content="Check">
@@ -106,7 +106,20 @@ export default function BillingList() {
                                 </Tippy>
                             </li>
                         </>
-                    ) : (
+                    )}
+                    <li className={style.importExportPrint}>
+                        <Tippy theme="ThemeRed" content="Print">
+                            <div className={`${style.noFill} mr-5`}>
+                                <Image
+                                    src="/Images/Print.png"
+                                    height={25}
+                                    width={30}
+                                    alt="Export"
+                                />
+                            </div>
+                        </Tippy>
+                    </li>
+                    {isType !== "Unposted" && (
                         <>
                             <li className={style.importExportPrint}>
                                 <Tippy theme="ThemeRed" content="Export">
@@ -121,9 +134,6 @@ export default function BillingList() {
                             </li>
                             <li className={style.new}>
                                 <div>POST TO PORTAL</div>
-                            </li>
-                            <li className={style.new}>
-                                <div>GENERATE</div>
                             </li>
                         </>
                     )}

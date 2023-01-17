@@ -9,20 +9,16 @@ import { getCookie } from "cookies-next";
 import { useQuery } from "react-query";
 import api from "../../../util/api";
 import { BarLoader } from "react-spinners";
-import Calendar from "../../Calendar";
+import PeriodCalendar from "../../PeriodCalendar";
 
 type Props = {
     type: string;
 };
 
 export default function JournalTable({ type }: Props) {
-    const [isDate, setDate] = useState({
-        value: "",
-        toggle: false,
-    });
-    const [isDate2, setDate2] = useState({
-        value: "",
-        toggle: false,
+    const [isPeriod, setPeriod] = useState({
+        from: "",
+        to: "",
     });
 
     const { data, isLoading, isError } = useQuery(
@@ -109,62 +105,13 @@ export default function JournalTable({ type }: Props) {
                                     </div>
                                 </Tippy>
                             </li>
-                            <li className={style.new}>
-                                <div>GENERATE</div>
-                            </li>
                         </>
                     )}
                 </ul>
             </section>
             {type === "Posted" && (
                 <div className="flex items-center mb-5 480px:mb-2 480px:flex-wrap">
-                    <p className=" text-ThemeRed mr-3 font-NHU-bold 480px:w-full 480px:mb-1">
-                        DATE
-                    </p>
-                    <div className="calendar mr-5 480px:mb-1">
-                        <span className="cal">
-                            <Image
-                                src="/Images/calendar.png"
-                                width={15}
-                                height={15}
-                                alt="Calendar"
-                            />
-                        </span>
-                        <input
-                            type="text"
-                            value={isDate.value}
-                            onChange={() => {}}
-                            placeholder="dd/mm/yyyy"
-                            onClick={() => setDate({ ...isDate, toggle: true })}
-                            className="p-2 outline-none rounded-md shadow-md"
-                        />
-                        {isDate.toggle && (
-                            <Calendar value={isDate} setValue={setDate} />
-                        )}
-                    </div>
-                    <div className="calendar">
-                        <span className="cal">
-                            <Image
-                                src="/Images/calendar.png"
-                                width={15}
-                                height={15}
-                                alt="Calendar"
-                            />
-                        </span>
-                        <input
-                            type="text"
-                            value={isDate2.value}
-                            onChange={() => {}}
-                            placeholder="dd/mm/yyyy"
-                            onClick={() =>
-                                setDate2({ ...isDate2, toggle: true })
-                            }
-                            className="p-2 outline-none rounded-md shadow-md"
-                        />
-                        {isDate2.toggle && (
-                            <Calendar value={isDate2} setValue={setDate2} />
-                        )}
-                    </div>
+                    <PeriodCalendar value={isPeriod} setValue={setPeriod} />
                 </div>
             )}
             <div className="table_container">

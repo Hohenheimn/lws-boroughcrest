@@ -28,8 +28,13 @@ export default function PeriodCalendar({ value, setValue }: Props) {
     return (
         <div className="relative">
             <aside className="flex items-center 480px:flex-wrap">
-                <p className=" text-ThemeRed font-NHU-medium mr-2">PERIOD</p>
-                <div className="flex bg-white px-2 py-1 rounded-md shadow-md border">
+                <p className=" text-ThemeRed mr-3 font-NHU-bold 1550px:text-[14px]">
+                    PERIOD
+                </p>
+                <div
+                    className="flex bg-white px-2 py-1 rounded-md shadow-md border"
+                    onClick={() => setToggle(!isToggle)}
+                >
                     <input
                         type="text"
                         className="w-[150px] 480px:w-[100px] outline-none pointer-events-none"
@@ -42,14 +47,12 @@ export default function PeriodCalendar({ value, setValue }: Props) {
                         value={value.to}
                         onChange={() => {}}
                     />
-                    <span
-                        className=" cursor-pointer"
-                        onClick={() => setToggle(!isToggle)}
-                    >
+                    <span className=" cursor-pointer">
                         <Image
-                            src="/Images/calendar.png"
+                            src="/Images/CalendarMini.png"
                             width={15}
                             height={15}
+                            alt=""
                         />
                     </span>
                 </div>

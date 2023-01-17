@@ -30,6 +30,7 @@ export default function Table({ isSearchTable }: Props) {
             );
         }
     );
+
     return (
         <>
             <div className="table_container">
