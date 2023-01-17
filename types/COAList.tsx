@@ -7,7 +7,7 @@ export type ChartofAccountPayload = {
     coa_default_account_id: number | null;
     apply_to_sub_acc: boolean;
     bank_acc_no: string;
-    bank_branch: string;
+    // bank_branch: string;
     defaultAccount?: string;
     parent?: string;
 };

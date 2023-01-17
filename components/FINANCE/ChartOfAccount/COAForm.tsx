@@ -196,7 +196,7 @@ export default function COAForm({
                     : isDefaultAccount.id,
             apply_to_sub_acc: isStatus,
             bank_acc_no: data.bank_acc_no,
-            bank_branch: data.bank_branch,
+            // bank_branch: data.bank_branch,
         };
 
         if (router.query.modify === undefined) {
@@ -367,10 +367,10 @@ export default function COAForm({
                         <label htmlFor="">BANK ACCOUNT NO.</label>
                         <input type="text" {...register("bank_acc_no")} />
                     </li>
-                    <li>
+                    {/* <li>
                         <label htmlFor="">BANK AND BRANCH</label>
                         <input type="text" {...register("bank_branch")} />
-                    </li>
+                    </li> */}
                 </ul>
                 <div className={style.SaveButton}>
                     <aside className={style.back} onClick={cancel}>
