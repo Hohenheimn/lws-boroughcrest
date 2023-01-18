@@ -142,7 +142,7 @@ export default function Calendar({ value, setValue }: Props) {
                                         ? true
                                         : false
                                 }
-                                className="focus:text-gray-400 focus:bg-ThemeRed hover:text-white mr-3 hover:bg-ThemeRed text-gray-800 border flex justify-center items-center bg-white rounded-full font-NHU-black w-5 h-5 "
+                                className="focus:text-gray-400 focus:bg-ThemeRed hover:text-white mr-3 hover:bg-ThemeRed text-[#757575] border flex justify-center items-center bg-white rounded-full font-NHU-black w-5 h-5 "
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -167,7 +167,7 @@ export default function Calendar({ value, setValue }: Props) {
                             <ul className="flex">
                                 <li className="relative mr-2  w-[100px] cursor-pointer text-center bg-white rounded-lg font-bold">
                                     <span
-                                        className=" py-1 px-2 inline-block text-[14px]"
+                                        className=" py-1 px-2 inline-block text-[14px] text-[#757575]"
                                         onClick={() =>
                                             setToggleButton({
                                                 ...toggleButton,
@@ -183,9 +183,9 @@ export default function Calendar({ value, setValue }: Props) {
                                                 <li
                                                     key={index}
                                                     className={`py-1 px-2 text-[12px] cursor-pointer hover:bg-ThemeRed50 ${
-                                                        currentMonth ===
-                                                            month &&
-                                                        " bg-ThemeRed text-white"
+                                                        currentMonth === month
+                                                            ? " bg-ThemeRed text-white"
+                                                            : "text-[#757575]"
                                                     }`}
                                                     onClick={() => {
                                                         setCurrentMonth(month);
@@ -203,7 +203,7 @@ export default function Calendar({ value, setValue }: Props) {
                                 </li>
                                 <li className=" relative cursor-pointer bg-white rounded-lg font-bold">
                                     <span
-                                        className=" py-1 px-2 text-[14px] inline-block"
+                                        className=" py-1 px-2 text-[14px] inline-block text-[#757575]"
                                         onClick={() =>
                                             setToggleButton({
                                                 ...toggleButton,
@@ -220,11 +220,9 @@ export default function Calendar({ value, setValue }: Props) {
                                                     key={index}
                                                     className={`py-1 px-2 text-[12px] cursor-pointer hover:bg-ThemeRed50 ${
                                                         currenYear ===
-                                                            format(
-                                                                year,
-                                                                "yyyy"
-                                                            ) &&
-                                                        " bg-ThemeRed text-white"
+                                                        format(year, "yyyy")
+                                                            ? " bg-ThemeRed text-white"
+                                                            : "text-[#757575]"
                                                     }`}
                                                     onClick={() => {
                                                         setCurrentYear(
@@ -252,7 +250,7 @@ export default function Calendar({ value, setValue }: Props) {
                                         ? true
                                         : false
                                 }
-                                className="focus:text-gray-400 relative focus:bg-ThemeRed hover:text-white hover:bg-ThemeRed ml-3 text-gray-800 border flex justify-center items-center bg-white rounded-full font-NHU-black w-5 h-5"
+                                className="focus:text-gray-400 relative text-[#757575] focus:bg-ThemeRed hover:text-white hover:bg-ThemeRed ml-3 border flex justify-center items-center bg-white rounded-full font-NHU-black w-5 h-5"
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -277,25 +275,25 @@ export default function Calendar({ value, setValue }: Props) {
                         </div>
                     </div>
                     <div className=" flex flex-wrap mb-2">
-                        <div className=" text-[14px] font-medium text-center text-gray-800  w-[14.28%]">
+                        <div className=" text-[14px] font-medium text-center text-[#757575]  w-[14.28%]">
                             S
                         </div>
-                        <div className="text-[14px] font-medium text-center text-gray-800  w-[14.28%]">
+                        <div className="text-[14px] font-medium text-center text-[#757575]  w-[14.28%]">
                             M
                         </div>
-                        <div className="text-[14px] font-medium text-center text-gray-800  w-[14.28%]">
+                        <div className="text-[14px] font-medium text-center text-[#757575]  w-[14.28%]">
                             T
                         </div>
-                        <div className="text-[14px] font-medium text-center text-gray-800  w-[14.28%]">
+                        <div className="text-[14px] font-medium text-center text-[#757575]  w-[14.28%]">
                             W
                         </div>
-                        <div className="text-[14px] font-medium text-center text-gray-800 w-[14.28%]">
+                        <div className="text-[14px] font-medium text-center text-[#757575] w-[14.28%]">
                             T
                         </div>
-                        <div className="text-[14px] font-medium text-center text-gray-800 w-[14.28%]">
+                        <div className="text-[14px] font-medium text-center text-[#757575] w-[14.28%]">
                             F
                         </div>
-                        <div className="text-[14px] font-medium text-center text-gray-800 w-[14.28%]">
+                        <div className="text-[14px] font-medium text-center text-[#757575] w-[14.28%]">
                             S
                         </div>
                     </div>
@@ -308,7 +306,9 @@ export default function Calendar({ value, setValue }: Props) {
                                 <button
                                     onClick={() => SelectedDateHandler(day)}
                                     className={` hover:bg-gray-300 w-[90%] flex justify-center items-center m-0 aspect-square text-[14px] rounded-lg ${
-                                        isToday(day) && todayStyle
+                                        isToday(day)
+                                            ? todayStyle
+                                            : "text-[#757575]"
                                     } ${isSameMonth(day, today) && sameMonth} ${
                                         isEqual(day, isSelected) &&
                                         !isToday(day) &&
