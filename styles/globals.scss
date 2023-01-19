@@ -540,3 +540,65 @@ input[type="number"] {
         }
     }
 }
+// Date range Customize
+.rdrDateDisplayWrapper {
+    display: none;
+}
+.rdrInputRanges {
+    display: none;
+}
+.rdrDayToday .rdrDayNumber span {
+    position: relative;
+}
+.rdrDayToday .rdrDayNumber span:after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    height: 26px !important;
+    border-radius: 50% !important;
+    width: 26px !important;
+    border: 1px solid #8f384d;
+    background-color: transparent !important;
+}
+.rdrDayToday .rdrEndEdge .rdrDayNumber span:after {
+    display: none !important;
+}
+.rdrWeekDay,
+.rdrMonthName {
+    color: #545454 !important;
+    font-weight: bold !important;
+}
+.rdrDayStartPreview,
+.rdrDayEndPreview,
+.rdrDayInPreview {
+    color: #8f384d !important;
+}
+
+.rdrSelected,
+.rdrInRange,
+.rdrStartEdge,
+.rdrEndEdge {
+    background-color: #8f384d !important;
+}
+
+.rdrNextPrevButton {
+    background-color: transparent !important;
+}
+.rdrPprevButton i {
+    border-color: transparent #8f384d transparent transparent !important;
+    border-width: 10px 10px 10px 10px !important;
+}
+.rdrNextButton i {
+    border-width: 10px 5px 10px 10px !important;
+    border-color: transparent transparent transparent #8f384d !important;
+}
+.rdrDefinedRangesWrapper {
+    display: none;
+}
+@media (max-width: 640px) {
+    .rdrMonths {
+        flex-direction: column;
+    }
+}

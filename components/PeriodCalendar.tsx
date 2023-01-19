@@ -71,6 +71,7 @@ export default function PeriodCalendar({
                     <>
                         {open && (
                             <DatePickerContainer
+                                setValue={setValue}
                                 setRange={setRange}
                                 range={range}
                                 setOpen={setOpen}
@@ -87,9 +88,10 @@ type Props = {
     setRange: Function;
     range: any;
     setOpen: Function;
+    setValue: Function;
 };
 
-const DatePickerContainer = ({ setRange, range, setOpen }: Props) => {
+const DatePickerContainer = ({ setRange, range, setOpen, setValue }: Props) => {
     const modal = useRef<any>();
     useEffect(() => {
         const clickOutSide = (e: any) => {
@@ -102,16 +104,28 @@ const DatePickerContainer = ({ setRange, range, setOpen }: Props) => {
             document.removeEventListener("mousedown", clickOutSide);
         };
     });
+
     return (
         <div ref={modal}>
             <DateRangePicker
-                onChange={(item: any) => setRange([item.selection])}
-                editableDateInputs={true}
+                onChange={(item: any) => {
+                    if (
+                        format(item.selection.startDate, "yyyy-MM-dd") ===
+                        format(item.selection.endDate, "yyyy-MM-dd")
+                    ) {
+                        setValue({
+                            from: "",
+                            to: "",
+                        });
+                        setRange([item.selection]);
+                    } else {
+                        setRange([item.selection]);
+                    }
+                }}
                 moveRangeOnFirstSelection={false}
                 ranges={range}
                 months={2}
                 direction="horizontal"
-                className="calendarElement"
             />
         </div>
     );
