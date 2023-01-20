@@ -42,6 +42,7 @@ export default function SubTable() {
                                         src="/Images/peso.png"
                                         height={13}
                                         width={10}
+                                        alt=""
                                     />
                                 </aside>
                                 <p>-</p>
@@ -80,6 +81,7 @@ const List = () => {
                             src="/Images/CalendarMini.png"
                             width={15}
                             height={15}
+                            alt=""
                         />
                     </span>
                     <input

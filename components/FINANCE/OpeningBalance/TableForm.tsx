@@ -52,6 +52,7 @@ export default function TableForm() {
                                         src="/Images/peso.png"
                                         height={13}
                                         width={10}
+                                        alt=""
                                     />
                                 </aside>
                                 <p>-</p>
@@ -64,6 +65,7 @@ export default function TableForm() {
                                         src="/Images/peso.png"
                                         height={13}
                                         width={10}
+                                        alt=""
                                     />
                                 </aside>
                                 <p>-</p>

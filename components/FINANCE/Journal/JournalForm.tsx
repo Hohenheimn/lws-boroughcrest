@@ -47,6 +47,7 @@ export default function BatchForm({ DefaultValue, type }: Props) {
                                     src="/Images/CalendarMini.png"
                                     width={15}
                                     height={15}
+                                    alt=""
                                 />
                             </span>
                             <input
@@ -107,6 +108,7 @@ export default function BatchForm({ DefaultValue, type }: Props) {
                                                 src="/Images/peso.png"
                                                 height={13}
                                                 width={10}
+                                                alt=""
                                             />
                                         </aside>
                                         <p>-</p>
@@ -119,6 +121,7 @@ export default function BatchForm({ DefaultValue, type }: Props) {
                                                 src="/Images/peso.png"
                                                 height={13}
                                                 width={10}
+                                                alt=""
                                             />
                                         </aside>
                                         <p>-</p>
@@ -234,7 +237,12 @@ const List = ({ itemList, setDefault, isDefault, index }: List) => {
             <td className="w-[20%]">
                 <div className={style.peso}>
                     <aside>
-                        <Image src="/Images/peso.png" height={13} width={10} />
+                        <Image
+                            src="/Images/peso.png"
+                            height={13}
+                            width={10}
+                            alt=""
+                        />
                     </aside>
                     <input
                         type="number"
@@ -247,7 +255,12 @@ const List = ({ itemList, setDefault, isDefault, index }: List) => {
             <td className="w-[20%]">
                 <div className={style.peso}>
                     <aside>
-                        <Image src="/Images/peso.png" height={13} width={10} />
+                        <Image
+                            src="/Images/peso.png"
+                            height={13}
+                            width={10}
+                            alt=""
+                        />
                     </aside>
                     <input
                         type="number"

@@ -72,6 +72,7 @@ export default function Header() {
                                         src="/Images/CalendarMini.png"
                                         width={15}
                                         height={15}
+                                        alt=""
                                     />
                                 </span>
                                 <input

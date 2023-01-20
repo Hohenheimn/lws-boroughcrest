@@ -605,6 +605,7 @@ export default function PropertyForm({
                                         src="/Images/CalendarMini.png"
                                         width={15}
                                         height={15}
+                                        alt=""
                                     />
                                 </span>
                                 <input
@@ -636,6 +637,7 @@ export default function PropertyForm({
                                         src="/Images/CalendarMini.png"
                                         width={15}
                                         height={15}
+                                        alt=""
                                     />
                                 </span>
                                 <input

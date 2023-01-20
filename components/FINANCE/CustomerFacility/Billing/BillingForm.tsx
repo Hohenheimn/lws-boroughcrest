@@ -100,6 +100,7 @@ export default function JournalForm({ DefaultValue, type }: Props) {
                                                 src="/Images/peso.png"
                                                 height={13}
                                                 width={10}
+                                                alt=""
                                             />
                                         </aside>
                                         <p>-</p>
@@ -112,6 +113,7 @@ export default function JournalForm({ DefaultValue, type }: Props) {
                                                 src="/Images/peso.png"
                                                 height={13}
                                                 width={10}
+                                                alt=""
                                             />
                                         </aside>
                                         <p>-</p>
