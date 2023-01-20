@@ -2,26 +2,29 @@ import React, { useState } from "react";
 import style from "../../../styles/finance/Crud-table.module.scss";
 import Image from "next/image";
 import Calendar from "../../Calendar";
+import DropdownSearch from "../../DropdownSearch";
 
 export default function SubTable() {
     return (
         <>
-            <table className={style.crudTable}>
-                <thead>
-                    <tr>
-                        <th>CUSTOMER ID</th>
-                        <th>CUSTOMER NAME</th>
-                        <th>DATE</th>
-                        <th>REFERENCE NO.</th>
-                        <th>CHARGE</th>
-                        <th>ACCOUNT</th>
-                        <th>AMOUNT</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <List />
-                </tbody>
-            </table>
+            <div className="w-full overflow-auto">
+                <table className={style.crudTable}>
+                    <thead>
+                        <tr>
+                            <th>CUSTOMER ID</th>
+                            <th>CUSTOMER NAME</th>
+                            <th>DATE</th>
+                            <th>REFERENCE NO.</th>
+                            <th>CHARGE</th>
+                            <th>ACCOUNT</th>
+                            <th>AMOUNT</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <List />
+                    </tbody>
+                </table>
+            </div>
             <div className="mt-10 border-b border-ThemeRed"></div>
             <table className={style.crudTable}>
                 <tbody>
@@ -65,10 +68,10 @@ const List = () => {
     return (
         <tr className={`${style.total} ${style.total1}`}>
             <td>
-                <input type="text" />
+                <h2>09</h2>
             </td>
             <td>
-                <input type="text" />
+                <DropdownSearch />
             </td>
             <td>
                 <aside className="calendar relative w-[200px]">
@@ -97,7 +100,7 @@ const List = () => {
                 <input type="text" />
             </td>
             <td>
-                <input type="text" />
+                <DropdownSearch />
             </td>
             <td>
                 <aside className=" p-1 rounded-md w-full bg-[#aeaeae] flex items-center justify-center">

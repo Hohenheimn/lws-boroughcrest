@@ -1,7 +1,7 @@
 .crudTable {
     @apply w-full 640px:min-w-[700px] overflow-auto;
     th {
-        @apply text-start text-[16px] 820px:text-[13px] text-ThemeRed pb-1;
+        @apply text-start text-[16px] min-w-[200px] 1550px:text-[13px] text-ThemeRed pb-1;
     }
 
     tr.total {
@@ -19,7 +19,7 @@
     td {
         @apply pb-2 pr-10 1366px:pr-5 1024px:pr-2 820px:text-[13px];
         input {
-            @apply w-full p-1 h-10 820px:h-8 rounded-md outline-none shadow-md text-[#757575] font-NHU-bold;
+            @apply w-full p-1 h-10 min-w-[200px] 820px:h-8 rounded-md outline-none shadow-md text-[#757575] font-NHU-bold;
         }
         input[type="number"] {
             @apply text-end;

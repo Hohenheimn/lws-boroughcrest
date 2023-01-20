@@ -5,7 +5,7 @@ import Image from "next/image";
 export default function TableForm() {
     return (
         <>
-            <div className=" overflow-auto">
+            <div className="w-full overflow-auto">
                 <table className={style.crudTable}>
                     <thead>
                         <tr>
