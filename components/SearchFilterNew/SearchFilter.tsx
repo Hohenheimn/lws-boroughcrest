@@ -12,12 +12,11 @@ import { useRouter } from "next/router";
 import style from "../../styles/SearchFilter.module.scss";
 import { CustomerImport } from "../ReactQuery/CustomerMethod";
 import { MoonLoader } from "react-spinners";
-import axios from "axios";
-import { getCookie } from "cookies-next";
 import { PropertyImport } from "../ReactQuery/PropertyMethod";
 import { format } from "date-fns";
 import { DynamicExportHandler } from "../DynamicExport";
 import { DynamicImport } from "../DynamicImport";
+import Link from "next/link";
 
 type SearchFilter = {
     page: string;
@@ -25,6 +24,7 @@ type SearchFilter = {
 };
 
 export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
+    const { cusTableColumn } = useContext(AppContext);
     const {
         setCorpToggle,
         setCusToggle,
@@ -43,6 +43,8 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
         propList,
         setNewUserToggle,
         setNewPropToggle,
+        // Print,
+        isPrint,
     } = useContext(AppContext);
     const date = format(new Date(), "dd/MM/yyyy");
     const [isFilter, setFilter] = useState(false);
@@ -165,12 +167,30 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
                                 className="hidden"
                             />
                             <Tippy theme="ThemeRed" content="Print">
-                                <div className={style.icon}>
-                                    <Image
-                                        src="/Images/Print.png"
-                                        layout="fill"
-                                        alt="Print"
-                                    />
+                                <div>
+                                    <Link
+                                        href={`${isPrint.url}?keyword=${
+                                            isPrint.keyword
+                                        }&limit=${isPrint.limit}&page=${
+                                            isPrint.page
+                                        }${
+                                            router.pathname.includes(
+                                                "admin/customer"
+                                            )
+                                                ? `&columns=${cusTableColumn}`
+                                                : ""
+                                        }`}
+                                    >
+                                        <a target="_blank">
+                                            <div className={style.icon}>
+                                                <Image
+                                                    src="/Images/Print.png"
+                                                    layout="fill"
+                                                    alt="Print"
+                                                />
+                                            </div>
+                                        </a>
+                                    </Link>
                                 </div>
                             </Tippy>
                         </li>

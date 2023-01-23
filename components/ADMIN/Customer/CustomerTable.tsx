@@ -12,9 +12,9 @@ import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 
 export default function CustomerTable() {
-    const { TableRows, cusTableColumn, isSearchBar } = useContext(AppContext);
+    const { TableRows, cusTableColumn, isSearchBar, setPrint } =
+        useContext(AppContext);
     const [TablePage, setTablePage] = useState(1);
-
     const { data, isLoading, isError } = useQuery(
         ["get-customer-list", TablePage, isSearchBar, TableRows],
         () => {
@@ -28,6 +28,15 @@ export default function CustomerTable() {
             );
         }
     );
+    // Set parameter for print
+    useEffect(() => {
+        setPrint({
+            keyword: isSearchBar,
+            page: TablePage,
+            limit: TableRows,
+            url: "/admin/customer/print",
+        });
+    }, []);
 
     return (
         <>

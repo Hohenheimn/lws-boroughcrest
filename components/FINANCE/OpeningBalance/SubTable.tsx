@@ -105,25 +105,18 @@ const List = () => {
                 <DropdownSearch />
             </td>
             <td>
-                <aside className=" p-1 rounded-md w-full bg-[#aeaeae] flex items-center justify-center">
-                    <ul className="min-w-[180px] flex relative">
-                        <li
-                            className="w-2/4 text-center font-NHU-bold text-[#757575] py-1 m-0 z-10 cursor-pointer"
-                            onClick={() => setTab(true)}
-                        >
-                            Advance
-                        </li>
-                        <li
-                            className="w-2/4 font-NHU-bold text-[#757575] text-center py-1 m-0 z-10 cursor-pointer"
-                            onClick={() => setTab(false)}
-                        >
-                            Received
-                        </li>
-                        <li
-                            className={` transition-all duration-100 ease-in-out absolute top-0 w-2/4 h-full bg-white rounded-md ${
-                                isTab ? "left-0" : "left-[50%]"
-                            }`}
-                        ></li>
+                <aside
+                    className={`ToggleAccount ${
+                        isTab ? "Advance" : "received"
+                    }`}
+                >
+                    <ul
+                        className="min-w-[180px] flex relative"
+                        onClick={() => setTab(!isTab)}
+                    >
+                        <li className="item ad">Advance</li>
+                        <li className="item re">Received</li>
+                        <li className="moving"></li>
                     </ul>
                 </aside>
             </td>

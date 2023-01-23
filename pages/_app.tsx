@@ -28,8 +28,10 @@ function MyApp({ Component, pageProps }: ExtendAppProps) {
         return (
             <>
                 <QueryClientProvider client={queryClient}>
-                    <Component {...pageProps} />
-                    <ReactQueryDevtools />
+                    <AppProvider>
+                        <Component {...pageProps} />
+                        <ReactQueryDevtools />
+                    </AppProvider>
                 </QueryClientProvider>
             </>
         );
