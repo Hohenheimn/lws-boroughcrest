@@ -54,12 +54,22 @@ export default function Header() {
         <>
             <section className={style.container}>
                 <div className=" flex items-center">
-                    <h1 className=" text-[24px]">Water</h1>
-                    <h1 className=" text-[24px] ml-5">Electric</h1>
-                    <span className=" font-NHU-bold text-[24px] text-ThemeRed ml-5 cursor-pointer">
-                        +
-                    </span>
+                    <p className=" text-ThemeRed mr-3 font-NHU-bold 1550px:text-[14px]">
+                        READING:
+                    </p>
+                    <input
+                        type="text"
+                        className=" rounded-md shadow-md 480px:text-[12px] outline-none px-2 py-1"
+                    />
                 </div>
+                <aside>
+                    <p className=" text-ThemeRed mr-3 font-NHU-bold 1550px:text-[14px]">
+                        READING SERIAL:{" "}
+                        <span className=" text-[#2e4364] font-NHU-medium">
+                            0001011
+                        </span>
+                    </p>
+                </aside>
                 <ul className={`${style.navigation}`}>
                     <li className={style.importExportPrint}>
                         <Tippy theme="ThemeRed" content="Export">
@@ -71,21 +81,7 @@ export default function Header() {
                                 />
                             </div>
                         </Tippy>
-                        <Tippy theme="ThemeRed" content="Import">
-                            <div className={style.icon}>
-                                {CusLoading ? (
-                                    <MoonLoader size={20} color="#8f384d" />
-                                ) : (
-                                    <label htmlFor="import">
-                                        <Image
-                                            src="/Images/Import.png"
-                                            layout="fill"
-                                            alt="Import"
-                                        />
-                                    </label>
-                                )}
-                            </div>
-                        </Tippy>
+
                         <input
                             type="file"
                             id="import"

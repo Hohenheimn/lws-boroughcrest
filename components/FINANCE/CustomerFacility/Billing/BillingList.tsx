@@ -139,9 +139,9 @@ export default function BillingList() {
                     )}
                 </ul>
             </section>
-            {isAdvFilter.length > 0 && (
+            {/* {isAdvFilter.length > 0 && (
                 <DisplayAdvFilter isAdvFilter={isAdvFilter} />
-            )}
+            )} */}
 
             {isType === "Posted" && (
                 <div className="w-full mb-5">

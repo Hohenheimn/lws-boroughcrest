@@ -44,27 +44,32 @@ export default function PeriodCalendar({
         <div>
             <DynamicPopOver
                 toRef={
-                    <div
-                        className="px-5 py-2 shadow-md rounded-md bg-white flex justify-between items-center"
-                        onClick={() => setOpen((open) => !open)}
-                    >
-                        <input
-                            value={value.from}
-                            readOnly
-                            className=" outline-none w-[90px]"
-                        />
-                        <p className="text-[#545454] mr-2">to</p>
-                        <input
-                            value={value.to}
-                            readOnly
-                            className=" outline-none w-[100px]"
-                        />
-                        <Image
-                            src="/Images/CalendarMini.png"
-                            height={15}
-                            width={15}
-                            alt=""
-                        />
+                    <div className="flex items-center">
+                        <p className="text-ThemeRed mr-3 font-NHU-bold 640px:text-[12px] 480px:w-full">
+                            PERIOD
+                        </p>
+                        <div
+                            className="px-5 py-2 shadow-md rounded-md bg-white flex justify-between items-center"
+                            onClick={() => setOpen((open) => !open)}
+                        >
+                            <input
+                                value={value.from}
+                                readOnly
+                                className=" outline-none w-[90px]"
+                            />
+                            <p className="text-[#545454] mr-2">to</p>
+                            <input
+                                value={value.to}
+                                readOnly
+                                className=" outline-none w-[100px]"
+                            />
+                            <Image
+                                src="/Images/CalendarMini.png"
+                                height={15}
+                                width={15}
+                                alt=""
+                            />
+                        </div>
                     </div>
                 }
                 toPop={

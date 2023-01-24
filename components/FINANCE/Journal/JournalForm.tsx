@@ -5,6 +5,7 @@ import { HiMinus } from "react-icons/hi";
 import { RiArrowDownSFill } from "react-icons/ri";
 import style from "../../../styles/finance/Crud-table.module.scss";
 import Calendar from "../../Calendar";
+import DropdownSearch from "../../DropdownSearch";
 
 type defaultArray = {
     id: number;
@@ -221,18 +222,20 @@ const List = ({ itemList, setDefault, isDefault, index }: List) => {
     return (
         <tr>
             <td className="w-[20%]">
-                <input
+                {/* <input
                     type="number"
                     value={itemList.code}
                     onChange={(e) => updateValue("code", e)}
-                />
+                /> */}
+                <h2>010101</h2>
             </td>
             <td className="w-[30%]">
-                <input
+                {/* <input
                     type="text"
                     value={itemList.accountName}
                     onChange={(e) => updateValue("accountName", e)}
-                />
+                /> */}
+                <DropdownSearch />
             </td>
             <td className="w-[20%]">
                 <div className={style.peso}>

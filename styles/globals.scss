@@ -120,6 +120,16 @@ input {
             th {
                 @apply text-start px-4 py-5 480px:py-3 1280px:px-3 text-[#545454] 1280px:text-[13px];
             }
+            th.checkbox {
+                @apply w-3;
+                input[type="checkbox"] {
+                    border: 1px solid rgb(216, 216, 216) !important;
+                    @apply relative h-4 w-4 rounded-md shadow-md overflow-hidden after:text-white after:flex after:justify-center after:items-center mr-1 checked:after:bg-ThemeRed checked:after:content-['✓'] appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
+                    &:checked {
+                        border: none !important;
+                    }
+                }
+            }
             .status {
                 @apply text-center;
             }
@@ -151,7 +161,9 @@ input {
                     p {
                         @apply text-[#2E4364] font-NHU-medium  1550px:text-[14px] 480px:text-[12px];
                     }
-                    input {
+                    input[type="text"],
+                    input[type="number"],
+                    input[type="email"] {
                         @apply rounded-md shadow-md 480px:text-[12px] outline-none px-2 py-1;
                     }
                 }
@@ -187,10 +199,10 @@ input {
                 }
             }
             td.checkbox {
-                @apply w-5;
+                @apply w-3;
                 input[type="checkbox"] {
                     border: 1px solid rgb(216, 216, 216) !important;
-                    @apply relative h-5 w-5 after:text-white after:flex after:justify-center after:items-center mr-1 checked:after:bg-ThemeRed checked:after:content-['✓'] appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
+                    @apply relative h-4 w-4 rounded-md shadow-md overflow-hidden after:text-white after:flex after:justify-center after:items-center mr-1 checked:after:bg-ThemeRed checked:after:content-['✓'] appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
                     &:checked {
                         border: none !important;
                     }

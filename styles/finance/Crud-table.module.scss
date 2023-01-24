@@ -1,25 +1,25 @@
 .crudTable {
     @apply w-full 640px:min-w-[700px] overflow-auto;
     th {
-        @apply text-start text-[16px] min-w-[200px] 1280px:text-[13px] text-ThemeRed pb-1;
-    }
-
-    tr.total {
-        .label {
-            @apply text-end;
-        }
-        td {
-            @apply pt-5 h-10;
-            .peso {
-                @apply w-full p-1 h-10 px-5 rounded-md outline-none relative text-end;
-            }
-        }
+        @apply text-start text-[16px] 1280px:text-[13px] text-ThemeRed pb-1;
     }
 
     td {
         @apply pb-2 pr-10 1366px:pr-5 1024px:pr-2 820px:text-[13px];
-        input {
-            @apply w-full p-1 h-10 min-w-[200px] 820px:h-8 rounded-md outline-none shadow-md text-[#757575] font-NHU-bold;
+        input[type="number"],
+        input[type="text"],
+        input[type="email"] {
+            @apply w-full p-1 px-2 h-10 min-w-[200px] 820px:h-8 rounded-md outline-none shadow-md text-[#757575] font-NHU-bold;
+        }
+        input[type="checkbox"] {
+            border: 1px solid rgb(216, 216, 216) !important;
+            @apply relative h-4 w-4 mr-5 after:text-white rounded-md overflow-hidden shadow-md after:flex after:justify-center after:items-center checked:after:bg-ThemeRed checked:after:content-['✓'] appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
+            &:checked {
+                border: none !important;
+            }
+        }
+        input.disabled {
+            @apply bg-ThemeRed50 pointer-events-none;
         }
         input[type="number"] {
             @apply text-end;
@@ -43,16 +43,7 @@
             @apply bg-ThemeRed text-white text-center px-3 py-1 cursor-pointer rounded-md;
         }
     }
-    td.checkbox {
-        @apply w-5;
-        input[type="checkbox"] {
-            border: 1px solid rgb(216, 216, 216) !important;
-            @apply relative h-5 w-5 after:text-white after:flex after:justify-center after:items-center mr-1 checked:after:bg-ThemeRed checked:after:content-['✓'] appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
-            &:checked {
-                border: none !important;
-            }
-        }
-    }
+
     td.action {
         @apply pr-0 pb-0 flex w-[100%] h-10 items-center max-w-[100px];
         div {

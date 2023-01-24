@@ -141,12 +141,10 @@ const List = ({ itemList, setDefault, isDefault, index }: List) => {
     };
     return (
         <tr>
-            <td className={style.checkbox}>
-                <div className="item">
-                    <input type="checkbox" />
-                </div>
+            <td className="checkbox">
+                <input type="checkbox" />
             </td>
-            <td>
+            <td className="flex items-center">
                 <input
                     type="number"
                     value={itemList.charge}

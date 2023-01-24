@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import AppContext from "../Context/AppContext";
 import Image from "next/image";
 import { BsSearch } from "react-icons/bs";
@@ -24,7 +24,7 @@ type SearchFilter = {
 };
 
 export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
-    const { cusTableColumn } = useContext(AppContext);
+    const [isPrintColumn, setPrintColumn] = useState();
     const {
         setCorpToggle,
         setCusToggle,
@@ -45,11 +45,23 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
         setNewPropToggle,
         // Print,
         isPrint,
+        cusTableColumn,
     } = useContext(AppContext);
     const date = format(new Date(), "dd/MM/yyyy");
     const [isFilter, setFilter] = useState(false);
     const router = useRouter();
     const ValidatePathName = router.pathname.split("/")[2];
+
+    // Print Columns
+    useEffect(() => {
+        if (router.pathname.includes("admin/customer")) {
+            setPrintColumn(cusTableColumn);
+        }
+        if (router.pathname.includes("admin/property")) {
+            setPrintColumn(propTableColumn);
+        }
+        console.log(isPrintColumn);
+    }, []);
 
     const openNew = () => {
         if (router.pathname.includes("project/corporate")) {
@@ -60,9 +72,11 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
         }
         if (router.pathname.includes("admin/customer")) {
             setCusToggle(true);
+            setPrintColumn(cusTableColumn);
         }
         if (router.pathname.includes("admin/property")) {
             setNewPropToggle(true);
+            setPrintColumn(propTableColumn);
         }
     };
 
@@ -169,17 +183,7 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
                             <Tippy theme="ThemeRed" content="Print">
                                 <div>
                                     <Link
-                                        href={`${isPrint.url}?keyword=${
-                                            isPrint.keyword
-                                        }&limit=${isPrint.limit}&page=${
-                                            isPrint.page
-                                        }${
-                                            router.pathname.includes(
-                                                "admin/customer"
-                                            )
-                                                ? `&columns=${cusTableColumn}`
-                                                : ""
-                                        }`}
+                                        href={`${isPrint.url}?keyword=${isPrint.keyword}&limit=${isPrint.limit}&page=${isPrint.page}&columns=${isPrintColumn}`}
                                     >
                                         <a target="_blank">
                                             <div className={style.icon}>

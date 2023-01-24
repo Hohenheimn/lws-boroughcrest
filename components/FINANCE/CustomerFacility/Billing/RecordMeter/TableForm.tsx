@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { IoMdArrowDropdown, IoMdArrowDropup } from "react-icons/io";
 import PeriodCalendar from "../../../../PeriodCalendar";
+import DropdownSearch from "../../../../DropdownSearch";
 
 export default function TableForm() {
     const [isPeriod, setPeriod] = useState({
@@ -15,10 +16,7 @@ export default function TableForm() {
                     <p className=" text-ThemeRed mr-3 font-NHU-bold 1550px:text-[14px]">
                         CHARGE
                     </p>
-                    <input
-                        type="text"
-                        className=" rounded-md shadow-md 480px:text-[12px] outline-none px-2 py-1"
-                    />
+                    <DropdownSearch />
                 </li>
                 <li className="mr-5 820px:mb-5 flex items-center mb-5">
                     <p className=" text-ThemeRed mr-3 font-NHU-bold 1550px:text-[14px]">
@@ -37,6 +35,11 @@ export default function TableForm() {
                 <table className="table_list">
                     <thead className="textRed">
                         <tr>
+                            <th className="checkbox">
+                                <div className="item">
+                                    <input type="checkbox" />
+                                </div>
+                            </th>
                             <th>PROPERTY NAME</th>
                             <th>PREVIOUS READING</th>
                             <th>CURRENT READING</th>
@@ -47,8 +50,19 @@ export default function TableForm() {
                     </thead>
                     <tbody>
                         <List />
+                        <List />
+                        <List />
+                        <List />
+                        <List />
+                        <List />
+                        <List />
+                        <List />
+                        <List />
                     </tbody>
                 </table>
+            </div>
+            <div className="w-full flex justify-end">
+                <button className="buttonRed">APPLY</button>
             </div>
         </div>
     );
@@ -57,6 +71,11 @@ export default function TableForm() {
 const List = () => {
     return (
         <tr>
+            <td className="checkbox">
+                <div className="item">
+                    <input type="checkbox" />
+                </div>
+            </td>
             <td>
                 <div className="item">
                     <h2>Unit 1</h2>
@@ -64,17 +83,17 @@ const List = () => {
             </td>
             <td>
                 <div className="item">
-                    <input type="text" />
+                    <h2>100.00</h2>
                 </div>
             </td>
             <td>
                 <div className="item">
-                    <input type="text" />
+                    <h2>250.00</h2>
                 </div>
             </td>
             <td>
                 <div className="item">
-                    <input type="text" />
+                    <h2>150.00</h2>
                 </div>
             </td>
             <td>

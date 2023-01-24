@@ -9,7 +9,7 @@ export default function DropdownSearch() {
                 toRef={
                     <input
                         type="text"
-                        className=" min-w-[200px]"
+                        className=" w-full p-1 h-10 min-w-[200px] 820px:h-8 rounded-md outline-none shadow-md text-[#757575]"
                         onClick={() => setToggle(true)}
                     />
                 }
@@ -40,13 +40,13 @@ const List = ({ setToggle }: Props) => {
     return (
         <ul className="w-[200px]" ref={PopOver}>
             <li className="px-4 py-2 1550px:px-2 1550px:py-1 border-b border-ThemeRed hover:bg-ThemeRed hover:text-white transition-all duration-75">
-                jomari
+                Sample
             </li>
             <li className="px-4 py-2 1550px:px-2 1550px:py-1 border-b border-ThemeRed hover:bg-ThemeRed hover:text-white transition-all duration-75">
-                jomari
+                Sample
             </li>
             <li className="px-4 py-2 1550px:px-2 1550px:py-1 border-b border-ThemeRed hover:bg-ThemeRed hover:text-white transition-all duration-75">
-                jomari
+                Sample
             </li>
         </ul>
     );

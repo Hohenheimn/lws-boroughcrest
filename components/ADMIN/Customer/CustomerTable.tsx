@@ -36,7 +36,7 @@ export default function CustomerTable() {
             limit: TableRows,
             url: "/admin/customer/print",
         });
-    }, []);
+    }, [isSearchBar, TablePage, TableRows]);
 
     return (
         <>
