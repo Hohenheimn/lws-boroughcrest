@@ -1,5 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { MdClose } from "react-icons/md";
+import Image from "next/image";
+import Tippy from "@tippy.js/react";
+import "tippy.js/dist/tippy.css";
 
 type AdvanceFilter = {
     isAdvFilter: {
@@ -14,12 +17,19 @@ export function AdvanceFilter({ isAdvFilter, setAdvFilter }: AdvanceFilter) {
 
     return (
         <div className="relative ml-5">
-            <button
-                className=" text-white px-4 py-2 bg-ThemeRed hover:bg-ThemeRed50 rounded-md cursor text-[16px] 1550px:text-[14px]"
-                onClick={() => setToggle(!isToggle)}
-            >
-                ADVANCE FILTER
-            </button>
+            <Tippy theme="ThemeRed" content="Advance Filter">
+                <button
+                    className="relative w-[25px] aspect-square hover:scale-[1.2] transition-all duration-200 ease-linear"
+                    onClick={() => setToggle(!isToggle)}
+                >
+                    <Image
+                        src="/Images/f_filter.png"
+                        layout="fill"
+                        alt="Advance Filter"
+                    />
+                </button>
+            </Tippy>
+
             {isToggle && (
                 <AdvFilterList
                     setAdvFilter={setAdvFilter}

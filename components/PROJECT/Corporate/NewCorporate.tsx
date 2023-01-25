@@ -13,6 +13,7 @@ import type { firstCorporateForm } from "../../../types/corporateList";
 import type { secondCorporateForm } from "../../../types/corporateList";
 import { ScaleLoader } from "react-spinners";
 import { getCookie } from "cookies-next";
+import * as yup from "yup";
 
 export default function NewCorporate() {
     const [isNewActive, setNewActive] = useState([true, false]);

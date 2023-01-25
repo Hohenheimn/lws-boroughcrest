@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import AppContext from "../Context/AppContext";
 import Image from "next/image";
 import { BsSearch } from "react-icons/bs";
@@ -12,12 +12,11 @@ import { useRouter } from "next/router";
 import style from "../../styles/SearchFilter.module.scss";
 import { CustomerImport } from "../ReactQuery/CustomerMethod";
 import { MoonLoader } from "react-spinners";
-import axios from "axios";
-import { getCookie } from "cookies-next";
 import { PropertyImport } from "../ReactQuery/PropertyMethod";
 import { format } from "date-fns";
 import { DynamicExportHandler } from "../DynamicExport";
 import { DynamicImport } from "../DynamicImport";
+import Link from "next/link";
 
 type SearchFilter = {
     page: string;
@@ -25,6 +24,7 @@ type SearchFilter = {
 };
 
 export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
+    const [isPrintColumn, setPrintColumn] = useState();
     const {
         setCorpToggle,
         setCusToggle,
@@ -43,11 +43,25 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
         propList,
         setNewUserToggle,
         setNewPropToggle,
+        // Print,
+        isPrint,
+        cusTableColumn,
     } = useContext(AppContext);
     const date = format(new Date(), "dd/MM/yyyy");
     const [isFilter, setFilter] = useState(false);
     const router = useRouter();
     const ValidatePathName = router.pathname.split("/")[2];
+
+    // Print Columns
+    useEffect(() => {
+        if (router.pathname.includes("admin/customer")) {
+            setPrintColumn(cusTableColumn);
+        }
+        if (router.pathname.includes("admin/property")) {
+            setPrintColumn(propTableColumn);
+        }
+        console.log(isPrintColumn);
+    }, []);
 
     const openNew = () => {
         if (router.pathname.includes("project/corporate")) {
@@ -58,9 +72,11 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
         }
         if (router.pathname.includes("admin/customer")) {
             setCusToggle(true);
+            setPrintColumn(cusTableColumn);
         }
         if (router.pathname.includes("admin/property")) {
             setNewPropToggle(true);
+            setPrintColumn(propTableColumn);
         }
     };
 
@@ -165,12 +181,20 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
                                 className="hidden"
                             />
                             <Tippy theme="ThemeRed" content="Print">
-                                <div className={style.icon}>
-                                    <Image
-                                        src="/Images/Print.png"
-                                        layout="fill"
-                                        alt="Print"
-                                    />
+                                <div>
+                                    <Link
+                                        href={`${isPrint.url}?keyword=${isPrint.keyword}&limit=${isPrint.limit}&page=${isPrint.page}&columns=${isPrintColumn}`}
+                                    >
+                                        <a target="_blank">
+                                            <div className={style.icon}>
+                                                <Image
+                                                    src="/Images/Print.png"
+                                                    layout="fill"
+                                                    alt="Print"
+                                                />
+                                            </div>
+                                        </a>
+                                    </Link>
                                 </div>
                             </Tippy>
                         </li>

@@ -4,7 +4,7 @@ import { BsPlusLg } from "react-icons/bs";
 import { HiMinus } from "react-icons/hi";
 import { RiArrowDownSFill } from "react-icons/ri";
 import style from "../../../../styles/finance/Crud-table.module.scss";
-import Calendar from "../../../Calendar";
+import DropdownSearch from "../../../DropdownSearch";
 
 type billingArray = {
     id: number;
@@ -43,10 +43,7 @@ export default function JournalForm({ DefaultValue, type }: Props) {
                         <p className=" text-ThemeRed mr-3 font-NHU-bold 820px:text-[13px]">
                             CUSTOMER
                         </p>
-                        <input
-                            type="text"
-                            className="p-2 820px:p-1 outline-none rounded-md shadow-md"
-                        />
+                        <DropdownSearch />
                     </li>
                     <li className="w-[32%] 820px:w-2/4 820px:mb-2">
                         <p className=" text-ThemeRed mr-3 font-NHU-bold 820px:text-[13px]">
@@ -85,41 +82,28 @@ export default function JournalForm({ DefaultValue, type }: Props) {
                                     isState={isBilling}
                                 />
                             ))}
-                            <tr className={style.total}>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td className={style.label}>
-                                    <h1 className=" text-ThemeRed">TOTAL</h1>
-                                </td>
-                                <td>
-                                    <div className={style.peso}>
-                                        <aside>
-                                            <Image
-                                                src="/Images/peso.png"
-                                                height={13}
-                                                width={10}
-                                            />
-                                        </aside>
-                                        <p>-</p>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div className={style.peso}>
-                                        <aside>
-                                            <Image
-                                                src="/Images/peso.png"
-                                                height={13}
-                                                width={10}
-                                            />
-                                        </aside>
-                                        <p>-</p>
-                                    </div>
-                                </td>
-                            </tr>
                         </tbody>
                     </table>
+                </div>
+                <div className="mt-10 border-b border-ThemeRed"></div>
+                <div className="flex flex-wrap justify-end py-5 480px:justify-start">
+                    <h1 className="text-start text-[16px] min-w-[200px] 1280px:text-[13px] text-ThemeRed pb-1">
+                        TOTAL
+                    </h1>
+
+                    <div className=" relative flex items-center text-[#757575] font-NHU-bold w-[200px] ">
+                        <aside className=" content-['₱'] absolute top-[0%] h-full flex items-center left-2 z-10">
+                            <Image
+                                src="/Images/peso.png"
+                                height={13}
+                                width={10}
+                                alt=""
+                            />
+                        </aside>
+                        <p className=" text-end w-full text-[#757575] font-NHU-bold text-[18px] 1280px:text-[13px]">
+                            -123123123
+                        </p>
+                    </div>
                 </div>
             </div>
 
@@ -230,11 +214,12 @@ const List = ({ itemList, setState, isState, index }: List) => {
     return (
         <tr>
             <td>
-                <input
+                {/* <input
                     type="number"
                     value={itemList.charge}
                     onChange={(e) => updateValue("charge", e)}
-                />
+                /> */}
+                <DropdownSearch />
             </td>
             <td>
                 <input
@@ -261,6 +246,7 @@ const List = ({ itemList, setState, isState, index }: List) => {
                 <input
                     type="number"
                     value={itemList.uom}
+                    className={style.disabled}
                     onChange={(e) => updateValue("uom", e)}
                 />
             </td>
@@ -268,12 +254,14 @@ const List = ({ itemList, setState, isState, index }: List) => {
                 <input
                     type="number"
                     value={itemList.vat}
+                    className={style.disabled}
                     onChange={(e) => updateValue("vat", e)}
                 />
             </td>
             <td>
                 <input
                     type="number"
+                    className={style.disabled}
                     value={itemList.amount}
                     onChange={(e) => updateValue("amount", e)}
                 />

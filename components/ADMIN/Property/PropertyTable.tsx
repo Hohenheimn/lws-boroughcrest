@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import AppContext from "../../Context/AppContext";
 import Link from "next/link";
 import { GetPropertyList } from "../../ReactQuery/PropertyMethod";
@@ -6,10 +6,19 @@ import { BarLoader } from "react-spinners";
 import Pagination from "../../Pagination";
 
 export default function PropertyTable({ isSearchTable }: any) {
-    const { propTableColumn, propTableRows } = useContext(AppContext);
+    const { propTableColumn, propTableRows, setPrint } = useContext(AppContext);
     const { isLoading, data } = GetPropertyList(propTableRows, isSearchTable);
     const PropertyData = data?.data?.data;
     const [TablePage, setTablePage] = useState(1);
+    // Set parameter for print
+    useEffect(() => {
+        setPrint({
+            keyword: isSearchTable,
+            page: TablePage,
+            limit: propTableRows,
+            url: "/admin/property/print",
+        });
+    }, [isSearchTable, TablePage, propTableRows]);
     return (
         <>
             <div className="table_container">

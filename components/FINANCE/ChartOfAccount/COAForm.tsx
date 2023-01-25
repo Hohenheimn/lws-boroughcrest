@@ -7,11 +7,13 @@ import { ScaleLoader } from "react-spinners";
 import style from "../../../styles/Popup_Modal.module.scss";
 import { ChartofAccountPayload } from "../../../types/COAList";
 import AppContext from "../../Context/AppContext";
+import DynamicPopOver from "../../DynamicPopOver";
 import {
     COACreate,
     COADelete,
     COAUpdate,
 } from "../../ReactQuery/ChartofAccount";
+import CrudBankAccNum from "./CrudBankAccNum";
 import DefaultAccount from "./DefaultAccount";
 import Parent from "./Parent";
 
@@ -36,6 +38,14 @@ export default function COAForm({
             DefaultFormData.parent === undefined ? "" : DefaultFormData.parent,
         suffix: DefaultFormData.code_suffix,
     });
+    const [isBankAccountToggle, setBankAccountToggle] = useState(false);
+    const [isBankAccountVal, setBankAccountVal] = useState({
+        id: DefaultFormData?.bank_acc_id,
+        value: DefaultFormData?.bank_acc_no,
+        firstVal: DefaultFormData?.bank_acc_no,
+        firstID: DefaultFormData?.bank_acc_id,
+    });
+
     const ErrorDefault = {
         account_name: "",
         chart_code: "",
@@ -63,6 +73,7 @@ export default function COAForm({
             : DefaultFormData.defaultAccount,
         firstID: DefaultFormData.coa_default_account_id,
     });
+    const updateFieldHandler = () => {};
 
     const {
         register,
@@ -363,10 +374,48 @@ export default function COAForm({
                             onClick={() => setStatus(!isStatus)}
                         ></div>
                     </li>
-                    <li>
-                        <label htmlFor="">BANK ACCOUNT NO.</label>
-                        <input type="text" {...register("bank_acc_no")} />
-                    </li>
+                    {(isDefaultAccount.value === "Cash Account Outbound" ||
+                        isDefaultAccount.value === "Cash Account Inbound") && (
+                        <li>
+                            <label htmlFor="">BANK ACCOUNT NO.</label>
+                            <DynamicPopOver
+                                toRef={
+                                    <>
+                                        <input
+                                            type="text"
+                                            {...register("bank_acc_no")}
+                                            autoComplete="off"
+                                            onClick={() =>
+                                                setBankAccountToggle(true)
+                                            }
+                                            value={isBankAccountVal.value}
+                                            onChange={(e: any) =>
+                                                setBankAccountVal({
+                                                    ...isBankAccountVal,
+                                                    value: e.target.value,
+                                                })
+                                            }
+                                        />
+                                    </>
+                                }
+                                toPop={
+                                    <>
+                                        {isBankAccountToggle && (
+                                            <CrudBankAccNum
+                                                update={updateFieldHandler}
+                                                setToggle={setBankAccountToggle}
+                                                isToggle={isBankAccountToggle}
+                                                isValID={isBankAccountVal.id}
+                                                isObject={isBankAccountVal}
+                                                setObject={setBankAccountVal}
+                                            />
+                                        )}
+                                    </>
+                                }
+                            />
+                        </li>
+                    )}
+
                     {/* <li>
                         <label htmlFor="">BANK AND BRANCH</label>
                         <input type="text" {...register("bank_branch")} />

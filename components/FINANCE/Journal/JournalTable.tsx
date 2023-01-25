@@ -10,12 +10,19 @@ import { useQuery } from "react-query";
 import api from "../../../util/api";
 import { BarLoader } from "react-spinners";
 import PeriodCalendar from "../../PeriodCalendar";
+import { AdvanceFilter } from "../../AdvanceFilter";
 
 type Props = {
     type: string;
 };
 
 export default function JournalTable({ type }: Props) {
+    const [isAdvFilter, setAdvFilter] = useState([
+        {
+            name: "Jomari Tiu",
+            subName: "Developer",
+        },
+    ]);
     const [isPeriod, setPeriod] = useState({
         from: "",
         to: "",
@@ -35,16 +42,22 @@ export default function JournalTable({ type }: Props) {
     return (
         <>
             <section className={style.container}>
-                <div className={style.searchBar}>
-                    <input type="text" placeholder="Search" />
-                    <BsSearch className={style.searchIcon} />
+                <div className={style.searchBarAdvF}>
+                    <div className={style.searchBar}>
+                        <input type="text" placeholder="Search" />
+                        <BsSearch className={style.searchIcon} />
+                    </div>
+                    <AdvanceFilter
+                        setAdvFilter={setAdvFilter}
+                        isAdvFilter={isAdvFilter}
+                    />
                 </div>
 
                 <ul className={style.navigation}>
                     {type === "Unposted" ? (
                         <>
                             <li className={style.importExportPrint}>
-                                <Tippy theme="ThemeRed" content="Check">
+                                <Tippy theme="ThemeRed" content="Approve">
                                     <div className={`${style.noFill} mr-5`}>
                                         <Image
                                             src="/Images/f_check.png"
@@ -56,7 +69,7 @@ export default function JournalTable({ type }: Props) {
                                 </Tippy>
                             </li>
                             <li className={style.importExportPrint}>
-                                <Tippy theme="ThemeRed" content="Refresh">
+                                <Tippy theme="ThemeRed" content="In Process">
                                     <div className={`${style.noFill} mr-5`}>
                                         <Image
                                             src="/Images/f_refresh.png"
@@ -68,7 +81,7 @@ export default function JournalTable({ type }: Props) {
                                 </Tippy>
                             </li>
                             <li className={style.importExportPrint}>
-                                <Tippy theme="ThemeRed" content="Back">
+                                <Tippy theme="ThemeRed" content="Draft">
                                     <div className={`${style.noFill} mr-5`}>
                                         <Image
                                             src="/Images/f_back.png"
@@ -80,7 +93,7 @@ export default function JournalTable({ type }: Props) {
                                 </Tippy>
                             </li>
                             <li className={style.importExportPrint}>
-                                <Tippy theme="ThemeRed" content="Remove">
+                                <Tippy theme="ThemeRed" content="Pending">
                                     <div className={style.noFill}>
                                         <Image
                                             src="/Images/f_remove.png"

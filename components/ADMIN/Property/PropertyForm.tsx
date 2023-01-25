@@ -544,10 +544,10 @@ export default function PropertyForm({
                                 toRef={
                                     <input
                                         type="text"
-                                        autoComplete="off"
                                         onFocus={() => setFloor(true)}
-                                        onClick={() => setFloor(true)}
                                         {...register("floor")}
+                                        autoComplete="off"
+                                        onClick={() => setFloor(true)}
                                         value={isFloorVal.value}
                                         onChange={(e: any) =>
                                             setFloorVal({
@@ -605,6 +605,7 @@ export default function PropertyForm({
                                         src="/Images/CalendarMini.png"
                                         width={15}
                                         height={15}
+                                        alt=""
                                     />
                                 </span>
                                 <input
@@ -636,6 +637,7 @@ export default function PropertyForm({
                                         src="/Images/CalendarMini.png"
                                         width={15}
                                         height={15}
+                                        alt=""
                                     />
                                 </span>
                                 <input

@@ -187,6 +187,13 @@ export default function AppProvider({ children }: AppProvider) {
     // Img Base Url
     const ImgUrl = "https://boroughcrest-api.lws.codes/get-img?image=";
 
+    const [isPrint, setPrint] = useState({
+        keyword: "",
+        page: "",
+        limit: "",
+        url: "",
+    });
+
     const [isSearchBar, setSearchBar] = useState("");
     return (
         <AppContext.Provider
@@ -253,6 +260,8 @@ export default function AppProvider({ children }: AppProvider) {
                 CusError,
                 setCusError,
                 ErrorDefault,
+                setPrint,
+                isPrint,
             }}
         >
             {children}

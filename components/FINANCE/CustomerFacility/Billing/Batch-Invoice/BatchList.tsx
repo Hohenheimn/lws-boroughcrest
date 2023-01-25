@@ -30,6 +30,9 @@ export default function BatchList() {
                     </tbody>
                 </table>
             </div>
+            <div className="flex w-full justify-end">
+                <button className="buttonRed">UPDATE</button>
+            </div>
         </div>
     );
 }

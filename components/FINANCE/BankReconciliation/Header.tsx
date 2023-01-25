@@ -1,17 +1,13 @@
 import React, { useContext, useState } from "react";
 import Image from "next/image";
-import { BsSearch } from "react-icons/bs";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
-import { useRouter } from "next/router";
 import style from "../../../styles/SearchFilter.module.scss";
 import { MoonLoader } from "react-spinners";
-import axios from "axios";
-import { getCookie } from "cookies-next";
 import AppContext from "../../../components/Context/AppContext";
 import { CustomerImport } from "../../../components/ReactQuery/CustomerMethod";
-import Calendar from "../../Calendar";
 import PeriodCalendar from "../../PeriodCalendar";
+import DropdownSearch from "../../DropdownSearch";
 
 export default function Header() {
     const { setPrompt } = useContext(AppContext);
@@ -19,16 +15,6 @@ export default function Header() {
         from: "",
         to: "",
     });
-    const router = useRouter();
-    const [isDate, setDate] = useState({
-        value: "",
-        toggle: false,
-    });
-    const [isDate2, setDate2] = useState({
-        value: "",
-        toggle: false,
-    });
-
     const ImportSuccess = () => {
         setPrompt({
             type: "success",
@@ -99,6 +85,10 @@ export default function Header() {
             <section className={style.container}>
                 <div className={style.period}>
                     <PeriodCalendar value={isPeriod} setValue={setPeriod} />
+                    <div className="flex items-center ml-5">
+                        <p>BANK ACCOUNT</p>
+                        <DropdownSearch />
+                    </div>
                 </div>
 
                 <ul className={style.navigation}>

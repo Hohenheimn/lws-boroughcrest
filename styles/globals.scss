@@ -1,3 +1,5 @@
+// Date Range CSS
+@import url("https://cdn.syncfusion.com/ej2/material.css");
 @font-face {
     font-family: "NHU-thin";
     src: url("./fonts/NeueHaasUnica-Thin.ttf");
@@ -66,10 +68,10 @@ input {
 }
 // button
 .buttonRed {
-    @apply capitalize px-5 480px:text-[12px] 480px:px-2 text-[14px] py-3 rounded-lg bg-ThemeRed text-white leading-none duration-75 hover:bg-ThemeRed50;
+    @apply capitalize px-5 480px:text-[12px] uppercase 480px:px-2 text-[14px] py-3 rounded-lg bg-ThemeRed text-white leading-none duration-75 hover:bg-ThemeRed50;
 }
 .button_cancel {
-    @apply text-ThemeRed font-semibold text-[14px] mr-5;
+    @apply text-ThemeRed font-semibold text-[14px] mr-5 uppercase;
 }
 // Text
 .pageTitle {
@@ -116,7 +118,17 @@ input {
         @apply shadow-md sticky top-0 bg-[#fbfbfb] z-[40];
         tr {
             th {
-                @apply text-start px-4 py-5 480px:py-3 1550px:px-3 text-[#545454] 1550px:text-[12px];
+                @apply text-start px-4 py-5 480px:py-3 1280px:px-3 text-[#545454] 1280px:text-[13px];
+            }
+            th.checkbox {
+                @apply w-3;
+                input[type="checkbox"] {
+                    border: 1px solid rgb(216, 216, 216) !important;
+                    @apply relative h-4 w-4 rounded-md shadow-md overflow-hidden after:text-white after:flex after:justify-center after:items-center mr-1 checked:after:bg-ThemeRed checked:after:content-['✓'] appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
+                    &:checked {
+                        border: none !important;
+                    }
+                }
             }
             .status {
                 @apply text-center;
@@ -137,7 +149,7 @@ input {
         tr {
             @apply border-b border-gray-300 cursor-pointer relative;
             td {
-                @apply py-1;
+                @apply py-1 text-[#2E4364] font-NHU-medium;
                 .item {
                     @apply flex items-center px-4 py-4 480px:py-2 480px:px-2;
                     aside {
@@ -149,7 +161,9 @@ input {
                     p {
                         @apply text-[#2E4364] font-NHU-medium  1550px:text-[14px] 480px:text-[12px];
                     }
-                    input {
+                    input[type="text"],
+                    input[type="number"],
+                    input[type="email"] {
                         @apply rounded-md shadow-md 480px:text-[12px] outline-none px-2 py-1;
                     }
                 }
@@ -185,10 +199,10 @@ input {
                 }
             }
             td.checkbox {
-                @apply w-5;
+                @apply w-3;
                 input[type="checkbox"] {
                     border: 1px solid rgb(216, 216, 216) !important;
-                    @apply relative h-5 w-5 after:text-white after:flex after:justify-center after:items-center mr-1 checked:after:bg-ThemeRed checked:after:content-['✓'] appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
+                    @apply relative h-4 w-4 rounded-md shadow-md overflow-hidden after:text-white after:flex after:justify-center after:items-center mr-1 checked:after:bg-ThemeRed checked:after:content-['✓'] appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
                     &:checked {
                         border: none !important;
                     }
@@ -218,6 +232,17 @@ input {
                 width: 500px;
             }
         }
+    }
+}
+@media print {
+    .hidePrint {
+        @apply hidden;
+    }
+    .printThis {
+        @apply my-10;
+    }
+    @page {
+        margin: 0;
     }
 }
 .table_list.headNoBg {
@@ -536,5 +561,101 @@ input[type="number"] {
         &::after {
             @apply content-['Posted'] w-[95px] pl-[35px] bg-ThemeRed50;
         }
+    }
+}
+// Date range Customize
+.rdrDateDisplayWrapper {
+    display: none;
+}
+.rdrInputRanges {
+    display: none;
+}
+.rdrDayToday .rdrDayNumber span {
+    position: relative;
+}
+.rdrDayToday .rdrDayNumber span:after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    height: 26px !important;
+    border-radius: 50% !important;
+    width: 26px !important;
+    border: 1px solid #8f384d;
+    background-color: transparent !important;
+}
+.rdrDayToday .rdrEndEdge .rdrDayNumber span:after {
+    display: none !important;
+}
+.rdrWeekDay,
+.rdrMonthName {
+    color: #545454 !important;
+    font-weight: bold !important;
+}
+.rdrDayStartPreview,
+.rdrDayEndPreview,
+.rdrDayInPreview {
+    color: #8f384d !important;
+}
+
+.rdrSelected,
+.rdrInRange,
+.rdrStartEdge,
+.rdrEndEdge {
+    background-color: #8f384d !important;
+}
+
+.rdrNextPrevButton {
+    background-color: transparent !important;
+}
+.rdrPprevButton i {
+    border-color: transparent #8f384d transparent transparent !important;
+    border-width: 10px 10px 10px 10px !important;
+}
+.rdrNextButton i {
+    border-width: 10px 5px 10px 10px !important;
+    border-color: transparent transparent transparent #8f384d !important;
+}
+.rdrDefinedRangesWrapper {
+    display: none;
+}
+@media (max-width: 640px) {
+    .rdrMonths {
+        flex-direction: column;
+    }
+}
+.ToggleAccount {
+    @apply p-1 rounded-lg w-full flex items-center justify-center;
+    transition: all 1s;
+    .item {
+        @apply w-2/4 text-center font-NHU-bold py-1 m-0 z-10 cursor-pointer;
+        transition: color 0.5s;
+    }
+    .moving {
+        @apply absolute top-0 left-0 right-[90px] h-full bg-white rounded-md;
+    }
+}
+.ToggleAccount.Advance {
+    @apply bg-[#aeaeae];
+    .item {
+        @apply text-[#757575];
+    }
+    .moving {
+        @apply bg-white;
+        transition: left 0.5s, right 0.4s 0.2s;
+    }
+}
+.ToggleAccount.received {
+    @apply bg-white;
+    .item {
+        @apply text-[#fff];
+    }
+    .ad {
+        @apply text-[#757575];
+    }
+    .moving {
+        @apply right-0 left-[90px] bg-[#757575];
+        transition: right 0.5s, left 0.4s 0.2s;
     }
 }
