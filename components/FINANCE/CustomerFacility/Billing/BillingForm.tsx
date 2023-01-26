@@ -40,19 +40,19 @@ export default function JournalForm({ DefaultValue, type }: Props) {
             <div>
                 <ul className="flex flex-wrap justify-between pb-8 mb-8 border-b border-gray-300">
                     <li className="w-[32%] 820px:w-2/4 820px:mb-2 480px:w-full">
-                        <p className=" text-ThemeRed mr-3 font-NHU-bold 820px:text-[13px]">
+                        <p className=" text-ThemeRed mr-3 font-NHU-bold 820px:text-[13px] 1550px:text-[14px]">
                             CUSTOMER
                         </p>
                         <DropdownSearch />
                     </li>
                     <li className="w-[32%] 820px:w-2/4 820px:mb-2">
-                        <p className=" text-ThemeRed mr-3 font-NHU-bold 820px:text-[13px]">
+                        <p className=" text-ThemeRed mr-3 font-NHU-bold 820px:text-[13px] 1550px:text-[14px]">
                             CLASS
                         </p>
                         <h1>Lorem ipsum</h1>
                     </li>
                     <li className="w-[32%] 820px:w-2/4 820px:mb-2">
-                        <p className=" text-ThemeRed mr-3 font-NHU-bold 820px:text-[13px]">
+                        <p className=" text-ThemeRed mr-3 font-NHU-bold 820px:text-[13px] 1550px:text-[14px]">
                             PROPERTY
                         </p>
                         <h1>Lorem ipsum</h1>

@@ -59,7 +59,7 @@ export default function BatchForm({ DefaultValue, type }: Props) {
                                 onClick={() =>
                                     setDate({ ...isDate, toggle: true })
                                 }
-                                className="p-2 outline-none rounded-md shadow-md"
+                                className="px-2 h-10 1550px:h-8 outline-none rounded-md shadow-md"
                             />
                             {isDate.toggle && (
                                 <Calendar value={isDate} setValue={setDate} />
@@ -72,7 +72,7 @@ export default function BatchForm({ DefaultValue, type }: Props) {
                         </p>
                         <input
                             type="text"
-                            className="p-2 outline-none rounded-md shadow-md w-full"
+                            className="px-2 h-10 1550px:h-8 outline-none rounded-md shadow-md w-full"
                         />
                     </li>
                 </ul>

@@ -52,8 +52,8 @@ export default function Header() {
 
     return (
         <>
-            <section className={style.container}>
-                <div className=" flex items-center">
+            <section className={`${style.container} 1280px:flex-wrap`}>
+                <div className=" flex items-center 1280px:w-2/4 640px:w-full 1280px:mb-5">
                     <p className=" text-ThemeRed mr-3 font-NHU-bold 1550px:text-[14px]">
                         READING:
                     </p>
@@ -62,7 +62,7 @@ export default function Header() {
                         className=" rounded-md shadow-md 480px:text-[12px] outline-none px-2 py-1"
                     />
                 </div>
-                <aside>
+                <aside className="1280px:w-2/4 640px:w-full">
                     <p className=" text-ThemeRed mr-3 font-NHU-bold 1550px:text-[14px]">
                         READING SERIAL:{" "}
                         <span className=" text-[#2e4364] font-NHU-medium">

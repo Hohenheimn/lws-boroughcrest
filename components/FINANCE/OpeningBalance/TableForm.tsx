@@ -55,7 +55,7 @@ export default function TableForm() {
 
     return (
         <>
-            <div className="w-full overflow-hidden">
+            <div className="w-full overflow-auto">
                 <table className={style.crudTable}>
                     <thead>
                         <tr>
@@ -113,7 +113,12 @@ export default function TableForm() {
 
             <div className="flex justify-end py-5 mt-20">
                 <button className="button_cancel">Cancel</button>
-                <button className="buttonRed">SAVE</button>
+                <button
+                    className="buttonRed"
+                    onClick={() => console.log(isTableItem)}
+                >
+                    SAVE
+                </button>
             </div>
         </>
     );
@@ -166,7 +171,7 @@ const List = ({ itemDetail, setTableItem, isTableItem }: List) => {
                     return {
                         ...item,
                         category: event.target.getAttribute("data-category"),
-                        chart_code: event.target.getAttribute("data-chartCode"),
+                        chart_code: event.target.getAttribute("data-chartcode"),
                         account_name: event.target.innerHTML,
                         account_id: event.target.getAttribute("data-id"),
                     };
@@ -297,7 +302,7 @@ const DropdownItem = ({
                         key={index}
                         className={listStyle}
                         data-id={item.id}
-                        data-chartCode={item.chart_code}
+                        data-chartcode={item.chart_code}
                         data-category={item.category}
                         onClick={(e) => {
                             UpdateStateHandler("accountName", e);

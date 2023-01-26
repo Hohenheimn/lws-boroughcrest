@@ -7,10 +7,25 @@ import type { customerItemDetail } from "../../../types/customerList";
 import Image from "next/image";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
-import ReactToPrint, { useReactToPrint } from "react-to-print";
+import PrintTemplate from "../../../components/PrintTemplate";
 
-export default function Print({ keyword, limit, page, columns }: any) {
-    const Columns = columns.split(",");
+export default function Print({ keyword, limit, page }: any) {
+    // Getting column from parameter
+    // const Columns = columns.split(",");
+    const Columns = [
+        "Class",
+        "Mobile",
+        "Email",
+        "Status",
+        "Spouse",
+        "Citizenship",
+        "Birth Date",
+        "Contact Person",
+        "Property",
+        "TIN",
+        "Branch Code",
+        "Type",
+    ];
 
     const { data, isLoading, isError } = useQuery(
         [keyword, limit, page],
@@ -50,49 +65,51 @@ export default function Print({ keyword, limit, page, columns }: any) {
                     </Tippy>
                 </aside>
 
-                <table className="w-full max-w-[1366px] printThis">
-                    <thead className="text-[#545454] text-[14px] text-start">
-                        <tr>
-                            <th className="text-start px-2 py-1">ID</th>
-                            <th className="text-start px-2 py-1">NAME</th>
-                            {Columns.map((item: any, index: number) => (
-                                <th
-                                    key={index}
-                                    className="text-start px-2 py-1"
-                                    colSpan={item === "Property" ? 2 : 1}
-                                >
-                                    {item === "Property" ? (
-                                        <div className="flex">
-                                            <div className="w-2/4">
-                                                Property (Unit Code)
+                <PrintTemplate title="Customer">
+                    <table className="w-full">
+                        <thead className="text-[#545454] text-[14px] text-start">
+                            <tr>
+                                <th className="text-start px-2 py-1">ID</th>
+                                <th className="text-start px-2 py-1">NAME</th>
+                                {Columns.map((item: any, index: number) => (
+                                    <th
+                                        key={index}
+                                        className="text-start px-2 py-1"
+                                        colSpan={item === "Property" ? 2 : 1}
+                                    >
+                                        {item === "Property" ? (
+                                            <div className="flex">
+                                                <div className="w-2/4">
+                                                    Property (Unit Code)
+                                                </div>
+                                                <div className="w-2/4">
+                                                    Property (Tower)
+                                                </div>
                                             </div>
-                                            <div className="w-2/4">
-                                                Property (Tower)
-                                            </div>
-                                        </div>
-                                    ) : (
-                                        item
+                                        ) : (
+                                            item
+                                        )}
+                                    </th>
+                                ))}
+                            </tr>
+                        </thead>
+                        <tbody className="text-[14px]">
+                            {!isLoading && !isError && (
+                                <>
+                                    {data?.data.data.map(
+                                        (item: any, index: number) => (
+                                            <List
+                                                key={index}
+                                                itemDetail={item}
+                                                Columns={Columns}
+                                            />
+                                        )
                                     )}
-                                </th>
-                            ))}
-                        </tr>
-                    </thead>
-                    <tbody className="text-[14px]">
-                        {!isLoading && !isError && (
-                            <>
-                                {data?.data.data.map(
-                                    (item: any, index: number) => (
-                                        <List
-                                            key={index}
-                                            itemDetail={item}
-                                            Columns={Columns}
-                                        />
-                                    )
-                                )}
-                            </>
-                        )}
-                    </tbody>
-                </table>
+                                </>
+                            )}
+                        </tbody>
+                    </table>
+                </PrintTemplate>
                 {isLoading && (
                     <div className="top-0 left-0 absolute w-full h-full flex justify-center items-center">
                         <aside className="text-center flex justify-center py-5">
@@ -128,9 +145,6 @@ const List = ({ itemDetail, Columns }: ListProps) => {
         <tr>
             <td className=" px-2 py-2 border-b border-gray-300 text-[#2E4364] font-NHU-medium">
                 <div className="flex items-center">
-                    <aside className="relative w-[30px] h-[30px] mr-1">
-                        <Image src={Logo} alt="profile" layout="fill" />
-                    </aside>
                     <div>
                         <p className="font-NHU-medium">{itemDetail?.id}</p>
                     </div>
@@ -155,11 +169,7 @@ const List = ({ itemDetail, Columns }: ListProps) => {
                     )}
 
                     {item === "Status" && (
-                        <div className="w-full flex px-5 justify-center">
-                            <div
-                                className={`statusCircle ${itemDetail?.status}`}
-                            ></div>
-                        </div>
+                        <p className="font-NHU-medium">{itemDetail?.status}</p>
                     )}
                     {item === "Type" && (
                         <p className="font-NHU-medium">{itemDetail?.type}</p>
@@ -253,13 +263,12 @@ export async function getServerSideProps({ query }: any) {
     const keyword = query.keyword;
     const limit = query.limit;
     const page = query.page;
-    const columns = query.columns;
+
     return {
         props: {
             keyword: keyword,
             limit: limit,
             page: page,
-            columns: columns,
         },
     };
 }

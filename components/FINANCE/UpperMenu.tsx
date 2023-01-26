@@ -36,7 +36,10 @@ export default function UpperMenu() {
             {isUrlData?.map((item: any, index: number) => (
                 <div key={index}>
                     {router.pathname.includes(item?.activeUrl) && (
-                        <ul className={`${style.container}`} key={index}>
+                        <ul
+                            className={`${style.container} ${style.subContainer}`}
+                            key={index}
+                        >
                             {item?.submenu?.map(
                                 (submenuItem: any, index1: number) => (
                                     <li

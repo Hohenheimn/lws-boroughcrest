@@ -39,12 +39,25 @@ export default function COAForm({
         suffix: DefaultFormData.code_suffix,
     });
     const [isBankAccountToggle, setBankAccountToggle] = useState(false);
+
     const [isBankAccountVal, setBankAccountVal] = useState({
         id: DefaultFormData?.bank_acc_id,
         value: DefaultFormData?.bank_acc_no,
         firstVal: DefaultFormData?.bank_acc_no,
         firstID: DefaultFormData?.bank_acc_id,
     });
+
+    const updateFieldHandler = (value: any, id: any) => {
+        setValue("bank_acc_no", value, {
+            shouldValidate: true,
+        });
+        setBankAccountVal({
+            id: id,
+            value: value,
+            firstVal: value,
+            firstID: id,
+        });
+    };
 
     const ErrorDefault = {
         account_name: "",
@@ -73,7 +86,6 @@ export default function COAForm({
             : DefaultFormData.defaultAccount,
         firstID: DefaultFormData.coa_default_account_id,
     });
-    const updateFieldHandler = () => {};
 
     const {
         register,
@@ -210,13 +222,15 @@ export default function COAForm({
             // bank_branch: data.bank_branch,
         };
 
-        if (router.query.modify === undefined) {
-            // Save
-            Save(Payload);
-        } else {
-            // Update
-            Update(Payload);
-        }
+        console.log(Payload);
+
+        // if (router.query.modify === undefined) {
+        //     // Save
+        //     Save(Payload);
+        // } else {
+        //     // Update
+        //     Update(Payload);
+        // }
     };
 
     return (

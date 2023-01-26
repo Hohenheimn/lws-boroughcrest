@@ -18,48 +18,18 @@ export default function TableForm() {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr className={`${style.total} ${style.total1}`}>
+                        <tr>
                             <td className={style.label}>
                                 <h1>TOTAL</h1>
                             </td>
                             <td>
-                                <div className={style.peso}>
-                                    <aside>
-                                        <Image
-                                            src="/Images/peso.png"
-                                            height={13}
-                                            width={10}
-                                            alt=""
-                                        />
-                                    </aside>
-                                    <p>1000.00</p>
-                                </div>
+                                <p className="withPeso">1000.00</p>
                             </td>
                             <td>
-                                <div className={style.peso}>
-                                    <aside>
-                                        <Image
-                                            src="/Images/peso.png"
-                                            height={13}
-                                            width={10}
-                                            alt=""
-                                        />
-                                    </aside>
-                                    <p>1000.00</p>
-                                </div>
+                                <p className="withPeso">1000.00</p>
                             </td>
                             <td>
-                                <div className={style.peso}>
-                                    <aside>
-                                        <Image
-                                            src="/Images/peso.png"
-                                            height={13}
-                                            width={10}
-                                            alt=""
-                                        />
-                                    </aside>
-                                    <p>1000.00</p>
-                                </div>
+                                <p className="withPeso">1000.00</p>
                             </td>
                             <td>
                                 <div className={style.peso}>
@@ -75,7 +45,7 @@ export default function TableForm() {
 
                         <tr className={`${style.total} ${style.total1}`}>
                             <td>
-                                <input type="number" />
+                                <input type="date" />
                             </td>
                             <td>
                                 <input type="text" />
@@ -84,17 +54,7 @@ export default function TableForm() {
                                 <input type="text" />
                             </td>
                             <td>
-                                <div className={style.peso}>
-                                    <aside>
-                                        <Image
-                                            src="/Images/peso.png"
-                                            height={13}
-                                            width={10}
-                                            alt=""
-                                        />
-                                    </aside>
-                                    <p>1000.00</p>
-                                </div>
+                                <p className="withPeso">1000.00</p>
                             </td>
                             <td>
                                 <input type="text" />

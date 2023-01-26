@@ -83,7 +83,7 @@ export default function Header() {
                                     onClick={() =>
                                         setDate({ ...isDate, toggle: true })
                                     }
-                                    className="p-2 outline-none rounded-md shadow-md"
+                                    className="px-2 h-10 1550px:h-8 outline-none rounded-md shadow-md"
                                 />
                                 {isDate.toggle && (
                                     <Calendar

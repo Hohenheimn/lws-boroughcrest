@@ -70,7 +70,7 @@ export default function BillingList() {
                     {isType === "Unposted" && (
                         <>
                             <li className={style.importExportPrint}>
-                                <Tippy theme="ThemeRed" content="Check">
+                                <Tippy theme="ThemeRed" content="Approved">
                                     <div className={`${style.noFill} mr-5`}>
                                         <Image
                                             src="/Images/f_check.png"
@@ -82,7 +82,19 @@ export default function BillingList() {
                                 </Tippy>
                             </li>
                             <li className={style.importExportPrint}>
-                                <Tippy theme="ThemeRed" content="Refresh">
+                                <Tippy theme="ThemeRed" content="Reject">
+                                    <div className={`${style.noFill} mr-5`}>
+                                        <Image
+                                            src="/Images/f_remove.png"
+                                            height={25}
+                                            width={25}
+                                            alt="Export"
+                                        />
+                                    </div>
+                                </Tippy>
+                            </li>
+                            <li className={style.importExportPrint}>
+                                <Tippy theme="ThemeRed" content="Process">
                                     <div className={`${style.noFill} mr-5`}>
                                         <Image
                                             src="/Images/f_refresh.png"
@@ -94,7 +106,7 @@ export default function BillingList() {
                                 </Tippy>
                             </li>
                             <li className={style.importExportPrint}>
-                                <Tippy theme="ThemeRed" content="Back">
+                                <Tippy theme="ThemeRed" content="Return">
                                     <div className={`${style.noFill} mr-5`}>
                                         <Image
                                             src="/Images/f_back.png"

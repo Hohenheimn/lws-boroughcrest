@@ -31,7 +31,7 @@ h6 {
     @apply text-[#545454];
 }
 input {
-    @apply text-[#545454];
+    @apply text-[#545454] font-NHU-medium;
 }
 * {
     font-family: "NHU-regular";
@@ -626,14 +626,14 @@ input[type="number"] {
     }
 }
 .ToggleAccount {
-    @apply p-1 rounded-lg w-full flex items-center justify-center;
+    @apply h-10 1550px:h-8 rounded-lg w-full flex items-center justify-center;
     transition: all 1s;
     .item {
         @apply w-2/4 text-center font-NHU-bold py-1 m-0 z-10 cursor-pointer;
         transition: color 0.5s;
     }
     .moving {
-        @apply absolute top-0 left-0 right-[90px] h-full bg-white rounded-md;
+        @apply absolute top-[5%] left-[2px] right-[90px] h-[90%] bg-white rounded-md;
     }
 }
 .ToggleAccount.Advance {
@@ -646,7 +646,7 @@ input[type="number"] {
         transition: left 0.5s, right 0.4s 0.2s;
     }
 }
-.ToggleAccount.received {
+.ToggleAccount.Received {
     @apply bg-white;
     .item {
         @apply text-[#fff];
@@ -655,7 +655,15 @@ input[type="number"] {
         @apply text-[#757575];
     }
     .moving {
-        @apply right-0 left-[90px] bg-[#757575];
+        @apply right-[2px] left-[90px] bg-[#757575];
         transition: right 0.5s, left 0.4s 0.2s;
+    }
+}
+
+.withPeso {
+    @apply relative pl-5;
+    &::before {
+        @apply content-[''] w-5 h-full absolute top-0 left-0 bg-no-repeat bg-center;
+        background-image: url(../public/Images/peso.png);
     }
 }

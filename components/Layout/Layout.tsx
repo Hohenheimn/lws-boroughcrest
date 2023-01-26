@@ -15,12 +15,15 @@ import SignOut from "./SignOut";
 import PrompMessage from "../PrompMessage";
 import { FadeSide } from "../Animation/SimpleAnimation";
 import UpperMenu from "../FINANCE/UpperMenu";
+import { UserInfo } from "./FetchUser";
 
 type Layout = {
     children: React.ReactNode;
 };
 
 export default function Layout({ children }: Layout) {
+    const router = useRouter();
+
     const [title, setTitle] = useState<string>("");
     const { togglePrompt, collapseSide, setCollapseSide } =
         useContext(AppContext);
@@ -28,8 +31,6 @@ export default function Layout({ children }: Layout) {
     const [isPathName, setPathName] = useState<any>();
     const [toggleProfileMenu, setToggleProfileMenu] = useState(false);
     const [financeMenu, setFinanceMenu] = useState(false);
-
-    const router = useRouter();
 
     // toggle for responsive sidebar
     const [isWide, setWide] = useState(false);

@@ -85,7 +85,7 @@ export default function Header() {
             <section className={style.container}>
                 <div className={style.period}>
                     <PeriodCalendar value={isPeriod} setValue={setPeriod} />
-                    <div className="flex items-center ml-5">
+                    <div className="flex items-center ml-5 1280px:ml-0 1280px:mt-5">
                         <p>BANK ACCOUNT</p>
                         <DropdownSearch />
                     </div>

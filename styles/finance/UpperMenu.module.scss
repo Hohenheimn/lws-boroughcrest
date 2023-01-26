@@ -21,4 +21,12 @@
             }
         }
     }
+    .subContainer {
+        li {
+            @apply hover:bg-ThemeRed50;
+        }
+        li.active {
+            @apply bg-ThemeRed50 text-white;
+        }
+    }
 }

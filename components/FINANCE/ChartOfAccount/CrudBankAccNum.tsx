@@ -8,6 +8,7 @@ import "tippy.js/dist/tippy.css";
 
 import { useQueryClient } from "react-query";
 import AppContext from "../../Context/AppContext";
+// Palitin
 import {
     DeleteFloor,
     GetFloor,
@@ -17,7 +18,7 @@ import {
 } from "../../ReactQuery/PropertyMethod";
 
 type Props = {
-    update: () => void;
+    update: (value: string, e: any) => void;
     setToggle: Function;
     isToggle: boolean;
     isValID: string | number;
@@ -39,18 +40,26 @@ const CrudBankAccNum = ({
     setObject,
 }: Props) => {
     const modal = useRef<any>();
-    // Click out side, remove empty array
+
+    const [isArray, setArray] = useState<any>([]);
+    const [isWarning, setWarning] = useState("");
+
+    // Click out side
     useEffect(() => {
         const clickOutSide = (e: any) => {
             if (!modal.current.contains(e.target)) {
+                //remove empty array
                 setArray((itemList: any) =>
                     itemList.filter((item: any) => item.name !== "")
                 );
+                // put back to first val
                 setObject({
                     ...isObject,
                     value: isObject.firstVal,
                 });
+                // Close
                 setToggle(false);
+                // Blank warning
                 setWarning("");
             }
         };
@@ -59,9 +68,6 @@ const CrudBankAccNum = ({
             document.removeEventListener("mousedown", clickOutSide);
         };
     });
-
-    const [isArray, setArray] = useState<any>([]);
-    const [isWarning, setWarning] = useState("");
 
     const AddArray = () => {
         setArray([
@@ -78,6 +84,7 @@ const CrudBankAccNum = ({
 
     const { isLoading, data, isError } = GetFloor(isObject.value);
 
+    // Palitin
     useEffect(() => {
         if (data?.status === 200) {
             const cloneArray = data?.data.map((item: any) => {
@@ -99,8 +106,8 @@ const CrudBankAccNum = ({
                 <thead>
                     <tr>
                         <th className="text-white">ID</th>
-                        <th className="text-white">NAME</th>
-                        <th className="text-white">TOWER</th>
+                        <th className="text-white">BANK ACCOUNT NUMBER</th>
+                        <th className="text-white">BANK AND BRANCH</th>
                         <th className="text-white">ACTION</th>
                     </tr>
                 </thead>
@@ -140,7 +147,7 @@ const CrudBankAccNum = ({
             {isError ||
                 (data?.data.length <= 0 && (
                     <div className="w-full flex justify-center py-3">
-                        <h1>Floor cannot be found!</h1>
+                        <h1>Bank Account number cannot be found!</h1>
                     </div>
                 ))}
             {isWarning !== "" && (
@@ -150,7 +157,7 @@ const CrudBankAccNum = ({
                 className="cursor-pointer text-ThemeRed text-[12px] inline-block py-2 hover:underline"
                 onClick={AddArray}
             >
-                ADD TOWER
+                ADD BANK
             </h1>
         </div>
     );

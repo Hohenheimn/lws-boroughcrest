@@ -10,6 +10,7 @@ import AppProvider from "../components/Context/AppProvider";
 // Page Loading
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
+import UserInfo from "../components/UserInfo";
 
 type ExtendAppProps = AppProps & {
     Component: any;
@@ -29,6 +30,7 @@ function MyApp({ Component, pageProps }: ExtendAppProps) {
             <>
                 <QueryClientProvider client={queryClient}>
                     <AppProvider>
+                        <UserInfo />
                         <Component {...pageProps} />
                         <ReactQueryDevtools />
                     </AppProvider>
@@ -41,6 +43,7 @@ function MyApp({ Component, pageProps }: ExtendAppProps) {
             <QueryClientProvider client={queryClient}>
                 <AppProvider>
                     <Layout>
+                        <UserInfo />
                         <Component {...pageProps} />
                     </Layout>
                 </AppProvider>
