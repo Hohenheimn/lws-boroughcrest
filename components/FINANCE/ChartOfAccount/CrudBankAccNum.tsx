@@ -10,12 +10,11 @@ import { useQueryClient } from "react-query";
 import AppContext from "../../Context/AppContext";
 // Palitin
 import {
-    DeleteFloor,
-    GetFloor,
-    GetTower,
-    PostFloor,
-    UpdateFloor,
-} from "../../ReactQuery/PropertyMethod";
+    DeleteBA,
+    GetBA,
+    CreateBA,
+    UpdateBA,
+} from "../../ReactQuery/BankAccount";
 
 type Props = {
     update: (value: string, e: any) => void;
@@ -75,25 +74,25 @@ const CrudBankAccNum = ({
             {
                 id: Math.random(),
                 displayId: "----",
-                name: "",
-                tower_id: "",
-                tower: "",
+                column1: "",
+                column2: "",
+                tagged: "",
             },
         ]);
     };
 
-    const { isLoading, data, isError } = GetFloor(isObject.value);
+    const { isLoading, data, isError } = GetBA(isObject.value);
 
-    // Palitin
+    // Set Data from backend to array of front end
     useEffect(() => {
         if (data?.status === 200) {
             const cloneArray = data?.data.map((item: any) => {
                 return {
                     id: item.id,
-                    displayId: item.assigned_floor_id,
-                    name: item.name,
-                    tower_id: item.tower_id,
-                    tower: item.tower.name,
+                    displayId: item.assigned_bank_account_id,
+                    column1: item.bank_acc_no,
+                    column2: item.bank_branch,
+                    tagged: item.tagged,
                 };
             });
             setArray(cloneArray);
@@ -123,10 +122,11 @@ const CrudBankAccNum = ({
                                     setArray={setArray}
                                     isArray={isArray}
                                     setWarning={setWarning}
-                                    set={setToggle}
-                                    is={isToggle}
+                                    setToggle={setToggle}
                                     update={update}
                                     isValID={isValID}
+                                    isFieldObj={isObject}
+                                    setFieldObj={setObject}
                                 />
                             ))}
                         </>
@@ -167,40 +167,57 @@ type List = {
     setArray: any;
     isArray: any;
     setWarning: any;
-    set: any;
+    setToggle: any;
     update: any;
-    is: any;
     isValID: any;
+    setFieldObj: Function;
+    isFieldObj: {
+        id: any;
+        value: any;
+        firstVal: any;
+        firstID: any;
+    };
 };
 const List = ({
+    setFieldObj,
+    isFieldObj,
     itemDetail,
     setArray,
     isArray,
     setWarning,
-    set,
-    is,
+    setToggle,
     update,
     isValID,
 }: List) => {
     const [isModify, setModify] = useState(false);
     const clientQuery = useQueryClient();
-    const [isProjectList, setProjectList] = useState(false);
     const { setPrompt } = useContext(AppContext);
 
+    // Auto editable when add row
     useEffect(() => {
-        if (itemDetail.name === "") {
+        if (itemDetail.column1 === "") {
             setModify(true);
         }
-    }, [itemDetail.name]);
+    }, [itemDetail.column1]);
+    // Toggle Modify Button
+    const Edit = () => {
+        setModify(!isModify);
+    };
 
-    // Functions
+    // Functions // Edit Array from front end
     const ModifyArray = (event: any, type: string) => {
         const newItems = isArray.map((item: any) => {
             if (itemDetail.id == item.id) {
-                if (type === "name") {
+                if (type === "column1") {
                     return {
                         ...item,
-                        name: event.target.value,
+                        column1: event.target.value,
+                    };
+                }
+                if (type === "column2") {
+                    return {
+                        ...item,
+                        column2: event.target.value,
                     };
                 }
             }
@@ -208,55 +225,40 @@ const List = ({
         });
         setArray(newItems);
     };
+
+    // Get Selected Data
     const Selected = (e: any) => {
-        update(itemDetail.name, itemDetail.id);
-        set(false);
-    };
-    const Edit = () => {
-        setModify(!isModify);
-    };
-    // Second Field Dropdown Update Value base on selected item
-    const updateVal = (value: any, id: any) => {
-        const newItems = isArray.map((item: any) => {
-            if (itemDetail.id == item.id) {
-                return {
-                    ...item,
-                    tower: value,
-                    tower_id: id,
-                };
-            }
-            return item;
-        });
-        setArray(newItems);
+        update(itemDetail.column1, itemDetail.id);
+        setToggle(false);
     };
 
     // Mutation
     const onSuccessSave = () => {
-        clientQuery.invalidateQueries("get-floor");
+        clientQuery.invalidateQueries("get-bank-account");
         setPrompt({
-            message: "Tower successfully registered!",
+            message: "Bank Account successfully registered!",
             type: "success",
             toggle: true,
         });
     };
     const onSuccessDelete = () => {
-        clientQuery.invalidateQueries("get-floor");
+        clientQuery.invalidateQueries("get-bank-account");
         setPrompt({
-            message: "Tower successfully deleted!",
+            message: "Bank Account successfully deleted!",
             type: "success",
             toggle: true,
         });
     };
     const onSuccessUpdate = () => {
-        clientQuery.invalidateQueries("get-floor");
+        clientQuery.invalidateQueries("get-bank-account");
         setPrompt({
-            message: "Tower successfully Updated!",
+            message: "Bank Account successfully Updated!",
             type: "success",
             toggle: true,
         });
     };
     const onError = () => {
-        setWarning("The name has already been registered");
+        setWarning("The Account Number has already been registered");
         setPrompt({
             message: "Something is wrong!",
             type: "error",
@@ -264,39 +266,33 @@ const List = ({
         });
     };
     // Save
-    const { isLoading: loadingSave, mutate: mutateSave } = PostFloor(
+    const { isLoading: loadingSave, mutate: mutateSave } = CreateBA(
         onSuccessSave,
         onError
     );
     // Delete
-    const { isLoading: loadingDelete, mutate: mutateDelete } = DeleteFloor(
+    const { isLoading: loadingDelete, mutate: mutateDelete } = DeleteBA(
         onSuccessDelete,
         onError
     );
     // Update
-    const { isLoading: loadingUpdate, mutate: mutateUpdate } = UpdateFloor(
+    const { isLoading: loadingUpdate, mutate: mutateUpdate } = UpdateBA(
         onSuccessUpdate,
         onError,
         itemDetail.id
     );
-    const [isTower, setTower] = useState({
-        value: itemDetail.tower,
-        firstVal: itemDetail.tower,
-        id: itemDetail.tower_id,
-        firstID: itemDetail.id,
-    });
 
     const Save = () => {
         // prevent here the function if field is empty
-        if (itemDetail.name === "" && itemDetail.tower === "") {
-            setWarning("Cannot save with empty name and project field");
+        if (itemDetail.column1 === "" && itemDetail.column2 === "") {
+            setWarning("Cannot save with empty Brank number and branch field");
             return;
         }
         setModify(!isModify);
         setWarning("");
         const Payload = {
-            name: itemDetail.name,
-            tower_id: isTower.id,
+            bank_acc_no: itemDetail.column1,
+            bank_branch: itemDetail.column2,
         };
 
         if (itemDetail.displayId === "----") {
@@ -314,6 +310,16 @@ const List = ({
         } else {
             // Delete from API
             mutateDelete(itemDetail.id);
+
+            // Check if selected item will be delete then, it will reset the select item back to blank
+            if (itemDetail.id === isFieldObj.id) {
+                setFieldObj({
+                    id: "",
+                    value: "",
+                    firstVal: "",
+                    firstID: "",
+                });
+            }
         }
     };
     return (
@@ -329,34 +335,17 @@ const List = ({
                 <input
                     type="text"
                     className={`${!isModify && "disabled"}`}
-                    value={itemDetail.name}
-                    onChange={(e) => ModifyArray(e, "name")}
+                    value={itemDetail.column1}
+                    onChange={(e) => ModifyArray(e, "column1")}
                 />
             </td>
             <td onClick={(e) => !isModify && Selected(e)} className="bg-hover">
-                <div className="dropdown">
-                    <input
-                        type="text"
-                        className={`${!isModify && "disabled"}`}
-                        value={isTower.value}
-                        onChange={(e: any) => {
-                            setTower({
-                                ...isTower,
-                                value: e.target.value,
-                            });
-                        }}
-                        onFocus={() => setProjectList(true)}
-                        onClick={() => setProjectList(true)}
-                    />
-                    {isProjectList && (
-                        <ListDropdown
-                            set={setProjectList}
-                            updateVal={updateVal}
-                            isTower={isTower}
-                            setTower={setTower}
-                        />
-                    )}
-                </div>
+                <input
+                    type="text"
+                    className={`${!isModify && "disabled"}`}
+                    value={itemDetail.column2}
+                    onChange={(e) => ModifyArray(e, "column2")}
+                />
             </td>
             <td className="action">
                 <div>
@@ -376,14 +365,23 @@ const List = ({
                                     </div>
                                 </Tippy>
                             ) : (
-                                <Tippy content={"Edit"} theme="ThemeRed">
-                                    <div>
-                                        <BiEdit
-                                            className="icon"
-                                            onClick={Edit}
-                                        />
-                                    </div>
-                                </Tippy>
+                                <div
+                                    className={
+                                        itemDetail.tagged === "1" ||
+                                        itemDetail.tagged === 1
+                                            ? " pointer-events-none opacity-[.4]"
+                                            : ""
+                                    }
+                                >
+                                    <Tippy content={"Edit"} theme="ThemeRed">
+                                        <div>
+                                            <BiEdit
+                                                className="icon"
+                                                onClick={Edit}
+                                            />
+                                        </div>
+                                    </Tippy>
+                                </div>
                             )}
                         </>
                     )}
@@ -392,7 +390,7 @@ const List = ({
                             <MoonLoader size={10} color="#8f384d" />
                         </div>
                     ) : (
-                        <Tippy content={"Delete"} theme="ThemeRed">
+                        <Tippy theme="ThemeRed" content="Export">
                             <div>
                                 <MdDeleteOutline
                                     className="icon"
@@ -408,86 +406,3 @@ const List = ({
 };
 
 export default CrudBankAccNum;
-
-type ListDropdown = {
-    set: any;
-    updateVal: any;
-    isTower: {
-        value: string;
-        firstVal: string;
-        firstID: string;
-    };
-    setTower: Function;
-};
-
-const ListDropdown = ({ set, updateVal, isTower, setTower }: ListDropdown) => {
-    const { data, isLoading, isError } = GetTower(isTower.value);
-
-    const modal = useRef<any>();
-
-    const reset = () => {
-        set(false);
-        setTower({
-            ...isTower,
-            value: isTower.firstVal,
-            id: isTower.firstID,
-        });
-    };
-
-    useEffect(() => {
-        const clickOutSide = (e: any) => {
-            if (!modal.current.contains(e.target)) {
-                reset();
-            }
-        };
-        document.addEventListener("mousedown", clickOutSide);
-        return () => {
-            document.removeEventListener("mousedown", clickOutSide);
-        };
-    });
-
-    const select = (e: any) => {
-        const id = e.target.getAttribute("data-id");
-        const value = e.target.innerHTML;
-        updateVal(value, id);
-        setTower({
-            value: value,
-            firstVal: value,
-            id: id,
-            firstID: id,
-        });
-        set(false);
-    };
-
-    if (isLoading) {
-        return (
-            <ul ref={modal} className="w-full flex justify-center py-3">
-                <BarLoader
-                    color={"#8f384d"}
-                    height="5px"
-                    width="100px"
-                    aria-label="Loading Spinner"
-                    data-testid="loader"
-                />
-            </ul>
-        );
-    }
-
-    if (isError || data?.data.length <= 0) {
-        return (
-            <ul ref={modal} className="w-full flex justify-center py-3">
-                <li onClick={reset}>Project Can&apos;t found!</li>
-            </ul>
-        );
-    }
-
-    return (
-        <ul ref={modal}>
-            {data?.data.map((item: any, index: number) => (
-                <li data-id={item.id} key={index} onClick={select}>
-                    {item.name}
-                </li>
-            ))}
-        </ul>
-    );
-};

@@ -5,11 +5,11 @@
     }
 
     td {
-        @apply pr-10 1550px:pr-8 1280px:pr-5 480px:pr-3 py-2 1366px:pr-5 1024px:pr-2 820px:text-[13px];
+        @apply pr-10 1550px:pr-8 1280px:pr-5 480px:pr-3 py-2 1366px:pr-5 1024px:pr-2 text-[16px] 1550px:text-[13px] 1280px:text-[13px];
         input[type="number"],
         input[type="text"],
         input[type="email"] {
-            @apply w-full p-1 px-2 min-w-[200px] 1550px:min-w-[100px] h-10 1550px:h-8 820px:h-8 rounded-md outline-none shadow-md text-[#757575] font-NHU-bold;
+            @apply w-full p-1 px-2 min-w-[200px] text-[12px] 1550px:min-w-[100px] h-10 1550px:h-8 820px:h-8 rounded-md outline-none shadow-md text-[#757575] font-NHU-bold;
         }
         input[type="checkbox"] {
             border: 1px solid rgb(216, 216, 216) !important;
@@ -25,7 +25,7 @@
             @apply text-end;
         }
         p {
-            @apply text-end w-full text-[#757575] font-NHU-bold;
+            @apply text-end w-full text-[#757575] font-NHU-bold text-[16px] 1550px:text-[13px] 1280px:text-[13px];
         }
         .peso {
             @apply relative flex items-center text-[#757575] font-NHU-bold;

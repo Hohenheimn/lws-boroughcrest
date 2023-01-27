@@ -133,7 +133,11 @@ export default function JournalTable({ type }: Props) {
                         <tr>
                             {type === "Unposted" ? (
                                 <>
-                                    <th></th>
+                                    <th className="checkbox">
+                                        <div className="item">
+                                            <input type="checkbox" />
+                                        </div>
+                                    </th>
                                     <th>Date</th>
                                     <th>Particulars</th>
                                     <th>Status</th>

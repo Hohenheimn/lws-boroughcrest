@@ -15,7 +15,6 @@ import SignOut from "./SignOut";
 import PrompMessage from "../PrompMessage";
 import { FadeSide } from "../Animation/SimpleAnimation";
 import UpperMenu from "../FINANCE/UpperMenu";
-import { UserInfo } from "./FetchUser";
 
 type Layout = {
     children: React.ReactNode;
@@ -121,7 +120,7 @@ export default function Layout({ children }: Layout) {
                         isWide === true ? "pl-wide" : "pl-no-wide"
                     } ${collapseSide && !isWide && "collapse_container"}`}
                 >
-                    <div className="flex-1 flex flex-col w-full 1024px:py-10 480px:pb-0 py-10 relative ">
+                    <div className="flex-1 flex flex-col w-full relative ">
                         {isWindow <= 1024 && (
                             <button
                                 onClick={() => setHide(!isHide)}
@@ -139,7 +138,7 @@ export default function Layout({ children }: Layout) {
                                 router.pathname === "/"
                                     ? "justify-between"
                                     : "justify-end"
-                            } items-center justify-between px-14 1550px:px-10 mb-5 640px:mb-0 480px:flex-wrap 480px:justify-end`}
+                            } items-center justify-between px-14 1550px:px-10 480px:flex-wrap 480px:justify-end`}
                         >
                             <AnimatePresence>
                                 {collapseSide ? (

@@ -203,6 +203,174 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                 >
                     <div className={isForm[0] ? "" : "hidden"}>
                         <h1 className={style.modal_label_primaryRed}>
+                            Lorem Ipsum
+                        </h1>
+                        <ul className={style.ThreeRows}>
+                            <li>
+                                <label>*CODE</label>
+                                <input
+                                    type="text"
+                                    value={fieldValue.code}
+                                    onChange={(e: any) => {
+                                        e.target.value.length <= 10 &&
+                                            setFieldValue({
+                                                ...fieldValue,
+                                                code: e.target.value,
+                                            });
+                                    }}
+                                />
+                                {isError?.code !== "" && (
+                                    <p className="text-[12px]">
+                                        {isError?.code}
+                                    </p>
+                                )}
+                            </li>
+                            <li>
+                                <label>*TYPE</label>
+                                <select
+                                    id=""
+                                    value={fieldValue.type}
+                                    onChange={(e: any) => {
+                                        setFieldValue({
+                                            ...fieldValue,
+                                            type: e.target.value,
+                                        });
+                                    }}
+                                >
+                                    <option value=""></option>
+                                    <option value="Charge">Charge</option>
+                                    <option value="Deposit">Deposit</option>
+                                </select>
+                                {isError?.type !== "" && (
+                                    <p className="text-[12px]">
+                                        {isError?.type}
+                                    </p>
+                                )}
+                            </li>
+                            <li>
+                                <label>*NAME</label>
+                                <input
+                                    type="text"
+                                    value={fieldValue.name}
+                                    onChange={(e: any) => {
+                                        setFieldValue({
+                                            ...fieldValue,
+                                            name: e.target.value,
+                                        });
+                                    }}
+                                />
+                                {isError?.name !== "" && (
+                                    <p className="text-[12px]">
+                                        {isError?.name}
+                                    </p>
+                                )}
+                            </li>
+                            <li>
+                                <label>DESCRIPTION</label>
+                                <input
+                                    type="text"
+                                    value={fieldValue.description}
+                                    onChange={(e: any) => {
+                                        setFieldValue({
+                                            ...fieldValue,
+                                            description: e.target.value,
+                                        });
+                                    }}
+                                />
+                            </li>
+                            <li>
+                                <label>*BASE RATE</label>
+                                <input
+                                    type="number"
+                                    value={fieldValue.base_rate}
+                                    onChange={(e: any) => {
+                                        setFieldValue({
+                                            ...fieldValue,
+                                            base_rate: parseFloat(
+                                                e.target.value
+                                            ),
+                                        });
+                                    }}
+                                />
+                            </li>
+                            <li>
+                                <label>*UOM</label>
+                                <input
+                                    type="text"
+                                    value={fieldValue.uom}
+                                    onChange={(e: any) => {
+                                        setFieldValue({
+                                            ...fieldValue,
+                                            uom: e.target.value,
+                                        });
+                                    }}
+                                />
+                                {isError?.uom !== "" && (
+                                    <p className="text-[12px]">
+                                        {isError?.uom}
+                                    </p>
+                                )}
+                            </li>
+                            <li>
+                                <label>*VAT%</label>
+                                <input
+                                    type="number"
+                                    value={fieldValue.vat_percent}
+                                    onChange={(e: any) => {
+                                        setFieldValue({
+                                            ...fieldValue,
+                                            vat_percent: parseFloat(
+                                                e.target.value
+                                            ),
+                                        });
+                                    }}
+                                />
+                            </li>
+                            <li>
+                                <label>*RECEIVABLE</label>
+                                <div
+                                    className={`${style.Dropdown} ${style.full}`}
+                                >
+                                    <input
+                                        type="text"
+                                        value={isReceivable.value}
+                                        onChange={(e: any) =>
+                                            setReceivable({
+                                                ...isReceivable,
+                                                value: e.target.value,
+                                            })
+                                        }
+                                        onClick={() =>
+                                            setReceivable({
+                                                ...isReceivable,
+                                                toggle: true,
+                                            })
+                                        }
+                                    />
+                                    {isReceivable.toggle && (
+                                        <Dropdown
+                                            name="receivable"
+                                            fieldObject={isReceivable}
+                                            searchValue={isReceivable.value}
+                                            setFunction={setReceivable}
+                                            endpoint="/finance/customer-facility/charges/coa-options/receivable"
+                                        />
+                                    )}
+                                </div>
+                            </li>
+                        </ul>
+
+                        <div className={style.SaveButton}>
+                            <aside className={style.back} onClick={cancel}>
+                                CANCEL
+                            </aside>
+                            <button className={style.next} onClick={next}>
+                                NEXT
+                            </button>
+                        </div>
+                    </div>
+                    <div className={isForm[1] ? "" : "hidden"}>
+                        <h1 className={style.modal_label_primaryRed}>
                             Primary Information
                         </h1>
                         <ul className={style.ThreeRows}>
@@ -378,175 +546,6 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                         {isError?.soa_sort_order}
                                     </p>
                                 )}
-                            </li>
-                        </ul>
-
-                        <div className={style.SaveButton}>
-                            <aside className={style.back} onClick={cancel}>
-                                CANCEL
-                            </aside>
-                            <button className={style.next} onClick={next}>
-                                NEXT
-                            </button>
-                        </div>
-                    </div>
-
-                    <div className={isForm[1] ? "" : "hidden"}>
-                        <h1 className={style.modal_label_primaryRed}>
-                            Lorem Ipsum
-                        </h1>
-                        <ul className={style.ThreeRows}>
-                            <li>
-                                <label>*CODE</label>
-                                <input
-                                    type="text"
-                                    value={fieldValue.code}
-                                    onChange={(e: any) => {
-                                        e.target.value.length <= 10 &&
-                                            setFieldValue({
-                                                ...fieldValue,
-                                                code: e.target.value,
-                                            });
-                                    }}
-                                />
-                                {isError?.code !== "" && (
-                                    <p className="text-[12px]">
-                                        {isError?.code}
-                                    </p>
-                                )}
-                            </li>
-                            <li>
-                                <label>*TYPE</label>
-                                <select
-                                    id=""
-                                    value={fieldValue.type}
-                                    onChange={(e: any) => {
-                                        setFieldValue({
-                                            ...fieldValue,
-                                            type: e.target.value,
-                                        });
-                                    }}
-                                >
-                                    <option value=""></option>
-                                    <option value="Charge">Charge</option>
-                                    <option value="Deposit">Deposit</option>
-                                </select>
-                                {isError?.type !== "" && (
-                                    <p className="text-[12px]">
-                                        {isError?.type}
-                                    </p>
-                                )}
-                            </li>
-                            <li>
-                                <label>*NAME</label>
-                                <input
-                                    type="text"
-                                    value={fieldValue.name}
-                                    onChange={(e: any) => {
-                                        setFieldValue({
-                                            ...fieldValue,
-                                            name: e.target.value,
-                                        });
-                                    }}
-                                />
-                                {isError?.name !== "" && (
-                                    <p className="text-[12px]">
-                                        {isError?.name}
-                                    </p>
-                                )}
-                            </li>
-                            <li>
-                                <label>DESCRIPTION</label>
-                                <input
-                                    type="text"
-                                    value={fieldValue.description}
-                                    onChange={(e: any) => {
-                                        setFieldValue({
-                                            ...fieldValue,
-                                            description: e.target.value,
-                                        });
-                                    }}
-                                />
-                            </li>
-                            <li>
-                                <label>*BASE RATE</label>
-                                <input
-                                    type="number"
-                                    value={fieldValue.base_rate}
-                                    onChange={(e: any) => {
-                                        setFieldValue({
-                                            ...fieldValue,
-                                            base_rate: parseFloat(
-                                                e.target.value
-                                            ),
-                                        });
-                                    }}
-                                />
-                            </li>
-                            <li>
-                                <label>*UOM</label>
-                                <input
-                                    type="text"
-                                    value={fieldValue.uom}
-                                    onChange={(e: any) => {
-                                        setFieldValue({
-                                            ...fieldValue,
-                                            uom: e.target.value,
-                                        });
-                                    }}
-                                />
-                                {isError?.uom !== "" && (
-                                    <p className="text-[12px]">
-                                        {isError?.uom}
-                                    </p>
-                                )}
-                            </li>
-                            <li>
-                                <label>*VAT%</label>
-                                <input
-                                    type="number"
-                                    value={fieldValue.vat_percent}
-                                    onChange={(e: any) => {
-                                        setFieldValue({
-                                            ...fieldValue,
-                                            vat_percent: parseFloat(
-                                                e.target.value
-                                            ),
-                                        });
-                                    }}
-                                />
-                            </li>
-                            <li>
-                                <label>*RECEIVABLE</label>
-                                <div
-                                    className={`${style.Dropdown} ${style.full}`}
-                                >
-                                    <input
-                                        type="text"
-                                        value={isReceivable.value}
-                                        onChange={(e: any) =>
-                                            setReceivable({
-                                                ...isReceivable,
-                                                value: e.target.value,
-                                            })
-                                        }
-                                        onClick={() =>
-                                            setReceivable({
-                                                ...isReceivable,
-                                                toggle: true,
-                                            })
-                                        }
-                                    />
-                                    {isReceivable.toggle && (
-                                        <Dropdown
-                                            name="receivable"
-                                            fieldObject={isReceivable}
-                                            searchValue={isReceivable.value}
-                                            setFunction={setReceivable}
-                                            endpoint="/finance/customer-facility/charges/coa-options/receivable"
-                                        />
-                                    )}
-                                </div>
                             </li>
                         </ul>
 

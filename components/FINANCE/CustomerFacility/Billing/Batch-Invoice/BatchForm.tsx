@@ -26,7 +26,7 @@ export default function BatchForm({ DefaultValue }: Props) {
     const [isDefault, setDefault] = useState<defaultArray>(DefaultValue);
     return (
         <>
-            <div className="w-full overflow-auto border-b border-gray-300 pb-10 mb-10">
+            <div className="w-full overflow-auto border-b border-gray-300 pb-10 mb-10 1550px:mb-5 1550px:pb-5">
                 <table className={style.crudTable}>
                     <thead>
                         <tr>
@@ -79,16 +79,8 @@ export default function BatchForm({ DefaultValue }: Props) {
                             </tr> */}
                     </tbody>
                 </table>
-                <div className="DropDownSave">
-                    <div>
-                        <button
-                            type="submit"
-                            name="save"
-                            className="bg-ThemeRed hover:bg-ThemeRed50 px-5 py-1 cursor-pointer relative text-white h-auto duration-75 overflow-hidden rounded-md text-[14px];"
-                        >
-                            APPLY
-                        </button>
-                    </div>
+                <div className="py-2 flex justify-end">
+                    <button className="buttonRed">APPLY</button>
                 </div>
             </div>
         </>

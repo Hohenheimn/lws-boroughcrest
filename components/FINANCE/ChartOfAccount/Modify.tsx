@@ -4,19 +4,22 @@ import style from "../../../styles/Popup_Modal.module.scss";
 import { BeatLoader } from "react-spinners";
 import { useRouter } from "next/router";
 import { COADetail } from "../../ReactQuery/ChartofAccount";
-import { ChartofAccountPayload } from "../../../types/COAList";
+import {
+    ChartofAccountList,
+    ChartofAccountPayload,
+} from "../../../types/COAList";
 
 export default function Modify({ setCreate }: any) {
     const router = useRouter();
     const { isLoading, data, isError } = COADetail(router.query.modify);
-    const DefaultFormData: ChartofAccountPayload = {
+    const DefaultFormData: ChartofAccountList = {
         chart_code: data?.data.chart_code,
         code_suffix: data?.data.code_suffix,
         account_name: data?.data.account_name,
         description: data?.data.description,
         apply_to_sub_acc: data?.data.apply_to_sub_acc,
-        bank_acc_no: data?.data.bank_acc_no,
-        // bank_branch: data?.data.bank_branch,
+        bank_account: data?.data.bank_account,
+        bank_account_id: data?.data.bank_account_id,
         coa_default_account_id: data?.data.coa_default_account_id,
         defaultAccount: data?.data.default_account?.name,
         parent_id: data?.data.parent_id,

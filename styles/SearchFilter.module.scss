@@ -3,7 +3,7 @@
 }
 
 .container {
-    @apply flex justify-between items-center mb-10 640px:flex-wrap 640px:justify-end 640px:mb-0;
+    @apply flex justify-between items-center mb-10 1550px:mb-5 640px:flex-wrap 640px:justify-end 640px:mb-0;
     .searchBar {
         @apply flex items-center shadow-lg px-2 h-10 1550px:h-8 bg-white flex-1 max-w-[500px] 640px:max-w-[unset] rounded-lg;
         input {
