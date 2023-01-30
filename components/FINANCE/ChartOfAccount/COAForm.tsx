@@ -224,6 +224,8 @@ export default function COAForm({
             bank_account_id: isBankAccountVal.id,
         };
 
+        console.log(Payload);
+
         if (router.query.modify === undefined) {
             // Save
             Save(Payload);

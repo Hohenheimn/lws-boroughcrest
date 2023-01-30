@@ -50,7 +50,7 @@ export default function SubTable() {
                 <table className={style.crudTable}>
                     <thead>
                         <tr>
-                            <th>CUSTOMER ID</th>
+                            <th className=" min-w-[130px]">CUSTOMER ID</th>
                             <th>CUSTOMER NAME</th>
                             <th>DATE</th>
                             <th>REFERENCE NO.</th>
@@ -90,7 +90,7 @@ export default function SubTable() {
                     </p>
                 </div>
             </div>
-            <div className="flex justify-end py-5 mt-20">
+            <div className="flex justify-end py-5 mt-5">
                 <button className="button_cancel">Cancel</button>
                 <button
                     className="buttonRed"

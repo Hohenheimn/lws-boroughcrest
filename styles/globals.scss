@@ -30,7 +30,10 @@ h6 {
     font-family: "NHU-bold";
     @apply text-[#545454];
 }
-input {
+input[type="number"],
+input[type="text"],
+input[type="email"],
+input[type="password"] {
     @apply text-[#545454] font-NHU-medium;
     color: #545454 !important;
     font-size: 16px !important;
@@ -637,7 +640,7 @@ input[type="number"] {
     }
 }
 .ToggleAccount {
-    @apply h-10 1550px:h-8 rounded-lg w-full flex items-center justify-center;
+    @apply h-8 1550px:h-8 rounded-lg w-full flex items-center justify-center;
     transition: all 1s;
     .item {
         @apply w-2/4 text-center font-NHU-bold py-1 m-0 z-10 cursor-pointer;

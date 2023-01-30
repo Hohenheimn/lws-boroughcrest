@@ -1,12 +1,12 @@
 import React from "react";
+import GeneralLedgerTable from "../../../../components/FINANCE/OpeningBalance/GeneralLedgerTable";
 import Header from "../../../../components/FINANCE/OpeningBalance/Header";
-import TableForm from "../../../../components/FINANCE/OpeningBalance/TableForm";
 
 export default function GeneralLedger() {
     return (
         <div>
             <Header />
-            <TableForm />
+            <GeneralLedgerTable />
         </div>
     );
 }
