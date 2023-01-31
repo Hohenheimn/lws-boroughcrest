@@ -7,37 +7,27 @@ import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 
 import { useQueryClient } from "react-query";
-import AppContext from "../../Context/AppContext";
+import AppContext from "../../../../Context/AppContext";
 // Palitin
 import {
     DeleteBA,
     GetBA,
     CreateBA,
     UpdateBA,
-} from "../../ReactQuery/BankAccount";
+} from "../../../../ReactQuery/BankAccount";
 
 type Props = {
-    update: (value: string, e: any) => void;
-    setToggle: Function;
-    isToggle: boolean;
-    isValID: string | number;
     isObject: {
-        id: any;
-        value: any;
-        firstVal: any;
-        firstID: any;
+        id: string;
+        value: string;
+        firstVal: string;
+        firstID: string;
+        toggle: boolean;
     };
     setObject: Function;
 };
 
-const CrudBankAccNum = ({
-    setToggle,
-    update,
-    isToggle,
-    isValID,
-    isObject,
-    setObject,
-}: Props) => {
+const ReadingCrud = ({ isObject, setObject }: Props) => {
     const modal = useRef<any>();
 
     const [isArray, setArray] = useState<any>([]);
@@ -51,13 +41,12 @@ const CrudBankAccNum = ({
                 setArray((itemList: any) =>
                     itemList.filter((item: any) => item.name !== "")
                 );
-                // put back to first val
+                // put back to first val and close
                 setObject({
                     ...isObject,
                     value: isObject.firstVal,
+                    toggle: false,
                 });
-                // Close
-                setToggle(false);
                 // Blank warning
                 setWarning("");
             }
@@ -92,7 +81,6 @@ const CrudBankAccNum = ({
                     displayId: item.assigned_bank_account_id,
                     column1: item.bank_acc_no,
                     column2: item.bank_branch,
-                    tagged: item.tagged,
                 };
             });
             setArray(cloneArray);
@@ -104,9 +92,8 @@ const CrudBankAccNum = ({
             <table className="crud-table wide">
                 <thead>
                     <tr>
-                        <th className="text-white">ID</th>
-                        <th className="text-white">BANK ACCOUNT NUMBER</th>
-                        <th className="text-white">BANK AND BRANCH</th>
+                        <th className="text-white">CHARGE</th>
+                        <th className="text-white">READING</th>
                         <th className="text-white">ACTION</th>
                     </tr>
                 </thead>
@@ -122,9 +109,6 @@ const CrudBankAccNum = ({
                                     setArray={setArray}
                                     isArray={isArray}
                                     setWarning={setWarning}
-                                    setToggle={setToggle}
-                                    update={update}
-                                    isValID={isValID}
                                     isFieldObj={isObject}
                                     setFieldObj={setObject}
                                 />
@@ -157,7 +141,7 @@ const CrudBankAccNum = ({
                 className="cursor-pointer text-ThemeRed text-[12px] inline-block py-2 hover:underline"
                 onClick={AddArray}
             >
-                ADD BANK
+                ADD READING
             </h1>
         </div>
     );
@@ -167,11 +151,9 @@ type List = {
     setArray: any;
     isArray: any;
     setWarning: any;
-    setToggle: any;
-    update: any;
-    isValID: any;
     setFieldObj: Function;
     isFieldObj: {
+        toggle: boolean;
         id: any;
         value: any;
         firstVal: any;
@@ -185,15 +167,12 @@ const List = ({
     setArray,
     isArray,
     setWarning,
-    setToggle,
-    update,
-    isValID,
 }: List) => {
     const [isModify, setModify] = useState(false);
     const clientQuery = useQueryClient();
     const { setPrompt } = useContext(AppContext);
 
-    // Auto editable when add row
+    // Auto editable field when add row
     useEffect(() => {
         if (itemDetail.column1 === "") {
             setModify(true);
@@ -202,6 +181,18 @@ const List = ({
     // Toggle Modify Button
     const Edit = () => {
         setModify(!isModify);
+    };
+
+    // Get Selected Data
+    const Selected = (id: string | number, name: string) => {
+        setFieldObj({
+            ...isFieldObj,
+            id: id,
+            value: name,
+            firstVal: name,
+            firstID: id,
+            toggle: false,
+        });
     };
 
     // Functions // Edit Array from front end
@@ -226,17 +217,11 @@ const List = ({
         setArray(newItems);
     };
 
-    // Get Selected Data
-    const Selected = (e: any) => {
-        update(itemDetail.column1, itemDetail.id);
-        setToggle(false);
-    };
-
     // Mutation
     const onSuccessSave = () => {
         clientQuery.invalidateQueries("get-bank-account");
         setPrompt({
-            message: "Bank Account successfully registered!",
+            message: "Reading successfully registered!",
             type: "success",
             toggle: true,
         });
@@ -244,7 +229,7 @@ const List = ({
     const onSuccessDelete = () => {
         clientQuery.invalidateQueries("get-bank-account");
         setPrompt({
-            message: "Bank Account successfully deleted!",
+            message: "Reading successfully deleted!",
             type: "success",
             toggle: true,
         });
@@ -252,13 +237,13 @@ const List = ({
     const onSuccessUpdate = () => {
         clientQuery.invalidateQueries("get-bank-account");
         setPrompt({
-            message: "Bank Account successfully Updated!",
+            message: "Reading successfully Updated!",
             type: "success",
             toggle: true,
         });
     };
     const onError = () => {
-        setWarning("The Account Number has already been registered");
+        setWarning("Reading has already been registered");
         setPrompt({
             message: "Something is wrong!",
             type: "error",
@@ -285,21 +270,22 @@ const List = ({
     const Save = () => {
         // prevent here the function if field is empty
         if (itemDetail.column1 === "" && itemDetail.column2 === "") {
-            setWarning("Cannot save with empty Brank number and branch field");
+            setWarning("Cannot save with empty Charge and Reading");
             return;
         }
         setModify(!isModify);
         setWarning("");
         const Payload = {
-            bank_acc_no: itemDetail.column1,
-            bank_branch: itemDetail.column2,
+            charge_id: itemDetail.displayId,
+            reading: itemDetail.column2,
         };
+        console.log(Payload);
 
-        if (itemDetail.displayId === "----") {
-            mutateSave(Payload);
-        } else {
-            mutateUpdate(Payload);
-        }
+        // if (itemDetail.displayId === "----") {
+        //     mutateSave(Payload);
+        // } else {
+        //     mutateUpdate(Payload);
+        // }
     };
     const Delete = () => {
         if (itemDetail.displayId === "----") {
@@ -325,13 +311,15 @@ const List = ({
     return (
         <tr
             className={`cursor-pointer container ${
-                isValID === itemDetail.id ? "active" : ""
+                isFieldObj.id === itemDetail.id ? "active" : ""
             }`}
         >
-            <td onClick={(e) => !isModify && Selected(e)} className="bg-hover">
-                <p>{itemDetail.displayId}</p>
-            </td>
-            <td onClick={(e) => !isModify && Selected(e)} className="bg-hover">
+            <td
+                onClick={(e) =>
+                    !isModify && Selected(itemDetail.id, itemDetail.column2)
+                }
+                className="bg-hover"
+            >
                 <input
                     type="text"
                     className={`${!isModify && "disabled"}`}
@@ -339,7 +327,12 @@ const List = ({
                     onChange={(e) => ModifyArray(e, "column1")}
                 />
             </td>
-            <td onClick={(e) => !isModify && Selected(e)} className="bg-hover">
+            <td
+                onClick={(e) =>
+                    !isModify && Selected(itemDetail.id, itemDetail.column2)
+                }
+                className="bg-hover"
+            >
                 <input
                     type="text"
                     className={`${!isModify && "disabled"}`}
@@ -365,14 +358,7 @@ const List = ({
                                     </div>
                                 </Tippy>
                             ) : (
-                                <div
-                                    className={
-                                        itemDetail.tagged === "1" ||
-                                        itemDetail.tagged === 1
-                                            ? " pointer-events-none opacity-[.4]"
-                                            : ""
-                                    }
-                                >
+                                <div>
                                     <Tippy content={"Edit"} theme="ThemeRed">
                                         <div>
                                             <BiEdit
@@ -405,4 +391,4 @@ const List = ({
     );
 };
 
-export default CrudBankAccNum;
+export default ReadingCrud;

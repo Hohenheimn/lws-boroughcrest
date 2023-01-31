@@ -12,7 +12,10 @@ export default function BatchList() {
                 <table className="table_list">
                     <thead className=" textRed">
                         <tr>
-                            <th></th>
+                            <th className="checkbox">
+                                <input type="checkbox" />
+                            </th>
+
                             <th>BATCH NO.</th>
                             <th>CHARGE</th>
                             <th>DESCRIPTION</th>
@@ -41,7 +44,9 @@ const List = () => {
     return (
         <tr>
             <td className="checkbox">
-                <input type="checkbox" />
+                <div className="item">
+                    <input type="checkbox" />
+                </div>
             </td>
             <td>
                 <div className="item">

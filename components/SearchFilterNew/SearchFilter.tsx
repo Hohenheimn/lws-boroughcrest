@@ -24,7 +24,7 @@ type SearchFilter = {
 };
 
 export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
-    const [isPrintColumn, setPrintColumn] = useState();
+    const [isPrintColumn, setPrintColumn] = useState<any>();
     const {
         setCorpToggle,
         setCusToggle,
@@ -55,7 +55,21 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
     // Print Columns
     useEffect(() => {
         if (router.pathname.includes("admin/customer")) {
-            setPrintColumn(cusTableColumn);
+            const customerAllColumn = [
+                "Class",
+                "Mobile",
+                "Email",
+                "Status",
+                "Spouse",
+                "Citizenship",
+                "Birth Date",
+                "Contact Person",
+                "Property",
+                "TIN",
+                "Branch Code",
+                "Type",
+            ];
+            setPrintColumn(customerAllColumn);
         }
         if (router.pathname.includes("admin/property")) {
             setPrintColumn(propTableColumn);
@@ -183,7 +197,7 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
                             <Tippy theme="ThemeRed" content="Print">
                                 <div>
                                     <Link
-                                        href={`${isPrint.url}?keyword=${isPrint.keyword}&limit=${isPrint.limit}&page=${isPrint.page}&columns=${isPrintColumn}`}
+                                        href={`${isPrint.url}?keyword=${isPrint.keyword}&limit=${isPrint.limit}&page=${isPrint.page}`}
                                     >
                                         <a target="_blank">
                                             <div className={style.icon}>

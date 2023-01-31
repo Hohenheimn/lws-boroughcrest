@@ -4,20 +4,20 @@ import { BsPlusLg } from "react-icons/bs";
 import { HiMinus } from "react-icons/hi";
 import { RiArrowDownSFill } from "react-icons/ri";
 import style from "../../../../styles/finance/Crud-table.module.scss";
-import DropdownSearch from "../../../DropdownSearch";
+import CustomerDropdown from "./CustomerDropdown";
+import DropDownCharge from "../../OpeningBalance/DropDownCharge";
 
-type billingArray = {
-    id: number;
-    charge: any;
-    description: string;
-    unit_price: number;
-    quantity: number;
-    uom: any;
-    vat: number;
-    amount: number;
-}[];
+export type customerDD = {
+    id: string | number;
+    name: string;
+    class: string;
+    property: string;
+};
+
+type billingArray = billingObject[];
 type billingObject = {
     id: number;
+    charge_id: string;
     charge: any;
     description: string;
     unit_price: number;
@@ -29,33 +29,47 @@ type billingObject = {
 type Props = {
     DefaultValue: billingArray;
     type: string;
+    DefaultCustomer: customerDD;
 };
-
-export default function JournalForm({ DefaultValue, type }: Props) {
+export default function JournalForm({
+    DefaultValue,
+    DefaultCustomer,
+    type,
+}: Props) {
     const [isSave, setSave] = useState(false);
-
     const [isBilling, setBilling] = useState<billingArray>(DefaultValue);
+    const [isCustomer, setCustomer] = useState<customerDD>({
+        id: DefaultCustomer?.id === undefined ? "" : DefaultCustomer?.id,
+        name: DefaultCustomer?.id === undefined ? "" : DefaultCustomer?.name,
+        class: DefaultCustomer?.id === undefined ? "" : DefaultCustomer?.class,
+        property:
+            DefaultCustomer?.id === undefined ? "" : DefaultCustomer?.property,
+    });
+
     return (
         <>
             <div>
                 <ul className="flex flex-wrap justify-between pb-8 mb-8 border-b border-gray-300">
                     <li className="w-[32%] 820px:w-2/4 820px:mb-2 480px:w-full">
-                        <p className=" text-ThemeRed mr-3 font-NHU-bold 820px:text-[13px]">
+                        <p className=" text-ThemeRed mr-3 font-NHU-bold 820px:text-[13px] 1550px:text-[14px]">
                             CUSTOMER
                         </p>
-                        <DropdownSearch />
+                        <CustomerDropdown
+                            setCustomer={setCustomer}
+                            isCustomer={isCustomer}
+                        />
                     </li>
                     <li className="w-[32%] 820px:w-2/4 820px:mb-2">
-                        <p className=" text-ThemeRed mr-3 font-NHU-bold 820px:text-[13px]">
+                        <p className=" text-ThemeRed mr-3 font-NHU-bold 820px:text-[13px] 1550px:text-[14px]">
                             CLASS
                         </p>
-                        <h1>Lorem ipsum</h1>
+                        <h1>{isCustomer.class}</h1>
                     </li>
                     <li className="w-[32%] 820px:w-2/4 820px:mb-2">
-                        <p className=" text-ThemeRed mr-3 font-NHU-bold 820px:text-[13px]">
+                        <p className=" text-ThemeRed mr-3 font-NHU-bold 820px:text-[13px] 1550px:text-[14px]">
                             PROPERTY
                         </p>
-                        <h1>Lorem ipsum</h1>
+                        <h1>{isCustomer.property}</h1>
                     </li>
                 </ul>
                 <div className="w-full overflow-auto">
@@ -116,6 +130,9 @@ export default function JournalForm({ DefaultValue, type }: Props) {
                             type="submit"
                             name="save"
                             className="ddsave_button"
+                            onClick={() => {
+                                console.log(isBilling);
+                            }}
                         >
                             SAVE
                         </button>
@@ -152,6 +169,7 @@ const List = ({ itemList, setState, isState, index }: List) => {
             ...temp,
             {
                 id: random,
+                charge_id: "",
                 charge: "",
                 description: "",
                 unit_price: 0,
@@ -173,7 +191,8 @@ const List = ({ itemList, setState, isState, index }: List) => {
                 if (key === "charge") {
                     return {
                         ...item,
-                        charge: e.target.value,
+                        charge: e.target.innerHTML,
+                        charge_id: e.target.getAttribute("data-id"),
                     };
                 } else if (key === "description") {
                     return {
@@ -214,12 +233,10 @@ const List = ({ itemList, setState, isState, index }: List) => {
     return (
         <tr>
             <td>
-                {/* <input
-                    type="number"
-                    value={itemList.charge}
-                    onChange={(e) => updateValue("charge", e)}
-                /> */}
-                <DropdownSearch />
+                <DropDownCharge
+                    UpdateStateHandler={updateValue}
+                    itemDetail={itemList}
+                />
             </td>
             <td>
                 <input

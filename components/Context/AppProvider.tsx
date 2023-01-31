@@ -128,6 +128,7 @@ export default function AppProvider({ children }: AppProvider) {
         "Contact no.",
         "Email",
     ]);
+    // Customer
     const [cusTableColumn, setCusTableColumn] = useState([
         "Class",
         "Mobile",
@@ -192,6 +193,14 @@ export default function AppProvider({ children }: AppProvider) {
         page: "",
         limit: "",
         url: "",
+    });
+
+    const [userInfo, setUserInfo] = useState({
+        name: "",
+        email: "",
+        email_verified: "",
+        created_at: "",
+        updated_at: "",
     });
 
     const [isSearchBar, setSearchBar] = useState("");
@@ -262,6 +271,8 @@ export default function AppProvider({ children }: AppProvider) {
                 ErrorDefault,
                 setPrint,
                 isPrint,
+                setUserInfo,
+                userInfo,
             }}
         >
             {children}

@@ -8,12 +8,17 @@ import AppContext from "../../../components/Context/AppContext";
 import { CustomerImport } from "../../../components/ReactQuery/CustomerMethod";
 import PeriodCalendar from "../../PeriodCalendar";
 import DropdownSearch from "../../DropdownSearch";
+import BankAccountDropDown from "./BankAccountDropDown";
 
 export default function Header() {
     const { setPrompt } = useContext(AppContext);
     const [isPeriod, setPeriod] = useState({
         from: "",
         to: "",
+    });
+    const [isBankAccount, setBankAccount] = useState({
+        id: "",
+        value: "",
     });
     const ImportSuccess = () => {
         setPrompt({
@@ -85,9 +90,12 @@ export default function Header() {
             <section className={style.container}>
                 <div className={style.period}>
                     <PeriodCalendar value={isPeriod} setValue={setPeriod} />
-                    <div className="flex items-center ml-5">
+                    <div className="flex items-center ml-5 1280px:ml-0 1280px:mt-5">
                         <p>BANK ACCOUNT</p>
-                        <DropdownSearch />
+                        <BankAccountDropDown
+                            isObject={isBankAccount}
+                            setObject={setBankAccount}
+                        />
                     </div>
                 </div>
 

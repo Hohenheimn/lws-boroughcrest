@@ -7,6 +7,7 @@ export default function Id() {
             id: 0,
             charge: "",
             description: "",
+            charge_id: "",
             unit_price: 0,
             quantity: 0,
             uom: "",
@@ -14,9 +15,19 @@ export default function Id() {
             amount: 0,
         },
     ];
+    const CustomerDefault = {
+        id: "",
+        name: "",
+        class: "",
+        property: "",
+    };
     return (
         <div>
-            <BillingForm DefaultValue={Value} type="create" />
+            <BillingForm
+                DefaultValue={Value}
+                type="create"
+                DefaultCustomer={CustomerDefault}
+            />
         </div>
     );
 }

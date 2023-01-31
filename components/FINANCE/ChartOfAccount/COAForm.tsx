@@ -5,7 +5,10 @@ import { RiArrowDownSFill } from "react-icons/ri";
 import { useQueryClient } from "react-query";
 import { ScaleLoader } from "react-spinners";
 import style from "../../../styles/Popup_Modal.module.scss";
-import { ChartofAccountPayload } from "../../../types/COAList";
+import {
+    ChartofAccountList,
+    ChartofAccountPayload,
+} from "../../../types/COAList";
 import AppContext from "../../Context/AppContext";
 import DynamicPopOver from "../../DynamicPopOver";
 import {
@@ -19,7 +22,7 @@ import Parent from "./Parent";
 
 type Props = {
     setCreate: Function;
-    DefaultFormData: any;
+    DefaultFormData: ChartofAccountList;
     transaction: boolean;
 };
 
@@ -39,12 +42,25 @@ export default function COAForm({
         suffix: DefaultFormData.code_suffix,
     });
     const [isBankAccountToggle, setBankAccountToggle] = useState(false);
+
     const [isBankAccountVal, setBankAccountVal] = useState({
-        id: DefaultFormData?.bank_acc_id,
-        value: DefaultFormData?.bank_acc_no,
-        firstVal: DefaultFormData?.bank_acc_no,
-        firstID: DefaultFormData?.bank_acc_id,
+        id: DefaultFormData?.bank_account_id,
+        value: DefaultFormData?.bank_account,
+        firstVal: DefaultFormData?.bank_account,
+        firstID: DefaultFormData?.bank_account_id,
     });
+
+    const updateFieldHandler = (value: any, id: any) => {
+        setValue("bank_account_id", value, {
+            shouldValidate: true,
+        });
+        setBankAccountVal({
+            id: id,
+            value: value,
+            firstVal: value,
+            firstID: id,
+        });
+    };
 
     const ErrorDefault = {
         account_name: "",
@@ -73,7 +89,6 @@ export default function COAForm({
             : DefaultFormData.defaultAccount,
         firstID: DefaultFormData.coa_default_account_id,
     });
-    const updateFieldHandler = () => {};
 
     const {
         register,
@@ -81,7 +96,7 @@ export default function COAForm({
         formState: { errors },
         reset,
         setValue,
-    } = useForm<ChartofAccountPayload>({
+    } = useForm<ChartofAccountList>({
         defaultValues: DefaultFormData,
     });
 
@@ -187,8 +202,8 @@ export default function COAForm({
         Delete();
     };
 
-    const Submit = (data: ChartofAccountPayload) => {
-        const Payload = {
+    const Submit = (data: any) => {
+        const Payload: ChartofAccountPayload = {
             chart_code: isChartCode.parent + isChartCode.suffix,
             parent_id:
                 isParent.id === 0 ||
@@ -206,9 +221,10 @@ export default function COAForm({
                     ? ""
                     : isDefaultAccount.id,
             apply_to_sub_acc: isStatus,
-            bank_acc_no: data.bank_acc_no,
-            // bank_branch: data.bank_branch,
+            bank_account_id: isBankAccountVal.id,
         };
+
+        console.log(Payload);
 
         if (router.query.modify === undefined) {
             // Save
@@ -383,7 +399,7 @@ export default function COAForm({
                                     <>
                                         <input
                                             type="text"
-                                            {...register("bank_acc_no")}
+                                            {...register("bank_account")}
                                             autoComplete="off"
                                             onClick={() =>
                                                 setBankAccountToggle(true)

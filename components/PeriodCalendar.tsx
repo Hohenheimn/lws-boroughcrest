@@ -49,19 +49,21 @@ export default function PeriodCalendar({
                             PERIOD
                         </p>
                         <div
-                            className="px-5 py-2 shadow-md rounded-md bg-white flex justify-between items-center"
+                            className="px-5 h-10 1550px:h-8 shadow-md rounded-md bg-white flex justify-between items-center"
                             onClick={() => setOpen((open) => !open)}
                         >
                             <input
                                 value={value.from}
                                 readOnly
-                                className=" outline-none w-[90px]"
+                                className=" outline-none w-[90px] font-NHU-medium text-[#545454]"
                             />
-                            <p className="text-[#545454] mr-2">to</p>
+                            <p className=" text-ThemeRed font-NHU-medium mr-2">
+                                to
+                            </p>
                             <input
                                 value={value.to}
                                 readOnly
-                                className=" outline-none w-[100px]"
+                                className=" outline-none w-[100px] font-NHU-medium text-[#545454]"
                             />
                             <Image
                                 src="/Images/CalendarMini.png"

@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import style from "../../../styles/finance/Crud-table.module.scss";
 import Image from "next/image";
+import Calendar from "../../Calendar";
+import DynamicPopOver from "../../DynamicPopOver";
 
 export default function TableForm() {
     return (
@@ -18,48 +20,18 @@ export default function TableForm() {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr className={`${style.total} ${style.total1}`}>
+                        <tr>
                             <td className={style.label}>
                                 <h1>TOTAL</h1>
                             </td>
                             <td>
-                                <div className={style.peso}>
-                                    <aside>
-                                        <Image
-                                            src="/Images/peso.png"
-                                            height={13}
-                                            width={10}
-                                            alt=""
-                                        />
-                                    </aside>
-                                    <p>1000.00</p>
-                                </div>
+                                <p className="withPeso">1000.00</p>
                             </td>
                             <td>
-                                <div className={style.peso}>
-                                    <aside>
-                                        <Image
-                                            src="/Images/peso.png"
-                                            height={13}
-                                            width={10}
-                                            alt=""
-                                        />
-                                    </aside>
-                                    <p>1000.00</p>
-                                </div>
+                                <p className="withPeso">1000.00</p>
                             </td>
                             <td>
-                                <div className={style.peso}>
-                                    <aside>
-                                        <Image
-                                            src="/Images/peso.png"
-                                            height={13}
-                                            width={10}
-                                            alt=""
-                                        />
-                                    </aside>
-                                    <p>1000.00</p>
-                                </div>
+                                <p className="withPeso">1000.00</p>
                             </td>
                             <td>
                                 <div className={style.peso}>
@@ -73,36 +45,7 @@ export default function TableForm() {
                             </td>
                         </tr>
 
-                        <tr className={`${style.total} ${style.total1}`}>
-                            <td>
-                                <input type="number" />
-                            </td>
-                            <td>
-                                <input type="text" />
-                            </td>
-                            <td>
-                                <input type="text" />
-                            </td>
-                            <td>
-                                <div className={style.peso}>
-                                    <aside>
-                                        <Image
-                                            src="/Images/peso.png"
-                                            height={13}
-                                            width={10}
-                                            alt=""
-                                        />
-                                    </aside>
-                                    <p>1000.00</p>
-                                </div>
-                            </td>
-                            <td>
-                                <input type="text" />
-                            </td>
-                            <td>
-                                <input type="text" />
-                            </td>
-                        </tr>
+                        <List />
                     </tbody>
                 </table>
             </div>
@@ -113,3 +56,63 @@ export default function TableForm() {
         </>
     );
 }
+
+const List = () => {
+    const [isDate, setDate] = useState({
+        value: "",
+        toggle: false,
+    });
+    return (
+        <tr className={`${style.total} ${style.total1}`}>
+            <td>
+                <DynamicPopOver
+                    toRef={
+                        <aside className="calendar relative w-[200px]">
+                            <span className="cal ">
+                                <Image
+                                    src="/Images/CalendarMini.png"
+                                    width={15}
+                                    height={15}
+                                    alt=""
+                                />
+                            </span>
+
+                            <input
+                                type="text"
+                                value={isDate.value}
+                                onChange={() => {}}
+                                placeholder="dd/mm/yyyy"
+                                onClick={() =>
+                                    setDate({ ...isDate, toggle: true })
+                                }
+                                className="p-2 outline-none rounded-md shadow-md"
+                            />
+                        </aside>
+                    }
+                    toPop={
+                        <>
+                            {isDate.toggle && (
+                                <Calendar value={isDate} setValue={setDate} />
+                            )}
+                        </>
+                    }
+                />
+            </td>
+            <td>
+                <input type="number" />
+            </td>
+            <td>
+                <input type="number" />
+            </td>
+            <td>
+                <p className="withPeso">1000.00</p>
+            </td>
+            <td>
+                <input type="text" />
+            </td>
+            <td>
+                <input type="text" />
+            </td>
+        </tr>
+    );
+};

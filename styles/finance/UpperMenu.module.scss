@@ -1,5 +1,5 @@
 .wrapper {
-    @apply mb-10 480px:mb-5;
+    @apply mb-10 1550px:mb-5 480px:mb-5;
     .container {
         @apply flex w-full 640px:flex-wrap;
         li {
@@ -19,6 +19,14 @@
             a {
                 @apply pointer-events-none;
             }
+        }
+    }
+    .subContainer {
+        li {
+            @apply hover:bg-ThemeRed;
+        }
+        li.active {
+            @apply bg-ThemeRed text-white;
         }
     }
 }

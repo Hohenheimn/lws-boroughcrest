@@ -5,10 +5,11 @@ export default function Modify() {
     const Value = [
         {
             id: 1,
+            account_id: "",
             code: 0,
-            accountName: "Jomari",
-            debit: "",
-            credit: "",
+            accountName: "",
+            debit: 0,
+            credit: 0,
         },
     ];
     return (

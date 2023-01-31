@@ -7,9 +7,21 @@ import type { property } from "../../../types/PropertyList";
 import Image from "next/image";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
+import PrintTemplate from "../../../components/PrintTemplate";
 
 export default function Print({ keyword, limit, page, columns }: any) {
-    const Columns = columns.split(",");
+    // const Columns = columns.split(",");
+    const Columns = [
+        "Unit Code",
+        "Project",
+        "Developer",
+        "Tower",
+        "Floor",
+        "Class",
+        "Type",
+        "Turn Over",
+        "Owner",
+    ];
 
     const { data, isLoading, isError } = useQuery(
         [keyword, limit, page],
@@ -47,31 +59,35 @@ export default function Print({ keyword, limit, page, columns }: any) {
                     </Tippy>
                 </aside>
 
-                <table className="w-full max-w-[1366px] printThis">
-                    <thead className="text-[#545454] text-[14px] text-start">
-                        <tr>
-                            <th className="text-start px-2 py-1">ID</th>
-                            {Columns?.map((item: any, index: number) => (
-                                <th key={index}>{item}</th>
-                            ))}
-                        </tr>
-                    </thead>
-                    <tbody className="text-[14px]">
-                        {!isLoading && !isError && (
-                            <>
-                                {data?.data.data.map(
-                                    (item: any, index: number) => (
-                                        <List
-                                            key={index}
-                                            itemDetail={item}
-                                            Columns={Columns}
-                                        />
-                                    )
-                                )}
-                            </>
-                        )}
-                    </tbody>
-                </table>
+                <PrintTemplate title="Property">
+                    <table className="w-full">
+                        <thead className="text-[#545454] text-[14px] text-start">
+                            <tr>
+                                <th className="text-start px-2 py-1">ID</th>
+                                {Columns?.map((item: any, index: number) => (
+                                    <th key={index} className="text-start">
+                                        {item}
+                                    </th>
+                                ))}
+                            </tr>
+                        </thead>
+                        <tbody className="text-[14px]">
+                            {!isLoading && !isError && (
+                                <>
+                                    {data?.data.data.map(
+                                        (item: any, index: number) => (
+                                            <List
+                                                key={index}
+                                                itemDetail={item}
+                                                Columns={Columns}
+                                            />
+                                        )
+                                    )}
+                                </>
+                            )}
+                        </tbody>
+                    </table>
+                </PrintTemplate>
                 {isLoading && (
                     <div className="top-0 left-0 absolute w-full h-full flex justify-center items-center">
                         <aside className="text-center flex justify-center py-5">
@@ -176,13 +192,12 @@ export async function getServerSideProps({ query }: any) {
     const keyword = query.keyword;
     const limit = query.limit;
     const page = query.page;
-    const columns = query.columns;
+    // const columns = query.columns;
     return {
         props: {
             keyword: keyword,
             limit: limit,
             page: page,
-            columns: columns,
         },
     };
 }

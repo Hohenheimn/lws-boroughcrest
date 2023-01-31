@@ -5,8 +5,9 @@ export default function CreateInvoice() {
     const Value = [
         {
             id: 0,
-            charge: "any",
-            description: "string",
+            charge: "",
+            charge_id: "",
+            description: "",
             unit_price: 0,
             quantity: 0,
             uom: "",
@@ -14,9 +15,19 @@ export default function CreateInvoice() {
             amount: 0,
         },
     ];
+
     return (
         <div>
-            <BillingForm DefaultValue={Value} type="create" />
+            <BillingForm
+                DefaultValue={Value}
+                type="create"
+                DefaultCustomer={{
+                    id: "",
+                    name: "",
+                    class: "",
+                    property: "",
+                }}
+            />
         </div>
     );
 }

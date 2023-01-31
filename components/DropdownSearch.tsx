@@ -10,7 +10,7 @@ export default function DropdownSearch() {
                 toRef={
                     <input
                         type="text"
-                        className=" w-full p-1 h-10 min-w-[200px] 820px:h-8 rounded-md outline-none shadow-md text-[#757575]"
+                        className=" w-full p-1 h-10 1550px:h-8 min-w-[200px] 820px:h-8 rounded-md outline-none shadow-md text-[#757575]"
                         onClick={() => setToggle(true)}
                     />
                 }

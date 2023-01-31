@@ -89,7 +89,6 @@ export default function ModifyProperty({
     };
     const saveNew = () => {
         buttonClick = "saveNew";
-        console.log(buttonClick);
         mutateHandler();
     };
 

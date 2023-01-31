@@ -21,6 +21,8 @@ type Layout = {
 };
 
 export default function Layout({ children }: Layout) {
+    const router = useRouter();
+
     const [title, setTitle] = useState<string>("");
     const { togglePrompt, collapseSide, setCollapseSide } =
         useContext(AppContext);
@@ -28,8 +30,6 @@ export default function Layout({ children }: Layout) {
     const [isPathName, setPathName] = useState<any>();
     const [toggleProfileMenu, setToggleProfileMenu] = useState(false);
     const [financeMenu, setFinanceMenu] = useState(false);
-
-    const router = useRouter();
 
     // toggle for responsive sidebar
     const [isWide, setWide] = useState(false);
@@ -120,7 +120,7 @@ export default function Layout({ children }: Layout) {
                         isWide === true ? "pl-wide" : "pl-no-wide"
                     } ${collapseSide && !isWide && "collapse_container"}`}
                 >
-                    <div className="flex-1 flex flex-col w-full 1024px:py-10 480px:pb-0 py-10 relative ">
+                    <div className="flex-1 flex flex-col w-full relative ">
                         {isWindow <= 1024 && (
                             <button
                                 onClick={() => setHide(!isHide)}
@@ -138,7 +138,7 @@ export default function Layout({ children }: Layout) {
                                 router.pathname === "/"
                                     ? "justify-between"
                                     : "justify-end"
-                            } items-center justify-between px-14 1550px:px-10 mb-5 640px:mb-0 480px:flex-wrap 480px:justify-end`}
+                            } items-center justify-between px-14 1550px:px-10 480px:flex-wrap 480px:justify-end`}
                         >
                             <AnimatePresence>
                                 {collapseSide ? (

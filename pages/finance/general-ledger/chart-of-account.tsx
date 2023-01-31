@@ -4,23 +4,26 @@ import COAForm from "../../../components/FINANCE/ChartOfAccount/COAForm";
 import COATable from "../../../components/FINANCE/ChartOfAccount/COATable";
 import FinanceSearchFilter from "../../../components/FINANCE/ChartOfAccount/FinanceSearchFilter";
 import Modify from "../../../components/FINANCE/ChartOfAccount/Modify";
-import { ChartofAccountPayload } from "../../../types/COAList";
+import {
+    ChartofAccountList,
+    ChartofAccountPayload,
+} from "../../../types/COAList";
 export default function ChartOfAccount() {
     const router = useRouter();
     const [isSearchTable, setSearchTable] = useState("");
     const [isCreate, setCreate] = useState(false);
     const [isFilterTable, setFilterTable] = useState(false);
-    const DefaultFormData: ChartofAccountPayload = {
+    const DefaultFormData: ChartofAccountList = {
         chart_code: "",
         code_suffix: "",
         account_name: "",
         description: "",
         apply_to_sub_acc: true,
-        bank_acc_no: "",
-        // bank_branch: "",
+        bank_account: "",
+        bank_account_id: "",
         coa_default_account_id: 0,
         defaultAccount: "",
-        parent_id: 0,
+        parent_id: "",
         parent: "",
     };
     return (
