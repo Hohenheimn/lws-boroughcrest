@@ -167,7 +167,10 @@ export default function BillingList() {
                         <tr>
                             {isType === "Unposted" ? (
                                 <>
-                                    <th></th>
+                                    <th className="checkbox">
+                                        <input type="checkbox" />
+                                    </th>
+
                                     <th>Date</th>
                                     <th>Customer</th>
                                     <th>Property</th>

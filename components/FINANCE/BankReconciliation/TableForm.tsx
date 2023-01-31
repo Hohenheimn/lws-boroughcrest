@@ -99,10 +99,10 @@ const List = () => {
                 />
             </td>
             <td>
-                <input type="text" />
+                <input type="number" />
             </td>
             <td>
-                <input type="text" />
+                <input type="number" />
             </td>
             <td>
                 <p className="withPeso">1000.00</p>

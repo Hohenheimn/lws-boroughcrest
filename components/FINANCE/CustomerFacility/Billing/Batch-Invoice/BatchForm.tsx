@@ -30,7 +30,9 @@ export default function BatchForm({ DefaultValue }: Props) {
                 <table className={style.crudTable}>
                     <thead>
                         <tr>
-                            <th></th>
+                            <th className="checkbox">
+                                <input type="checkbox" />
+                            </th>
                             <th>CHARGE</th>
                             <th>DESCRIPTION</th>
                             <th>APPLICATION</th>
@@ -47,36 +49,6 @@ export default function BatchForm({ DefaultValue }: Props) {
                                 isDefault={isDefault}
                             />
                         ))}
-                        {/* <tr className={style.total}>
-                                <td></td>
-                                <td className={style.label}>
-                                    <h1>TOTAL</h1>
-                                </td>
-                                <td>
-                                    <div className={style.peso}>
-                                        <aside>
-                                            <Image
-                                                src="/Images/peso.png"
-                                                height={13}
-                                                width={10}
-                                            />
-                                        </aside>
-                                        <p>-</p>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div className={style.peso}>
-                                        <aside>
-                                            <Image
-                                                src="/Images/peso.png"
-                                                height={13}
-                                                width={10}
-                                            />
-                                        </aside>
-                                        <p>-</p>
-                                    </div>
-                                </td>
-                            </tr> */}
                     </tbody>
                 </table>
                 <div className="py-2 flex justify-end">
@@ -138,7 +110,7 @@ const List = ({ itemList, setDefault, isDefault, index }: List) => {
             </td>
             <td className="flex items-center">
                 <input
-                    type="number"
+                    type="text"
                     value={itemList.charge}
                     onChange={(e) => updateValue("charge", e)}
                 />

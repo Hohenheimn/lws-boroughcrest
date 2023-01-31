@@ -23,10 +23,10 @@
     }
     .subContainer {
         li {
-            @apply hover:bg-ThemeRed50;
+            @apply hover:bg-ThemeRed;
         }
         li.active {
-            @apply bg-ThemeRed50 text-white;
+            @apply bg-ThemeRed text-white;
         }
     }
 }

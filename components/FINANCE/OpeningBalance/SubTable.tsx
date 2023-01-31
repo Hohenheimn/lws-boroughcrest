@@ -122,9 +122,6 @@ const List = ({ itemDetail, setTableItem, isTableItem }: List) => {
         UpdateStateHandler("date", e);
     }, [isDate]);
 
-    const [tempSearchCustomer, setTempSearchCustomer] = useState("");
-    const [tempSearchCharge, setTempSearchCharge] = useState("");
-
     const UpdateStateHandler = (key: string, event: any) => {
         const newItems = isTableItem.map((item: any) => {
             if (itemDetail.id == item.id) {
@@ -185,8 +182,6 @@ const List = ({ itemDetail, setTableItem, isTableItem }: List) => {
             </td>
             <td>
                 <DropDownCustomer
-                    tempSearch={tempSearchCustomer}
-                    setTempSearch={setTempSearchCustomer}
                     UpdateStateHandler={UpdateStateHandler}
                     itemDetail={itemDetail}
                 />
@@ -236,8 +231,6 @@ const List = ({ itemDetail, setTableItem, isTableItem }: List) => {
             </td>
             <td>
                 <DropDownCharge
-                    tempSearch={tempSearchCharge}
-                    setTempSearch={setTempSearchCharge}
                     UpdateStateHandler={UpdateStateHandler}
                     itemDetail={itemDetail}
                 />

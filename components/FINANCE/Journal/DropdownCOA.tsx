@@ -4,26 +4,26 @@ import { useQuery } from "react-query";
 import { BarLoader } from "react-spinners";
 import api from "../../../util/api";
 import DynamicPopOver from "../../DynamicPopOver";
-import { isTableItemObj } from "./SubTable";
 
 type DropdownItem = {
     UpdateStateHandler: (key: string, e: any) => void;
-    itemDetail: isTableItemObj;
+    itemDetail: any;
 };
 
-export default function DropDownCustomer({
+export default function DropDownCOA({
     UpdateStateHandler,
     itemDetail,
 }: DropdownItem) {
     const [isToggle, setToggle] = useState(false);
-    const [tempSearch, setTempSearch] = useState(itemDetail.customer_name);
+    const [tempSearch, setTempSearch] = useState(itemDetail.accountName);
+    console.log(itemDetail.accountName);
     return (
         <>
             <DynamicPopOver
                 toRef={
                     <input
                         type="text"
-                        className=" w-full p-1 min-w-[200px] 820px:h-8 rounded-md outline-none shadow-md text-[#757575]"
+                        className="dropdown-input"
                         onClick={() => setToggle(true)}
                         value={tempSearch}
                         onChange={(e) => {
@@ -53,8 +53,7 @@ type List = {
     setToggle: Function;
     setTempSearch: Function;
     UpdateStateHandler: (key: string, e: any) => void;
-    itemDetail: isTableItemObj;
-
+    itemDetail: any;
     tempSearch: string;
 };
 
@@ -66,13 +65,16 @@ const List = ({
     itemDetail,
 }: List) => {
     const { data, isLoading, isError } = useQuery(
-        ["COA-list", tempSearch],
+        ["COA-list-dd", tempSearch],
         () => {
-            return api.get(`/admin/customer?keywords=${tempSearch}`, {
-                headers: {
-                    Authorization: "Bearer " + getCookie("user"),
-                },
-            });
+            return api.get(
+                `/finance/general-ledger/chart-of-accounts?keywords=${tempSearch}`,
+                {
+                    headers: {
+                        Authorization: "Bearer " + getCookie("user"),
+                    },
+                }
+            );
         }
     );
     const PopOver = useRef<any>();
@@ -81,7 +83,7 @@ const List = ({
         const clickOutSide = (e: any) => {
             if (!PopOver.current.contains(e.target)) {
                 setToggle(false);
-                setTempSearch(itemDetail.customer_name);
+                setTempSearch(itemDetail.accountName);
             }
         };
         document.addEventListener("mousedown", clickOutSide);
@@ -89,20 +91,20 @@ const List = ({
             document.removeEventListener("mousedown", clickOutSide);
         };
     });
-
     return (
         <ul className="dropdown-list" ref={PopOver}>
             {data?.data.map((item: any, index: number) => (
                 <li
                     key={index}
                     data-id={item.id}
+                    data-code={item.chart_code}
                     onClick={(e) => {
-                        UpdateStateHandler("customer", e);
-                        setTempSearch(item.name);
+                        UpdateStateHandler("accountName", e);
+                        setTempSearch(item.account_name);
                         setToggle(false);
                     }}
                 >
-                    {item.name}
+                    {item.account_name}
                 </li>
             ))}
             {isLoading && (
@@ -119,7 +121,7 @@ const List = ({
             {isError ||
                 (data?.data.length <= 0 && (
                     <li>
-                        <h1>Customer name cannot be found!</h1>
+                        <h1>Chart of Account cannot be found!</h1>
                     </li>
                 ))}
         </ul>

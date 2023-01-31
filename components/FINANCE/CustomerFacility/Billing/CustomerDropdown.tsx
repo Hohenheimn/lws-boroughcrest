@@ -2,32 +2,39 @@ import { getCookie } from "cookies-next";
 import React, { useEffect, useRef, useState } from "react";
 import { useQuery } from "react-query";
 import { BarLoader } from "react-spinners";
-import api from "../../../util/api";
-import DynamicPopOver from "../../DynamicPopOver";
-import { isTableItemObj } from "./SubTable";
+import api from "../../../../util/api";
+import DynamicPopOver from "../../../DynamicPopOver";
+import { customerDD } from "./BillingForm";
 
-type DropdownItem = {
-    UpdateStateHandler: (key: string, e: any) => void;
-    itemDetail: isTableItemObj;
+type Props = {
+    isCustomer: customerDD;
+    setCustomer: Function;
 };
 
-export default function DropDownCustomer({
-    UpdateStateHandler,
-    itemDetail,
-}: DropdownItem) {
+export default function CustomerDropdown({ isCustomer, setCustomer }: Props) {
     const [isToggle, setToggle] = useState(false);
-    const [tempSearch, setTempSearch] = useState(itemDetail.customer_name);
+    const [isSearchTemp, setSearchTemp] = useState(isCustomer.name);
+    const selectedItem = (CustomerObject: any) => {
+        setCustomer({
+            id: CustomerObject.id,
+            name: CustomerObject.name,
+            class: CustomerObject.class,
+            property: "Property",
+        });
+        setSearchTemp(CustomerObject.name);
+        setToggle(false);
+    };
     return (
         <>
             <DynamicPopOver
                 toRef={
                     <input
                         type="text"
-                        className=" w-full p-1 min-w-[200px] 820px:h-8 rounded-md outline-none shadow-md text-[#757575]"
+                        className=" w-full px-2 py-1 capitalize h-10 1550px:h-8 min-w-[200px] 820px:h-8 rounded-md outline-none shadow-md text-[#757575]"
                         onClick={() => setToggle(true)}
-                        value={tempSearch}
+                        value={isSearchTemp}
                         onChange={(e) => {
-                            setTempSearch(e.target.value);
+                            setSearchTemp(e.target.value);
                         }}
                     />
                 }
@@ -36,10 +43,10 @@ export default function DropDownCustomer({
                         {isToggle && (
                             <List
                                 setToggle={setToggle}
-                                tempSearch={tempSearch}
-                                setTempSearch={setTempSearch}
-                                UpdateStateHandler={UpdateStateHandler}
-                                itemDetail={itemDetail}
+                                setSearchTemp={setSearchTemp}
+                                isSearchTemp={isSearchTemp}
+                                isCustomer={isCustomer}
+                                selectedItem={selectedItem}
                             />
                         )}
                     </>
@@ -51,37 +58,37 @@ export default function DropDownCustomer({
 
 type List = {
     setToggle: Function;
-    setTempSearch: Function;
-    UpdateStateHandler: (key: string, e: any) => void;
-    itemDetail: isTableItemObj;
-
-    tempSearch: string;
+    setSearchTemp: Function;
+    isCustomer: customerDD;
+    isSearchTemp: string;
+    selectedItem: (CustomerObject: any) => void;
 };
 
 const List = ({
     setToggle,
-    tempSearch,
-    setTempSearch,
-    UpdateStateHandler,
-    itemDetail,
+    setSearchTemp,
+    isSearchTemp,
+    isCustomer,
+    selectedItem,
 }: List) => {
     const { data, isLoading, isError } = useQuery(
-        ["COA-list", tempSearch],
+        ["customer-dd-list", isSearchTemp],
         () => {
-            return api.get(`/admin/customer?keywords=${tempSearch}`, {
+            return api.get(`/admin/customer?keywords=${isSearchTemp}`, {
                 headers: {
                     Authorization: "Bearer " + getCookie("user"),
                 },
             });
         }
     );
+
     const PopOver = useRef<any>();
 
     useEffect(() => {
         const clickOutSide = (e: any) => {
             if (!PopOver.current.contains(e.target)) {
                 setToggle(false);
-                setTempSearch(itemDetail.customer_name);
+                setSearchTemp(isCustomer.name);
             }
         };
         document.addEventListener("mousedown", clickOutSide);
@@ -89,19 +96,10 @@ const List = ({
             document.removeEventListener("mousedown", clickOutSide);
         };
     });
-
     return (
         <ul className="dropdown-list" ref={PopOver}>
-            {data?.data.map((item: any, index: number) => (
-                <li
-                    key={index}
-                    data-id={item.id}
-                    onClick={(e) => {
-                        UpdateStateHandler("customer", e);
-                        setTempSearch(item.name);
-                        setToggle(false);
-                    }}
-                >
+            {data?.data.map((item: customerDD, index: number) => (
+                <li key={index} onClick={() => selectedItem(item)}>
                     {item.name}
                 </li>
             ))}

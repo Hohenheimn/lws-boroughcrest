@@ -5,10 +5,11 @@ export default function CreateJournal() {
     const Value = [
         {
             id: 1,
+            account_id: "",
             code: 0,
             accountName: "",
-            debit: "",
-            credit: "",
+            debit: 0,
+            credit: 0,
         },
     ];
     return (

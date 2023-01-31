@@ -16,9 +16,12 @@ export default function DynamicPopOver({ toRef, toPop }: Props) {
     });
     return (
         <>
-            <div ref={setReferenceElement}>{toRef}</div>
+            <aside ref={referenceElement}>
+                <div ref={setReferenceElement}>{toRef}</div>
+            </aside>
             <div
                 className="bg-white z-50 shadow-md"
+                // style={{"width": `${referenceElement?.current?.offsetWidth}px`}}
                 ref={setPopperElement}
                 style={styles.popper}
                 {...attributes.popper}

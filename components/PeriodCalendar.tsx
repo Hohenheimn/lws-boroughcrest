@@ -57,7 +57,9 @@ export default function PeriodCalendar({
                                 readOnly
                                 className=" outline-none w-[90px] font-NHU-medium text-[#545454]"
                             />
-                            <p className="text-[#545454] mr-2">to</p>
+                            <p className=" text-ThemeRed font-NHU-medium mr-2">
+                                to
+                            </p>
                             <input
                                 value={value.to}
                                 readOnly

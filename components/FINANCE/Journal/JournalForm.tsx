@@ -6,27 +6,23 @@ import { RiArrowDownSFill } from "react-icons/ri";
 import style from "../../../styles/finance/Crud-table.module.scss";
 import Calendar from "../../Calendar";
 import DropdownSearch from "../../DropdownSearch";
+import DropDownCOA from "./DropdownCOA";
 
-type defaultArray = {
-    id: number;
-    code: number;
-    accountName: string;
-    debit: string;
-    credit: string;
-}[];
+type defaultArray = defaultObject[];
 type defaultObject = {
     id: number;
-    code: number;
+    account_id: string | number;
+    code: number | string;
     accountName: string;
-    debit: string;
-    credit: string;
+    debit: number;
+    credit: number;
 };
 type Props = {
     DefaultValue: defaultArray;
     type: string;
 };
 
-export default function BatchForm({ DefaultValue, type }: Props) {
+export default function JournalForm({ DefaultValue, type }: Props) {
     const [isSave, setSave] = useState(false);
     const [isDate, setDate] = useState({
         value: "",
@@ -197,16 +193,20 @@ const List = ({ itemList, setDefault, isDefault, index }: List) => {
                     return {
                         ...item,
                         debit: e.target.value,
+                        credit: 0,
                     };
                 } else if (key === "credit") {
                     return {
                         ...item,
                         credit: e.target.value,
+                        debit: 0,
                     };
                 } else if (key === "accountName") {
                     return {
                         ...item,
-                        accountName: e.target.value,
+                        accountName: e.target.innerHTML,
+                        account_id: e.target.getAttribute("data-id"),
+                        code: e.target.getAttribute("data-code"),
                     };
                 } else if (key === "code") {
                     return {
@@ -222,56 +222,29 @@ const List = ({ itemList, setDefault, isDefault, index }: List) => {
     return (
         <tr>
             <td className="w-[20%]">
-                {/* <input
+                <h2>{itemList.code}</h2>
+            </td>
+            <td>
+                <DropDownCOA
+                    UpdateStateHandler={updateValue}
+                    itemDetail={itemList}
+                />
+            </td>
+            <td>
+                <input
                     type="number"
-                    value={itemList.code}
-                    onChange={(e) => updateValue("code", e)}
-                /> */}
-                <h2>010101</h2>
+                    value={itemList.debit}
+                    className={style.peso}
+                    onChange={(e) => updateValue("debit", e)}
+                />
             </td>
-            <td className="w-[30%]">
-                {/* <input
-                    type="text"
-                    value={itemList.accountName}
-                    onChange={(e) => updateValue("accountName", e)}
-                /> */}
-                <DropdownSearch />
-            </td>
-            <td className="w-[20%]">
-                <div className={style.peso}>
-                    <aside>
-                        <Image
-                            src="/Images/peso.png"
-                            height={13}
-                            width={10}
-                            alt=""
-                        />
-                    </aside>
-                    <input
-                        type="number"
-                        value={itemList.debit}
-                        className={style.peso}
-                        onChange={(e) => updateValue("debit", e)}
-                    />
-                </div>
-            </td>
-            <td className="w-[20%]">
-                <div className={style.peso}>
-                    <aside>
-                        <Image
-                            src="/Images/peso.png"
-                            height={13}
-                            width={10}
-                            alt=""
-                        />
-                    </aside>
-                    <input
-                        type="number"
-                        value={itemList.credit}
-                        className={style.peso}
-                        onChange={(e) => updateValue("credit", e)}
-                    />
-                </div>
+            <td>
+                <input
+                    type="number"
+                    value={itemList.credit}
+                    className={style.peso}
+                    onChange={(e) => updateValue("credit", e)}
+                />
             </td>
             <td className={`${style.action}`}>
                 {isDefault.length > 1 && (
