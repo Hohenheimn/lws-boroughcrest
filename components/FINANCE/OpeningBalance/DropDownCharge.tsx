@@ -24,7 +24,6 @@ export default function DropDownCharge({
                 toRef={
                     <input
                         type="text"
-                        className=" w-full p-1 820px:h-8 rounded-md outline-none shadow-md text-[#757575]"
                         onClick={() => setToggle(true)}
                         value={tempSearch}
                         onChange={(e) => {

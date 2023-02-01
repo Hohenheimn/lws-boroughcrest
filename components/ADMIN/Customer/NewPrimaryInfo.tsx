@@ -2,6 +2,7 @@ import React from "react";
 import NewDefault from "./NewDefault";
 import NewIndividual from "./NewIndividual";
 import style from "../../../styles/Popup_Modal.module.scss";
+import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 
 type NewPrimaryInfo = {
     setActiveForm: Function;
@@ -32,34 +33,39 @@ export default function NewPrimaryInfo({
                     <p className=" text-[12px] font-semibold mb-1 w-[90%]">
                         TYPE
                     </p>
+                    <div className="select">
+                        <select
+                            name=""
+                            id=""
+                            defaultValue={isType}
+                            onChange={(e) => setType(e.target.value)}
+                            className="uppercase rounded-md px-2 py-[2px] border-none text-black outline-none w-[90%] 480px:w-full"
+                        >
+                            <option
+                                value={isType}
+                                className="text-[12px] text-white bg-ThemeRed"
+                                disabled
+                            >
+                                {isType}
+                            </option>
+                            <option
+                                value="individual"
+                                className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
+                            >
+                                Individual
+                            </option>
+                            <option
+                                className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
+                                value="company"
+                            >
+                                Company
+                            </option>
+                        </select>
+                        <span>
+                            <MdOutlineKeyboardArrowDown />
+                        </span>
+                    </div>
 
-                    <select
-                        name=""
-                        id=""
-                        defaultValue={isType}
-                        onChange={(e) => setType(e.target.value)}
-                        className="uppercase rounded-md px-2 py-[2px] border-none text-black outline-none w-[90%] 480px:w-full"
-                    >
-                        <option
-                            value={isType}
-                            className="text-[12px] text-white bg-ThemeRed"
-                            disabled
-                        >
-                            {isType}
-                        </option>
-                        <option
-                            value="individual"
-                            className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
-                        >
-                            Individual
-                        </option>
-                        <option
-                            className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
-                            value="company"
-                        >
-                            Company
-                        </option>
-                    </select>
                     {isType === "" && (
                         <label className=" font-NHU-bold">
                             Please Select a Type

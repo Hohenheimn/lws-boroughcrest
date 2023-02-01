@@ -24,6 +24,7 @@ import {
 } from "../../ReactQuery/PropertyMethod";
 import Calendar from "../../Calendar";
 import DynamicPopOver from "../../DynamicPopOver";
+import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 
 type Props = {
     DefaultFormData: PropertyDefaultValue;
@@ -338,11 +339,19 @@ export default function PropertyForm({
                         )}
                         <li>
                             <label>*TYPE</label>
-                            <select id="" {...register("type")}>
-                                <option value="Parking">Parking</option>
-                                <option value="Unit">Unit</option>
-                                <option value="Commercial">Commercial</option>
-                            </select>
+                            <div className="select">
+                                <select id="" {...register("type")}>
+                                    <option value="Parking">Parking</option>
+                                    <option value="Unit">Unit</option>
+                                    <option value="Commercial">
+                                        Commercial
+                                    </option>
+                                </select>
+                                <span>
+                                    <MdOutlineKeyboardArrowDown />
+                                </span>
+                            </div>
+
                             {errors.type && (
                                 <p className="text-[10px]">
                                     {errors.type.message}
@@ -377,10 +386,16 @@ export default function PropertyForm({
                         </li>
                         <li>
                             <label>*CLASS</label>
-                            <select id="" {...register("class")}>
-                                <option value="Saleable">Saleable</option>
-                                <option value="Leaseable">Leaseable</option>
-                            </select>
+                            <div className="select">
+                                <select id="" {...register("class")}>
+                                    <option value="Saleable">Saleable</option>
+                                    <option value="Leaseable">Leaseable</option>
+                                </select>
+                                <span>
+                                    <MdOutlineKeyboardArrowDown />
+                                </span>
+                            </div>
+
                             {errors.class && (
                                 <p className="text-[10px]">
                                     {errors.class.message}

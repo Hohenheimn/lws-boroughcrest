@@ -5,9 +5,9 @@
 .container {
     @apply flex justify-between items-center mb-10 1550px:mb-5 640px:flex-wrap 640px:justify-end 640px:mb-0;
     .searchBar {
-        @apply flex items-center shadow-lg px-2 h-10 1550px:h-8 bg-white flex-1 max-w-[500px] 640px:max-w-[unset] rounded-lg;
+        @apply flex items-center shadow-lg px-2 h-10  1550px:h-8 bg-white flex-1 max-w-[500px] 640px:max-w-[unset] rounded-lg;
         input {
-            @apply flex-1 outline-none text-[14px];
+            @apply flex-1 outline-none text-[14px] shadow-none;
         }
         .searchIcon {
             @apply mr-2 text-gray-500 text-[18px];
@@ -24,9 +24,6 @@
     }
     .period {
         @apply flex items-center 640px:w-full flex-wrap;
-        p {
-            @apply text-ThemeRed mr-3 font-NHU-bold 640px:text-[12px] 480px:w-full;
-        }
         input {
             @apply mr-2;
         }

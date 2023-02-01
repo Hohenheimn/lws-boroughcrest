@@ -8,6 +8,7 @@ import { customer } from "../../../types/customerList";
 import Link from "next/link";
 import Image from "next/image";
 import { AiFillCamera } from "react-icons/ai";
+import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 
 type Props = {
     setActiveForm: Function;
@@ -218,14 +219,20 @@ export default function NewCompany({ setActiveForm, isType, status }: Props) {
                 <ul className={style.ThreeRows}>
                     <li>
                         <label>CLASS</label>
-                        <select
-                            id=""
-                            {...register("class", { required: "Required" })}
-                        >
-                            <option value="developer">Developer</option>
-                            <option value="owner">Owner</option>
-                            <option value="tenant">Tenant</option>
-                        </select>
+                        <div className="select">
+                            <select
+                                id=""
+                                {...register("class", { required: "Required" })}
+                            >
+                                <option value="developer">Developer</option>
+                                <option value="owner">Owner</option>
+                                <option value="tenant">Tenant</option>
+                            </select>
+                            <span>
+                                <MdOutlineKeyboardArrowDown />
+                            </span>
+                        </div>
+
                         {errors.class && (
                             <p className="text-[10px]">
                                 {errors.class.message}

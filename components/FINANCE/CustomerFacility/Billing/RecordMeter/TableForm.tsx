@@ -15,6 +15,8 @@ import { DynamicImport } from "../../../../DynamicImport";
 import DynamicPopOver from "../../../../DynamicPopOver";
 import ReadingCrud from "./ReadingCrud";
 import DropDownCharge from "../../../OpeningBalance/DropDownCharge";
+import { HiPencil } from "react-icons/hi";
+import Readingform from "./Readingform";
 
 export default function TableForm() {
     const [isPeriod, setPeriod] = useState({
@@ -72,13 +74,13 @@ export default function TableForm() {
         id: "",
         charge: "",
     });
+    const [toggleReading, setToggleReading] = useState(false);
     return (
         <>
+            {toggleReading && <Readingform toggle={setToggleReading} />}
             <section className={`${style.container} 1280px:flex-wrap`}>
                 <div className=" flex items-center 1280px:w-2/4 640px:w-full 1280px:mb-5">
-                    <p className=" text-ThemeRed mr-3 font-NHU-bold 1550px:text-[14px]">
-                        READING:
-                    </p>
+                    <p className="labelField">READING:</p>
                     <DynamicPopOver
                         className="w-full"
                         toRef={
@@ -86,7 +88,6 @@ export default function TableForm() {
                                 <input
                                     type="text"
                                     autoComplete="off"
-                                    className="w-full p-1 h-10 1550px:h-8 min-w-[200px] 820px:h-8 rounded-md outline-none shadow-md text-[#757575]"
                                     onClick={() =>
                                         setReading({
                                             ...isReading,
@@ -116,7 +117,7 @@ export default function TableForm() {
                     />
                 </div>
                 <aside className="1280px:w-2/4 640px:w-full">
-                    <p className=" text-ThemeRed mr-3 font-NHU-bold 1550px:text-[14px]">
+                    <p className=" labelField">
                         READING SERIAL:{" "}
                         <span className=" text-[#2e4364] font-NHU-medium">
                             0001011
@@ -144,19 +145,30 @@ export default function TableForm() {
                     </li>
 
                     <li className={`${style.new} mr-0`}>
-                        <div>NEW READING</div>
+                        <div onClick={() => setToggleReading(!toggleReading)}>
+                            NEW READING
+                        </div>
                     </li>
-                    <li className={`${style.new} mr-0`}>
-                        <div>PROPERTY</div>
+                    <li className={style.importExportPrint}>
+                        <Tippy theme="ThemeRed" content="Modify">
+                            <div className={style.icon} onClick={exportHandler}>
+                                <HiPencil />
+                            </div>
+                        </Tippy>
+
+                        <input
+                            type="file"
+                            id="import"
+                            onChange={importHandler}
+                            className="hidden"
+                        />
                     </li>
                 </ul>
             </section>
             <div>
                 <ul className=" flex mb-5 flex-wrap">
                     <li className="mr-5 820px:mb-5 flex items-center mb-5">
-                        <p className=" text-ThemeRed mr-3 font-NHU-bold 1550px:text-[14px]">
-                            CHARGE
-                        </p>
+                        <p className=" labelField">CHARGE</p>
                         <DropDownCharge
                             UpdateStateHandler={(key, e) => {
                                 setCharge({
@@ -168,13 +180,8 @@ export default function TableForm() {
                         />
                     </li>
                     <li className="mr-5 820px:mb-5 flex items-center mb-5">
-                        <p className=" text-ThemeRed mr-3 font-NHU-bold 1550px:text-[14px]">
-                            RATE
-                        </p>
-                        <input
-                            type="text"
-                            className=" w-full p-1 h-10 1550px:h-8 min-w-[200px] 820px:h-8 rounded-md outline-none shadow-md text-[#757575]"
-                        />
+                        <p className=" labelField">RATE</p>
+                        <input type="text" />
                     </li>
                     <li className=" 820px:mb-5 flex items-center mb-5">
                         <PeriodCalendar value={isPeriod} setValue={setPeriod} />

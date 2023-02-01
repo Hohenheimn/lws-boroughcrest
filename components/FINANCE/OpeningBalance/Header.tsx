@@ -65,7 +65,7 @@ export default function Header() {
                 <div className={style.period}>
                     {!router.asPath.includes("subledger") && (
                         <>
-                            <p>DATE</p>
+                            <p className="labelField">DATE</p>
                             <div className="calendar">
                                 <span className="cal">
                                     <Image
@@ -83,7 +83,6 @@ export default function Header() {
                                     onClick={() =>
                                         setDate({ ...isDate, toggle: true })
                                     }
-                                    className="px-2 h-10 1550px:h-8 outline-none rounded-md shadow-md"
                                 />
                                 {isDate.toggle && (
                                     <Calendar

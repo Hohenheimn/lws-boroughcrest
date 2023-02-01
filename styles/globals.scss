@@ -30,22 +30,43 @@ h6 {
     font-family: "NHU-bold";
     @apply text-[#545454];
 }
+.labelField {
+    @apply text-ThemeRed mr-3 font-NHU-medium 1550px:text-[14px] 640px:text-[12px];
+}
 input[type="number"],
 input[type="text"],
 input[type="email"],
 input[type="password"] {
-    @apply text-[#545454] font-NHU-medium;
+    @apply p-1 px-2 text-[#545454] font-NHU-medium 1550px:min-w-[100px] rounded-md outline-none shadow-md;
     color: #545454 !important;
-    font-size: 16px !important;
     height: 30px !important;
+    font-size: 16px !important;
     @media (max-width: 1550px) {
-        font-size: 12px !important;
+        font-size: 14px !important;
+        height: 25px;
     }
+}
+input[type="number"].noEdit,
+input[type="text"].noEdit,
+input[type="email"].noEdit,
+input[type="password"].noEdit {
+    @apply shadow-none;
 }
 * {
     font-family: "NHU-regular";
 }
-
+select {
+    -webkit-appearance: none;
+}
+.select {
+    @apply relative;
+    select {
+        @apply w-full;
+    }
+    span {
+        @apply absolute pointer-events-none right-1 top-[50%] translate-y-[-50%] text-[20px];
+    }
+}
 .calendar {
     @apply relative inline-block;
     .cal {
@@ -77,7 +98,7 @@ input[type="password"] {
 }
 // button
 .buttonRed {
-    @apply capitalize px-5 480px:text-[12px] uppercase 480px:px-2 text-[14px] py-3 1550px:py-2 rounded-lg bg-ThemeRed text-white leading-none duration-75 hover:bg-ThemeRed50;
+    @apply capitalize px-5 480px:text-[12px] uppercase 480px:px-2 text-[14px] py-2 1550px:py-2 rounded-lg bg-ThemeRed text-white leading-none duration-75 hover:bg-ThemeRed50;
 }
 .button_cancel {
     @apply text-ThemeRed font-semibold text-[14px] mr-5 uppercase;
@@ -116,7 +137,12 @@ input[type="password"] {
 }
 // Table
 .table_container {
-    @apply w-full overflow-x-auto mb-10 480px:mb-5 overflow-y-auto h-[60vh] min-h-[600px] relative;
+    @apply w-full overflow-x-auto mb-10 480px:mb-5 overflow-y-auto min-h-[200px] max-h-[60vh] relative;
+    table {
+        thead {
+            @apply sticky top-0 z-[40];
+        }
+    }
 }
 .table_container.hAuto {
     @apply h-auto min-h-0 max-h-[300px];
@@ -127,13 +153,13 @@ input[type="password"] {
         @apply shadow-md sticky top-0 bg-[#fbfbfb] z-[40];
         tr {
             th {
-                @apply text-start px-4 py-4 1550px:py-2 480px:py-3 1280px:px-3 text-[#545454] 1280px:text-[13px];
+                @apply text-start px-4 py-4 uppercase 1550px:py-2 480px:py-3 1280px:px-3 text-[#545454] text-[14px] 1280px:text-[13px];
             }
             th.checkbox {
                 @apply w-3;
                 input[type="checkbox"] {
                     border: 1px solid rgb(216, 216, 216) !important;
-                    @apply relative h-4 w-4 rounded-md shadow-md overflow-hidden after:text-white after:flex after:justify-center after:items-center mr-1 checked:after:bg-ThemeRed checked:after:content-['✓'] appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
+                    @apply relative h-4 w-4 rounded-md shadow-md overflow-hidden after:text-white after:flex after:justify-center after:items-center mr-1 checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
                     &:checked {
                         border: none !important;
                     }
@@ -158,7 +184,7 @@ input[type="password"] {
         tr {
             @apply border-b border-gray-300 cursor-pointer relative;
             td {
-                @apply py-1 text-[#2E4364] font-NHU-regular;
+                @apply py-1 text-[#2E4364] font-NHU-regular min-w-[100px];
                 .item {
                     @apply flex items-center px-4 py-2 1550px:py-1 480px:py-2 480px:px-2;
                     aside {
@@ -211,7 +237,7 @@ input[type="password"] {
                 @apply w-3;
                 input[type="checkbox"] {
                     border: 1px solid rgb(216, 216, 216) !important;
-                    @apply relative h-4 w-4 rounded-md shadow-md overflow-hidden after:text-white after:flex after:justify-center after:items-center mr-1 checked:after:bg-ThemeRed checked:after:content-['✓'] appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
+                    @apply relative h-4 w-4 rounded-md shadow-md overflow-hidden after:text-white after:flex after:justify-center after:items-center mr-1 checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
                     &:checked {
                         border: none !important;
                     }
@@ -239,6 +265,23 @@ input[type="password"] {
             }
             .td.wid20 {
                 width: 500px;
+            }
+        }
+    }
+}
+.table_list.miniTable {
+    thead {
+        @apply shadow-none sticky top-0 z-[40] bg-transparent;
+        tr {
+            th {
+                @apply text-start text-[14px] 1550px:text-[13px] 1280px:text-[13px] px-1 py-1;
+            }
+        }
+    }
+    tbody {
+        tr {
+            td {
+                @apply text-[14px] py-1 px-1 text-[#545454];
             }
         }
     }
@@ -290,7 +333,7 @@ input[type="checkbox"] {
     &:checked {
         border: none !important;
     }
-    @apply relative after:text-white after:flex after:justify-center after:items-center mr-1 checked:after:bg-ThemeRed checked:after:content-['✓'] appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
+    @apply relative after:text-white after:flex after:justify-center after:items-center mr-1 checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
 }
 
 .pageDetail {
@@ -389,7 +432,7 @@ input[type="number"] {
             font-size: 12px !important;
         }
         input.disabled {
-            @apply border-none pointer-events-none;
+            @apply border-none pointer-events-none shadow-none;
         }
         p {
             @apply text-[#545454];
@@ -478,6 +521,10 @@ input[type="number"] {
             }
         }
     }
+}
+input.disabled_input {
+    @apply pointer-events-none bg-ThemeRed50;
+    color: black !important;
 }
 .SimpleTab {
     @apply flex mb-5;
@@ -688,7 +735,7 @@ input[type="number"] {
     @apply max-h-[400px] overflow-auto w-full;
 
     li {
-        @apply w-full cursor-pointer px-3 text-[14px] py-2 1550px:px-2 1550px:py-1 border-b border-ThemeRed hover:bg-ThemeRed hover:text-white transition-all duration-75;
+        @apply w-full cursor-pointer px-3 text-[#545454] text-[14px] py-1 1550px:px-2 1550px:py-1 border-b border-ThemeRed hover:bg-ThemeRed hover:text-white transition-all duration-75;
         width: 100% !important;
         margin: 0 !important;
         div {
@@ -698,4 +745,7 @@ input[type="number"] {
     li:nth-last-child(1) {
         @apply border-none;
     }
+}
+.iconNav {
+    @apply hover:scale-[1.2] mr-5 transition duration-75 text-ThemeRed text-[30px] font-bold cursor-pointer flex hover:text-ThemeRed50 w-8 h-8 relative;
 }

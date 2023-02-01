@@ -6,6 +6,7 @@ import { customer } from "../../../types/customerList";
 import Image from "next/image";
 import { AiFillCamera } from "react-icons/ai";
 import Calendar from "../../Calendar";
+import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 
 type Props = {
     setActiveForm: Function;
@@ -276,29 +277,35 @@ export default function NewIndividual({
                 <ul className={style.ThreeRows}>
                     <li>
                         <label>*CLASS</label>
-                        <select
-                            id=""
-                            {...register("class")}
-                            defaultValue={isNewCustomer.class}
-                            value={isNewCustomer.class}
-                            onChange={(e) =>
-                                setNewCustomer({
-                                    ...isNewCustomer,
-                                    class: e.target.value,
-                                })
-                            }
-                        >
-                            <option
+                        <div className="select">
+                            <select
+                                id=""
+                                {...register("class")}
+                                defaultValue={isNewCustomer.class}
                                 value={isNewCustomer.class}
-                                className={style.disabled}
-                                disabled
+                                onChange={(e) =>
+                                    setNewCustomer({
+                                        ...isNewCustomer,
+                                        class: e.target.value,
+                                    })
+                                }
                             >
-                                {isNewCustomer.class}
-                            </option>
-                            <option value="developer">Developer</option>
-                            <option value="owner">Owner</option>
-                            <option value="tenant">Tenant</option>
-                        </select>
+                                <option
+                                    value={isNewCustomer.class}
+                                    className={style.disabled}
+                                    disabled
+                                >
+                                    {isNewCustomer.class}
+                                </option>
+                                <option value="developer">Developer</option>
+                                <option value="owner">Owner</option>
+                                <option value="tenant">Tenant</option>
+                            </select>
+                            <span>
+                                <MdOutlineKeyboardArrowDown />
+                            </span>
+                        </div>
+
                         {CusError?.class !== "" && (
                             <p className="text-[10px]">{CusError?.class}</p>
                         )}

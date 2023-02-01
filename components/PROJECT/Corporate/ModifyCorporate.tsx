@@ -17,6 +17,7 @@ import type {
 } from "../../../types/corporateList";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
+import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 
 type ModifyCorporate = {
     setToggleModify: Function;
@@ -296,24 +297,30 @@ const PrimaryInformation = ({
                 </li>
                 <li>
                     <label>*GST TYPE.</label>
-                    <select
-                        {...register("gst_type", {
-                            required: true,
-                        })}
-                        id=""
-                        defaultValue={modifyCorporate.gst_type}
-                        required
-                    >
-                        <option
-                            className={style.disabled}
-                            value={modifyCorporate.gst_type}
-                            disabled
+                    <div className="select">
+                        <select
+                            {...register("gst_type", {
+                                required: true,
+                            })}
+                            id=""
+                            defaultValue={modifyCorporate.gst_type}
+                            required
                         >
-                            {modifyCorporate.gst_type}
-                        </option>
-                        <option value="VAT">VAT</option>
-                        <option value="NON-VAT">NON-VAT</option>
-                    </select>
+                            <option
+                                className={style.disabled}
+                                value={modifyCorporate.gst_type}
+                                disabled
+                            >
+                                {modifyCorporate.gst_type}
+                            </option>
+                            <option value="VAT">VAT</option>
+                            <option value="NON-VAT">NON-VAT</option>
+                        </select>
+                        <span>
+                            <MdOutlineKeyboardArrowDown />
+                        </span>
+                    </div>
+
                     {errors.gst_type && <p>{errors.gst_type.message}</p>}
                 </li>
                 {validateTransaction && (

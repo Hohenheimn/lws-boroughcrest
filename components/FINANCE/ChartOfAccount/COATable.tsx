@@ -33,7 +33,7 @@ export default function COATable({ isSearchTable, isFilterTable }: Props) {
     return (
         <>
             <div className="table_container">
-                <table className="table_list corp">
+                <table className="table_list">
                     <thead>
                         <tr>
                             {isFilterTable ? (

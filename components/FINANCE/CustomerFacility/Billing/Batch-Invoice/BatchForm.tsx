@@ -21,7 +21,7 @@ export default function BatchForm({ DefaultValue }: Props) {
     const [isDefault, setDefault] = useState<defaultArray>(DefaultValue);
     return (
         <>
-            <div className="w-full overflow-auto border-b border-gray-300 pb-10 mb-10 1550px:mb-5 1550px:pb-5">
+            <div className="table_container border-b border-gray-300 pb-10 mb-10 1550px:mb-5 1550px:pb-5">
                 <table className={style.crudTable}>
                     <thead>
                         <tr>

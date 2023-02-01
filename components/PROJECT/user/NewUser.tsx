@@ -6,6 +6,7 @@ import style from "../../../styles/Popup_Modal.module.scss";
 import { RiArrowDownSFill } from "react-icons/ri";
 import { useForm } from "react-hook-form";
 import AppContext from "../../Context/AppContext";
+import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 
 export default function NewUser() {
     const { setNewUserToggle } = useContext(AppContext);
@@ -128,9 +129,14 @@ export default function NewUser() {
                         </li>
                         <li>
                             <label>*DEPARTMENT</label>
-                            <select name="" id="">
-                                <option value=""></option>
-                            </select>
+                            <div className="select">
+                                <select name="" id="">
+                                    <option value=""></option>
+                                </select>
+                                <span>
+                                    <MdOutlineKeyboardArrowDown />
+                                </span>
+                            </div>
                         </li>
                         <li>
                             <label>*EMAIL</label>
@@ -143,9 +149,14 @@ export default function NewUser() {
                         </li>
                         <li>
                             <label>*CORPORATE</label>
-                            <select name="" id="">
-                                <option value=""></option>
-                            </select>
+                            <div className="select">
+                                <select name="" id="">
+                                    <option value=""></option>
+                                </select>
+                                <span>
+                                    <MdOutlineKeyboardArrowDown />
+                                </span>
+                            </div>
                         </li>
                     </ul>
                     <div className={style.button_container}>
@@ -190,32 +201,37 @@ const NewRolesPermission = ({ setUserForm, userForm }: any) => {
                     <p className="text-Themered text-[12px] font-semibold mb-1 uppercase">
                         ROLE
                     </p>
-                    <select
-                        name=""
-                        id=""
-                        onChange={(e) => setRole(e.target.value)}
-                        className="w-full rounded-md text-black px-2 text-[14px] py-[2px] outline-none"
-                    >
-                        <option></option>
-                        <option
-                            value="admin staff"
-                            className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
+                    <div className="select">
+                        <select
+                            name=""
+                            id=""
+                            onChange={(e) => setRole(e.target.value)}
+                            className="w-full rounded-md text-black px-2 text-[14px] py-[2px] outline-none"
                         >
-                            Admin Staff
-                        </option>
-                        <option
-                            value="finance"
-                            className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
-                        >
-                            Finance
-                        </option>
-                        <option
-                            value="accounting"
-                            className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
-                        >
-                            Accounting
-                        </option>
-                    </select>
+                            <option></option>
+                            <option
+                                value="admin staff"
+                                className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
+                            >
+                                Admin Staff
+                            </option>
+                            <option
+                                value="finance"
+                                className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
+                            >
+                                Finance
+                            </option>
+                            <option
+                                value="accounting"
+                                className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
+                            >
+                                Accounting
+                            </option>
+                        </select>
+                        <span>
+                            <MdOutlineKeyboardArrowDown />
+                        </span>
+                    </div>
                 </li>
             </ul>
 
@@ -314,50 +330,60 @@ const List = ({ detail, setTable, isTable, index }: List) => {
     return (
         <tr>
             <td className=" pr-2">
-                <select
-                    name=""
-                    id=""
-                    className="w-full rounded-md text-black px-2 text-[14px] py-[2px] outline-none"
-                    onChange={(e) => updateValue(e, "permission")}
-                    value={detail.permissions}
-                >
-                    <option value=""></option>
-                    <option
-                        className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
-                        value="admin"
+                <div className="select">
+                    <select
+                        name=""
+                        id=""
+                        className="w-full rounded-md text-black px-2 text-[14px] py-[2px] outline-none"
+                        onChange={(e) => updateValue(e, "permission")}
+                        value={detail.permissions}
                     >
-                        Admin
-                    </option>
-                    <option
-                        className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
-                        value="Staff"
-                    >
-                        Staff
-                    </option>
-                </select>
+                        <option value=""></option>
+                        <option
+                            className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
+                            value="admin"
+                        >
+                            Admin
+                        </option>
+                        <option
+                            className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
+                            value="Staff"
+                        >
+                            Staff
+                        </option>
+                    </select>
+                    <span>
+                        <MdOutlineKeyboardArrowDown />
+                    </span>
+                </div>
             </td>
             <td className=" pr-2">
-                <select
-                    name=""
-                    id=""
-                    className="w-full rounded-md text-black px-2 text-[14px] py-[2px] outline-none"
-                    onChange={(e) => updateValue(e, "access")}
-                    value={detail.access}
-                >
-                    <option value=""></option>
-                    <option
-                        value="view"
-                        className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
+                <div className="select">
+                    <select
+                        name=""
+                        id=""
+                        className="w-full rounded-md text-black px-2 text-[14px] py-[2px] outline-none"
+                        onChange={(e) => updateValue(e, "access")}
+                        value={detail.access}
                     >
-                        View
-                    </option>
-                    <option
-                        value="access"
-                        className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
-                    >
-                        Access
-                    </option>
-                </select>
+                        <option value=""></option>
+                        <option
+                            value="view"
+                            className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
+                        >
+                            View
+                        </option>
+                        <option
+                            value="access"
+                            className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
+                        >
+                            Access
+                        </option>
+                    </select>
+                    <span>
+                        <MdOutlineKeyboardArrowDown />
+                    </span>
+                </div>
             </td>
             <td className="  pr-2">
                 <input

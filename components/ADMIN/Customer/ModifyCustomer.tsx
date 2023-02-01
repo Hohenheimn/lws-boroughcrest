@@ -13,6 +13,7 @@ import { useRouter } from "next/router";
 import { ScaleLoader } from "react-spinners";
 import { useQueryClient } from "react-query";
 import Calendar from "../../Calendar";
+import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 
 type ModifyCustomer = {
     setToggleModify: Function;
@@ -254,26 +255,31 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
                         <p className=" text-[12px] font-semibold mb-1 w-[90%]">
                             TYPE
                         </p>
-                        <select
-                            name=""
-                            id=""
-                            className="rounded-md text-black px-2 py-[2px] outline-none w-[90%] 480px:w-full"
-                            value={isType}
-                            onChange={typeHandler}
-                        >
-                            <option
-                                value="Individual"
-                                className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
+                        <div className="select">
+                            <select
+                                name=""
+                                id=""
+                                className="rounded-md text-black px-2 py-[2px] outline-none w-[90%] 480px:w-full"
+                                value={isType}
+                                onChange={typeHandler}
                             >
-                                Individual
-                            </option>
-                            <option
-                                value="Company"
-                                className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
-                            >
-                                Company
-                            </option>
-                        </select>
+                                <option
+                                    value="Individual"
+                                    className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
+                                >
+                                    Individual
+                                </option>
+                                <option
+                                    value="Company"
+                                    className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
+                                >
+                                    Company
+                                </option>
+                            </select>
+                            <span>
+                                <MdOutlineKeyboardArrowDown />
+                            </span>
+                        </div>
                     </aside>
                     <aside className=" flex w-4/12 justify-end 480px:w-2/5">
                         <span className="mr-2 font-bold">STATUS</span>
@@ -386,18 +392,23 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
                     </li>
                     <li>
                         <label>*CLASS</label>
-                        <select
-                            id=""
-                            defaultValue={isModifyCustomer.class}
-                            {...register("class")}
-                        >
-                            <option value={isModifyCustomer.class} disabled>
-                                {isModifyCustomer.class}
-                            </option>
-                            <option value="developer">Developer</option>
-                            <option value="owner">Owner</option>
-                            <option value="tenant">Tenant</option>
-                        </select>
+                        <div className="select">
+                            <select
+                                id=""
+                                defaultValue={isModifyCustomer.class}
+                                {...register("class")}
+                            >
+                                <option value={isModifyCustomer.class} disabled>
+                                    {isModifyCustomer.class}
+                                </option>
+                                <option value="developer">Developer</option>
+                                <option value="owner">Owner</option>
+                                <option value="tenant">Tenant</option>
+                            </select>
+                            <span>
+                                <MdOutlineKeyboardArrowDown />
+                            </span>
+                        </div>
                         {errors.class && (
                             <p className="text-[10px]">
                                 {errors.class.message}

@@ -7,13 +7,13 @@ import { RiArrowDownSFill } from "react-icons/ri";
 import { AiFillCamera } from "react-icons/ai";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import api from "../../../util/api";
 import type { firstCorporateForm } from "../../../types/corporateList";
 import type { secondCorporateForm } from "../../../types/corporateList";
 import { ScaleLoader } from "react-spinners";
 import { getCookie } from "cookies-next";
-import * as yup from "yup";
+import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 
 export default function NewCorporate() {
     const [isNewActive, setNewActive] = useState([true, false]);
@@ -105,8 +105,6 @@ const Primary = ({
                 ImageReader.addEventListener("load", (event: any) => {
                     setProfileUrl(event.target.result);
                 });
-                // const file = e.target.files;
-                // setLogoStatus(file[0].name);
             } else {
                 setLogoStatus("Invalid Image File");
             }
@@ -267,23 +265,28 @@ const Primary = ({
                     </li>
                     <li>
                         <label>*GST TYPE.</label>
-                        <select
-                            {...register("gst_type", {
-                                required: true,
-                            })}
-                            id=""
-                            required
-                            value={createCorporate.gst_type}
-                            onChange={(e) => {
-                                setCreateCorporate({
-                                    ...createCorporate,
-                                    gst_type: e.target.value,
-                                });
-                            }}
-                        >
-                            <option value="VAT">VAT</option>
-                            <option value="NON-VAT">NON-VAT</option>
-                        </select>
+                        <div className="select">
+                            <select
+                                {...register("gst_type", {
+                                    required: true,
+                                })}
+                                id=""
+                                required
+                                value={createCorporate.gst_type}
+                                onChange={(e) => {
+                                    setCreateCorporate({
+                                        ...createCorporate,
+                                        gst_type: e.target.value,
+                                    });
+                                }}
+                            >
+                                <option value="VAT">VAT</option>
+                                <option value="NON-VAT">NON-VAT</option>
+                            </select>
+                            <span>
+                                <MdOutlineKeyboardArrowDown />
+                            </span>
+                        </div>
                     </li>
                     <li>
                         <label>SEC. Registration</label>

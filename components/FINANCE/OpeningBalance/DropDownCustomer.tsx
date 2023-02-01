@@ -25,7 +25,7 @@ export default function DropDownCustomer({
                 toRef={
                     <input
                         type="text"
-                        className=" w-full p-1 min-w-[200px] 820px:h-8 rounded-md outline-none shadow-md text-[#757575]"
+                        className=" w-full"
                         onClick={() => setToggle(true)}
                         value={tempSearch}
                         onChange={(e) => {

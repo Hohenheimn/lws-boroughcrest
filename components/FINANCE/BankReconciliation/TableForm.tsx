@@ -94,7 +94,7 @@ export default function TableForm() {
                 <div className={styleSearch.period}>
                     <PeriodCalendar value={isPeriod} setValue={setPeriod} />
                     <div className="flex items-center ml-5 1280px:ml-0 1280px:mt-5">
-                        <p>BANK ACCOUNT</p>
+                        <p className="labelField">BANK ACCOUNT</p>
                         <BankAccountDropDown
                             isObject={isBankAccount}
                             setObject={setBankAccount}
@@ -140,7 +140,7 @@ export default function TableForm() {
                     </li>
                 </ul>
             </section>
-            <div className="w-full overflow-auto">
+            <div className="table_container">
                 <table className={style.crudTable}>
                     <thead>
                         <tr>

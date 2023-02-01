@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useRouter } from "next/router";
 import React, { useContext, useEffect, useState } from "react";
+import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { RiArrowDownSFill } from "react-icons/ri";
 import { useQueryClient } from "react-query";
 import { ScaleLoader } from "react-spinners";
@@ -202,9 +203,9 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                     exit="exit"
                 >
                     <div className={isForm[0] ? "" : "hidden"}>
-                        <h1 className={style.modal_label_primaryRed}>
+                        {/* <h1 className={style.modal_label_primaryRed}>
                             Lorem Ipsum
-                        </h1>
+                        </h1> */}
                         <ul className={style.ThreeRows}>
                             <li>
                                 <label>*CODE</label>
@@ -227,20 +228,26 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                             </li>
                             <li>
                                 <label>*TYPE</label>
-                                <select
-                                    id=""
-                                    value={fieldValue.type}
-                                    onChange={(e: any) => {
-                                        setFieldValue({
-                                            ...fieldValue,
-                                            type: e.target.value,
-                                        });
-                                    }}
-                                >
-                                    <option value=""></option>
-                                    <option value="Charge">Charge</option>
-                                    <option value="Deposit">Deposit</option>
-                                </select>
+                                <div className="select">
+                                    <select
+                                        id=""
+                                        value={fieldValue.type}
+                                        onChange={(e: any) => {
+                                            setFieldValue({
+                                                ...fieldValue,
+                                                type: e.target.value,
+                                            });
+                                        }}
+                                    >
+                                        <option value=""></option>
+                                        <option value="Charge">Charge</option>
+                                        <option value="Deposit">Deposit</option>
+                                    </select>
+                                    <span>
+                                        <MdOutlineKeyboardArrowDown />
+                                    </span>
+                                </div>
+
                                 {isError?.type !== "" && (
                                     <p className="text-[12px]">
                                         {isError?.type}
@@ -485,22 +492,27 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                             </li>
                             <li>
                                 <label>*INTEREST</label>
+                                <div className="select">
+                                    <select
+                                        value={fieldValue.interest}
+                                        onChange={(e: any) => {
+                                            setFieldValue({
+                                                ...fieldValue,
+                                                interest: e.target.value,
+                                            });
+                                        }}
+                                    >
+                                        <option value=""></option>
+                                        <option value="Bearing">Bearing</option>
+                                        <option value="Non-Bearing">
+                                            Non-Bearing
+                                        </option>
+                                    </select>
+                                    <span>
+                                        <MdOutlineKeyboardArrowDown />
+                                    </span>
+                                </div>
 
-                                <select
-                                    value={fieldValue.interest}
-                                    onChange={(e: any) => {
-                                        setFieldValue({
-                                            ...fieldValue,
-                                            interest: e.target.value,
-                                        });
-                                    }}
-                                >
-                                    <option value=""></option>
-                                    <option value="Bearing">Bearing</option>
-                                    <option value="Non-Bearing">
-                                        Non-Bearing
-                                    </option>
-                                </select>
                                 {isError?.interest !== "" && (
                                     <p className="text-[12px]">
                                         {isError?.interest}

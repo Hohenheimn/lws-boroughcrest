@@ -46,9 +46,7 @@ export default function PeriodCalendar({
                 className=""
                 toRef={
                     <div className="flex items-center">
-                        <p className="text-ThemeRed mr-3 font-NHU-bold 640px:text-[12px] 480px:w-full">
-                            PERIOD
-                        </p>
+                        <p className="labelField">PERIOD</p>
                         <div
                             className="px-5 h-8 1550px:h-8 shadow-md rounded-md bg-white flex justify-between items-center"
                             onClick={() => setOpen((open) => !open)}
@@ -56,15 +54,15 @@ export default function PeriodCalendar({
                             <input
                                 value={value.from}
                                 readOnly
-                                className=" outline-none w-[90px] font-NHU-medium text-[#545454]"
+                                className=" outline-none w-[90px] font-NHU-medium text-[#545454] 1550px:text-[14px]"
                             />
-                            <p className=" text-ThemeRed font-NHU-medium mr-2">
-                                to
+                            <p className=" text-ThemeRed font-NHU-regular mr-2">
+                                -
                             </p>
                             <input
                                 value={value.to}
                                 readOnly
-                                className=" outline-none w-[100px] font-NHU-medium text-[#545454]"
+                                className=" outline-none w-[100px] font-NHU-medium text-[#545454] 1550px:text-[14px]"
                             />
                             <Image
                                 src="/Images/CalendarMini.png"

@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { AiFillCamera } from "react-icons/ai";
+import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 
 export default function NewDefault() {
     const [isProfileUrl, setProfileUrl] = useState("/Images/sampleProfile.png");
@@ -77,9 +78,14 @@ export default function NewDefault() {
             >
                 <li>
                     <label>CLASS</label>
-                    <select name="" id="" disabled>
-                        <option value=""></option>
-                    </select>
+                    <div className="select">
+                        <select name="" id="" disabled>
+                            <option value=""></option>
+                        </select>
+                        <span>
+                            <MdOutlineKeyboardArrowDown />
+                        </span>
+                    </div>
                 </li>
                 <li>
                     <label>NAME</label>

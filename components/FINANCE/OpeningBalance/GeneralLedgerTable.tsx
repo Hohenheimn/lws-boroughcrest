@@ -82,7 +82,7 @@ export default function GeneralLedgerTable() {
 
     return (
         <>
-            <div className="w-full overflow-auto">
+            <div className="table_container">
                 <table className={style.crudTable}>
                     <thead>
                         <tr>

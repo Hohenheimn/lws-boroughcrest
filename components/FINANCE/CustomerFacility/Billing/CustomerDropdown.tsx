@@ -32,7 +32,7 @@ export default function CustomerDropdown({ isCustomer, setCustomer }: Props) {
                 toRef={
                     <input
                         type="text"
-                        className=" w-full px-2 py-1 capitalize h-10 1550px:h-8 max-w-[300px] 820px:h-8 rounded-md outline-none shadow-md text-[#757575]"
+                        className=" w-full"
                         onClick={() => setToggle(true)}
                         value={isSearchTemp}
                         onChange={(e) => {
