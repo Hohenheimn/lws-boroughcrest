@@ -7,6 +7,7 @@ export default function DropdownSearch() {
     return (
         <>
             <DynamicPopOver
+                className="w-full"
                 toRef={
                     <input
                         type="text"

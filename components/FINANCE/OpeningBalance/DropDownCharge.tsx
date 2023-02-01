@@ -19,10 +19,12 @@ export default function DropDownCharge({
     return (
         <>
             <DynamicPopOver
+                className="w-full"
+                samewidth={true}
                 toRef={
                     <input
                         type="text"
-                        className=" w-full p-1 min-w-[200px] 820px:h-8 rounded-md outline-none shadow-md text-[#757575]"
+                        className=" w-full p-1 820px:h-8 rounded-md outline-none shadow-md text-[#757575]"
                         onClick={() => setToggle(true)}
                         value={tempSearch}
                         onChange={(e) => {
@@ -96,6 +98,7 @@ const List = ({
                 <li
                     key={index}
                     data-id={item.id}
+                    data-description={item.description}
                     onClick={(e) => {
                         UpdateStateHandler("charge", e);
                         setTempSearch(item.name);
@@ -107,13 +110,15 @@ const List = ({
             ))}
             {isLoading && (
                 <li>
-                    <BarLoader
-                        color={"#8f384d"}
-                        height="5px"
-                        width="100px"
-                        aria-label="Loading Spinner"
-                        data-testid="loader"
-                    />
+                    <div>
+                        <BarLoader
+                            color={"#8f384d"}
+                            height="5px"
+                            width="100px"
+                            aria-label="Loading Spinner"
+                            data-testid="loader"
+                        />
+                    </div>
                 </li>
             )}
             {isError ||

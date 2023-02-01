@@ -20,6 +20,8 @@ export default function DropDownCustomer({
     return (
         <>
             <DynamicPopOver
+                className="w-full"
+                samewidth={true}
                 toRef={
                     <input
                         type="text"
@@ -66,7 +68,7 @@ const List = ({
     itemDetail,
 }: List) => {
     const { data, isLoading, isError } = useQuery(
-        ["COA-list", tempSearch],
+        ["customer-list-dd", tempSearch],
         () => {
             return api.get(`/admin/customer?keywords=${tempSearch}`, {
                 headers: {
@@ -105,15 +107,18 @@ const List = ({
                     {item.name}
                 </li>
             ))}
+
             {isLoading && (
                 <li>
-                    <BarLoader
-                        color={"#8f384d"}
-                        height="5px"
-                        width="100px"
-                        aria-label="Loading Spinner"
-                        data-testid="loader"
-                    />
+                    <div>
+                        <BarLoader
+                            color={"#8f384d"}
+                            height="5px"
+                            width="100px"
+                            aria-label="Loading Spinner"
+                            data-testid="loader"
+                        />
+                    </div>
                 </li>
             )}
             {isError ||

@@ -80,6 +80,7 @@ export default function TableForm() {
                         READING:
                     </p>
                     <DynamicPopOver
+                        className="w-full"
                         toRef={
                             <>
                                 <input

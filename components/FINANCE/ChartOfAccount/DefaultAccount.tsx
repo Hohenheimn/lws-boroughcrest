@@ -58,7 +58,7 @@ const DefaultAccount = ({ setValue, isValue }: DefaultAccountProps) => {
     if (isLoading) {
         return (
             <ul>
-                <div className="w-full flex justify-center py-3">
+                <li className="w-full flex justify-center py-3">
                     <BarLoader
                         color={"#8f384d"}
                         height="5px"
@@ -66,30 +66,26 @@ const DefaultAccount = ({ setValue, isValue }: DefaultAccountProps) => {
                         aria-label="Loading Spinner"
                         data-testid="loader"
                     />
-                </div>
+                </li>
             </ul>
         );
     }
     if (data?.data.length <= 0) {
         return (
             <ul>
-                <p className="py-2 px-3 text-center text-[12px]">
-                    Default Account cannot be found!
-                </p>
+                <li>Default Account cannot be found!</li>
             </ul>
         );
     }
     if (isError) {
         return (
             <ul>
-                <p className="py-2 px-3 text-center text-[12px]">
-                    Something is wrong!
-                </p>
+                <li>Something is wrong!</li>
             </ul>
         );
     }
     return (
-        <ul ref={modal}>
+        <ul ref={modal} className="dropdown-list">
             {data?.data.map((item: any, index: number) => (
                 <li
                     key={index}
@@ -97,7 +93,7 @@ const DefaultAccount = ({ setValue, isValue }: DefaultAccountProps) => {
                     data-id={item?.id}
                     onClick={clickHandler}
                 >
-                    <p className=" pointer-events-none">{item?.name}</p>
+                    {item?.name}
                 </li>
             ))}
         </ul>

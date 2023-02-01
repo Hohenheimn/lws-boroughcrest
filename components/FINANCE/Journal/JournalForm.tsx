@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { BsPlusLg } from "react-icons/bs";
 import { HiMinus } from "react-icons/hi";
@@ -30,6 +30,18 @@ export default function JournalForm({ DefaultValue, type }: Props) {
     });
 
     const [isDefault, setDefault] = useState<defaultArray>(DefaultValue);
+
+    // TOTAL
+    const [totalDebit, setTotalDebit] = useState<number>(0);
+    const [totalCredit, setTotalCredit] = useState<number>(0);
+    useEffect(() => {
+        setTotalDebit(0);
+        setTotalCredit(0);
+        isDefault.map((item: defaultObject) => {
+            setTotalDebit((temp) => Number(temp) + Number(item.debit));
+            setTotalCredit((temp) => Number(temp) + Number(item.credit));
+        });
+    }, [isDefault]);
     return (
         <>
             <div>
@@ -93,40 +105,39 @@ export default function JournalForm({ DefaultValue, type }: Props) {
                                     isDefault={isDefault}
                                 />
                             ))}
-                            <tr className={style.total}>
-                                <td></td>
-                                <td className={style.label}>
-                                    <h1>TOTAL</h1>
-                                </td>
-                                <td>
-                                    <div className={style.peso}>
-                                        <aside>
-                                            <Image
-                                                src="/Images/peso.png"
-                                                height={13}
-                                                width={10}
-                                                alt=""
-                                            />
-                                        </aside>
-                                        <p>-</p>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div className={style.peso}>
-                                        <aside>
-                                            <Image
-                                                src="/Images/peso.png"
-                                                height={13}
-                                                width={10}
-                                                alt=""
-                                            />
-                                        </aside>
-                                        <p>-</p>
-                                    </div>
-                                </td>
-                            </tr>
                         </tbody>
                     </table>
+                </div>
+                <div className="flex flex-wrap justify-end py-5 480px:justify-start">
+                    <h1 className="text-start text-[16px] min-w-[200px] 1280px:text-[13px] text-ThemeRed pb-1">
+                        TOTAL
+                    </h1>
+                    <div className=" relative flex items-center text-[#757575] font-NHU-bold w-[200px] mr-5">
+                        <aside className=" content-['₱'] absolute top-[0%] h-full flex items-center left-2 z-10">
+                            <Image
+                                src="/Images/peso.png"
+                                height={13}
+                                width={10}
+                                alt=""
+                            />
+                        </aside>
+                        <p className=" text-end w-full text-[#757575] font-NHU-bold text-[18px] 1280px:text-[13px]">
+                            {totalDebit}-
+                        </p>
+                    </div>
+                    <div className=" relative flex items-center text-[#757575] font-NHU-bold w-[200px] ">
+                        <aside className=" content-['₱'] absolute top-[0%] h-full flex items-center left-2 z-10">
+                            <Image
+                                src="/Images/peso.png"
+                                height={13}
+                                width={10}
+                                alt=""
+                            />
+                        </aside>
+                        <p className=" text-end w-full text-[#757575] font-NHU-bold text-[18px] 1280px:text-[13px]">
+                            {totalCredit}-
+                        </p>
+                    </div>
                 </div>
             </div>
             <div className="DropDownSave">

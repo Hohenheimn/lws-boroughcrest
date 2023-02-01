@@ -27,10 +27,12 @@ export default function CustomerDropdown({ isCustomer, setCustomer }: Props) {
     return (
         <>
             <DynamicPopOver
+                className="w-full max-w-[300px]"
+                samewidth={true}
                 toRef={
                     <input
                         type="text"
-                        className=" w-full px-2 py-1 capitalize h-10 1550px:h-8 min-w-[200px] 820px:h-8 rounded-md outline-none shadow-md text-[#757575]"
+                        className=" w-full px-2 py-1 capitalize h-10 1550px:h-8 max-w-[300px] 820px:h-8 rounded-md outline-none shadow-md text-[#757575]"
                         onClick={() => setToggle(true)}
                         value={isSearchTemp}
                         onChange={(e) => {

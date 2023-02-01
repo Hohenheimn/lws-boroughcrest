@@ -37,7 +37,7 @@ export default function Developer({
     };
     return (
         <>
-            <ul className={style.developer} ref={modal}>
+            <ul className="dropdown-list" ref={modal}>
                 {data?.data.map((item: any, index: number) => (
                     <li
                         data-id={item.id}
@@ -51,21 +51,23 @@ export default function Developer({
                 ))}
             </ul>
             {isLoading && (
-                <div className="w-full flex justify-center py-3">
-                    <BarLoader
-                        color={"#8f384d"}
-                        height="5px"
-                        width="100px"
-                        aria-label="Loading Spinner"
-                        data-testid="loader"
-                    />
-                </div>
+                <li>
+                    <div className="w-full flex justify-center py-3">
+                        <BarLoader
+                            color={"#8f384d"}
+                            height="5px"
+                            width="100px"
+                            aria-label="Loading Spinner"
+                            data-testid="loader"
+                        />
+                    </div>
+                </li>
             )}
             {isError ||
                 (data?.data.length <= 0 && (
-                    <div className="w-full flex justify-center py-3">
+                    <li>
                         <h1>Developer cannot be found!</h1>
-                    </div>
+                    </li>
                 ))}
         </>
     );

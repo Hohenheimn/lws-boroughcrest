@@ -29,6 +29,8 @@ export default function BankAccountDropDown({ isObject, setObject }: Props) {
     return (
         <>
             <DynamicPopOver
+                className=""
+                samewidth={false}
                 toRef={
                     <input
                         type="text"

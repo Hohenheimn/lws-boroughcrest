@@ -188,6 +188,7 @@ const List = ({ itemDetail, setTableItem, isTableItem }: List) => {
             </td>
             <td>
                 <DynamicPopOver
+                    className="w-full"
                     toRef={
                         <aside className="calendar relative w-[200px]">
                             <span className="cal ">

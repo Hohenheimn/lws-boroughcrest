@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { useRouter } from "next/router";
 import React, { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -9,6 +10,7 @@ import {
     ChartofAccountList,
     ChartofAccountPayload,
 } from "../../../types/COAList";
+import { ModalSideFade } from "../../Animation/SimpleAnimation";
 import AppContext from "../../Context/AppContext";
 import DynamicPopOver from "../../DynamicPopOver";
 import {
@@ -238,271 +240,299 @@ export default function COAForm({
     return (
         <form className={style.container} onSubmit={handleSubmit(Submit)}>
             <section>
-                <p className={style.modal_title}>
-                    {router.query.modify === undefined ? "Create" : "Modify"}{" "}
-                    Account
-                </p>
-                <h1 className={style.modal_label_primaryRed}>
-                    Primary Information
-                </h1>
-                <ul className={style.FinanceTwoRows}>
-                    <li>
-                        <label htmlFor="">*CHART CODE</label>
-                        <input
-                            type="text"
-                            disabled
-                            value={isChartCode.parent + isChartCode.suffix}
-                            onChange={() => {}}
-                            className=" bg-ThemeRed50"
-                        />
-                        {isError.chart_code !== "" && (
-                            <p className="text-[10px]">{isError.chart_code}</p>
-                        )}
-                    </li>
-                    <li className={style.twoField}>
-                        <div>
-                            <label>PARENT</label>
-                            <div className={style.Dropdown}>
+                <motion.div
+                    variants={ModalSideFade}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                >
+                    <p className={style.modal_title}>
+                        {router.query.modify === undefined
+                            ? "Create"
+                            : "Modify"}{" "}
+                        Account
+                    </p>
+                    <h1 className={style.modal_label_primaryRed}>
+                        Primary Information
+                    </h1>
+                    <ul className={style.FinanceTwoRows}>
+                        <li>
+                            <label htmlFor="">*CHART CODE</label>
+                            <input
+                                type="text"
+                                disabled
+                                value={isChartCode.parent + isChartCode.suffix}
+                                onChange={() => {}}
+                                className=" bg-ThemeRed50"
+                            />
+                            {isError.chart_code !== "" && (
+                                <p className="text-[10px]">
+                                    {isError.chart_code}
+                                </p>
+                            )}
+                        </li>
+                        <li className={style.twoField}>
+                            <div>
+                                <label>PARENT</label>
+                                <div className={style.Dropdown}>
+                                    <input
+                                        type="number"
+                                        value={isParent.value}
+                                        {...register("parent", {
+                                            onChange: () => {
+                                                setValue(
+                                                    "parent",
+                                                    isParent.value,
+                                                    {
+                                                        shouldValidate: true,
+                                                    }
+                                                );
+                                            },
+                                        })}
+                                        onChange={(e: any) => {
+                                            setParent({
+                                                ...isParent,
+                                                value: e.target.value,
+                                            });
+                                            setChartcode({
+                                                ...isChartCode,
+                                                parent: e.target.value,
+                                            });
+                                        }}
+                                        onFocus={() =>
+                                            setParent({
+                                                ...isParent,
+                                                toggle: true,
+                                            })
+                                        }
+                                    />
+                                    {isParent.toggle && (
+                                        <Parent
+                                            setParent={setParent}
+                                            setChartcode={setChartcode}
+                                            isChartcode={isChartCode}
+                                            isParent={isParent}
+                                        />
+                                    )}
+                                    {isError.parent_id && (
+                                        <p className="text-[10px]">
+                                            {isError.parent_id}
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+                            <div>
+                                <label>*CODE SUFFIX</label>
                                 <input
                                     type="number"
-                                    value={isParent.value}
-                                    {...register("parent", {
-                                        onChange: () => {
-                                            setValue("parent", isParent.value, {
-                                                shouldValidate: true,
+                                    {...register("code_suffix")}
+                                    value={isChartCode.suffix}
+                                    onChange={(e) => {
+                                        if (e.target.value.length <= 2) {
+                                            setChartcode({
+                                                ...isChartCode,
+                                                suffix: e.target.value,
                                             });
-                                        },
-                                    })}
+                                        }
+                                    }}
+                                />
+                                {isError.code_suffix && (
+                                    <p className="text-[10px]">
+                                        {isError.code_suffix}
+                                    </p>
+                                )}
+                            </div>
+                        </li>
+                        <li>
+                            <label htmlFor="">*ACCOUNT NAME</label>
+                            <input type="text" {...register("account_name")} />
+                            {isError.account_name && (
+                                <p className="text-[10px]">
+                                    {isError.account_name}
+                                </p>
+                            )}
+                        </li>
+                        <li>
+                            <label htmlFor="">DESCRIPTION</label>
+                            <input type="text" {...register("description")} />
+                        </li>
+                        <li>
+                            <label htmlFor="">*DEFAULT ACCOUNT</label>
+                            <div className={style.Dropdown}>
+                                <input
+                                    autoComplete="off"
+                                    type="text"
+                                    value={isDefaultAccount.value}
+                                    {...register("defaultAccount")}
                                     onChange={(e: any) => {
-                                        setParent({
-                                            ...isParent,
+                                        setDefaultAccount({
+                                            ...isDefaultAccount,
                                             value: e.target.value,
                                         });
-                                        setChartcode({
-                                            ...isChartCode,
-                                            parent: e.target.value,
-                                        });
+                                        setValue(
+                                            "defaultAccount",
+                                            isDefaultAccount,
+                                            {
+                                                shouldValidate: true,
+                                            }
+                                        );
                                     }}
                                     onFocus={() =>
-                                        setParent({
-                                            ...isParent,
+                                        setDefaultAccount({
+                                            ...isDefaultAccount,
                                             toggle: true,
                                         })
                                     }
                                 />
-                                {isParent.toggle && (
-                                    <Parent
-                                        setParent={setParent}
-                                        setChartcode={setChartcode}
-                                        isChartcode={isChartCode}
-                                        isParent={isParent}
+                                {isDefaultAccount.toggle && (
+                                    <DefaultAccount
+                                        setValue={setDefaultAccount}
+                                        isValue={isDefaultAccount}
                                     />
                                 )}
-                                {isError.parent_id && (
+                                {isError.coa_default_account_id && (
                                     <p className="text-[10px]">
-                                        {isError.parent_id}
+                                        {isError.coa_default_account_id}
                                     </p>
                                 )}
                             </div>
-                        </div>
-                        <div>
-                            <label>*CODE SUFFIX</label>
-                            <input
-                                type="number"
-                                {...register("code_suffix")}
-                                value={isChartCode.suffix}
-                                onChange={(e) => {
-                                    if (e.target.value.length <= 2) {
-                                        setChartcode({
-                                            ...isChartCode,
-                                            suffix: e.target.value,
-                                        });
-                                    }
-                                }}
-                            />
-                            {isError.code_suffix && (
-                                <p className="text-[10px]">
-                                    {isError.code_suffix}
-                                </p>
-                            )}
-                        </div>
-                    </li>
-                    <li>
-                        <label htmlFor="">*ACCOUNT NAME</label>
-                        <input type="text" {...register("account_name")} />
-                        {isError.account_name && (
-                            <p className="text-[10px]">
-                                {isError.account_name}
-                            </p>
-                        )}
-                    </li>
-                    <li>
-                        <label htmlFor="">DESCRIPTION</label>
-                        <input type="text" {...register("description")} />
-                    </li>
-                    <li>
-                        <label htmlFor="">*DEFAULT ACCOUNT</label>
-                        <div className={style.Dropdown}>
-                            <input
-                                autoComplete="off"
-                                type="text"
-                                value={isDefaultAccount.value}
-                                {...register("defaultAccount")}
-                                onChange={(e: any) => {
-                                    setDefaultAccount({
-                                        ...isDefaultAccount,
-                                        value: e.target.value,
-                                    });
-                                    setValue(
-                                        "defaultAccount",
-                                        isDefaultAccount,
-                                        {
-                                            shouldValidate: true,
-                                        }
-                                    );
-                                }}
-                                onFocus={() =>
-                                    setDefaultAccount({
-                                        ...isDefaultAccount,
-                                        toggle: true,
-                                    })
-                                }
-                            />
-                            {isDefaultAccount.toggle && (
-                                <DefaultAccount
-                                    setValue={setDefaultAccount}
-                                    isValue={isDefaultAccount}
-                                />
-                            )}
-                            {isError.coa_default_account_id && (
-                                <p className="text-[10px]">
-                                    {isError.coa_default_account_id}
-                                </p>
-                            )}
-                        </div>
-                    </li>
-                    <li className={style.status}>
-                        <label htmlFor="status">*APPLY TO SUB-ACCOUNT</label>
-                        <div
-                            className={`statusCircle ${
-                                isStatus ? "active" : "inactive"
-                            }`}
-                            onClick={() => setStatus(!isStatus)}
-                        ></div>
-                    </li>
-                    {(isDefaultAccount.value === "Cash Account Outbound" ||
-                        isDefaultAccount.value === "Cash Account Inbound") && (
-                        <li>
-                            <label htmlFor="">BANK ACCOUNT NO.</label>
-                            <DynamicPopOver
-                                toRef={
-                                    <>
-                                        <input
-                                            type="text"
-                                            {...register("bank_account")}
-                                            autoComplete="off"
-                                            onClick={() =>
-                                                setBankAccountToggle(true)
-                                            }
-                                            value={isBankAccountVal.value}
-                                            onChange={(e: any) =>
-                                                setBankAccountVal({
-                                                    ...isBankAccountVal,
-                                                    value: e.target.value,
-                                                })
-                                            }
-                                        />
-                                    </>
-                                }
-                                toPop={
-                                    <>
-                                        {isBankAccountToggle && (
-                                            <CrudBankAccNum
-                                                update={updateFieldHandler}
-                                                setToggle={setBankAccountToggle}
-                                                isToggle={isBankAccountToggle}
-                                                isValID={isBankAccountVal.id}
-                                                isObject={isBankAccountVal}
-                                                setObject={setBankAccountVal}
-                                            />
-                                        )}
-                                    </>
-                                }
-                            />
                         </li>
-                    )}
+                        <li className={style.status}>
+                            <label htmlFor="status">
+                                *APPLY TO SUB-ACCOUNT
+                            </label>
+                            <div
+                                className={`statusCircle ${
+                                    isStatus ? "active" : "inactive"
+                                }`}
+                                onClick={() => setStatus(!isStatus)}
+                            ></div>
+                        </li>
+                        {(isDefaultAccount.value === "Cash Account Outbound" ||
+                            isDefaultAccount.value ===
+                                "Cash Account Inbound") && (
+                            <li>
+                                <label htmlFor="">BANK ACCOUNT NO.</label>
+                                <DynamicPopOver
+                                    className="w-full"
+                                    samewidth={false}
+                                    toRef={
+                                        <>
+                                            <input
+                                                type="text"
+                                                {...register("bank_account")}
+                                                autoComplete="off"
+                                                onClick={() =>
+                                                    setBankAccountToggle(true)
+                                                }
+                                                value={isBankAccountVal.value}
+                                                onChange={(e: any) =>
+                                                    setBankAccountVal({
+                                                        ...isBankAccountVal,
+                                                        value: e.target.value,
+                                                    })
+                                                }
+                                            />
+                                        </>
+                                    }
+                                    toPop={
+                                        <>
+                                            {isBankAccountToggle && (
+                                                <CrudBankAccNum
+                                                    update={updateFieldHandler}
+                                                    setToggle={
+                                                        setBankAccountToggle
+                                                    }
+                                                    isToggle={
+                                                        isBankAccountToggle
+                                                    }
+                                                    isValID={
+                                                        isBankAccountVal.id
+                                                    }
+                                                    isObject={isBankAccountVal}
+                                                    setObject={
+                                                        setBankAccountVal
+                                                    }
+                                                />
+                                            )}
+                                        </>
+                                    }
+                                />
+                            </li>
+                        )}
 
-                    {/* <li>
+                        {/* <li>
                         <label htmlFor="">BANK AND BRANCH</label>
                         <input type="text" {...register("bank_branch")} />
                     </li> */}
-                </ul>
-                <div className={style.SaveButton}>
-                    <aside className={style.back} onClick={cancel}>
-                        CANCEL
-                    </aside>
+                    </ul>
+                    <div className={style.SaveButton}>
+                        <aside className={style.back} onClick={cancel}>
+                            CANCEL
+                        </aside>
 
-                    {router.query.modify !== undefined && (
-                        <>
-                            {transaction ? (
-                                <aside
-                                    className={`mr-5 ${style.next}`}
-                                    onClick={deleteHandler}
+                        {router.query.modify !== undefined && (
+                            <>
+                                {transaction ? (
+                                    <aside
+                                        className={`mr-5 ${style.next}`}
+                                        onClick={deleteHandler}
+                                    >
+                                        {DeleteLoading ? (
+                                            <ScaleLoader
+                                                color="#fff"
+                                                height="10px"
+                                                width="2px"
+                                            />
+                                        ) : (
+                                            "DELETE"
+                                        )}
+                                    </aside>
+                                ) : (
+                                    ""
+                                )}
+                            </>
+                        )}
+
+                        <div className={style.Save}>
+                            <div>
+                                <button
+                                    name="save"
+                                    className={style.save_button}
+                                    type="submit"
+                                    onClick={() => setSaveButton("save")}
                                 >
-                                    {DeleteLoading ? (
+                                    {SaveLoading || UpdateLoading ? (
                                         <ScaleLoader
                                             color="#fff"
                                             height="10px"
                                             width="2px"
                                         />
                                     ) : (
-                                        "DELETE"
+                                        "SAVE"
                                     )}
-                                </aside>
-                            ) : (
-                                ""
-                            )}
-                        </>
-                    )}
-
-                    <div className={style.Save}>
-                        <div>
-                            <button
-                                name="save"
-                                className={style.save_button}
-                                type="submit"
-                                onClick={() => setSaveButton("save")}
-                            >
-                                {SaveLoading || UpdateLoading ? (
-                                    <ScaleLoader
-                                        color="#fff"
-                                        height="10px"
-                                        width="2px"
+                                </button>
+                                <aside className={style.Arrow}>
+                                    <RiArrowDownSFill
+                                        onClick={() => setSave(!isSave)}
                                     />
-                                ) : (
-                                    "SAVE"
-                                )}
-                            </button>
-                            <aside className={style.Arrow}>
-                                <RiArrowDownSFill
-                                    onClick={() => setSave(!isSave)}
-                                />
-                            </aside>
+                                </aside>
+                            </div>
+                            {isSave && (
+                                <ul>
+                                    <li>
+                                        <button
+                                            type="submit"
+                                            onClick={() => setSaveButton("new")}
+                                        >
+                                            SAVE & NEW
+                                        </button>
+                                    </li>
+                                </ul>
+                            )}
                         </div>
-                        {isSave && (
-                            <ul>
-                                <li>
-                                    <button
-                                        type="submit"
-                                        onClick={() => setSaveButton("new")}
-                                    >
-                                        SAVE & NEW
-                                    </button>
-                                </li>
-                            </ul>
-                        )}
                     </div>
-                </div>
+                </motion.div>
             </section>
         </form>
     );

@@ -405,6 +405,8 @@ export default function PropertyForm({
                         <li>
                             <label>*DEVELOPER</label>
                             <DynamicPopOver
+                                className="w-full"
+                                samewidth={true}
                                 toRef={
                                     <input
                                         type="text"
@@ -450,6 +452,8 @@ export default function PropertyForm({
                         <li>
                             <label>*PROJECT</label>
                             <DynamicPopOver
+                                className="w-full"
+                                samewidth={false}
                                 toRef={
                                     <input
                                         type="text"
@@ -495,6 +499,8 @@ export default function PropertyForm({
                         <li>
                             <label>*TOWER</label>
                             <DynamicPopOver
+                                className="w-full"
+                                samewidth={false}
                                 toRef={
                                     <input
                                         type="text"
@@ -541,6 +547,8 @@ export default function PropertyForm({
                         <li>
                             <label>*FLOOR</label>
                             <DynamicPopOver
+                                className="w-full"
+                                samewidth={false}
                                 toRef={
                                     <input
                                         type="text"
