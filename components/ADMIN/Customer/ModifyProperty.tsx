@@ -9,6 +9,7 @@ import { GetUnitCode } from "../../ReactQuery/CustomerMethod";
 import { useRouter } from "next/router";
 import AppContext from "../../Context/AppContext";
 import { useQueryClient } from "react-query";
+import DynamicPopOver from "../../DynamicPopOver";
 
 type ModifyRolesPermission = {
     setToggle: Function;
@@ -95,7 +96,7 @@ export default function ModifyProperty({
     return (
         <div className={style.container}>
             <section className=" p-10 bg-[#e2e3e4ef] rounded-lg w-[90%] max-w-[700px] text-ThemeRed shadow-lg">
-                <p className=" text-[16px] mb-3 font-bold">Create Customer</p>
+                <p className=" text-[16px] mb-3 font-bold">Modify Customer</p>
 
                 <motion.div
                     variants={ModalSideFade}
@@ -222,27 +223,39 @@ const List = ({ detail, setProperty, isProperty, id }: List) => {
 
     return (
         <tr>
-            <td className=" max-w-[50px] pr-2 ">
-                <div className=" relative">
-                    <input
-                        type="text"
-                        value={detail.unit_code}
-                        onChange={(e) => updateValue(e)}
-                        className="w-full rounded-md text-black px-2 text-[14px] py-[2px] outline-none"
-                        onFocus={() => setSelect(true)}
+            <td className=" pr-2 ">
+                <div className=" relative w-full">
+                    <DynamicPopOver
+                        samewidth={true}
+                        toRef={
+                            <input
+                                type="text"
+                                value={detail.unit_code}
+                                onChange={(e) => updateValue(e)}
+                                className="field w-full"
+                                onFocus={() => setSelect(true)}
+                            />
+                        }
+                        toPop={
+                            <>
+                                {isSelect && (
+                                    <Select
+                                        setSelect={setSelect}
+                                        updateValue={updateValue}
+                                    />
+                                )}
+                            </>
+                        }
+                        className={""}
                     />
-                    {isSelect && (
-                        <Select
-                            setSelect={setSelect}
-                            updateValue={updateValue}
-                        />
-                    )}
                 </div>
             </td>
             <td className="pr-2">
-                <p className="w-full rounded-md text-black h-6 px-2 text-[14px] py-[2px] outline-none bg-ThemeRed50">
-                    {detail.project}
-                </p>
+                <input
+                    type="text"
+                    className="field w-full"
+                    value={detail.project}
+                />
             </td>
             <td className=" flex justify-center">
                 <div className="flex justify-between w-10">
@@ -302,10 +315,7 @@ const Select = ({ setSelect, updateValue }: any) => {
     });
 
     return (
-        <ul
-            ref={Menu}
-            className=" absolute top-full left-0 w-full bg-white z-10"
-        >
+        <ul ref={Menu} className="dropdown-list">
             {isLoading && (
                 <div className="flex justify-center py-2">
                     <ScaleLoader color="#8f384d" height="10px" width="2px" />

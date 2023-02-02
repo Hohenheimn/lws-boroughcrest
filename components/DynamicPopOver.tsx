@@ -16,25 +16,44 @@ export default function DynamicPopOver({
     samewidth,
     className,
 }: Props) {
-    const reference = useRef<any>();
-    const [referenceElement, setReferenceElement] = useState<any>();
-    const [popperElement, setPopperElement] = useState<any>();
-    const { styles, attributes } = usePopper(referenceElement, popperElement, {
-        placement: "bottom-start",
-    });
-    const refWidth = reference?.current?.offsetWidth;
+    const inputField = useRef<any>();
+    const toPopOver = useRef<any>();
+
+    const { styles, attributes } = usePopper(
+        inputField.current,
+        toPopOver.current,
+        {
+            placement: "bottom-start",
+            modifiers: [
+                {
+                    name: "offset",
+                    options: {
+                        offset: [0, 5],
+                    },
+                },
+                {
+                    name: "flip",
+                    options: {
+                        fallbackPlacements: ["top-start"],
+                    },
+                },
+            ],
+        }
+    );
+    const refWidth = inputField?.current?.offsetWidth;
     const extendStyle = {
         ...styles.popper,
         width: `${refWidth}px`,
     };
     return (
         <>
-            <aside ref={reference} className={className}>
-                <div ref={setReferenceElement}>{toRef}</div>
-            </aside>
+            <div ref={inputField} className={className}>
+                {toRef}
+            </div>
+
             <div
                 className="bg-white z-50 shadow-md"
-                ref={setPopperElement}
+                ref={toPopOver}
                 style={samewidth ? extendStyle : styles.popper}
                 {...attributes.popper}
             >

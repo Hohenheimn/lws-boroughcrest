@@ -260,10 +260,9 @@ export default function COAForm({
                             <label htmlFor="">*CHART CODE</label>
                             <input
                                 type="text"
-                                disabled
                                 value={isChartCode.parent + isChartCode.suffix}
                                 onChange={() => {}}
-                                className=" bg-ThemeRed50"
+                                className="field disabled"
                             />
                             {isError.chart_code !== "" && (
                                 <p className="text-[10px]">
@@ -271,59 +270,72 @@ export default function COAForm({
                                 </p>
                             )}
                         </li>
+
                         <li className={style.twoField}>
-                            <div>
+                            <article>
                                 <label>PARENT</label>
-                                <div className={style.Dropdown}>
-                                    <input
-                                        type="number"
-                                        value={isParent.value}
-                                        {...register("parent", {
-                                            onChange: () => {
-                                                setValue(
-                                                    "parent",
-                                                    isParent.value,
-                                                    {
-                                                        shouldValidate: true,
-                                                    }
-                                                );
-                                            },
-                                        })}
-                                        onChange={(e: any) => {
-                                            setParent({
-                                                ...isParent,
-                                                value: e.target.value,
-                                            });
-                                            setChartcode({
-                                                ...isChartCode,
-                                                parent: e.target.value,
-                                            });
-                                        }}
-                                        onFocus={() =>
-                                            setParent({
-                                                ...isParent,
-                                                toggle: true,
-                                            })
-                                        }
-                                    />
-                                    {isParent.toggle && (
-                                        <Parent
-                                            setParent={setParent}
-                                            setChartcode={setChartcode}
-                                            isChartcode={isChartCode}
-                                            isParent={isParent}
+                                <DynamicPopOver
+                                    className=""
+                                    toRef={
+                                        <input
+                                            type="number"
+                                            className="field"
+                                            value={isParent.value}
+                                            {...register("parent", {
+                                                onChange: () => {
+                                                    setValue(
+                                                        "parent",
+                                                        isParent.value,
+                                                        {
+                                                            shouldValidate:
+                                                                true,
+                                                        }
+                                                    );
+                                                },
+                                            })}
+                                            onChange={(e: any) => {
+                                                setParent({
+                                                    ...isParent,
+                                                    value: e.target.value,
+                                                });
+                                                setChartcode({
+                                                    ...isChartCode,
+                                                    parent: e.target.value,
+                                                });
+                                            }}
+                                            onFocus={() =>
+                                                setParent({
+                                                    ...isParent,
+                                                    toggle: true,
+                                                })
+                                            }
                                         />
-                                    )}
-                                    {isError.parent_id && (
-                                        <p className="text-[10px]">
-                                            {isError.parent_id}
-                                        </p>
-                                    )}
-                                </div>
-                            </div>
-                            <div>
+                                    }
+                                    toPop={
+                                        <>
+                                            {isParent.toggle && (
+                                                <Parent
+                                                    setParent={setParent}
+                                                    setChartcode={setChartcode}
+                                                    isChartcode={isChartCode}
+                                                    isParent={isParent}
+                                                />
+                                            )}
+                                        </>
+                                    }
+                                />
+
+                                {isError.parent_id && (
+                                    <p className="text-[10px]">
+                                        {isError.parent_id}
+                                    </p>
+                                )}
+                            </article>
+
+                            <article>
                                 <label>*CODE SUFFIX</label>
                                 <input
+                                    className="field"
                                     type="number"
                                     {...register("code_suffix")}
                                     value={isChartCode.suffix}
@@ -341,11 +353,15 @@ export default function COAForm({
                                         {isError.code_suffix}
                                     </p>
                                 )}
-                            </div>
+                            </article>
                         </li>
                         <li>
                             <label htmlFor="">*ACCOUNT NAME</label>
-                            <input type="text" {...register("account_name")} />
+                            <input
+                                type="text"
+                                {...register("account_name")}
+                                className="field"
+                            />
                             {isError.account_name && (
                                 <p className="text-[10px]">
                                     {isError.account_name}
@@ -354,7 +370,11 @@ export default function COAForm({
                         </li>
                         <li>
                             <label htmlFor="">DESCRIPTION</label>
-                            <input type="text" {...register("description")} />
+                            <input
+                                className="field"
+                                type="text"
+                                {...register("description")}
+                            />
                         </li>
                         <li>
                             <label htmlFor="">*DEFAULT ACCOUNT</label>
@@ -362,6 +382,7 @@ export default function COAForm({
                                 <input
                                     autoComplete="off"
                                     type="text"
+                                    className="field"
                                     value={isDefaultAccount.value}
                                     {...register("defaultAccount")}
                                     onChange={(e: any) => {
@@ -420,6 +441,7 @@ export default function COAForm({
                                         <>
                                             <input
                                                 type="text"
+                                                className="field"
                                                 {...register("bank_account")}
                                                 autoComplete="off"
                                                 onClick={() =>
@@ -460,11 +482,6 @@ export default function COAForm({
                                 />
                             </li>
                         )}
-
-                        {/* <li>
-                        <label htmlFor="">BANK AND BRANCH</label>
-                        <input type="text" {...register("bank_branch")} />
-                    </li> */}
                     </ul>
                     <div className={style.SaveButton}>
                         <aside className={style.back} onClick={cancel}>

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import style from "../../../styles/finance/Crud-table.module.scss";
 import Image from "next/image";
 import Calendar from "../../Calendar";
 import DynamicPopOver from "../../DynamicPopOver";
@@ -47,8 +46,8 @@ export default function SubTable() {
     return (
         <>
             <div className="table_container">
-                <table className={style.crudTable}>
-                    <thead>
+                <table className="table_list forCrud">
+                    <thead className="textRed">
                         <tr>
                             <th className=" min-w-[130px]">CUSTOMER ID</th>
                             <th>CUSTOMER NAME</th>
@@ -176,7 +175,7 @@ const List = ({ itemDetail, setTableItem, isTableItem }: List) => {
     };
 
     return (
-        <tr className={`${style.total} ${style.total1}`}>
+        <tr>
             <td>
                 <h2>{itemDetail.customer_id}</h2>
             </td>
@@ -188,9 +187,9 @@ const List = ({ itemDetail, setTableItem, isTableItem }: List) => {
             </td>
             <td>
                 <DynamicPopOver
-                    className="w-full"
+                    className=""
                     toRef={
-                        <aside className="calendar relative w-[200px]">
+                        <article className="calendar relative">
                             <span className="cal ">
                                 <Image
                                     src="/Images/CalendarMini.png"
@@ -208,9 +207,8 @@ const List = ({ itemDetail, setTableItem, isTableItem }: List) => {
                                 onClick={() =>
                                     setDate({ ...isDate, toggle: true })
                                 }
-                                className="p-2 outline-none rounded-md shadow-md"
                             />
-                        </aside>
+                        </article>
                     }
                     toPop={
                         <>
@@ -225,6 +223,7 @@ const List = ({ itemDetail, setTableItem, isTableItem }: List) => {
                 <input
                     type="number"
                     value={itemDetail.reference_no}
+                    className="field w-full"
                     onChange={(e) => {
                         UpdateStateHandler("reference_no", e);
                     }}
@@ -237,7 +236,7 @@ const List = ({ itemDetail, setTableItem, isTableItem }: List) => {
                 />
             </td>
             <td>
-                <aside className={`ToggleAccount ${itemDetail.account}`}>
+                <article className={`ToggleAccount ${itemDetail.account}`}>
                     <ul className="min-w-[180px] flex relative">
                         <li
                             className="item ad"
@@ -257,12 +256,13 @@ const List = ({ itemDetail, setTableItem, isTableItem }: List) => {
                         </li>
                         <li className="moving"></li>
                     </ul>
-                </aside>
+                </article>
             </td>
             <td>
                 <input
                     type="number"
                     value={itemDetail.amount}
+                    className="field w-full"
                     onChange={(e) => {
                         UpdateStateHandler("amount", e);
                     }}

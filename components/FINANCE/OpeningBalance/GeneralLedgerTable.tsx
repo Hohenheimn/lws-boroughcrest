@@ -83,8 +83,8 @@ export default function GeneralLedgerTable() {
     return (
         <>
             <div className="table_container">
-                <table className={style.crudTable}>
-                    <thead>
+                <table className="table_list forCrud">
+                    <thead className="textRed">
                         <tr>
                             <th>CHART CODE</th>
                             <th>CATEGORY</th>
@@ -216,6 +216,7 @@ const List = ({ itemDetail, setTableItem, isTableItem }: List) => {
             <td>
                 <input
                     type="number"
+                    className="field w-full"
                     value={itemDetail.debit}
                     onChange={(e) => UpdateStateHandler("debit", e)}
                 />
@@ -223,6 +224,7 @@ const List = ({ itemDetail, setTableItem, isTableItem }: List) => {
             <td>
                 <input
                     type="number"
+                    className="field w-full"
                     value={itemDetail.credit}
                     onChange={(e) => UpdateStateHandler("credit", e)}
                 />

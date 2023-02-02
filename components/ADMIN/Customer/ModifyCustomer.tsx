@@ -259,7 +259,7 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
                             <select
                                 name=""
                                 id=""
-                                className="rounded-md text-black px-2 py-[2px] outline-none w-[90%] 480px:w-full"
+                                className="field"
                                 value={isType}
                                 onChange={typeHandler}
                             >
@@ -386,15 +386,18 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
                             ID
                         </label>
 
-                        <p className="w-full bg-ThemeRed50 rounded-md text-black px-2 py-[2px] outline-none 480px:w-full">
-                            {isModifyCustomer.id}
-                        </p>
+                        <input
+                            type="text"
+                            className="field disabled"
+                            value={isModifyCustomer.id}
+                        />
                     </li>
                     <li>
                         <label>*CLASS</label>
                         <div className="select">
                             <select
                                 id=""
+                                className="field"
                                 defaultValue={isModifyCustomer.class}
                                 {...register("class")}
                             >
@@ -427,7 +430,7 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
                         </label>
                         <input
                             type="text"
-                            className="bg-white"
+                            className="field"
                             {...register("name")}
                         />
                         {errors.name && (
@@ -443,7 +446,7 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
                                 <label>CO-OWNER</label>
                                 <input
                                     type="text"
-                                    className="bg-white"
+                                    className="field"
                                     {...register("individual_co_owner")}
                                 />
                                 {errors.individual_co_owner && (
@@ -457,7 +460,7 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
                                 <label>*CITIZENSHIP</label>
                                 <input
                                     type="text"
-                                    className="bg-white"
+                                    className="field"
                                     {...register("individual_citizenship")}
                                 />
                                 {errors.individual_citizenship && (
@@ -473,12 +476,6 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
                             </li>
                             <li>
                                 <label>BIRTH DATE</label>
-
-                                {/* <input
-                                    type="date"
-                                    className="bg-white"
-                                    {...register("individual_birth_date")}
-                                /> */}
                                 <div className="calendar">
                                     <span className="cal">
                                         <Image
@@ -497,7 +494,7 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
                                         onClick={() =>
                                             setDate({ ...isDate, toggle: true })
                                         }
-                                        className="p-2 outline-none rounded-md shadow-md"
+                                        className="field"
                                     />
                                     {isDate.toggle && (
                                         <Calendar
@@ -528,6 +525,7 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
                                     message: "Must be 9 numbers only",
                                 },
                             })}
+                            className="field"
                             value={isModifyCustomer.tin}
                             onChange={(e) => {
                                 e.target.value.length <= 9 &&
@@ -558,6 +556,7 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
                                     message: "Must be 5 Number",
                                 },
                             })}
+                            className="field"
                             value={isModifyCustomer.branch_code}
                             onChange={(e) => {
                                 e.target.value.length <= 5 &&
@@ -864,6 +863,7 @@ const Contact = ({
                         <label>*MOBILE</label>
                         <input
                             type="text"
+                            className="field"
                             {...register("contact_no", {
                                 minLength: {
                                     value: 11,
@@ -901,6 +901,7 @@ const Contact = ({
                     <li>
                         <label>*REGISTERED-EMAIL</label>
                         <input
+                            className="field"
                             type="email"
                             {...register("registered_email")}
                             value={isModifyCustomer.registered_email}
@@ -924,7 +925,11 @@ const Contact = ({
                     </li>
                     <li>
                         <label>*PREFERED EMAIL</label>
-                        <input type="email" {...register("preferred_email")} />
+                        <input
+                            type="email"
+                            {...register("preferred_email")}
+                            className="field"
+                        />
                         {errors.preferred_email && (
                             <p className="text-[10px]">
                                 {errors.preferred_email.message}
@@ -953,6 +958,7 @@ const Contact = ({
                             <label>*CONTACT PERSON</label>
                             <input
                                 type="text"
+                                className="field"
                                 {...register("company_contact_person")}
                                 // isNewCustomer.registered_email
                                 value={isModifyCustomer.company_contact_person}
@@ -982,6 +988,7 @@ const Contact = ({
                     <li>
                         <label>*UNIT/FLOOR/HOUSE NO.</label>
                         <input
+                            className="field"
                             type="text"
                             {...register("registered_address_unit_floor")}
                             value={
@@ -1010,6 +1017,7 @@ const Contact = ({
                         <label>*BUILDING</label>
                         <input
                             type="text"
+                            className="field"
                             {...register("registered_address_building")}
                             value={isModifyCustomer.registered_address_building}
                             onChange={(e) =>
@@ -1033,6 +1041,7 @@ const Contact = ({
                     <li>
                         <label>*STREET</label>
                         <input
+                            className="field"
                             type="text"
                             {...register("registered_address_street")}
                             value={isModifyCustomer.registered_address_street}
@@ -1057,6 +1066,7 @@ const Contact = ({
                     <li>
                         <label>*DISTRICT</label>
                         <input
+                            className="field"
                             type="text"
                             {...register("registered_address_district")}
                             value={isModifyCustomer.registered_address_district}
@@ -1081,6 +1091,7 @@ const Contact = ({
                     <li>
                         <label>*MUNICIPALITY CITY</label>
                         <input
+                            className="field"
                             type="text"
                             {...register("registered_address_municipal_city")}
                             value={
@@ -1111,6 +1122,7 @@ const Contact = ({
                     <li>
                         <label>*PROVINCE</label>
                         <input
+                            className="field"
                             type="text"
                             {...register("registered_address_province")}
                             value={isModifyCustomer.registered_address_province}
@@ -1135,6 +1147,7 @@ const Contact = ({
                     <li>
                         <label>*ZIP CODE</label>
                         <input
+                            className="field"
                             type="number"
                             {...register("registered_address_zip_code", {
                                 maxLength: {
@@ -1185,6 +1198,7 @@ const Contact = ({
                     <li>
                         <label>*UNIT/FLOOR/HOUSE NO.</label>
                         <input
+                            className="field"
                             type="text"
                             {...register("MA.mailing_address_unit_floor")}
                         />
@@ -1197,6 +1211,7 @@ const Contact = ({
                     <li>
                         <label>*BUILDING</label>
                         <input
+                            className="field"
                             type="text"
                             {...register("MA.mailing_address_building")}
                         />
@@ -1209,6 +1224,7 @@ const Contact = ({
                     <li>
                         <label>*STREET</label>
                         <input
+                            className="field"
                             type="text"
                             {...register("MA.mailing_address_street")}
                         />
@@ -1221,6 +1237,7 @@ const Contact = ({
                     <li>
                         <label>*DISTRICT</label>
                         <input
+                            className="field"
                             type="text"
                             {...register("MA.mailing_address_district")}
                         />
@@ -1233,6 +1250,7 @@ const Contact = ({
                     <li>
                         <label>*MUNICIPALITY CITY</label>
                         <input
+                            className="field"
                             type="text"
                             {...register("MA.mailing_address_municipal_city")}
                         />
@@ -1248,6 +1266,7 @@ const Contact = ({
                     <li>
                         <label>*PROVINCE</label>
                         <input
+                            className="field"
                             type="text"
                             {...register("MA.mailing_address_province")}
                         />
@@ -1260,6 +1279,7 @@ const Contact = ({
                     <li>
                         <label>*ZIP CODE</label>
                         <input
+                            className="field"
                             type="text"
                             {...register("MA.mailing_address_zip_code", {
                                 maxLength: {

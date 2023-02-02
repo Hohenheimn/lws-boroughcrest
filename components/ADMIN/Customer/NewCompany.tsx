@@ -243,7 +243,7 @@ export default function NewCompany({ setActiveForm, isType, status }: Props) {
                         <label>COMPANY NAME</label>
                         <input
                             type="text"
-                            className="bg-white"
+                            className="field"
                             {...register("name", {
                                 required: "Required",
                             })}

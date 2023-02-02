@@ -22,8 +22,8 @@ export default function BatchForm({ DefaultValue }: Props) {
     return (
         <>
             <div className="table_container border-b border-gray-300 pb-10 mb-10 1550px:mb-5 1550px:pb-5">
-                <table className={style.crudTable}>
-                    <thead>
+                <table className="table_list forCrud">
+                    <thead className="textRed">
                         <tr>
                             <th className="checkbox">
                                 <input type="checkbox" />
@@ -119,14 +119,19 @@ const List = ({ itemList, setDefault, isDefault, index }: List) => {
             <td>
                 <input
                     type="text"
+                    className="field w-full"
                     value={itemList.description}
                     onChange={(e) => updateValue("description", e)}
                 />
             </td>
             <td>
-                <div className={style.SelectModal}>{itemList.application}</div>
+                <input
+                    type="text"
+                    value={itemList.application}
+                    className="field disabled text-center"
+                />
             </td>
-            <td className={`${style.action}`}>
+            <td className="actionIcon">
                 {isDefault.length > 1 && (
                     <div onClick={RemoveJournal}>
                         <HiMinus />

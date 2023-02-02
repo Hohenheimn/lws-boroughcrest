@@ -8,7 +8,13 @@ export default function DropdownSearch() {
         <>
             <DynamicPopOver
                 className=""
-                toRef={<input type="text" onClick={() => setToggle(true)} />}
+                toRef={
+                    <input
+                        type="text"
+                        className="field"
+                        onClick={() => setToggle(true)}
+                    />
+                }
                 toPop={<>{isToggle && <List setToggle={setToggle} />}</>}
             />
         </>

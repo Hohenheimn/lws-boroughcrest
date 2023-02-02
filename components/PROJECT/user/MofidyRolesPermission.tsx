@@ -52,7 +52,7 @@ export default function ModifyRolesPermission({
                             name=""
                             id=""
                             onChange={(e) => setRole(e.target.value)}
-                            className="w-full rounded-md text-black px-2 text-[14px] py-[2px] outline-none"
+                            className="field w-full"
                         >
                             <option value="please select"></option>
                             <option
@@ -178,7 +178,7 @@ const List = ({ detail, setTable, isTable, index }: List) => {
                 <select
                     name=""
                     id=""
-                    className="w-full rounded-md text-black px-2 text-[14px] py-[2px] outline-none"
+                    className="field w-full"
                     onChange={(e) => updateValue(e, "permission")}
                     value={detail.permissions}
                 >
@@ -201,7 +201,7 @@ const List = ({ detail, setTable, isTable, index }: List) => {
                 <select
                     name=""
                     id=""
-                    className="w-full rounded-md text-black px-2 text-[14px] py-[2px] outline-none"
+                    className="field w-full"
                     onChange={(e) => updateValue(e, "access")}
                     value={detail.access}
                 >
@@ -223,7 +223,7 @@ const List = ({ detail, setTable, isTable, index }: List) => {
             <td className="  pr-2">
                 <input
                     type="number"
-                    className="w-full rounded-md text-black px-2 text-[14px] py-[2px] outline-none relative after:absolute after:right-1 after:top-[50%] after:content-['Days'] after:translate-x-2/4"
+                    className="field w-full"
                     value={detail.duration}
                     placeholder="Number of Days"
                     onChange={(e) => updateValue(e, "duration")}

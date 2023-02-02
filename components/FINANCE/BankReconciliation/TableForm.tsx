@@ -1,5 +1,4 @@
 import React, { useContext, useState } from "react";
-import style from "../../../styles/finance/Crud-table.module.scss";
 import Image from "next/image";
 import Calendar from "../../Calendar";
 import DynamicPopOver from "../../DynamicPopOver";
@@ -141,8 +140,8 @@ export default function TableForm() {
                 </ul>
             </section>
             <div className="table_container">
-                <table className={style.crudTable}>
-                    <thead>
+                <table className="table_list forCrud">
+                    <thead className="textRed">
                         <tr>
                             <th>DATE</th>
                             <th>DEBIT</th>
@@ -154,7 +153,7 @@ export default function TableForm() {
                     </thead>
                     <tbody>
                         <tr>
-                            <td className={style.label}>
+                            <td>
                                 <h1>TOTAL</h1>
                             </td>
                             <td>
@@ -167,12 +166,12 @@ export default function TableForm() {
                                 <p className="withPeso">1000.00</p>
                             </td>
                             <td>
-                                <div className={style.peso}>
+                                <div>
                                     <p></p>
                                 </div>
                             </td>
                             <td>
-                                <div className={style.peso}>
+                                <div>
                                     <p></p>
                                 </div>
                             </td>
@@ -196,13 +195,13 @@ const List = () => {
         toggle: false,
     });
     return (
-        <tr className={`${style.total} ${style.total1}`}>
+        <tr>
             <td>
                 <DynamicPopOver
                     className="w-[200px]"
                     samewidth={false}
                     toRef={
-                        <aside className="calendar relative w-full">
+                        <article className="calendar relative w-full">
                             <span className="cal ">
                                 <Image
                                     src="/Images/CalendarMini.png"
@@ -220,9 +219,8 @@ const List = () => {
                                 onClick={() =>
                                     setDate({ ...isDate, toggle: true })
                                 }
-                                className="p-2 outline-none rounded-md shadow-md"
                             />
-                        </aside>
+                        </article>
                     }
                     toPop={
                         <>
@@ -234,19 +232,19 @@ const List = () => {
                 />
             </td>
             <td>
-                <input type="number" />
+                <input type="number" className="field w-full" />
             </td>
             <td>
-                <input type="number" />
+                <input type="number" className="field w-full" />
             </td>
             <td>
                 <p className="withPeso">1000.00</p>
             </td>
             <td>
-                <input type="text" />
+                <input type="text" className="field w-full" />
             </td>
             <td>
-                <input type="text" />
+                <input type="text" className="field w-full" />
             </td>
         </tr>
     );

@@ -210,6 +210,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                             <li>
                                 <label>*CODE</label>
                                 <input
+                                    className="field"
                                     type="text"
                                     value={fieldValue.code}
                                     onChange={(e: any) => {
@@ -230,6 +231,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                 <label>*TYPE</label>
                                 <div className="select">
                                     <select
+                                        className="field"
                                         id=""
                                         value={fieldValue.type}
                                         onChange={(e: any) => {
@@ -257,6 +259,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                             <li>
                                 <label>*NAME</label>
                                 <input
+                                    className="field"
                                     type="text"
                                     value={fieldValue.name}
                                     onChange={(e: any) => {
@@ -275,6 +278,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                             <li>
                                 <label>DESCRIPTION</label>
                                 <input
+                                    className="field"
                                     type="text"
                                     value={fieldValue.description}
                                     onChange={(e: any) => {
@@ -288,6 +292,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                             <li>
                                 <label>*BASE RATE</label>
                                 <input
+                                    className="field"
                                     type="number"
                                     value={fieldValue.base_rate}
                                     onChange={(e: any) => {
@@ -303,6 +308,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                             <li>
                                 <label>*UOM</label>
                                 <input
+                                    className="field"
                                     type="text"
                                     value={fieldValue.uom}
                                     onChange={(e: any) => {
@@ -321,6 +327,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                             <li>
                                 <label>*VAT%</label>
                                 <input
+                                    className="field"
                                     type="number"
                                     value={fieldValue.vat_percent}
                                     onChange={(e: any) => {
@@ -339,6 +346,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                     className={`${style.Dropdown} ${style.full}`}
                                 >
                                     <input
+                                        className="field"
                                         type="text"
                                         value={isReceivable.value}
                                         onChange={(e: any) =>
@@ -387,6 +395,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                     className={`${style.Dropdown} ${style.full}`}
                                 >
                                     <input
+                                        className="field"
                                         type="text"
                                         value={isDiscount.value}
                                         onChange={(e: any) =>
@@ -419,6 +428,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                     className={`${style.Dropdown} ${style.full}`}
                                 >
                                     <input
+                                        className="field"
                                         type="text"
                                         value={isRevenue.value}
                                         onChange={(e: any) =>
@@ -451,6 +461,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                     className={`${style.Dropdown} ${style.full}`}
                                 >
                                     <input
+                                        className="field"
                                         type="text"
                                         value={isAdvance.value}
                                         onChange={(e: any) =>
@@ -480,6 +491,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                             <li>
                                 <label>MINIMUM</label>
                                 <input
+                                    className="field"
                                     type="number"
                                     value={fieldValue.minimum}
                                     onChange={(e: any) => {
@@ -494,6 +506,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                 <label>*INTEREST</label>
                                 <div className="select">
                                     <select
+                                        className="field"
                                         value={fieldValue.interest}
                                         onChange={(e: any) => {
                                             setFieldValue({
@@ -522,6 +535,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                             <li>
                                 <label>*PAYMENT HEIRARCHY</label>
                                 <input
+                                    className="field"
                                     type="number"
                                     value={fieldValue.payment_heirarchy}
                                     onChange={(e: any) => {
@@ -542,6 +556,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                             <li>
                                 <label>*SOA SORT ORDER</label>
                                 <input
+                                    className="field"
                                     type="number"
                                     value={fieldValue.soa_sort_order}
                                     onChange={(e: any) => {

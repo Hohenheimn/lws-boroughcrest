@@ -39,7 +39,7 @@ export default function NewPrimaryInfo({
                             id=""
                             defaultValue={isType}
                             onChange={(e) => setType(e.target.value)}
-                            className="uppercase rounded-md px-2 py-[2px] border-none text-black outline-none w-[90%] 480px:w-full"
+                            className="field"
                         >
                             <option
                                 value={isType}

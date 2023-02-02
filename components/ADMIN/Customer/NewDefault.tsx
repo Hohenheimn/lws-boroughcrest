@@ -79,7 +79,11 @@ export default function NewDefault() {
                 <li>
                     <label>CLASS</label>
                     <div className="select">
-                        <select name="" id="" disabled>
+                        <select
+                            name=""
+                            id=""
+                            className="field pointer-events-none"
+                        >
                             <option value=""></option>
                         </select>
                         <span>
@@ -89,44 +93,46 @@ export default function NewDefault() {
                 </li>
                 <li>
                     <label>NAME</label>
-                    <input disabled type="text" className="bg-white" />
+                    <input type="text" className="field pointer-events-none" />
                 </li>
                 <li>
                     <label>SPOUSE / CO-OWNER</label>
-                    <input disabled type="email" className="bg-white" />
+                    <input type="email" className="field pointer-events-none" />
                 </li>
 
                 <li>
                     <label>CITIZENSHIP</label>
-                    <input disabled type="number" className="bg-white" />
+                    <input
+                        type="number"
+                        className="field pointer-events-none"
+                    />
                 </li>
                 <li>
                     <label>BIRTH DATE</label>
-                    <input disabled type="number" className="bg-white" />
+                    <input
+                        type="number"
+                        className="field pointer-events-none"
+                    />
                 </li>
                 <li>
                     <label>COMPANY NAME</label>
-                    <input disabled type="text" className="bg-white" />
+                    <input type="text" className="field pointer-events-none" />
                 </li>
                 <li>
                     <label>CONTACT PERSON</label>
-                    <input disabled type="text" className="bg-white" />
-                </li>
-                <li>
-                    <label>PROPERTY</label>
-                    <input disabled type="text" className="bg-white" />
+                    <input type="text" className="field pointer-events-none" />
                 </li>
                 <li>
                     <label>TIN</label>
-                    <input disabled type="text" className="bg-white" />
+                    <input type="text" className="field pointer-events-none" />
                 </li>
                 <li>
                     <label>BRANCH CODE</label>
-                    <input disabled type="text" className="bg-white" />
+                    <input type="text" className="field pointer-events-none" />
                 </li>
                 <li>
                     <label>PORTAL ID</label>
-                    <input disabled type="text" className="bg-white" />
+                    <input type="text" className="field pointer-events-none" />
                 </li>
             </motion.ul>
 

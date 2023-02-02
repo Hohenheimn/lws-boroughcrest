@@ -3,8 +3,8 @@ import SearchFilter from "../../../components/SearchFilterNew/SearchFilter";
 import Pagination from "../../../components/Pagination";
 import { useRouter } from "next/router";
 import UserTable from "../../../components/PROJECT/user/UserTable";
-import NewUser from "../../../components/PROJECT/user/NewUser";
 import AppContext from "../../../components/Context/AppContext";
+import UserForm from "../../../components/PROJECT/user/UserForm";
 export default function User() {
     const [isSearchTable, setSearchTable] = useState("");
     const { newUserToggle } = useContext(AppContext);
@@ -16,7 +16,7 @@ export default function User() {
                 <SearchFilter page="user" setSearchTable={setSearchTable} />
                 <UserTable />
             </>
-            {newUserToggle && <NewUser />}
+            {newUserToggle && <UserForm />}
         </div>
     );
 }

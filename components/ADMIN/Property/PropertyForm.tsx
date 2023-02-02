@@ -340,7 +340,11 @@ export default function PropertyForm({
                         <li>
                             <label>*TYPE</label>
                             <div className="select">
-                                <select id="" {...register("type")}>
+                                <select
+                                    id=""
+                                    {...register("type")}
+                                    className="field"
+                                >
                                     <option value="Parking">Parking</option>
                                     <option value="Unit">Unit</option>
                                     <option value="Commercial">
@@ -364,6 +368,7 @@ export default function PropertyForm({
                         <li>
                             <label>*UNIT CODE</label>
                             <input
+                                className="field"
                                 type="text"
                                 placeholder="---"
                                 value={isUnitCode}
@@ -387,7 +392,11 @@ export default function PropertyForm({
                         <li>
                             <label>*CLASS</label>
                             <div className="select">
-                                <select id="" {...register("class")}>
+                                <select
+                                    id=""
+                                    {...register("class")}
+                                    className="field"
+                                >
                                     <option value="Saleable">Saleable</option>
                                     <option value="Leaseable">Leaseable</option>
                                 </select>
@@ -407,7 +416,11 @@ export default function PropertyForm({
                         </li>
                         <li>
                             <label>*ADDRESS</label>
-                            <input type="text" {...register("address")} />
+                            <input
+                                type="text"
+                                {...register("address")}
+                                className="field"
+                            />
                             {errors.address && (
                                 <p className="text-[10px]">
                                     {errors.address.message}
@@ -424,6 +437,7 @@ export default function PropertyForm({
                                 samewidth={true}
                                 toRef={
                                     <input
+                                        className="field"
                                         type="text"
                                         {...register("developer")}
                                         autoComplete="off"
@@ -472,6 +486,7 @@ export default function PropertyForm({
                                 toRef={
                                     <input
                                         type="text"
+                                        className="field"
                                         onFocus={() => setProject(true)}
                                         onClick={() => setProject(true)}
                                         autoComplete="off"
@@ -518,6 +533,7 @@ export default function PropertyForm({
                                 samewidth={false}
                                 toRef={
                                     <input
+                                        className="field"
                                         type="text"
                                         onFocus={() => setTower(true)}
                                         onClick={() => setTower(true)}
@@ -566,6 +582,7 @@ export default function PropertyForm({
                                 samewidth={false}
                                 toRef={
                                     <input
+                                        className="field"
                                         type="text"
                                         onFocus={() => setFloor(true)}
                                         {...register("floor")}
@@ -609,7 +626,11 @@ export default function PropertyForm({
                         </li>
                         <li>
                             <label>*AREA</label>
-                            <input type="text" {...register("area")} />
+                            <input
+                                type="text"
+                                className="field"
+                                {...register("area")}
+                            />
                             {errors.area && (
                                 <p className="text-[10px]">
                                     {errors.area.message}
@@ -632,6 +653,7 @@ export default function PropertyForm({
                                     />
                                 </span>
                                 <input
+                                    className="field"
                                     type="text"
                                     {...register("acceptance_date")}
                                     autoComplete="off"
@@ -642,7 +664,6 @@ export default function PropertyForm({
                                             toggle: true,
                                         })
                                     }
-                                    className="p-2 outline-none rounded-md shadow-md"
                                 />
                                 {acceptanceDate.toggle && (
                                     <Calendar
@@ -665,6 +686,7 @@ export default function PropertyForm({
                                 </span>
                                 <input
                                     type="text"
+                                    className="field"
                                     {...register("turnover_date")}
                                     placeholder="dd/mm/yyyy"
                                     autoComplete="off"
@@ -674,7 +696,6 @@ export default function PropertyForm({
                                             toggle: true,
                                         })
                                     }
-                                    className="p-2 outline-none rounded-md shadow-md"
                                 />
                                 {turnoverDate.toggle && (
                                     <Calendar

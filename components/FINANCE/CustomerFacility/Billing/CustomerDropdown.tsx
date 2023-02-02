@@ -32,7 +32,7 @@ export default function CustomerDropdown({ isCustomer, setCustomer }: Props) {
                 toRef={
                     <input
                         type="text"
-                        className=" w-full"
+                        className="field w-full"
                         onClick={() => setToggle(true)}
                         value={isSearchTemp}
                         onChange={(e) => {
@@ -107,13 +107,15 @@ const List = ({
             ))}
             {isLoading && (
                 <li>
-                    <BarLoader
-                        color={"#8f384d"}
-                        height="5px"
-                        width="100px"
-                        aria-label="Loading Spinner"
-                        data-testid="loader"
-                    />
+                    <div>
+                        <BarLoader
+                            color={"#8f384d"}
+                            height="5px"
+                            width="100px"
+                            aria-label="Loading Spinner"
+                            data-testid="loader"
+                        />
+                    </div>
                 </li>
             )}
             {isError ||

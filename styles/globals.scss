@@ -33,10 +33,11 @@ h6 {
 .labelField {
     @apply text-ThemeRed mr-3 font-NHU-medium 1550px:text-[14px] 640px:text-[12px];
 }
-input[type="number"],
-input[type="text"],
-input[type="email"],
-input[type="password"] {
+select.field,
+input[type="number"].field,
+input[type="text"].field,
+input[type="email"].field,
+input[type="password"].field {
     @apply p-1 px-2 text-[#545454] font-NHU-medium 1550px:min-w-[100px] rounded-md outline-none shadow-md;
     color: #545454 !important;
     height: 30px !important;
@@ -52,20 +53,12 @@ input[type="email"].noEdit,
 input[type="password"].noEdit {
     @apply shadow-none;
 }
-* {
-    font-family: "NHU-regular";
-}
-select {
-    -webkit-appearance: none;
-}
-.select {
-    @apply relative;
-    select {
-        @apply w-full;
-    }
-    span {
-        @apply absolute pointer-events-none right-1 top-[50%] translate-y-[-50%] text-[20px];
-    }
+input[type="number"].disabled,
+input[type="text"].disabled,
+input[type="email"].disabled,
+input[type="password"].disabled {
+    @apply text-white bg-ThemeRed50 pointer-events-none;
+    color: black !important;
 }
 .calendar {
     @apply relative inline-block;
@@ -76,6 +69,16 @@ select {
     // input[type="date"]::-webkit-calendar-picker-indicator {
     //     color: white;
     // }
+    input[type="text"] {
+        @apply p-1 px-2 text-[#545454] font-NHU-medium 1550px:min-w-[100px] rounded-md outline-none shadow-md;
+        color: #545454 !important;
+        height: 30px !important;
+        font-size: 16px !important;
+        @media (max-width: 1550px) {
+            font-size: 14px !important;
+            height: 25px;
+        }
+    }
     input[type="date"]::-webkit-calendar-picker-indicator {
         position: absolute;
         top: 0;
@@ -89,6 +92,27 @@ select {
     }
 }
 
+* {
+    font-family: "NHU-regular";
+}
+select {
+    -webkit-appearance: none;
+}
+.select {
+    @apply relative;
+    select {
+        @apply w-full;
+        option {
+            @apply hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed;
+        }
+        option:nth-child(1) {
+            @apply bg-ThemeRed text-white text-[12px];
+        }
+    }
+    span {
+        @apply absolute pointer-events-none right-1 top-[50%] translate-y-[-50%] text-[20px];
+    }
+}
 // Page Loading
 #nprogress .bar {
     background: #8f384d !important;
@@ -137,7 +161,7 @@ select {
 }
 // Table
 .table_container {
-    @apply w-full overflow-x-auto mb-10 480px:mb-5 overflow-y-auto min-h-[200px] max-h-[60vh] relative;
+    @apply w-full overflow-x-auto mb-10 480px:mb-5 overflow-y-auto min-h-[200px] max-h-[50vh] relative;
     table {
         thead {
             @apply sticky top-0 z-[40];
@@ -153,7 +177,7 @@ select {
         @apply shadow-md sticky top-0 bg-[#fbfbfb] z-[40];
         tr {
             th {
-                @apply text-start px-4 py-4 uppercase 1550px:py-2 480px:py-3 1280px:px-3 text-[#545454] text-[14px] 1280px:text-[13px];
+                @apply text-start px-2 py-4 uppercase 1550px:py-2 480px:py-3 1280px:px-3 text-[#545454] text-[14px] 1280px:text-[13px];
             }
             th.checkbox {
                 @apply w-3;
@@ -182,25 +206,26 @@ select {
     }
     tbody {
         tr {
-            @apply border-b border-gray-300 cursor-pointer relative;
+            @apply border-b border-gray-300 cursor-pointer relative text-[16px] 1550px:text-[14px] 480px:text-[12px];
             td {
-                @apply py-1 text-[#2E4364] font-NHU-regular min-w-[100px];
-                .item {
-                    @apply flex items-center px-4 py-2 1550px:py-1 480px:py-2 480px:px-2;
-                    aside {
-                        @apply w-10 h-10 480px:w-8 480px:h-8 rounded-full overflow-hidden relative shadow-lg mr-3;
-                    }
-                    h2 {
-                        @apply text-[#2E4364] font-NHU-regular  1550px:text-[14px] 480px:text-[12px] pr-1 mr-1;
-                    }
-                    p {
-                        @apply text-[#2E4364] font-NHU-regular  1550px:text-[14px] 480px:text-[12px];
-                    }
-                    input[type="text"],
-                    input[type="number"],
-                    input[type="email"] {
-                        @apply rounded-md shadow-md 480px:text-[12px] outline-none px-2 py-1;
-                    }
+                @apply py-2 px-2 text-[#2E4364] font-NHU-regular;
+
+                aside {
+                    @apply w-10 h-10 480px:w-8 480px:h-8 rounded-full overflow-hidden relative shadow-lg mr-3;
+                }
+                h2 {
+                    @apply text-[#2E4364] font-NHU-regular pr-1 mr-1;
+                }
+                p {
+                    @apply text-[#2E4364] font-NHU-regular;
+                }
+                input[type="text"],
+                input[type="number"],
+                input[type="email"] {
+                    @apply rounded-md shadow-md 480px:text-[12px] outline-none px-2 py-1 w-full;
+                }
+                input[type="number"] {
+                    @apply text-end;
                 }
                 .property {
                     @apply flex flex-wrap text-[#2e4364] px-4 py-4 480px:py-2 480px:px-2;
@@ -248,6 +273,9 @@ select {
                     @apply flex text-ThemeRed;
                 }
             }
+            td.actionIcon {
+                @apply flex items-center mt-2;
+            }
             td.icon {
                 @apply w-[50px];
             }
@@ -282,6 +310,16 @@ select {
         tr {
             td {
                 @apply text-[14px] py-1 px-1 text-[#545454];
+            }
+        }
+    }
+}
+.table_list.forCrud {
+    tbody {
+        tr {
+            @apply border-none;
+            td {
+                @apply py-2;
             }
         }
     }
@@ -551,10 +589,11 @@ input.disabled_input {
 }
 // Finance Status Style
 .finance_status {
+    @apply inline-block;
     .status {
         @apply relative;
         div {
-            @apply w-[30px] h-[30px] relative flex justify-center items-center rounded-[50%] z-10;
+            @apply w-[25px] h-[25px] relative flex justify-center items-center rounded-[50%] z-10;
             span {
                 @apply relative z-10;
             }
@@ -687,7 +726,7 @@ input.disabled_input {
     }
 }
 .ToggleAccount {
-    @apply h-8 1550px:h-8 rounded-lg w-full flex items-center justify-center;
+    @apply h-8 1550px:h-8 rounded-lg w-[180px] flex items-center justify-center;
     transition: all 1s;
     .item {
         @apply w-2/4 text-center font-NHU-bold py-1 m-0 z-10 cursor-pointer;
@@ -748,4 +787,55 @@ input.disabled_input {
 }
 .iconNav {
     @apply hover:scale-[1.2] mr-5 transition duration-75 text-ThemeRed text-[30px] font-bold cursor-pointer flex hover:text-ThemeRed50 w-8 h-8 relative;
+}
+/* text editor*/
+.rs-picker-default .rs-picker-toggle.rs-btn {
+    padding-top: 7px;
+    padding-bottom: 7px;
+    width: 282px;
+}
+
+/* picked date align */
+.rs-picker-default .rs-picker-toggle {
+    position: relative;
+    z-index: 5;
+    padding-right: 67px;
+    display: inline-block;
+    outline: none;
+    cursor: pointer;
+    color: #575757;
+    border: 1px solid #e5e5ea;
+    padding-left: 44px;
+}
+/* calander align */
+.rs-picker-toggle-caret {
+    display: inline-block;
+    margin-right: 240px;
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    font-weight: normal;
+    color: #8e8e93;
+}
+
+/* ok button style */
+.rs-picker-toolbar-right-btn-ok {
+    text-align: center;
+    cursor: pointer;
+    outline: 0;
+    border: none;
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 30px;
+    color: #fff;
+    background-color: #3498ff;
+    width: 100px;
+}
+
+/* range style */
+.rs-picker-menu .rs-calendar .rs-calendar-table-cell-content {
+    padding-left: 0;
+    padding-right: 0;
+    border-radius: 21px;
+    display: inline-block;
 }

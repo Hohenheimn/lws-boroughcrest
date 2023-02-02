@@ -94,6 +94,7 @@ export default function TableForm() {
                                             toggle: true,
                                         })
                                     }
+                                    className="field"
                                     value={isReading.value}
                                     onChange={(e: any) =>
                                         setReading({
@@ -181,7 +182,7 @@ export default function TableForm() {
                     </li>
                     <li className="mr-5 820px:mb-5 flex items-center mb-5">
                         <p className=" labelField">RATE</p>
-                        <input type="text" />
+                        <input type="text" className="field" />
                     </li>
                     <li className=" 820px:mb-5 flex items-center mb-5">
                         <PeriodCalendar value={isPeriod} setValue={setPeriod} />
@@ -269,7 +270,7 @@ const List = () => {
                 </div>
             </td>
             <td>
-                <div className="item w-[150px]">
+                <div className="item w-[100px]">
                     <div className="finance_status">
                         <div className="status posted">
                             <div>

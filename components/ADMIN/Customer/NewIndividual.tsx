@@ -314,7 +314,7 @@ export default function NewIndividual({
                         <label>*NAME</label>
                         <input
                             type="text"
-                            className="bg-white"
+                            className="field"
                             {...register("name")}
                             value={isNewCustomer.name}
                             onChange={(e) =>
@@ -334,7 +334,7 @@ export default function NewIndividual({
                                 <label>CO-OWNER</label>
                                 <input
                                     type="text"
-                                    className="bg-white"
+                                    className="field"
                                     {...register("individual_co_owner")}
                                     value={isNewCustomer.individual_co_owner}
                                     onChange={(e) =>
@@ -350,7 +350,7 @@ export default function NewIndividual({
                                 <label>*CITIZENSHIP</label>
                                 <input
                                     type="text"
-                                    className="bg-white"
+                                    className="field"
                                     {...register("individual_citizenship")}
                                     value={isNewCustomer.individual_citizenship}
                                     onChange={(e) =>
@@ -369,20 +369,6 @@ export default function NewIndividual({
                             </li>
                             <li>
                                 <label>BIRTH DATE</label>
-
-                                {/* <input
-                                    type="date"
-                                    className="bg-white"
-                                    {...register("individual_birth_date")}
-                                    value={isNewCustomer.individual_birth_date}
-                                    onChange={(e) =>
-                                        setNewCustomer({
-                                            ...isNewCustomer,
-                                            individual_birth_date:
-                                                e.target.value,
-                                        })
-                                    }
-                                /> */}
                                 <div className="calendar">
                                     <span className="cal">
                                         <Image
@@ -401,7 +387,7 @@ export default function NewIndividual({
                                         onClick={() =>
                                             setDate({ ...isDate, toggle: true })
                                         }
-                                        className="p-2 outline-none rounded-md shadow-md"
+                                        className="field w-full"
                                     />
                                     {isDate.toggle && (
                                         <Calendar
@@ -430,6 +416,7 @@ export default function NewIndividual({
                                     message: "Must be 9 numbers",
                                 },
                             })}
+                            className="field"
                             value={isNewCustomer.tin}
                             onChange={(e) => {
                                 if (e.target.value.length <= 9) {
@@ -452,6 +439,7 @@ export default function NewIndividual({
                             {isType === "company" ? "*" : ""}Branch Code
                         </label>
                         <input
+                            className="field"
                             type="number"
                             placeholder="00000"
                             {...register("branch_code", {

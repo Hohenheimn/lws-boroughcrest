@@ -11,6 +11,7 @@ import api from "../../../util/api";
 import { BarLoader } from "react-spinners";
 import PeriodCalendar from "../../PeriodCalendar";
 import { AdvanceFilter } from "../../AdvanceFilter";
+import PeriodFNS from "../../PeriodFNS";
 
 type Props = {
     type: string;
@@ -122,6 +123,9 @@ export default function JournalTable({ type }: Props) {
                     )}
                 </ul>
             </section>
+            <div className="relative">
+                <PeriodFNS />
+            </div>
             {type === "Posted" && (
                 <div className="flex items-center mb-5 480px:mb-2 480px:flex-wrap">
                     <PeriodCalendar value={isPeriod} setValue={setPeriod} />

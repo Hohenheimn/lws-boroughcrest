@@ -3,7 +3,6 @@ import "tippy.js/dist/tippy.css";
 import React, { useState } from "react";
 import { BiSearch } from "react-icons/bi";
 import styleModal from "../../../../../styles/Popup_Modal.module.scss";
-import styleCrudTable from "../../../../../styles/finance/Crud-table.module.scss";
 import DropdownSearch from "../../../../DropdownSearch";
 import Image from "next/image";
 import PeriodCalendar from "../../../../PeriodCalendar";
@@ -105,11 +104,11 @@ export default function Readingform({ toggle }: Props) {
                     <ul className="flex flex-wrap mb-5">
                         <li className=" flex items-center mr-5 mb-5 1024px:mb-2">
                             <p className=" labelField">CHARGE:</p>
-                            <input type="text" className="disabled_input" />
+                            <input type="text" className="field" />
                         </li>
                         <li className=" flex items-center mr-5 mb-5 1024px:mb-2">
                             <p className=" labelField">RATE:</p>
-                            <input type="text" />
+                            <input type="text" className="field" />
                         </li>
                         <li className=" flex items-center mb-5 1024px:mb-2">
                             <PeriodCalendar
@@ -119,10 +118,8 @@ export default function Readingform({ toggle }: Props) {
                         </li>
                     </ul>
                     <div className="w-full overflow-auto max-h-[50vh]">
-                        <table
-                            className={`${styleCrudTable.crudTable} ${styleCrudTable.miniTable}`}
-                        >
-                            <thead>
+                        <table className="table_list forCrud miniTable">
+                            <thead className="textRed">
                                 <tr>
                                     <th>PROPERTY</th>
                                     <th>PREVIOUS READING</th>
@@ -133,19 +130,16 @@ export default function Readingform({ toggle }: Props) {
                             <tbody>
                                 <tr>
                                     <td>
-                                        <input
-                                            type="text"
-                                            className="disabled_input"
-                                        />
+                                        <input type="text" className="field" />
                                     </td>
                                     <td>
-                                        <input type="text" />
+                                        <input type="text" className="field" />
                                     </td>
                                     <td>
-                                        <input type="text" />
+                                        <input type="text" className="field" />
                                     </td>
                                     <td>
-                                        <input type="text" />
+                                        <input type="text" className="field" />
                                     </td>
                                 </tr>
                             </tbody>

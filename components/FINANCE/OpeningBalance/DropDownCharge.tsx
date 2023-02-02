@@ -24,6 +24,7 @@ export default function DropDownCharge({
                 toRef={
                     <input
                         type="text"
+                        className="field w-full"
                         onClick={() => setToggle(true)}
                         value={tempSearch}
                         onChange={(e) => {

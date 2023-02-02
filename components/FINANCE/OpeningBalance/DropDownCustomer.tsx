@@ -25,7 +25,7 @@ export default function DropDownCustomer({
                 toRef={
                     <input
                         type="text"
-                        className=" w-full"
+                        className="field w-full"
                         onClick={() => setToggle(true)}
                         value={tempSearch}
                         onChange={(e) => {

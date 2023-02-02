@@ -24,7 +24,7 @@ export default function DropDownCOA({
                 toRef={
                     <input
                         type="text"
-                        className="dropdown-input"
+                        className="field w-full"
                         onClick={() => setToggle(true)}
                         value={tempSearch}
                         onChange={(e) => {

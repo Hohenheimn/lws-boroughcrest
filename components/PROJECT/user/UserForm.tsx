@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import AppContext from "../../Context/AppContext";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 
-export default function NewUser() {
+export default function UserForm() {
     const { setNewUserToggle } = useContext(AppContext);
     const [userForm, setUserForm] = useState([true, false]);
     const [isLogoStatus, setLogoStatus] = useState("Upload Logo");
@@ -103,10 +103,7 @@ export default function NewUser() {
                             <label className=" text-[12px] font-semibold mb-1 w-[90%]">
                                 *NAME
                             </label>
-                            <input
-                                type="text"
-                                className="rounded-md text-black px-2 py-[2px] outline-none w-[90%] 480px:w-full"
-                            />
+                            <input type="text" className="field" />
                         </li>
                         <li className="  flex flex-col  w-4/12 820px:w-2/4 480px:w-full mb-5 justify-center items-end">
                             <label
@@ -121,16 +118,16 @@ export default function NewUser() {
                     <ul className={style.ThreeRows}>
                         <li>
                             <label>POSITION</label>
-                            <input type="text" />
+                            <input type="text" className="field" />
                         </li>
                         <li>
                             <label>EMPLOYEE ID</label>
-                            <input type="text" />
+                            <input type="text" className="field" />
                         </li>
                         <li>
                             <label>*DEPARTMENT</label>
                             <div className="select">
-                                <select name="" id="">
+                                <select name="" id="" className="field">
                                     <option value=""></option>
                                 </select>
                                 <span>
@@ -140,17 +137,21 @@ export default function NewUser() {
                         </li>
                         <li>
                             <label>*EMAIL</label>
-                            <input type="email" />
+                            <input type="email" className="field" />
                         </li>
 
                         <li>
                             <label>*MOBILE</label>
-                            <input type="number" placeholder="+63" />
+                            <input
+                                type="number"
+                                className="field"
+                                placeholder="+63"
+                            />
                         </li>
                         <li>
                             <label>*CORPORATE</label>
                             <div className="select">
-                                <select name="" id="">
+                                <select name="" id="" className="field">
                                     <option value=""></option>
                                 </select>
                                 <span>
@@ -206,7 +207,7 @@ const NewRolesPermission = ({ setUserForm, userForm }: any) => {
                             name=""
                             id=""
                             onChange={(e) => setRole(e.target.value)}
-                            className="w-full rounded-md text-black px-2 text-[14px] py-[2px] outline-none"
+                            className="field w-full"
                         >
                             <option></option>
                             <option
@@ -334,7 +335,7 @@ const List = ({ detail, setTable, isTable, index }: List) => {
                     <select
                         name=""
                         id=""
-                        className="w-full rounded-md text-black px-2 text-[14px] py-[2px] outline-none"
+                        className="field w-full"
                         onChange={(e) => updateValue(e, "permission")}
                         value={detail.permissions}
                     >
@@ -362,7 +363,7 @@ const List = ({ detail, setTable, isTable, index }: List) => {
                     <select
                         name=""
                         id=""
-                        className="w-full rounded-md text-black px-2 text-[14px] py-[2px] outline-none"
+                        className="field w-full"
                         onChange={(e) => updateValue(e, "access")}
                         value={detail.access}
                     >
@@ -388,7 +389,7 @@ const List = ({ detail, setTable, isTable, index }: List) => {
             <td className="  pr-2">
                 <input
                     type="number"
-                    className="w-full rounded-md text-black px-2 text-[14px] py-[2px] outline-none relative after:absolute after:right-1 after:top-[50%] after:content-['Days'] after:translate-x-2/4"
+                    className="field w-full"
                     value={detail.duration}
                     placeholder="Number of Days"
                     onChange={(e) => updateValue(e, "duration")}

@@ -3,7 +3,6 @@ import Image from "next/image";
 import { BsPlusLg } from "react-icons/bs";
 import { HiMinus } from "react-icons/hi";
 import { RiArrowDownSFill } from "react-icons/ri";
-import style from "../../../styles/finance/Crud-table.module.scss";
 import Calendar from "../../Calendar";
 import DropdownSearch from "../../DropdownSearch";
 import DropDownCOA from "./DropdownCOA";
@@ -81,8 +80,8 @@ export default function JournalForm({ DefaultValue, type }: Props) {
                     </li>
                 </ul>
                 <div className="table_container">
-                    <table className={style.crudTable}>
-                        <thead>
+                    <table className="table_list forCrud">
+                        <thead className="textRed">
                             <tr>
                                 <th>CODE</th>
                                 <th>ACCOUNT NAME</th>
@@ -241,7 +240,7 @@ const List = ({ itemList, setDefault, isDefault, index }: List) => {
                 <input
                     type="number"
                     value={itemList.debit}
-                    className={style.peso}
+                    className="field w-full"
                     onChange={(e) => updateValue("debit", e)}
                 />
             </td>
@@ -249,11 +248,11 @@ const List = ({ itemList, setDefault, isDefault, index }: List) => {
                 <input
                     type="number"
                     value={itemList.credit}
-                    className={style.peso}
+                    className="field w-full"
                     onChange={(e) => updateValue("credit", e)}
                 />
             </td>
-            <td className={`${style.action}`}>
+            <td className="actionIcon">
                 {isDefault.length > 1 && (
                     <div onClick={RemoveJournal}>
                         <HiMinus />
