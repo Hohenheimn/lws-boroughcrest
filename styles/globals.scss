@@ -161,7 +161,7 @@ select {
 }
 // Table
 .table_container {
-    @apply w-full overflow-x-auto mb-10 480px:mb-5 overflow-y-auto min-h-[200px] max-h-[50vh] relative;
+    @apply w-full overflow-x-auto mb-10 480px:mb-5 overflow-y-auto min-h-[300px] max-h-[50vh] relative;
     table {
         thead {
             @apply sticky top-0 z-[40];
@@ -771,7 +771,7 @@ input.disabled_input {
     @apply p-1 820px:h-8 rounded-md outline-none shadow-md text-[#757575];
 }
 .dropdown-list {
-    @apply max-h-[400px] overflow-auto w-full;
+    @apply max-h-[150px] overflow-auto w-full;
 
     li {
         @apply w-full cursor-pointer px-3 text-[#545454] text-[14px] py-1 1550px:px-2 1550px:py-1 border-b border-ThemeRed hover:bg-ThemeRed hover:text-white transition-all duration-75;

@@ -1,13 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
-import style from "../../../styles/finance/Crud-table.module.scss";
+import React, { useEffect, useState, useContext } from "react";
 import Image from "next/image";
-import DropdownSearch from "../../DropdownSearch";
-import DynamicPopOver from "../../DynamicPopOver";
 import { useQuery } from "react-query";
 import { getCookie } from "cookies-next";
 import api from "../../../util/api";
 import { BarLoader } from "react-spinners";
-import { ChartofAccountList } from "../../../types/COAList";
+import AppContext from "../../Context/AppContext";
+import TableErrorMessage from "../../TableErrorMessage";
 
 type isTableItem = {
     id: number | string;
@@ -30,13 +28,19 @@ type isTableItemObj = {
 };
 
 export default function GeneralLedgerTable() {
-    const { data, isLoading, isError } = useQuery(["COA-list-ob"], () => {
-        return api.get(`/finance/general-ledger/chart-of-accounts`, {
-            headers: {
-                Authorization: "Bearer " + getCookie("user"),
-            },
-        });
-    });
+    const { data, isLoading, isError } = useQuery(
+        ["generalLedger-list"],
+        () => {
+            return api.get(
+                `/finance/general-ledger/opening-balance/general-ledger`,
+                {
+                    headers: {
+                        Authorization: "Bearer " + getCookie("user"),
+                    },
+                }
+            );
+        }
+    );
     const [isTableItem, setTableItem] = useState<isTableItem>([
         {
             id: 0,
@@ -57,15 +61,25 @@ export default function GeneralLedgerTable() {
             const CloneArray = data?.data.map((item: any, index: number) => {
                 return {
                     id: index,
-                    account_id: item.id,
-                    chart_code: item.chart_code,
-                    category: item.category,
-                    account_name: item.account_name,
-                    debit: 0,
-                    credit: 0,
+                    account_id: item.chart_of_account.id,
+                    chart_code: item.chart_of_account.chart_code,
+                    category: item.chart_of_account.category,
+                    account_name: item.chart_of_account.account_name,
+                    debit: item.debit,
+                    credit: item.credit,
                 };
             });
-            setTableItem(CloneArray);
+            // Additional blank row field
+            setTableItem({
+                ...CloneArray,
+                id: 9999,
+                account_id: "",
+                chart_code: "",
+                category: "",
+                account_name: "",
+                debit: 0,
+                credit: 0,
+            });
         }
     }, [data]);
 
@@ -123,6 +137,7 @@ export default function GeneralLedgerTable() {
                         </aside>
                     </div>
                 )}
+                {isError && <TableErrorMessage />}
             </div>
             <div className="mt-10 border-b border-ThemeRed"></div>
             <div className="flex flex-wrap justify-end py-5 480px:justify-start">

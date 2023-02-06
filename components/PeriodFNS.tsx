@@ -11,51 +11,114 @@ import {
     startOfWeek,
     parse,
     add,
+    intervalToDuration,
+    formatDistance,
 } from "date-fns";
-import React, { useContext, useEffect, useRef, useState } from "react";
-import AppContext from "./Context/AppContext";
+import React, { useEffect, useRef, useState } from "react";
 
-type Props = {
-    value: {
-        value: string;
-        toggle: boolean;
+type PeriodFNS = {
+    setToggle: Function;
+    isValue: {
+        from: string;
+        to: string;
     };
     setValue: Function;
 };
 
-export default function PeriodFNS() {
-    const modal = useRef<any>();
+export default function PeriodFNS({ setToggle, isValue, setValue }: PeriodFNS) {
+    // Close Calendar By Clicking outside
+    const CalendarContainer = useRef<any>();
+    useEffect(() => {
+        const clickOutSide = (e: any) => {
+            if (!CalendarContainer.current.contains(e.target)) {
+                setToggle(false);
+            }
+        };
+        document.addEventListener("mousedown", clickOutSide);
+        return () => {
+            document.removeEventListener("mousedown", clickOutSide);
+        };
+    });
+    // End
+
     const date = new Date();
     let today = startOfDay(date);
-    const [currentMonth1, setCurrentMonth1] = useState(format(today, "MMMM"));
-    const [currentMonth2, setCurrentMonth2] = useState(format(today, "MMMM"));
+    // Start
+    let nextMonth = add(today, {
+        months: 1,
+    });
+    const [calendar, setCalendar] = useState({
+        firstCalMonth: today,
+        firstCalYear: today,
+        secondCalMonth: nextMonth,
+        secondCalYear: nextMonth,
+    });
+    const [isDateRange, setDateRange] = useState({
+        from: {
+            value: today,
+            validate: false,
+        },
+        to: {
+            value: today,
+            validate: false,
+        },
+    });
+    // End
+
+    const setDatehandler = () => {
+        setValue({
+            from: format(isDateRange.from.value, "dd/MM/yyyy"),
+            to: format(isDateRange.to.value, "dd/MM/yyyy"),
+        });
+        setToggle(false);
+    };
     return (
-        <div className="absolute top-full left-0 z-[60]" ref={modal}>
+        <div
+            className="absolute top-full left-0 z-[60]"
+            ref={CalendarContainer}
+        >
             {/* Ask kung pano naka infinite ung year tas naka focus agad ung year sa current yr */}
             <div className="shadow-lg" style={{ backgroundColor: "#f5f5f5" }}>
                 <div className="flex">
                     <CalendarPeriod
-                        currentMonth={currentMonth1}
-                        setCurrentMonth={setCurrentMonth1}
+                        calendar={calendar}
+                        setCalendar={setCalendar}
+                        type="First"
+                        isDateRange={isDateRange}
+                        setDateRange={setDateRange}
                     />
                     <CalendarPeriod
-                        currentMonth={currentMonth2}
-                        setCurrentMonth={setCurrentMonth2}
+                        calendar={calendar}
+                        setCalendar={setCalendar}
+                        type="Second"
+                        isDateRange={isDateRange}
+                        setDateRange={setDateRange}
                     />
                 </div>
                 <ul className="p-3 flex justify-between">
                     <li className="flex items-center">
                         <p className="text-[#757575] px-2 py-1 text-[14px] border border-ThemeRed rounded-md">
-                            {currentMonth1}
+                            {isDateRange.from.validate
+                                ? format(isDateRange.from.value, "MMM dd yyyy")
+                                : "----"}
                         </p>
                         <div className="h-[2px] w-[7px] bg-ThemeRed mx-2"></div>
                         <p className="text-[#757575] px-2 py-1 text-[14px] border border-ThemeRed rounded-md">
-                            {currentMonth2}
+                            {isDateRange.to.validate
+                                ? format(isDateRange.to.value, "MMM dd yyyy")
+                                : "----"}
                         </p>
                     </li>
                     <li>
-                        <button className="button_cancel">CANCEL</button>
-                        <button className="buttonRed">APPLY</button>
+                        <button
+                            className="button_cancel"
+                            onClick={() => setToggle(false)}
+                        >
+                            CANCEL
+                        </button>
+                        <button className="buttonRed" onClick={setDatehandler}>
+                            APPLY
+                        </button>
                     </li>
                 </ul>
             </div>
@@ -64,11 +127,34 @@ export default function PeriodFNS() {
 }
 
 type CalendarPeriod = {
-    currentMonth: string;
-    setCurrentMonth: Function;
+    calendar: {
+        firstCalMonth: Date;
+        firstCalYear: Date;
+        secondCalMonth: Date;
+        secondCalYear: Date;
+    };
+    setCalendar: Function;
+    type: string;
+    isDateRange: {
+        from: {
+            value: Date;
+            validate: boolean;
+        };
+        to: {
+            value: Date;
+            validate: boolean;
+        };
+    };
+    setDateRange: Function;
 };
 
-const CalendarPeriod = ({ currentMonth, setCurrentMonth }: CalendarPeriod) => {
+const CalendarPeriod = ({
+    calendar,
+    setCalendar,
+    type,
+    isDateRange,
+    setDateRange,
+}: CalendarPeriod) => {
     const Months = [
         "January",
         "February",
@@ -90,16 +176,40 @@ const CalendarPeriod = ({ currentMonth, setCurrentMonth }: CalendarPeriod) => {
     const date = new Date();
     // get date today
     let today = startOfDay(date);
-    const [isSelected, setSelect] = useState(today);
 
-    const [currenYear, setCurrentYear] = useState(format(today, "yyyy"));
-    let wholeYear = currentMonth + "-" + currenYear;
+    const currentYear =
+        type === "First"
+            ? format(calendar.firstCalYear, "yyyy")
+            : format(calendar.secondCalYear, "yyyy");
+
+    const currentMonth =
+        type === "First"
+            ? format(calendar.firstCalMonth, "MMMM")
+            : format(calendar.secondCalMonth, "MMMM");
+
+    let wholeYear =
+        format(
+            type === "First" ? calendar.firstCalMonth : calendar.secondCalMonth,
+            "MMMM"
+        ) +
+        "-" +
+        format(
+            type === "First" ? calendar.firstCalYear : calendar.secondCalYear,
+            "yyyy"
+        );
 
     let firstDayofMonthYear = parse(wholeYear, "MMMM-yyyy", new Date());
-
+    // Days of Month
+    // Need to be updated everytime month and year changes
     let days = eachDayOfInterval({
         start: startOfWeek(firstDayofMonthYear),
         end: endOfWeek(endOfMonth(firstDayofMonthYear)),
+    });
+
+    // Dates Between from and to date range
+    let DateBetween = eachDayOfInterval({
+        start: isDateRange.from.value,
+        end: isDateRange.to.value,
     });
 
     let Years = eachYearOfInterval({
@@ -107,36 +217,126 @@ const CalendarPeriod = ({ currentMonth, setCurrentMonth }: CalendarPeriod) => {
         end: new Date(5000, 6, 10),
     });
 
-    const SelectedDateHandler = (day: any) => {
-        setSelect(day);
-        // setValue({
-        //     value: format(day, "yyyy-MM-dd"),
-        //     toggle: false,
-        // });
+    const SelectedDayHandler = (day: any) => {
+        if (isDateRange.from.validate === false) {
+            setDateRange({
+                ...isDateRange,
+                from: {
+                    value: day,
+                    validate: true,
+                },
+            });
+        } else if (isDateRange.to.validate === false) {
+            setDateRange({
+                ...isDateRange,
+                to: {
+                    value: day,
+                    validate: true,
+                },
+            });
+        }
+        if (
+            isDateRange.from.validate === true &&
+            isDateRange.to.validate === true
+        ) {
+            setDateRange({
+                ...isDateRange,
+                from: {
+                    value: day,
+                    validate: true,
+                },
+                to: {
+                    value: day,
+                    validate: false,
+                },
+            });
+        }
+    };
+    const SelectedMonth = (month: string) => {
+        const selectedMonth = parse(month, "MMMM", new Date());
+        if (type === "First") {
+            setCalendar({
+                ...calendar,
+                firstCalMonth: selectedMonth,
+            });
+        } else {
+            setCalendar({
+                ...calendar,
+                secondCalMonth: selectedMonth,
+            });
+        }
+        setToggleButton({
+            ...toggleButton,
+            month: false,
+        });
+    };
+    const SelectedYear = (year: Date) => {
+        if (type === "First") {
+            setCalendar({
+                ...calendar,
+                firstCalYear: year,
+            });
+        } else {
+            setCalendar({
+                ...calendar,
+                secondCalYear: year,
+            });
+        }
+        setToggleButton({
+            ...toggleButton,
+            year: false,
+        });
     };
 
+    const SubtAddYear = (button: string) => {
+        const NextYear = add(
+            type === "First" ? calendar.firstCalYear : calendar.secondCalYear,
+            {
+                years: button === "next" ? 1 : -1,
+            }
+        );
+        if (type === "First") {
+            setCalendar({
+                ...calendar,
+                firstCalYear: NextYear,
+            });
+        } else {
+            setCalendar({
+                ...calendar,
+                secondCalYear: NextYear,
+            });
+        }
+    };
     const PrevNext = (button: string) => {
         // Get Current Month and Year
-        let firstDayCurrentMonth = parse(currentMonth, "MMMM", new Date());
-        let firstDayCurrentYear = parse(currenYear, "yyyy", new Date());
 
-        let firstdayNextMonth = add(firstDayCurrentMonth, {
-            months: button === "next" ? 1 : -1,
-        });
-        setCurrentMonth(format(firstdayNextMonth, "MMMM"));
+        // Add and Subt Month depend on button clicked
+        let firstdayNextMonth = add(
+            type === "First" ? calendar.firstCalMonth : calendar.secondCalMonth,
+            {
+                months: button === "next" ? 1 : -1,
+            }
+        );
+        // Set New Month
+        if (type === "First") {
+            setCalendar({
+                ...calendar,
+                firstCalMonth: firstdayNextMonth,
+            });
+        } else {
+            setCalendar({
+                ...calendar,
+                secondCalMonth: firstdayNextMonth,
+            });
+        }
 
         const validateMonth = format(firstdayNextMonth, "MM");
         if (validateMonth === "01" && button === "next") {
-            let firstdayNextYear = add(firstDayCurrentYear, {
-                years: 1,
-            });
-            setCurrentYear(format(firstdayNextYear, "yyyy"));
+            SubtAddYear("next");
         }
+
         if (validateMonth === "12" && button === "prev") {
-            let firstdayNextYear = add(firstDayCurrentYear, {
-                years: -1,
-            });
-            setCurrentYear(format(firstdayNextYear, "yyyy"));
+            SubtAddYear("prev");
         }
     };
 
@@ -155,7 +355,7 @@ const CalendarPeriod = ({ currentMonth, setCurrentMonth }: CalendarPeriod) => {
                         aria-label="calendar backward"
                         onClick={prevMonthHandler}
                         disabled={
-                            currenYear === "1970" && currentMonth === "January"
+                            currentYear === "1970" && currentMonth === "January"
                                 ? true
                                 : false
                         }
@@ -188,10 +388,15 @@ const CalendarPeriod = ({ currentMonth, setCurrentMonth }: CalendarPeriod) => {
                                     })
                                 }
                             >
-                                {currentMonth}
+                                {format(
+                                    type === "First"
+                                        ? calendar.firstCalMonth
+                                        : calendar.secondCalMonth,
+                                    "MMMM"
+                                )}
                             </span>
                             {toggleButton.month && (
-                                <ul className="absolute top-full left-0 w-full bg-white shadow-md max-h-[200px] overflow-auto">
+                                <ul className="absolute top-full left-0 w-full bg-white shadow-md max-h-[200px] overflow-auto z-50">
                                     {Months.map((month, index) => (
                                         <li
                                             key={index}
@@ -200,13 +405,7 @@ const CalendarPeriod = ({ currentMonth, setCurrentMonth }: CalendarPeriod) => {
                                                     ? " bg-ThemeRed text-white"
                                                     : "text-[#757575]"
                                             }`}
-                                            onClick={() => {
-                                                setCurrentMonth(month);
-                                                setToggleButton({
-                                                    ...toggleButton,
-                                                    month: false,
-                                                });
-                                            }}
+                                            onClick={() => SelectedMonth(month)}
                                         >
                                             {month}
                                         </li>
@@ -224,28 +423,25 @@ const CalendarPeriod = ({ currentMonth, setCurrentMonth }: CalendarPeriod) => {
                                     })
                                 }
                             >
-                                {currenYear}
+                                {format(
+                                    type === "First"
+                                        ? calendar.firstCalYear
+                                        : calendar.secondCalYear,
+                                    "yyyy"
+                                )}
                             </span>
                             {toggleButton.year && (
-                                <ul className="absolute top-full left-0 w-full bg-white shadow-md max-h-[200px] overflow-auto">
+                                <ul className="absolute top-full left-0 w-full bg-white shadow-md max-h-[200px] overflow-auto z-50">
                                     {Years.map((year, index) => (
                                         <li
                                             key={index}
                                             className={`py-1 px-2 text-[12px] cursor-pointer hover:bg-ThemeRed50 ${
-                                                currenYear ===
+                                                currentYear ===
                                                 format(year, "yyyy")
                                                     ? " bg-ThemeRed text-white"
                                                     : "text-[#757575]"
                                             }`}
-                                            onClick={() => {
-                                                setCurrentYear(
-                                                    format(year, "yyyy")
-                                                );
-                                                setToggleButton({
-                                                    ...toggleButton,
-                                                    year: false,
-                                                });
-                                            }}
+                                            onClick={() => SelectedYear(year)}
                                         >
                                             {format(year, "yyyy")}
                                         </li>
@@ -258,7 +454,8 @@ const CalendarPeriod = ({ currentMonth, setCurrentMonth }: CalendarPeriod) => {
                         aria-label="calendar forward"
                         onClick={nextMonthHandler}
                         disabled={
-                            currenYear === "5000" && currentMonth === "December"
+                            currentYear === "5000" &&
+                            currentMonth === "December"
                                 ? true
                                 : false
                         }
@@ -312,7 +509,7 @@ const CalendarPeriod = ({ currentMonth, setCurrentMonth }: CalendarPeriod) => {
                         className={` cursor-pointer aspect-square flex justify-center items-center text-base font-medium text-center text-gray-800 w-[14.28%]`}
                     >
                         <button
-                            onClick={() => SelectedDateHandler(day)}
+                            onClick={() => SelectedDayHandler(day)}
                             className={` relative w-[100%] m-0 aspect-square text-[14px] ${
                                 isSameMonth(day, today)
                                     ? "text-[#545454]"
@@ -326,13 +523,20 @@ const CalendarPeriod = ({ currentMonth, setCurrentMonth }: CalendarPeriod) => {
                                         ? " rounded-full border border-ThemeRed"
                                         : ""
                                 } ${
-                                    isEqual(day, isSelected) &&
+                                    isEqual(day, isDateRange.from.value) &&
+                                    isDateRange.from.validate &&
+                                    "rounded-full bg-ThemeRed text-white"
+                                }
+                                ${
+                                    isEqual(day, isDateRange.to.value) &&
+                                    isDateRange.to.validate &&
                                     "rounded-full bg-ThemeRed text-white"
                                 }`}
                             >
                                 {format(day, "d")}
                             </time>
                             {/* magiging half pag start and end of date, left-0 if start right-0 if end */}
+
                             {/* <div className=" absolute top-0 left-0 w-full h-full bg-gray-300"></div> */}
                         </button>
                     </div>

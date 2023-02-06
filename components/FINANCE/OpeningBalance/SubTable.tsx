@@ -5,17 +5,7 @@ import DynamicPopOver from "../../DynamicPopOver";
 import DropDownCustomer from "./DropDownCustomer";
 import DropDownCharge from "./DropDownCharge";
 
-export type isTableItemArray = {
-    id: number | string;
-    customer_id: number | string;
-    customer_name: string;
-    date: string;
-    reference_no: number;
-    charge_id: number | string;
-    charge: string;
-    account: string;
-    amount: number;
-}[];
+export type isTableItemArray = isTableItemObj[];
 
 export type isTableItemObj = {
     id: number | string;
@@ -43,6 +33,7 @@ export default function SubTable() {
             amount: 0,
         },
     ]);
+
     return (
         <>
             <div className="table_container">
@@ -65,6 +56,7 @@ export default function SubTable() {
                                 setTableItem={setTableItem}
                                 isTableItem={isTableItem}
                                 key={index}
+                                rowNumber={index}
                             />
                         ))}
                     </tbody>
@@ -107,9 +99,10 @@ type List = {
     itemDetail: isTableItemObj;
     setTableItem: Function;
     isTableItem: isTableItemArray;
+    rowNumber: number;
 };
 
-const List = ({ itemDetail, setTableItem, isTableItem }: List) => {
+const List = ({ itemDetail, setTableItem, isTableItem, rowNumber }: List) => {
     // true is advnace false is received
     const [isDate, setDate] = useState({
         value: "",
@@ -174,18 +167,53 @@ const List = ({ itemDetail, setTableItem, isTableItem }: List) => {
         setTableItem(newItems);
     };
 
+    const AddRowHandler = (e: any) => {
+        if (e.key !== "Enter") {
+            return;
+        }
+        if (isTableItem.length !== rowNumber + 1) {
+            return;
+        }
+        const random = Math.random();
+        if (
+            itemDetail.customer_name === "" ||
+            itemDetail.date === "" ||
+            itemDetail.reference_no === 0 ||
+            itemDetail.reference_no === null ||
+            itemDetail.charge === "" ||
+            itemDetail.amount === 0 ||
+            itemDetail.amount === null
+        ) {
+            return;
+        }
+        setTableItem([
+            ...isTableItem,
+            {
+                id: random,
+                customer_id: 0,
+                customer_name: "",
+                date: "",
+                reference_no: 0,
+                charge_id: 0,
+                charge: "",
+                account: "Advance",
+                amount: 0,
+            },
+        ]);
+    };
+
     return (
         <tr>
             <td>
                 <h2>{itemDetail.customer_id}</h2>
             </td>
-            <td>
+            <td onKeyUp={(e) => AddRowHandler(e)}>
                 <DropDownCustomer
                     UpdateStateHandler={UpdateStateHandler}
                     itemDetail={itemDetail}
                 />
             </td>
-            <td>
+            <td onKeyUp={(e) => AddRowHandler(e)}>
                 <DynamicPopOver
                     className=""
                     toRef={
@@ -219,7 +247,7 @@ const List = ({ itemDetail, setTableItem, isTableItem }: List) => {
                     }
                 />
             </td>
-            <td>
+            <td onKeyUp={(e) => AddRowHandler(e)}>
                 <input
                     type="number"
                     value={itemDetail.reference_no}
@@ -229,13 +257,13 @@ const List = ({ itemDetail, setTableItem, isTableItem }: List) => {
                     }}
                 />
             </td>
-            <td>
+            <td onKeyUp={(e) => AddRowHandler(e)}>
                 <DropDownCharge
                     UpdateStateHandler={UpdateStateHandler}
                     itemDetail={itemDetail}
                 />
             </td>
-            <td>
+            <td onKeyUp={(e) => AddRowHandler(e)}>
                 <article className={`ToggleAccount ${itemDetail.account}`}>
                     <ul className="min-w-[180px] flex relative">
                         <li
@@ -258,7 +286,7 @@ const List = ({ itemDetail, setTableItem, isTableItem }: List) => {
                     </ul>
                 </article>
             </td>
-            <td>
+            <td onKeyUp={(e) => AddRowHandler(e)}>
                 <input
                     type="number"
                     value={itemDetail.amount}

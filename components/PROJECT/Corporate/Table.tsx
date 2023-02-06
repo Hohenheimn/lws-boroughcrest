@@ -8,6 +8,7 @@ import { useQuery } from "react-query";
 import Pagination from "../../Pagination";
 import BarLoader from "react-spinners/BarLoader";
 import { getCookie } from "cookies-next";
+import TableErrorMessage from "../../TableErrorMessage";
 
 type Props = {
     isSearchTable: string;
@@ -68,6 +69,7 @@ export default function Table({ isSearchTable }: Props) {
                         </aside>
                     </div>
                 )}
+                {isError && <TableErrorMessage />}
             </div>
 
             <Pagination

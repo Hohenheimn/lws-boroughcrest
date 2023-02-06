@@ -6,8 +6,9 @@ import "react-date-range/dist/theme/default.css"; // theme css file
 import DynamicPopOver from "./DynamicPopOver";
 import React from "react";
 import Image from "next/image";
+import PeriodFNS from "./PeriodFNS";
 
-type PeriodCalendarProps = {
+export type PeriodCalendarProps = {
     value: {
         from: string;
         to: string;
@@ -19,26 +20,7 @@ export default function PeriodCalendar({
     value,
     setValue,
 }: PeriodCalendarProps) {
-    const [range, setRange] = useState([
-        {
-            startDate: new Date(),
-            endDate: new Date(),
-            key: "selection",
-        },
-    ]);
     const [open, setOpen] = useState(false);
-    // change Value of field
-    useEffect(() => {
-        if (
-            format(range[0].startDate, "yyyy-MM-dd") ===
-            format(range[0].endDate, "yyyy-MM-dd")
-        )
-            return;
-        setValue({
-            from: format(range[0].startDate, "yyyy-MM-dd"),
-            to: format(range[0].endDate, "yyyy-MM-dd"),
-        });
-    }, [range[0].startDate, range[0].endDate]);
 
     return (
         <div>
@@ -76,11 +58,10 @@ export default function PeriodCalendar({
                 toPop={
                     <>
                         {open && (
-                            <DatePickerContainer
+                            <PeriodFNS
+                                setToggle={setOpen}
+                                isValue={value}
                                 setValue={setValue}
-                                setRange={setRange}
-                                range={range}
-                                setOpen={setOpen}
                             />
                         )}
                     </>
@@ -89,50 +70,3 @@ export default function PeriodCalendar({
         </div>
     );
 }
-
-type Props = {
-    setRange: Function;
-    range: any;
-    setOpen: Function;
-    setValue: Function;
-};
-
-const DatePickerContainer = ({ setRange, range, setOpen, setValue }: Props) => {
-    const modal = useRef<any>();
-    useEffect(() => {
-        const clickOutSide = (e: any) => {
-            if (!modal.current.contains(e.target)) {
-                setOpen(false);
-            }
-        };
-        document.addEventListener("mousedown", clickOutSide);
-        return () => {
-            document.removeEventListener("mousedown", clickOutSide);
-        };
-    });
-
-    return (
-        <div ref={modal}>
-            <DateRangePicker
-                onChange={(item: any) => {
-                    if (
-                        format(item.selection.startDate, "yyyy-MM-dd") ===
-                        format(item.selection.endDate, "yyyy-MM-dd")
-                    ) {
-                        setValue({
-                            from: "",
-                            to: "",
-                        });
-                        setRange([item.selection]);
-                    } else {
-                        setRange([item.selection]);
-                    }
-                }}
-                moveRangeOnFirstSelection={false}
-                ranges={range}
-                months={2}
-                direction="horizontal"
-            />
-        </div>
-    );
-};
