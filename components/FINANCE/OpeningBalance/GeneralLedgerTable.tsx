@@ -3,53 +3,59 @@ import Image from "next/image";
 import { useQuery } from "react-query";
 import { getCookie } from "cookies-next";
 import api from "../../../util/api";
-import { BarLoader } from "react-spinners";
+import { BarLoader, ScaleLoader } from "react-spinners";
 import AppContext from "../../Context/AppContext";
 import TableErrorMessage from "../../TableErrorMessage";
+import { CreateUpdateGeneralLedger, GetGeneralLedger } from "./Query";
 
-type isTableItem = {
-    id: number | string;
-    account_id: number | string;
-    chart_code: string;
-    category: string;
-    account_name: string;
-    debit: number;
-    credit: number;
-}[];
+type isTableItem = isTableItemObj[];
 
 type isTableItemObj = {
-    id: number | string;
-    account_id: number | string;
+    id: string;
+    account_id: string;
     chart_code: string;
     category: string;
     account_name: string;
-    debit: number;
-    credit: number;
+    debit: string;
+    credit: string;
+    account_type: string | null;
+    id_backend: string | null;
 };
-
-export default function GeneralLedgerTable() {
-    const { data, isLoading, isError } = useQuery(
-        ["generalLedger-list"],
-        () => {
-            return api.get(
-                `/finance/general-ledger/opening-balance/general-ledger`,
-                {
-                    headers: {
-                        Authorization: "Bearer " + getCookie("user"),
-                    },
-                }
-            );
-        }
+type GeneralLedgerTableProps = {
+    date: string;
+};
+export default function GeneralLedgerTable({ date }: GeneralLedgerTableProps) {
+    const { setPrompt } = useContext(AppContext);
+    const onSucces = () => {
+        setPrompt({
+            toggle: true,
+            message: "General Ledger successfully saved!",
+            type: "success",
+        });
+    };
+    const onError = () => {
+        setPrompt({
+            toggle: true,
+            message: "Something is wrong!",
+            type: "error",
+        });
+    };
+    const { isLoading: mutateLoading, mutate } = CreateUpdateGeneralLedger(
+        onSucces,
+        onError
     );
+    const { data, isLoading, isError } = GetGeneralLedger();
     const [isTableItem, setTableItem] = useState<isTableItem>([
         {
-            id: 0,
+            id: "",
             account_id: "",
             chart_code: "",
             category: "",
             account_name: "",
-            debit: 0,
-            credit: 0,
+            debit: "",
+            credit: "",
+            account_type: null,
+            id_backend: null,
         },
     ]);
 
@@ -61,6 +67,7 @@ export default function GeneralLedgerTable() {
             const CloneArray = data?.data.map((item: any, index: number) => {
                 return {
                     id: index,
+                    id_backend: item.id,
                     account_id: item.chart_of_account.id,
                     chart_code: item.chart_of_account.chart_code,
                     category: item.chart_of_account.category,
@@ -70,16 +77,7 @@ export default function GeneralLedgerTable() {
                 };
             });
             // Additional blank row field
-            setTableItem({
-                ...CloneArray,
-                id: 9999,
-                account_id: "",
-                chart_code: "",
-                category: "",
-                account_name: "",
-                debit: 0,
-                credit: 0,
-            });
+            setTableItem(CloneArray);
         }
     }, [data]);
 
@@ -93,6 +91,41 @@ export default function GeneralLedgerTable() {
             });
         }
     }, [isTableItem]);
+
+    const SubmitHandler = () => {
+        let validate = true;
+        const subledger = isTableItem.map((item: isTableItemObj) => {
+            if (date === "") {
+                setPrompt({
+                    message: "Please fill out date field!",
+                    toggle: true,
+                    type: "draft",
+                });
+                validate = false;
+                return;
+            } else if (item.debit === "0" && item.credit === "0") {
+                setPrompt({
+                    message: "Please input a value on debit or credit!",
+                    toggle: true,
+                    type: "draft",
+                });
+                validate = false;
+            } else {
+                return {
+                    id: item.id_backend,
+                    chart_of_account_id: parseInt(item.account_id),
+                    debit: Number(item.debit),
+                    credit: Number(item.credit),
+                };
+            }
+        });
+        const Payload = {
+            general_ledger: subledger,
+            date: date,
+        };
+
+        if (validate) mutate(Payload);
+    };
 
     return (
         <>
@@ -174,11 +207,12 @@ export default function GeneralLedgerTable() {
 
             <div className="flex justify-end py-5 mt-5">
                 <button className="button_cancel">Cancel</button>
-                <button
-                    className="buttonRed"
-                    onClick={() => console.log(isTableItem)}
-                >
-                    SAVE
+                <button className="buttonRed" onClick={SubmitHandler}>
+                    {mutateLoading ? (
+                        <ScaleLoader color="#fff" height="10px" width="2px" />
+                    ) : (
+                        "SAVE"
+                    )}
                 </button>
             </div>
         </>
@@ -231,7 +265,9 @@ const List = ({ itemDetail, setTableItem, isTableItem }: List) => {
             <td>
                 <input
                     type="number"
-                    className="field w-full"
+                    className={`field w-full ${
+                        itemDetail.account_type === null && "disabled"
+                    }`}
                     value={itemDetail.debit}
                     onChange={(e) => UpdateStateHandler("debit", e)}
                 />
@@ -239,7 +275,9 @@ const List = ({ itemDetail, setTableItem, isTableItem }: List) => {
             <td>
                 <input
                     type="number"
-                    className="field w-full"
+                    className={`field w-full ${
+                        itemDetail.account_type === null && "disabled"
+                    }`}
                     value={itemDetail.credit}
                     onChange={(e) => UpdateStateHandler("credit", e)}
                 />

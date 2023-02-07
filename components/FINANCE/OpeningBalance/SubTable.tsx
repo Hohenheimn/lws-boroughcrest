@@ -1,38 +1,150 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Image from "next/image";
 import Calendar from "../../Calendar";
 import DynamicPopOver from "../../DynamicPopOver";
 import DropDownCustomer from "./DropDownCustomer";
 import DropDownCharge from "./DropDownCharge";
+import { useQuery, useQueryClient } from "react-query";
+import api from "../../../util/api";
+import { getCookie } from "cookies-next";
+import { BarLoader, ScaleLoader } from "react-spinners";
+import TableErrorMessage from "../../TableErrorMessage";
+import { CreateUpdateSubledger, GetSubledger } from "./Query";
+import AppContext from "../../Context/AppContext";
 
 export type isTableItemArray = isTableItemObj[];
 
 export type isTableItemObj = {
     id: number | string;
-    customer_id: number | string;
+    id_backend: null | number;
+    customer_id: string;
     customer_name: string;
     date: string;
-    reference_no: number;
-    charge_id: number | string;
+    reference_no: string;
+    charge_id: string;
     charge: string;
     account: string;
-    amount: number;
+    amount: string;
 };
 
 export default function SubTable() {
+    const { setPrompt } = useContext(AppContext);
+    const onSucces = () => {
+        setPrompt({
+            toggle: true,
+            message: "Subledger successfully saved!",
+            type: "success",
+        });
+    };
+    const onError = () => {
+        setPrompt({
+            toggle: true,
+            message: "Something is wrong!",
+            type: "error",
+        });
+    };
+    const { data, isLoading, isError } = GetSubledger();
+    const { isLoading: mutateLoading, mutate } = CreateUpdateSubledger(
+        onSucces,
+        onError
+    );
     const [isTableItem, setTableItem] = useState<isTableItemArray>([
         {
             id: 0,
-            customer_id: 0,
+            id_backend: null,
+            customer_id: "",
             customer_name: "",
             date: "",
-            reference_no: 0,
-            charge_id: 0,
+            reference_no: "",
+            charge_id: "",
             charge: "",
-            account: "Advance",
-            amount: 0,
+            account: "advance",
+            amount: "",
         },
     ]);
+
+    useEffect(() => {
+        if (!isLoading && !isError) {
+            const random = Math.random();
+            const CloneArray = data?.data.map((item: any, index: number) => {
+                return {
+                    id: index,
+                    id_backend: item.id,
+                    customer_id: item.customer?.id,
+                    customer_name: item.customer?.name,
+                    date: item.customer?.date,
+                    reference_no: item.reference_no,
+                    charge_id: item.charge?.id,
+                    charge: item.charge?.name,
+                    account: item.account_type,
+                    amount: item.amount,
+                };
+            });
+            // Additional blank row field
+            setTableItem([
+                ...CloneArray,
+                {
+                    id: random,
+                    id_backend: null,
+                    customer_id: "",
+                    customer_name: "",
+                    date: "",
+                    reference_no: 0,
+                    charge_id: "",
+                    charge: "",
+                    account: "advance",
+                    amount: 0,
+                },
+            ]);
+        }
+    }, [data?.status]);
+
+    const [isTotal, setTotal] = useState<number>(0);
+
+    useEffect(() => {
+        if (data?.status === 200) {
+            setTotal(0);
+            isTableItem.map((item: isTableItemObj) => {
+                setTotal((temp) => Number(temp) + Number(item.amount));
+            });
+        }
+    }, [isTableItem]);
+
+    const SubmitHandler = () => {
+        let validate = true;
+        const subledger = isTableItem.map((item: isTableItemObj) => {
+            if (
+                item.customer_id === "" ||
+                item.date === "" ||
+                item.reference_no === "" ||
+                item.charge_id === "" ||
+                item.amount === "" ||
+                item.amount === null
+            ) {
+                setPrompt({
+                    message: "Please fill out all fields!",
+                    toggle: true,
+                    type: "draft",
+                });
+                validate = false;
+                return;
+            } else {
+                return {
+                    id: item.id_backend,
+                    customer_id: parseInt(item.customer_id),
+                    date: item.date,
+                    reference_no: item.reference_no,
+                    charge_id: parseInt(item.charge_id),
+                    account_type: item.account,
+                    amount: parseFloat(item.amount),
+                };
+            }
+        });
+        const Payload = {
+            subledger: subledger,
+        };
+        if (validate) mutate(Payload);
+    };
 
     return (
         <>
@@ -61,6 +173,20 @@ export default function SubTable() {
                         ))}
                     </tbody>
                 </table>
+                {isLoading && (
+                    <div className="w-full h-full flex justify-center items-center">
+                        <aside className="text-center flex justify-center py-5">
+                            <BarLoader
+                                color={"#8f384d"}
+                                height="10px"
+                                width="200px"
+                                aria-label="Loading Spinner"
+                                data-testid="loader"
+                            />
+                        </aside>
+                    </div>
+                )}
+                {isError && <TableErrorMessage />}
             </div>
             <div className="mt-10 border-b border-ThemeRed"></div>
             <div className="flex flex-wrap justify-end py-5 480px:justify-start">
@@ -77,19 +203,18 @@ export default function SubTable() {
                         />
                     </aside>
                     <p className=" text-end w-full text-[#757575] font-NHU-bold text-[18px] 1280px:text-[13px]">
-                        0-
+                        {isTotal}-
                     </p>
                 </div>
             </div>
             <div className="flex justify-end py-5 mt-5">
                 <button className="button_cancel">Cancel</button>
-                <button
-                    className="buttonRed"
-                    onClick={() => {
-                        console.log(isTableItem);
-                    }}
-                >
-                    SAVE
+                <button className="buttonRed" onClick={SubmitHandler}>
+                    {mutateLoading ? (
+                        <ScaleLoader color="#fff" height="10px" width="2px" />
+                    ) : (
+                        "SAVE"
+                    )}
                 </button>
             </div>
         </>
@@ -103,12 +228,11 @@ type List = {
 };
 
 const List = ({ itemDetail, setTableItem, isTableItem, rowNumber }: List) => {
-    // true is advnace false is received
+    const date = itemDetail.date;
     const [isDate, setDate] = useState({
-        value: "",
+        value: date,
         toggle: false,
     });
-
     useEffect(() => {
         const e = "";
         UpdateStateHandler("date", e);
@@ -146,13 +270,13 @@ const List = ({ itemDetail, setTableItem, isTableItem, rowNumber }: List) => {
                 if (key === "advance") {
                     return {
                         ...item,
-                        account: "Advance",
+                        account: "advance",
                     };
                 }
                 if (key === "received") {
                     return {
                         ...item,
-                        account: "Received",
+                        account: "receivable",
                     };
                 }
                 if (key === "date") {
@@ -178,10 +302,10 @@ const List = ({ itemDetail, setTableItem, isTableItem, rowNumber }: List) => {
         if (
             itemDetail.customer_name === "" ||
             itemDetail.date === "" ||
-            itemDetail.reference_no === 0 ||
+            itemDetail.reference_no === "" ||
             itemDetail.reference_no === null ||
             itemDetail.charge === "" ||
-            itemDetail.amount === 0 ||
+            itemDetail.amount === "" ||
             itemDetail.amount === null
         ) {
             return;
@@ -196,7 +320,7 @@ const List = ({ itemDetail, setTableItem, isTableItem, rowNumber }: List) => {
                 reference_no: 0,
                 charge_id: 0,
                 charge: "",
-                account: "Advance",
+                account: "advance",
                 amount: 0,
             },
         ]);

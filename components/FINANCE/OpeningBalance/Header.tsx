@@ -12,13 +12,17 @@ import AppContext from "../../../components/Context/AppContext";
 import { CustomerImport } from "../../../components/ReactQuery/CustomerMethod";
 import Calendar from "../../Calendar";
 
-export default function Header() {
+type HeaderProps = {
+    isDate: {
+        value: string;
+        toggle: boolean;
+    };
+    setDate: Function;
+};
+
+export default function Header({ isDate, setDate }: HeaderProps) {
     const { setPrompt } = useContext(AppContext);
     const router = useRouter();
-    const [isDate, setDate] = useState({
-        value: "",
-        toggle: false,
-    });
 
     const ImportSuccess = () => {
         setPrompt({

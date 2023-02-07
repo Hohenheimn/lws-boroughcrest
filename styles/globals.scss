@@ -736,7 +736,7 @@ input.disabled_input {
         @apply absolute top-[5%] left-[2px] right-[90px] h-[90%] bg-white rounded-md;
     }
 }
-.ToggleAccount.Advance {
+.ToggleAccount.advance {
     @apply bg-[#aeaeae];
     .item {
         @apply text-[#757575];
@@ -746,7 +746,7 @@ input.disabled_input {
         transition: left 0.5s, right 0.4s 0.2s;
     }
 }
-.ToggleAccount.Received {
+.ToggleAccount.receivable {
     @apply bg-white;
     .item {
         @apply text-[#fff];

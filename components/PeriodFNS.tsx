@@ -13,6 +13,7 @@ import {
     add,
     intervalToDuration,
     formatDistance,
+    compareDesc,
 } from "date-fns";
 import React, { useEffect, useRef, useState } from "react";
 
@@ -211,6 +212,9 @@ const CalendarPeriod = ({
         start: isDateRange.from.value,
         end: isDateRange.to.value,
     });
+
+    // other option
+    // isAfter and isBefore
 
     let Years = eachYearOfInterval({
         start: new Date(1970, 6, 10),
