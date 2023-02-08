@@ -165,7 +165,6 @@ export default function SubTable() {
                         {isTableItem.map((item: isTableItemObj, index) => (
                             <List
                                 itemDetail={item}
-                                date={item.date}
                                 setTableItem={setTableItem}
                                 isTableItem={isTableItem}
                                 key={index}
@@ -226,32 +225,25 @@ type List = {
     setTableItem: Function;
     isTableItem: isTableItemArray;
     rowNumber: number;
-    date: string;
 };
 
-const List = ({
-    itemDetail,
-    setTableItem,
-    isTableItem,
-    rowNumber,
-    date,
-}: List) => {
+const List = ({ itemDetail, setTableItem, isTableItem, rowNumber }: List) => {
     const [isDate, setDate] = useState({
-        value: date,
+        value: "",
         toggle: false,
     });
 
     useEffect(() => {
         setDate({
             ...isDate,
-            value: date,
+            value: itemDetail.date,
         });
     }, []);
 
-    // useEffect(() => {
-    //     const e = "";
-    //     UpdateStateHandler("date", e);
-    // }, [isDate]);
+    useEffect(() => {
+        const e = "";
+        UpdateStateHandler("date", e);
+    }, [isDate]);
 
     const UpdateStateHandler = (key: string, event: any) => {
         const newItems = isTableItem.map((item: any) => {
