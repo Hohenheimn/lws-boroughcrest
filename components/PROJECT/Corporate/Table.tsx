@@ -101,7 +101,7 @@ const List = ({ itemDetail }: any) => {
                     <td key={index}>
                         {item === "ID" && (
                             <Link href={`/project/corporate/${itemDetail.id}`}>
-                                <a className="item">
+                                <a className="flex items-center">
                                     <aside>
                                         <Image
                                             src={Logo}

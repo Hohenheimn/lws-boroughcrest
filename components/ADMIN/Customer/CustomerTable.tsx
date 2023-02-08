@@ -136,7 +136,7 @@ const List = ({ itemDetail }: customerItemDetail) => {
                             : `/admin/customer/${itemDetail?.id}`
                     }`}
                 >
-                    <a className="item">
+                    <a className="flex items-center">
                         <aside>
                             <Image src={Logo} alt="profile" layout="fill" />
                         </aside>

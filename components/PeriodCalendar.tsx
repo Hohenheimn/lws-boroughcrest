@@ -38,7 +38,7 @@ export default function PeriodCalendar({
                                 readOnly
                                 className=" outline-none w-[90px] font-NHU-medium text-[#545454] 1550px:text-[14px]"
                             />
-                            <p className=" text-ThemeRed font-NHU-regular mr-2">
+                            <p className=" text-ThemeRed font-NHU-regular mx-2">
                                 -
                             </p>
                             <input

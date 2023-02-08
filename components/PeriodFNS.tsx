@@ -11,8 +11,6 @@ import {
     startOfWeek,
     parse,
     add,
-    intervalToDuration,
-    formatDistance,
     compareDesc,
 } from "date-fns";
 import React, { useEffect, useRef, useState } from "react";
@@ -510,7 +508,7 @@ const CalendarPeriod = ({
                 {days.map((day, index) => (
                     <div
                         key={index}
-                        className={` cursor-pointer aspect-square flex justify-center items-center text-base font-medium text-center text-gray-800 w-[14.28%]`}
+                        className={` mb-1 cursor-pointer aspect-square flex justify-center items-center text-base font-medium text-center text-gray-800 w-[14.28%]`}
                     >
                         <button
                             onClick={() => SelectedDayHandler(day)}
@@ -518,6 +516,13 @@ const CalendarPeriod = ({
                                 isSameMonth(day, today)
                                     ? "text-[#545454]"
                                     : "text-[#a2a2a2]"
+                            } ${
+                                compareDesc(isDateRange.from.value, day) ===
+                                    -1 &&
+                                isDateRange.from.validate &&
+                                !isDateRange.to.validate
+                                    ? " pointer-events-none bg-gray-100 "
+                                    : ""
                             }`}
                         >
                             <time
@@ -539,9 +544,26 @@ const CalendarPeriod = ({
                             >
                                 {format(day, "d")}
                             </time>
-                            {/* magiging half pag start and end of date, left-0 if start right-0 if end */}
-
-                            {/* <div className=" absolute top-0 left-0 w-full h-full bg-gray-300"></div> */}
+                            {/* check days, kung pasok sa selected date */}
+                            {compareDesc(isDateRange.from.value, day) === 1 &&
+                                compareDesc(isDateRange.to.value, day) ===
+                                    -1 && (
+                                    <div
+                                        className={`absolute top-0 left-0 w-full h-full bg-gray-300`}
+                                    ></div>
+                                )}
+                            {((compareDesc(isDateRange.from.value, day) === 0 &&
+                                isDateRange.from.validate) ||
+                                compareDesc(isDateRange.to.value, day) === 0) &&
+                                isDateRange.to.validate && (
+                                    <div
+                                        className={`absolute top-0 ${
+                                            isEqual(day, isDateRange.to.value)
+                                                ? "left-0"
+                                                : "right-0"
+                                        } w-[50%] h-full bg-gray-300`}
+                                    ></div>
+                                )}
                         </button>
                     </div>
                 ))}

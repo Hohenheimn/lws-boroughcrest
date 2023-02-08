@@ -43,7 +43,7 @@ function MyApp({ Component, pageProps }: ExtendAppProps) {
             <QueryClientProvider client={queryClient}>
                 <AppProvider>
                     <Layout>
-                        {/* <UserInfo /> */}
+                        <UserInfo />
                         <Component {...pageProps} />
                     </Layout>
                 </AppProvider>
