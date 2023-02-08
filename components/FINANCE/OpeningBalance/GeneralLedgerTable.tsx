@@ -120,9 +120,17 @@ export default function GeneralLedgerTable({ date }: GeneralLedgerTableProps) {
             }
         });
         const Payload = {
-            general_ledger: subledger,
+            general_ledger: [
+                {
+                    id: null,
+                    chart_of_account_id: 12,
+                    debit: 12,
+                    credit: 0,
+                },
+            ],
             date: date,
         };
+        mutate(Payload);
 
         if (validate) mutate(Payload);
     };

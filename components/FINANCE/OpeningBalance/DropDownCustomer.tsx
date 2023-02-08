@@ -17,6 +17,9 @@ export default function DropDownCustomer({
 }: DropdownItem) {
     const [isToggle, setToggle] = useState(false);
     const [tempSearch, setTempSearch] = useState(itemDetail.customer_name);
+    useEffect(() => {
+        setTempSearch(itemDetail.customer_name);
+    }, []);
     return (
         <>
             <DynamicPopOver

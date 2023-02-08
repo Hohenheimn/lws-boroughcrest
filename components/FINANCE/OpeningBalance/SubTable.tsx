@@ -80,6 +80,7 @@ export default function SubTable() {
                     amount: item.amount,
                 };
             });
+            console.log(CloneArray);
             // Additional blank row field
             setTableItem([
                 ...CloneArray,
@@ -329,7 +330,7 @@ const List = ({ itemDetail, setTableItem, isTableItem, rowNumber }: List) => {
     return (
         <tr>
             <td>
-                <h2>{itemDetail.customer_id}</h2>
+                <h2>{itemDetail.customer_id} </h2>
             </td>
             <td onKeyUp={(e) => AddRowHandler(e)}>
                 <DropDownCustomer

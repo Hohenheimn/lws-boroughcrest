@@ -41,7 +41,7 @@ export const CreateUpdateGeneralLedger = (onSucces: any, onError: any) => {
     return useMutation(
         (Payload: any) => {
             return api.post(
-                "/finance/general-ledger/opening-balance/subledger",
+                "/finance/general-ledger/opening-balance/general-ledger",
                 Payload,
                 {
                     headers: {
