@@ -72,7 +72,7 @@ export default function SubTable() {
                     id_backend: item.id,
                     customer_id: item.customer?.id,
                     customer_name: item.customer?.name,
-                    date: item.customer?.date,
+                    date: item.date,
                     reference_no: item.reference_no,
                     charge_id: item.charge?.id,
                     charge: item.charge?.name,
@@ -80,7 +80,6 @@ export default function SubTable() {
                     amount: item.amount,
                 };
             });
-            console.log(CloneArray);
             // Additional blank row field
             setTableItem([
                 ...CloneArray,
@@ -166,6 +165,7 @@ export default function SubTable() {
                         {isTableItem.map((item: isTableItemObj, index) => (
                             <List
                                 itemDetail={item}
+                                date={item.date}
                                 setTableItem={setTableItem}
                                 isTableItem={isTableItem}
                                 key={index}
@@ -226,18 +226,32 @@ type List = {
     setTableItem: Function;
     isTableItem: isTableItemArray;
     rowNumber: number;
+    date: string;
 };
 
-const List = ({ itemDetail, setTableItem, isTableItem, rowNumber }: List) => {
-    const date = itemDetail.date;
+const List = ({
+    itemDetail,
+    setTableItem,
+    isTableItem,
+    rowNumber,
+    date,
+}: List) => {
     const [isDate, setDate] = useState({
         value: date,
         toggle: false,
     });
+
     useEffect(() => {
-        const e = "";
-        UpdateStateHandler("date", e);
-    }, [isDate]);
+        setDate({
+            ...isDate,
+            value: date,
+        });
+    }, []);
+
+    // useEffect(() => {
+    //     const e = "";
+    //     UpdateStateHandler("date", e);
+    // }, [isDate]);
 
     const UpdateStateHandler = (key: string, event: any) => {
         const newItems = isTableItem.map((item: any) => {
@@ -351,10 +365,13 @@ const List = ({ itemDetail, setTableItem, isTableItem, rowNumber }: List) => {
                                     alt=""
                                 />
                             </span>
-
                             <input
                                 type="text"
-                                value={isDate.value}
+                                value={
+                                    isDate.value === ""
+                                        ? itemDetail.date
+                                        : isDate.value
+                                }
                                 onChange={() => {}}
                                 placeholder="dd/mm/yyyy"
                                 onClick={() =>

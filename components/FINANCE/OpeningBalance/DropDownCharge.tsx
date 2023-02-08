@@ -18,7 +18,7 @@ export default function DropDownCharge({
     const [tempSearch, setTempSearch] = useState(itemDetail.charge);
     useEffect(() => {
         setTempSearch(itemDetail.charge);
-    }, []);
+    }, [itemDetail.charge]);
     return (
         <>
             <DynamicPopOver
