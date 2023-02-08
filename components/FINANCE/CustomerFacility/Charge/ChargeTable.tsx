@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { BsSearch } from "react-icons/bs";
 import style from "../../../../styles/SearchFilter.module.scss";
 import "tippy.js/dist/tippy.css";
@@ -8,6 +8,8 @@ import { useQuery } from "react-query";
 import { getCookie } from "cookies-next";
 import api from "../../../../util/api";
 import Pagination from "../../../Pagination";
+import AppContext from "../../../Context/AppContext";
+import TableErrorMessage from "../../../TableErrorMessage";
 
 type Props = {
     page: string;
@@ -15,6 +17,7 @@ type Props = {
 };
 
 export default function ChargeTable({ page, setCreate }: Props) {
+    const { setPrompt } = useContext(AppContext);
     const [TablePage, setTablePage] = useState(1);
     const [isSearch, setSearch] = useState("");
     const { data, isLoading, isError } = useQuery(
@@ -30,6 +33,13 @@ export default function ChargeTable({ page, setCreate }: Props) {
             );
         }
     );
+    if (isError) {
+        setPrompt({
+            message: "Something is wrong!",
+            type: "error",
+            toggle: true,
+        });
+    }
     return (
         <>
             <section className={style.container}>
@@ -91,6 +101,7 @@ export default function ChargeTable({ page, setCreate }: Props) {
                         </aside>
                     </div>
                 )}
+                {isError && <TableErrorMessage />}
             </div>
             <Pagination
                 setTablePage={setTablePage}

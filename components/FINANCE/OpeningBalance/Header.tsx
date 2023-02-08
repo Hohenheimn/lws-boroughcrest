@@ -12,13 +12,17 @@ import AppContext from "../../../components/Context/AppContext";
 import { CustomerImport } from "../../../components/ReactQuery/CustomerMethod";
 import Calendar from "../../Calendar";
 
-export default function Header() {
+type HeaderProps = {
+    isDate: {
+        value: string;
+        toggle: boolean;
+    };
+    setDate: Function;
+};
+
+export default function Header({ isDate, setDate }: HeaderProps) {
     const { setPrompt } = useContext(AppContext);
     const router = useRouter();
-    const [isDate, setDate] = useState({
-        value: "",
-        toggle: false,
-    });
 
     const ImportSuccess = () => {
         setPrompt({
@@ -65,7 +69,7 @@ export default function Header() {
                 <div className={style.period}>
                     {!router.asPath.includes("subledger") && (
                         <>
-                            <p>DATE</p>
+                            <p className="labelField">DATE</p>
                             <div className="calendar">
                                 <span className="cal">
                                     <Image
@@ -83,7 +87,6 @@ export default function Header() {
                                     onClick={() =>
                                         setDate({ ...isDate, toggle: true })
                                     }
-                                    className="px-2 h-10 1550px:h-8 outline-none rounded-md shadow-md"
                                 />
                                 {isDate.toggle && (
                                     <Calendar

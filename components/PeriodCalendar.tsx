@@ -6,8 +6,9 @@ import "react-date-range/dist/theme/default.css"; // theme css file
 import DynamicPopOver from "./DynamicPopOver";
 import React from "react";
 import Image from "next/image";
+import PeriodFNS from "./PeriodFNS";
 
-type PeriodCalendarProps = {
+export type PeriodCalendarProps = {
     value: {
         from: string;
         to: string;
@@ -19,51 +20,31 @@ export default function PeriodCalendar({
     value,
     setValue,
 }: PeriodCalendarProps) {
-    const [range, setRange] = useState([
-        {
-            startDate: new Date(),
-            endDate: new Date(),
-            key: "selection",
-        },
-    ]);
     const [open, setOpen] = useState(false);
-    // change Value of field
-    useEffect(() => {
-        if (
-            format(range[0].startDate, "yyyy-MM-dd") ===
-            format(range[0].endDate, "yyyy-MM-dd")
-        )
-            return;
-        setValue({
-            from: format(range[0].startDate, "yyyy-MM-dd"),
-            to: format(range[0].endDate, "yyyy-MM-dd"),
-        });
-    }, [range[0].startDate, range[0].endDate]);
 
     return (
         <div>
             <DynamicPopOver
+                className=""
                 toRef={
                     <div className="flex items-center">
-                        <p className="text-ThemeRed mr-3 font-NHU-bold 640px:text-[12px] 480px:w-full">
-                            PERIOD
-                        </p>
+                        <p className="labelField">PERIOD</p>
                         <div
-                            className="px-5 h-10 1550px:h-8 shadow-md rounded-md bg-white flex justify-between items-center"
+                            className="p-1 px-2 text-[#545454] font-NHU-medium 1550px:min-w-[100px] rounded-md outline-none shadow-md bg-white flex justify-between items-center"
                             onClick={() => setOpen((open) => !open)}
                         >
                             <input
                                 value={value.from}
                                 readOnly
-                                className=" outline-none w-[90px] font-NHU-medium text-[#545454]"
+                                className=" outline-none w-[90px] font-NHU-medium text-[#545454] 1550px:text-[14px]"
                             />
-                            <p className=" text-ThemeRed font-NHU-medium mr-2">
-                                to
+                            <p className=" text-ThemeRed font-NHU-regular mx-2">
+                                -
                             </p>
                             <input
                                 value={value.to}
                                 readOnly
-                                className=" outline-none w-[100px] font-NHU-medium text-[#545454]"
+                                className=" outline-none w-[100px] font-NHU-medium text-[#545454] 1550px:text-[14px]"
                             />
                             <Image
                                 src="/Images/CalendarMini.png"
@@ -77,11 +58,10 @@ export default function PeriodCalendar({
                 toPop={
                     <>
                         {open && (
-                            <DatePickerContainer
+                            <PeriodFNS
+                                setToggle={setOpen}
+                                isValue={value}
                                 setValue={setValue}
-                                setRange={setRange}
-                                range={range}
-                                setOpen={setOpen}
                             />
                         )}
                     </>
@@ -90,50 +70,3 @@ export default function PeriodCalendar({
         </div>
     );
 }
-
-type Props = {
-    setRange: Function;
-    range: any;
-    setOpen: Function;
-    setValue: Function;
-};
-
-const DatePickerContainer = ({ setRange, range, setOpen, setValue }: Props) => {
-    const modal = useRef<any>();
-    useEffect(() => {
-        const clickOutSide = (e: any) => {
-            if (!modal.current.contains(e.target)) {
-                setOpen(false);
-            }
-        };
-        document.addEventListener("mousedown", clickOutSide);
-        return () => {
-            document.removeEventListener("mousedown", clickOutSide);
-        };
-    });
-
-    return (
-        <div ref={modal}>
-            <DateRangePicker
-                onChange={(item: any) => {
-                    if (
-                        format(item.selection.startDate, "yyyy-MM-dd") ===
-                        format(item.selection.endDate, "yyyy-MM-dd")
-                    ) {
-                        setValue({
-                            from: "",
-                            to: "",
-                        });
-                        setRange([item.selection]);
-                    } else {
-                        setRange([item.selection]);
-                    }
-                }}
-                moveRangeOnFirstSelection={false}
-                ranges={range}
-                months={2}
-                direction="horizontal"
-            />
-        </div>
-    );
-};

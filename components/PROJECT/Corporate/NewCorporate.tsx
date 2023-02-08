@@ -7,13 +7,13 @@ import { RiArrowDownSFill } from "react-icons/ri";
 import { AiFillCamera } from "react-icons/ai";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import api from "../../../util/api";
 import type { firstCorporateForm } from "../../../types/corporateList";
 import type { secondCorporateForm } from "../../../types/corporateList";
 import { ScaleLoader } from "react-spinners";
 import { getCookie } from "cookies-next";
-import * as yup from "yup";
+import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 
 export default function NewCorporate() {
     const [isNewActive, setNewActive] = useState([true, false]);
@@ -105,8 +105,6 @@ const Primary = ({
                 ImageReader.addEventListener("load", (event: any) => {
                     setProfileUrl(event.target.result);
                 });
-                // const file = e.target.files;
-                // setLogoStatus(file[0].name);
             } else {
                 setLogoStatus("Invalid Image File");
             }
@@ -167,6 +165,7 @@ const Primary = ({
                                     name: e.target.value,
                                 });
                             }}
+                            className="field"
                         />
                         {errors.name && (
                             <p className="text-[10px]">{errors.name.message}</p>
@@ -175,6 +174,7 @@ const Primary = ({
                     <li>
                         <label>*TIN Number</label>
                         <input
+                            className="field"
                             type="number"
                             placeholder="000000000"
                             {...register("tin", {
@@ -207,6 +207,7 @@ const Primary = ({
                     <li>
                         <label>*Branch Code</label>
                         <input
+                            className="field"
                             placeholder="00000"
                             {...register("branch_code", {
                                 required: "Required",
@@ -238,6 +239,7 @@ const Primary = ({
                     <li>
                         <label>RDO NO.</label>
                         <input
+                            className="field"
                             type="number"
                             placeholder="000"
                             {...register("rdo_no", {
@@ -267,27 +269,34 @@ const Primary = ({
                     </li>
                     <li>
                         <label>*GST TYPE.</label>
-                        <select
-                            {...register("gst_type", {
-                                required: true,
-                            })}
-                            id=""
-                            required
-                            value={createCorporate.gst_type}
-                            onChange={(e) => {
-                                setCreateCorporate({
-                                    ...createCorporate,
-                                    gst_type: e.target.value,
-                                });
-                            }}
-                        >
-                            <option value="VAT">VAT</option>
-                            <option value="NON-VAT">NON-VAT</option>
-                        </select>
+                        <div className="select">
+                            <select
+                                {...register("gst_type", {
+                                    required: true,
+                                })}
+                                id=""
+                                required
+                                value={createCorporate.gst_type}
+                                onChange={(e) => {
+                                    setCreateCorporate({
+                                        ...createCorporate,
+                                        gst_type: e.target.value,
+                                    });
+                                }}
+                                className="field"
+                            >
+                                <option value="VAT">VAT</option>
+                                <option value="NON-VAT">NON-VAT</option>
+                            </select>
+                            <span>
+                                <MdOutlineKeyboardArrowDown />
+                            </span>
+                        </div>
                     </li>
                     <li>
                         <label>SEC. Registration</label>
                         <input
+                            className="field"
                             type="number"
                             placeholder="000"
                             {...register("sec_registration_no", {
@@ -479,6 +488,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                         <label>CONTACT NO</label>
                         <aside>
                             <input
+                                className="field"
                                 type="number"
                                 placeholder="09"
                                 maxLength={11}
@@ -521,6 +531,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                             </p>
                         )}
                         <input
+                            className="field"
                             type="number"
                             placeholder="09"
                             value={createCorporate.alt_contact_no}
@@ -562,6 +573,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                         <label>EMAIL ADDRESS</label>
                         <aside>
                             <input
+                                className="field"
                                 type="email"
                                 {...register("email", {
                                     required: "Required",
@@ -590,6 +602,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                             </p>
                         )}
                         <input
+                            className="field"
                             type="email"
                             {...register("alt_email", {
                                 onChange: (e) => {
@@ -619,6 +632,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                     <li>
                         <label>*UNIT/FLOOR/HOUSE NO.</label>
                         <input
+                            className="field"
                             type="text"
                             {...register("address_unit_floor", {
                                 required: "Required",
@@ -644,6 +658,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                     <li>
                         <label>*BUILDING</label>
                         <input
+                            className="field"
                             type="text"
                             {...register("address_building", {
                                 required: "Required",
@@ -669,6 +684,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                     <li>
                         <label>*STREET</label>
                         <input
+                            className="field"
                             type="text"
                             {...register("address_street", {
                                 required: "Required",
@@ -691,6 +707,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                     <li>
                         <label>*DISTRICT</label>
                         <input
+                            className="field"
                             type="text"
                             {...register("address_district", {
                                 required: "Required",
@@ -716,6 +733,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                     <li>
                         <label>*MUNICIPALITY</label>
                         <input
+                            className="field"
                             type="text"
                             {...register("address_municipal_city", {
                                 required: "Required",
@@ -741,6 +759,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                     <li>
                         <label>*PROVINCE</label>
                         <input
+                            className="field"
                             type="text"
                             {...register("address_province", {
                                 required: "Required",
@@ -766,6 +785,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                     <li>
                         <label>*ZIP CODE</label>
                         <input
+                            className="field"
                             type="number"
                             {...register("address_zip_code", {
                                 required: "Required",

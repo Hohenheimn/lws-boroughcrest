@@ -62,36 +62,38 @@ export default function Dropdown({
 
     if (isLoading) {
         return (
-            <ul ref={modal} className="w-full flex justify-center py-3">
-                <BarLoader
-                    color={"#8f384d"}
-                    height="5px"
-                    width="100px"
-                    aria-label="Loading Spinner"
-                    data-testid="loader"
-                />
+            <ul ref={modal} className="dropdown-list">
+                <li>
+                    <div>
+                        <BarLoader
+                            color={"#8f384d"}
+                            height="5px"
+                            width="100px"
+                            aria-label="Loading Spinner"
+                            data-testid="loader"
+                        />
+                    </div>
+                </li>
             </ul>
         );
     }
     if (isError) {
         return (
-            <ul ref={modal} className="w-full flex justify-center py-3">
+            <ul ref={modal} className="dropdown-list">
                 <li>Something is wrong!</li>
             </ul>
         );
     }
     if (data?.data.length <= 0) {
         return (
-            <ul ref={modal}>
-                <p className="py-2 px-3 text-center text-[12px]">
-                    Discount cannot be found!
-                </p>
+            <ul ref={modal} className="dropdown-list">
+                <li>Discount cannot be found!</li>
             </ul>
         );
     }
 
     return (
-        <ul ref={modal} className="dropdown">
+        <ul ref={modal} className="dropdown-list">
             {data?.data.map((item: any, index: number) => (
                 <li key={index} onClick={onClickHandler} data-id={item.id}>
                     {item.account_name}

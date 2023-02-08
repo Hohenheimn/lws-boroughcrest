@@ -51,30 +51,24 @@ export default function JournalForm({
             <div>
                 <ul className="flex flex-wrap justify-between pb-8 mb-8 border-b border-gray-300">
                     <li className="w-[32%] 820px:w-2/4 820px:mb-2 480px:w-full">
-                        <p className=" text-ThemeRed mr-3 font-NHU-bold 820px:text-[13px] 1550px:text-[14px]">
-                            CUSTOMER
-                        </p>
+                        <p className="labelField">CUSTOMER</p>
                         <CustomerDropdown
                             setCustomer={setCustomer}
                             isCustomer={isCustomer}
                         />
                     </li>
                     <li className="w-[32%] 820px:w-2/4 820px:mb-2">
-                        <p className=" text-ThemeRed mr-3 font-NHU-bold 820px:text-[13px] 1550px:text-[14px]">
-                            CLASS
-                        </p>
+                        <p className=" labelField">CLASS</p>
                         <h1>{isCustomer.class}</h1>
                     </li>
                     <li className="w-[32%] 820px:w-2/4 820px:mb-2">
-                        <p className=" text-ThemeRed mr-3 font-NHU-bold 820px:text-[13px] 1550px:text-[14px]">
-                            PROPERTY
-                        </p>
+                        <p className=" labelField">PROPERTY</p>
                         <h1>{isCustomer.property}</h1>
                     </li>
                 </ul>
-                <div className="w-full overflow-auto">
-                    <table className={style.crudTable}>
-                        <thead>
+                <div className="table_container">
+                    <table className="table_list forCrud">
+                        <thead className="textRed">
                             <tr>
                                 <th>CHARGE</th>
                                 <th>DESCRIPTION</th>
@@ -240,6 +234,7 @@ const List = ({ itemList, setState, isState, index }: List) => {
             </td>
             <td>
                 <input
+                    className="field"
                     type="text"
                     value={itemList.description}
                     onChange={(e) => updateValue("description", e)}
@@ -247,6 +242,7 @@ const List = ({ itemList, setState, isState, index }: List) => {
             </td>
             <td>
                 <input
+                    className="field"
                     type="number"
                     value={itemList.unit_price}
                     onChange={(e) => updateValue("unit_price", e)}
@@ -254,6 +250,7 @@ const List = ({ itemList, setState, isState, index }: List) => {
             </td>
             <td>
                 <input
+                    className="field"
                     type="number"
                     value={itemList.quantity}
                     onChange={(e) => updateValue("quantity", e)}
@@ -261,29 +258,29 @@ const List = ({ itemList, setState, isState, index }: List) => {
             </td>
             <td>
                 <input
+                    className="field disabled"
                     type="number"
                     value={itemList.uom}
-                    className={style.disabled}
                     onChange={(e) => updateValue("uom", e)}
                 />
             </td>
             <td>
                 <input
                     type="number"
+                    className="field disabled"
                     value={itemList.vat}
-                    className={style.disabled}
                     onChange={(e) => updateValue("vat", e)}
                 />
             </td>
             <td>
                 <input
                     type="number"
-                    className={style.disabled}
+                    className="field disabled"
                     value={itemList.amount}
                     onChange={(e) => updateValue("amount", e)}
                 />
             </td>
-            <td className={`${style.action}`}>
+            <td className="actionIcon">
                 {isState.length > 1 && (
                     <div onClick={RemoveJournal}>
                         <HiMinus />

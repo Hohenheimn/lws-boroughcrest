@@ -29,10 +29,12 @@ export default function BankAccountDropDown({ isObject, setObject }: Props) {
     return (
         <>
             <DynamicPopOver
+                className=""
+                samewidth={false}
                 toRef={
                     <input
                         type="text"
-                        className=" w-full p-1 h-10 1550px:h-8 min-w-[200px] 820px:h-8 rounded-md outline-none shadow-md text-[#757575]"
+                        className=" field"
                         onClick={() => setToggle(true)}
                         value={tempVal}
                         onChange={(e) => {

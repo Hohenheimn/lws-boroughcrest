@@ -297,26 +297,24 @@ const List = ({ itemDetail, type }: ListProps) => {
                 </td>
             )}
             <td>
-                <div className="item">
-                    {type !== "Posted" ? (
-                        <div className="finance_status">
-                            <div className="status draft">
-                                <div>
-                                    <Image
-                                        src="/Images/f_draft.png"
-                                        width={10}
-                                        height={10}
-                                        alt="Draft"
-                                    />
-                                </div>
+                {type !== "Posted" ? (
+                    <div className="finance_status">
+                        <div className="status draft">
+                            <div>
+                                <Image
+                                    src="/Images/f_draft.png"
+                                    width={10}
+                                    height={10}
+                                    alt="Draft"
+                                />
                             </div>
                         </div>
-                    ) : (
-                        <div>
-                            <h2>Due Date</h2>
-                        </div>
-                    )}
-                </div>
+                    </div>
+                ) : (
+                    <div>
+                        <h2>Due Date</h2>
+                    </div>
+                )}
             </td>
 
             {type === "Unposted" ? (

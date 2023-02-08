@@ -164,6 +164,7 @@ export default function NewContactInfo({
                         <input
                             type="number"
                             formNoValidate
+                            className="field"
                             {...register("contact_no", {
                                 minLength: {
                                     value: 11,
@@ -202,6 +203,7 @@ export default function NewContactInfo({
                         <label>*REGISTERED-EMAIL</label>
                         <input
                             type="email"
+                            className="field"
                             {...register("registered_email", {
                                 onChange: (e) =>
                                     setValue(
@@ -225,6 +227,7 @@ export default function NewContactInfo({
                         <label>*PREFERED EMAIL</label>
                         <input
                             type="email"
+                            className="field"
                             {...register("preferred_email", {
                                 onChange: (e) =>
                                     setValue(
@@ -260,6 +263,7 @@ export default function NewContactInfo({
                         <li>
                             <label>CONTACT PERSON</label>
                             <input
+                                className="field"
                                 type="text"
                                 {...register("company_contact_person", {
                                     onChange: (e) =>
@@ -291,6 +295,7 @@ export default function NewContactInfo({
                     <li>
                         <label>*UNIT/FLOOR/HOUSE NO.</label>
                         <input
+                            className="field"
                             type="text"
                             {...register("registered_address_unit_floor", {
                                 onChange: (e) =>
@@ -314,6 +319,7 @@ export default function NewContactInfo({
                     <li>
                         <label>*BUILDING</label>
                         <input
+                            className="field"
                             type="text"
                             {...register("registered_address_building", {
                                 onChange: (e) =>
@@ -337,6 +343,7 @@ export default function NewContactInfo({
                     <li>
                         <label>*STREET</label>
                         <input
+                            className="field"
                             type="text"
                             {...register("registered_address_street", {})}
                         />
@@ -355,6 +362,7 @@ export default function NewContactInfo({
                     <li>
                         <label>*DISTRICT</label>
                         <input
+                            className="field"
                             type="text"
                             {...register("registered_address_district")}
                         />
@@ -372,6 +380,7 @@ export default function NewContactInfo({
                     <li>
                         <label>*MUNICIPALITY CITY</label>
                         <input
+                            className="field"
                             type="text"
                             {...register("registered_address_municipal_city")}
                         />
@@ -392,6 +401,7 @@ export default function NewContactInfo({
                     <li>
                         <label>*PROVINCE</label>
                         <input
+                            className="field"
                             type="text"
                             {...register("registered_address_province")}
                         />
@@ -409,6 +419,7 @@ export default function NewContactInfo({
                     <li>
                         <label>*ZIP CODE</label>
                         <input
+                            className="field"
                             type="number"
                             {...register("registered_address_zip_code", {
                                 maxLength: {
@@ -452,6 +463,7 @@ export default function NewContactInfo({
                     <li>
                         <label>UNIT/FLOOR/HOUSE NO.</label>
                         <input
+                            className="field"
                             type="text"
                             {...register("MA.mailing_address_unit_floor", {
                                 onChange: (e) =>
@@ -470,6 +482,7 @@ export default function NewContactInfo({
                     <li>
                         <label>BUILDING</label>
                         <input
+                            className="field"
                             type="text"
                             {...register("MA.mailing_address_building", {
                                 onChange: (e) =>
@@ -488,6 +501,7 @@ export default function NewContactInfo({
                     <li>
                         <label>STREET</label>
                         <input
+                            className="field"
                             type="text"
                             {...register("MA.mailing_address_street", {
                                 onChange: (e) =>
@@ -506,6 +520,7 @@ export default function NewContactInfo({
                     <li>
                         <label>DISTRICT</label>
                         <input
+                            className="field"
                             type="text"
                             {...register("MA.mailing_address_district", {
                                 onChange: (e) =>
@@ -524,6 +539,7 @@ export default function NewContactInfo({
                     <li>
                         <label>MUNICIPALITY CITY</label>
                         <input
+                            className="field"
                             type="text"
                             {...register("MA.mailing_address_municipal_city", {
                                 onChange: (e) =>
@@ -545,6 +561,7 @@ export default function NewContactInfo({
                     <li>
                         <label>PROVINCE</label>
                         <input
+                            className="field"
                             type="text"
                             {...register("MA.mailing_address_province", {
                                 onChange: (e) =>
@@ -563,6 +580,7 @@ export default function NewContactInfo({
                     <li>
                         <label>ZIP CODE</label>
                         <input
+                            className="field"
                             type="text"
                             {...register("MA.mailing_address_zip_code", {
                                 maxLength: {

@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useForm } from "react-hook-form";
 import AppContext from "../../Context/AppContext";
 import { RiArrowDownSFill } from "react-icons/ri";
+import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 
 type ModifyUser = {
     setToggleModify: Function;
@@ -98,10 +99,7 @@ export default function ModifyUser({ setToggleModify }: any) {
                             <label className=" text-[12px] font-semibold mb-1 w-[90%]">
                                 *NAME
                             </label>
-                            <input
-                                type="text"
-                                className="rounded-md text-black px-2 py-[2px] outline-none w-[90%] 480px:w-full"
-                            />
+                            <input type="text" className="field w-full" />
                         </li>
                         <li className="  flex flex-col  w-4/12 820px:w-2/4 480px:w-full mb-5 justify-center items-end">
                             <label
@@ -116,30 +114,39 @@ export default function ModifyUser({ setToggleModify }: any) {
                     <ul className={style.ThreeRows}>
                         <li>
                             <label>POSITION</label>
-                            <input type="text" />
+                            <input type="text" className="field w-full" />
                         </li>
                         <li>
                             <label>EMPLOYEE ID</label>
-                            <input type="text" />
+                            <input type="text" className="field w-full" />
                         </li>
                         <li>
                             <label>*DEPARTMENT</label>
-                            <select name="" id="">
-                                <option value=""></option>
-                            </select>
+                            <div className="select">
+                                <select name="" id="" className="field">
+                                    <option value=""></option>
+                                </select>
+                                <span>
+                                    <MdOutlineKeyboardArrowDown />
+                                </span>
+                            </div>
                         </li>
                         <li>
                             <label>*EMAIL</label>
-                            <input type="email" />
+                            <input type="email" className="field w-full" />
                         </li>
 
                         <li>
                             <label>*MOBILE</label>
-                            <input type="number" placeholder="+63" />
+                            <input
+                                type="number"
+                                placeholder="+63"
+                                className="field w-full"
+                            />
                         </li>
                         <li>
                             <label>*CORPORATE</label>
-                            <select name="" id="">
+                            <select name="" id="" className="field w-full">
                                 <option value=""></option>
                             </select>
                         </li>

@@ -11,6 +11,7 @@ import api from "../../../util/api";
 import { BarLoader } from "react-spinners";
 import PeriodCalendar from "../../PeriodCalendar";
 import { AdvanceFilter } from "../../AdvanceFilter";
+import PeriodFNS from "../../PeriodFNS";
 
 type Props = {
     type: string;
@@ -127,6 +128,7 @@ export default function JournalTable({ type }: Props) {
                     <PeriodCalendar value={isPeriod} setValue={setPeriod} />
                 </div>
             )}
+
             <div className="table_container">
                 <table className="table_list journal">
                     <thead>

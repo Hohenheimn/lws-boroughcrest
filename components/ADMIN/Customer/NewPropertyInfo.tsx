@@ -8,6 +8,7 @@ import {
     GetUnitCode,
     PostCustomerDraft,
 } from "../../ReactQuery/CustomerMethod";
+import DynamicPopOver from "../../DynamicPopOver";
 
 type NewPropertyInfo = {
     setActiveForm: Function;
@@ -343,27 +344,39 @@ const List = ({ detail, isProperty, setProperty, id }: List) => {
 
     return (
         <tr>
-            <td className=" max-w-[50px] pr-2 ">
+            <td className="pr-2 ">
                 <div className=" relative">
-                    <input
-                        type="text"
-                        value={detail.unitCode}
-                        onChange={(e) => updateValue(e)}
-                        className="w-full rounded-md text-black px-2 text-[14px] py-[2px] outline-none"
-                        onFocus={() => setSelect(true)}
+                    <DynamicPopOver
+                        className=""
+                        samewidth={true}
+                        toRef={
+                            <input
+                                type="text"
+                                value={detail.unitCode}
+                                onChange={(e) => updateValue(e)}
+                                className="field w-full"
+                                onFocus={() => setSelect(true)}
+                            />
+                        }
+                        toPop={
+                            <>
+                                {isSelect && (
+                                    <Select
+                                        setSelect={setSelect}
+                                        updateValue={updateValue}
+                                    />
+                                )}
+                            </>
+                        }
                     />
-                    {isSelect && (
-                        <Select
-                            setSelect={setSelect}
-                            updateValue={updateValue}
-                        />
-                    )}
                 </div>
             </td>
             <td className="pr-2">
-                <p className="w-full rounded-md text-black h-6 px-2 text-[14px] py-[2px] outline-none bg-ThemeRed50">
-                    {detail.project}
-                </p>
+                <input
+                    type="text"
+                    className="field disabled"
+                    value={detail.project}
+                />
             </td>
             <td className=" flex justify-center">
                 <div className="flex justify-between w-10">
@@ -423,10 +436,7 @@ const Select = ({ setSelect, updateValue }: any) => {
     });
 
     return (
-        <ul
-            ref={Menu}
-            className=" absolute top-full left-0 w-full bg-white p-3 z-10"
-        >
+        <ul ref={Menu} className="dropdown-list">
             {isLoading && (
                 <div className="flex justify-center">
                     <ScaleLoader color="#8f384d" height="10px" width="2px" />

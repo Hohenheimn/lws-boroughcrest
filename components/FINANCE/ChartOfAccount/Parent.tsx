@@ -105,7 +105,7 @@ const Parent = ({
         );
     }
     return (
-        <ul ref={modal}>
+        <ul ref={modal} className="dropdown-list w-[300px]">
             {data?.data.map((item: any, index: number) => (
                 <li
                     key={index}

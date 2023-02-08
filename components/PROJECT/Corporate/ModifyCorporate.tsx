@@ -17,6 +17,7 @@ import type {
 } from "../../../types/corporateList";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
+import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 
 type ModifyCorporate = {
     setToggleModify: Function;
@@ -212,7 +213,7 @@ const PrimaryInformation = ({
                         type="text"
                         value={`${modifyCorporate.id}`}
                         disabled={true}
-                        className=" bg-[#cdb8be]"
+                        className="field disabled"
                     />
                 </li>
                 <li>
@@ -222,6 +223,7 @@ const PrimaryInformation = ({
                         {...register("name", {
                             required: "Required",
                         })}
+                        className="field"
                     />
                     {errors.name && <p>{errors.name.message}</p>}
                 </li>
@@ -243,6 +245,7 @@ const PrimaryInformation = ({
                                     message: "Must be 9 numbers only",
                                 },
                             })}
+                            className="field"
                         />
                         {errors.tin && (
                             <p className="text-[10px]">{errors.tin.message}</p>
@@ -264,6 +267,7 @@ const PrimaryInformation = ({
                                 },
                             })}
                             type="number"
+                            className="field"
                         />
                         {errors.branch_code && (
                             <p className="text-[10px]">
@@ -289,6 +293,7 @@ const PrimaryInformation = ({
                                 message: "Must be 3 Number",
                             },
                         })}
+                        className="field"
                     />
                     {errors.rdo_no && (
                         <p className="text-[10px]">{errors.rdo_no.message}</p>
@@ -296,24 +301,31 @@ const PrimaryInformation = ({
                 </li>
                 <li>
                     <label>*GST TYPE.</label>
-                    <select
-                        {...register("gst_type", {
-                            required: true,
-                        })}
-                        id=""
-                        defaultValue={modifyCorporate.gst_type}
-                        required
-                    >
-                        <option
-                            className={style.disabled}
-                            value={modifyCorporate.gst_type}
-                            disabled
+                    <div className="select">
+                        <select
+                            {...register("gst_type", {
+                                required: true,
+                            })}
+                            id=""
+                            defaultValue={modifyCorporate.gst_type}
+                            required
+                            className="field"
                         >
-                            {modifyCorporate.gst_type}
-                        </option>
-                        <option value="VAT">VAT</option>
-                        <option value="NON-VAT">NON-VAT</option>
-                    </select>
+                            <option
+                                className={style.disabled}
+                                value={modifyCorporate.gst_type}
+                                disabled
+                            >
+                                {modifyCorporate.gst_type}
+                            </option>
+                            <option value="VAT">VAT</option>
+                            <option value="NON-VAT">NON-VAT</option>
+                        </select>
+                        <span>
+                            <MdOutlineKeyboardArrowDown />
+                        </span>
+                    </div>
+
                     {errors.gst_type && <p>{errors.gst_type.message}</p>}
                 </li>
                 {validateTransaction && (
@@ -332,6 +344,7 @@ const PrimaryInformation = ({
                                     message: "Must be 3 Number",
                                 },
                             })}
+                            className="field"
                         />
                         {errors.sec_registration_no && (
                             <p className="text-[10px]">
@@ -559,6 +572,7 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                                         contact_no: e.target.value,
                                     })
                                 }
+                                className="field"
                             />
                             <span>*Official</span>
                         </aside>
@@ -590,6 +604,7 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                                     alt_contact_no: e.target.value,
                                 })
                             }
+                            className="field"
                         />
                         {errors.alt_contact_no && (
                             <p className="text-[10px]">
@@ -617,6 +632,7 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                                         email: e.target.value,
                                     })
                                 }
+                                className="field"
                             />
                             <span>*Official</span>
                         </aside>
@@ -634,6 +650,7 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                                     alt_email: e.target.value,
                                 })
                             }
+                            className="field"
                         />
                         {errors.alt_contact_no && (
                             <p className="text-[10px]">
@@ -662,6 +679,7 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                                     address_unit_floor: e.target.value,
                                 })
                             }
+                            className="field"
                         />
                         {errors.address_unit_floor && (
                             <p className="text-[10px]">
@@ -682,6 +700,7 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                                     address_building: e.target.value,
                                 })
                             }
+                            className="field"
                         />
                         {errors.address_building && (
                             <p className="text-[10px]">
@@ -702,6 +721,7 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                                     address_street: e.target.value,
                                 })
                             }
+                            className="field"
                         />
                         {errors.address_street && (
                             <p className="text-[10px]">
@@ -722,6 +742,7 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                                     address_district: e.target.value,
                                 })
                             }
+                            className="field"
                         />
                         {errors.address_district && (
                             <p className="text-[10px]">
@@ -742,6 +763,7 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                                     address_municipal_city: e.target.value,
                                 })
                             }
+                            className="field"
                         />
                         {errors.address_municipal_city && (
                             <p className="text-[10px]">
@@ -762,6 +784,7 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                                     address_province: e.target.value,
                                 })
                             }
+                            className="field"
                         />
                         {errors.address_province && (
                             <p className="text-[10px]">
@@ -784,6 +807,7 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                                     message: "Must be 4 Numbers",
                                 },
                             })}
+                            className="field"
                             onChange={(e) =>
                                 setModifyCorporate({
                                     ...modifyCorporate,

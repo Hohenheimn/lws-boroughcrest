@@ -17,13 +17,18 @@ export default function DropDownCustomer({
 }: DropdownItem) {
     const [isToggle, setToggle] = useState(false);
     const [tempSearch, setTempSearch] = useState(itemDetail.customer_name);
+    useEffect(() => {
+        setTempSearch(itemDetail.customer_name);
+    }, []);
     return (
         <>
             <DynamicPopOver
+                className="w-full"
+                samewidth={true}
                 toRef={
                     <input
                         type="text"
-                        className=" w-full p-1 min-w-[200px] 820px:h-8 rounded-md outline-none shadow-md text-[#757575]"
+                        className="field w-full"
                         onClick={() => setToggle(true)}
                         value={tempSearch}
                         onChange={(e) => {
@@ -66,7 +71,7 @@ const List = ({
     itemDetail,
 }: List) => {
     const { data, isLoading, isError } = useQuery(
-        ["COA-list", tempSearch],
+        ["customer-list-dd", tempSearch],
         () => {
             return api.get(`/admin/customer?keywords=${tempSearch}`, {
                 headers: {
@@ -105,15 +110,18 @@ const List = ({
                     {item.name}
                 </li>
             ))}
+
             {isLoading && (
                 <li>
-                    <BarLoader
-                        color={"#8f384d"}
-                        height="5px"
-                        width="100px"
-                        aria-label="Loading Spinner"
-                        data-testid="loader"
-                    />
+                    <div>
+                        <BarLoader
+                            color={"#8f384d"}
+                            height="5px"
+                            width="100px"
+                            aria-label="Loading Spinner"
+                            data-testid="loader"
+                        />
+                    </div>
                 </li>
             )}
             {isError ||

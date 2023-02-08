@@ -10,6 +10,7 @@ import BarLoader from "react-spinners/BarLoader";
 import type { customerItemDetail } from "../../../types/customerList";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
+import TableErrorMessage from "../../TableErrorMessage";
 
 export default function CustomerTable() {
     const { TableRows, cusTableColumn, isSearchBar, setPrint } =
@@ -95,6 +96,7 @@ export default function CustomerTable() {
                         </aside>
                     </div>
                 )}
+                {isError && <TableErrorMessage />}
             </div>
 
             <Pagination
@@ -134,7 +136,7 @@ const List = ({ itemDetail }: customerItemDetail) => {
                             : `/admin/customer/${itemDetail?.id}`
                     }`}
                 >
-                    <a className="item">
+                    <a className="flex items-center">
                         <aside>
                             <Image src={Logo} alt="profile" layout="fill" />
                         </aside>

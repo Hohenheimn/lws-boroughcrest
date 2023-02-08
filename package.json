@@ -33,6 +33,7 @@
         "react-spinners": "^0.13.6",
         "react-table": "^7.8.0",
         "react-to-print": "^2.14.11",
+        "rsuite": "^5.25.0",
         "sass": "^1.55.0",
         "sharp": "^0.31.1",
         "yup": "^0.32.11"

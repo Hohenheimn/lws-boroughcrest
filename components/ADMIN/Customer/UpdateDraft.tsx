@@ -16,6 +16,7 @@ import { useForm } from "react-hook-form";
 import { customer } from "../../../types/customerList";
 import { BeatLoader, ScaleLoader } from "react-spinners";
 import { useQueryClient } from "react-query";
+import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 
 export default function UpdateDraft() {
     const {
@@ -173,31 +174,35 @@ export default function UpdateDraft() {
                                     <p className=" text-[12px] font-semibold mb-1 w-[90%]">
                                         TYPE
                                     </p>
-
-                                    <select
-                                        id=""
-                                        {...register("type", {
-                                            required: "Required",
-                                        })}
-                                        value={isType}
-                                        onChange={(e) =>
-                                            setType(e.target.value)
-                                        }
-                                        className="uppercase rounded-md px-2 py-[2px] border-none text-black outline-none w-[90%] 480px:w-full"
-                                    >
-                                        <option
-                                            value="Individual"
-                                            className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
+                                    <div className="select">
+                                        <select
+                                            id=""
+                                            {...register("type", {
+                                                required: "Required",
+                                            })}
+                                            value={isType}
+                                            onChange={(e) =>
+                                                setType(e.target.value)
+                                            }
+                                            className="uppercase rounded-md px-2 py-[2px] border-none text-black outline-none w-[90%] 480px:w-full"
                                         >
-                                            Individual
-                                        </option>
-                                        <option
-                                            className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
-                                            value="Company"
-                                        >
-                                            Company
-                                        </option>
-                                    </select>
+                                            <option
+                                                value="Individual"
+                                                className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
+                                            >
+                                                Individual
+                                            </option>
+                                            <option
+                                                className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
+                                                value="Company"
+                                            >
+                                                Company
+                                            </option>
+                                        </select>
+                                        <span>
+                                            <MdOutlineKeyboardArrowDown />
+                                        </span>
+                                    </div>
                                 </aside>
                                 <aside className=" flex w-4/12 justify-end 480px:w-2/5">
                                     <span className="mr-2 font-bold">

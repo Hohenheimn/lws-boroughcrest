@@ -24,6 +24,7 @@ import {
 } from "../../ReactQuery/PropertyMethod";
 import Calendar from "../../Calendar";
 import DynamicPopOver from "../../DynamicPopOver";
+import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 
 type Props = {
     DefaultFormData: PropertyDefaultValue;
@@ -338,11 +339,23 @@ export default function PropertyForm({
                         )}
                         <li>
                             <label>*TYPE</label>
-                            <select id="" {...register("type")}>
-                                <option value="Parking">Parking</option>
-                                <option value="Unit">Unit</option>
-                                <option value="Commercial">Commercial</option>
-                            </select>
+                            <div className="select">
+                                <select
+                                    id=""
+                                    {...register("type")}
+                                    className="field"
+                                >
+                                    <option value="Parking">Parking</option>
+                                    <option value="Unit">Unit</option>
+                                    <option value="Commercial">
+                                        Commercial
+                                    </option>
+                                </select>
+                                <span>
+                                    <MdOutlineKeyboardArrowDown />
+                                </span>
+                            </div>
+
                             {errors.type && (
                                 <p className="text-[10px]">
                                     {errors.type.message}
@@ -355,6 +368,7 @@ export default function PropertyForm({
                         <li>
                             <label>*UNIT CODE</label>
                             <input
+                                className="field"
                                 type="text"
                                 placeholder="---"
                                 value={isUnitCode}
@@ -377,10 +391,20 @@ export default function PropertyForm({
                         </li>
                         <li>
                             <label>*CLASS</label>
-                            <select id="" {...register("class")}>
-                                <option value="Saleable">Saleable</option>
-                                <option value="Leaseable">Leaseable</option>
-                            </select>
+                            <div className="select">
+                                <select
+                                    id=""
+                                    {...register("class")}
+                                    className="field"
+                                >
+                                    <option value="Saleable">Saleable</option>
+                                    <option value="Leaseable">Leaseable</option>
+                                </select>
+                                <span>
+                                    <MdOutlineKeyboardArrowDown />
+                                </span>
+                            </div>
+
                             {errors.class && (
                                 <p className="text-[10px]">
                                     {errors.class.message}
@@ -392,7 +416,11 @@ export default function PropertyForm({
                         </li>
                         <li>
                             <label>*ADDRESS</label>
-                            <input type="text" {...register("address")} />
+                            <input
+                                type="text"
+                                {...register("address")}
+                                className="field"
+                            />
                             {errors.address && (
                                 <p className="text-[10px]">
                                     {errors.address.message}
@@ -405,8 +433,11 @@ export default function PropertyForm({
                         <li>
                             <label>*DEVELOPER</label>
                             <DynamicPopOver
+                                className="w-full"
+                                samewidth={true}
                                 toRef={
                                     <input
+                                        className="field"
                                         type="text"
                                         {...register("developer")}
                                         autoComplete="off"
@@ -450,9 +481,12 @@ export default function PropertyForm({
                         <li>
                             <label>*PROJECT</label>
                             <DynamicPopOver
+                                className="w-full"
+                                samewidth={false}
                                 toRef={
                                     <input
                                         type="text"
+                                        className="field"
                                         onFocus={() => setProject(true)}
                                         onClick={() => setProject(true)}
                                         autoComplete="off"
@@ -495,8 +529,11 @@ export default function PropertyForm({
                         <li>
                             <label>*TOWER</label>
                             <DynamicPopOver
+                                className="w-full"
+                                samewidth={false}
                                 toRef={
                                     <input
+                                        className="field"
                                         type="text"
                                         onFocus={() => setTower(true)}
                                         onClick={() => setTower(true)}
@@ -541,8 +578,11 @@ export default function PropertyForm({
                         <li>
                             <label>*FLOOR</label>
                             <DynamicPopOver
+                                className="w-full"
+                                samewidth={false}
                                 toRef={
                                     <input
+                                        className="field"
                                         type="text"
                                         onFocus={() => setFloor(true)}
                                         {...register("floor")}
@@ -586,7 +626,11 @@ export default function PropertyForm({
                         </li>
                         <li>
                             <label>*AREA</label>
-                            <input type="text" {...register("area")} />
+                            <input
+                                type="text"
+                                className="field"
+                                {...register("area")}
+                            />
                             {errors.area && (
                                 <p className="text-[10px]">
                                     {errors.area.message}
@@ -609,6 +653,7 @@ export default function PropertyForm({
                                     />
                                 </span>
                                 <input
+                                    className="field"
                                     type="text"
                                     {...register("acceptance_date")}
                                     autoComplete="off"
@@ -619,7 +664,6 @@ export default function PropertyForm({
                                             toggle: true,
                                         })
                                     }
-                                    className="p-2 outline-none rounded-md shadow-md"
                                 />
                                 {acceptanceDate.toggle && (
                                     <Calendar
@@ -642,6 +686,7 @@ export default function PropertyForm({
                                 </span>
                                 <input
                                     type="text"
+                                    className="field"
                                     {...register("turnover_date")}
                                     placeholder="dd/mm/yyyy"
                                     autoComplete="off"
@@ -651,7 +696,6 @@ export default function PropertyForm({
                                             toggle: true,
                                         })
                                     }
-                                    className="p-2 outline-none rounded-md shadow-md"
                                 />
                                 {turnoverDate.toggle && (
                                     <Calendar

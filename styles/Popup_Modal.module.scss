@@ -23,14 +23,11 @@
             }
         }
         .twoRows_container {
-            @apply flex w-full justify-between mb-5;
+            @apply flex w-full justify-between mb-5 items-start;
             li {
                 @apply w-2/4 flex flex-col;
-                aside {
+                article {
                     @apply mb-2;
-                }
-                input {
-                    @apply w-3/5 mr-1 rounded-md text-black px-2 py-[2px] outline-none 480px:w-full;
                 }
                 span {
                     @apply text-[12px] text-gray-500;
@@ -44,12 +41,9 @@
             @apply flex flex-wrap w-full justify-between mb-5;
             li {
                 @apply w-[48%] 640px:w-full mb-5 flex flex-col;
-                aside {
-                    @apply mb-2;
-                }
                 input,
                 select {
-                    @apply w-3/5 mr-1 w-full rounded-md text-black px-2 py-[2px] outline-none 480px:w-full;
+                    @apply w-3/5 mr-1 w-full rounded-md text-[#545454] px-2 py-[2px] outline-none 480px:w-full;
                 }
                 span {
                     @apply text-[12px] text-gray-500;
@@ -86,14 +80,9 @@
                 }
             }
             li.twoField {
-                @apply flex flex-row flex-wrap justify-between mb-0;
-                div {
+                @apply flex-row -mt-[5px] justify-between flex-wrap;
+                article {
                     @apply w-[48%] 480px:w-full 480px:mb-5;
-                    input,
-                    select,
-                    div {
-                        @apply w-full;
-                    }
                 }
             }
             li.status {
@@ -132,20 +121,7 @@
                     @apply text-[12px] font-semibold uppercase mb-1;
                 }
                 .id-disabled {
-                    @apply rounded-md text-black px-2 py-[2px] outline-none w-[100%] 480px:w-full bg-[#cdb8be];
-                }
-                input {
-                    @apply rounded-md text-black px-2 py-[2px] outline-none w-[100%] 480px:w-full;
-                }
-
-                select {
-                    @apply w-full rounded-md text-black px-2 py-[2px] outline-none 480px:w-full;
-                    option {
-                        @apply hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed;
-                    }
-                    option.disabled {
-                        @apply bg-ThemeRed text-white text-[12px];
-                    }
+                    @apply rounded-md text-[#545454] px-2 py-[2px] outline-none w-[100%] 480px:w-full bg-[#cdb8be];
                 }
                 .checkboxContainer {
                     @apply mt-2;
@@ -250,6 +226,9 @@
                 }
             }
         }
+    }
+    section.wide {
+        @apply max-w-[1200px];
     }
 }
 

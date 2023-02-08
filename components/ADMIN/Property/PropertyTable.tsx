@@ -4,10 +4,14 @@ import Link from "next/link";
 import { GetPropertyList } from "../../ReactQuery/PropertyMethod";
 import { BarLoader } from "react-spinners";
 import Pagination from "../../Pagination";
+import TableErrorMessage from "../../TableErrorMessage";
 
 export default function PropertyTable({ isSearchTable }: any) {
     const { propTableColumn, propTableRows, setPrint } = useContext(AppContext);
-    const { isLoading, data } = GetPropertyList(propTableRows, isSearchTable);
+    const { isLoading, data, isError } = GetPropertyList(
+        propTableRows,
+        isSearchTable
+    );
     const PropertyData = data?.data?.data;
     const [TablePage, setTablePage] = useState(1);
     // Set parameter for print
@@ -52,6 +56,7 @@ export default function PropertyTable({ isSearchTable }: any) {
                         </aside>
                     </div>
                 )}
+                {isError && <TableErrorMessage />}
             </div>
 
             <Pagination

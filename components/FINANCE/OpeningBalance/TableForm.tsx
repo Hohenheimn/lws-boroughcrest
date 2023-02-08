@@ -192,6 +192,7 @@ const List = ({ itemDetail, setTableItem, isTableItem }: List) => {
             </td>
             <td>
                 <DynamicPopOver
+                    className="w-full"
                     toRef={
                         <input
                             type="text"

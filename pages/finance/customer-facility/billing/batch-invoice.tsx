@@ -7,6 +7,7 @@ export default function BatchInvoice() {
         {
             id: 0,
             charge: 0,
+            charge_id: 0,
             description: "",
             application: "SELECT",
         },

@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { BsPlusLg } from "react-icons/bs";
 import { HiMinus } from "react-icons/hi";
 import { RiArrowDownSFill } from "react-icons/ri";
-import style from "../../../styles/finance/Crud-table.module.scss";
 import Calendar from "../../Calendar";
 import DropdownSearch from "../../DropdownSearch";
 import DropDownCOA from "./DropdownCOA";
@@ -30,14 +29,24 @@ export default function JournalForm({ DefaultValue, type }: Props) {
     });
 
     const [isDefault, setDefault] = useState<defaultArray>(DefaultValue);
+
+    // TOTAL
+    const [totalDebit, setTotalDebit] = useState<number>(0);
+    const [totalCredit, setTotalCredit] = useState<number>(0);
+    useEffect(() => {
+        setTotalDebit(0);
+        setTotalCredit(0);
+        isDefault.map((item: defaultObject) => {
+            setTotalDebit((temp) => Number(temp) + Number(item.debit));
+            setTotalCredit((temp) => Number(temp) + Number(item.credit));
+        });
+    }, [isDefault]);
     return (
         <>
             <div>
                 <ul className="flex flex-wrap justify-between pb-8 mb-8 border-b border-gray-300">
                     <li className="w-[20%] 1366px:w-[30%] 820px:w-full 820px:mb-5 flex items-center">
-                        <p className=" text-ThemeRed mr-3 font-NHU-bold 820px:text-[13px]">
-                            DATE
-                        </p>
+                        <p className=" labelField">DATE</p>
                         <div className="calendar">
                             <span className="cal">
                                 <Image
@@ -63,18 +72,16 @@ export default function JournalForm({ DefaultValue, type }: Props) {
                         </div>
                     </li>
                     <li className="w-[75%] max-w-[850px] 1366px:w-[65%] 820px:w-full flex items-center">
-                        <p className=" text-ThemeRed mr-3 font-NHU-bold">
-                            PARTICULARS
-                        </p>
+                        <p className=" labelField">PARTICULARS</p>
                         <input
                             type="text"
                             className="px-2 h-10 1550px:h-8 outline-none rounded-md shadow-md w-full"
                         />
                     </li>
                 </ul>
-                <div className="w-full overflow-auto">
-                    <table className={style.crudTable}>
-                        <thead>
+                <div className="table_container">
+                    <table className="table_list forCrud">
+                        <thead className="textRed">
                             <tr>
                                 <th>CODE</th>
                                 <th>ACCOUNT NAME</th>
@@ -93,40 +100,39 @@ export default function JournalForm({ DefaultValue, type }: Props) {
                                     isDefault={isDefault}
                                 />
                             ))}
-                            <tr className={style.total}>
-                                <td></td>
-                                <td className={style.label}>
-                                    <h1>TOTAL</h1>
-                                </td>
-                                <td>
-                                    <div className={style.peso}>
-                                        <aside>
-                                            <Image
-                                                src="/Images/peso.png"
-                                                height={13}
-                                                width={10}
-                                                alt=""
-                                            />
-                                        </aside>
-                                        <p>-</p>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div className={style.peso}>
-                                        <aside>
-                                            <Image
-                                                src="/Images/peso.png"
-                                                height={13}
-                                                width={10}
-                                                alt=""
-                                            />
-                                        </aside>
-                                        <p>-</p>
-                                    </div>
-                                </td>
-                            </tr>
                         </tbody>
                     </table>
+                </div>
+                <div className="flex flex-wrap justify-end py-5 480px:justify-start">
+                    <h1 className="text-start text-[16px] min-w-[200px] 1280px:text-[13px] text-ThemeRed pb-1">
+                        TOTAL
+                    </h1>
+                    <div className=" relative flex items-center text-[#757575] font-NHU-bold w-[200px] mr-5">
+                        <aside className=" content-['₱'] absolute top-[0%] h-full flex items-center left-2 z-10">
+                            <Image
+                                src="/Images/peso.png"
+                                height={13}
+                                width={10}
+                                alt=""
+                            />
+                        </aside>
+                        <p className=" text-end w-full text-[#757575] font-NHU-bold text-[18px] 1280px:text-[13px]">
+                            {totalDebit}-
+                        </p>
+                    </div>
+                    <div className=" relative flex items-center text-[#757575] font-NHU-bold w-[200px] ">
+                        <aside className=" content-['₱'] absolute top-[0%] h-full flex items-center left-2 z-10">
+                            <Image
+                                src="/Images/peso.png"
+                                height={13}
+                                width={10}
+                                alt=""
+                            />
+                        </aside>
+                        <p className=" text-end w-full text-[#757575] font-NHU-bold text-[18px] 1280px:text-[13px]">
+                            {totalCredit}-
+                        </p>
+                    </div>
                 </div>
             </div>
             <div className="DropDownSave">
@@ -234,7 +240,7 @@ const List = ({ itemList, setDefault, isDefault, index }: List) => {
                 <input
                     type="number"
                     value={itemList.debit}
-                    className={style.peso}
+                    className="field w-full"
                     onChange={(e) => updateValue("debit", e)}
                 />
             </td>
@@ -242,11 +248,11 @@ const List = ({ itemList, setDefault, isDefault, index }: List) => {
                 <input
                     type="number"
                     value={itemList.credit}
-                    className={style.peso}
+                    className="field w-full"
                     onChange={(e) => updateValue("credit", e)}
                 />
             </td>
-            <td className={`${style.action}`}>
+            <td className="actionIcon">
                 {isDefault.length > 1 && (
                     <div onClick={RemoveJournal}>
                         <HiMinus />

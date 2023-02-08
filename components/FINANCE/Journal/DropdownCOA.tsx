@@ -16,14 +16,15 @@ export default function DropDownCOA({
 }: DropdownItem) {
     const [isToggle, setToggle] = useState(false);
     const [tempSearch, setTempSearch] = useState(itemDetail.accountName);
-    console.log(itemDetail.accountName);
     return (
         <>
             <DynamicPopOver
+                className="w-full"
+                samewidth={true}
                 toRef={
                     <input
                         type="text"
-                        className="dropdown-input"
+                        className="field w-full"
                         onClick={() => setToggle(true)}
                         value={tempSearch}
                         onChange={(e) => {
@@ -109,13 +110,15 @@ const List = ({
             ))}
             {isLoading && (
                 <li>
-                    <BarLoader
-                        color={"#8f384d"}
-                        height="5px"
-                        width="100px"
-                        aria-label="Loading Spinner"
-                        data-testid="loader"
-                    />
+                    <div>
+                        <BarLoader
+                            color={"#8f384d"}
+                            height="5px"
+                            width="100px"
+                            aria-label="Loading Spinner"
+                            data-testid="loader"
+                        />
+                    </div>
                 </li>
             )}
             {isError ||

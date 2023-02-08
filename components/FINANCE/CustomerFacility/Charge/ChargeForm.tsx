@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useRouter } from "next/router";
 import React, { useContext, useEffect, useState } from "react";
+import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { RiArrowDownSFill } from "react-icons/ri";
 import { useQueryClient } from "react-query";
 import { ScaleLoader } from "react-spinners";
@@ -202,13 +203,14 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                     exit="exit"
                 >
                     <div className={isForm[0] ? "" : "hidden"}>
-                        <h1 className={style.modal_label_primaryRed}>
+                        {/* <h1 className={style.modal_label_primaryRed}>
                             Lorem Ipsum
-                        </h1>
+                        </h1> */}
                         <ul className={style.ThreeRows}>
                             <li>
                                 <label>*CODE</label>
                                 <input
+                                    className="field"
                                     type="text"
                                     value={fieldValue.code}
                                     onChange={(e: any) => {
@@ -227,20 +229,27 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                             </li>
                             <li>
                                 <label>*TYPE</label>
-                                <select
-                                    id=""
-                                    value={fieldValue.type}
-                                    onChange={(e: any) => {
-                                        setFieldValue({
-                                            ...fieldValue,
-                                            type: e.target.value,
-                                        });
-                                    }}
-                                >
-                                    <option value=""></option>
-                                    <option value="Charge">Charge</option>
-                                    <option value="Deposit">Deposit</option>
-                                </select>
+                                <div className="select">
+                                    <select
+                                        className="field"
+                                        id=""
+                                        value={fieldValue.type}
+                                        onChange={(e: any) => {
+                                            setFieldValue({
+                                                ...fieldValue,
+                                                type: e.target.value,
+                                            });
+                                        }}
+                                    >
+                                        <option value=""></option>
+                                        <option value="Charge">Charge</option>
+                                        <option value="Deposit">Deposit</option>
+                                    </select>
+                                    <span>
+                                        <MdOutlineKeyboardArrowDown />
+                                    </span>
+                                </div>
+
                                 {isError?.type !== "" && (
                                     <p className="text-[12px]">
                                         {isError?.type}
@@ -250,6 +259,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                             <li>
                                 <label>*NAME</label>
                                 <input
+                                    className="field"
                                     type="text"
                                     value={fieldValue.name}
                                     onChange={(e: any) => {
@@ -268,6 +278,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                             <li>
                                 <label>DESCRIPTION</label>
                                 <input
+                                    className="field"
                                     type="text"
                                     value={fieldValue.description}
                                     onChange={(e: any) => {
@@ -281,6 +292,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                             <li>
                                 <label>*BASE RATE</label>
                                 <input
+                                    className="field"
                                     type="number"
                                     value={fieldValue.base_rate}
                                     onChange={(e: any) => {
@@ -296,6 +308,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                             <li>
                                 <label>*UOM</label>
                                 <input
+                                    className="field"
                                     type="text"
                                     value={fieldValue.uom}
                                     onChange={(e: any) => {
@@ -314,6 +327,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                             <li>
                                 <label>*VAT%</label>
                                 <input
+                                    className="field"
                                     type="number"
                                     value={fieldValue.vat_percent}
                                     onChange={(e: any) => {
@@ -332,6 +346,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                     className={`${style.Dropdown} ${style.full}`}
                                 >
                                     <input
+                                        className="field"
                                         type="text"
                                         value={isReceivable.value}
                                         onChange={(e: any) =>
@@ -380,6 +395,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                     className={`${style.Dropdown} ${style.full}`}
                                 >
                                     <input
+                                        className="field"
                                         type="text"
                                         value={isDiscount.value}
                                         onChange={(e: any) =>
@@ -412,6 +428,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                     className={`${style.Dropdown} ${style.full}`}
                                 >
                                     <input
+                                        className="field"
                                         type="text"
                                         value={isRevenue.value}
                                         onChange={(e: any) =>
@@ -444,6 +461,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                     className={`${style.Dropdown} ${style.full}`}
                                 >
                                     <input
+                                        className="field"
                                         type="text"
                                         value={isAdvance.value}
                                         onChange={(e: any) =>
@@ -473,6 +491,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                             <li>
                                 <label>MINIMUM</label>
                                 <input
+                                    className="field"
                                     type="number"
                                     value={fieldValue.minimum}
                                     onChange={(e: any) => {
@@ -485,22 +504,28 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                             </li>
                             <li>
                                 <label>*INTEREST</label>
+                                <div className="select">
+                                    <select
+                                        className="field"
+                                        value={fieldValue.interest}
+                                        onChange={(e: any) => {
+                                            setFieldValue({
+                                                ...fieldValue,
+                                                interest: e.target.value,
+                                            });
+                                        }}
+                                    >
+                                        <option value=""></option>
+                                        <option value="Bearing">Bearing</option>
+                                        <option value="Non-Bearing">
+                                            Non-Bearing
+                                        </option>
+                                    </select>
+                                    <span>
+                                        <MdOutlineKeyboardArrowDown />
+                                    </span>
+                                </div>
 
-                                <select
-                                    value={fieldValue.interest}
-                                    onChange={(e: any) => {
-                                        setFieldValue({
-                                            ...fieldValue,
-                                            interest: e.target.value,
-                                        });
-                                    }}
-                                >
-                                    <option value=""></option>
-                                    <option value="Bearing">Bearing</option>
-                                    <option value="Non-Bearing">
-                                        Non-Bearing
-                                    </option>
-                                </select>
                                 {isError?.interest !== "" && (
                                     <p className="text-[12px]">
                                         {isError?.interest}
@@ -510,6 +535,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                             <li>
                                 <label>*PAYMENT HEIRARCHY</label>
                                 <input
+                                    className="field"
                                     type="number"
                                     value={fieldValue.payment_heirarchy}
                                     onChange={(e: any) => {
@@ -530,6 +556,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                             <li>
                                 <label>*SOA SORT ORDER</label>
                                 <input
+                                    className="field"
                                     type="number"
                                     value={fieldValue.soa_sort_order}
                                     onChange={(e: any) => {

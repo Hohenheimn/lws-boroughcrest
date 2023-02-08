@@ -2,18 +2,13 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { BsPlusLg } from "react-icons/bs";
 import { HiMinus } from "react-icons/hi";
-import { RiArrowDownSFill } from "react-icons/ri";
 import style from "../../../../../styles/finance/Crud-table.module.scss";
-import Calendar from "../../../../Calendar";
+import DropDownCharge from "../../../OpeningBalance/DropDownCharge";
 
-type defaultArray = {
-    id: number;
-    charge: number;
-    description: string;
-    application: string;
-}[];
+type defaultArray = defaultObject[];
 type defaultObject = {
     id: number;
+    charge_id: string | number;
     charge: number;
     description: string;
     application: string;
@@ -26,9 +21,9 @@ export default function BatchForm({ DefaultValue }: Props) {
     const [isDefault, setDefault] = useState<defaultArray>(DefaultValue);
     return (
         <>
-            <div className="w-full overflow-auto border-b border-gray-300 pb-10 mb-10 1550px:mb-5 1550px:pb-5">
-                <table className={style.crudTable}>
-                    <thead>
+            <div className="table_container border-b border-gray-300 pb-10 mb-10 1550px:mb-5 1550px:pb-5">
+                <table className="table_list forCrud">
+                    <thead className="textRed">
                         <tr>
                             <th className="checkbox">
                                 <input type="checkbox" />
@@ -67,6 +62,11 @@ type List = {
 };
 
 const List = ({ itemList, setDefault, isDefault, index }: List) => {
+    const [isCharge, setCharge] = useState({
+        charge: "",
+        id: "",
+        description: "",
+    });
     const AddJournal = () => {
         const random = Math.random();
         setDefault((temp: any) => [
@@ -91,6 +91,8 @@ const List = ({ itemList, setDefault, isDefault, index }: List) => {
                     return {
                         ...item,
                         charge: e.target.value,
+                        charge_id: e.target.getAttribute("data-id"),
+                        description: e.target.getAttribute("data-description"),
                     };
                 } else if (key === "description") {
                     return {
@@ -109,23 +111,27 @@ const List = ({ itemList, setDefault, isDefault, index }: List) => {
                 <input type="checkbox" />
             </td>
             <td className="flex items-center">
-                <input
-                    type="text"
-                    value={itemList.charge}
-                    onChange={(e) => updateValue("charge", e)}
+                <DropDownCharge
+                    UpdateStateHandler={updateValue}
+                    itemDetail={isCharge}
                 />
             </td>
             <td>
                 <input
                     type="text"
+                    className="field w-full"
                     value={itemList.description}
                     onChange={(e) => updateValue("description", e)}
                 />
             </td>
             <td>
-                <div className={style.SelectModal}>{itemList.application}</div>
+                <input
+                    type="text"
+                    value={itemList.application}
+                    className="field disabled text-center"
+                />
             </td>
-            <td className={`${style.action}`}>
+            <td className="actionIcon">
                 {isDefault.length > 1 && (
                     <div onClick={RemoveJournal}>
                         <HiMinus />

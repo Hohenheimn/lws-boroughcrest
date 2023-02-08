@@ -27,10 +27,12 @@ export default function CustomerDropdown({ isCustomer, setCustomer }: Props) {
     return (
         <>
             <DynamicPopOver
+                className="w-full max-w-[300px]"
+                samewidth={true}
                 toRef={
                     <input
                         type="text"
-                        className=" w-full px-2 py-1 capitalize h-10 1550px:h-8 min-w-[200px] 820px:h-8 rounded-md outline-none shadow-md text-[#757575]"
+                        className="field w-full"
                         onClick={() => setToggle(true)}
                         value={isSearchTemp}
                         onChange={(e) => {
@@ -105,13 +107,15 @@ const List = ({
             ))}
             {isLoading && (
                 <li>
-                    <BarLoader
-                        color={"#8f384d"}
-                        height="5px"
-                        width="100px"
-                        aria-label="Loading Spinner"
-                        data-testid="loader"
-                    />
+                    <div>
+                        <BarLoader
+                            color={"#8f384d"}
+                            height="5px"
+                            width="100px"
+                            aria-label="Loading Spinner"
+                            data-testid="loader"
+                        />
+                    </div>
                 </li>
             )}
             {isError ||

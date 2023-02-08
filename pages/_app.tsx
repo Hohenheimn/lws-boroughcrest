@@ -30,7 +30,7 @@ function MyApp({ Component, pageProps }: ExtendAppProps) {
             <>
                 <QueryClientProvider client={queryClient}>
                     <AppProvider>
-                        <UserInfo />
+                        {/* <UserInfo /> */}
                         <Component {...pageProps} />
                         <ReactQueryDevtools />
                     </AppProvider>

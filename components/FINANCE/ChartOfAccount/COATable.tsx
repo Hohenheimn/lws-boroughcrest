@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Link from "next/link";
 import api from "../../../util/api";
 import { useQuery } from "react-query";
@@ -8,6 +8,8 @@ import { getCookie } from "cookies-next";
 import { HiPencil } from "react-icons/hi";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
+import AppContext from "../../Context/AppContext";
+import TableErrorMessage from "../../TableErrorMessage";
 
 type Props = {
     isSearchTable: string;
@@ -15,6 +17,7 @@ type Props = {
 };
 
 export default function COATable({ isSearchTable, isFilterTable }: Props) {
+    const { setPrompt } = useContext(AppContext);
     const [TablePage, setTablePage] = useState(1);
 
     const { data, isLoading, isError } = useQuery(
@@ -30,10 +33,17 @@ export default function COATable({ isSearchTable, isFilterTable }: Props) {
             );
         }
     );
+    if (isError) {
+        setPrompt({
+            message: "Something is wrong!",
+            type: "error",
+            toggle: true,
+        });
+    }
     return (
         <>
             <div className="table_container">
-                <table className="table_list corp">
+                <table className="table_list">
                     <thead>
                         <tr>
                             {isFilterTable ? (
@@ -89,6 +99,7 @@ export default function COATable({ isSearchTable, isFilterTable }: Props) {
                         </aside>
                     </div>
                 )}
+                {isError && <TableErrorMessage />}
             </div>
 
             <Pagination
