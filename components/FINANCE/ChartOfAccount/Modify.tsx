@@ -18,7 +18,7 @@ export default function Modify({ setCreate }: any) {
         account_name: data?.data.account_name,
         description: data?.data.description,
         apply_to_sub_acc: data?.data.apply_to_sub_acc,
-        bank_account: data?.data.bank_account.bank_acc_no,
+        bank_account: data?.data.bank_account?.bank_acc_no,
         bank_account_id: data?.data.bank_account_id,
         coa_default_account_id: data?.data.coa_default_account_id,
         defaultAccount: data?.data.default_account?.name,

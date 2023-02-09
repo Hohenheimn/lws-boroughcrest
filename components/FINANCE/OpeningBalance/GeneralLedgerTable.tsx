@@ -68,10 +68,11 @@ export default function GeneralLedgerTable({ date }: GeneralLedgerTableProps) {
                 return {
                     id: index,
                     id_backend: item.id,
-                    account_id: item.chart_of_account.id,
-                    chart_code: item.chart_of_account.chart_code,
-                    category: item.chart_of_account.category,
-                    account_name: item.chart_of_account.account_name,
+                    account_id: item.chart_of_account?.id,
+                    chart_code: item.chart_of_account?.chart_code,
+                    category: item.chart_of_account?.category,
+                    account_name: item.chart_of_account?.account_name,
+                    account_type: item.account_type,
                     debit: item.debit,
                     credit: item.credit,
                 };
@@ -113,24 +114,20 @@ export default function GeneralLedgerTable({ date }: GeneralLedgerTableProps) {
             } else {
                 return {
                     id: item.id_backend,
-                    chart_of_account_id: parseInt(item.account_id),
+                    chart_of_account_id:
+                        item.account_id === null ||
+                        item.account_id === undefined
+                            ? null
+                            : parseInt(item.account_id),
                     debit: Number(item.debit),
                     credit: Number(item.credit),
                 };
             }
         });
         const Payload = {
-            general_ledger: [
-                {
-                    id: null,
-                    chart_of_account_id: 12,
-                    debit: 12,
-                    credit: 0,
-                },
-            ],
+            general_ledger: subledger,
             date: date,
         };
-        mutate(Payload);
 
         if (validate) mutate(Payload);
     };
@@ -274,7 +271,7 @@ const List = ({ itemDetail, setTableItem, isTableItem }: List) => {
                 <input
                     type="number"
                     className={`field w-full ${
-                        itemDetail.account_type === null && "disabled"
+                        itemDetail.account_type !== null && "disabled bg-black"
                     }`}
                     value={itemDetail.debit}
                     onChange={(e) => UpdateStateHandler("debit", e)}
@@ -284,7 +281,7 @@ const List = ({ itemDetail, setTableItem, isTableItem }: List) => {
                 <input
                     type="number"
                     className={`field w-full ${
-                        itemDetail.account_type === null && "disabled"
+                        itemDetail.account_type !== null && "disabled"
                     }`}
                     value={itemDetail.credit}
                     onChange={(e) => UpdateStateHandler("credit", e)}

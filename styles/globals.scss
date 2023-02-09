@@ -779,12 +779,22 @@ input.disabled_input {
         @apply w-full cursor-pointer px-3 text-[#545454] text-[14px] py-1 1550px:px-2 1550px:py-1 border-b border-ThemeRed hover:bg-ThemeRed hover:text-white transition-all duration-75;
         width: 100% !important;
         margin: 0 !important;
+        span {
+            padding: 0 !important;
+        }
         div {
             @apply flex justify-center w-full;
         }
     }
     li:nth-last-child(1) {
         @apply border-none;
+    }
+    li.twoRow {
+        display: flex !important;
+        flex-direction: row !important;
+        p {
+            @apply w-2/4;
+        }
     }
 }
 .iconNav {

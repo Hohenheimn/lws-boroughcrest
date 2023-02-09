@@ -71,21 +71,6 @@ const Parent = ({
         }
     );
 
-    if (isLoading) {
-        return (
-            <ul>
-                <div className="w-full flex justify-center py-3">
-                    <BarLoader
-                        color={"#8f384d"}
-                        height="5px"
-                        width="100px"
-                        aria-label="Loading Spinner"
-                        data-testid="loader"
-                    />
-                </div>
-            </ul>
-        );
-    }
     if (isError) {
         return (
             <ul>
@@ -112,15 +97,25 @@ const Parent = ({
                     data-chartcode={item?.chart_code}
                     data-id={item?.id}
                     onClick={clickHandler}
+                    className="twoRow"
                 >
-                    <span className=" pointer-events-none">
-                        {item?.account_name}
-                    </span>
-                    <span className=" pointer-events-none">
-                        {item?.chart_code}
-                    </span>
+                    <p className=" pointer-events-none">{item?.account_name}</p>
+                    <p className=" pointer-events-none">{item?.chart_code}</p>
                 </li>
             ))}
+            {isLoading && (
+                <li>
+                    <div className="w-full flex justify-center py-3">
+                        <BarLoader
+                            color={"#8f384d"}
+                            height="5px"
+                            width="100px"
+                            aria-label="Loading Spinner"
+                            data-testid="loader"
+                        />
+                    </div>
+                </li>
+            )}
         </ul>
     );
 };
