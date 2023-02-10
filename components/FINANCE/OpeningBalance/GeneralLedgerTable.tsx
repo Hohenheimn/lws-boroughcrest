@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useContext } from "react";
 import Image from "next/image";
-import { useQuery } from "react-query";
-import { getCookie } from "cookies-next";
-import api from "../../../util/api";
 import { BarLoader, ScaleLoader } from "react-spinners";
 import AppContext from "../../Context/AppContext";
 import TableErrorMessage from "../../TableErrorMessage";
 import { CreateUpdateGeneralLedger, GetGeneralLedger } from "./Query";
+import { NumericFormat } from "react-number-format";
+import { InputNumberForTable, TextNumberDisplay } from "../../NumberFormat";
+import { validateCreditDebitField } from "./ValidateCreditDebitField";
 
 type isTableItem = isTableItemObj[];
 
@@ -16,8 +16,8 @@ type isTableItemObj = {
     chart_code: string;
     category: string;
     account_name: string;
-    debit: string;
-    credit: string;
+    debit: string | number;
+    credit: string | number;
     account_type: string | null;
     id_backend: string | null;
 };
@@ -73,8 +73,14 @@ export default function GeneralLedgerTable({ date }: GeneralLedgerTableProps) {
                     category: item.chart_of_account?.category,
                     account_name: item.chart_of_account?.account_name,
                     account_type: item.account_type,
-                    debit: item.debit,
-                    credit: item.credit,
+                    debit:
+                        item.debit === 0 || item.debit === "0"
+                            ? ""
+                            : item.debit,
+                    credit:
+                        item.credit === 0 || item.credit === "0"
+                            ? ""
+                            : item.credit,
                 };
             });
             // Additional blank row field
@@ -162,6 +168,7 @@ export default function GeneralLedgerTable({ date }: GeneralLedgerTableProps) {
                         )}
                     </tbody>
                 </table>
+
                 {isLoading && (
                     <div className="w-full h-full flex justify-center items-center">
                         <aside className="text-center flex justify-center py-5">
@@ -182,31 +189,17 @@ export default function GeneralLedgerTable({ date }: GeneralLedgerTableProps) {
                 <h1 className="text-start text-[16px] min-w-[200px] 1280px:text-[13px] text-ThemeRed pb-1">
                     SUBTOTAL
                 </h1>
-                <div className=" relative flex items-center text-[#757575] font-NHU-bold w-[200px] mr-5">
-                    <aside className=" content-['₱'] absolute top-[0%] h-full flex items-center left-2 z-10">
-                        <Image
-                            src="/Images/peso.png"
-                            height={13}
-                            width={10}
-                            alt=""
-                        />
-                    </aside>
-                    <p className=" text-end w-full text-[#757575] font-NHU-bold text-[18px] 1280px:text-[13px]">
-                        {totalDebit}-
-                    </p>
+                <div className="withPeso relative flex items-center text-[#757575] font-NHU-bold  mr-5">
+                    <TextNumberDisplay
+                        value={totalDebit}
+                        className="text-end w-full text-[#757575] font-NHU-bold text-[18px] 1280px:text-[13px]"
+                    />
                 </div>
-                <div className=" relative flex items-center text-[#757575] font-NHU-bold w-[200px] ">
-                    <aside className=" content-['₱'] absolute top-[0%] h-full flex items-center left-2 z-10">
-                        <Image
-                            src="/Images/peso.png"
-                            height={13}
-                            width={10}
-                            alt=""
-                        />
-                    </aside>
-                    <p className=" text-end w-full text-[#757575] font-NHU-bold text-[18px] 1280px:text-[13px]">
-                        {totalCredit}-
-                    </p>
+                <div className="withPeso relative flex items-center text-[#757575] font-NHU-bold ml-20">
+                    <TextNumberDisplay
+                        value={totalCredit}
+                        className="text-end w-full text-[#757575] font-NHU-bold text-[18px] 1280px:text-[13px]"
+                    />
                 </div>
             </div>
 
@@ -231,21 +224,21 @@ type List = {
 };
 
 const List = ({ itemDetail, setTableItem, isTableItem }: List) => {
-    const UpdateStateHandler = (key: string, event: any) => {
+    const UpdateStateHandler = (key: string, value: any) => {
         const newItems = isTableItem.map((item: any) => {
             if (itemDetail.id == item.id) {
                 if (key === "debit") {
                     return {
                         ...item,
-                        debit: event.target.value,
-                        credit: 0,
+                        debit: Number(value),
+                        credit: "",
                     };
                 }
                 if (key === "credit") {
                     return {
                         ...item,
-                        credit: event.target.value,
-                        debit: 0,
+                        credit: Number(value),
+                        debit: "",
                     };
                 }
             }
@@ -253,6 +246,23 @@ const List = ({ itemDetail, setTableItem, isTableItem }: List) => {
         });
         setTableItem(newItems);
     };
+
+    const [debitValidate, setDebitValidate] = useState("");
+    const [creditValidate, setcreditValidate] = useState("");
+
+    useEffect(() => {
+        if (itemDetail.account_type !== null) {
+            setDebitValidate((prev) => (prev = "disabled"));
+            setcreditValidate((prev) => (prev = "disabled"));
+            return;
+        }
+        validateCreditDebitField(
+            itemDetail.debit,
+            itemDetail.credit,
+            setDebitValidate,
+            setcreditValidate
+        );
+    }, [itemDetail.debit, itemDetail.credit]);
 
     return (
         <tr>
@@ -268,23 +278,19 @@ const List = ({ itemDetail, setTableItem, isTableItem }: List) => {
                 </h2>
             </td>
             <td>
-                <input
-                    type="number"
-                    className={`field w-full ${
-                        itemDetail.account_type !== null && "disabled bg-black"
-                    }`}
+                <InputNumberForTable
+                    className={`number field inline-block w-full bg-white ${debitValidate}`}
                     value={itemDetail.debit}
-                    onChange={(e) => UpdateStateHandler("debit", e)}
+                    onChange={UpdateStateHandler}
+                    type={"debit"}
                 />
             </td>
             <td>
-                <input
-                    type="number"
-                    className={`field w-full ${
-                        itemDetail.account_type !== null && "disabled"
-                    }`}
+                <InputNumberForTable
+                    className={`number field inline-block w-full bg-white ${creditValidate}`}
                     value={itemDetail.credit}
-                    onChange={(e) => UpdateStateHandler("credit", e)}
+                    onChange={UpdateStateHandler}
+                    type={"credit"}
                 />
             </td>
         </tr>

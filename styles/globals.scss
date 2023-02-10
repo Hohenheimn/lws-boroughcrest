@@ -33,11 +33,7 @@ h6 {
 .labelField {
     @apply text-ThemeRed mr-3 font-NHU-medium 1550px:text-[14px] 640px:text-[12px];
 }
-select.field,
-input[type="number"].field,
-input[type="text"].field,
-input[type="email"].field,
-input[type="password"].field {
+.field {
     @apply p-1 px-2 text-[#545454] font-NHU-medium 1550px:min-w-[100px] rounded-md outline-none shadow-md;
     color: #545454 !important;
     height: 30px !important;
@@ -46,6 +42,9 @@ input[type="password"].field {
         font-size: 14px !important;
         height: 25px;
     }
+}
+.number {
+    @apply text-end;
 }
 input[type="number"].noEdit,
 input[type="text"].noEdit,
@@ -58,8 +57,9 @@ input[type="text"].disabled,
 input[type="email"].disabled,
 input[type="password"].disabled {
     @apply text-white bg-ThemeRed50 pointer-events-none;
-    color: black !important;
+    color: rgb(47, 47, 47) !important;
 }
+
 .calendar {
     @apply relative inline-block;
     .cal {
@@ -161,7 +161,7 @@ select {
 }
 // Table
 .table_container {
-    @apply w-full overflow-x-auto mb-10 480px:mb-5 overflow-y-auto min-h-[300px] max-h-[50vh] relative;
+    @apply w-full overflow-x-auto mb-10 480px:mb-5 overflow-y-auto min-h-[300px] max-h-[60vh] relative;
     table {
         thead {
             @apply sticky top-0 z-[40];
@@ -171,6 +171,7 @@ select {
 .table_container.hAuto {
     @apply h-auto min-h-0 max-h-[300px];
 }
+
 .table_list {
     @apply min-w-full;
     thead {
@@ -470,7 +471,7 @@ input[type="number"] {
             font-size: 12px !important;
         }
         input.disabled {
-            @apply border-none pointer-events-none shadow-none;
+            @apply border-none pointer-events-none shadow-none bg-transparent outline-none;
         }
         p {
             @apply text-[#545454];
@@ -763,10 +764,20 @@ input.disabled_input {
 }
 
 .withPeso {
-    @apply relative pl-5;
+    @apply relative pl-[20px];
     &::before {
         @apply content-[''] w-5 h-full absolute top-0 left-0 bg-no-repeat bg-center;
         background-image: url(../public/Images/peso.png);
+    }
+}
+.withPesoField {
+    @apply relative;
+    &::before {
+        @apply content-[''] w-5 h-full absolute top-0 left-0 bg-no-repeat bg-center;
+        background-image: url(../public/Images/peso.png);
+    }
+    input {
+        padding-left: 20px !important;
     }
 }
 .dropdown-input {
