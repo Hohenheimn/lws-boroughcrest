@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
+import { AiOutlineInfoCircle } from "react-icons/ai";
 import { BarLoader } from "react-spinners";
 import DynamicPopOver from "../../DynamicPopOver";
 import { GetBA } from "../../ReactQuery/BankAccount";
+import Tippy from "@tippy.js/react";
+import "tippy.js/dist/tippy.css";
 
 type Props = {
     isObject: {
@@ -75,6 +78,7 @@ type BankAccount = {
     id: string | number;
     bank_acc_no: string | number;
     bank_branch: string;
+    status: string;
 };
 
 const DropdownItems = ({
@@ -153,13 +157,34 @@ type List = {
 const List = ({ itemDetail, UpdateHandler }: List) => {
     return (
         <tr
-            className="cursor-pointer hover:bg-ThemeRed50 hover:text-white "
+            className={`cursor-pointer  ${
+                itemDetail.status === "No"
+                    ? " bg-gray-300"
+                    : "hover:bg-ThemeRed50 hover:text-white"
+            }`}
             onClick={(e) =>
+                itemDetail.status !== "No" &&
                 UpdateHandler(itemDetail.id, itemDetail.bank_acc_no)
             }
         >
-            <td>{itemDetail.bank_acc_no}</td>
-            <td>{itemDetail.bank_branch}</td>
+            <td className="relative">
+                {itemDetail.status === "No" && (
+                    <Tippy
+                        theme="ThemeRed"
+                        content={
+                            <p className=" text-[12px]">lorem lorem lorem</p>
+                        }
+                    >
+                        <div className="absolute left-[5px] top-[50%] translate-y-[-50%] text-[14px] text-ThemeRed">
+                            <AiOutlineInfoCircle />
+                        </div>
+                    </Tippy>
+                )}
+                <p className=" ml-4">{itemDetail.bank_acc_no}</p>
+            </td>
+            <td>
+                <p>{itemDetail.bank_branch}</p>
+            </td>
         </tr>
     );
 };

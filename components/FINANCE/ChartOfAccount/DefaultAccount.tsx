@@ -55,21 +55,6 @@ const DefaultAccount = ({ setValue, isValue }: DefaultAccountProps) => {
         }
     );
 
-    if (isLoading) {
-        return (
-            <ul>
-                <li className="w-full flex justify-center py-3">
-                    <BarLoader
-                        color={"#8f384d"}
-                        height="5px"
-                        width="100px"
-                        aria-label="Loading Spinner"
-                        data-testid="loader"
-                    />
-                </li>
-            </ul>
-        );
-    }
     if (data?.data.length <= 0) {
         return (
             <ul>
@@ -96,6 +81,17 @@ const DefaultAccount = ({ setValue, isValue }: DefaultAccountProps) => {
                     {item?.name}
                 </li>
             ))}
+            {isLoading && (
+                <li className="w-full flex justify-center py-3">
+                    <BarLoader
+                        color={"#8f384d"}
+                        height="5px"
+                        width="100px"
+                        aria-label="Loading Spinner"
+                        data-testid="loader"
+                    />
+                </li>
+            )}
         </ul>
     );
 };

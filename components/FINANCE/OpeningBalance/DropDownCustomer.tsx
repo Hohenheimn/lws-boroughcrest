@@ -19,7 +19,7 @@ export default function DropDownCustomer({
     const [tempSearch, setTempSearch] = useState(itemDetail.customer_name);
     useEffect(() => {
         setTempSearch(itemDetail.customer_name);
-    }, []);
+    }, [itemDetail.customer_name]);
     return (
         <>
             <DynamicPopOver

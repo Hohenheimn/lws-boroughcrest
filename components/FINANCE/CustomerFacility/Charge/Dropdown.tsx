@@ -60,9 +60,15 @@ export default function Dropdown({
         });
     };
 
-    if (isLoading) {
-        return (
-            <ul ref={modal} className="dropdown-list">
+    return (
+        <ul ref={modal} className="dropdown-list">
+            {data?.data.map((item: any, index: number) => (
+                <li key={index} onClick={onClickHandler} data-id={item.id}>
+                    {item.account_name}
+                </li>
+            ))}
+
+            {isLoading && (
                 <li>
                     <div>
                         <BarLoader
@@ -74,31 +80,10 @@ export default function Dropdown({
                         />
                     </div>
                 </li>
-            </ul>
-        );
-    }
-    if (isError) {
-        return (
-            <ul ref={modal} className="dropdown-list">
-                <li>Something is wrong!</li>
-            </ul>
-        );
-    }
-    if (data?.data.length <= 0) {
-        return (
-            <ul ref={modal} className="dropdown-list">
-                <li>Discount cannot be found!</li>
-            </ul>
-        );
-    }
+            )}
 
-    return (
-        <ul ref={modal} className="dropdown-list">
-            {data?.data.map((item: any, index: number) => (
-                <li key={index} onClick={onClickHandler} data-id={item.id}>
-                    {item.account_name}
-                </li>
-            ))}
+            {isError && <li>{name} cannot be found!</li>}
+            {data?.data.length <= 0 && <li>{name} cannot be found!</li>}
         </ul>
     );
 }

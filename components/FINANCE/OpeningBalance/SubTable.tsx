@@ -11,6 +11,7 @@ import { BarLoader, ScaleLoader } from "react-spinners";
 import TableErrorMessage from "../../TableErrorMessage";
 import { CreateUpdateSubledger, GetSubledger } from "./Query";
 import AppContext from "../../Context/AppContext";
+import { InputNumberForTable, TextNumberDisplay } from "../../NumberFormat";
 
 export type isTableItemArray = isTableItemObj[];
 
@@ -72,7 +73,7 @@ export default function SubTable() {
                     id_backend: item.id,
                     customer_id: item.customer?.id,
                     customer_name: item.customer?.name,
-                    date: item.customer?.date,
+                    date: item.date,
                     reference_no: item.reference_no,
                     charge_id: item.charge?.id,
                     charge: item.charge?.name,
@@ -80,8 +81,7 @@ export default function SubTable() {
                     amount: item.amount,
                 };
             });
-            console.log(CloneArray);
-            // Additional blank row field
+
             setTableItem([
                 ...CloneArray,
                 {
@@ -131,7 +131,7 @@ export default function SubTable() {
                 return;
             } else {
                 return {
-                    id: item.id_backend,
+                    id: item.id_backend === undefined ? null : item.id_backend,
                     customer_id: parseInt(item.customer_id),
                     date: item.date,
                     reference_no: item.reference_no,
@@ -194,18 +194,11 @@ export default function SubTable() {
                 <h1 className="text-start text-[16px] min-w-[200px] 1280px:text-[13px] text-ThemeRed pb-1">
                     SUBTOTAL
                 </h1>
-                <div className=" relative flex items-center text-[#757575] font-NHU-bold w-[200px] mr-5">
-                    <aside className=" content-['₱'] absolute top-[0%] h-full flex items-center left-2 z-10">
-                        <Image
-                            src="/Images/peso.png"
-                            height={13}
-                            width={10}
-                            alt=""
-                        />
-                    </aside>
-                    <p className=" text-end w-full text-[#757575] font-NHU-bold text-[18px] 1280px:text-[13px]">
-                        {isTotal}-
-                    </p>
+                <div className="withPeso relative flex items-center text-[#757575] font-NHU-bold">
+                    <TextNumberDisplay
+                        value={isTotal}
+                        className="text-end w-full text-[#757575] font-NHU-bold text-[18px] 1280px:text-[13px]"
+                    />
                 </div>
             </div>
             <div className="flex justify-end py-5 mt-5">
@@ -229,11 +222,18 @@ type List = {
 };
 
 const List = ({ itemDetail, setTableItem, isTableItem, rowNumber }: List) => {
-    const date = itemDetail.date;
     const [isDate, setDate] = useState({
-        value: date,
+        value: "",
         toggle: false,
     });
+
+    useEffect(() => {
+        setDate({
+            ...isDate,
+            value: itemDetail.date,
+        });
+    }, []);
+
     useEffect(() => {
         const e = "";
         UpdateStateHandler("date", e);
@@ -251,7 +251,7 @@ const List = ({ itemDetail, setTableItem, isTableItem, rowNumber }: List) => {
                 if (key === "amount") {
                     return {
                         ...item,
-                        amount: event.target.value,
+                        amount: Number(event),
                     };
                 }
                 if (key === "customer") {
@@ -277,7 +277,7 @@ const List = ({ itemDetail, setTableItem, isTableItem, rowNumber }: List) => {
                 if (key === "received") {
                     return {
                         ...item,
-                        account: "receivable",
+                        account: "Receivable",
                     };
                 }
                 if (key === "date") {
@@ -351,10 +351,13 @@ const List = ({ itemDetail, setTableItem, isTableItem, rowNumber }: List) => {
                                     alt=""
                                 />
                             </span>
-
                             <input
                                 type="text"
-                                value={isDate.value}
+                                value={
+                                    isDate.value === ""
+                                        ? itemDetail.date
+                                        : isDate.value
+                                }
                                 onChange={() => {}}
                                 placeholder="dd/mm/yyyy"
                                 onClick={() =>
@@ -374,7 +377,7 @@ const List = ({ itemDetail, setTableItem, isTableItem, rowNumber }: List) => {
             </td>
             <td onKeyUp={(e) => AddRowHandler(e)}>
                 <input
-                    type="number"
+                    type="text"
                     value={itemDetail.reference_no}
                     className="field w-full"
                     onChange={(e) => {
@@ -412,13 +415,19 @@ const List = ({ itemDetail, setTableItem, isTableItem, rowNumber }: List) => {
                 </article>
             </td>
             <td onKeyUp={(e) => AddRowHandler(e)}>
-                <input
+                {/* <input
                     type="number"
                     value={itemDetail.amount}
                     className="field w-full"
                     onChange={(e) => {
                         UpdateStateHandler("amount", e);
                     }}
+                /> */}
+                <InputNumberForTable
+                    className="field w-full number"
+                    value={itemDetail.amount}
+                    type="amount"
+                    onChange={UpdateStateHandler}
                 />
             </td>
         </tr>

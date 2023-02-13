@@ -124,7 +124,7 @@ export default function Calendar({ value, setValue }: Props) {
     };
 
     return (
-        <div className=" absolute top-full left-0 z-[60]" ref={modal}>
+        <div className="absolute z-[60]" ref={modal}>
             {/* Ask kung pano naka infinite ung year tas naka focus agad ung year sa current yr */}
             <div
                 className="max-w-[250px] w-full shadow-lg"
@@ -142,7 +142,7 @@ export default function Calendar({ value, setValue }: Props) {
                                         ? true
                                         : false
                                 }
-                                className="focus:text-gray-400 focus:bg-ThemeRed hover:text-white mr-3 hover:bg-ThemeRed text-[#757575] border flex justify-center items-center bg-white rounded-full font-NHU-black w-5 h-5 "
+                                className=" text-[#757575] border flex justify-center items-center bg-white rounded-full font-NHU-black w-5 h-5 "
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -250,7 +250,7 @@ export default function Calendar({ value, setValue }: Props) {
                                         ? true
                                         : false
                                 }
-                                className="focus:text-gray-400 relative text-[#757575] focus:bg-ThemeRed hover:text-white hover:bg-ThemeRed ml-3 border flex justify-center items-center bg-white rounded-full font-NHU-black w-5 h-5"
+                                className=" ml-3 border flex justify-center items-center bg-white rounded-full font-NHU-black w-5 h-5"
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"

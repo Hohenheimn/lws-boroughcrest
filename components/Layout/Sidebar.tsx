@@ -183,7 +183,7 @@ export default function Sidebar({
                                         <PropertySearch />
                                     )}
                                     {router.pathname.includes(
-                                        "journal/[id]"
+                                        "journal-list/[id]"
                                     ) && <JournalSearch />}
                                     {router.pathname.includes(
                                         "invoice-list/[id]"
