@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Image from "next/image";
 import { BsPlusLg } from "react-icons/bs";
 import { HiMinus } from "react-icons/hi";
@@ -6,6 +6,9 @@ import { RiArrowDownSFill } from "react-icons/ri";
 import Calendar from "../../Calendar";
 import DropdownSearch from "../../DropdownSearch";
 import DropDownCOA from "./DropdownCOA";
+import { validateCreditDebitField } from "../OpeningBalance/ValidateCreditDebitField";
+import { InputNumberForTable, TextNumberDisplay } from "../../NumberFormat";
+import AppContext from "../../Context/AppContext";
 
 type defaultArray = defaultObject[];
 type defaultObject = {
@@ -13,8 +16,8 @@ type defaultObject = {
     account_id: string | number;
     code: number | string;
     accountName: string;
-    debit: number;
-    credit: number;
+    debit: string;
+    credit: string;
 };
 type Props = {
     DefaultValue: defaultArray;
@@ -107,31 +110,17 @@ export default function JournalForm({ DefaultValue, type }: Props) {
                     <h1 className="text-start text-[16px] min-w-[200px] 1280px:text-[13px] text-ThemeRed pb-1">
                         TOTAL
                     </h1>
-                    <div className=" relative flex items-center text-[#757575] font-NHU-bold w-[200px] mr-5">
-                        <aside className=" content-['₱'] absolute top-[0%] h-full flex items-center left-2 z-10">
-                            <Image
-                                src="/Images/peso.png"
-                                height={13}
-                                width={10}
-                                alt=""
-                            />
-                        </aside>
-                        <p className=" text-end w-full text-[#757575] font-NHU-bold text-[18px] 1280px:text-[13px]">
-                            {totalDebit}-
-                        </p>
+                    <div className="withPeso relative flex items-center text-[#757575] font-NHU-bold mr-10">
+                        <TextNumberDisplay
+                            value={totalDebit}
+                            className="text-end w-full text-[#757575] font-NHU-bold text-[18px] 1280px:text-[13px]"
+                        />
                     </div>
-                    <div className=" relative flex items-center text-[#757575] font-NHU-bold w-[200px] ">
-                        <aside className=" content-['₱'] absolute top-[0%] h-full flex items-center left-2 z-10">
-                            <Image
-                                src="/Images/peso.png"
-                                height={13}
-                                width={10}
-                                alt=""
-                            />
-                        </aside>
-                        <p className=" text-end w-full text-[#757575] font-NHU-bold text-[18px] 1280px:text-[13px]">
-                            {totalCredit}-
-                        </p>
+                    <div className="withPeso relative flex items-center text-[#757575] font-NHU-bold">
+                        <TextNumberDisplay
+                            value={totalCredit}
+                            className="text-end w-full text-[#757575] font-NHU-bold text-[18px] 1280px:text-[13px]"
+                        />
                     </div>
                 </div>
             </div>
@@ -174,7 +163,24 @@ type List = {
 };
 
 const List = ({ itemList, setDefault, isDefault, index }: List) => {
-    const AddJournal = () => {
+    const { setPrompt } = useContext(AppContext);
+    const AddJournal = (e: any) => {
+        if (itemList.account_id === "" || itemList.accountName === "") {
+            setPrompt({
+                toggle: true,
+                message: "Fill out the fields!",
+                type: "draft",
+            });
+            return;
+        }
+        if (itemList.debit === "" && itemList.credit === "") {
+            setPrompt({
+                toggle: true,
+                message: "Fill out the fields!",
+                type: "draft",
+            });
+            return;
+        }
         const random = Math.random();
         setDefault((temp: any) => [
             ...temp,
@@ -195,19 +201,7 @@ const List = ({ itemList, setDefault, isDefault, index }: List) => {
     const updateValue = (key: string, e: any) => {
         const newItems = isDefault.map((item: any) => {
             if (itemList.id == item.id) {
-                if (key === "debit") {
-                    return {
-                        ...item,
-                        debit: e.target.value,
-                        credit: 0,
-                    };
-                } else if (key === "credit") {
-                    return {
-                        ...item,
-                        credit: e.target.value,
-                        debit: 0,
-                    };
-                } else if (key === "accountName") {
+                if (key === "accountName") {
                     return {
                         ...item,
                         accountName: e.target.innerHTML,
@@ -225,6 +219,40 @@ const List = ({ itemList, setDefault, isDefault, index }: List) => {
         });
         setDefault(newItems);
     };
+    const UpdateStateHandler = (key: string, value: any) => {
+        const newItems = isDefault.map((item: any) => {
+            if (itemList.id == item.id) {
+                if (key === "debit") {
+                    return {
+                        ...item,
+                        debit: Number(value),
+                        credit: "",
+                    };
+                }
+                if (key === "credit") {
+                    return {
+                        ...item,
+                        credit: Number(value),
+                        debit: "",
+                    };
+                }
+            }
+            return item;
+        });
+        setDefault(newItems);
+    };
+
+    const [debitValidate, setDebitValidate] = useState("");
+    const [creditValidate, setcreditValidate] = useState("");
+
+    useEffect(() => {
+        validateCreditDebitField(
+            itemList.debit,
+            itemList.credit,
+            setDebitValidate,
+            setcreditValidate
+        );
+    }, [itemList.debit, itemList.credit]);
     return (
         <tr>
             <td className="w-[20%]">
@@ -237,19 +265,19 @@ const List = ({ itemList, setDefault, isDefault, index }: List) => {
                 />
             </td>
             <td>
-                <input
-                    type="number"
+                <InputNumberForTable
+                    className={`number field inline-block w-full bg-white ${debitValidate}`}
                     value={itemList.debit}
-                    className="field w-full"
-                    onChange={(e) => updateValue("debit", e)}
+                    onChange={UpdateStateHandler}
+                    type={"debit"}
                 />
             </td>
             <td>
-                <input
-                    type="number"
+                <InputNumberForTable
+                    className={`number field inline-block w-full bg-white ${creditValidate}`}
                     value={itemList.credit}
-                    className="field w-full"
-                    onChange={(e) => updateValue("credit", e)}
+                    onChange={UpdateStateHandler}
+                    type={"credit"}
                 />
             </td>
             <td className="actionIcon">
@@ -259,7 +287,10 @@ const List = ({ itemList, setDefault, isDefault, index }: List) => {
                     </div>
                 )}
                 {isDefault.length - 1 === index && (
-                    <div className="ml-5 1024px:ml-2" onClick={AddJournal}>
+                    <div
+                        className="ml-5 1024px:ml-2"
+                        onClick={(e) => AddJournal(e)}
+                    >
                         <BsPlusLg />
                     </div>
                 )}

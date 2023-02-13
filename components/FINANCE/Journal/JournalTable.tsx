@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BsSearch } from "react-icons/bs";
 import style from "../../../styles/SearchFilter.module.scss";
 import Image from "next/image";
@@ -12,12 +12,40 @@ import { BarLoader } from "react-spinners";
 import PeriodCalendar from "../../PeriodCalendar";
 import { AdvanceFilter } from "../../AdvanceFilter";
 import PeriodFNS from "../../PeriodFNS";
+import TableErrorMessage from "../../TableErrorMessage";
 
 type Props = {
     type: string;
 };
 
+type isTable = {
+    itemArray: isTableItemObj[];
+    selectAll: boolean;
+};
+
+type isTableItemObj = {
+    id: string | number;
+    date: string;
+    particulars: string;
+    status: string;
+    journal_no: string | number;
+    select: boolean;
+};
+
 export default function JournalTable({ type }: Props) {
+    const [isTableItem, setTableItem] = useState<isTable>({
+        itemArray: [
+            {
+                id: "",
+                date: "",
+                particulars: "",
+                status: "",
+                journal_no: "",
+                select: false,
+            },
+        ],
+        selectAll: false,
+    });
     const [isAdvFilter, setAdvFilter] = useState([
         {
             name: "Jomari Tiu",
@@ -39,6 +67,39 @@ export default function JournalTable({ type }: Props) {
             });
         }
     );
+    useEffect(() => {
+        if (data?.status === 200) {
+            const CloneArray = data?.data.map((item: any, index: number) => {
+                return {
+                    id: index,
+                    date: "sample date",
+                    particulars: "sample particulars",
+                    status: "sample status",
+                    journal_no: "sample journal number",
+                    select: false,
+                    selectAll: false,
+                };
+            });
+            // Additional blank row field
+            setTableItem({
+                itemArray: CloneArray,
+                selectAll: false,
+            });
+        }
+    }, [data]);
+
+    const selectAll = () => {
+        const newItems = isTableItem?.itemArray.map((item: any) => {
+            return {
+                ...item,
+                select: !isTableItem.selectAll,
+            };
+        });
+        setTableItem({
+            itemArray: newItems,
+            selectAll: !isTableItem.selectAll,
+        });
+    };
 
     return (
         <>
@@ -137,7 +198,11 @@ export default function JournalTable({ type }: Props) {
                                 <>
                                     <th className="checkbox">
                                         <div className="item">
-                                            <input type="checkbox" />
+                                            <input
+                                                type="checkbox"
+                                                checked={isTableItem.selectAll}
+                                                onChange={selectAll}
+                                            />
                                         </div>
                                     </th>
                                     <th>Date</th>
@@ -156,20 +221,21 @@ export default function JournalTable({ type }: Props) {
                         </tr>
                     </thead>
                     <tbody>
-                        {isError && (
-                            <tr>
-                                <td colSpan={5} className="text-center">
-                                    Error...
-                                </td>
-                            </tr>
+                        {isTableItem?.itemArray.map(
+                            (item: any, index: number) => (
+                                <List
+                                    key={index}
+                                    itemDetail={item}
+                                    type={type}
+                                    isTableItem={isTableItem}
+                                    setTableItem={setTableItem}
+                                />
+                            )
                         )}
-                        {data?.data.map((item: any, index: number) => (
-                            <List key={index} itemDetail={item} type={type} />
-                        ))}
                     </tbody>
                 </table>
                 {isLoading && (
-                    <div className="top-0 left-0 absolute w-full h-full flex justify-center items-center">
+                    <div className="w-full h-full flex justify-center items-center">
                         <aside className="text-center flex justify-center py-5">
                             <BarLoader
                                 color={"#8f384d"}
@@ -181,23 +247,45 @@ export default function JournalTable({ type }: Props) {
                         </aside>
                     </div>
                 )}
+                {isError && <TableErrorMessage />}
             </div>
         </>
     );
 }
 
 type ListProps = {
-    itemDetail: any;
+    itemDetail: isTableItemObj;
+    isTableItem: isTable;
     type: string;
+    setTableItem: Function;
 };
 
-const List = ({ itemDetail, type }: ListProps) => {
+const List = ({ itemDetail, type, isTableItem, setTableItem }: ListProps) => {
+    const updateValue = (e: any) => {
+        const newItems = isTableItem?.itemArray.map((item: any) => {
+            if (itemDetail.id == item.id) {
+                return {
+                    ...item,
+                    select: !item.select,
+                };
+            }
+            return item;
+        });
+        setTableItem({
+            itemArray: newItems,
+            selectAll: false,
+        });
+    };
     return (
         <tr>
             {type === "Unposted" && (
                 <td className="checkbox">
                     <div className="item">
-                        <input type="checkbox" />
+                        <input
+                            type="checkbox"
+                            onChange={(e: any) => updateValue(e)}
+                            checked={itemDetail.select}
+                        />
                     </div>
                 </td>
             )}
@@ -207,7 +295,7 @@ const List = ({ itemDetail, type }: ListProps) => {
                 >
                     <a className="item">
                         <div>
-                            <h2>Lorem, ipsum.</h2>
+                            <h2>{itemDetail.date}</h2>
                         </div>
                     </a>
                 </Link>
@@ -218,7 +306,7 @@ const List = ({ itemDetail, type }: ListProps) => {
                 >
                     <a className="item">
                         <div>
-                            <h2>Lorem, ipsum.</h2>
+                            <h2>{itemDetail.particulars}</h2>
                         </div>
                     </a>
                 </Link>
@@ -243,7 +331,7 @@ const List = ({ itemDetail, type }: ListProps) => {
                             </div>
                         ) : (
                             <div>
-                                <h2>Lorem, ipsum.</h2>
+                                <h2>{itemDetail.journal_no}</h2>
                             </div>
                         )}
                     </a>

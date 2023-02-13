@@ -57,7 +57,7 @@ input[type="text"].disabled,
 input[type="email"].disabled,
 input[type="password"].disabled {
     @apply text-white bg-ThemeRed50 pointer-events-none;
-    color: rgb(47, 47, 47) !important;
+    color: #554e50 !important;
 }
 
 .calendar {

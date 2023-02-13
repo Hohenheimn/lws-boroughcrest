@@ -81,23 +81,22 @@ export default function SubTable() {
                     amount: item.amount,
                 };
             });
-            setTableItem(CloneArray);
-            // Additional blank row field
-            // setTableItem([
-            //     ...CloneArray,
-            //     {
-            //         id: random,
-            //         id_backend: null,
-            //         customer_id: "",
-            //         customer_name: "",
-            //         date: "",
-            //         reference_no: 0,
-            //         charge_id: "",
-            //         charge: "",
-            //         account: "advance",
-            //         amount: 0,
-            //     },
-            // ]);
+
+            setTableItem([
+                ...CloneArray,
+                {
+                    id: random,
+                    id_backend: null,
+                    customer_id: "",
+                    customer_name: "",
+                    date: "",
+                    reference_no: 0,
+                    charge_id: "",
+                    charge: "",
+                    account: "advance",
+                    amount: 0,
+                },
+            ]);
         }
     }, [data?.status]);
 
