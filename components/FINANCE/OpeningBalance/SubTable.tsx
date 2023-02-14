@@ -82,21 +82,25 @@ export default function SubTable() {
                 };
             });
 
-            setTableItem([
-                ...CloneArray,
-                {
-                    id: random,
-                    id_backend: null,
-                    customer_id: "",
-                    customer_name: "",
-                    date: "",
-                    reference_no: 0,
-                    charge_id: "",
-                    charge: "",
-                    account: "advance",
-                    amount: 0,
-                },
-            ]);
+            if (data?.data.length <= 0) {
+                setTableItem([
+                    ...CloneArray,
+                    {
+                        id: random,
+                        id_backend: null,
+                        customer_id: "",
+                        customer_name: "",
+                        date: "",
+                        reference_no: 0,
+                        charge_id: "",
+                        charge: "",
+                        account: "advance",
+                        amount: 0,
+                    },
+                ]);
+            } else {
+                setTableItem(CloneArray);
+            }
         }
     }, [data?.status]);
 
@@ -277,7 +281,8 @@ const List = ({ itemDetail, setTableItem, isTableItem, rowNumber }: List) => {
                 if (key === "date") {
                     return {
                         ...item,
-                        date: isDate.value,
+                        date:
+                            isDate.value === "" ? itemData.date : isDate.value,
                     };
                 }
             }

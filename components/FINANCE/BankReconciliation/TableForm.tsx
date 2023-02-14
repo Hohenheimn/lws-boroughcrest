@@ -93,18 +93,22 @@ export default function TableForm() {
                 };
             });
             // Additional blank row field
-            setTableItem([
-                ...CloneArray,
-                {
-                    id: "",
-                    date: "",
-                    balance: "",
-                    remarks: "",
-                    document_no: "",
-                    debit: "",
-                    credit: "",
-                },
-            ]);
+            if (data?.data.length <= 0) {
+                setTableItem([
+                    ...CloneArray,
+                    {
+                        id: "",
+                        date: "",
+                        balance: "",
+                        remarks: "",
+                        document_no: "",
+                        debit: "",
+                        credit: "",
+                    },
+                ]);
+            } else {
+                setTableItem(CloneArray);
+            }
         }
     }, [data]);
 
@@ -348,7 +352,8 @@ const List = ({
                 if (key === "date") {
                     return {
                         ...item,
-                        date: isDate.value,
+                        date:
+                            isDate.value === "" ? itemData.date : isDate.value,
                     };
                 }
                 if (key === "remarks") {
