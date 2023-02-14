@@ -6,10 +6,10 @@ export default function CreateJournal() {
         {
             id: 1,
             account_id: "",
-            code: 0,
+            code: "",
             accountName: "",
-            debit: 0,
-            credit: 0,
+            debit: "",
+            credit: "",
         },
     ];
     return (

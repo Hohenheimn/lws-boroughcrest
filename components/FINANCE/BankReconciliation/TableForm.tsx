@@ -81,7 +81,7 @@ export default function TableForm() {
                     date: item.date,
                     balance: item.balance,
                     remarks: item.remarks,
-                    document_no: item.document,
+                    document_no: item.document_no,
                     debit:
                         item.debit === 0 || item.debit === "0"
                             ? ""
@@ -121,7 +121,7 @@ export default function TableForm() {
                 setTotalBalance((temp) => Number(temp) + Number(item.balance));
             });
         }
-    }, [isTableItem]);
+    }, [isTableItem, data]);
 
     const SubmitHandler = () => {
         let validate = true;
@@ -317,10 +317,12 @@ const List = ({
     rowNumber,
 }: ListProps) => {
     const { setPrompt } = useContext(AppContext);
+    const itemData: isTableitemObj = itemDetail;
     const [isDate, setDate] = useState({
-        value: itemDetail.date,
+        value: itemData.date,
         toggle: false,
     });
+
     useEffect(() => {
         const e = "";
         UpdateStateHandler("date", e);
@@ -328,7 +330,7 @@ const List = ({
 
     const UpdateStateHandler = (key: string, value: any) => {
         const newItems = isTableItem.map((item: any) => {
-            if (itemDetail.id == item.id) {
+            if (itemData.id == item.id) {
                 if (key === "debit") {
                     return {
                         ...item,
@@ -371,12 +373,12 @@ const List = ({
 
     useEffect(() => {
         validateCreditDebitField(
-            itemDetail.debit,
-            itemDetail.credit,
+            itemData.debit,
+            itemData.credit,
             setDebitValidate,
             setcreditValidate
         );
-    }, [itemDetail.debit, itemDetail.credit]);
+    }, [itemData.debit, itemData.credit]);
 
     const AddRowHandler = (e: any) => {
         if (e.key !== "Enter") {
@@ -387,9 +389,9 @@ const List = ({
         }
         const random = Math.random();
         if (
-            itemDetail.date === "" ||
-            itemDetail.remarks === "" ||
-            itemDetail.document_no === ""
+            itemData.date === "" ||
+            itemData.remarks === "" ||
+            itemData.document_no === ""
         ) {
             setPrompt({
                 toggle: true,
@@ -398,7 +400,7 @@ const List = ({
             });
             return;
         }
-        if (itemDetail.debit === "" && itemDetail.credit === "") {
+        if (itemData.debit === "" && itemData.credit === "") {
             setPrompt({
                 toggle: true,
                 message: "Fill out the fields!",
@@ -419,6 +421,7 @@ const List = ({
             },
         ]);
     };
+
     return (
         <tr>
             <td onKeyUp={(e) => AddRowHandler(e)}>
@@ -438,7 +441,7 @@ const List = ({
 
                             <input
                                 type="text"
-                                value={isDate.value}
+                                value={itemData.date}
                                 onChange={() => {}}
                                 placeholder="dd/mm/yyyy"
                                 onClick={() =>
@@ -459,7 +462,7 @@ const List = ({
             <td onKeyUp={(e) => AddRowHandler(e)}>
                 <InputNumberForTable
                     className={`number field inline-block w-full bg-white ${debitValidate}`}
-                    value={itemDetail.debit}
+                    value={itemData.debit}
                     onChange={UpdateStateHandler}
                     type={"debit"}
                 />
@@ -467,13 +470,16 @@ const List = ({
             <td onKeyUp={(e) => AddRowHandler(e)}>
                 <InputNumberForTable
                     className={`number field inline-block w-full bg-white ${creditValidate}`}
-                    value={itemDetail.credit}
+                    value={itemData.credit}
                     onChange={UpdateStateHandler}
                     type={"credit"}
                 />
             </td>
             <td>
-                <p className="withPeso">{itemDetail.balance}</p>
+                <TextNumberDisplay
+                    value={itemData.balance}
+                    className="withPeso text-end inline-block w-full"
+                />
             </td>
             <td onKeyUp={(e) => AddRowHandler(e)}>
                 <input
@@ -482,7 +488,7 @@ const List = ({
                     onChange={(e) => {
                         UpdateStateHandler("remarks", e.target.value);
                     }}
-                    value={itemDetail.remarks}
+                    value={itemData.remarks}
                 />
             </td>
             <td onKeyUp={(e) => AddRowHandler(e)}>
@@ -492,7 +498,7 @@ const List = ({
                     onChange={(e) => {
                         UpdateStateHandler("document_no", e.target.value);
                     }}
-                    value={itemDetail.document_no}
+                    value={itemData.document_no}
                 />
             </td>
         </tr>

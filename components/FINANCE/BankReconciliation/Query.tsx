@@ -31,14 +31,17 @@ export const GetBR = (
     dateTo: string,
     bank_account_id: string
 ) => {
-    return useQuery("bank-recon-list", () => {
-        return api.get(
-            `/finance/general-ledger/bank-reconciliation?bank_account_id=1&date_from=${dateFrom}&date_to=${dateTo}`,
-            {
-                headers: {
-                    Authorization: "Bearer " + getCookie("user"),
-                },
-            }
-        );
-    });
+    return useQuery(
+        ["bank-recon-list", bank_account_id, dateFrom, dateTo],
+        () => {
+            return api.get(
+                `/finance/general-ledger/bank-reconciliation?bank_account_id=${bank_account_id}&date_from=${dateFrom}&date_to=${dateTo}`,
+                {
+                    headers: {
+                        Authorization: "Bearer " + getCookie("user"),
+                    },
+                }
+            );
+        }
+    );
 };

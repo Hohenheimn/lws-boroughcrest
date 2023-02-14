@@ -29,12 +29,13 @@ const selectedDay = "bg-[#545454] text-white font-bold";
 
 export default function Calendar({ value, setValue }: Props) {
     const modal = useRef<any>();
+    const lastVal = value.value;
 
     useEffect(() => {
         const clickOutSide = (e: any) => {
             if (!modal.current.contains(e.target)) {
                 setValue({
-                    ...value,
+                    value: lastVal,
                     toggle: false,
                 });
             }
