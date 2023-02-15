@@ -82,21 +82,25 @@ export default function SubTable() {
                 };
             });
 
-            setTableItem([
-                ...CloneArray,
-                {
-                    id: random,
-                    id_backend: null,
-                    customer_id: "",
-                    customer_name: "",
-                    date: "",
-                    reference_no: 0,
-                    charge_id: "",
-                    charge: "",
-                    account: "advance",
-                    amount: 0,
-                },
-            ]);
+            if (data?.data.length <= 0) {
+                setTableItem([
+                    ...CloneArray,
+                    {
+                        id: random,
+                        id_backend: null,
+                        customer_id: "",
+                        customer_name: "",
+                        date: "",
+                        reference_no: 0,
+                        charge_id: "",
+                        charge: "",
+                        account: "advance",
+                        amount: 0,
+                    },
+                ]);
+            } else {
+                setTableItem(CloneArray);
+            }
         }
     }, [data?.status]);
 
@@ -222,17 +226,11 @@ type List = {
 };
 
 const List = ({ itemDetail, setTableItem, isTableItem, rowNumber }: List) => {
+    const itemData: isTableItemObj = itemDetail;
     const [isDate, setDate] = useState({
-        value: "",
+        value: itemData.date,
         toggle: false,
     });
-
-    useEffect(() => {
-        setDate({
-            ...isDate,
-            value: itemDetail.date,
-        });
-    }, []);
 
     useEffect(() => {
         const e = "";
@@ -241,7 +239,7 @@ const List = ({ itemDetail, setTableItem, isTableItem, rowNumber }: List) => {
 
     const UpdateStateHandler = (key: string, event: any) => {
         const newItems = isTableItem.map((item: any) => {
-            if (itemDetail.id == item.id) {
+            if (itemData.id == item.id) {
                 if (key === "reference_no") {
                     return {
                         ...item,
@@ -283,7 +281,8 @@ const List = ({ itemDetail, setTableItem, isTableItem, rowNumber }: List) => {
                 if (key === "date") {
                     return {
                         ...item,
-                        date: isDate.value,
+                        date:
+                            isDate.value === "" ? itemData.date : isDate.value,
                     };
                 }
             }
@@ -301,13 +300,13 @@ const List = ({ itemDetail, setTableItem, isTableItem, rowNumber }: List) => {
         }
         const random = Math.random();
         if (
-            itemDetail.customer_name === "" ||
-            itemDetail.date === "" ||
-            itemDetail.reference_no === "" ||
-            itemDetail.reference_no === null ||
-            itemDetail.charge === "" ||
-            itemDetail.amount === "" ||
-            itemDetail.amount === null
+            itemData.customer_name === "" ||
+            itemData.date === "" ||
+            itemData.reference_no === "" ||
+            itemData.reference_no === null ||
+            itemData.charge === "" ||
+            itemData.amount === "" ||
+            itemData.amount === null
         ) {
             return;
         }
@@ -330,12 +329,12 @@ const List = ({ itemDetail, setTableItem, isTableItem, rowNumber }: List) => {
     return (
         <tr>
             <td>
-                <h2>{itemDetail.customer_id} </h2>
+                <h2>{itemData.customer_id} </h2>
             </td>
             <td onKeyUp={(e) => AddRowHandler(e)}>
                 <DropDownCustomer
                     UpdateStateHandler={UpdateStateHandler}
-                    itemDetail={itemDetail}
+                    itemDetail={itemData}
                 />
             </td>
             <td onKeyUp={(e) => AddRowHandler(e)}>
@@ -355,7 +354,7 @@ const List = ({ itemDetail, setTableItem, isTableItem, rowNumber }: List) => {
                                 type="text"
                                 value={
                                     isDate.value === ""
-                                        ? itemDetail.date
+                                        ? itemData.date
                                         : isDate.value
                                 }
                                 onChange={() => {}}
@@ -378,7 +377,7 @@ const List = ({ itemDetail, setTableItem, isTableItem, rowNumber }: List) => {
             <td onKeyUp={(e) => AddRowHandler(e)}>
                 <input
                     type="text"
-                    value={itemDetail.reference_no}
+                    value={itemData.reference_no}
                     className="field w-full"
                     onChange={(e) => {
                         UpdateStateHandler("reference_no", e);
@@ -388,11 +387,11 @@ const List = ({ itemDetail, setTableItem, isTableItem, rowNumber }: List) => {
             <td onKeyUp={(e) => AddRowHandler(e)}>
                 <DropDownCharge
                     UpdateStateHandler={UpdateStateHandler}
-                    itemDetail={itemDetail}
+                    itemDetail={itemData}
                 />
             </td>
             <td onKeyUp={(e) => AddRowHandler(e)}>
-                <article className={`ToggleAccount ${itemDetail.account}`}>
+                <article className={`ToggleAccount ${itemData.account}`}>
                     <ul className="min-w-[180px] flex relative">
                         <li
                             className="item ad"
@@ -415,17 +414,9 @@ const List = ({ itemDetail, setTableItem, isTableItem, rowNumber }: List) => {
                 </article>
             </td>
             <td onKeyUp={(e) => AddRowHandler(e)}>
-                {/* <input
-                    type="number"
-                    value={itemDetail.amount}
-                    className="field w-full"
-                    onChange={(e) => {
-                        UpdateStateHandler("amount", e);
-                    }}
-                /> */}
                 <InputNumberForTable
                     className="field w-full number"
-                    value={itemDetail.amount}
+                    value={itemData.amount}
                     type="amount"
                     onChange={UpdateStateHandler}
                 />
