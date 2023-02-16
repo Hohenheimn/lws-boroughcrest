@@ -6,15 +6,21 @@ export default function CreateJournal() {
         {
             id: 1,
             account_id: "",
-            code: "",
+            accountCode: "",
             accountName: "",
             debit: "",
             credit: "",
         },
     ];
+
     return (
         <>
-            <JournalForm DefaultValue={Value} type="create" />
+            <JournalForm
+                DefaultValue={Value}
+                DefaultParticulars=""
+                DefaultDateValue=""
+                type="create"
+            />
         </>
     );
 }

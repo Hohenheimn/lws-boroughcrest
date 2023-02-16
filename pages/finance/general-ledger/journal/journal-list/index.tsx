@@ -2,20 +2,20 @@ import React, { useState } from "react";
 import JournalTable from "../../../../../components/FINANCE/Journal/JournalTable";
 
 export default function Index() {
-    const [isJounalType, setJournalType] = useState("Unposted");
+    const [isJounalType, setJournalType] = useState("unposted");
 
     return (
         <>
             <ul className="SimpleTab">
                 <li
-                    className={`${isJounalType === "Unposted" && "Active"}`}
-                    onClick={() => setJournalType("Unposted")}
+                    className={`${isJounalType === "unposted" && "Active"}`}
+                    onClick={() => setJournalType("unposted")}
                 >
                     Unposted Journal
                 </li>
                 <li
-                    className={`${isJounalType === "Posted" && "Active"}`}
-                    onClick={() => setJournalType("Posted")}
+                    className={`${isJounalType === "posted" && "Active"}`}
+                    onClick={() => setJournalType("posted")}
                 >
                     Posted Journal
                 </li>

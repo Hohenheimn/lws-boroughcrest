@@ -55,16 +55,16 @@ export default function Readingform({ toggle }: Props) {
                     </div>
                     <div className="w-full overflow-auto max-h-[50vh]">
                         <table className="table_list miniTable">
-                            <thead className="textRed">
+                            <thead>
                                 <tr>
                                     <th className="text-start">ID</th>
-                                    <th>UNIT CODE</th>
-                                    <th>PROJECT</th>
-                                    <th>DEVELOPER</th>
-                                    <th>TOWER</th>
-                                    <th>FLOOR</th>
-                                    <th>CLASS</th>
-                                    <th>TYPE</th>
+                                    <th>Unit Code</th>
+                                    <th>Project</th>
+                                    <th>Developer</th>
+                                    <th>Tower</th>
+                                    <th>Floor</th>
+                                    <th>Class</th>
+                                    <th>Type</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -91,6 +91,7 @@ export default function Readingform({ toggle }: Props) {
                         </button>
                     </div>
                 </div>
+                {/* Next Form */}
                 <div className={formActive[1] ? "" : "hidden"}>
                     <h3 className="mb-5 text-ThemeRed">New Reading</h3>
                     <button

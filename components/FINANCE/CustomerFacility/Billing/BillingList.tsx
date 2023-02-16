@@ -162,7 +162,7 @@ export default function BillingList() {
             )}
 
             <div className="table_container">
-                <table className="table_list journal">
+                <table className="table_list">
                     <thead>
                         <tr>
                             {isType === "Unposted" ? (

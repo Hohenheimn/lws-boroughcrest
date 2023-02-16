@@ -16,8 +16,9 @@ export const InputNumberForTable = ({
     return (
         <div className="withPesoField">
             <NumericFormat
-                className={className}
+                className={className + "max-w-[400px]"}
                 value={value}
+                fixedDecimalScale
                 decimalScale={2}
                 decimalSeparator="."
                 allowNegative={false}
@@ -41,6 +42,7 @@ export const TextNumberDisplay = ({ value, className }: TextNumberDisplay) => {
     return (
         <NumericFormat
             className={className}
+            fixedDecimalScale
             value={value}
             displayType="text"
             decimalScale={2}

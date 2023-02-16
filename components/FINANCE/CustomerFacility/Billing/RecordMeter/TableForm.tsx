@@ -190,18 +190,18 @@ export default function TableForm() {
                 </ul>
                 <div className="table_container">
                     <table className="table_list">
-                        <thead className="textRed">
+                        <thead>
                             <tr>
                                 <th className="checkbox">
                                     <div className="item">
                                         <input type="checkbox" />
                                     </div>
                                 </th>
-                                <th>PROPERTY NAME</th>
-                                <th>PREVIOUS READING</th>
-                                <th>CURRENT READING</th>
-                                <th>CONSUMPTION</th>
-                                <th>MOVING AVERAGE CONSUMPTION</th>
+                                <th>Property Name</th>
+                                <th>Previous Reading</th>
+                                <th>Current Reading</th>
+                                <th>Consumption</th>
+                                <th>Moving Average Consumption</th>
                                 <th></th>
                             </tr>
                         </thead>

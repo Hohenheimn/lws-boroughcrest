@@ -13,6 +13,8 @@ import PeriodCalendar from "../../PeriodCalendar";
 import { AdvanceFilter } from "../../AdvanceFilter";
 import PeriodFNS from "../../PeriodFNS";
 import TableErrorMessage from "../../TableErrorMessage";
+import { GetJournal } from "./Query";
+import Pagination from "../../Pagination";
 
 type Props = {
     type: string;
@@ -33,17 +35,10 @@ type isTableItemObj = {
 };
 
 export default function JournalTable({ type }: Props) {
+    const [isSearch, setSearch] = useState("");
+    const [TablePage, setTablePage] = useState(1);
     const [isTableItem, setTableItem] = useState<isTable>({
-        itemArray: [
-            {
-                id: "",
-                date: "",
-                particulars: "",
-                status: "",
-                journal_no: "",
-                select: false,
-            },
-        ],
+        itemArray: [],
         selectAll: false,
     });
     const [isAdvFilter, setAdvFilter] = useState([
@@ -57,27 +52,17 @@ export default function JournalTable({ type }: Props) {
         to: "",
     });
 
-    const { data, isLoading, isError } = useQuery(
-        ["get-corporate-list"],
-        () => {
-            return api.get(`/project/corporate`, {
-                headers: {
-                    Authorization: "Bearer " + getCookie("user"),
-                },
-            });
-        }
-    );
+    const { data, isLoading, isError } = GetJournal(isSearch, type, TablePage);
     useEffect(() => {
         if (data?.status === 200) {
-            const CloneArray = data?.data.map((item: any, index: number) => {
+            const CloneArray = data?.data.data.map((item: isTableItemObj) => {
                 return {
-                    id: index,
-                    date: "sample date",
-                    particulars: "sample particulars",
-                    status: "sample status",
-                    journal_no: "sample journal number",
+                    id: item.id,
+                    date: item.date,
+                    particulars: item.particulars,
+                    status: item.status,
+                    journal_no: item.journal_no,
                     select: false,
-                    selectAll: false,
                 };
             });
             // Additional blank row field
@@ -86,7 +71,7 @@ export default function JournalTable({ type }: Props) {
                 selectAll: false,
             });
         }
-    }, [data]);
+    }, [data?.status, type, isSearch, TablePage]);
 
     const selectAll = () => {
         const newItems = isTableItem?.itemArray.map((item: any) => {
@@ -106,7 +91,12 @@ export default function JournalTable({ type }: Props) {
             <section className={style.container}>
                 <div className={style.searchBarAdvF}>
                     <div className={style.searchBar}>
-                        <input type="text" placeholder="Search" />
+                        <input
+                            type="text"
+                            placeholder="Search"
+                            value={isSearch}
+                            onChange={(e) => setSearch(e.target.value)}
+                        />
                         <BsSearch className={style.searchIcon} />
                     </div>
                     <AdvanceFilter
@@ -116,7 +106,7 @@ export default function JournalTable({ type }: Props) {
                 </div>
 
                 <ul className={style.navigation}>
-                    {type === "Unposted" ? (
+                    {type === "unposted" ? (
                         <>
                             <li className={style.importExportPrint}>
                                 <Tippy theme="ThemeRed" content="Approve">
@@ -143,7 +133,7 @@ export default function JournalTable({ type }: Props) {
                                 </Tippy>
                             </li>
                             <li className={style.importExportPrint}>
-                                <Tippy theme="ThemeRed" content="Draft">
+                                <Tippy theme="ThemeRed" content="Return">
                                     <div className={`${style.noFill} mr-5`}>
                                         <Image
                                             src="/Images/f_back.png"
@@ -184,7 +174,7 @@ export default function JournalTable({ type }: Props) {
                     )}
                 </ul>
             </section>
-            {type === "Posted" && (
+            {type === "posted" && (
                 <div className="flex items-center mb-5 480px:mb-2 480px:flex-wrap">
                     <PeriodCalendar value={isPeriod} setValue={setPeriod} />
                 </div>
@@ -194,7 +184,7 @@ export default function JournalTable({ type }: Props) {
                 <table className="table_list journal">
                     <thead>
                         <tr>
-                            {type === "Unposted" ? (
+                            {type === "unposted" ? (
                                 <>
                                     <th className="checkbox">
                                         <div className="item">
@@ -235,7 +225,7 @@ export default function JournalTable({ type }: Props) {
                     </tbody>
                 </table>
                 {isLoading && (
-                    <div className="w-full h-full flex justify-center items-center">
+                    <div className="w-full flex justify-center items-center">
                         <aside className="text-center flex justify-center py-5">
                             <BarLoader
                                 color={"#8f384d"}
@@ -249,6 +239,12 @@ export default function JournalTable({ type }: Props) {
                 )}
                 {isError && <TableErrorMessage />}
             </div>
+            <Pagination
+                setTablePage={setTablePage}
+                TablePage={TablePage}
+                PageNumber={data?.data.last_page}
+                CurrentPage={data?.data.current_page}
+            />
         </>
     );
 }
@@ -278,7 +274,7 @@ const List = ({ itemDetail, type, isTableItem, setTableItem }: ListProps) => {
     };
     return (
         <tr>
-            {type === "Unposted" && (
+            {type === "unposted" && (
                 <td className="checkbox">
                     <div className="item">
                         <input
@@ -316,9 +312,15 @@ const List = ({ itemDetail, type, isTableItem, setTableItem }: ListProps) => {
                     href={`/finance/general-ledger/journal/journal-list/${itemDetail.id}`}
                 >
                     <a className="item">
-                        {type !== "Posted" ? (
+                        {type !== "posted" ? (
                             <div className="finance_status">
-                                <div className="status draft">
+                                <div
+                                    className={`status ${
+                                        itemDetail.status === "In Process"
+                                            ? "InProcess"
+                                            : itemDetail.status
+                                    }`}
+                                >
                                     <div>
                                         <Image
                                             src="/Images/f_draft.png"

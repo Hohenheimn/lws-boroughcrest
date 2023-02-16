@@ -283,6 +283,7 @@ export default function NewIndividual({
                                 {...register("class")}
                                 defaultValue={isNewCustomer.class}
                                 value={isNewCustomer.class}
+                                className="field"
                                 onChange={(e) =>
                                     setNewCustomer({
                                         ...isNewCustomer,
