@@ -18,8 +18,8 @@ export default function BillingList() {
     const [isType, setType] = useState("Unposted");
     const [isAdvFilter, setAdvFilter] = useState([
         {
-            name: "Jomari Tiu",
-            subName: "Developer",
+            value: "Jomari Tiu",
+            key: "Developer",
         },
     ]);
     const [isPeriod, setPeriod] = useState({
@@ -63,6 +63,7 @@ export default function BillingList() {
                     <AdvanceFilter
                         setAdvFilter={setAdvFilter}
                         isAdvFilter={isAdvFilter}
+                        endpoint={""}
                     />
                 </div>
 

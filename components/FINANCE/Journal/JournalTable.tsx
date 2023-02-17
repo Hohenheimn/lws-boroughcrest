@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { BsSearch } from "react-icons/bs";
 import style from "../../../styles/SearchFilter.module.scss";
 import Image from "next/image";
@@ -8,13 +8,14 @@ import Link from "next/link";
 import { getCookie } from "cookies-next";
 import { useQuery } from "react-query";
 import api from "../../../util/api";
-import { BarLoader } from "react-spinners";
+import { BarLoader, MoonLoader } from "react-spinners";
 import PeriodCalendar from "../../PeriodCalendar";
-import { AdvanceFilter } from "../../AdvanceFilter";
+import { Advancefilter, AdvanceFilter } from "../../AdvanceFilter";
 import PeriodFNS from "../../PeriodFNS";
 import TableErrorMessage from "../../TableErrorMessage";
-import { GetJournal } from "./Query";
+import { GetJournal, MultipleUpdate } from "./Query";
 import Pagination from "../../Pagination";
+import AppContext from "../../Context/AppContext";
 
 type Props = {
     type: string;
@@ -35,24 +36,38 @@ type isTableItemObj = {
 };
 
 export default function JournalTable({ type }: Props) {
+    let buttonClicked = "";
+    const { setPrompt } = useContext(AppContext);
     const [isSearch, setSearch] = useState("");
     const [TablePage, setTablePage] = useState(1);
     const [isTableItem, setTableItem] = useState<isTable>({
         itemArray: [],
         selectAll: false,
     });
-    const [isAdvFilter, setAdvFilter] = useState([
-        {
-            name: "Jomari Tiu",
-            subName: "Developer",
-        },
-    ]);
+    // ADVANCE FILTER
+    const [isAdvFilter, setAdvFilter] = useState<Advancefilter>([]);
+
+    const [isFilterText, setFilterText] = useState<string[]>([]);
+
+    useEffect(() => {
+        const cloneArray = isAdvFilter.map((item) => {
+            return `${item.key}:${item.value}`;
+        });
+        setFilterText(cloneArray);
+    }, [isAdvFilter]);
+
     const [isPeriod, setPeriod] = useState({
         from: "",
         to: "",
     });
 
-    const { data, isLoading, isError } = GetJournal(isSearch, type, TablePage);
+    const { data, isLoading, isError } = GetJournal(
+        isSearch,
+        type,
+        TablePage,
+        isFilterText
+    );
+
     useEffect(() => {
         if (data?.status === 200) {
             const CloneArray = data?.data.data.map((item: isTableItemObj) => {
@@ -86,6 +101,39 @@ export default function JournalTable({ type }: Props) {
         });
     };
 
+    const onSuccess = () => {
+        setPrompt({
+            message: `Items successfully ${buttonClicked}!`,
+            type: "success",
+            toggle: true,
+        });
+        buttonClicked = "";
+    };
+    const onError = () => {
+        setPrompt({
+            message: `Something is wrong!`,
+            type: "success",
+            toggle: true,
+        });
+        buttonClicked = "";
+    };
+    const { isLoading: updateLoading, mutate: updateMutate } = MultipleUpdate(
+        onSuccess,
+        onError
+    );
+
+    const UpdateStatus = (button: string) => {
+        buttonClicked = button;
+        const CloneArray = isTableItem.itemArray.map((item: isTableItemObj) => {
+            return Number(item.id);
+        });
+        const Payload = {
+            journal_ids: CloneArray,
+            status: button,
+        };
+        updateMutate(Payload);
+    };
+
     return (
         <>
             <section className={style.container}>
@@ -100,6 +148,7 @@ export default function JournalTable({ type }: Props) {
                         <BsSearch className={style.searchIcon} />
                     </div>
                     <AdvanceFilter
+                        endpoint={`/finance/general-ledger/journal/filter-options?list_type=${type}&date_from=${isPeriod.from}&date_to=${isPeriod.to}&keywords=`}
                         setAdvFilter={setAdvFilter}
                         isAdvFilter={isAdvFilter}
                     />
@@ -110,49 +159,127 @@ export default function JournalTable({ type }: Props) {
                         <>
                             <li className={style.importExportPrint}>
                                 <Tippy theme="ThemeRed" content="Approve">
-                                    <div className={`${style.noFill} mr-5`}>
-                                        <Image
-                                            src="/Images/f_check.png"
-                                            height={25}
-                                            width={30}
-                                            alt="Export"
-                                        />
+                                    <div
+                                        className={`${style.noFill} mr-5`}
+                                        onClick={() => UpdateStatus("Approved")}
+                                    >
+                                        {updateLoading ? (
+                                            buttonClicked === "Approved" ? (
+                                                <MoonLoader
+                                                    size={20}
+                                                    color="#8f384d"
+                                                />
+                                            ) : (
+                                                <Image
+                                                    src="/Images/f_check.png"
+                                                    height={25}
+                                                    width={30}
+                                                    alt="Export"
+                                                />
+                                            )
+                                        ) : (
+                                            <Image
+                                                src="/Images/f_check.png"
+                                                height={25}
+                                                width={30}
+                                                alt="Export"
+                                            />
+                                        )}
                                     </div>
                                 </Tippy>
                             </li>
                             <li className={style.importExportPrint}>
                                 <Tippy theme="ThemeRed" content="In Process">
-                                    <div className={`${style.noFill} mr-5`}>
-                                        <Image
-                                            src="/Images/f_refresh.png"
-                                            height={30}
-                                            width={30}
-                                            alt="Export"
-                                        />
+                                    <div
+                                        className={`${style.noFill} mr-5`}
+                                        onClick={() =>
+                                            UpdateStatus("In Progress")
+                                        }
+                                    >
+                                        {updateLoading ? (
+                                            buttonClicked === "In Progress" ? (
+                                                <MoonLoader
+                                                    size={20}
+                                                    color="#8f384d"
+                                                />
+                                            ) : (
+                                                <Image
+                                                    src="/Images/f_check.png"
+                                                    height={25}
+                                                    width={30}
+                                                    alt="Export"
+                                                />
+                                            )
+                                        ) : (
+                                            <Image
+                                                src="/Images/f_check.png"
+                                                height={25}
+                                                width={30}
+                                                alt="Export"
+                                            />
+                                        )}
                                     </div>
                                 </Tippy>
                             </li>
                             <li className={style.importExportPrint}>
                                 <Tippy theme="ThemeRed" content="Return">
-                                    <div className={`${style.noFill} mr-5`}>
-                                        <Image
-                                            src="/Images/f_back.png"
-                                            height={25}
-                                            width={35}
-                                            alt="Export"
-                                        />
+                                    <div
+                                        className={`${style.noFill} mr-5`}
+                                        onClick={() => UpdateStatus("Pending")}
+                                    >
+                                        {updateLoading ? (
+                                            buttonClicked === "Return" ? (
+                                                <MoonLoader
+                                                    size={20}
+                                                    color="#8f384d"
+                                                />
+                                            ) : (
+                                                <Image
+                                                    src="/Images/f_check.png"
+                                                    height={25}
+                                                    width={30}
+                                                    alt="Export"
+                                                />
+                                            )
+                                        ) : (
+                                            <Image
+                                                src="/Images/f_check.png"
+                                                height={25}
+                                                width={30}
+                                                alt="Export"
+                                            />
+                                        )}
                                     </div>
                                 </Tippy>
                             </li>
                             <li className={style.importExportPrint}>
-                                <Tippy theme="ThemeRed" content="Pending">
-                                    <div className={style.noFill}>
-                                        <Image
-                                            src="/Images/f_remove.png"
-                                            height={25}
-                                            width={25}
-                                            alt="Export"
-                                        />
+                                <Tippy theme="ThemeRed" content="Reject">
+                                    <div
+                                        className={style.noFill}
+                                        onClick={() => UpdateStatus("Rejected")}
+                                    >
+                                        {updateLoading ? (
+                                            buttonClicked === "Rejected" ? (
+                                                <MoonLoader
+                                                    size={20}
+                                                    color="#8f384d"
+                                                />
+                                            ) : (
+                                                <Image
+                                                    src="/Images/f_check.png"
+                                                    height={25}
+                                                    width={30}
+                                                    alt="Export"
+                                                />
+                                            )
+                                        ) : (
+                                            <Image
+                                                src="/Images/f_check.png"
+                                                height={25}
+                                                width={30}
+                                                alt="Export"
+                                            />
+                                        )}
                                     </div>
                                 </Tippy>
                             </li>

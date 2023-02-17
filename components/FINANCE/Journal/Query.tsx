@@ -90,23 +90,48 @@ export const DeleteJournal = (
         }
     );
 };
+
+export const MultipleUpdate = (onSucces: any, onError: any) => {
+    const queryClient = useQueryClient();
+    return useMutation(
+        (Payload: any) => {
+            return api.put(`/finance/general-ledger/journal`, Payload, {
+                headers: {
+                    Authorization: "Bearer " + getCookie("user"),
+                },
+            });
+        },
+        {
+            onSuccess: () => {
+                onSucces();
+                queryClient.invalidateQueries("journal-list");
+            },
+            onError: onError,
+        }
+    );
+};
+
 // Journal List
 // type posted or unposted
 export const GetJournal = (
     keyword: string,
     type: string,
-    TablePage: number | string
+    TablePage: number | string,
+    filterArray: string[]
 ) => {
-    return useQuery(["journal-list", keyword, type, TablePage], () => {
-        return api.get(
-            `/finance/general-ledger/journal?list_type=${type}&paginate=10&keywords=${keyword}&page=${TablePage}`,
-            {
-                headers: {
-                    Authorization: "Bearer " + getCookie("user"),
-                },
-            }
-        );
-    });
+    return useQuery(
+        ["journal-list", keyword, type, TablePage, filterArray],
+        () => {
+            return api.get(
+                `/finance/general-ledger/journal?list_type=${type}&paginate=10&keywords=${keyword}&page=${TablePage}&filters=${filterArray}`,
+                {
+                    headers: {
+                        Authorization: "Bearer " + getCookie("user"),
+                    },
+                }
+            );
+        }
+    );
 };
 
 export const GetJournalDetail = (id: string | number) => {

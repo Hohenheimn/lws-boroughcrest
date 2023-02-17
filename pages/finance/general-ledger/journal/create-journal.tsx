@@ -19,6 +19,7 @@ export default function CreateJournal() {
                 DefaultValue={Value}
                 DefaultParticulars=""
                 DefaultDateValue=""
+                DefaultStatus=""
                 type="create"
             />
         </>

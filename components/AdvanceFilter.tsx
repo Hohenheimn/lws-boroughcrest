@@ -3,16 +3,29 @@ import { MdClose } from "react-icons/md";
 import Image from "next/image";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
+import { useQuery } from "react-query";
+import api from "../util/api";
+import { getCookie } from "cookies-next";
+import { BarLoader } from "react-spinners";
 
 type AdvanceFilter = {
-    isAdvFilter: {
-        name: string;
-        subName: string;
-    }[];
+    isAdvFilter: isAdvFilter[];
     setAdvFilter: Function;
+    endpoint: string;
 };
 
-export function AdvanceFilter({ isAdvFilter, setAdvFilter }: AdvanceFilter) {
+export type Advancefilter = isAdvFilter[];
+
+type isAdvFilter = {
+    key: string;
+    value: string;
+};
+
+export function AdvanceFilter({
+    isAdvFilter,
+    setAdvFilter,
+    endpoint,
+}: AdvanceFilter) {
     const [isToggle, setToggle] = useState(false);
 
     return (
@@ -35,6 +48,7 @@ export function AdvanceFilter({ isAdvFilter, setAdvFilter }: AdvanceFilter) {
                     setAdvFilter={setAdvFilter}
                     isAdvFilter={isAdvFilter}
                     setToggle={setToggle}
+                    endpoint={endpoint}
                 />
             )}
         </div>
@@ -43,19 +57,30 @@ export function AdvanceFilter({ isAdvFilter, setAdvFilter }: AdvanceFilter) {
 
 type AdvFilterList = {
     setToggle: Function;
-    isAdvFilter: {
-        name: string;
-        subName: string;
-    }[];
+    isAdvFilter: isAdvFilter[];
     setAdvFilter: Function;
+    endpoint: string;
 };
 
 const AdvFilterList = ({
     setToggle,
     isAdvFilter,
     setAdvFilter,
+    endpoint,
 }: AdvFilterList) => {
     const AdvFilter: any = useRef();
+    const [isSearch, setSearch] = useState("");
+
+    const { isLoading, data, isError } = useQuery(
+        ["advance-filter", isSearch, endpoint],
+        () => {
+            return api.get(`${endpoint}${isSearch}`, {
+                headers: {
+                    Authorization: "Bearer " + getCookie("user"),
+                },
+            });
+        }
+    );
 
     useEffect(() => {
         const clickOutSide = (e: any) => {
@@ -69,6 +94,16 @@ const AdvFilterList = ({
         };
     });
 
+    const AddToFilter = (key: string, value: string) => {
+        setAdvFilter([
+            ...isAdvFilter,
+            {
+                key: key,
+                value: value,
+            },
+        ]);
+    };
+
     return (
         <aside
             className=" absolute top-[110%] bg-white shadow-md p-5 z-50 left-0 w-[300px]"
@@ -81,19 +116,42 @@ const AdvFilterList = ({
                 type="text"
                 className=" bg-Gray shadow-md w-full px-2 py-1 rounded-md mb-2"
                 placeholder="search"
+                value={isSearch}
+                onChange={(e) => setSearch(e.target.value)}
             />
 
             <ul>
-                <li className=" text-Gray2 hover:text-ThemeRed hover:underline cursor-pointer text-[14px]">
-                    Jomari Tiu - <span className=" text-Gray1">Developer</span>
-                </li>
-                <li className=" text-Gray2 hover:text-ThemeRed hover:underline cursor-pointer text-[14px]">
-                    Jomari Tiu - <span className=" text-Gray1">Developer</span>
-                </li>
-                <li className=" text-Gray2 hover:text-ThemeRed hover:underline cursor-pointer text-[14px]">
-                    Jomari Tiu - <span className=" text-Gray1">Developer</span>
-                </li>
+                {data?.data.map((item: isAdvFilter, index: number) => (
+                    <li
+                        className=" text-Gray2 hover:text-ThemeRed hover:underline cursor-pointer text-[14px]"
+                        key={index}
+                        onClick={() => AddToFilter(item.key, item.value)}
+                    >
+                        {item.value} -{" "}
+                        <span className=" text-Gray1">{item.key}</span>
+                    </li>
+                ))}
             </ul>
+            {isLoading && (
+                <div className="w-full flex justify-center items-center">
+                    <aside className="text-center flex justify-center py-5">
+                        <BarLoader
+                            color={"#8f384d"}
+                            height="10px"
+                            width="200px"
+                            aria-label="Loading Spinner"
+                            data-testid="loader"
+                        />
+                    </aside>
+                </div>
+            )}
+            {isError && (
+                <div className="w-full flex justify-center items-center">
+                    <aside className="text-center flex justify-center py-5">
+                        <h1>Something is wrong!</h1>
+                    </aside>
+                </div>
+            )}
         </aside>
     );
 };

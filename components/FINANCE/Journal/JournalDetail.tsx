@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { HiPencil } from "react-icons/hi";
 import style from "../../../styles/Project/PropertyDetails.module.scss";
 import Tippy from "@tippy.js/react";
@@ -27,7 +27,7 @@ type trail = {
     datetime: string;
 };
 
-type journal_list = {
+export type journal_list = {
     debit: string;
     credit: string;
     chart_of_account: {
@@ -37,9 +37,17 @@ type journal_list = {
 };
 
 export default function JournalDetail({ Detail }: JournalDetail) {
-    let totalDebit = 0;
-    let totalCredit = 0;
-    console.log(Detail.journal_list);
+    const [totalDebit, setTotalDebit] = useState(0);
+    const [totalCredit, setTotalCredit] = useState(0);
+
+    useEffect(() => {
+        setTotalCredit(0);
+        setTotalDebit(0);
+        Detail.journal_list.map((item: journal_list) => {
+            setTotalDebit((value) => value + Number(item.debit));
+            setTotalCredit((value) => value + Number(item.credit));
+        });
+    }, []);
     return (
         <div>
             <div className="flex justify-between items-center mb-5">
@@ -132,13 +140,13 @@ export default function JournalDetail({ Detail }: JournalDetail) {
                                 <td>
                                     <TextNumberDisplay
                                         value={totalDebit}
-                                        className="main_text"
+                                        className="main_text font-NHU-bold"
                                     />
                                 </td>
                                 <td>
                                     <TextNumberDisplay
                                         value={totalCredit}
-                                        className="main_text"
+                                        className="main_text font-NHU-bold"
                                     />
                                 </td>
                             </tr>

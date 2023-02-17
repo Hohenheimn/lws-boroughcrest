@@ -9,7 +9,6 @@ import DropDownCOA from "./DropdownCOA";
 import { validateCreditDebitField } from "../OpeningBalance/ValidateCreditDebitField";
 import { InputNumberForTable, TextNumberDisplay } from "../../NumberFormat";
 import AppContext from "../../Context/AppContext";
-import { isTableItemObj } from "../OpeningBalance/SubTable";
 import { CreateDraftJournal, CreateJournal, UpdateJournal } from "./Query";
 import { ScaleLoader } from "react-spinners";
 import { useRouter } from "next/router";
@@ -29,6 +28,7 @@ type Props = {
     DefaultParticulars: string;
     type: string;
     id?: string | number;
+    DefaultStatus: string;
 };
 
 export default function JournalForm({
@@ -37,6 +37,7 @@ export default function JournalForm({
     DefaultParticulars,
     type,
     id,
+    DefaultStatus,
 }: Props) {
     const router = useRouter();
     let buttonClicked = "";
@@ -149,7 +150,13 @@ export default function JournalForm({
                 };
             }
         });
-        const Payload = {
+        const PayloadUpdate = {
+            date: isDate.value,
+            particulars: isParticulars,
+            status: DefaultStatus,
+            journal: journal,
+        };
+        const PayloadSave = {
             date: isDate.value,
             particulars: isParticulars,
             journal: journal,
@@ -159,14 +166,13 @@ export default function JournalForm({
 
         if (button === "save" || button === "new") {
             if (type === "create") {
-                console.log(Payload);
-                saveMutate(Payload);
+                saveMutate(PayloadSave);
             } else {
-                updateMutate(Payload);
+                updateMutate(PayloadUpdate);
             }
         }
         if (button === "draft") {
-            draftMutate(Payload);
+            draftMutate(PayloadSave);
         }
     };
     return (
@@ -299,16 +305,18 @@ export default function JournalForm({
                                 </button>
                             </li>
                             <li>
-                                <button
-                                    type="submit"
-                                    onClick={() => {
-                                        SaveHandler("draft");
+                                {type === "create" && (
+                                    <button
+                                        type="submit"
+                                        onClick={() => {
+                                            SaveHandler("draft");
 
-                                        setSave(false);
-                                    }}
-                                >
-                                    SAVE AS DRAFT
-                                </button>
+                                            setSave(false);
+                                        }}
+                                    >
+                                        SAVE AS DRAFT
+                                    </button>
+                                )}
                             </li>
                         </ul>
                     )}
