@@ -47,7 +47,7 @@ export const CreateDraftJournal = (onSucces: any, onError: any) => {
 export const UpdateJournal = (
     onSucces: any,
     onError: any,
-    id: string | number | undefined
+    id: string | number
 ) => {
     const queryClient = useQueryClient();
     return useMutation(
@@ -91,7 +91,14 @@ export const DeleteJournal = (
     );
 };
 
-export const MultipleUpdate = (onSucces: any, onError: any) => {
+export const MultipleUpdate = (
+    onSucces: any,
+    onError: any,
+    keyword: string,
+    type: string,
+    TablePage: number,
+    filterArray: string[]
+) => {
     const queryClient = useQueryClient();
     return useMutation(
         (Payload: any) => {
@@ -104,7 +111,13 @@ export const MultipleUpdate = (onSucces: any, onError: any) => {
         {
             onSuccess: () => {
                 onSucces();
-                queryClient.invalidateQueries("journal-list");
+                queryClient.invalidateQueries([
+                    "journal-list",
+                    "",
+                    "unposted",
+                    1,
+                    [],
+                ]);
             },
             onError: onError,
         }

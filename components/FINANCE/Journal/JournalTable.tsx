@@ -56,6 +56,11 @@ export default function JournalTable({ type }: Props) {
         setFilterText(cloneArray);
     }, [isAdvFilter]);
 
+    const removeItemFromFilter = (value: string) => {
+        const cloneFilter = isAdvFilter.filter((item) => item.value !== value);
+        setAdvFilter(cloneFilter);
+    };
+
     const [isPeriod, setPeriod] = useState({
         from: "",
         to: "",
@@ -86,7 +91,7 @@ export default function JournalTable({ type }: Props) {
                 selectAll: false,
             });
         }
-    }, [data?.status, type, isSearch, TablePage]);
+    }, [data, type, isSearch, TablePage]);
 
     const selectAll = () => {
         const newItems = isTableItem?.itemArray.map((item: any) => {
@@ -112,23 +117,30 @@ export default function JournalTable({ type }: Props) {
     const onError = () => {
         setPrompt({
             message: `Something is wrong!`,
-            type: "success",
+            type: "error",
             toggle: true,
         });
         buttonClicked = "";
     };
     const { isLoading: updateLoading, mutate: updateMutate } = MultipleUpdate(
         onSuccess,
-        onError
+        onError,
+        isSearch,
+        type,
+        TablePage,
+        isFilterText
     );
 
     const UpdateStatus = (button: string) => {
         buttonClicked = button;
-        const CloneArray = isTableItem.itemArray.map((item: isTableItemObj) => {
-            return Number(item.id);
+        let journalIds: any[] = [];
+        isTableItem.itemArray.map((item: isTableItemObj) => {
+            if (item.select === true) {
+                journalIds.push(item.id);
+            }
         });
         const Payload = {
-            journal_ids: CloneArray,
+            journal_ids: "[" + journalIds.toString() + "]",
             status: button,
         };
         updateMutate(Payload);
@@ -199,12 +211,12 @@ export default function JournalTable({ type }: Props) {
                                         {updateLoading ? (
                                             buttonClicked === "In Progress" ? (
                                                 <MoonLoader
-                                                    size={20}
+                                                    size={25}
                                                     color="#8f384d"
                                                 />
                                             ) : (
                                                 <Image
-                                                    src="/Images/f_check.png"
+                                                    src="/Images/f_refresh.png"
                                                     height={25}
                                                     width={30}
                                                     alt="Export"
@@ -212,7 +224,7 @@ export default function JournalTable({ type }: Props) {
                                             )
                                         ) : (
                                             <Image
-                                                src="/Images/f_check.png"
+                                                src="/Images/f_refresh.png"
                                                 height={25}
                                                 width={30}
                                                 alt="Export"
@@ -235,7 +247,7 @@ export default function JournalTable({ type }: Props) {
                                                 />
                                             ) : (
                                                 <Image
-                                                    src="/Images/f_check.png"
+                                                    src="/Images/f_back.png"
                                                     height={25}
                                                     width={30}
                                                     alt="Export"
@@ -243,7 +255,7 @@ export default function JournalTable({ type }: Props) {
                                             )
                                         ) : (
                                             <Image
-                                                src="/Images/f_check.png"
+                                                src="/Images/f_back.png"
                                                 height={25}
                                                 width={30}
                                                 alt="Export"
@@ -261,12 +273,12 @@ export default function JournalTable({ type }: Props) {
                                         {updateLoading ? (
                                             buttonClicked === "Rejected" ? (
                                                 <MoonLoader
-                                                    size={20}
+                                                    size={25}
                                                     color="#8f384d"
                                                 />
                                             ) : (
                                                 <Image
-                                                    src="/Images/f_check.png"
+                                                    src="/Images/f_remove.png"
                                                     height={25}
                                                     width={30}
                                                     alt="Export"
@@ -274,7 +286,7 @@ export default function JournalTable({ type }: Props) {
                                             )
                                         ) : (
                                             <Image
-                                                src="/Images/f_check.png"
+                                                src="/Images/f_remove.png"
                                                 height={25}
                                                 width={30}
                                                 alt="Export"
@@ -301,10 +313,28 @@ export default function JournalTable({ type }: Props) {
                     )}
                 </ul>
             </section>
+            {/* Advance filter */}
+            <ul className=" flex flex-wrap">
+                {isAdvFilter.map((item) => (
+                    <li className="px-3 text-[14px] text-ThemeRed py-1 bg-[#d9d9d9] mb-5 mr-3 rounded-[50px] relative pr-[25px]">
+                        {item.value} -{" "}
+                        <span className="text-ThemeRed50">{item.key}</span>
+                        <span
+                            onClick={() => removeItemFromFilter(item.value)}
+                            className="text-[28px] hover:text-ThemeRed50 cursor-pointer rotate-45 absolute right-1 top-[48%] translate-y-[-50%]"
+                        >
+                            +
+                        </span>
+                    </li>
+                ))}
+            </ul>
+
             {type === "posted" && (
-                <div className="flex items-center mb-5 480px:mb-2 480px:flex-wrap">
-                    <PeriodCalendar value={isPeriod} setValue={setPeriod} />
-                </div>
+                <>
+                    <div className="flex items-center mb-5 480px:mb-2 480px:flex-wrap">
+                        <PeriodCalendar value={isPeriod} setValue={setPeriod} />
+                    </div>
+                </>
             )}
 
             <div className="table_container">
@@ -443,7 +473,7 @@ const List = ({ itemDetail, type, isTableItem, setTableItem }: ListProps) => {
                             <div className="finance_status">
                                 <div
                                     className={`status ${
-                                        itemDetail.status === "In Process"
+                                        itemDetail.status === "In Progress"
                                             ? "InProcess"
                                             : itemDetail.status
                                     }`}

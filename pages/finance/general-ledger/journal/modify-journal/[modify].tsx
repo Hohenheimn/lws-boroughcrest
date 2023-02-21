@@ -1,3 +1,4 @@
+import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { BeatLoader } from "react-spinners";
@@ -5,9 +6,7 @@ import { journal_list } from "../../../../../components/FINANCE/Journal/JournalD
 import JournalForm from "../../../../../components/FINANCE/Journal/JournalForm";
 import { GetJournalDetail } from "../../../../../components/FINANCE/Journal/Query";
 
-export default function Modify() {
-    const router = useRouter();
-    const id: any = router.query.modify;
+export default function Modify({ id }: any) {
     const { isLoading, data, isError } = GetJournalDetail(id);
     const [isJournalList, setJournalList] = useState([]);
 
@@ -50,7 +49,9 @@ export default function Modify() {
     return (
         <>
             <JournalForm
-                DefaultValue={isJournalList}
+                id={id}
+                JournalList={isJournalList}
+                setJournalList={setJournalList}
                 DefaultParticulars={data?.data.particulars}
                 DefaultDateValue={data?.data.date}
                 DefaultStatus={data?.data.status}
@@ -58,4 +59,13 @@ export default function Modify() {
             />
         </>
     );
+}
+
+export async function getServerSideProps({ query }: any) {
+    const id = query.modify;
+    return {
+        props: {
+            id: id,
+        },
+    };
 }

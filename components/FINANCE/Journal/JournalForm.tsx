@@ -13,8 +13,8 @@ import { CreateDraftJournal, CreateJournal, UpdateJournal } from "./Query";
 import { ScaleLoader } from "react-spinners";
 import { useRouter } from "next/router";
 
-type defaultArray = defaultObject[];
-type defaultObject = {
+export type defaultArray = defaultObject[];
+export type defaultObject = {
     id: number | string;
     account_id: string | number;
     accountName: string;
@@ -23,16 +23,18 @@ type defaultObject = {
     credit: string | number;
 };
 type Props = {
-    DefaultValue: defaultArray;
+    JournalList: defaultArray;
+    setJournalList: Function;
     DefaultDateValue: string;
     DefaultParticulars: string;
     type: string;
-    id?: string | number;
+    id: string | number;
     DefaultStatus: string;
 };
 
 export default function JournalForm({
-    DefaultValue,
+    JournalList,
+    setJournalList,
     DefaultDateValue,
     DefaultParticulars,
     type,
@@ -44,7 +46,6 @@ export default function JournalForm({
     const { setPrompt } = useContext(AppContext);
     const [isSave, setSave] = useState(false);
 
-    const [isDefault, setDefault] = useState<defaultArray>(DefaultValue);
     const [isDate, setDate] = useState({
         value: DefaultDateValue,
         toggle: false,
@@ -57,11 +58,11 @@ export default function JournalForm({
     useEffect(() => {
         setTotalDebit(0);
         setTotalCredit(0);
-        isDefault.map((item: defaultObject) => {
+        JournalList.map((item: defaultObject) => {
             setTotalDebit((temp) => Number(temp) + Number(item.debit));
             setTotalCredit((temp) => Number(temp) + Number(item.credit));
         });
-    }, [isDefault]);
+    }, [JournalList]);
 
     const onSuccess = () => {
         if (buttonClicked === "new") {
@@ -70,7 +71,7 @@ export default function JournalForm({
                 message: "Journal successfully saved!",
                 type: "success",
             });
-            setDefault([
+            setJournalList([
                 {
                     id: "",
                     account_id: "",
@@ -124,7 +125,7 @@ export default function JournalForm({
             return;
         }
 
-        const journal = isDefault.map((item: defaultObject) => {
+        const journal = JournalList.map((item: defaultObject) => {
             if (item.account_id === "") {
                 setPrompt({
                     message: "Please fill out field!",
@@ -229,13 +230,13 @@ export default function JournalForm({
                             </tr>
                         </thead>
                         <tbody>
-                            {isDefault?.map((item: any, index: number) => (
+                            {JournalList?.map((item: any, index: number) => (
                                 <List
                                     key={index}
                                     index={index}
-                                    setDefault={setDefault}
+                                    setDefault={setJournalList}
                                     itemList={item}
-                                    isDefault={isDefault}
+                                    isDefault={JournalList}
                                 />
                             ))}
                         </tbody>
@@ -416,7 +417,7 @@ const List = ({ itemList, setDefault, isDefault, index }: List) => {
             </td>
             <td>
                 <InputNumberForTable
-                    className={`number field inline-block w-full bg-white ${debitValidate}`}
+                    className={`number field inline-block w-full bg-white ${debitValidate} `}
                     value={itemList.debit}
                     onChange={UpdateStateHandler}
                     type={"debit"}
@@ -424,7 +425,7 @@ const List = ({ itemList, setDefault, isDefault, index }: List) => {
             </td>
             <td>
                 <InputNumberForTable
-                    className={`number field inline-block w-full bg-white ${creditValidate}`}
+                    className={`number field inline-block w-full bg-white ${creditValidate} `}
                     value={itemList.credit}
                     onChange={UpdateStateHandler}
                     type={"credit"}

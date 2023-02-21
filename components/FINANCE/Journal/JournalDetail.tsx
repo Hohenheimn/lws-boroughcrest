@@ -158,7 +158,7 @@ export default function JournalDetail({ Detail }: JournalDetail) {
                 <li className={style.noMb}>
                     <p className="label_text">TRAIL</p>
                     {Detail?.trail.map((item: trail, index) => (
-                        <h4 className="main_text" key={index}>
+                        <h4 className="text-[#6b7280] mb-2" key={index}>
                             {item?.event} by {item?.user} on {item?.date},{" "}
                             {item?.time} | {item?.datetime}
                         </h4>

@@ -114,7 +114,7 @@ const AdvFilterList = ({
             </h3>
             <input
                 type="text"
-                className=" bg-Gray shadow-md w-full px-2 py-1 rounded-md mb-2"
+                className=" bg-Gray shadow-md w-full px-2 py-1 rounded-md mb-2 outline-none"
                 placeholder="search"
                 value={isSearch}
                 onChange={(e) => setSearch(e.target.value)}

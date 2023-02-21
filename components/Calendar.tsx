@@ -85,7 +85,7 @@ export default function Calendar({ value, setValue }: Props) {
     const SelectedDateHandler = (day: any) => {
         setSelect(day);
         setValue({
-            value: format(day, "MM-dd-yyyy"),
+            value: format(day, "MM/dd/yyyy"),
             toggle: false,
         });
     };
