@@ -315,8 +315,11 @@ export default function JournalTable({ type }: Props) {
             </section>
             {/* Advance filter */}
             <ul className=" flex flex-wrap">
-                {isAdvFilter.map((item) => (
-                    <li className="px-3 text-[14px] text-ThemeRed py-1 bg-[#d9d9d9] mb-5 mr-3 rounded-[50px] relative pr-[25px]">
+                {isAdvFilter.map((item, index) => (
+                    <li
+                        key={index}
+                        className="px-3 text-[14px] text-ThemeRed py-1 bg-[#d9d9d9] mb-5 mr-3 rounded-[50px] relative pr-[25px]"
+                    >
                         {item.value} -{" "}
                         <span className="text-ThemeRed50">{item.key}</span>
                         <span
