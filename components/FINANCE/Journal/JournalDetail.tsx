@@ -1,12 +1,53 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { HiPencil } from "react-icons/hi";
 import style from "../../../styles/Project/PropertyDetails.module.scss";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 import Link from "next/link";
 import Image from "next/image";
+import { TextNumberDisplay } from "../../NumberFormat";
 
-export default function JournalDetail() {
+type JournalDetail = {
+    Detail: {
+        id: string;
+        corporate_id: string;
+        date: string;
+        particulars: string;
+        journal_no: string | null;
+        status: string;
+        trail: trail[];
+        journal_list: journal_list[];
+    };
+};
+type trail = {
+    event: string;
+    user: string;
+    date: string;
+    time: string;
+    datetime: string;
+};
+
+export type journal_list = {
+    debit: string;
+    credit: string;
+    chart_of_account: {
+        chart_code: string;
+        account_name: string;
+    };
+};
+
+export default function JournalDetail({ Detail }: JournalDetail) {
+    const [totalDebit, setTotalDebit] = useState(0);
+    const [totalCredit, setTotalCredit] = useState(0);
+
+    useEffect(() => {
+        setTotalCredit(0);
+        setTotalDebit(0);
+        Detail.journal_list.map((item: journal_list) => {
+            setTotalDebit((value) => value + Number(item.debit));
+            setTotalCredit((value) => value + Number(item.credit));
+        });
+    }, []);
     return (
         <div>
             <div className="flex justify-between items-center mb-5">
@@ -60,16 +101,16 @@ export default function JournalDetail() {
                 <li className={style.noMb}>
                     <div className={style.row}>
                         <p className="label_text">DATE</p>
-                        <h4 className="main_text">Lorem, ipsum.</h4>
+                        <h4 className="main_text">{Detail?.date}</h4>
                     </div>
                     <div className={style.row}>
                         <p className="label_text">JOURNAL NO.</p>
-                        <h4 className="main_text">00001</h4>
+                        <h4 className="main_text">{Detail?.journal_no}</h4>
                     </div>
                 </li>
                 <li className={style.noMb}>
                     <p className="label_text">PARTICULARS</p>
-                    <h4 className="main_text">Lorem, ipsum.</h4>
+                    <h4 className="main_text">{Detail?.particulars}</h4>
                 </li>
             </ul>
             <ul className={`${style.OneRow} ${style.narrow}`}>
@@ -84,19 +125,29 @@ export default function JournalDetail() {
                             </tr>
                         </thead>
                         <tbody>
-                            <List />
-                            <List />
-                            <List />
-                            <List />
+                            {Detail?.journal_list.map(
+                                (item: journal_list, index: number) => (
+                                    <>
+                                        <List journal_list={item} key={index} />
+                                    </>
+                                )
+                            )}
+
                             <tr>
                                 <td colSpan={2} className={style.total}>
                                     <p className="label_text">TOTAL:</p>
                                 </td>
                                 <td>
-                                    <h4 className="main_text">4000</h4>
+                                    <TextNumberDisplay
+                                        value={totalDebit}
+                                        className="main_text font-NHU-bold"
+                                    />
                                 </td>
                                 <td>
-                                    <h4 className="main_text">400</h4>
+                                    <TextNumberDisplay
+                                        value={totalCredit}
+                                        className="main_text font-NHU-bold"
+                                    />
                                 </td>
                             </tr>
                         </tbody>
@@ -106,26 +157,39 @@ export default function JournalDetail() {
             <ul className={`${style.Occupants} ${style.narrow}`}>
                 <li className={style.noMb}>
                     <p className="label_text">TRAIL</p>
-                    <h4 className="main_text">Lorem, ipsum.</h4>
+                    {Detail?.trail.map((item: trail, index) => (
+                        <h4 className="text-[#6b7280] mb-2" key={index}>
+                            {item?.event} by {item?.user} on {item?.date},{" "}
+                            {item?.time} | {item?.datetime}
+                        </h4>
+                    ))}
                 </li>
             </ul>
         </div>
     );
 }
-const List = () => {
+
+type ListProps = {
+    journal_list: journal_list;
+};
+const List = ({ journal_list }: ListProps) => {
     return (
         <tr>
-            <td className="main_text">
-                <h4>000001</h4>
+            <td>
+                <h4 className="main_text">
+                    {journal_list?.chart_of_account?.chart_code}
+                </h4>
             </td>
-            <td className="main_text">
-                <h4>Juan Dela Cruz</h4>
+            <td>
+                <h4 className="main_text">
+                    {journal_list?.chart_of_account?.account_name}
+                </h4>
             </td>
-            <td className="main_text">
-                <h4>1000</h4>
+            <td>
+                <h4 className="main_text">{journal_list?.debit}</h4>
             </td>
-            <td className="main_text">
-                <h4>100</h4>
+            <td>
+                <h4 className="main_text">{journal_list?.credit}</h4>
             </td>
         </tr>
     );

@@ -49,20 +49,7 @@ export default function SubTable() {
         onSucces,
         onError
     );
-    const [isTableItem, setTableItem] = useState<isTableItemArray>([
-        {
-            id: 0,
-            id_backend: null,
-            customer_id: "",
-            customer_name: "",
-            date: "",
-            reference_no: "",
-            charge_id: "",
-            charge: "",
-            account: "advance",
-            amount: "",
-        },
-    ]);
+    const [isTableItem, setTableItem] = useState<isTableItemArray>([]);
 
     useEffect(() => {
         if (!isLoading && !isError) {
@@ -179,7 +166,7 @@ export default function SubTable() {
                     </tbody>
                 </table>
                 {isLoading && (
-                    <div className="w-full h-full flex justify-center items-center">
+                    <div className="w-full flex justify-center items-center">
                         <aside className="text-center flex justify-center py-5">
                             <BarLoader
                                 color={"#8f384d"}

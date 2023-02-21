@@ -10,16 +10,16 @@ export default function BatchList() {
             </h1>
             <div className="table_container hAuto">
                 <table className="table_list">
-                    <thead className=" textRed">
+                    <thead className="">
                         <tr>
                             <th className="checkbox">
                                 <input type="checkbox" />
                             </th>
 
-                            <th>BATCH NO.</th>
-                            <th>CHARGE</th>
-                            <th>DESCRIPTION</th>
-                            <th>APPLICATION</th>
+                            <th>Batch no.</th>
+                            <th>Charge</th>
+                            <th>Description</th>
+                            <th>Application</th>
                             <th></th>
                         </tr>
                     </thead>

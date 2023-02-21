@@ -1,10 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { MdArrowForwardIos } from "react-icons/md";
 import { BsSearch } from "react-icons/bs";
 import Link from "next/link";
 import style from "../../styles/SearchSidebar.module.scss";
+import { GetJournalRecentSearch } from "../FINANCE/Journal/Query";
+import { useRouter } from "next/router";
+import { BeatLoader } from "react-spinners";
 
 export default function JournalSearch() {
+    const [search, setSearch] = useState<string>("");
+    const router = useRouter();
+    const id: any = router.query.id;
+    const { isLoading, isError, data } = GetJournalRecentSearch(id, search);
     return (
         <div className={style.container}>
             <div className={style.header}>
@@ -21,55 +28,52 @@ export default function JournalSearch() {
                     <div>
                         <input
                             type="text"
-                            placeholder="Search anything here..."
+                            placeholder="Search"
+                            value={search}
+                            onChange={(e) => {
+                                setSearch(e.target.value);
+                            }}
                         />
                         <BsSearch />
                     </div>
                 </aside>
             </div>
-
-            <Link href="/finance/general-ledger/journal/3">
-                <a className={style.searchedItem}>
-                    <ul>
-                        <li>
-                            <h4>JOURNAL NO.</h4>
-                            <p>00001</p>
-                        </li>
-                        <li>
-                            <p>DATE</p>
-                            <p>01/01/2011</p>
-                        </li>
-                    </ul>
-                </a>
-            </Link>
-            <Link href="/finance/general-ledger/journal/3">
-                <a className={style.searchedItem}>
-                    <ul>
-                        <li>
-                            <h4>JOURNAL NO.</h4>
-                            <p>00001</p>
-                        </li>
-                        <li>
-                            <p>DATE</p>
-                            <p>01/01/2011</p>
-                        </li>
-                    </ul>
-                </a>
-            </Link>
-            <Link href="/finance/general-ledger/journal/3">
-                <a className={style.searchedItem}>
-                    <ul>
-                        <li>
-                            <h4>JOURNAL NO.</h4>
-                            <p>00001</p>
-                        </li>
-                        <li>
-                            <p>DATE</p>
-                            <p>01/01/2011</p>
-                        </li>
-                    </ul>
-                </a>
-            </Link>
+            <div className=" overflow-y-auto">
+                {isLoading ? (
+                    <div className="flex justify-center py-5">
+                        <BeatLoader
+                            color={"#8f384d"}
+                            size={10}
+                            aria-label="Loading Spinner"
+                            data-testid="loader"
+                        />
+                    </div>
+                ) : (
+                    data?.data.map((item: any, index: number) => (
+                        <Link
+                            key={index}
+                            href={`/finance/general-ledger/journal/${item.id}`}
+                        >
+                            <a className={style.searchedItem}>
+                                <ul>
+                                    <li>
+                                        <h4>
+                                            {item.journal_no === null
+                                                ? "N/A"
+                                                : item.journal_no}
+                                        </h4>
+                                        <p>{item.date}</p>
+                                    </li>
+                                    <li>
+                                        <p>ID: {item.id}</p>
+                                        <p>{item.status}</p>
+                                    </li>
+                                </ul>
+                            </a>
+                        </Link>
+                    ))
+                )}
+            </div>
         </div>
     );
 }

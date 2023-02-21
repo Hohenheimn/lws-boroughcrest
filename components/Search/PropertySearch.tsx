@@ -45,7 +45,7 @@ export default function PropertySearch() {
                     <div>
                         <input
                             type="text"
-                            placeholder="Search anything here..."
+                            placeholder="Search"
                             value={search}
                             onChange={(e) => {
                                 setSearch((text) => (text = e.target.value));
@@ -67,16 +67,16 @@ export default function PropertySearch() {
                     </div>
                 ) : (
                     RecentData?.data.map((item: any, index: number) => (
-                        <Link key={index} href={`/admin/property/${item.id}`}>
+                        <Link key={index} href={`/admin/property/${item?.id}`}>
                             <a className={style.searchedItem}>
                                 <ul>
                                     <li>
-                                        <h4>{item.unit_code}</h4>
-                                        <p>{item.class}</p>
+                                        <h4>{item?.unit_code}</h4>
+                                        <p>{item?.class}</p>
                                     </li>
                                     <li>
-                                        <p>ID: {item.id}</p>
-                                        <p>{item.type}</p>
+                                        <p>ID: {item?.id}</p>
+                                        <p>{item?.type}</p>
                                     </li>
                                 </ul>
                             </a>

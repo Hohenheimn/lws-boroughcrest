@@ -9,7 +9,7 @@ import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 import PrintTemplate from "../../../components/PrintTemplate";
 
-export default function Print({ keyword, limit, page }: any) {
+export default function Print({ keyword }: any) {
     // Getting column from parameter
     // const Columns = columns.split(",");
     const Columns = [
@@ -27,21 +27,13 @@ export default function Print({ keyword, limit, page }: any) {
         "Type",
     ];
 
-    const { data, isLoading, isError } = useQuery(
-        [keyword, limit, page],
-        () => {
-            return api.get(
-                `/admin/customer?keywords=${keyword}&paginate=${limit}&page=${page}`,
-                {
-                    headers: {
-                        Authorization: "Bearer " + getCookie("user"),
-                    },
-                }
-            );
-        }
-    );
-
-    const tableToPrint: any = useRef();
+    const { data, isLoading, isError } = useQuery([keyword], () => {
+        return api.get(`/admin/customer?keywords=${keyword}`, {
+            headers: {
+                Authorization: "Bearer " + getCookie("user"),
+            },
+        });
+    });
 
     const printhandler = () => {
         print();
@@ -96,7 +88,7 @@ export default function Print({ keyword, limit, page }: any) {
                         <tbody className="text-[14px]">
                             {!isLoading && !isError && (
                                 <>
-                                    {data?.data.data.map(
+                                    {data?.data.map(
                                         (item: any, index: number) => (
                                             <List
                                                 key={index}
@@ -261,14 +253,10 @@ const List = ({ itemDetail, Columns }: ListProps) => {
 
 export async function getServerSideProps({ query }: any) {
     const keyword = query.keyword;
-    const limit = query.limit;
-    const page = query.page;
 
     return {
         props: {
             keyword: keyword,
-            limit: limit,
-            page: page,
         },
     };
 }

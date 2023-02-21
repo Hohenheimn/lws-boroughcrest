@@ -1,20 +1,31 @@
-import React from "react";
-import JournalForm from "../../../../components/FINANCE/Journal/JournalForm";
+import React, { useState } from "react";
+import JournalForm, {
+    defaultArray,
+} from "../../../../components/FINANCE/Journal/JournalForm";
 
 export default function CreateJournal() {
-    const Value = [
+    const [isJournalList, setJournalList] = useState<defaultArray>([
         {
             id: 1,
             account_id: "",
-            code: "",
+            accountCode: "",
             accountName: "",
             debit: "",
             credit: "",
         },
-    ];
+    ]);
+
     return (
         <>
-            <JournalForm DefaultValue={Value} type="create" />
+            <JournalForm
+                id=""
+                JournalList={isJournalList}
+                setJournalList={setJournalList}
+                DefaultParticulars=""
+                DefaultDateValue=""
+                DefaultStatus=""
+                type="create"
+            />
         </>
     );
 }

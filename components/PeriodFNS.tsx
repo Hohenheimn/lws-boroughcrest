@@ -66,8 +66,8 @@ export default function PeriodFNS({ setToggle, isValue, setValue }: PeriodFNS) {
 
     const setDatehandler = () => {
         setValue({
-            from: format(isDateRange.from.value, "dd/MM/yyyy"),
-            to: format(isDateRange.to.value, "dd/MM/yyyy"),
+            from: format(isDateRange.from.value, "MM/dd/yyyy"),
+            to: format(isDateRange.to.value, "MM/dd/yyyy"),
         });
         setToggle(false);
     };
@@ -226,6 +226,10 @@ const CalendarPeriod = ({
                 from: {
                     value: day,
                     validate: true,
+                },
+                to: {
+                    value: day,
+                    validate: false,
                 },
             });
         } else if (isDateRange.to.validate === false) {

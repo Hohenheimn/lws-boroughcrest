@@ -41,25 +41,9 @@ export default function NewPrimaryInfo({
                             onChange={(e) => setType(e.target.value)}
                             className="field"
                         >
-                            <option
-                                value={isType}
-                                className="text-[12px] text-white bg-ThemeRed"
-                                disabled
-                            >
-                                {isType}
-                            </option>
-                            <option
-                                value="individual"
-                                className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
-                            >
-                                Individual
-                            </option>
-                            <option
-                                className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
-                                value="company"
-                            >
-                                Company
-                            </option>
+                            <option value="" className="hidden"></option>
+                            <option value="individual">Individual</option>
+                            <option value="company">Company</option>
                         </select>
                         <span>
                             <MdOutlineKeyboardArrowDown />

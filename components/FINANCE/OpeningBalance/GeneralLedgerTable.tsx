@@ -45,19 +45,7 @@ export default function GeneralLedgerTable({ date }: GeneralLedgerTableProps) {
         onError
     );
     const { data, isLoading, isError } = GetGeneralLedger();
-    const [isTableItem, setTableItem] = useState<isTableItem>([
-        {
-            id: "",
-            account_id: "",
-            chart_code: "",
-            category: "",
-            account_name: "",
-            debit: "",
-            credit: "",
-            account_type: null,
-            id_backend: null,
-        },
-    ]);
+    const [isTableItem, setTableItem] = useState<isTableItem>([]);
 
     const [totalDebit, setTotalDebit] = useState<number>(0);
     const [totalCredit, setTotalCredit] = useState<number>(0);
@@ -86,7 +74,7 @@ export default function GeneralLedgerTable({ date }: GeneralLedgerTableProps) {
             // Additional blank row field
             setTableItem(CloneArray);
         }
-    }, [data]);
+    }, [data?.status]);
 
     useEffect(() => {
         if (data?.status === 200) {
@@ -170,7 +158,7 @@ export default function GeneralLedgerTable({ date }: GeneralLedgerTableProps) {
                 </table>
 
                 {isLoading && (
-                    <div className="w-full h-full flex justify-center items-center">
+                    <div className="w-full flex justify-center items-center">
                         <aside className="text-center flex justify-center py-5">
                             <BarLoader
                                 color={"#8f384d"}

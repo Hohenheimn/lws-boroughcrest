@@ -18,8 +18,8 @@ export default function BillingList() {
     const [isType, setType] = useState("Unposted");
     const [isAdvFilter, setAdvFilter] = useState([
         {
-            name: "Jomari Tiu",
-            subName: "Developer",
+            value: "Jomari Tiu",
+            key: "Developer",
         },
     ]);
     const [isPeriod, setPeriod] = useState({
@@ -63,6 +63,7 @@ export default function BillingList() {
                     <AdvanceFilter
                         setAdvFilter={setAdvFilter}
                         isAdvFilter={isAdvFilter}
+                        endpoint={""}
                     />
                 </div>
 
@@ -162,7 +163,7 @@ export default function BillingList() {
             )}
 
             <div className="table_container">
-                <table className="table_list journal">
+                <table className="table_list">
                     <thead>
                         <tr>
                             {isType === "Unposted" ? (

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { BsSearch } from "react-icons/bs";
 import style from "../../../styles/SearchFilter.module.scss";
 import Image from "next/image";
@@ -8,11 +8,14 @@ import Link from "next/link";
 import { getCookie } from "cookies-next";
 import { useQuery } from "react-query";
 import api from "../../../util/api";
-import { BarLoader } from "react-spinners";
+import { BarLoader, MoonLoader } from "react-spinners";
 import PeriodCalendar from "../../PeriodCalendar";
-import { AdvanceFilter } from "../../AdvanceFilter";
+import { Advancefilter, AdvanceFilter } from "../../AdvanceFilter";
 import PeriodFNS from "../../PeriodFNS";
 import TableErrorMessage from "../../TableErrorMessage";
+import { GetJournal, MultipleUpdate } from "./Query";
+import Pagination from "../../Pagination";
+import AppContext from "../../Context/AppContext";
 
 type Props = {
     type: string;
@@ -33,51 +36,53 @@ type isTableItemObj = {
 };
 
 export default function JournalTable({ type }: Props) {
+    let buttonClicked = "";
+    const { setPrompt } = useContext(AppContext);
+    const [isSearch, setSearch] = useState("");
+    const [TablePage, setTablePage] = useState(1);
     const [isTableItem, setTableItem] = useState<isTable>({
-        itemArray: [
-            {
-                id: "",
-                date: "",
-                particulars: "",
-                status: "",
-                journal_no: "",
-                select: false,
-            },
-        ],
+        itemArray: [],
         selectAll: false,
     });
-    const [isAdvFilter, setAdvFilter] = useState([
-        {
-            name: "Jomari Tiu",
-            subName: "Developer",
-        },
-    ]);
+    // ADVANCE FILTER
+    const [isAdvFilter, setAdvFilter] = useState<Advancefilter>([]);
+
+    const [isFilterText, setFilterText] = useState<string[]>([]);
+
+    useEffect(() => {
+        const cloneArray = isAdvFilter.map((item) => {
+            return `${item.key}:${item.value}`;
+        });
+        setFilterText(cloneArray);
+    }, [isAdvFilter]);
+
+    const removeItemFromFilter = (value: string) => {
+        const cloneFilter = isAdvFilter.filter((item) => item.value !== value);
+        setAdvFilter(cloneFilter);
+    };
+
     const [isPeriod, setPeriod] = useState({
         from: "",
         to: "",
     });
 
-    const { data, isLoading, isError } = useQuery(
-        ["get-corporate-list"],
-        () => {
-            return api.get(`/project/corporate`, {
-                headers: {
-                    Authorization: "Bearer " + getCookie("user"),
-                },
-            });
-        }
+    const { data, isLoading, isError } = GetJournal(
+        isSearch,
+        type,
+        TablePage,
+        isFilterText
     );
+
     useEffect(() => {
         if (data?.status === 200) {
-            const CloneArray = data?.data.map((item: any, index: number) => {
+            const CloneArray = data?.data.data.map((item: isTableItemObj) => {
                 return {
-                    id: index,
-                    date: "sample date",
-                    particulars: "sample particulars",
-                    status: "sample status",
-                    journal_no: "sample journal number",
+                    id: item.id,
+                    date: item.date,
+                    particulars: item.particulars,
+                    status: item.status,
+                    journal_no: item.journal_no,
                     select: false,
-                    selectAll: false,
                 };
             });
             // Additional blank row field
@@ -86,7 +91,7 @@ export default function JournalTable({ type }: Props) {
                 selectAll: false,
             });
         }
-    }, [data]);
+    }, [data, type, isSearch, TablePage]);
 
     const selectAll = () => {
         const newItems = isTableItem?.itemArray.map((item: any) => {
@@ -101,68 +106,192 @@ export default function JournalTable({ type }: Props) {
         });
     };
 
+    const onSuccess = () => {
+        setPrompt({
+            message: `Items successfully ${buttonClicked}!`,
+            type: "success",
+            toggle: true,
+        });
+        buttonClicked = "";
+    };
+    const onError = () => {
+        setPrompt({
+            message: `Something is wrong!`,
+            type: "error",
+            toggle: true,
+        });
+        buttonClicked = "";
+    };
+    const { isLoading: updateLoading, mutate: updateMutate } = MultipleUpdate(
+        onSuccess,
+        onError,
+        isSearch,
+        type,
+        TablePage,
+        isFilterText
+    );
+
+    const UpdateStatus = (button: string) => {
+        buttonClicked = button;
+        let journalIds: any[] = [];
+        isTableItem.itemArray.map((item: isTableItemObj) => {
+            if (item.select === true) {
+                journalIds.push(item.id);
+            }
+        });
+        const Payload = {
+            journal_ids: "[" + journalIds.toString() + "]",
+            status: button,
+        };
+        updateMutate(Payload);
+    };
+
     return (
         <>
             <section className={style.container}>
                 <div className={style.searchBarAdvF}>
                     <div className={style.searchBar}>
-                        <input type="text" placeholder="Search" />
+                        <input
+                            type="text"
+                            placeholder="Search"
+                            value={isSearch}
+                            onChange={(e) => setSearch(e.target.value)}
+                        />
                         <BsSearch className={style.searchIcon} />
                     </div>
                     <AdvanceFilter
+                        endpoint={`/finance/general-ledger/journal/filter-options?list_type=${type}&date_from=${isPeriod.from}&date_to=${isPeriod.to}&keywords=`}
                         setAdvFilter={setAdvFilter}
                         isAdvFilter={isAdvFilter}
                     />
                 </div>
 
                 <ul className={style.navigation}>
-                    {type === "Unposted" ? (
+                    {type === "unposted" ? (
                         <>
                             <li className={style.importExportPrint}>
                                 <Tippy theme="ThemeRed" content="Approve">
-                                    <div className={`${style.noFill} mr-5`}>
-                                        <Image
-                                            src="/Images/f_check.png"
-                                            height={25}
-                                            width={30}
-                                            alt="Export"
-                                        />
+                                    <div
+                                        className={`${style.noFill} mr-5`}
+                                        onClick={() => UpdateStatus("Approved")}
+                                    >
+                                        {updateLoading ? (
+                                            buttonClicked === "Approved" ? (
+                                                <MoonLoader
+                                                    size={20}
+                                                    color="#8f384d"
+                                                />
+                                            ) : (
+                                                <Image
+                                                    src="/Images/f_check.png"
+                                                    height={25}
+                                                    width={30}
+                                                    alt="Export"
+                                                />
+                                            )
+                                        ) : (
+                                            <Image
+                                                src="/Images/f_check.png"
+                                                height={25}
+                                                width={30}
+                                                alt="Export"
+                                            />
+                                        )}
                                     </div>
                                 </Tippy>
                             </li>
                             <li className={style.importExportPrint}>
                                 <Tippy theme="ThemeRed" content="In Process">
-                                    <div className={`${style.noFill} mr-5`}>
-                                        <Image
-                                            src="/Images/f_refresh.png"
-                                            height={30}
-                                            width={30}
-                                            alt="Export"
-                                        />
+                                    <div
+                                        className={`${style.noFill} mr-5`}
+                                        onClick={() =>
+                                            UpdateStatus("In Progress")
+                                        }
+                                    >
+                                        {updateLoading ? (
+                                            buttonClicked === "In Progress" ? (
+                                                <MoonLoader
+                                                    size={25}
+                                                    color="#8f384d"
+                                                />
+                                            ) : (
+                                                <Image
+                                                    src="/Images/f_refresh.png"
+                                                    height={25}
+                                                    width={30}
+                                                    alt="Export"
+                                                />
+                                            )
+                                        ) : (
+                                            <Image
+                                                src="/Images/f_refresh.png"
+                                                height={25}
+                                                width={30}
+                                                alt="Export"
+                                            />
+                                        )}
                                     </div>
                                 </Tippy>
                             </li>
                             <li className={style.importExportPrint}>
-                                <Tippy theme="ThemeRed" content="Draft">
-                                    <div className={`${style.noFill} mr-5`}>
-                                        <Image
-                                            src="/Images/f_back.png"
-                                            height={25}
-                                            width={35}
-                                            alt="Export"
-                                        />
+                                <Tippy theme="ThemeRed" content="Return">
+                                    <div
+                                        className={`${style.noFill} mr-5`}
+                                        onClick={() => UpdateStatus("Pending")}
+                                    >
+                                        {updateLoading ? (
+                                            buttonClicked === "Return" ? (
+                                                <MoonLoader
+                                                    size={20}
+                                                    color="#8f384d"
+                                                />
+                                            ) : (
+                                                <Image
+                                                    src="/Images/f_back.png"
+                                                    height={25}
+                                                    width={30}
+                                                    alt="Export"
+                                                />
+                                            )
+                                        ) : (
+                                            <Image
+                                                src="/Images/f_back.png"
+                                                height={25}
+                                                width={30}
+                                                alt="Export"
+                                            />
+                                        )}
                                     </div>
                                 </Tippy>
                             </li>
                             <li className={style.importExportPrint}>
-                                <Tippy theme="ThemeRed" content="Pending">
-                                    <div className={style.noFill}>
-                                        <Image
-                                            src="/Images/f_remove.png"
-                                            height={25}
-                                            width={25}
-                                            alt="Export"
-                                        />
+                                <Tippy theme="ThemeRed" content="Reject">
+                                    <div
+                                        className={style.noFill}
+                                        onClick={() => UpdateStatus("Rejected")}
+                                    >
+                                        {updateLoading ? (
+                                            buttonClicked === "Rejected" ? (
+                                                <MoonLoader
+                                                    size={25}
+                                                    color="#8f384d"
+                                                />
+                                            ) : (
+                                                <Image
+                                                    src="/Images/f_remove.png"
+                                                    height={25}
+                                                    width={30}
+                                                    alt="Export"
+                                                />
+                                            )
+                                        ) : (
+                                            <Image
+                                                src="/Images/f_remove.png"
+                                                height={25}
+                                                width={30}
+                                                alt="Export"
+                                            />
+                                        )}
                                     </div>
                                 </Tippy>
                             </li>
@@ -184,17 +313,38 @@ export default function JournalTable({ type }: Props) {
                     )}
                 </ul>
             </section>
-            {type === "Posted" && (
-                <div className="flex items-center mb-5 480px:mb-2 480px:flex-wrap">
-                    <PeriodCalendar value={isPeriod} setValue={setPeriod} />
-                </div>
+            {/* Advance filter */}
+            <ul className=" flex flex-wrap">
+                {isAdvFilter.map((item, index) => (
+                    <li
+                        key={index}
+                        className="px-3 text-[14px] text-ThemeRed py-1 bg-[#d9d9d9] mb-5 mr-3 rounded-[50px] relative pr-[25px]"
+                    >
+                        {item.value} -{" "}
+                        <span className="text-ThemeRed50">{item.key}</span>
+                        <span
+                            onClick={() => removeItemFromFilter(item.value)}
+                            className="text-[28px] hover:text-ThemeRed50 cursor-pointer rotate-45 absolute right-1 top-[48%] translate-y-[-50%]"
+                        >
+                            +
+                        </span>
+                    </li>
+                ))}
+            </ul>
+
+            {type === "posted" && (
+                <>
+                    <div className="flex items-center mb-5 480px:mb-2 480px:flex-wrap">
+                        <PeriodCalendar value={isPeriod} setValue={setPeriod} />
+                    </div>
+                </>
             )}
 
             <div className="table_container">
                 <table className="table_list journal">
                     <thead>
                         <tr>
-                            {type === "Unposted" ? (
+                            {type === "unposted" ? (
                                 <>
                                     <th className="checkbox">
                                         <div className="item">
@@ -235,7 +385,7 @@ export default function JournalTable({ type }: Props) {
                     </tbody>
                 </table>
                 {isLoading && (
-                    <div className="w-full h-full flex justify-center items-center">
+                    <div className="w-full flex justify-center items-center">
                         <aside className="text-center flex justify-center py-5">
                             <BarLoader
                                 color={"#8f384d"}
@@ -249,6 +399,12 @@ export default function JournalTable({ type }: Props) {
                 )}
                 {isError && <TableErrorMessage />}
             </div>
+            <Pagination
+                setTablePage={setTablePage}
+                TablePage={TablePage}
+                PageNumber={data?.data.last_page}
+                CurrentPage={data?.data.current_page}
+            />
         </>
     );
 }
@@ -278,7 +434,7 @@ const List = ({ itemDetail, type, isTableItem, setTableItem }: ListProps) => {
     };
     return (
         <tr>
-            {type === "Unposted" && (
+            {type === "unposted" && (
                 <td className="checkbox">
                     <div className="item">
                         <input
@@ -316,9 +472,15 @@ const List = ({ itemDetail, type, isTableItem, setTableItem }: ListProps) => {
                     href={`/finance/general-ledger/journal/journal-list/${itemDetail.id}`}
                 >
                     <a className="item">
-                        {type !== "Posted" ? (
+                        {type !== "posted" ? (
                             <div className="finance_status">
-                                <div className="status draft">
+                                <div
+                                    className={`status ${
+                                        itemDetail.status === "In Progress"
+                                            ? "InProcess"
+                                            : itemDetail.status
+                                    }`}
+                                >
                                     <div>
                                         <Image
                                             src="/Images/f_draft.png"

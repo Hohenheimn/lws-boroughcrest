@@ -216,7 +216,7 @@ export default function Login() {
                                         <input
                                             type="checkbox"
                                             id="rememberme"
-                                            className="mr-1 h-4 w-4 after:text-[11px]"
+                                            className="mr-1 h-4 w-4 rounded-md after:text-[11px]"
                                             checked={CheckRemember}
                                             onChange={RememberMe}
                                         />

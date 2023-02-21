@@ -15,7 +15,8 @@ import { CreateUpdateBR, GetBR } from "./Query";
 import TableErrorMessage from "../../TableErrorMessage";
 import { InputNumberForTable, TextNumberDisplay } from "../../NumberFormat";
 import { validateCreditDebitField } from "../OpeningBalance/ValidateCreditDebitField";
-import App from "next/app";
+import { HiMinus } from "react-icons/hi";
+import { BsPlusLg } from "react-icons/bs";
 
 type isTableitemArray = isTableitemObj[];
 
@@ -110,22 +111,24 @@ export default function TableForm() {
                 setTableItem(CloneArray);
             }
         }
-    }, [data]);
+    }, [data?.status]);
 
     const [totalDebit, setTotalDebit] = useState<number>(0);
     const [totalCredit, setTotalCredit] = useState<number>(0);
+    const [prevBalance, setPrevBalance] = useState<number>(0);
     const [totalBalance, setTotalBalance] = useState<number>(0);
     useEffect(() => {
         if (data?.status === 200) {
             setTotalDebit(0);
             setTotalCredit(0);
+            setTotalBalance(0);
             isTableItem.map((item: isTableitemObj) => {
                 setTotalDebit((temp) => Number(temp) + Number(item.debit));
                 setTotalCredit((temp) => Number(temp) + Number(item.credit));
                 setTotalBalance((temp) => Number(temp) + Number(item.balance));
             });
         }
-    }, [isTableItem, data]);
+    }, [isTableItem]);
 
     const SubmitHandler = () => {
         let validate = true;
@@ -219,6 +222,7 @@ export default function TableForm() {
                             <th>BALANCE</th>
                             <th>REMARKS</th>
                             <th>DOCUMENT NO.</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -268,6 +272,8 @@ export default function TableForm() {
                                         isTableItem={isTableItem}
                                         setTableItem={setTableItem}
                                         rowNumber={index}
+                                        setPrevBalance={setPrevBalance}
+                                        prevBalance={prevBalance}
                                     />
                                 ))}
                             </>
@@ -312,6 +318,8 @@ type ListProps = {
     isTableItem: isTableitemArray;
     setTableItem: Function;
     rowNumber: number;
+    setPrevBalance: Function;
+    prevBalance: number | string;
 };
 
 const List = ({
@@ -319,6 +327,8 @@ const List = ({
     isTableItem,
     setTableItem,
     rowNumber,
+    setPrevBalance,
+    prevBalance,
 }: ListProps) => {
     const { setPrompt } = useContext(AppContext);
     const itemData: isTableitemObj = itemDetail;
@@ -332,14 +342,22 @@ const List = ({
         UpdateStateHandler("date", e);
     }, [isDate]);
 
+    useEffect(() => {
+        setPrevBalance(itemData.balance);
+    }, []);
+
     const UpdateStateHandler = (key: string, value: any) => {
         const newItems = isTableItem.map((item: any) => {
             if (itemData.id == item.id) {
                 if (key === "debit") {
                     return {
                         ...item,
-                        debit: Number(value),
+                        debit: Number(value).toFixed(2),
                         credit: "",
+                        balance:
+                            Number(prevBalance) -
+                            Number(value) +
+                            Number(itemData.credit),
                     };
                 }
                 if (key === "credit") {
@@ -347,6 +365,10 @@ const List = ({
                         ...item,
                         credit: Number(value),
                         debit: "",
+                        balance:
+                            Number(prevBalance) -
+                            Number(value) +
+                            Number(itemData.debit),
                     };
                 }
                 if (key === "date") {
@@ -386,9 +408,6 @@ const List = ({
     }, [itemData.debit, itemData.credit]);
 
     const AddRowHandler = (e: any) => {
-        if (e.key !== "Enter") {
-            return;
-        }
         if (isTableItem.length !== rowNumber + 1) {
             return;
         }
@@ -418,7 +437,7 @@ const List = ({
             {
                 id: random,
                 date: "",
-                balance: "",
+                balance: prevBalance,
                 remarks: "",
                 document_no: "",
                 debit: "",
@@ -426,10 +445,15 @@ const List = ({
             },
         ]);
     };
+    const RemoveRowHandler = () => {
+        setTableItem((item: any[]) =>
+            item.filter((x: any) => x.id !== itemData.id)
+        );
+    };
 
     return (
         <tr>
-            <td onKeyUp={(e) => AddRowHandler(e)}>
+            <td>
                 <DynamicPopOver
                     className="w-[200px]"
                     samewidth={false}
@@ -464,7 +488,7 @@ const List = ({
                     }
                 />
             </td>
-            <td onKeyUp={(e) => AddRowHandler(e)}>
+            <td>
                 <InputNumberForTable
                     className={`number field inline-block w-full bg-white ${debitValidate}`}
                     value={itemData.debit}
@@ -472,7 +496,7 @@ const List = ({
                     type={"debit"}
                 />
             </td>
-            <td onKeyUp={(e) => AddRowHandler(e)}>
+            <td>
                 <InputNumberForTable
                     className={`number field inline-block w-full bg-white ${creditValidate}`}
                     value={itemData.credit}
@@ -486,7 +510,7 @@ const List = ({
                     className="withPeso text-end inline-block w-full"
                 />
             </td>
-            <td onKeyUp={(e) => AddRowHandler(e)}>
+            <td>
                 <input
                     type="text"
                     className="field w-full"
@@ -496,7 +520,7 @@ const List = ({
                     value={itemData.remarks}
                 />
             </td>
-            <td onKeyUp={(e) => AddRowHandler(e)}>
+            <td>
                 <input
                     type="text"
                     className="field w-full"
@@ -505,6 +529,21 @@ const List = ({
                     }}
                     value={itemData.document_no}
                 />
+            </td>
+            <td className="actionIcon">
+                {isTableItem.length > 1 && (
+                    <div onClick={RemoveRowHandler}>
+                        <HiMinus />
+                    </div>
+                )}
+                {isTableItem.length - 1 === rowNumber && (
+                    <div
+                        className="ml-5 1024px:ml-2"
+                        onClick={(e) => AddRowHandler(e)}
+                    >
+                        <BsPlusLg />
+                    </div>
+                )}
             </td>
         </tr>
     );

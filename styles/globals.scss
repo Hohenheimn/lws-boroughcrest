@@ -56,7 +56,7 @@ input[type="number"].disabled,
 input[type="text"].disabled,
 input[type="email"].disabled,
 input[type="password"].disabled {
-    @apply text-white bg-ThemeRed50 pointer-events-none;
+    @apply text-white bg-[#e3e3e3] pointer-events-none;
     color: #554e50 !important;
 }
 
@@ -103,10 +103,11 @@ select {
     select {
         @apply w-full;
         option {
-            @apply hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed;
+            @apply hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed text-[14px];
+            -webkit-appearance: none;
         }
         option:nth-child(1) {
-            @apply bg-ThemeRed text-white text-[12px];
+            display: none !important;
         }
     }
     span {
@@ -178,7 +179,7 @@ select {
         @apply shadow-md sticky top-0 bg-[#fbfbfb] z-[40];
         tr {
             th {
-                @apply text-start px-2 py-4 uppercase 1550px:py-2 480px:py-3 1280px:px-3 text-[#545454] text-[14px] 1280px:text-[13px];
+                @apply text-start px-2 py-4 1550px:py-2 480px:py-3 1280px:px-3 text-[#545454] text-[14px] 1280px:text-[13px];
             }
             th.checkbox {
                 @apply w-3;
@@ -205,6 +206,21 @@ select {
             }
         }
     }
+    thead.capitalizeText {
+        tr {
+            th {
+                @apply text-ThemeRed capitalize;
+            }
+        }
+    }
+    thead.uppercaseText {
+        tr {
+            th {
+                @apply text-ThemeRed uppercase;
+            }
+        }
+    }
+
     tbody {
         tr {
             @apply border-b border-gray-300 cursor-pointer relative text-[16px] 1550px:text-[14px] 480px:text-[12px];
@@ -555,15 +571,11 @@ input[type="number"] {
                     @apply cursor-pointer text-ThemeRed inline-block text-[12px] py-2 w-full text-center hover:bg-ThemeRed hover:text-white duration-75;
                 }
                 .disabled {
-                    @apply pointer-events-none bg-ThemeRed text-white;
+                    @apply pointer-events-none bg-[#e3e3e3];
                 }
             }
         }
     }
-}
-input.disabled_input {
-    @apply pointer-events-none bg-ThemeRed50;
-    color: black !important;
 }
 .SimpleTab {
     @apply flex mb-5;
@@ -603,7 +615,7 @@ input.disabled_input {
             @apply transition-all duration-100 ease-in-out content-[''] overflow-hidden text-[12px] w-full rounded-[50px] bg-white flex items-center absolute h-full left-0 top-0;
         }
     }
-    .draft {
+    .Draft {
         div {
             @apply bg-[#ffb85f];
         }
@@ -611,12 +623,12 @@ input.disabled_input {
             @apply bg-[#fdd19ba4];
         }
     }
-    .draft:hover {
+    .Draft:hover {
         &::after {
             @apply content-['Draft'] w-[80px] pl-[35px];
         }
     }
-    .process {
+    .InProcess {
         div {
             @apply bg-[#56c6f6];
         }
@@ -624,12 +636,12 @@ input.disabled_input {
             @apply bg-[#88d5f6];
         }
     }
-    .process:hover {
+    .InProcess:hover {
         &::after {
             @apply content-['In_process'] w-[105px] pl-[35px];
         }
     }
-    .pending {
+    .Pending {
         div {
             @apply bg-[#ff737d];
         }
@@ -637,28 +649,28 @@ input.disabled_input {
             @apply bg-[#faa8ad];
         }
     }
-    .pending:hover {
+    .Pending:hover {
         &::after {
             @apply content-['Pending'] w-[95px] pl-[35px];
         }
     }
 
-    .sent {
+    .Sent {
         &::after {
             @apply bg-transparent;
         }
     }
-    .sent:hover {
+    .Sent:hover {
         &::after {
             @apply content-['Sent'] w-[95px] pl-[35px] bg-ThemeRed50;
         }
     }
-    .posted {
+    .Posted {
         &::after {
             @apply bg-transparent;
         }
     }
-    .posted:hover {
+    .Posted:hover {
         &::after {
             @apply content-['Posted'] w-[95px] pl-[35px] bg-ThemeRed50;
         }

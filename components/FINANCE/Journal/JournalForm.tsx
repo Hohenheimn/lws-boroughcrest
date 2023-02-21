@@ -9,29 +9,48 @@ import DropDownCOA from "./DropdownCOA";
 import { validateCreditDebitField } from "../OpeningBalance/ValidateCreditDebitField";
 import { InputNumberForTable, TextNumberDisplay } from "../../NumberFormat";
 import AppContext from "../../Context/AppContext";
+import { CreateDraftJournal, CreateJournal, UpdateJournal } from "./Query";
+import { ScaleLoader } from "react-spinners";
+import { useRouter } from "next/router";
 
-type defaultArray = defaultObject[];
-type defaultObject = {
-    id: number;
+export type defaultArray = defaultObject[];
+export type defaultObject = {
+    id: number | string;
     account_id: string | number;
-    code: number | string;
     accountName: string;
-    debit: string;
-    credit: string;
+    accountCode: number | string;
+    debit: string | number;
+    credit: string | number;
 };
 type Props = {
-    DefaultValue: defaultArray;
+    JournalList: defaultArray;
+    setJournalList: Function;
+    DefaultDateValue: string;
+    DefaultParticulars: string;
     type: string;
+    id: string | number;
+    DefaultStatus: string;
 };
 
-export default function JournalForm({ DefaultValue, type }: Props) {
+export default function JournalForm({
+    JournalList,
+    setJournalList,
+    DefaultDateValue,
+    DefaultParticulars,
+    type,
+    id,
+    DefaultStatus,
+}: Props) {
+    const router = useRouter();
+    let buttonClicked = "";
+    const { setPrompt } = useContext(AppContext);
     const [isSave, setSave] = useState(false);
+
     const [isDate, setDate] = useState({
-        value: "",
+        value: DefaultDateValue,
         toggle: false,
     });
-
-    const [isDefault, setDefault] = useState<defaultArray>(DefaultValue);
+    const [isParticulars, setParticulars] = useState(DefaultParticulars);
 
     // TOTAL
     const [totalDebit, setTotalDebit] = useState<number>(0);
@@ -39,11 +58,124 @@ export default function JournalForm({ DefaultValue, type }: Props) {
     useEffect(() => {
         setTotalDebit(0);
         setTotalCredit(0);
-        isDefault.map((item: defaultObject) => {
+        JournalList.map((item: defaultObject) => {
             setTotalDebit((temp) => Number(temp) + Number(item.debit));
             setTotalCredit((temp) => Number(temp) + Number(item.credit));
         });
-    }, [isDefault]);
+    }, [JournalList]);
+
+    const onSuccess = () => {
+        if (buttonClicked === "new") {
+            setPrompt({
+                toggle: true,
+                message: "Journal successfully saved!",
+                type: "success",
+            });
+            setJournalList([
+                {
+                    id: "",
+                    account_id: "",
+                    accountName: "",
+                    accountCode: "",
+                    debit: "",
+                    credit: "",
+                },
+            ]);
+        }
+        if (buttonClicked === "save" || buttonClicked === "draft") {
+            setPrompt({
+                toggle: true,
+                message: "Journal successfully saved!",
+                type: "success",
+            });
+            router.push("/finance/general-ledger/journal/journal-list");
+        }
+    };
+    const onError = () => {
+        setPrompt({
+            toggle: true,
+            message: "Something is wrong!",
+            type: "error",
+        });
+    };
+
+    const { isLoading: saveLoading, mutate: saveMutate } = CreateJournal(
+        onSuccess,
+        onError
+    );
+    const { isLoading: updateLoading, mutate: updateMutate } = UpdateJournal(
+        onSuccess,
+        onError,
+        id
+    );
+    const { isLoading: draftLoading, mutate: draftMutate } = CreateDraftJournal(
+        onSuccess,
+        onError
+    );
+
+    const SaveHandler = (button: string) => {
+        buttonClicked = button;
+        let validate = true;
+        if (isDate.value === "" || isParticulars === "") {
+            setPrompt({
+                message: "Please fill out field!",
+                toggle: true,
+                type: "draft",
+            });
+            return;
+        }
+
+        const journal = JournalList.map((item: defaultObject) => {
+            if (item.account_id === "") {
+                setPrompt({
+                    message: "Please fill out field!",
+                    toggle: true,
+                    type: "draft",
+                });
+                validate = false;
+                return;
+            } else if (item.debit === "0" && item.credit === "0") {
+                setPrompt({
+                    message: "Please input a value on debit or credit!",
+                    toggle: true,
+                    type: "draft",
+                });
+                validate = false;
+                return;
+            } else {
+                validate = true;
+                return {
+                    chart_of_account_id: Number(item.account_id),
+                    debit: Number(item.debit),
+                    credit: Number(item.credit),
+                };
+            }
+        });
+        const PayloadUpdate = {
+            date: isDate.value,
+            particulars: isParticulars,
+            status: DefaultStatus,
+            journal: journal,
+        };
+        const PayloadSave = {
+            date: isDate.value,
+            particulars: isParticulars,
+            journal: journal,
+        };
+
+        if (!validate) return;
+
+        if (button === "save" || button === "new") {
+            if (type === "create") {
+                saveMutate(PayloadSave);
+            } else {
+                updateMutate(PayloadUpdate);
+            }
+        }
+        if (button === "draft") {
+            draftMutate(PayloadSave);
+        }
+    };
     return (
         <>
             <div>
@@ -79,6 +211,10 @@ export default function JournalForm({ DefaultValue, type }: Props) {
                         <input
                             type="text"
                             className="px-2 h-10 1550px:h-8 outline-none rounded-md shadow-md w-full"
+                            value={isParticulars}
+                            onChange={(e) => {
+                                setParticulars(e.target.value);
+                            }}
                         />
                     </li>
                 </ul>
@@ -94,13 +230,13 @@ export default function JournalForm({ DefaultValue, type }: Props) {
                             </tr>
                         </thead>
                         <tbody>
-                            {isDefault?.map((item: any, index: number) => (
+                            {JournalList?.map((item: any, index: number) => (
                                 <List
                                     key={index}
                                     index={index}
-                                    setDefault={setDefault}
+                                    setDefault={setJournalList}
                                     itemList={item}
-                                    isDefault={isDefault}
+                                    isDefault={JournalList}
                                 />
                             ))}
                         </tbody>
@@ -133,8 +269,21 @@ export default function JournalForm({ DefaultValue, type }: Props) {
                             type="submit"
                             name="save"
                             className="ddsave_button"
+                            onClick={() => {
+                                SaveHandler("save");
+
+                                setSave(false);
+                            }}
                         >
-                            SAVE
+                            {saveLoading || draftLoading || updateLoading ? (
+                                <ScaleLoader
+                                    color="#fff"
+                                    height="10px"
+                                    width="2px"
+                                />
+                            ) : (
+                                "SAVE"
+                            )}
                         </button>
                         <aside className="ddArrow">
                             <RiArrowDownSFill
@@ -145,7 +294,30 @@ export default function JournalForm({ DefaultValue, type }: Props) {
                     {isSave && (
                         <ul>
                             <li>
-                                <button type="submit">SAVE & NEW</button>
+                                <button
+                                    type="submit"
+                                    onClick={() => {
+                                        SaveHandler("new");
+
+                                        setSave(false);
+                                    }}
+                                >
+                                    SAVE & NEW
+                                </button>
+                            </li>
+                            <li>
+                                {type === "create" && (
+                                    <button
+                                        type="submit"
+                                        onClick={() => {
+                                            SaveHandler("draft");
+
+                                            setSave(false);
+                                        }}
+                                    >
+                                        SAVE AS DRAFT
+                                    </button>
+                                )}
                             </li>
                         </ul>
                     )}
@@ -163,30 +335,14 @@ type List = {
 };
 
 const List = ({ itemList, setDefault, isDefault, index }: List) => {
-    const { setPrompt } = useContext(AppContext);
     const AddJournal = (e: any) => {
-        if (itemList.account_id === "" || itemList.accountName === "") {
-            setPrompt({
-                toggle: true,
-                message: "Fill out the fields!",
-                type: "draft",
-            });
-            return;
-        }
-        if (itemList.debit === "" && itemList.credit === "") {
-            setPrompt({
-                toggle: true,
-                message: "Fill out the fields!",
-                type: "draft",
-            });
-            return;
-        }
         const random = Math.random();
-        setDefault((temp: any) => [
-            ...temp,
+        setDefault([
+            ...isDefault,
             {
                 id: random,
-                code: 0,
+                account_id: "",
+                accountCode: "",
                 accountName: "",
                 debit: "",
                 credit: "",
@@ -194,7 +350,7 @@ const List = ({ itemList, setDefault, isDefault, index }: List) => {
         ]);
     };
     const RemoveJournal = () => {
-        setDefault((item: any[]) =>
+        setDefault((item: defaultArray[]) =>
             item.filter((x: any) => x.id !== itemList.id)
         );
     };
@@ -206,12 +362,7 @@ const List = ({ itemList, setDefault, isDefault, index }: List) => {
                         ...item,
                         accountName: e.target.innerHTML,
                         account_id: e.target.getAttribute("data-id"),
-                        code: e.target.getAttribute("data-code"),
-                    };
-                } else if (key === "code") {
-                    return {
-                        ...item,
-                        code: e.target.value,
+                        accountCode: e.target.getAttribute("data-code"),
                     };
                 }
             }
@@ -225,8 +376,8 @@ const List = ({ itemList, setDefault, isDefault, index }: List) => {
                 if (key === "debit") {
                     return {
                         ...item,
-                        debit: Number(value),
                         credit: "",
+                        debit: Number(value),
                     };
                 }
                 if (key === "credit") {
@@ -256,7 +407,7 @@ const List = ({ itemList, setDefault, isDefault, index }: List) => {
     return (
         <tr>
             <td className="w-[20%]">
-                <h2>{itemList.code}</h2>
+                <h2>{itemList.accountCode}</h2>
             </td>
             <td>
                 <DropDownCOA
@@ -266,7 +417,7 @@ const List = ({ itemList, setDefault, isDefault, index }: List) => {
             </td>
             <td>
                 <InputNumberForTable
-                    className={`number field inline-block w-full bg-white ${debitValidate}`}
+                    className={`number field inline-block w-full bg-white ${debitValidate} `}
                     value={itemList.debit}
                     onChange={UpdateStateHandler}
                     type={"debit"}
@@ -274,7 +425,7 @@ const List = ({ itemList, setDefault, isDefault, index }: List) => {
             </td>
             <td>
                 <InputNumberForTable
-                    className={`number field inline-block w-full bg-white ${creditValidate}`}
+                    className={`number field inline-block w-full bg-white ${creditValidate} `}
                     value={itemList.credit}
                     onChange={UpdateStateHandler}
                     type={"credit"}

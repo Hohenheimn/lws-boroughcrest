@@ -16,6 +16,9 @@ export default function DropDownCOA({
 }: DropdownItem) {
     const [isToggle, setToggle] = useState(false);
     const [tempSearch, setTempSearch] = useState(itemDetail.accountName);
+    useEffect(() => {
+        setTempSearch(itemDetail.accountName);
+    }, [itemDetail.accountName]);
     return (
         <>
             <DynamicPopOver
