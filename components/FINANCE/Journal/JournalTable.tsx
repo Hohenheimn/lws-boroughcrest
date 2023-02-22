@@ -186,7 +186,7 @@ export default function JournalTable({ type }: Props) {
                                                     src="/Images/f_check.png"
                                                     height={25}
                                                     width={30}
-                                                    alt="Export"
+                                                    alt="Approved"
                                                 />
                                             )
                                         ) : (
@@ -194,7 +194,7 @@ export default function JournalTable({ type }: Props) {
                                                 src="/Images/f_check.png"
                                                 height={25}
                                                 width={30}
-                                                alt="Export"
+                                                alt="Approved"
                                             />
                                         )}
                                     </div>
@@ -219,7 +219,7 @@ export default function JournalTable({ type }: Props) {
                                                     src="/Images/f_refresh.png"
                                                     height={25}
                                                     width={30}
-                                                    alt="Export"
+                                                    alt="In Process"
                                                 />
                                             )
                                         ) : (
@@ -227,7 +227,7 @@ export default function JournalTable({ type }: Props) {
                                                 src="/Images/f_refresh.png"
                                                 height={25}
                                                 width={30}
-                                                alt="Export"
+                                                alt="In Process"
                                             />
                                         )}
                                     </div>
@@ -250,7 +250,7 @@ export default function JournalTable({ type }: Props) {
                                                     src="/Images/f_back.png"
                                                     height={25}
                                                     width={30}
-                                                    alt="Export"
+                                                    alt="Return"
                                                 />
                                             )
                                         ) : (
@@ -258,7 +258,7 @@ export default function JournalTable({ type }: Props) {
                                                 src="/Images/f_back.png"
                                                 height={25}
                                                 width={30}
-                                                alt="Export"
+                                                alt="Return"
                                             />
                                         )}
                                     </div>
@@ -281,7 +281,7 @@ export default function JournalTable({ type }: Props) {
                                                     src="/Images/f_remove.png"
                                                     height={25}
                                                     width={30}
-                                                    alt="Export"
+                                                    alt="Reject"
                                                 />
                                             )
                                         ) : (
@@ -289,7 +289,7 @@ export default function JournalTable({ type }: Props) {
                                                 src="/Images/f_remove.png"
                                                 height={25}
                                                 width={30}
-                                                alt="Export"
+                                                alt="Reject"
                                             />
                                         )}
                                     </div>
@@ -483,9 +483,14 @@ const List = ({ itemDetail, type, isTableItem, setTableItem }: ListProps) => {
                                 >
                                     <div>
                                         <Image
-                                            src="/Images/f_draft.png"
-                                            width={10}
-                                            height={10}
+                                            src={`/Images/f_${
+                                                itemDetail.status ===
+                                                "In Progress"
+                                                    ? "InProcess"
+                                                    : itemDetail.status
+                                            }.png`}
+                                            width={15}
+                                            height={15}
                                             alt="Draft"
                                         />
                                     </div>

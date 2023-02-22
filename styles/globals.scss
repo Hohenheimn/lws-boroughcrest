@@ -30,8 +30,17 @@ h6 {
     font-family: "NHU-bold";
     @apply text-[#545454];
 }
+h1.lowGray,
+h2.lowGray,
+h3.lowGray,
+h4.lowGray,
+h5.lowGray,
+h6.lowGray {
+    font-family: "NHU-bold";
+    @apply text-[#6f6f6f];
+}
 .labelField {
-    @apply text-ThemeRed mr-3 font-NHU-medium 1550px:text-[14px] 640px:text-[12px];
+    @apply text-ThemeRed mr-3 font-NHU-medium 1550px:text-[13px] 640px:text-[12px];
 }
 .field {
     @apply p-1 px-2 text-[#545454] font-NHU-medium 1550px:min-w-[100px] rounded-md outline-none shadow-md;
@@ -56,10 +65,14 @@ input[type="number"].disabled,
 input[type="text"].disabled,
 input[type="email"].disabled,
 input[type="password"].disabled {
-    @apply text-white bg-[#e3e3e3] pointer-events-none;
+    @apply text-white bg-[#e2e2e2] pointer-events-none;
     color: #554e50 !important;
 }
 
+.disabled {
+    @apply text-white bg-[#e3e3e3] pointer-events-none;
+    color: #554e50 !important;
+}
 .calendar {
     @apply relative inline-block;
     .cal {
@@ -223,7 +236,7 @@ select {
 
     tbody {
         tr {
-            @apply border-b border-gray-300 cursor-pointer relative text-[16px] 1550px:text-[14px] 480px:text-[12px];
+            @apply border-b border-gray-300 relative text-[16px] 1550px:text-[14px] 480px:text-[12px];
             td {
                 @apply py-2 px-2 text-[#2E4364] font-NHU-regular;
 
@@ -291,7 +304,7 @@ select {
                 }
             }
             td.actionIcon {
-                @apply flex items-center mt-2;
+                @apply flex items-center mt-2 text-ThemeRed text-[13px] cursor-pointer;
             }
             td.icon {
                 @apply w-[50px];
@@ -356,13 +369,6 @@ select {
     thead {
         @apply shadow-none;
     }
-}
-.table_list.corp,
-.table_list.user {
-    @apply 1024px:w-[1000px];
-}
-.table_list.journal {
-    @apply 1024px:w-[800px];
 }
 // Active Status
 .statusCircle {
@@ -473,10 +479,7 @@ input[type="number"] {
     @apply overflow-y-auto max-h-[300px] p-2 pt-0 relative;
 }
 .crud-table {
-    @apply w-[300px] static mt-2;
-    thead {
-        @apply sticky top-0 z-50;
-    }
+    @apply w-[300px] static;
     th {
         @apply bg-ThemeRed px-3 py-1 text-[10px] font-NHU-regular font-light border border-gray-300;
     }
@@ -660,6 +663,7 @@ input[type="number"] {
             @apply bg-transparent;
         }
     }
+
     .Sent:hover {
         &::after {
             @apply content-['Sent'] w-[95px] pl-[35px] bg-ThemeRed50;
@@ -672,7 +676,20 @@ input[type="number"] {
     }
     .Posted:hover {
         &::after {
-            @apply content-['Posted'] w-[95px] pl-[35px] bg-ThemeRed50;
+            @apply content-['Posted'] w-[95px] pl-[35px] bg-ThemeRed50 text-[#2e2e2e];
+        }
+    }
+    .PendingDC {
+        div {
+            @apply bg-[#56c6f6];
+        }
+        &::after {
+            @apply bg-[#88d5f6];
+        }
+    }
+    .PendingDC:hover {
+        &::after {
+            @apply content-['Pending'] w-[105px] pl-[35px];
         }
     }
 }
