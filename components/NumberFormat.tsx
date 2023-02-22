@@ -16,7 +16,7 @@ export const InputNumberForTable = ({
     return (
         <div className="withPesoField">
             <NumericFormat
-                className={className + "max-w-[400px]"}
+                className={className + " max-w-[400px]"}
                 value={value}
                 fixedDecimalScale
                 decimalScale={2}

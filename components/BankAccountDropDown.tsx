@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { AiOutlineInfoCircle } from "react-icons/ai";
 import { BarLoader } from "react-spinners";
-import DynamicPopOver from "../../DynamicPopOver";
-import { GetBA } from "../../ReactQuery/BankAccount";
+import DynamicPopOver from "./DynamicPopOver";
+import { GetBA } from "./ReactQuery/BankAccount";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 
@@ -109,7 +109,7 @@ const DropdownItems = ({
                 <thead>
                     <tr>
                         <th className="text-white">BANK ACCOUNT NO.</th>
-                        <th className="text-white">BANK & SEARCH</th>
+                        <th className="text-white">BANK & BRANCH</th>
                     </tr>
                 </thead>
                 <tbody>

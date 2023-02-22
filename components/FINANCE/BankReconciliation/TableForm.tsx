@@ -10,7 +10,7 @@ import AppContext from "../../../components/Context/AppContext";
 import { CustomerImport } from "../../../components/ReactQuery/CustomerMethod";
 import PeriodCalendar from "../../PeriodCalendar";
 import DropdownSearch from "../../DropdownSearch";
-import BankAccountDropDown from "./BankAccountDropDown";
+import BankAccountDropDown from "../../BankAccountDropDown";
 import { CreateUpdateBR, GetBR } from "./Query";
 import TableErrorMessage from "../../TableErrorMessage";
 import { InputNumberForTable, TextNumberDisplay } from "../../NumberFormat";
@@ -40,17 +40,7 @@ export default function TableForm() {
         id: "",
         value: "",
     });
-    const [isTableItem, setTableItem] = useState<isTableitemArray>([
-        {
-            id: "",
-            date: "",
-            balance: "",
-            remarks: "",
-            document_no: "",
-            debit: "",
-            credit: "",
-        },
-    ]);
+    const [isTableItem, setTableItem] = useState<isTableitemArray>([]);
     const onSucces = () => {
         setPrompt({
             toggle: true,
@@ -82,7 +72,7 @@ export default function TableForm() {
                     date: item.date,
                     balance: item.balance,
                     remarks: item.remarks,
-                    document_no: item.document_no,
+                    document_no: "",
                     debit:
                         item.debit === 0 || item.debit === "0"
                             ? ""
@@ -523,7 +513,7 @@ const List = ({
             <td>
                 <input
                     type="text"
-                    className="field w-full"
+                    className="field disabled w-full"
                     onChange={(e) => {
                         UpdateStateHandler("document_no", e.target.value);
                     }}

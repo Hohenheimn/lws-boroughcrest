@@ -272,10 +272,10 @@ const List = () => {
             <td>
                 <div className="item w-[100px]">
                     <div className="finance_status">
-                        <div className="status posted">
+                        <div className="status Posted">
                             <div>
                                 <Image
-                                    src="/Images/f_posted.png"
+                                    src="/Images/f_Posted.png"
                                     width={25}
                                     height={25}
                                     alt="Draft"

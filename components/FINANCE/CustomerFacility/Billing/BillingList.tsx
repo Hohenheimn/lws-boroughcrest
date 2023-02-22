@@ -300,10 +300,10 @@ const List = ({ itemDetail, type }: ListProps) => {
             <td>
                 {type !== "Posted" ? (
                     <div className="finance_status">
-                        <div className="status draft">
+                        <div className="status Draft">
                             <div>
                                 <Image
-                                    src="/Images/f_draft.png"
+                                    src="/Images/f_Draft.png"
                                     width={10}
                                     height={10}
                                     alt="Draft"
@@ -327,7 +327,7 @@ const List = ({ itemDetail, type }: ListProps) => {
                                     href={`/finance/customer-facility/billing/invoice-list/${itemDetail.id}`}
                                 >
                                     <a>
-                                        <FaRegEye />
+                                        <FaRegEye className="text-[14x]" />
                                     </a>
                                 </Link>
                             </div>
@@ -338,7 +338,7 @@ const List = ({ itemDetail, type }: ListProps) => {
                                     href={`/finance/customer-facility/billing/modify/${itemDetail.id}`}
                                 >
                                     <a>
-                                        <HiPencil />
+                                        <HiPencil className="text-[14px]" />
                                     </a>
                                 </Link>
                             </div>
@@ -349,10 +349,10 @@ const List = ({ itemDetail, type }: ListProps) => {
                 <td className="icon w-[100px]">
                     <div className="item w-[150px]">
                         <div className="finance_status">
-                            <div className="status sent">
+                            <div className="status Sent">
                                 <div>
                                     <Image
-                                        src="/Images/f_sent.png"
+                                        src="/Images/f_Sent.png"
                                         width={15}
                                         height={15}
                                         alt="Draft"

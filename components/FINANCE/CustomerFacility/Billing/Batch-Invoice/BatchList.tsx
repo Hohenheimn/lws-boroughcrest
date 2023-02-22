@@ -75,14 +75,14 @@ const List = () => {
             <td className="action">
                 <div className="item">
                     <div>
-                        <HiMinus />
+                        <HiMinus className="text-[13px]" />
                     </div>
 
                     <div className="ml-5 1024px:ml-2">
-                        <BsPlusLg />
+                        <BsPlusLg className="text-[13px]" />
                     </div>
                     <div className="ml-5 1024px:ml-2">
-                        <HiPencil />
+                        <HiPencil className="text-[13px]" />
                     </div>
                 </div>
             </td>
