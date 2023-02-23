@@ -12,8 +12,10 @@ import { GetReceiptsBook } from "./Query";
 import TableErrorMessage from "../../../TableErrorMessage";
 import Pagination from "../../../Pagination";
 import { BarLoader } from "react-spinners";
-import { BsSearch } from "react-icons/bs";
+import { BsPlusLg, BsSearch } from "react-icons/bs";
 import DepositDetail from "./DepositDetail";
+import { HiMinus } from "react-icons/hi";
+import index from "../../../../pages/project";
 
 export type isTableDC = {
     itemArray: isTableItemObjDC[];
@@ -189,6 +191,7 @@ export default function Receiptsbook({ type }: Props) {
                             <th>DEPOSIT DATE</th>
                             <th>DEPOSIT AMOUNT</th>
                             <th>INDEX</th>
+                            {type !== "receipts-book" && <th></th>}
                         </tr>
                     </thead>
                     <tbody>
@@ -200,6 +203,7 @@ export default function Receiptsbook({ type }: Props) {
                                     isTableItem={isTableItem}
                                     setTableItem={setTableItem}
                                     type={type}
+                                    index={index}
                                 />
                             )
                         )}
@@ -237,9 +241,16 @@ type ListProps = {
     isTableItem: isTableDC;
     setTableItem: Function;
     type: string;
+    index: number;
 };
 
-const List = ({ itemDetail, isTableItem, setTableItem, type }: ListProps) => {
+const List = ({
+    itemDetail,
+    isTableItem,
+    setTableItem,
+    type,
+    index,
+}: ListProps) => {
     const updateValue = (e: any, key: string) => {
         const newItems = isTableItem?.itemArray.map((item: any) => {
             if (itemDetail.id == item.id) {
@@ -314,6 +325,20 @@ const List = ({ itemDetail, isTableItem, setTableItem, type }: ListProps) => {
                     />
                 )}
             </td>
+            {type !== "receipts-book" && (
+                <td className="actionIcon">
+                    {isTableItem.itemArray.length > 1 && (
+                        <div>
+                            <HiMinus />
+                        </div>
+                    )}
+                    {isTableItem.itemArray.length - 1 === index && (
+                        <div className="ml-5 1024px:ml-2">
+                            <BsPlusLg />
+                        </div>
+                    )}
+                </td>
+            )}
         </tr>
     );
 };

@@ -43,6 +43,28 @@ export default function PropertyForm({
         value: DefaultFormData.turnover_date,
         toggle: false,
     });
+
+    const [isSelect, setSelect] = useState({
+        type: false,
+        class: false,
+    });
+    const SelectField = (value: string, key: string) => {
+        if (key === "type") {
+            setValue("type", value);
+            setSelect({
+                ...isSelect,
+                type: false,
+            });
+        }
+        if (key === "class") {
+            setValue("class", value);
+            setSelect({
+                ...isSelect,
+                class: false,
+            });
+        }
+    };
+
     useEffect(() => {
         setValue("acceptance_date", acceptanceDate.value, {
             shouldValidate: true,
@@ -339,21 +361,67 @@ export default function PropertyForm({
                         )}
                         <li>
                             <label>*TYPE</label>
-                            <div className="select">
-                                <select
-                                    id=""
-                                    {...register("type")}
-                                    className="field"
-                                >
-                                    <option value="Parking">Parking</option>
-                                    <option value="Unit">Unit</option>
-                                    <option value="Commercial">
-                                        Commercial
-                                    </option>
-                                </select>
+                            <div className="select w-full">
                                 <span>
                                     <MdOutlineKeyboardArrowDown />
                                 </span>
+                                <DynamicPopOver
+                                    toRef={
+                                        <input
+                                            type="text"
+                                            autoComplete="off"
+                                            className="field w-full"
+                                            {...register("type")}
+                                            readOnly
+                                            onClick={() =>
+                                                setSelect({
+                                                    ...isSelect,
+                                                    type: true,
+                                                })
+                                            }
+                                        />
+                                    }
+                                    samewidth={true}
+                                    toPop={
+                                        <>
+                                            {isSelect.type && (
+                                                <ul>
+                                                    <li
+                                                        onClick={() =>
+                                                            SelectField(
+                                                                "Parking",
+                                                                "type"
+                                                            )
+                                                        }
+                                                    >
+                                                        Parking
+                                                    </li>
+                                                    <li
+                                                        onClick={() =>
+                                                            SelectField(
+                                                                "Unit",
+                                                                "type"
+                                                            )
+                                                        }
+                                                    >
+                                                        Unit
+                                                    </li>
+                                                    <li
+                                                        onClick={() =>
+                                                            SelectField(
+                                                                "Commercial",
+                                                                "type"
+                                                            )
+                                                        }
+                                                    >
+                                                        Commercial
+                                                    </li>
+                                                </ul>
+                                            )}
+                                        </>
+                                    }
+                                    className=""
+                                />
                             </div>
 
                             {errors.type && (
@@ -391,18 +459,57 @@ export default function PropertyForm({
                         </li>
                         <li>
                             <label>*CLASS</label>
-                            <div className="select">
-                                <select
-                                    id=""
-                                    {...register("class")}
-                                    className="field"
-                                >
-                                    <option value="Saleable">Saleable</option>
-                                    <option value="Leaseable">Leaseable</option>
-                                </select>
+                            <div className="select w-full">
                                 <span>
                                     <MdOutlineKeyboardArrowDown />
                                 </span>
+                                <DynamicPopOver
+                                    toRef={
+                                        <input
+                                            type="text"
+                                            autoComplete="off"
+                                            className="field w-full"
+                                            {...register("class")}
+                                            readOnly
+                                            onClick={() =>
+                                                setSelect({
+                                                    ...isSelect,
+                                                    class: true,
+                                                })
+                                            }
+                                        />
+                                    }
+                                    samewidth={true}
+                                    toPop={
+                                        <>
+                                            {isSelect.class && (
+                                                <ul>
+                                                    <li
+                                                        onClick={() =>
+                                                            SelectField(
+                                                                "Saleable",
+                                                                "class"
+                                                            )
+                                                        }
+                                                    >
+                                                        Saleable
+                                                    </li>
+                                                    <li
+                                                        onClick={() =>
+                                                            SelectField(
+                                                                "Leaseable",
+                                                                "class"
+                                                            )
+                                                        }
+                                                    >
+                                                        Leaseable
+                                                    </li>
+                                                </ul>
+                                            )}
+                                        </>
+                                    }
+                                    className=""
+                                />
                             </div>
 
                             {errors.class && (

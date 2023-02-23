@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Calendar from "../../../Calendar";
-import BankAccountDropDown from "../../../BankAccountDropDown";
 import { TextNumberDisplay } from "../../../NumberFormat";
+import BankAccountDropDown from "../../../BankAccountDropDown";
 
 type Props = {
     id?: number;
@@ -68,7 +68,7 @@ export default function DepositForm({ id }: Props) {
                 </li>
             </ul>
             <h1 className=" text-[20px] 1366px:text-[17px] mb-5 480px:mb-2 flex items-center lowGray">
-                {id !== undefined ? "Modify Receipts" : "Create Receipts"}
+                Cash Receipts
             </h1>
             <div className="table_container">
                 <table className="table_list">

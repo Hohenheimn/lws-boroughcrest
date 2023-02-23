@@ -14,6 +14,7 @@ import { ScaleLoader } from "react-spinners";
 import { useQueryClient } from "react-query";
 import Calendar from "../../Calendar";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
+import DynamicPopOver from "../../DynamicPopOver";
 
 type ModifyCustomer = {
     setToggleModify: Function;
@@ -58,6 +59,16 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
     const { isModifyCustomer, ImgUrl, setModifyCustomer, CusError } =
         useContext(AppContext);
 
+    const [isSelect, setSelect] = useState(false);
+    const SelectField = (value: string) => {
+        setModifyCustomer({
+            ...isModifyCustomer,
+            class: value,
+        });
+        setValue("class", value);
+        setSelect(false);
+    };
+
     // Birth Date Field with custom Calendar
     const [isDate, setDate] = useState({
         value: isModifyCustomer.individual_birth_date,
@@ -101,6 +112,7 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
     const {
         register,
         handleSubmit,
+        setValue,
         formState: { errors },
     } = useForm<customer>({
         defaultValues: {
@@ -394,24 +406,56 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
                     </li>
                     <li>
                         <label>*CLASS</label>
-                        <div className="select">
-                            <select
-                                id=""
-                                className="field"
-                                defaultValue={isModifyCustomer.class}
-                                {...register("class")}
-                            >
-                                <option value={isModifyCustomer.class} disabled>
-                                    {isModifyCustomer.class}
-                                </option>
-                                <option value="developer">Developer</option>
-                                <option value="owner">Owner</option>
-                                <option value="tenant">Tenant</option>
-                            </select>
+                        <div className="select w-full">
                             <span>
                                 <MdOutlineKeyboardArrowDown />
                             </span>
+                            <DynamicPopOver
+                                toRef={
+                                    <input
+                                        type="text"
+                                        autoComplete="off"
+                                        className="field w-full"
+                                        {...register("class")}
+                                        readOnly
+                                        onClick={() => setSelect(true)}
+                                        value={isModifyCustomer.class}
+                                    />
+                                }
+                                samewidth={true}
+                                toPop={
+                                    <>
+                                        {isSelect && (
+                                            <ul>
+                                                <li
+                                                    onClick={() =>
+                                                        SelectField("Developer")
+                                                    }
+                                                >
+                                                    Developer
+                                                </li>
+                                                <li
+                                                    onClick={() =>
+                                                        SelectField("Owner")
+                                                    }
+                                                >
+                                                    Owner
+                                                </li>
+                                                <li
+                                                    onClick={() =>
+                                                        SelectField("Tenant")
+                                                    }
+                                                >
+                                                    Tenant
+                                                </li>
+                                            </ul>
+                                        )}
+                                    </>
+                                }
+                                className=""
+                            />
                         </div>
+
                         {errors.class && (
                             <p className="text-[10px]">
                                 {errors.class.message}

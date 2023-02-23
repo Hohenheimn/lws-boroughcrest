@@ -7,7 +7,7 @@ export default function index() {
         <>
             <Receiptsbook type="" />
             <div className="my-10 h-[1px] bg-gray-300 w-full"></div>
-            {/* <BankCredit type="" /> */}
+            <BankCredit type="" />
         </>
     );
 }

@@ -20,7 +20,7 @@ export default function AppProvider({ children }: AppProvider) {
         name: "",
         tin: "",
         branch_code: "",
-        gst_type: "VAT",
+        gst_type: "",
         rdo_no: "",
         sec_registration_no: "",
         email: "",

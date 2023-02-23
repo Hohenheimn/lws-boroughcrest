@@ -101,7 +101,7 @@ export default function TableForm() {
                 setTableItem(CloneArray);
             }
         }
-    }, [data?.status]);
+    }, [data?.status, isBankAccount, isPeriod]);
 
     const [totalDebit, setTotalDebit] = useState<number>(0);
     const [totalCredit, setTotalCredit] = useState<number>(0);
@@ -123,11 +123,7 @@ export default function TableForm() {
     const SubmitHandler = () => {
         let validate = true;
         const bank_recon = isTableItem.map((item: isTableitemObj) => {
-            if (
-                item.date === "" ||
-                item.remarks === "" ||
-                item.document_no === ""
-            ) {
+            if (item.date === "" || item.remarks === "") {
                 setPrompt({
                     toggle: true,
                     message: "Fill out the fields!",
@@ -342,7 +338,7 @@ const List = ({
                 if (key === "debit") {
                     return {
                         ...item,
-                        debit: Number(value).toFixed(2),
+                        debit: Number(value),
                         credit: "",
                         balance:
                             Number(prevBalance) -
@@ -402,11 +398,7 @@ const List = ({
             return;
         }
         const random = Math.random();
-        if (
-            itemData.date === "" ||
-            itemData.remarks === "" ||
-            itemData.document_no === ""
-        ) {
+        if (itemData.date === "" || itemData.remarks === "") {
             setPrompt({
                 toggle: true,
                 message: "Fill out the fields!",

@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import NewDefault from "./NewDefault";
 import NewIndividual from "./NewIndividual";
 import style from "../../../styles/Popup_Modal.module.scss";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
+import DynamicPopOver from "../../DynamicPopOver";
 
 type NewPrimaryInfo = {
     setActiveForm: Function;
@@ -25,6 +26,12 @@ export default function NewPrimaryInfo({
         setStatus(!status);
     };
 
+    const [isSelect, setSelect] = useState(false);
+    const SelectField = (value: string) => {
+        setType(value);
+        setSelect(false);
+    };
+
     return (
         <div className={`${isActiveForm[0] ? "" : "hidden"}`}>
             <h1 className={style.modal_label_primary}>Primary Informations</h1>
@@ -34,20 +41,45 @@ export default function NewPrimaryInfo({
                         TYPE
                     </p>
                     <div className="select">
-                        <select
-                            name=""
-                            id=""
-                            defaultValue={isType}
-                            onChange={(e) => setType(e.target.value)}
-                            className="field"
-                        >
-                            <option value="" className="hidden"></option>
-                            <option value="individual">Individual</option>
-                            <option value="company">Company</option>
-                        </select>
                         <span>
                             <MdOutlineKeyboardArrowDown />
                         </span>
+                        <DynamicPopOver
+                            toRef={
+                                <input
+                                    type="text"
+                                    autoComplete="off"
+                                    className="field w-full"
+                                    readOnly
+                                    onClick={() => setSelect(true)}
+                                    value={isType}
+                                />
+                            }
+                            samewidth={true}
+                            toPop={
+                                <>
+                                    {isSelect && (
+                                        <ul>
+                                            <li
+                                                onClick={() =>
+                                                    SelectField("individual")
+                                                }
+                                            >
+                                                Individual
+                                            </li>
+                                            <li
+                                                onClick={() =>
+                                                    SelectField("company")
+                                                }
+                                            >
+                                                Company
+                                            </li>
+                                        </ul>
+                                    )}
+                                </>
+                            }
+                            className=""
+                        />
                     </div>
 
                     {isType === "" && (

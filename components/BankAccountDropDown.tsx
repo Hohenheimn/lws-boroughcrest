@@ -20,13 +20,14 @@ export default function BankAccountDropDown({ isObject, setObject }: Props) {
 
     const UpdateHandler = (
         id: string | number,
-        account_no: string | number
+        account_no: string | number,
+        branch: string
     ) => {
-        setTempVal(account_no);
+        setTempVal(`${account_no} - ${branch}`);
         setToggle(false);
         setObject({
             id: id,
-            value: account_no,
+            value: `${account_no} - ${branch}`,
         });
     };
     return (
@@ -66,7 +67,11 @@ export default function BankAccountDropDown({ isObject, setObject }: Props) {
 type DropdownItems = {
     setToggle: Function;
     keyword: string;
-    UpdateHandler: (id: string | number, account_no: string | number) => void;
+    UpdateHandler: (
+        id: string | number,
+        account_no: string | number,
+        branch: string
+    ) => void;
     isObject: {
         id: string | number;
         value: string;
@@ -151,7 +156,11 @@ const DropdownItems = ({
 
 type List = {
     itemDetail: BankAccount;
-    UpdateHandler: (id: string | number, account_no: string | number) => void;
+    UpdateHandler: (
+        id: string | number,
+        account_no: string | number,
+        branch: string
+    ) => void;
 };
 
 const List = ({ itemDetail, UpdateHandler }: List) => {
@@ -164,7 +173,11 @@ const List = ({ itemDetail, UpdateHandler }: List) => {
             }`}
             onClick={(e) =>
                 itemDetail.status !== "No" &&
-                UpdateHandler(itemDetail.id, itemDetail.bank_acc_no)
+                UpdateHandler(
+                    itemDetail.id,
+                    itemDetail.bank_acc_no,
+                    itemDetail.bank_branch
+                )
             }
         >
             <td className="relative">

@@ -55,20 +55,9 @@ h6.lowGray {
 .number {
     @apply text-end;
 }
-input[type="number"].noEdit,
-input[type="text"].noEdit,
-input[type="email"].noEdit,
-input[type="password"].noEdit {
+.noEdit {
     @apply shadow-none;
 }
-input[type="number"].disabled,
-input[type="text"].disabled,
-input[type="email"].disabled,
-input[type="password"].disabled {
-    @apply text-white bg-[#e2e2e2] pointer-events-none;
-    color: #554e50 !important;
-}
-
 .disabled {
     @apply text-white bg-[#e3e3e3] pointer-events-none;
     color: #554e50 !important;
@@ -113,14 +102,16 @@ select {
 }
 .select {
     @apply relative;
-    select {
-        @apply w-full;
-        option {
-            @apply hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed text-[14px];
-            -webkit-appearance: none;
-        }
-        option:nth-child(1) {
-            display: none !important;
+    input {
+        @extend .field;
+        @apply cursor-pointer;
+    }
+    ul {
+        @apply w-full bg-white;
+        li {
+            width: 100% !important;
+            margin: 0 !important;
+            @apply px-2 py-[2px] text-[14px] hover:bg-ThemeRed hover:text-white cursor-pointer;
         }
     }
     span {
@@ -238,7 +229,7 @@ select {
         tr {
             @apply border-b border-gray-300 relative text-[16px] 1550px:text-[14px] 480px:text-[12px];
             td {
-                @apply py-2 px-2 text-[#2E4364] font-NHU-regular;
+                @apply py-2 px-2 text-[#2E4364] font-NHU-regular 1024px:min-w-[150px] max-w-[350px];
 
                 aside {
                     @apply w-10 h-10 480px:w-8 480px:h-8 rounded-full overflow-hidden relative shadow-lg mr-3;
@@ -763,7 +754,7 @@ input[type="number"] {
         transition: color 0.5s;
     }
     .moving {
-        @apply absolute top-[5%] left-[2px] right-[90px] h-[90%] bg-white rounded-md;
+        @apply absolute top-[5%] left-[2px] right-[90px] h-[90%] 480px:h-full 480px:top-0 bg-white rounded-md;
     }
 }
 .ToggleAccount.advance,

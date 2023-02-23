@@ -6,13 +6,16 @@ import styleSearch from "../../../../styles/SearchFilter.module.scss";
 import Image from "next/image";
 import Link from "next/link";
 import { GoEye } from "react-icons/go";
-import BankAccountDropDown from "../../../BankAccountDropDown";
 import TableErrorMessage from "../../../TableErrorMessage";
 import { BarLoader } from "react-spinners";
 import { TextNumberDisplay } from "../../../NumberFormat";
 import { GetBankCredit } from "./Query";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import Pagination from "../../../Pagination";
+import BankAccountDropDown from "../../../BankAccountDropDown";
+import DynamicPopOver from "../../../DynamicPopOver";
+import { HiMinus } from "react-icons/hi";
+import { BsPlusLg } from "react-icons/bs";
 
 export type isTableDC = {
     itemArray: isTableItemObjDC[];
@@ -37,6 +40,8 @@ type Props = {
 };
 
 export default function BankCreditComp({ type }: Props) {
+    const [isSelect, setSelect] = useState(false);
+
     const [isBank, setBank] = useState({
         id: "",
         value: "",
@@ -182,7 +187,7 @@ export default function BankCreditComp({ type }: Props) {
                             <th>
                                 {type === "bank-credit" ? "STATUS" : "VARIANCE"}
                             </th>
-                            <th></th>
+                            {type !== "bank-credit" && <th></th>}
                         </tr>
                     </thead>
                     <tbody>
@@ -190,6 +195,7 @@ export default function BankCreditComp({ type }: Props) {
                             (item: any, index: number) => (
                                 <List
                                     key={index}
+                                    index={index}
                                     itemDetail={item}
                                     isTableItem={isTableItem}
                                     setTableItem={setTableItem}
@@ -231,10 +237,22 @@ type ListProps = {
     isTableItem: isTableDC;
     setTableItem: Function;
     type: string;
+    index: number;
 };
 
-const List = ({ itemDetail, isTableItem, setTableItem, type }: ListProps) => {
-    const updateValue = (e: any, key: string) => {
+const List = ({
+    itemDetail,
+    isTableItem,
+    setTableItem,
+    type,
+    index,
+}: ListProps) => {
+    const [isSelect, setSelect] = useState(false);
+    const SelectField = (value: string) => {
+        updateValue("", value, "rec_ref");
+        setSelect(false);
+    };
+    const updateValue = (e: any, value: string, key: string) => {
         const newItems = isTableItem?.itemArray.map((item: any) => {
             if (itemDetail.id == item.id) {
                 if (key === "select") {
@@ -246,7 +264,7 @@ const List = ({ itemDetail, isTableItem, setTableItem, type }: ListProps) => {
                 if (key === "rec_ref") {
                     return {
                         ...item,
-                        receipt_reference_no: e.target.value,
+                        receipt_reference_no: value,
                     };
                 }
             }
@@ -265,7 +283,7 @@ const List = ({ itemDetail, isTableItem, setTableItem, type }: ListProps) => {
                     <div className="item">
                         <input
                             type="checkbox"
-                            onChange={(e: any) => updateValue(e, "select")}
+                            onChange={(e: any) => updateValue(e, "select", "")}
                             checked={itemDetail.select}
                         />
                     </div>
@@ -280,20 +298,45 @@ const List = ({ itemDetail, isTableItem, setTableItem, type }: ListProps) => {
             <td>{itemDetail.remarks}</td>
             <td>
                 <div className="select">
-                    <select
-                        className="field"
-                        onChange={(e) => updateValue(e, "rec_ref")}
-                        defaultValue={itemDetail.receipt_reference_no}
-                    >
-                        <option value={itemDetail.receipt_reference_no}>
-                            {itemDetail.receipt_reference_no}
-                        </option>
-                        <option value="Receipt No.">Receipt No.</option>
-                        <option value="Reference No.">Reference No.</option>
-                    </select>
                     <span>
-                        <MdOutlineKeyboardArrowDown className=" text-ThemeRed" />
+                        <MdOutlineKeyboardArrowDown />
                     </span>
+                    <DynamicPopOver
+                        toRef={
+                            <input
+                                type="text"
+                                autoComplete="off"
+                                className="field w-full"
+                                readOnly
+                                onClick={() => setSelect(true)}
+                                value={itemDetail.receipt_reference_no}
+                            />
+                        }
+                        samewidth={true}
+                        toPop={
+                            <>
+                                {isSelect && (
+                                    <ul>
+                                        <li
+                                            onClick={() =>
+                                                SelectField("Receipt No.")
+                                            }
+                                        >
+                                            VAT
+                                        </li>
+                                        <li
+                                            onClick={() =>
+                                                SelectField("Reference No.")
+                                            }
+                                        >
+                                            NON-VAT
+                                        </li>
+                                    </ul>
+                                )}
+                            </>
+                        }
+                        className=""
+                    />
                 </div>
             </td>
             <td>
@@ -332,6 +375,20 @@ const List = ({ itemDetail, isTableItem, setTableItem, type }: ListProps) => {
                     <p className="field disabled">{itemDetail.variance}</p>
                 )}
             </td>
+            {type !== "bank-credit" && (
+                <td className="actionIcon">
+                    {isTableItem.itemArray.length > 1 && (
+                        <div>
+                            <HiMinus />
+                        </div>
+                    )}
+                    {isTableItem.itemArray.length - 1 === index && (
+                        <div className="ml-5 1024px:ml-2">
+                            <BsPlusLg />
+                        </div>
+                    )}
+                </td>
+            )}
         </tr>
     );
 };

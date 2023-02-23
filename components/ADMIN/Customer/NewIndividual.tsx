@@ -7,6 +7,7 @@ import Image from "next/image";
 import { AiFillCamera } from "react-icons/ai";
 import Calendar from "../../Calendar";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
+import DynamicPopOver from "../../DynamicPopOver";
 
 type Props = {
     setActiveForm: Function;
@@ -22,6 +23,17 @@ export default function NewIndividual({
     const [isProfileUrl, setProfileUrl] = useState("/Images/sampleProfile.png");
     const [isValidIDUrl, setValidIDUrl] = useState("/Images/id-sample.png");
     const [isSignature, setSignature] = useState(false);
+
+    const [isSelect, setSelect] = useState(false);
+    const SelectField = (value: string) => {
+        setNewCustomer({
+            ...isNewCustomer,
+            class: value,
+        });
+        setValue("class", value);
+        setSelect(false);
+    };
+
     const {
         setCusToggle,
         isNewCustomer,
@@ -277,34 +289,54 @@ export default function NewIndividual({
                 <ul className={style.ThreeRows}>
                     <li>
                         <label>*CLASS</label>
-                        <div className="select">
-                            <select
-                                id=""
-                                {...register("class")}
-                                defaultValue={isNewCustomer.class}
-                                value={isNewCustomer.class}
-                                className="field"
-                                onChange={(e) =>
-                                    setNewCustomer({
-                                        ...isNewCustomer,
-                                        class: e.target.value,
-                                    })
-                                }
-                            >
-                                <option
-                                    value={isNewCustomer.class}
-                                    className={style.disabled}
-                                    disabled
-                                >
-                                    {isNewCustomer.class}
-                                </option>
-                                <option value="developer">Developer</option>
-                                <option value="owner">Owner</option>
-                                <option value="tenant">Tenant</option>
-                            </select>
+                        <div className="select w-full">
                             <span>
                                 <MdOutlineKeyboardArrowDown />
                             </span>
+                            <DynamicPopOver
+                                toRef={
+                                    <input
+                                        type="text"
+                                        autoComplete="off"
+                                        className="field w-full"
+                                        {...register("class")}
+                                        readOnly
+                                        onClick={() => setSelect(true)}
+                                        value={isNewCustomer.class}
+                                    />
+                                }
+                                samewidth={true}
+                                toPop={
+                                    <>
+                                        {isSelect && (
+                                            <ul>
+                                                <li
+                                                    onClick={() =>
+                                                        SelectField("Developer")
+                                                    }
+                                                >
+                                                    Developer
+                                                </li>
+                                                <li
+                                                    onClick={() =>
+                                                        SelectField("Owner")
+                                                    }
+                                                >
+                                                    Owner
+                                                </li>
+                                                <li
+                                                    onClick={() =>
+                                                        SelectField("Tenant")
+                                                    }
+                                                >
+                                                    Tenant
+                                                </li>
+                                            </ul>
+                                        )}
+                                    </>
+                                }
+                                className=""
+                            />
                         </div>
 
                         {CusError?.class !== "" && (
@@ -383,7 +415,7 @@ export default function NewIndividual({
                                         autoComplete="off"
                                         type="text"
                                         value={isDate.value}
-                                        onChange={() => {}}
+                                        readOnly
                                         placeholder="dd/mm/yyyy"
                                         onClick={() =>
                                             setDate({ ...isDate, toggle: true })
