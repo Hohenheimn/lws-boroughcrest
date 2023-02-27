@@ -375,11 +375,11 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                             </li>
                         </ul>
 
-                        <div className={style.SaveButton}>
-                            <aside className={style.back} onClick={cancel}>
+                        <div className="flex w-full justify-end items-center">
+                            <aside className="button_cancel" onClick={cancel}>
                                 CANCEL
                             </aside>
-                            <button className={style.next} onClick={next}>
+                            <button className="buttonRed" onClick={next}>
                                 NEXT
                             </button>
                         </div>
@@ -577,7 +577,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                         </ul>
 
                         <div className={style.SaveButton}>
-                            <aside className={style.back} onClick={back}>
+                            <aside className="button_cancel" onClick={back}>
                                 BACK
                             </aside>
 

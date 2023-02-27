@@ -43,7 +43,7 @@ h6.lowGray {
     @apply text-ThemeRed mr-3 font-NHU-medium 1550px:text-[13px] 640px:text-[12px];
 }
 .field {
-    @apply p-1 px-2 text-[#545454] font-NHU-medium 1550px:min-w-[100px] rounded-md outline-none shadow-md;
+    @apply p-1 px-2 text-[#545454] font-NHU-medium 1550px:min-w-[70px] rounded-md outline-none shadow-md;
     color: #545454 !important;
     height: 30px !important;
     font-size: 16px !important;
@@ -115,7 +115,7 @@ select {
         }
     }
     span {
-        @apply absolute pointer-events-none right-1 top-[50%] translate-y-[-50%] text-[20px];
+        @apply absolute pointer-events-none right-1 text-ThemeRed top-[50%] translate-y-[-50%] text-[20px];
     }
 }
 // Page Loading
@@ -127,10 +127,10 @@ select {
 }
 // button
 .buttonRed {
-    @apply capitalize px-5 480px:text-[12px] uppercase 480px:px-2 text-[14px] py-2 1550px:py-2 rounded-lg bg-ThemeRed text-white leading-none duration-75 hover:bg-ThemeRed50;
+    @apply uppercase px-5 text-[14px] 480px:text-[12px] 480px:px-2  py-2 rounded-lg bg-ThemeRed text-white leading-none duration-75 hover:bg-ThemeRed50;
 }
 .button_cancel {
-    @apply text-ThemeRed font-semibold text-[14px] mr-5 uppercase;
+    @apply text-ThemeRed font-semibold cursor-pointer text-[14px] mr-5 uppercase;
 }
 // Text
 .pageTitle {
@@ -186,7 +186,7 @@ select {
                 @apply text-start px-2 py-4 1550px:py-2 480px:py-3 1280px:px-3 text-[#545454] text-[14px] 1280px:text-[13px];
             }
             th.checkbox {
-                @apply w-3;
+                @apply w-3 min-w-0;
                 input[type="checkbox"] {
                     border: 1px solid rgb(216, 216, 216) !important;
                     @apply relative h-4 w-4 rounded-md shadow-md overflow-hidden after:text-white after:flex after:justify-center after:items-center mr-1 checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
@@ -206,7 +206,7 @@ select {
     thead.textRed {
         tr {
             th {
-                @apply text-ThemeRed;
+                @apply text-ThemeRed  1550px:text-[13px];
             }
         }
     }
@@ -229,7 +229,7 @@ select {
         tr {
             @apply border-b border-gray-300 relative text-[16px] 1550px:text-[14px] 480px:text-[12px];
             td {
-                @apply py-2 px-2 text-[#2E4364] font-NHU-regular 1024px:min-w-[150px] max-w-[350px];
+                @apply py-2 px-2 text-[#2E4364] font-NHU-regular 1550px:min-w-[100px] max-w-[350px];
 
                 aside {
                     @apply w-10 h-10 480px:w-8 480px:h-8 rounded-full overflow-hidden relative shadow-lg mr-3;
@@ -280,7 +280,7 @@ select {
                 }
             }
             td.checkbox {
-                @apply w-3;
+                @apply w-3 min-w-0;
                 input[type="checkbox"] {
                     border: 1px solid rgb(216, 216, 216) !important;
                     @apply relative h-4 w-4 rounded-md shadow-md overflow-hidden after:text-white after:flex after:justify-center after:items-center mr-1 checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
@@ -295,7 +295,7 @@ select {
                 }
             }
             td.actionIcon {
-                @apply flex items-center mt-2 text-ThemeRed text-[13px] cursor-pointer;
+                @apply flex items-center mt-2 text-ThemeRed text-[13px] w-[80px] min-w-0 cursor-pointer;
             }
             td.icon {
                 @apply w-[50px];
@@ -456,10 +456,10 @@ input[type="number"] {
     @apply w-[258px] 1550px:w-[220px];
 }
 .w-wide {
-    @apply w-[350px] 1550px:w-[220px];
+    @apply w-[350px];
 }
 .pl-wide {
-    @apply pl-[350px] 1550px:pl-[220px] 1024px:pl-0;
+    @apply pl-[350px] 1024px:pl-0;
 }
 .pl-no-wide {
     @apply pl-[258px] 1550px:pl-[220px] 1024px:pl-0;
@@ -474,9 +474,21 @@ input[type="number"] {
     th {
         @apply bg-ThemeRed px-3 py-1 text-[10px] font-NHU-regular font-light border border-gray-300;
     }
+    th.checkbox {
+        @apply w-3 min-w-0;
+        input[type="checkbox"] {
+            border: 1px solid rgb(216, 216, 216) !important;
+            @apply bg-white relative h-3 w-3 rounded-md shadow-md overflow-hidden after:text-white after:flex after:justify-center mr-0 after:items-center checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
+            &:checked {
+                border: none !important;
+            }
+        }
+    }
     td {
         @apply border border-gray-300 px-2 py-0;
-        input {
+        input[type="text"],
+        input[type="number"],
+        input[type="email"] {
             @apply border border-gray-500 text-[12px] z-10 hover:text-white bg-transparent;
             font-size: 12px !important;
         }
@@ -523,6 +535,16 @@ input[type="number"] {
                 li {
                     @apply text-ThemeRed hover:text-white;
                 }
+            }
+        }
+    }
+    td.checkbox {
+        @apply w-3 min-w-0 text-center;
+        input[type="checkbox"] {
+            border: 1px solid rgb(216, 216, 216) !important;
+            @apply bg-white relative h-3 w-3 rounded-md shadow-md overflow-hidden after:text-white after:flex after:justify-center mr-0 after:items-center checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
+            &:checked {
+                border: none !important;
             }
         }
     }
@@ -606,7 +628,7 @@ input[type="number"] {
             }
         }
         &::after {
-            @apply transition-all duration-100 ease-in-out content-[''] overflow-hidden text-[12px] w-full rounded-[50px] bg-white flex items-center absolute h-full left-0 top-0;
+            @apply transition-all text-white duration-100 ease-in-out content-[''] overflow-hidden text-[12px] w-full rounded-[50px] bg-white flex items-center absolute h-full left-0 top-0;
         }
     }
     .Draft {
@@ -667,7 +689,7 @@ input[type="number"] {
     }
     .Posted:hover {
         &::after {
-            @apply content-['Posted'] w-[95px] pl-[35px] bg-ThemeRed50 text-[#2e2e2e];
+            @apply content-['Posted'] w-[95px] pl-[35px] bg-ThemeRed50 text-white;
         }
     }
     .PendingDC {

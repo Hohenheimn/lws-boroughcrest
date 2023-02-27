@@ -31,13 +31,13 @@
             li {
                 @apply w-full flex flex-wrap;
                 h4 {
-                    @apply text-[13px] text-gray-500 w-2/4 1550px:w-full;
+                    @apply text-[13px] text-gray-500 w-2/4;
                 }
                 p {
-                    @apply text-[13px] text-gray-400 w-2/4  1550px:w-full;
+                    @apply text-[13px] text-gray-400 w-2/4;
                 }
                 .roleText {
-                    @apply text-[16px] text-[#545454] w-full  1550px:w-full;
+                    @apply text-[16px] text-[#545454] w-full;
                 }
             }
         }

@@ -175,28 +175,12 @@ export default function JournalTable({ type }: Props) {
                                         className={`${style.noFill} mr-5`}
                                         onClick={() => UpdateStatus("Approved")}
                                     >
-                                        {updateLoading ? (
-                                            buttonClicked === "Approved" ? (
-                                                <MoonLoader
-                                                    size={20}
-                                                    color="#8f384d"
-                                                />
-                                            ) : (
-                                                <Image
-                                                    src="/Images/f_check.png"
-                                                    height={25}
-                                                    width={30}
-                                                    alt="Approved"
-                                                />
-                                            )
-                                        ) : (
-                                            <Image
-                                                src="/Images/f_check.png"
-                                                height={25}
-                                                width={30}
-                                                alt="Approved"
-                                            />
-                                        )}
+                                        <Image
+                                            src="/Images/f_check.png"
+                                            height={25}
+                                            width={30}
+                                            alt="Approved"
+                                        />
                                     </div>
                                 </Tippy>
                             </li>
@@ -208,28 +192,12 @@ export default function JournalTable({ type }: Props) {
                                             UpdateStatus("In Progress")
                                         }
                                     >
-                                        {updateLoading ? (
-                                            buttonClicked === "In Progress" ? (
-                                                <MoonLoader
-                                                    size={25}
-                                                    color="#8f384d"
-                                                />
-                                            ) : (
-                                                <Image
-                                                    src="/Images/f_refresh.png"
-                                                    height={25}
-                                                    width={30}
-                                                    alt="In Process"
-                                                />
-                                            )
-                                        ) : (
-                                            <Image
-                                                src="/Images/f_refresh.png"
-                                                height={25}
-                                                width={30}
-                                                alt="In Process"
-                                            />
-                                        )}
+                                        <Image
+                                            src="/Images/f_refresh.png"
+                                            height={30}
+                                            width={30}
+                                            alt="In Process"
+                                        />
                                     </div>
                                 </Tippy>
                             </li>
@@ -239,28 +207,12 @@ export default function JournalTable({ type }: Props) {
                                         className={`${style.noFill} mr-5`}
                                         onClick={() => UpdateStatus("Pending")}
                                     >
-                                        {updateLoading ? (
-                                            buttonClicked === "Return" ? (
-                                                <MoonLoader
-                                                    size={20}
-                                                    color="#8f384d"
-                                                />
-                                            ) : (
-                                                <Image
-                                                    src="/Images/f_back.png"
-                                                    height={25}
-                                                    width={30}
-                                                    alt="Return"
-                                                />
-                                            )
-                                        ) : (
-                                            <Image
-                                                src="/Images/f_back.png"
-                                                height={25}
-                                                width={30}
-                                                alt="Return"
-                                            />
-                                        )}
+                                        <Image
+                                            src="/Images/f_back.png"
+                                            height={25}
+                                            width={35}
+                                            alt="Return"
+                                        />
                                     </div>
                                 </Tippy>
                             </li>
@@ -280,7 +232,7 @@ export default function JournalTable({ type }: Props) {
                                                 <Image
                                                     src="/Images/f_remove.png"
                                                     height={25}
-                                                    width={30}
+                                                    width={25}
                                                     alt="Reject"
                                                 />
                                             )
@@ -288,7 +240,7 @@ export default function JournalTable({ type }: Props) {
                                             <Image
                                                 src="/Images/f_remove.png"
                                                 height={25}
-                                                width={30}
+                                                width={25}
                                                 alt="Reject"
                                             />
                                         )}

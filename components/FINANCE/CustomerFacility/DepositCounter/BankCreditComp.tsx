@@ -16,6 +16,7 @@ import BankAccountDropDown from "../../../BankAccountDropDown";
 import DynamicPopOver from "../../../DynamicPopOver";
 import { HiMinus } from "react-icons/hi";
 import { BsPlusLg } from "react-icons/bs";
+import SelectBankAccount from "../../../SelectBankAccount";
 
 export type isTableDC = {
     itemArray: isTableItemObjDC[];
@@ -40,18 +41,16 @@ type Props = {
 };
 
 export default function BankCreditComp({ type }: Props) {
-    const [isSelect, setSelect] = useState(false);
-
     const [isBank, setBank] = useState({
         id: "",
         value: "",
     });
+    const [isSelectBank, setSelectBank] = useState([]);
     const [isPeriod, setPeriod] = useState({
         from: "",
         to: "",
     });
     const [TablePage, setTablePage] = useState(1);
-    const [isSearch, setSearch] = useState("");
     const [isTableItem, setTableItem] = useState<isTableDC>({
         itemArray: [],
         selectAll: false,
@@ -68,7 +67,7 @@ export default function BankCreditComp({ type }: Props) {
             selectAll: !isTableItem.selectAll,
         });
     };
-    const { data, isLoading, isError } = GetBankCredit(isSearch, TablePage);
+    const { data, isLoading, isError } = GetBankCredit("", TablePage);
     useEffect(() => {
         if (data?.status === 200) {
             const CloneArray = data?.data.data.map((item: isTableItemObjDC) => {
@@ -90,17 +89,17 @@ export default function BankCreditComp({ type }: Props) {
                 selectAll: false,
             });
         }
-    }, [data?.status, isSearch, TablePage]);
+    }, [data?.status, TablePage]);
     return (
         <>
             <section className={`${styleSearch.container}`}>
                 <div className={styleSearch.period}>
-                    <h1 className=" text-[24px] 1366px:text-[20px] flex items-center">
+                    <h1 className=" text-[20px] 1366px:text-[20px] flex items-center">
                         Bank Credit{" "}
                         {type !== "bank-credit" && (
                             <Link href="/finance/customer-facility/deposit-counter/bank-credit">
                                 <a>
-                                    <GoEye className=" text-ThemeRed ml-2 text-[20px]" />
+                                    <GoEye className=" text-ThemeRed ml-2 text-[16px]" />
                                 </a>
                             </Link>
                         )}
@@ -112,10 +111,17 @@ export default function BankCreditComp({ type }: Props) {
                     <PeriodCalendar value={isPeriod} setValue={setPeriod} />
                     <div className="flex items-center ml-5">
                         <p className="labelField">BANK & ACCOUNT NO.</p>
-                        <BankAccountDropDown
-                            isObject={isBank}
-                            setObject={setBank}
-                        />
+                        {type === "bank-credit" ? (
+                            <BankAccountDropDown
+                                isObject={isBank}
+                                setObject={setBank}
+                            />
+                        ) : (
+                            <SelectBankAccount
+                                isArrayBA={isSelectBank}
+                                setArrayBA={setSelectBank}
+                            />
+                        )}
                     </div>
                 </div>
 
@@ -123,11 +129,12 @@ export default function BankCreditComp({ type }: Props) {
                     <ul className={styleSearch.navigation}>
                         <li className={styleSearch.importExportPrint}>
                             <Tippy theme="ThemeRed" content="Export">
-                                <div className={styleSearch.icon}>
+                                <div className={`${styleSearch.noFill} mr-5`}>
                                     <Image
                                         src="/Images/Export.png"
-                                        layout="fill"
-                                        alt="Export"
+                                        height={30}
+                                        width={30}
+                                        alt="Return"
                                     />
                                 </div>
                             </Tippy>
@@ -294,7 +301,12 @@ const List = ({
             </td>
             <td>{itemDetail.bank_account_no}</td>
             <td>{itemDetail.credit_date}</td>
-            <td>{itemDetail.credit_amount}</td>
+            <td>
+                <TextNumberDisplay
+                    value={itemDetail.credit_amount}
+                    className="withPeso"
+                />
+            </td>
             <td>{itemDetail.remarks}</td>
             <td>
                 <div className="select">
@@ -322,14 +334,14 @@ const List = ({
                                                 SelectField("Receipt No.")
                                             }
                                         >
-                                            VAT
+                                            Receipt No.
                                         </li>
                                         <li
                                             onClick={() =>
                                                 SelectField("Reference No.")
                                             }
                                         >
-                                            NON-VAT
+                                            Reference No.
                                         </li>
                                     </ul>
                                 )}
@@ -377,16 +389,13 @@ const List = ({
             </td>
             {type !== "bank-credit" && (
                 <td className="actionIcon">
-                    {isTableItem.itemArray.length > 1 && (
-                        <div>
-                            <HiMinus />
-                        </div>
-                    )}
-                    {isTableItem.itemArray.length - 1 === index && (
-                        <div className="ml-5 1024px:ml-2">
-                            <BsPlusLg />
-                        </div>
-                    )}
+                    <div>
+                        <HiMinus />
+                    </div>
+
+                    <div className="ml-5 1024px:ml-2">
+                        <BsPlusLg />
+                    </div>
                 </td>
             )}
         </tr>

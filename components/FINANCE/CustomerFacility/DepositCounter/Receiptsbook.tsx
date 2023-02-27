@@ -143,11 +143,11 @@ export default function Receiptsbook({ type }: Props) {
             {type !== "receipts-book" && (
                 <section className={`${styleSearch.container}`}>
                     <div className={styleSearch.period}>
-                        <h1 className=" text-[24px] 1366px:text-[20px] flex items-center">
+                        <h1 className=" text-[20px] 1366px:text-[20px] flex items-center">
                             Receipts Book{" "}
                             <Link href="/finance/customer-facility/deposit-counter/receipts-book">
                                 <a>
-                                    <GoEye className=" text-ThemeRed ml-2 text-[20px]" />
+                                    <GoEye className=" text-ThemeRed ml-2 text-[16px]" />
                                 </a>
                             </Link>
                         </h1>
@@ -191,6 +191,7 @@ export default function Receiptsbook({ type }: Props) {
                             <th>DEPOSIT DATE</th>
                             <th>DEPOSIT AMOUNT</th>
                             <th>INDEX</th>
+                            {type !== "receipts-book" && <th>VARIANCE</th>}
                             {type !== "receipts-book" && <th></th>}
                         </tr>
                     </thead>
@@ -319,24 +320,29 @@ const List = ({
                 ) : (
                     <input
                         type="text"
-                        className="field"
+                        className="field max-w-[150px]"
                         value={itemDetail.index}
                         onChange={(e: any) => updateValue(e, "index")}
                     />
                 )}
             </td>
             {type !== "receipts-book" && (
+                <td>
+                    <input
+                        type="text"
+                        className="field disabled max-w-[150px]"
+                    />
+                </td>
+            )}
+            {type !== "receipts-book" && (
                 <td className="actionIcon">
-                    {isTableItem.itemArray.length > 1 && (
-                        <div>
-                            <HiMinus />
-                        </div>
-                    )}
-                    {isTableItem.itemArray.length - 1 === index && (
-                        <div className="ml-5 1024px:ml-2">
-                            <BsPlusLg />
-                        </div>
-                    )}
+                    <div>
+                        <HiMinus />
+                    </div>
+
+                    <div className="ml-5 1024px:ml-2">
+                        <BsPlusLg />
+                    </div>
                 </td>
             )}
         </tr>
