@@ -15,14 +15,15 @@ import { BarLoader } from "react-spinners";
 import { BsPlusLg, BsSearch } from "react-icons/bs";
 import DepositDetail from "./DepositDetail";
 import { HiMinus } from "react-icons/hi";
-import index from "../../../../pages/project";
+import { isTableBankCredit } from "./BankCreditComp";
+import DropdownIndex from "./DropdownIndex";
 
-export type isTableDC = {
-    itemArray: isTableItemObjDC[];
+export type isReceiptBookData = {
+    itemArray: isTableItemObjRB[];
     selectAll: boolean;
 };
 
-export type isTableItemObjDC = {
+export type isTableItemObjRB = {
     id: string | number;
     document_date: string;
     depositor: string;
@@ -33,55 +34,63 @@ export type isTableItemObjDC = {
     deposit_amount: number;
     index: string | number;
     select: boolean;
+    variance: number | string;
 };
 
 type Props = {
     type: string;
+    isReceiptBookData: isReceiptBookData;
+    setReceiptBookData: Function;
+    isBankCredit: isTableBankCredit;
+    setBankCredit: Function;
+    setChangeData: Function;
 };
 
-export default function Receiptsbook({ type }: Props) {
+export default function Receiptsbook({
+    type,
+    isReceiptBookData,
+    setReceiptBookData,
+    setChangeData,
+}: Props) {
     const router = useRouter();
     const [TablePage, setTablePage] = useState(1);
     const [isSearch, setSearch] = useState("");
-    const [isTableItem, setTableItem] = useState<isTableDC>({
-        itemArray: [],
-        selectAll: false,
-    });
     const { data, isLoading, isError } = GetReceiptsBook(isSearch, TablePage);
-    useEffect(() => {
-        if (data?.status === 200) {
-            const CloneArray = data?.data.data.map((item: isTableItemObjDC) => {
-                return {
-                    id: item.id,
-                    document_date: "Sep 28 2022",
-                    depositor: "Juan Carlos",
-                    receipt_no: "0000000202",
-                    bank_and_account_no: "BD0-549845",
-                    reference_no: "RF48489754",
-                    deposit_date: "Sept 28 2022",
-                    deposit_amount: 1000,
-                    index: "00001",
-                    select: false,
-                };
-            });
-            // Additional blank row field
-            setTableItem({
-                itemArray: CloneArray,
-                selectAll: false,
-            });
-        }
-    }, [data?.status, isSearch, TablePage]);
+    // APPLY DATA FROM API
+    // useEffect(() => {
+    //     if (data?.status === 200) {
+    //         const CloneArray = data?.data.data.map((item: isTableItemObjRB) => {
+    //             return {
+    //                 id: item.id,
+    //                 document_date: "Sep 28 2022",
+    //                 depositor: "Juan Carlos",
+    //                 receipt_no: "0000000202",
+    //                 bank_and_account_no: "BD0-549845",
+    //                 reference_no: "RF48489754",
+    //                 deposit_date: "Sept 28 2022",
+    //                 deposit_amount: 1000,
+    //                 index: "",
+    //                 select: false,
+    //             };
+    //         });
+    //         // Additional blank row field
+    //         setReceiptBookData({
+    //             itemArray: CloneArray,
+    //             selectAll: false,
+    //         });
+    //     }
+    // }, [data?.status, isSearch, TablePage]);
 
     const selectAll = () => {
-        const newItems = isTableItem?.itemArray.map((item: any) => {
+        const newItems = isReceiptBookData?.itemArray.map((item: any) => {
             return {
                 ...item,
-                select: !isTableItem.selectAll,
+                select: !isReceiptBookData.selectAll,
             };
         });
-        setTableItem({
+        setReceiptBookData({
             itemArray: newItems,
-            selectAll: !isTableItem.selectAll,
+            selectAll: !isReceiptBookData.selectAll,
         });
     };
     return (
@@ -177,7 +186,9 @@ export default function Receiptsbook({ type }: Props) {
                                     <div className="item">
                                         <input
                                             type="checkbox"
-                                            checked={isTableItem.selectAll}
+                                            checked={
+                                                isReceiptBookData.selectAll
+                                            }
                                             onChange={selectAll}
                                         />
                                     </div>
@@ -196,15 +207,16 @@ export default function Receiptsbook({ type }: Props) {
                         </tr>
                     </thead>
                     <tbody>
-                        {isTableItem?.itemArray.map(
+                        {isReceiptBookData?.itemArray.map(
                             (item: any, index: number) => (
                                 <List
                                     key={index}
                                     itemDetail={item}
-                                    isTableItem={isTableItem}
-                                    setTableItem={setTableItem}
+                                    isTableItem={isReceiptBookData}
+                                    setTableItem={setReceiptBookData}
                                     type={type}
                                     index={index}
+                                    setChangeData={setChangeData}
                                 />
                             )
                         )}
@@ -238,11 +250,12 @@ export default function Receiptsbook({ type }: Props) {
 }
 
 type ListProps = {
-    itemDetail: isTableItemObjDC;
-    isTableItem: isTableDC;
+    itemDetail: isTableItemObjRB;
+    isTableItem: isReceiptBookData;
     setTableItem: Function;
     type: string;
     index: number;
+    setChangeData: Function;
 };
 
 const List = ({
@@ -251,8 +264,9 @@ const List = ({
     setTableItem,
     type,
     index,
+    setChangeData,
 }: ListProps) => {
-    const updateValue = (e: any, key: string) => {
+    const updateValue = (key: string, value: string) => {
         const newItems = isTableItem?.itemArray.map((item: any) => {
             if (itemDetail.id == item.id) {
                 if (key === "select") {
@@ -264,7 +278,7 @@ const List = ({
                 if (key === "index") {
                     return {
                         ...item,
-                        index: e.target.value,
+                        index: value,
                     };
                 }
             }
@@ -276,6 +290,15 @@ const List = ({
         });
     };
 
+    const SelectHandler = (value: string) => {
+        updateValue("index", value);
+        setChangeData({
+            dataThatChange: value,
+            fromWhere: "receipt book",
+            id: itemDetail.id,
+        });
+    };
+
     return (
         <tr>
             {type === "receipts-book" && (
@@ -283,7 +306,7 @@ const List = ({
                     <div className="item">
                         <input
                             type="checkbox"
-                            onChange={(e: any) => updateValue(e, "select")}
+                            onChange={(e: any) => updateValue("select", "")}
                             checked={itemDetail.select}
                         />
                     </div>
@@ -318,19 +341,23 @@ const List = ({
                 {type === "receipts-book" ? (
                     itemDetail.index
                 ) : (
-                    <input
-                        type="text"
-                        className="field max-w-[150px]"
+                    <DropdownIndex
+                        name="index"
                         value={itemDetail.index}
-                        onChange={(e: any) => updateValue(e, "index")}
+                        selectHandler={SelectHandler}
+                        endpoint="/finance/customer-facility/charges"
                     />
                 )}
             </td>
             {type !== "receipts-book" && (
                 <td>
-                    <input
-                        type="text"
-                        className="field disabled max-w-[150px]"
+                    <InputNumberForTable
+                        onChange={() => {}}
+                        value={itemDetail.variance}
+                        className={
+                            "field disabled w-full max-w-[150px] text-end"
+                        }
+                        type={""}
                     />
                 </td>
             )}

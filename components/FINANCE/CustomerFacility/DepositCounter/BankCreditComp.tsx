@@ -8,7 +8,7 @@ import Link from "next/link";
 import { GoEye } from "react-icons/go";
 import TableErrorMessage from "../../../TableErrorMessage";
 import { BarLoader } from "react-spinners";
-import { TextNumberDisplay } from "../../../NumberFormat";
+import { InputNumberForTable, TextNumberDisplay } from "../../../NumberFormat";
 import { GetBankCredit } from "./Query";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import Pagination from "../../../Pagination";
@@ -17,30 +17,40 @@ import DynamicPopOver from "../../../DynamicPopOver";
 import { HiMinus } from "react-icons/hi";
 import { BsPlusLg } from "react-icons/bs";
 import SelectBankAccount from "../../../SelectBankAccount";
+import { isReceiptBookData } from "./Receiptsbook";
 
-export type isTableDC = {
-    itemArray: isTableItemObjDC[];
+export type isTableBankCredit = {
+    itemArray: isTableItemObjBC[];
     selectAll: boolean;
 };
 
-export type isTableItemObjDC = {
+export type isTableItemObjBC = {
     id: string | number;
-    index: number;
+    index: string;
     bank_account_no: string;
     credit_date: string;
     credit_amount: number;
     remarks: string;
-    receipt_reference_no: string;
     variance: string;
-    select: boolean;
     status: string;
+    select: boolean;
+    receipt_no: string;
+    reference_no: string;
 };
 
 type Props = {
     type: string;
+    isReceiptBookData: isReceiptBookData;
+    setReceiptBookData: Function;
+    isBankCredit: isTableBankCredit;
+    setBankCredit: Function;
 };
 
-export default function BankCreditComp({ type }: Props) {
+export default function BankCreditComp({
+    type,
+    isBankCredit,
+    setBankCredit,
+}: Props) {
     const [isBank, setBank] = useState({
         id: "",
         value: "",
@@ -51,45 +61,41 @@ export default function BankCreditComp({ type }: Props) {
         to: "",
     });
     const [TablePage, setTablePage] = useState(1);
-    const [isTableItem, setTableItem] = useState<isTableDC>({
-        itemArray: [],
-        selectAll: false,
-    });
     const selectAll = () => {
-        const newItems = isTableItem?.itemArray.map((item: any) => {
+        const newItems = isBankCredit?.itemArray.map((item: any) => {
             return {
                 ...item,
-                select: !isTableItem.selectAll,
+                select: !isBankCredit.selectAll,
             };
         });
-        setTableItem({
+        setBankCredit({
             itemArray: newItems,
-            selectAll: !isTableItem.selectAll,
+            selectAll: !isBankCredit.selectAll,
         });
     };
     const { data, isLoading, isError } = GetBankCredit("", TablePage);
-    useEffect(() => {
-        if (data?.status === 200) {
-            const CloneArray = data?.data.data.map((item: isTableItemObjDC) => {
-                return {
-                    id: item.id,
-                    index: "00001",
-                    bank_account_no: "BDO-555534",
-                    credit_date: "SEP 22 2022",
-                    credit_amount: 5000,
-                    remarks: "Bounce Check",
-                    receipt_reference_no: "Receipt No.",
-                    variance: "",
-                    status: "Posted",
-                };
-            });
-            // Additional blank row field
-            setTableItem({
-                itemArray: CloneArray,
-                selectAll: false,
-            });
-        }
-    }, [data?.status, TablePage]);
+    // APPLY DATA FROM API
+    // useEffect(() => {
+    //     if (data?.status === 200) {
+    //         const CloneArray = data?.data.data.map((item: isTableItemObjBC) => {
+    //             return {
+    //                 id: item.id,
+    //                 index: "",
+    //                 bank_account_no: "BDO-555534",
+    //                 credit_date: "SEP 22 2022",
+    //                 credit_amount: 5000,
+    //                 remarks: "Bounce Check",
+    //                 variance: "",
+    //                 status: "Posted",
+    //             };
+    //         });
+    //         // Additional blank row field
+    //         setBankCredit({
+    //             itemArray: CloneArray,
+    //             selectAll: false,
+    //         });
+    //     }
+    // }, [data?.status, TablePage]);
     return (
         <>
             <section className={`${styleSearch.container}`}>
@@ -179,7 +185,7 @@ export default function BankCreditComp({ type }: Props) {
                                     <div className="item">
                                         <input
                                             type="checkbox"
-                                            checked={isTableItem.selectAll}
+                                            checked={isBankCredit.selectAll}
                                             onChange={selectAll}
                                         />
                                     </div>
@@ -198,14 +204,14 @@ export default function BankCreditComp({ type }: Props) {
                         </tr>
                     </thead>
                     <tbody>
-                        {isTableItem?.itemArray.map(
+                        {isBankCredit?.itemArray.map(
                             (item: any, index: number) => (
                                 <List
                                     key={index}
                                     index={index}
                                     itemDetail={item}
-                                    isTableItem={isTableItem}
-                                    setTableItem={setTableItem}
+                                    isTableItem={isBankCredit}
+                                    setTableItem={setBankCredit}
                                     type={type}
                                 />
                             )
@@ -240,8 +246,8 @@ export default function BankCreditComp({ type }: Props) {
 }
 
 type ListProps = {
-    itemDetail: isTableItemObjDC;
-    isTableItem: isTableDC;
+    itemDetail: isTableItemObjBC;
+    isTableItem: isTableBankCredit;
     setTableItem: Function;
     type: string;
     index: number;
@@ -254,12 +260,18 @@ const List = ({
     type,
     index,
 }: ListProps) => {
-    const [isSelect, setSelect] = useState(false);
+    const [isSelect, setSelect] = useState({
+        toggle: false,
+        rec_ref: "",
+    });
+
     const SelectField = (value: string) => {
-        updateValue("", value, "rec_ref");
-        setSelect(false);
+        setSelect({
+            rec_ref: value,
+            toggle: false,
+        });
     };
-    const updateValue = (e: any, value: string, key: string) => {
+    const updateValue = (e: any, key: string) => {
         const newItems = isTableItem?.itemArray.map((item: any) => {
             if (itemDetail.id == item.id) {
                 if (key === "select") {
@@ -268,10 +280,16 @@ const List = ({
                         select: !item.select,
                     };
                 }
-                if (key === "rec_ref") {
+                if (key === "receipt") {
                     return {
                         ...item,
-                        receipt_reference_no: value,
+                        receipt_no: e.target.value,
+                    };
+                }
+                if (key === "reference") {
+                    return {
+                        ...item,
+                        reference_no: e.target.value,
                     };
                 }
             }
@@ -290,14 +308,14 @@ const List = ({
                     <div className="item">
                         <input
                             type="checkbox"
-                            onChange={(e: any) => updateValue(e, "select", "")}
+                            onChange={(e: any) => updateValue(e, "select")}
                             checked={itemDetail.select}
                         />
                     </div>
                 </td>
             )}
             <td>
-                <p className="field disabled">{itemDetail.index}</p>
+                <h4 className="field disabled ">{itemDetail.index}</h4>
             </td>
             <td>{itemDetail.bank_account_no}</td>
             <td>{itemDetail.credit_date}</td>
@@ -308,48 +326,62 @@ const List = ({
                 />
             </td>
             <td>{itemDetail.remarks}</td>
-            <td>
-                <div className="select">
-                    <span>
-                        <MdOutlineKeyboardArrowDown />
-                    </span>
-                    <DynamicPopOver
-                        toRef={
-                            <input
-                                type="text"
-                                autoComplete="off"
-                                className="field w-full"
-                                readOnly
-                                onClick={() => setSelect(true)}
-                                value={itemDetail.receipt_reference_no}
-                            />
+            <td className="maxlarge">
+                {isSelect.rec_ref === "" ? (
+                    <div className="select">
+                        <span>
+                            <MdOutlineKeyboardArrowDown />
+                        </span>
+                        <DynamicPopOver
+                            toRef={
+                                <input
+                                    type="text"
+                                    autoComplete="off"
+                                    className="field w-full"
+                                    readOnly
+                                    onClick={() =>
+                                        setSelect({ ...isSelect, toggle: true })
+                                    }
+                                />
+                            }
+                            samewidth={true}
+                            toPop={
+                                <>
+                                    {isSelect.toggle && (
+                                        <ul>
+                                            <li
+                                                onClick={() =>
+                                                    SelectField("receipt")
+                                                }
+                                            >
+                                                Receipt No.
+                                            </li>
+                                            <li
+                                                onClick={() =>
+                                                    SelectField("reference")
+                                                }
+                                            >
+                                                Reference No.
+                                            </li>
+                                        </ul>
+                                    )}
+                                </>
+                            }
+                            className=""
+                        />
+                    </div>
+                ) : (
+                    <input
+                        type="text"
+                        className="field w-full"
+                        value={
+                            isSelect.rec_ref === "receipt"
+                                ? itemDetail.receipt_no
+                                : itemDetail.reference_no
                         }
-                        samewidth={true}
-                        toPop={
-                            <>
-                                {isSelect && (
-                                    <ul>
-                                        <li
-                                            onClick={() =>
-                                                SelectField("Receipt No.")
-                                            }
-                                        >
-                                            Receipt No.
-                                        </li>
-                                        <li
-                                            onClick={() =>
-                                                SelectField("Reference No.")
-                                            }
-                                        >
-                                            Reference No.
-                                        </li>
-                                    </ul>
-                                )}
-                            </>
-                        }
-                        className=""
+                        onChange={(e: any) => updateValue(e, isSelect.rec_ref)}
                     />
-                </div>
+                )}
             </td>
             <td>
                 {type === "bank-credit" ? (
@@ -384,7 +416,12 @@ const List = ({
                         </div>
                     </div>
                 ) : (
-                    <p className="field disabled">{itemDetail.variance}</p>
+                    <InputNumberForTable
+                        onChange={() => {}}
+                        value={itemDetail.variance}
+                        className={"field disabled w-full text-end"}
+                        type={""}
+                    />
                 )}
             </td>
             {type !== "bank-credit" && (

@@ -8,6 +8,7 @@ import { ScaleLoader } from "react-spinners";
 import style from "../../../../styles/Popup_Modal.module.scss";
 import { ModalSideFade } from "../../../Animation/SimpleAnimation";
 import AppContext from "../../../Context/AppContext";
+import DynamicPopOver from "../../../DynamicPopOver";
 import { ChargeCreate, ChargeUpdate } from "../../../ReactQuery/Charge";
 import Dropdown from "./Dropdown";
 import { ChargePayload, IDstate } from "./Type";
@@ -19,6 +20,33 @@ type Props = {
 };
 export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
     const { setPrompt } = useContext(AppContext);
+    const [isSelect, setSelect] = useState({
+        type: false,
+        interest: false,
+    });
+    const SelectField = (value: string, key: string) => {
+        if (key === "type") {
+            setSelect({
+                ...isSelect,
+                type: false,
+            });
+            setFieldValue({
+                ...fieldValue,
+                type: value,
+            });
+        }
+        if (key === "interest") {
+            setSelect({
+                ...isSelect,
+                interest: false,
+            });
+            setFieldValue({
+                ...fieldValue,
+                interest: value,
+            });
+        }
+    };
+
     const queryClient = useQueryClient();
     const router = useRouter();
     var ButtonType = "";
@@ -230,24 +258,56 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                             <li>
                                 <label>*TYPE</label>
                                 <div className="select">
-                                    <select
-                                        className="field"
-                                        id=""
-                                        value={fieldValue.type}
-                                        onChange={(e: any) => {
-                                            setFieldValue({
-                                                ...fieldValue,
-                                                type: e.target.value,
-                                            });
-                                        }}
-                                    >
-                                        <option value=""></option>
-                                        <option value="Charge">Charge</option>
-                                        <option value="Deposit">Deposit</option>
-                                    </select>
                                     <span>
                                         <MdOutlineKeyboardArrowDown />
                                     </span>
+                                    <DynamicPopOver
+                                        toRef={
+                                            <input
+                                                type="text"
+                                                autoComplete="off"
+                                                className="field w-full"
+                                                readOnly
+                                                onClick={() =>
+                                                    setSelect({
+                                                        ...isSelect,
+                                                        type: true,
+                                                    })
+                                                }
+                                                value={fieldValue.type}
+                                            />
+                                        }
+                                        samewidth={true}
+                                        toPop={
+                                            <>
+                                                {isSelect.type && (
+                                                    <ul>
+                                                        <li
+                                                            onClick={() =>
+                                                                SelectField(
+                                                                    "Charge",
+                                                                    "type"
+                                                                )
+                                                            }
+                                                        >
+                                                            Charge
+                                                        </li>
+                                                        <li
+                                                            onClick={() =>
+                                                                SelectField(
+                                                                    "Deposit",
+                                                                    "type"
+                                                                )
+                                                            }
+                                                        >
+                                                            Deposit
+                                                        </li>
+                                                    </ul>
+                                                )}
+                                            </>
+                                        }
+                                        className=""
+                                    />
                                 </div>
 
                                 {isError?.type !== "" && (
@@ -346,7 +406,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                     className={`${style.Dropdown} ${style.full}`}
                                 >
                                     <input
-                                        className="field"
+                                        className="field w-full"
                                         type="text"
                                         value={isReceivable.value}
                                         onChange={(e: any) =>
@@ -395,7 +455,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                     className={`${style.Dropdown} ${style.full}`}
                                 >
                                     <input
-                                        className="field"
+                                        className="field w-full"
                                         type="text"
                                         value={isDiscount.value}
                                         onChange={(e: any) =>
@@ -428,7 +488,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                     className={`${style.Dropdown} ${style.full}`}
                                 >
                                     <input
-                                        className="field"
+                                        className="field w-full"
                                         type="text"
                                         value={isRevenue.value}
                                         onChange={(e: any) =>
@@ -461,7 +521,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                     className={`${style.Dropdown} ${style.full}`}
                                 >
                                     <input
-                                        className="field"
+                                        className="field w-full"
                                         type="text"
                                         value={isAdvance.value}
                                         onChange={(e: any) =>
@@ -505,25 +565,56 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                             <li>
                                 <label>*INTEREST</label>
                                 <div className="select">
-                                    <select
-                                        className="field"
-                                        value={fieldValue.interest}
-                                        onChange={(e: any) => {
-                                            setFieldValue({
-                                                ...fieldValue,
-                                                interest: e.target.value,
-                                            });
-                                        }}
-                                    >
-                                        <option value=""></option>
-                                        <option value="Bearing">Bearing</option>
-                                        <option value="Non-Bearing">
-                                            Non-Bearing
-                                        </option>
-                                    </select>
                                     <span>
                                         <MdOutlineKeyboardArrowDown />
                                     </span>
+                                    <DynamicPopOver
+                                        toRef={
+                                            <input
+                                                type="text"
+                                                autoComplete="off"
+                                                className="field w-full"
+                                                readOnly
+                                                onClick={() =>
+                                                    setSelect({
+                                                        ...isSelect,
+                                                        interest: true,
+                                                    })
+                                                }
+                                                value={fieldValue.interest}
+                                            />
+                                        }
+                                        samewidth={true}
+                                        toPop={
+                                            <>
+                                                {isSelect.interest && (
+                                                    <ul>
+                                                        <li
+                                                            onClick={() =>
+                                                                SelectField(
+                                                                    "Bearing",
+                                                                    "interest"
+                                                                )
+                                                            }
+                                                        >
+                                                            Bearing
+                                                        </li>
+                                                        <li
+                                                            onClick={() =>
+                                                                SelectField(
+                                                                    "Non-Bearing",
+                                                                    "interest"
+                                                                )
+                                                            }
+                                                        >
+                                                            Non-Bearing
+                                                        </li>
+                                                    </ul>
+                                                )}
+                                            </>
+                                        }
+                                        className=""
+                                    />
                                 </div>
 
                                 {isError?.interest !== "" && (

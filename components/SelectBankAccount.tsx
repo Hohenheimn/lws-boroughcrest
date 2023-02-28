@@ -153,11 +153,11 @@ const DropdownItems = ({
                 <thead>
                     <tr>
                         <th className="checkbox">
-                            <input
+                            {/* <input
                                 type="checkbox"
                                 checked={isAll}
                                 onChange={selectAll}
-                            />
+                            /> */}
                         </th>
                         <th className="text-white">BANK asda ACCOUNT NO.</th>
                         <th className="text-white">BANK & BRANCH</th>

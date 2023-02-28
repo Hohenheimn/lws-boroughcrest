@@ -478,7 +478,7 @@ input[type="number"] {
         @apply w-3 min-w-0;
         input[type="checkbox"] {
             border: 1px solid rgb(216, 216, 216) !important;
-            @apply bg-white relative h-3 w-3 rounded-md shadow-md overflow-hidden after:text-white after:flex after:justify-center mr-0 after:items-center checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
+            @apply bg-white relative h-3 w-3 rounded-sm shadow-md overflow-hidden after:text-white after:flex after:justify-center mr-0 after:items-center checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
             &:checked {
                 border: none !important;
             }
@@ -542,7 +542,7 @@ input[type="number"] {
         @apply w-3 min-w-0 text-center;
         input[type="checkbox"] {
             border: 1px solid rgb(216, 216, 216) !important;
-            @apply bg-white relative h-3 w-3 rounded-md shadow-md overflow-hidden after:text-white after:flex after:justify-center mr-0 after:items-center checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
+            @apply bg-white relative h-3 w-3 rounded-sm shadow-md overflow-hidden after:text-white after:flex after:justify-center mr-0 after:items-center checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
             &:checked {
                 border: none !important;
             }
