@@ -18,6 +18,7 @@ import { HiMinus } from "react-icons/hi";
 import { BsPlusLg } from "react-icons/bs";
 import SelectBankAccount from "../../../SelectBankAccount";
 import { isReceiptBookData } from "./Receiptsbook";
+import DropdownReceipt_Reference from "./DropdownReceipt_Reference";
 
 export type isTableBankCredit = {
     itemArray: isTableItemObjBC[];
@@ -36,6 +37,7 @@ export type isTableItemObjBC = {
     select: boolean;
     receipt_no: string;
     reference_no: string;
+    children: boolean;
 };
 
 type Props = {
@@ -44,12 +46,14 @@ type Props = {
     setReceiptBookData: Function;
     isBankCredit: isTableBankCredit;
     setBankCredit: Function;
+    setChangeData: Function;
 };
 
 export default function BankCreditComp({
     type,
     isBankCredit,
     setBankCredit,
+    setChangeData,
 }: Props) {
     const [isBank, setBank] = useState({
         id: "",
@@ -73,6 +77,39 @@ export default function BankCreditComp({
             selectAll: !isBankCredit.selectAll,
         });
     };
+    const AddHandler = (itemDetail: isTableItemObjBC, index: number) => {
+        const LocationToStart = index + 1;
+        const cloneToSplice = isBankCredit.itemArray;
+        cloneToSplice.splice(LocationToStart, 0, {
+            id: isBankCredit.itemArray.length + 1,
+            index: itemDetail.index,
+            bank_account_no: itemDetail.bank_account_no,
+            credit_date: itemDetail.credit_date,
+            credit_amount: itemDetail.credit_amount,
+            remarks: itemDetail.remarks,
+            variance: itemDetail.variance,
+            status: itemDetail.status,
+            select: false,
+            receipt_no: itemDetail.receipt_no,
+            reference_no: itemDetail.reference_no,
+            children: true,
+        });
+        setBankCredit({
+            ...isBankCredit,
+            itemArray: cloneToSplice,
+        });
+    };
+
+    const DeleteHandler = (id: string | number) => {
+        const cloneToDelete = isBankCredit.itemArray.filter(
+            (item) => item.id !== id
+        );
+        setBankCredit({
+            ...isBankCredit,
+            itemArray: cloneToDelete,
+        });
+    };
+
     const { data, isLoading, isError } = GetBankCredit("", TablePage);
     // APPLY DATA FROM API
     // useEffect(() => {
@@ -213,6 +250,9 @@ export default function BankCreditComp({
                                     isTableItem={isBankCredit}
                                     setTableItem={setBankCredit}
                                     type={type}
+                                    setChangeData={setChangeData}
+                                    AddHandler={AddHandler}
+                                    DeleteHandler={DeleteHandler}
                                 />
                             )
                         )}
@@ -251,6 +291,9 @@ type ListProps = {
     setTableItem: Function;
     type: string;
     index: number;
+    setChangeData: Function;
+    AddHandler: (itemDetail: isTableItemObjBC, index: number) => void;
+    DeleteHandler: (id: number | string) => void;
 };
 
 const List = ({
@@ -259,6 +302,9 @@ const List = ({
     setTableItem,
     type,
     index,
+    setChangeData,
+    AddHandler,
+    DeleteHandler,
 }: ListProps) => {
     const [isSelect, setSelect] = useState({
         toggle: false,
@@ -271,7 +317,16 @@ const List = ({
             toggle: false,
         });
     };
-    const updateValue = (e: any, key: string) => {
+    const SelectHandler = (value: string) => {
+        updateValue("", isSelect.rec_ref, value);
+        setChangeData({
+            dataThatChange: value,
+            fromWhere: "bank credit",
+            id: itemDetail.id,
+            key: isSelect.rec_ref,
+        });
+    };
+    const updateValue = (e: any, key: string, value: string) => {
         const newItems = isTableItem?.itemArray.map((item: any) => {
             if (itemDetail.id == item.id) {
                 if (key === "select") {
@@ -283,13 +338,13 @@ const List = ({
                 if (key === "receipt") {
                     return {
                         ...item,
-                        receipt_no: e.target.value,
+                        receipt_no: value,
                     };
                 }
                 if (key === "reference") {
                     return {
                         ...item,
-                        reference_no: e.target.value,
+                        reference_no: value,
                     };
                 }
             }
@@ -308,7 +363,7 @@ const List = ({
                     <div className="item">
                         <input
                             type="checkbox"
-                            onChange={(e: any) => updateValue(e, "select")}
+                            onChange={(e: any) => updateValue(e, "select", "")}
                             checked={itemDetail.select}
                         />
                     </div>
@@ -326,63 +381,71 @@ const List = ({
                 />
             </td>
             <td>{itemDetail.remarks}</td>
-            <td className="maxlarge">
-                {isSelect.rec_ref === "" ? (
-                    <div className="select">
-                        <span>
-                            <MdOutlineKeyboardArrowDown />
-                        </span>
-                        <DynamicPopOver
-                            toRef={
-                                <input
-                                    type="text"
-                                    autoComplete="off"
-                                    className="field w-full"
-                                    readOnly
-                                    onClick={() =>
-                                        setSelect({ ...isSelect, toggle: true })
-                                    }
-                                />
+            {type === "bank-credit" ? (
+                <td>{itemDetail.receipt_no}</td>
+            ) : (
+                <td className="maxlarge">
+                    {isSelect.rec_ref === "" ? (
+                        <div className="select">
+                            <span>
+                                <MdOutlineKeyboardArrowDown />
+                            </span>
+                            <DynamicPopOver
+                                toRef={
+                                    <input
+                                        type="text"
+                                        autoComplete="off"
+                                        className="field w-full"
+                                        readOnly
+                                        onClick={() =>
+                                            setSelect({
+                                                ...isSelect,
+                                                toggle: true,
+                                            })
+                                        }
+                                    />
+                                }
+                                samewidth={true}
+                                toPop={
+                                    <>
+                                        {isSelect.toggle && (
+                                            <ul>
+                                                <li
+                                                    onClick={() =>
+                                                        SelectField("receipt")
+                                                    }
+                                                >
+                                                    Receipt No.
+                                                </li>
+                                                <li
+                                                    onClick={() =>
+                                                        SelectField("reference")
+                                                    }
+                                                >
+                                                    Reference No.
+                                                </li>
+                                            </ul>
+                                        )}
+                                    </>
+                                }
+                                className=""
+                            />
+                        </div>
+                    ) : (
+                        <DropdownReceipt_Reference
+                            name="index"
+                            value={
+                                isSelect.rec_ref === "receipt"
+                                    ? itemDetail.receipt_no
+                                    : itemDetail.reference_no
                             }
-                            samewidth={true}
-                            toPop={
-                                <>
-                                    {isSelect.toggle && (
-                                        <ul>
-                                            <li
-                                                onClick={() =>
-                                                    SelectField("receipt")
-                                                }
-                                            >
-                                                Receipt No.
-                                            </li>
-                                            <li
-                                                onClick={() =>
-                                                    SelectField("reference")
-                                                }
-                                            >
-                                                Reference No.
-                                            </li>
-                                        </ul>
-                                    )}
-                                </>
-                            }
-                            className=""
+                            selectHandler={SelectHandler}
+                            keyType={isSelect.rec_ref}
+                            endpoint="/finance/customer-facility/charges"
                         />
-                    </div>
-                ) : (
-                    <input
-                        type="text"
-                        className="field w-full"
-                        value={
-                            isSelect.rec_ref === "receipt"
-                                ? itemDetail.receipt_no
-                                : itemDetail.reference_no
-                        }
-                        onChange={(e: any) => updateValue(e, isSelect.rec_ref)}
-                    />
-                )}
-            </td>
+                    )}
+                </td>
+            )}
             <td>
                 {type === "bank-credit" ? (
                     <div className="item w-[100px]">
@@ -427,12 +490,16 @@ const List = ({
             {type !== "bank-credit" && (
                 <td className="actionIcon">
                     <div>
-                        <HiMinus />
+                        <HiMinus onClick={() => DeleteHandler(itemDetail.id)} />
                     </div>
 
-                    <div className="ml-5 1024px:ml-2">
-                        <BsPlusLg />
-                    </div>
+                    {itemDetail.variance !== "0" && (
+                        <div className="ml-5 1024px:ml-2">
+                            <BsPlusLg
+                                onClick={() => AddHandler(itemDetail, index)}
+                            />
+                        </div>
+                    )}
                 </td>
             )}
         </tr>
