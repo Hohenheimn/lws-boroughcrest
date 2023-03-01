@@ -55,9 +55,12 @@ export default function ChargeTable({ page, setCreate }: Props) {
 
                 <ul className={style.navigation}>
                     <li className={style.new}>
-                        <div onClick={() => setCreate(true)}>
-                            Create <span className=" capitalize">{page}</span>
-                        </div>
+                        <button
+                            className="buttonRed"
+                            onClick={() => setCreate(true)}
+                        >
+                            CREATE <span className=" uppercase">{page}</span>
+                        </button>
                     </li>
                 </ul>
             </section>

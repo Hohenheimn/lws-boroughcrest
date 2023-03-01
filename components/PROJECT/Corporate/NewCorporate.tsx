@@ -13,6 +13,7 @@ import type { firstCorporateForm } from "../../../types/corporateList";
 import type { secondCorporateForm } from "../../../types/corporateList";
 import { ScaleLoader } from "react-spinners";
 import { getCookie } from "cookies-next";
+import DynamicPopOver from "../../DynamicPopOver";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 
 export default function NewCorporate() {
@@ -56,6 +57,15 @@ const Primary = ({
     setProfileUrl,
 }: Props) => {
     const [isLogoStatus, setLogoStatus] = useState("Upload Logo");
+    const [isSelect, setSelect] = useState(false);
+    const SelectField = (value: string) => {
+        setCreateCorporate({
+            ...createCorporate,
+            gst_type: value,
+        });
+        setValue("gst_type", value);
+        setSelect(false);
+    };
 
     const {
         setCorpToggle,
@@ -70,6 +80,7 @@ const Primary = ({
         handleSubmit,
         formState: { errors },
         reset,
+        setValue,
     } = useForm<firstCorporateForm>();
 
     useEffect(() => {
@@ -270,28 +281,54 @@ const Primary = ({
                     <li>
                         <label>*GST TYPE.</label>
                         <div className="select">
-                            <select
-                                {...register("gst_type", {
-                                    required: true,
-                                })}
-                                id=""
-                                required
-                                value={createCorporate.gst_type}
-                                onChange={(e) => {
-                                    setCreateCorporate({
-                                        ...createCorporate,
-                                        gst_type: e.target.value,
-                                    });
-                                }}
-                                className="field"
-                            >
-                                <option value="VAT">VAT</option>
-                                <option value="NON-VAT">NON-VAT</option>
-                            </select>
                             <span>
                                 <MdOutlineKeyboardArrowDown />
                             </span>
+                            <DynamicPopOver
+                                toRef={
+                                    <input
+                                        type="text"
+                                        autoComplete="off"
+                                        className="field w-full"
+                                        {...register("gst_type", {
+                                            required: "Required",
+                                        })}
+                                        readOnly
+                                        onClick={() => setSelect(true)}
+                                        value={createCorporate.gst_type}
+                                    />
+                                }
+                                samewidth={true}
+                                toPop={
+                                    <>
+                                        {isSelect && (
+                                            <ul>
+                                                <li
+                                                    onClick={() =>
+                                                        SelectField("VAT")
+                                                    }
+                                                >
+                                                    VAT
+                                                </li>
+                                                <li
+                                                    onClick={() =>
+                                                        SelectField("NON-VAT")
+                                                    }
+                                                >
+                                                    NON-VAT
+                                                </li>
+                                            </ul>
+                                        )}
+                                    </>
+                                }
+                                className=""
+                            />
                         </div>
+                        {errors.gst_type && (
+                            <p className="text-[10px]">
+                                {errors.gst_type.message}
+                            </p>
+                        )}
                     </li>
                     <li>
                         <label>SEC. Registration</label>
@@ -484,11 +521,11 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
             <h1 className={style.modal_label_primary}>Contact Informations</h1>
             <form onSubmit={handleSubmit(Submit)} autoComplete="off">
                 <ul className={style.twoRows_container}>
-                    <li>
+                    <li className=" flex flex-col justify-start">
                         <label>CONTACT NO</label>
-                        <aside>
+                        <aside className="mb-2">
                             <input
-                                className="field"
+                                className="field mr-2"
                                 type="number"
                                 placeholder="09"
                                 maxLength={11}
@@ -530,34 +567,36 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                                 {errors.contact_no.message}
                             </p>
                         )}
-                        <input
-                            className="field"
-                            type="number"
-                            placeholder="09"
-                            value={createCorporate.alt_contact_no}
-                            {...register("alt_contact_no", {
-                                minLength: {
-                                    value: 11,
-                                    message: "Must be 11 Numbers",
-                                },
-                                maxLength: {
-                                    value: 11,
-                                    message: "Must be 11 Number",
-                                },
-                                onChange: (e) => {
-                                    if (e.target.value.length <= 11) {
-                                        setValue(
-                                            "alt_contact_no",
-                                            e.target.value
-                                        );
-                                        setCreateCorporate({
-                                            ...createCorporate,
-                                            alt_contact_no: e.target.value,
-                                        });
-                                    }
-                                },
-                            })}
-                        />
+                        <aside>
+                            <input
+                                className="field inline"
+                                type="number"
+                                placeholder="09"
+                                value={createCorporate.alt_contact_no}
+                                {...register("alt_contact_no", {
+                                    minLength: {
+                                        value: 11,
+                                        message: "Must be 11 Numbers",
+                                    },
+                                    maxLength: {
+                                        value: 11,
+                                        message: "Must be 11 Number",
+                                    },
+                                    onChange: (e) => {
+                                        if (e.target.value.length <= 11) {
+                                            setValue(
+                                                "alt_contact_no",
+                                                e.target.value
+                                            );
+                                            setCreateCorporate({
+                                                ...createCorporate,
+                                                alt_contact_no: e.target.value,
+                                            });
+                                        }
+                                    },
+                                })}
+                            />
+                        </aside>
                         {errors.alt_contact_no && (
                             <p className="text-[10px]">
                                 {errors.alt_contact_no.message}
@@ -571,9 +610,9 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                     </li>
                     <li>
                         <label>EMAIL ADDRESS</label>
-                        <aside>
+                        <aside className="mb-2">
                             <input
-                                className="field"
+                                className="field mr-2"
                                 type="email"
                                 {...register("email", {
                                     required: "Required",
@@ -601,20 +640,22 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                                 {errors.email.message}
                             </p>
                         )}
-                        <input
-                            className="field"
-                            type="email"
-                            {...register("alt_email", {
-                                onChange: (e) => {
-                                    setValue("alt_email", e.target.value);
-                                    setCreateCorporate({
-                                        ...createCorporate,
-                                        alt_email: e.target.value,
-                                    });
-                                },
-                            })}
-                            value={createCorporate.alt_email}
-                        />
+                        <aside>
+                            <input
+                                className="field"
+                                type="email"
+                                {...register("alt_email", {
+                                    onChange: (e) => {
+                                        setValue("alt_email", e.target.value);
+                                        setCreateCorporate({
+                                            ...createCorporate,
+                                            alt_email: e.target.value,
+                                        });
+                                    },
+                                })}
+                                value={createCorporate.alt_email}
+                            />
+                        </aside>
                         {errors.alt_email && (
                             <p className="text-[10px]">
                                 {errors.alt_email.message}

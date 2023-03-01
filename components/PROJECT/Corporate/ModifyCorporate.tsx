@@ -18,6 +18,7 @@ import type {
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
+import DynamicPopOver from "../../DynamicPopOver";
 
 type ModifyCorporate = {
     setToggleModify: Function;
@@ -76,6 +77,16 @@ const PrimaryInformation = ({
     validataLogo,
 }: Props) => {
     const router = useRouter();
+
+    const [isSelect, setSelect] = useState(false);
+    const SelectField = (value: string) => {
+        setModifyCorporate({
+            ...modifyCorporate,
+            gst_type: value,
+        });
+        setValue("gst_type", value);
+        setSelect(false);
+    };
     // true if may transaction
     const validateTransaction = true;
     // Default Image
@@ -116,6 +127,7 @@ const PrimaryInformation = ({
     const {
         register,
         handleSubmit,
+        setValue,
         formState: { errors },
     } = useForm<firstCorporateForm>({
         defaultValues: {
@@ -139,7 +151,8 @@ const PrimaryInformation = ({
             branch_code: data.branch_code,
             sec_registration_no: data.sec_registration_no,
         });
-        setNewActive((item: any) => [(item[0] = false), (item[1] = true)]);
+        // setNewActive((item: any) => [(item[0] = false), (item[1] = true)]);
+        console.log(modifyCorporate);
     };
 
     const {
@@ -302,29 +315,52 @@ const PrimaryInformation = ({
                 <li>
                     <label>*GST TYPE.</label>
                     <div className="select">
-                        <select
-                            {...register("gst_type", {
-                                required: true,
-                            })}
-                            id=""
-                            defaultValue={modifyCorporate.gst_type}
-                            required
-                            className="field"
-                        >
-                            <option
-                                className={style.disabled}
-                                value={modifyCorporate.gst_type}
-                                disabled
-                            >
-                                {modifyCorporate.gst_type}
-                            </option>
-                            <option value="VAT">VAT</option>
-                            <option value="NON-VAT">NON-VAT</option>
-                        </select>
                         <span>
                             <MdOutlineKeyboardArrowDown />
                         </span>
+                        <DynamicPopOver
+                            toRef={
+                                <input
+                                    type="text"
+                                    autoComplete="off"
+                                    className="field w-full"
+                                    {...register("gst_type", {
+                                        required: "Required",
+                                    })}
+                                    onChange={() => {}}
+                                    onClick={() => setSelect(true)}
+                                    value={modifyCorporate.gst_type}
+                                />
+                            }
+                            samewidth={true}
+                            toPop={
+                                <>
+                                    {isSelect && (
+                                        <ul>
+                                            <li
+                                                onClick={() =>
+                                                    SelectField("VAT")
+                                                }
+                                            >
+                                                VAT
+                                            </li>
+                                            <li
+                                                onClick={() =>
+                                                    SelectField("NON-VAT")
+                                                }
+                                            >
+                                                NON-VAT
+                                            </li>
+                                        </ul>
+                                    )}
+                                </>
+                            }
+                            className=""
+                        />
                     </div>
+                    {errors.gst_type && (
+                        <p className="text-[10px]">{errors.gst_type.message}</p>
+                    )}
 
                     {errors.gst_type && <p>{errors.gst_type.message}</p>}
                 </li>

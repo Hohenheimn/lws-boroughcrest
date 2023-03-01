@@ -144,7 +144,9 @@ export default function SubTable() {
                 <table className="table_list forCrud">
                     <thead className="textRed">
                         <tr>
-                            <th className=" min-w-[130px]">CUSTOMER ID</th>
+                            <th className=" min-w-[130px] 480px:min-w-0">
+                                CUSTOMER ID
+                            </th>
                             <th>CUSTOMER NAME</th>
                             <th>DATE</th>
                             <th>REFERENCE NO.</th>

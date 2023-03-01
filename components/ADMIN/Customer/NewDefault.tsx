@@ -79,13 +79,12 @@ export default function NewDefault() {
                 <li>
                     <label>CLASS</label>
                     <div className="select">
-                        <select
-                            name=""
-                            id=""
-                            className="field pointer-events-none"
-                        >
-                            <option value=""></option>
-                        </select>
+                        <input
+                            type="text"
+                            autoComplete="off"
+                            className=" pointer-events-none w-full"
+                            readOnly
+                        />
                         <span>
                             <MdOutlineKeyboardArrowDown />
                         </span>
