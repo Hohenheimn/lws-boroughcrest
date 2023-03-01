@@ -35,6 +35,7 @@ export type isTableItemObjRB = {
     index: string | number;
     select: boolean;
     variance: number | string;
+    children: boolean;
 };
 
 type Props = {
@@ -61,16 +62,18 @@ export default function Receiptsbook({
     //     if (data?.status === 200) {
     //         const CloneArray = data?.data.data.map((item: isTableItemObjRB) => {
     //             return {
-    //                 id: item.id,
-    //                 document_date: "Sep 28 2022",
-    //                 depositor: "Juan Carlos",
-    //                 receipt_no: "0000000202",
-    //                 bank_and_account_no: "BD0-549845",
-    //                 reference_no: "RF48489754",
-    //                 deposit_date: "Sept 28 2022",
-    //                 deposit_amount: 1000,
-    //                 index: "",
-    //                 select: false,
+    //                  id: 2,
+    //                  document_date: "Sep 24 2022",
+    //                  depositor: "Hulio Cadiente",
+    //                  receipt_no: "0000000333",
+    //                  bank_and_account_no: "BD0-549888",
+    //                  reference_no: "RF48489754",
+    //                  deposit_date: "Sept 28 2022",
+    //                  deposit_amount: 1000,
+    //                  index: "",
+    //                  select: false,
+    //                  variance: "",
+    //                  children: false,
     //             };
     //         });
     //         // Additional blank row field
@@ -93,6 +96,40 @@ export default function Receiptsbook({
             selectAll: !isReceiptBookData.selectAll,
         });
     };
+
+    const AddHandler = (itemDetail: isTableItemObjRB, index: number) => {
+        const LocationToStart = index + 1;
+        const cloneToSplice = isReceiptBookData.itemArray;
+        cloneToSplice.splice(LocationToStart, 0, {
+            id: isReceiptBookData.itemArray.length + 1,
+            document_date: itemDetail.document_date,
+            depositor: itemDetail.depositor,
+            receipt_no: itemDetail.receipt_no,
+            bank_and_account_no: itemDetail.bank_and_account_no,
+            reference_no: itemDetail.reference_no,
+            deposit_date: itemDetail.deposit_date,
+            deposit_amount: itemDetail.deposit_amount,
+            index: "",
+            select: false,
+            variance: itemDetail.variance,
+            children: true,
+        });
+        setReceiptBookData({
+            ...isReceiptBookData,
+            itemArray: cloneToSplice,
+        });
+    };
+
+    const DeleteHandler = (id: string | number) => {
+        const cloneToDelete = isReceiptBookData.itemArray.filter(
+            (item) => item.id !== id
+        );
+        setReceiptBookData({
+            ...isReceiptBookData,
+            itemArray: cloneToDelete,
+        });
+    };
+
     return (
         <>
             {router.query.detail !== undefined && (
@@ -212,11 +249,13 @@ export default function Receiptsbook({
                                 <List
                                     key={index}
                                     itemDetail={item}
-                                    isTableItem={isReceiptBookData}
+                                    isReceiptBookData={isReceiptBookData}
                                     setTableItem={setReceiptBookData}
                                     type={type}
                                     index={index}
                                     setChangeData={setChangeData}
+                                    AddHandler={AddHandler}
+                                    DeleteHandler={DeleteHandler}
                                 />
                             )
                         )}
@@ -251,23 +290,27 @@ export default function Receiptsbook({
 
 type ListProps = {
     itemDetail: isTableItemObjRB;
-    isTableItem: isReceiptBookData;
+    isReceiptBookData: isReceiptBookData;
     setTableItem: Function;
     type: string;
     index: number;
     setChangeData: Function;
+    DeleteHandler: (id: string | number) => void;
+    AddHandler: (itemDetail: isTableItemObjRB, index: number) => void;
 };
 
 const List = ({
     itemDetail,
-    isTableItem,
+    isReceiptBookData,
     setTableItem,
     type,
     index,
     setChangeData,
+    DeleteHandler,
+    AddHandler,
 }: ListProps) => {
     const updateValue = (key: string, value: string) => {
-        const newItems = isTableItem?.itemArray.map((item: any) => {
+        const newItems = isReceiptBookData?.itemArray.map((item: any) => {
             if (itemDetail.id == item.id) {
                 if (key === "select") {
                     return {
@@ -296,6 +339,7 @@ const List = ({
             dataThatChange: value,
             fromWhere: "receipt book",
             id: itemDetail.id,
+            key: "",
         });
     };
 
@@ -364,12 +408,16 @@ const List = ({
             {type !== "receipts-book" && (
                 <td className="actionIcon">
                     <div>
-                        <HiMinus />
+                        <HiMinus onClick={() => DeleteHandler(itemDetail.id)} />
                     </div>
 
-                    <div className="ml-5 1024px:ml-2">
-                        <BsPlusLg />
-                    </div>
+                    {itemDetail.variance !== "0" && (
+                        <div className="ml-5 1024px:ml-2">
+                            <BsPlusLg
+                                onClick={() => AddHandler(itemDetail, index)}
+                            />
+                        </div>
+                    )}
                 </td>
             )}
         </tr>

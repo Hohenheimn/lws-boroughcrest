@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import BankCredit from "../../../../components/FINANCE/CustomerFacility/DepositCounter/BankCreditComp";
 import Receiptsbook from "../../../../components/FINANCE/CustomerFacility/DepositCounter/Receiptsbook";
 
-export default function index() {
+export default function DepositCounter() {
     const [changeData, setChangeData] = useState({
         dataThatChange: "",
         fromWhere: "",
         id: "",
+        key: "",
     });
     const [isReceiptBookData, setReceiptBookData] = useState({
         selectAll: false,
@@ -23,6 +24,7 @@ export default function index() {
                 index: "",
                 select: false,
                 variance: "",
+                children: false,
             },
             {
                 id: 2,
@@ -36,6 +38,7 @@ export default function index() {
                 index: "",
                 select: false,
                 variance: "",
+                children: false,
             },
         ],
     });
@@ -55,6 +58,7 @@ export default function index() {
                 status: "Posted",
                 receipt_no: "",
                 reference_no: "",
+                children: false,
             },
             {
                 id: 2,
@@ -69,23 +73,34 @@ export default function index() {
                 status: "Posted",
                 receipt_no: "",
                 reference_no: "",
+                children: false,
             },
         ],
         selectAll: false,
     });
 
+    // Compute Pairing of Receipt Book and Bank Credit
     useEffect(() => {
         if (changeData.dataThatChange === "") return;
-
+        // Receipt book's Index to Bank Credit
         if (changeData.fromWhere === "receipt book") {
             const getBankCreditWithSameIndex = isBankCredit.itemArray.filter(
                 (item) => item.index === changeData.dataThatChange
             );
             const cloneReceiptBook = isReceiptBookData.itemArray.map((item) => {
                 if (Number(changeData.id) === item.id) {
-                    const variance =
-                        Number(item.deposit_amount) -
-                        Number(getBankCreditWithSameIndex[0].credit_amount);
+                    let variance = 0;
+                    // Computation for Children row
+                    if (item.children) {
+                        variance =
+                            Number(item.variance) -
+                            Number(getBankCreditWithSameIndex[0].credit_amount);
+                    } else {
+                        // Computation for Main row
+                        variance =
+                            Number(item.deposit_amount) -
+                            Number(getBankCreditWithSameIndex[0].credit_amount);
+                    }
                     return {
                         ...item,
                         variance: `${variance <= 0 ? 0 : variance}`,
@@ -101,10 +116,46 @@ export default function index() {
                 dataThatChange: "",
                 fromWhere: "",
                 id: "",
+                key: "",
+            });
+        }
+        // Bank Credit's Reference no and receipt no to Receipt Book
+        if (changeData.fromWhere === "bank credit") {
+            const getReceiptBookWithSameRecRef =
+                changeData.key === "receipt"
+                    ? isReceiptBookData.itemArray.filter(
+                          (item) =>
+                              item.receipt_no === changeData.dataThatChange
+                      )
+                    : isReceiptBookData.itemArray.filter(
+                          (item) =>
+                              item.reference_no === changeData.dataThatChange
+                      );
+            const cloneBankCredit = isBankCredit.itemArray.map((item) => {
+                if (Number(changeData.id) === item.id) {
+                    const variance =
+                        Number(item.credit_amount) -
+                        Number(getReceiptBookWithSameRecRef[0].deposit_amount);
+                    return {
+                        ...item,
+                        variance: `${variance <= 0 ? 0 : variance}`,
+                    };
+                }
+                return item;
+            });
+            setBankCredit({
+                selectAll: false,
+                itemArray: cloneBankCredit,
+            });
+            setChangeData({
+                dataThatChange: "",
+                fromWhere: "",
+                id: "",
+                key: "",
             });
         }
         return;
-    }, [isReceiptBookData.itemArray]);
+    }, [isReceiptBookData.itemArray, isBankCredit.itemArray]);
 
     return (
         <>
@@ -119,6 +170,7 @@ export default function index() {
             <div className="my-10 h-[1px] bg-gray-300 w-full"></div>
             <BankCredit
                 type=""
+                setChangeData={setChangeData}
                 isReceiptBookData={isReceiptBookData}
                 setReceiptBookData={setReceiptBookData}
                 isBankCredit={isBankCredit}

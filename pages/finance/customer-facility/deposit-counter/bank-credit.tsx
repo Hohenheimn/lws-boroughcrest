@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import BankCreditComp from "../../../../components/FINANCE/CustomerFacility/DepositCounter/BankCreditComp";
 
 export default function BankCredit() {
+    const [isChangeData, setChangeData] = useState({});
     const [isReceiptBookData, setReceiptBookData] = useState({
         itemArray: [],
         selectAll: false,
@@ -21,9 +22,10 @@ export default function BankCredit() {
                 status: "Posted",
                 receipt_no: "",
                 reference_no: "",
+                children: false,
             },
             {
-                id: 1,
+                id: 2,
                 index: "0002",
                 bank_account_no: "BDO-555534",
                 credit_date: "SEP 22 2022",
@@ -35,12 +37,14 @@ export default function BankCredit() {
                 status: "Posted",
                 receipt_no: "",
                 reference_no: "",
+                children: false,
             },
         ],
         selectAll: false,
     });
     return (
         <BankCreditComp
+            setChangeData={setChangeData}
             isBankCredit={isBankCredit}
             setBankCredit={setBankCredit}
             isReceiptBookData={isReceiptBookData}

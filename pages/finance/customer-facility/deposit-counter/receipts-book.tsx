@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Receiptsbook from "../../../../components/FINANCE/CustomerFacility/DepositCounter/Receiptsbook";
 
 export default function ReceiptsBook() {
+    const [isChangeData, setChangeData] = useState({});
     const [isBankCredit, setBankCredit] = useState({
         itemArray: [],
         selectAll: false,
@@ -13,14 +14,15 @@ export default function ReceiptsBook() {
                 id: 1,
                 document_date: "Sep 28 2022",
                 depositor: "Juan Carlos",
-                receipt_no: "0000000202",
+                receipt_no: "0000000303",
                 bank_and_account_no: "BD0-549845",
-                reference_no: "RF48489754",
+                reference_no: "RF54897321",
                 deposit_date: "Sept 28 2022",
                 deposit_amount: 10000,
                 index: "",
-
                 select: false,
+                variance: "",
+                children: false,
             },
             {
                 id: 2,
@@ -33,16 +35,19 @@ export default function ReceiptsBook() {
                 deposit_amount: 1000,
                 index: "",
                 select: false,
+                variance: "",
+                children: false,
             },
         ],
     });
     return (
         <Receiptsbook
-            isBankCredit={isBankCredit}
-            setBankCredit={setBankCredit}
+            type="receipts-book"
+            setChangeData={setChangeData}
             isReceiptBookData={isReceiptBookData}
             setReceiptBookData={setReceiptBookData}
-            type="receipts-book"
+            isBankCredit={isBankCredit}
+            setBankCredit={setBankCredit}
         />
     );
 }
