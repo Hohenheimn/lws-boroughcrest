@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import JournalForm, {
     defaultArray,
-} from "../../../../components/FINANCE/Journal/JournalForm";
+} from "../../../../components/FINANCE/General-Ledger/Journal/JournalForm";
 
 export default function CreateJournal() {
     const [isJournalList, setJournalList] = useState<defaultArray>([

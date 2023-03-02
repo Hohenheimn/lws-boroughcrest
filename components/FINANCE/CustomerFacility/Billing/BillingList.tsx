@@ -74,7 +74,7 @@ export default function BillingList() {
                                 <Tippy theme="ThemeRed" content="Approved">
                                     <div className={`${style.noFill} mr-5`}>
                                         <Image
-                                            src="/Images/f_check.png"
+                                            src="/Images/f_Check.png"
                                             height={25}
                                             width={30}
                                             alt="Export"
@@ -86,7 +86,7 @@ export default function BillingList() {
                                 <Tippy theme="ThemeRed" content="Reject">
                                     <div className={`${style.noFill} mr-5`}>
                                         <Image
-                                            src="/Images/f_remove.png"
+                                            src="/Images/f_Remove.png"
                                             height={25}
                                             width={25}
                                             alt="Export"
@@ -98,7 +98,7 @@ export default function BillingList() {
                                 <Tippy theme="ThemeRed" content="Process">
                                     <div className={`${style.noFill} mr-5`}>
                                         <Image
-                                            src="/Images/f_refresh.png"
+                                            src="/Images/f_Refresh.png"
                                             height={30}
                                             width={30}
                                             alt="Export"
@@ -110,7 +110,7 @@ export default function BillingList() {
                                 <Tippy theme="ThemeRed" content="Return">
                                     <div className={`${style.noFill} mr-5`}>
                                         <Image
-                                            src="/Images/f_back.png"
+                                            src="/Images/f_Back.png"
                                             height={25}
                                             width={35}
                                             alt="Export"
@@ -303,7 +303,7 @@ const List = ({ itemDetail, type }: ListProps) => {
                         <div className="status Draft">
                             <div>
                                 <Image
-                                    src="/Images/f_Draft.png"
+                                    src="/Images/f_draft.png"
                                     width={10}
                                     height={10}
                                     alt="Draft"
@@ -352,7 +352,7 @@ const List = ({ itemDetail, type }: ListProps) => {
                             <div className="status Sent">
                                 <div>
                                     <Image
-                                        src="/Images/f_Sent.png"
+                                        src="/Images/f_sent.png"
                                         width={15}
                                         height={15}
                                         alt="Draft"

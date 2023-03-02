@@ -775,6 +775,9 @@ input[type="number"] {
         @apply w-2/4 text-center font-NHU-bold py-1 m-0 z-10 cursor-pointer;
         transition: color 0.5s;
     }
+    .item.ad {
+        display: inline !important;
+    }
     .moving {
         @apply absolute top-[5%] left-[2px] right-[90px] h-[90%] 480px:h-full 480px:top-0 bg-white rounded-md;
     }

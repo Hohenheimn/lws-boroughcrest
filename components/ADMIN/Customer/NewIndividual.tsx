@@ -8,6 +8,7 @@ import { AiFillCamera } from "react-icons/ai";
 import Calendar from "../../Calendar";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import DynamicPopOver from "../../DynamicPopOver";
+import SelectDropdown from "../../SelectDropdown";
 
 type Props = {
     setActiveForm: Function;
@@ -23,16 +24,6 @@ export default function NewIndividual({
     const [isProfileUrl, setProfileUrl] = useState("/Images/sampleProfile.png");
     const [isValidIDUrl, setValidIDUrl] = useState("/Images/id-sample.png");
     const [isSignature, setSignature] = useState(false);
-
-    const [isSelect, setSelect] = useState(false);
-    const SelectField = (value: string) => {
-        setNewCustomer({
-            ...isNewCustomer,
-            class: value,
-        });
-        setValue("class", value);
-        setSelect(false);
-    };
 
     const {
         setCusToggle,
@@ -289,55 +280,26 @@ export default function NewIndividual({
                 <ul className={style.ThreeRows}>
                     <li>
                         <label>*CLASS</label>
-                        <div className="select w-full">
-                            <span>
-                                <MdOutlineKeyboardArrowDown />
-                            </span>
-                            <DynamicPopOver
-                                toRef={
-                                    <input
-                                        type="text"
-                                        autoComplete="off"
-                                        className="field w-full"
-                                        {...register("class")}
-                                        readOnly
-                                        onClick={() => setSelect(true)}
-                                        value={isNewCustomer.class}
-                                    />
-                                }
-                                samewidth={true}
-                                toPop={
-                                    <>
-                                        {isSelect && (
-                                            <ul>
-                                                <li
-                                                    onClick={() =>
-                                                        SelectField("Developer")
-                                                    }
-                                                >
-                                                    Developer
-                                                </li>
-                                                <li
-                                                    onClick={() =>
-                                                        SelectField("Owner")
-                                                    }
-                                                >
-                                                    Owner
-                                                </li>
-                                                <li
-                                                    onClick={() =>
-                                                        SelectField("Tenant")
-                                                    }
-                                                >
-                                                    Tenant
-                                                </li>
-                                            </ul>
-                                        )}
-                                    </>
-                                }
-                                className=""
-                            />
-                        </div>
+                        <SelectDropdown
+                            selectHandler={(value: string) => {
+                                setNewCustomer({
+                                    ...isNewCustomer,
+                                    class: value,
+                                });
+                                setValue("class", value);
+                            }}
+                            className=""
+                            inputElement={
+                                <input
+                                    className="w-full field"
+                                    {...register("class")}
+                                    value={isNewCustomer.class}
+                                    readOnly
+                                    autoComplete="off"
+                                />
+                            }
+                            listArray={["Developer", "Owner", "Tenant"]}
+                        />
 
                         {CusError?.class !== "" && (
                             <p className="text-[10px]">{CusError?.class}</p>

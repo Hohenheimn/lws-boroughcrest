@@ -36,7 +36,7 @@ export function AdvanceFilter({
                     onClick={() => setToggle(!isToggle)}
                 >
                     <Image
-                        src="/Images/f_filter.png"
+                        src="/Images/f_Filter.png"
                         layout="fill"
                         alt="Advance Filter"
                     />

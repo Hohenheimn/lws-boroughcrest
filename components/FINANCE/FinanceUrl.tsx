@@ -83,7 +83,7 @@ export const CustomerFacility = [
     {
         name: "Collection",
         activeUrl: "collection",
-        url: "/finance/customer-facility/collection",
+        url: "/finance/customer-facility/collection/receive-payment",
     },
     {
         name: "Deposit Counter",

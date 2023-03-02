@@ -7,6 +7,7 @@ import { RiArrowDownSFill } from "react-icons/ri";
 import { useForm } from "react-hook-form";
 import AppContext from "../../Context/AppContext";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
+import SelectDropdown from "../../SelectDropdown";
 
 export default function UserForm() {
     const { setNewUserToggle } = useContext(AppContext);
@@ -126,18 +127,24 @@ export default function UserForm() {
                         </li>
                         <li>
                             <label>*DEPARTMENT</label>
-                            <div className="select">
-                                <select name="" id="" className="field">
-                                    <option value=""></option>
-                                </select>
-                                <span>
-                                    <MdOutlineKeyboardArrowDown />
-                                </span>
-                            </div>
+                            <SelectDropdown
+                                selectHandler={(value: string) => {
+                                    // setReceiptType(value);
+                                }}
+                                className=""
+                                inputElement={
+                                    <input
+                                        className="w-full field"
+                                        value={""}
+                                        readOnly
+                                    />
+                                }
+                                listArray={["Department"]}
+                            />
                         </li>
                         <li>
                             <label>*EMAIL</label>
-                            <input type="email" className="field" />
+                            <input type="email" className="field w-full" />
                         </li>
 
                         <li>
@@ -150,14 +157,20 @@ export default function UserForm() {
                         </li>
                         <li>
                             <label>*CORPORATE</label>
-                            <div className="select">
-                                <select name="" id="" className="field">
-                                    <option value=""></option>
-                                </select>
-                                <span>
-                                    <MdOutlineKeyboardArrowDown />
-                                </span>
-                            </div>
+                            <SelectDropdown
+                                selectHandler={(value: string) => {
+                                    // setReceiptType(value);
+                                }}
+                                className=""
+                                inputElement={
+                                    <input
+                                        className="w-full field"
+                                        value={""}
+                                        readOnly
+                                    />
+                                }
+                                listArray={["Department"]}
+                            />
                         </li>
                     </ul>
                     <div className={style.button_container}>
@@ -202,37 +215,25 @@ const NewRolesPermission = ({ setUserForm, userForm }: any) => {
                     <p className="text-Themered text-[12px] font-semibold mb-1 uppercase">
                         ROLE
                     </p>
-                    <div className="select">
-                        <select
-                            name=""
-                            id=""
-                            onChange={(e) => setRole(e.target.value)}
-                            className="field w-full"
-                        >
-                            <option></option>
-                            <option
-                                value="admin staff"
-                                className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
-                            >
-                                Admin Staff
-                            </option>
-                            <option
-                                value="finance"
-                                className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
-                            >
-                                Finance
-                            </option>
-                            <option
-                                value="accounting"
-                                className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
-                            >
-                                Accounting
-                            </option>
-                        </select>
-                        <span>
-                            <MdOutlineKeyboardArrowDown />
-                        </span>
-                    </div>
+                    <SelectDropdown
+                        selectHandler={(value: string) => {
+                            // setReceiptType(value);
+                        }}
+                        className=""
+                        inputElement={
+                            <input
+                                className="w-full field"
+                                value={""}
+                                readOnly
+                            />
+                        }
+                        listArray={[
+                            "Admin",
+                            "Admin Staff",
+                            "Finance",
+                            " Accounting",
+                        ]}
+                    />
                 </li>
             </ul>
 
@@ -331,60 +332,28 @@ const List = ({ detail, setTable, isTable, index }: List) => {
     return (
         <tr>
             <td className=" pr-2">
-                <div className="select">
-                    <select
-                        name=""
-                        id=""
-                        className="field w-full"
-                        onChange={(e) => updateValue(e, "permission")}
-                        value={detail.permissions}
-                    >
-                        <option value=""></option>
-                        <option
-                            className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
-                            value="admin"
-                        >
-                            Admin
-                        </option>
-                        <option
-                            className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
-                            value="Staff"
-                        >
-                            Staff
-                        </option>
-                    </select>
-                    <span>
-                        <MdOutlineKeyboardArrowDown />
-                    </span>
-                </div>
+                <SelectDropdown
+                    selectHandler={(value: string) => {
+                        // setReceiptType(value);
+                    }}
+                    className=""
+                    inputElement={
+                        <input className="w-full field" value={""} readOnly />
+                    }
+                    listArray={["Admin", "Staff"]}
+                />
             </td>
             <td className=" pr-2">
-                <div className="select">
-                    <select
-                        name=""
-                        id=""
-                        className="field w-full"
-                        onChange={(e) => updateValue(e, "access")}
-                        value={detail.access}
-                    >
-                        <option value=""></option>
-                        <option
-                            value="view"
-                            className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
-                        >
-                            View
-                        </option>
-                        <option
-                            value="access"
-                            className="hover:bg-ThemeRed border-none hover:text-white uppercase font-bold text-ThemeRed"
-                        >
-                            Access
-                        </option>
-                    </select>
-                    <span>
-                        <MdOutlineKeyboardArrowDown />
-                    </span>
-                </div>
+                <SelectDropdown
+                    selectHandler={(value: string) => {
+                        // setReceiptType(value);
+                    }}
+                    className=""
+                    inputElement={
+                        <input className="w-full field" value={""} readOnly />
+                    }
+                    listArray={["View", "Access"]}
+                />
             </td>
             <td className="  pr-2">
                 <input

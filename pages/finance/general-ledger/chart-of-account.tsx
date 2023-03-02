@@ -1,9 +1,9 @@
 import { useRouter } from "next/router";
 import React, { useState } from "react";
-import COAForm from "../../../components/FINANCE/ChartOfAccount/COAForm";
-import COATable from "../../../components/FINANCE/ChartOfAccount/COATable";
-import FinanceSearchFilter from "../../../components/FINANCE/ChartOfAccount/FinanceSearchFilter";
-import Modify from "../../../components/FINANCE/ChartOfAccount/Modify";
+import COAForm from "../../../components/FINANCE/General-Ledger/ChartOfAccount/COAForm";
+import COATable from "../../../components/FINANCE/General-Ledger/ChartOfAccount/COATable";
+import FinanceSearchFilter from "../../../components/FINANCE/General-Ledger/ChartOfAccount/FinanceSearchFilter";
+import Modify from "../../../components/FINANCE/General-Ledger/ChartOfAccount/Modify";
 import {
     ChartofAccountList,
     ChartofAccountPayload,

@@ -2,9 +2,9 @@ import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { BeatLoader } from "react-spinners";
-import { journal_list } from "../../../../../components/FINANCE/Journal/JournalDetail";
-import JournalForm from "../../../../../components/FINANCE/Journal/JournalForm";
-import { GetJournalDetail } from "../../../../../components/FINANCE/Journal/Query";
+import { journal_list } from "../../../../../components/FINANCE/General-Ledger/Journal/JournalDetail";
+import JournalForm from "../../../../../components/FINANCE/General-Ledger/Journal/JournalForm";
+import { GetJournalDetail } from "../../../../../components/FINANCE/General-Ledger/Journal/Query";
 
 export default function Modify({ id }: any) {
     const { isLoading, data, isError } = GetJournalDetail(id);

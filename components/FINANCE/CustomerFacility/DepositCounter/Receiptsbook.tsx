@@ -31,10 +31,11 @@ export type isTableItemObjRB = {
     bank_and_account_no: number | string;
     reference_no: string;
     deposit_date: string;
-    deposit_amount: number;
+    deposit_amount: number | string;
     index: string | number;
     select: boolean;
     variance: number | string;
+    childrenID: number | string;
     children: boolean;
 };
 
@@ -107,12 +108,13 @@ export default function Receiptsbook({
             receipt_no: itemDetail.receipt_no,
             bank_and_account_no: itemDetail.bank_and_account_no,
             reference_no: itemDetail.reference_no,
-            deposit_date: itemDetail.deposit_date,
-            deposit_amount: itemDetail.deposit_amount,
+            deposit_date: "",
+            deposit_amount: "",
             index: "",
             select: false,
             variance: itemDetail.variance,
             children: true,
+            childrenID: itemDetail.id,
         });
         setReceiptBookData({
             ...isReceiptBookData,
@@ -160,7 +162,7 @@ export default function Receiptsbook({
                                         className={`${styleSearch.noFill} mr-5`}
                                     >
                                         <Image
-                                            src="/Images/f_back.png"
+                                            src="/Images/f_Back.png"
                                             height={25}
                                             width={30}
                                             alt="Export"
@@ -174,7 +176,7 @@ export default function Receiptsbook({
                                         className={`${styleSearch.noFill} mr-5`}
                                     >
                                         <Image
-                                            src="/Images/f_check.png"
+                                            src="/Images/f_Check.png"
                                             height={25}
                                             width={30}
                                             alt="Export"
@@ -378,7 +380,9 @@ const List = ({
             <td>
                 <TextNumberDisplay
                     value={itemDetail.deposit_amount}
-                    className={"withPeso"}
+                    className={
+                        itemDetail.deposit_amount === "" ? "" : "withPeso"
+                    }
                 />
             </td>
             <td>

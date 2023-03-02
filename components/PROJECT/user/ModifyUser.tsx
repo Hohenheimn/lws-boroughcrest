@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import AppContext from "../../Context/AppContext";
 import { RiArrowDownSFill } from "react-icons/ri";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
+import SelectDropdown from "../../SelectDropdown";
 
 type ModifyUser = {
     setToggleModify: Function;
@@ -122,14 +123,20 @@ export default function ModifyUser({ setToggleModify }: any) {
                         </li>
                         <li>
                             <label>*DEPARTMENT</label>
-                            <div className="select">
-                                <select name="" id="" className="field">
-                                    <option value=""></option>
-                                </select>
-                                <span>
-                                    <MdOutlineKeyboardArrowDown />
-                                </span>
-                            </div>
+                            <SelectDropdown
+                                selectHandler={(value: string) => {
+                                    // setReceiptType(value);
+                                }}
+                                className=""
+                                inputElement={
+                                    <input
+                                        className="w-full field"
+                                        value={""}
+                                        readOnly
+                                    />
+                                }
+                                listArray={["Department"]}
+                            />
                         </li>
                         <li>
                             <label>*EMAIL</label>
@@ -146,9 +153,20 @@ export default function ModifyUser({ setToggleModify }: any) {
                         </li>
                         <li>
                             <label>*CORPORATE</label>
-                            <select name="" id="" className="field w-full">
-                                <option value=""></option>
-                            </select>
+                            <SelectDropdown
+                                selectHandler={(value: string) => {
+                                    // setReceiptType(value);
+                                }}
+                                className=""
+                                inputElement={
+                                    <input
+                                        className="w-full field"
+                                        value={""}
+                                        readOnly
+                                    />
+                                }
+                                listArray={["Department"]}
+                            />
                         </li>
                     </ul>
                     <div className={style.SaveButton}>

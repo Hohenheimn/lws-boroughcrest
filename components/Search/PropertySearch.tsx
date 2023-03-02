@@ -14,20 +14,19 @@ export default function PropertySearch() {
 
     const router = useRouter();
 
-    const {
-        isLoading,
-        data: RecentData,
-        isError,
-    } = useQuery(["recent-customer", router.query.id, search], () => {
-        return api.get(
-            `/admin/property/unit/recent-search/${router.query.id}&keywords=${search}&paginate=3`,
-            {
-                headers: {
-                    Authorization: "Bearer " + getCookie("user"),
-                },
-            }
-        );
-    });
+    const { isLoading, data, isError } = useQuery(
+        ["recent-customer", router.query.id, search],
+        () => {
+            return api.get(
+                `/admin/property/unit/recent-search/${router.query.id}&keywords=${search}&paginate=3`,
+                {
+                    headers: {
+                        Authorization: "Bearer " + getCookie("user"),
+                    },
+                }
+            );
+        }
+    );
 
     return (
         <div className={style.container}>
@@ -56,7 +55,23 @@ export default function PropertySearch() {
                 </aside>
             </div>
             <div className=" overflow-y-auto">
-                {isLoading ? (
+                {data?.data.map((item: any, index: number) => (
+                    <Link key={index} href={`/admin/property/${item?.id}`}>
+                        <a className={style.searchedItem}>
+                            <ul>
+                                <li>
+                                    <h4>{item?.unit_code}</h4>
+                                    <p>{item?.class}</p>
+                                </li>
+                                <li>
+                                    <p>ID: {item?.id}</p>
+                                    <p>{item?.type}</p>
+                                </li>
+                            </ul>
+                        </a>
+                    </Link>
+                ))}
+                {isLoading && (
                     <div className="flex justify-center py-5">
                         <BeatLoader
                             color={"#8f384d"}
@@ -65,23 +80,6 @@ export default function PropertySearch() {
                             data-testid="loader"
                         />
                     </div>
-                ) : (
-                    RecentData?.data.map((item: any, index: number) => (
-                        <Link key={index} href={`/admin/property/${item?.id}`}>
-                            <a className={style.searchedItem}>
-                                <ul>
-                                    <li>
-                                        <h4>{item?.unit_code}</h4>
-                                        <p>{item?.class}</p>
-                                    </li>
-                                    <li>
-                                        <p>ID: {item?.id}</p>
-                                        <p>{item?.type}</p>
-                                    </li>
-                                </ul>
-                            </a>
-                        </Link>
-                    ))
                 )}
             </div>
         </div>

@@ -14,7 +14,7 @@ import { DynamicExportHandler } from "../../../../DynamicExport";
 import { DynamicImport } from "../../../../DynamicImport";
 import DynamicPopOver from "../../../../DynamicPopOver";
 import ReadingCrud from "./ReadingCrud";
-import DropDownCharge from "../../../OpeningBalance/DropDownCharge";
+import DropDownCharge from "../../../../Dropdowns/DropDownCharge";
 import { HiPencil } from "react-icons/hi";
 import Readingform from "./Readingform";
 
@@ -275,7 +275,7 @@ const List = () => {
                         <div className="status Posted">
                             <div>
                                 <Image
-                                    src="/Images/f_Posted.png"
+                                    src="/Images/f_posted.png"
                                     width={25}
                                     height={25}
                                     alt="Draft"

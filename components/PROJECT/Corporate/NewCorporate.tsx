@@ -15,6 +15,7 @@ import { ScaleLoader } from "react-spinners";
 import { getCookie } from "cookies-next";
 import DynamicPopOver from "../../DynamicPopOver";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
+import SelectDropdown from "../../SelectDropdown";
 
 export default function NewCorporate() {
     const [isNewActive, setNewActive] = useState([true, false]);
@@ -57,15 +58,6 @@ const Primary = ({
     setProfileUrl,
 }: Props) => {
     const [isLogoStatus, setLogoStatus] = useState("Upload Logo");
-    const [isSelect, setSelect] = useState(false);
-    const SelectField = (value: string) => {
-        setCreateCorporate({
-            ...createCorporate,
-            gst_type: value,
-        });
-        setValue("gst_type", value);
-        setSelect(false);
-    };
 
     const {
         setCorpToggle,
@@ -97,7 +89,6 @@ const Primary = ({
             ...createCorporate,
             logo: data.logo[0],
         });
-
         setNewActive((item: any) => [(item[0] = false), (item[1] = true)]);
     };
 
@@ -280,50 +271,28 @@ const Primary = ({
                     </li>
                     <li>
                         <label>*GST TYPE.</label>
-                        <div className="select">
-                            <span>
-                                <MdOutlineKeyboardArrowDown />
-                            </span>
-                            <DynamicPopOver
-                                toRef={
-                                    <input
-                                        type="text"
-                                        autoComplete="off"
-                                        className="field w-full"
-                                        {...register("gst_type", {
-                                            required: "Required",
-                                        })}
-                                        readOnly
-                                        onClick={() => setSelect(true)}
-                                        value={createCorporate.gst_type}
-                                    />
-                                }
-                                samewidth={true}
-                                toPop={
-                                    <>
-                                        {isSelect && (
-                                            <ul>
-                                                <li
-                                                    onClick={() =>
-                                                        SelectField("VAT")
-                                                    }
-                                                >
-                                                    VAT
-                                                </li>
-                                                <li
-                                                    onClick={() =>
-                                                        SelectField("NON-VAT")
-                                                    }
-                                                >
-                                                    NON-VAT
-                                                </li>
-                                            </ul>
-                                        )}
-                                    </>
-                                }
-                                className=""
-                            />
-                        </div>
+                        <SelectDropdown
+                            selectHandler={(value: string) => {
+                                setCreateCorporate({
+                                    ...createCorporate,
+                                    gst_type: value,
+                                });
+                                setValue("gst_type", value);
+                            }}
+                            className=""
+                            inputElement={
+                                <input
+                                    className="w-full field"
+                                    autoComplete="off"
+                                    value={createCorporate.gst_type}
+                                    {...register("gst_type", {
+                                        required: "Required",
+                                    })}
+                                    readOnly
+                                />
+                            }
+                            listArray={["VAT", "NON-VAT"]}
+                        />
                         {errors.gst_type && (
                             <p className="text-[10px]">
                                 {errors.gst_type.message}

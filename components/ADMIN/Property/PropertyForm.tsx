@@ -25,6 +25,7 @@ import {
 import Calendar from "../../Calendar";
 import DynamicPopOver from "../../DynamicPopOver";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
+import SelectDropdown from "../../SelectDropdown";
 
 type Props = {
     DefaultFormData: PropertyDefaultValue;
@@ -361,68 +362,21 @@ export default function PropertyForm({
                         )}
                         <li>
                             <label>*TYPE</label>
-                            <div className="select w-full">
-                                <span>
-                                    <MdOutlineKeyboardArrowDown />
-                                </span>
-                                <DynamicPopOver
-                                    toRef={
-                                        <input
-                                            type="text"
-                                            autoComplete="off"
-                                            className="field w-full"
-                                            {...register("type")}
-                                            readOnly
-                                            onClick={() =>
-                                                setSelect({
-                                                    ...isSelect,
-                                                    type: true,
-                                                })
-                                            }
-                                        />
-                                    }
-                                    samewidth={true}
-                                    toPop={
-                                        <>
-                                            {isSelect.type && (
-                                                <ul>
-                                                    <li
-                                                        onClick={() =>
-                                                            SelectField(
-                                                                "Parking",
-                                                                "type"
-                                                            )
-                                                        }
-                                                    >
-                                                        Parking
-                                                    </li>
-                                                    <li
-                                                        onClick={() =>
-                                                            SelectField(
-                                                                "Unit",
-                                                                "type"
-                                                            )
-                                                        }
-                                                    >
-                                                        Unit
-                                                    </li>
-                                                    <li
-                                                        onClick={() =>
-                                                            SelectField(
-                                                                "Commercial",
-                                                                "type"
-                                                            )
-                                                        }
-                                                    >
-                                                        Commercial
-                                                    </li>
-                                                </ul>
-                                            )}
-                                        </>
-                                    }
-                                    className=""
-                                />
-                            </div>
+                            <SelectDropdown
+                                selectHandler={(value: string) => {
+                                    setValue("type", value);
+                                }}
+                                className=""
+                                inputElement={
+                                    <input
+                                        className="w-full field"
+                                        {...register("type")}
+                                        readOnly
+                                        autoComplete="off"
+                                    />
+                                }
+                                listArray={["Parking", "Unit", "Commercial"]}
+                            />
 
                             {errors.type && (
                                 <p className="text-[10px]">
@@ -459,58 +413,21 @@ export default function PropertyForm({
                         </li>
                         <li>
                             <label>*CLASS</label>
-                            <div className="select w-full">
-                                <span>
-                                    <MdOutlineKeyboardArrowDown />
-                                </span>
-                                <DynamicPopOver
-                                    toRef={
-                                        <input
-                                            type="text"
-                                            autoComplete="off"
-                                            className="field w-full"
-                                            {...register("class")}
-                                            readOnly
-                                            onClick={() =>
-                                                setSelect({
-                                                    ...isSelect,
-                                                    class: true,
-                                                })
-                                            }
-                                        />
-                                    }
-                                    samewidth={true}
-                                    toPop={
-                                        <>
-                                            {isSelect.class && (
-                                                <ul>
-                                                    <li
-                                                        onClick={() =>
-                                                            SelectField(
-                                                                "Saleable",
-                                                                "class"
-                                                            )
-                                                        }
-                                                    >
-                                                        Saleable
-                                                    </li>
-                                                    <li
-                                                        onClick={() =>
-                                                            SelectField(
-                                                                "Leaseable",
-                                                                "class"
-                                                            )
-                                                        }
-                                                    >
-                                                        Leaseable
-                                                    </li>
-                                                </ul>
-                                            )}
-                                        </>
-                                    }
-                                    className=""
-                                />
-                            </div>
+                            <SelectDropdown
+                                selectHandler={(value: string) => {
+                                    setValue("class", value);
+                                }}
+                                className=""
+                                inputElement={
+                                    <input
+                                        className="w-full field"
+                                        {...register("class")}
+                                        readOnly
+                                        autoComplete="off"
+                                    />
+                                }
+                                listArray={["Saleable", "Leaseable"]}
+                            />
 
                             {errors.class && (
                                 <p className="text-[10px]">

@@ -30,7 +30,7 @@ export type isTableItemObjBC = {
     index: string;
     bank_account_no: string;
     credit_date: string;
-    credit_amount: number;
+    credit_amount: number | string;
     remarks: string;
     variance: string;
     status: string;
@@ -84,8 +84,8 @@ export default function BankCreditComp({
             id: isBankCredit.itemArray.length + 1,
             index: itemDetail.index,
             bank_account_no: itemDetail.bank_account_no,
-            credit_date: itemDetail.credit_date,
-            credit_amount: itemDetail.credit_amount,
+            credit_date: "",
+            credit_amount: "",
             remarks: itemDetail.remarks,
             variance: itemDetail.variance,
             status: itemDetail.status,
@@ -186,7 +186,7 @@ export default function BankCreditComp({
                             <Tippy theme="ThemeRed" content="Return">
                                 <div className={`${styleSearch.noFill} mr-5`}>
                                     <Image
-                                        src="/Images/f_back.png"
+                                        src="/Images/f_Back.png"
                                         height={25}
                                         width={30}
                                         alt="Return"
@@ -198,7 +198,7 @@ export default function BankCreditComp({
                             <Tippy theme="ThemeRed" content="Approved">
                                 <div className={`${styleSearch.noFill} mr-5`}>
                                     <Image
-                                        src="/Images/f_check.png"
+                                        src="/Images/f_Check.png"
                                         height={25}
                                         width={30}
                                         alt="Approved"
@@ -463,15 +463,15 @@ const List = ({
                                             src="/Images/f_Pending.png"
                                             width={15}
                                             height={15}
-                                            alt="Draft"
+                                            alt="Pending"
                                         />
                                     )}
                                     {itemDetail.status === "Posted" && (
                                         <Image
-                                            src="/Images/f_Posted.png"
+                                            src="/Images/f_posted.png"
                                             width={25}
                                             height={25}
-                                            alt="Draft"
+                                            alt="Posted"
                                         />
                                     )}
                                 </div>

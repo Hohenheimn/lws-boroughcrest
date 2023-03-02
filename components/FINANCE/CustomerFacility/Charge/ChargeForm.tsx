@@ -10,7 +10,7 @@ import { ModalSideFade } from "../../../Animation/SimpleAnimation";
 import AppContext from "../../../Context/AppContext";
 import DynamicPopOver from "../../../DynamicPopOver";
 import { ChargeCreate, ChargeUpdate } from "../../../ReactQuery/Charge";
-import Dropdown from "./Dropdown";
+import Dropdown from "../../../Dropdowns/withSameKeyDropdown";
 import { ChargePayload, IDstate } from "./Type";
 
 type Props = {
