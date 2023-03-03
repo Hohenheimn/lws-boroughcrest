@@ -75,23 +75,30 @@ export default function JournalTable({ type }: Props) {
 
     useEffect(() => {
         if (data?.status === 200) {
-            const CloneArray = data?.data.data.map((item: isTableItemObj) => {
-                return {
-                    id: item.id,
-                    date: item.date,
-                    particulars: item.particulars,
-                    status: item.status,
-                    journal_no: item.journal_no,
-                    select: false,
-                };
-            });
-            // Additional blank row field
-            setTableItem({
-                itemArray: CloneArray,
-                selectAll: false,
-            });
+            if (data.data.data.length > 0) {
+                let CloneArray = data?.data.data.map((item: isTableItemObj) => {
+                    let select = false;
+                    isTableItem.itemArray.map((itemSelect) => {
+                        if (itemSelect.id === item.id) {
+                            select = itemSelect.select;
+                        }
+                    });
+                    return {
+                        id: item.id,
+                        date: item.date,
+                        particulars: item.particulars,
+                        status: item.status,
+                        journal_no: item.journal_no,
+                        select: select,
+                    };
+                });
+                setTableItem({
+                    itemArray: CloneArray,
+                    selectAll: false,
+                });
+            }
         }
-    }, [data?.status, type, isSearch, TablePage]);
+    }, [data?.status, type, isSearch, TablePage, isFilterText]);
 
     const selectAll = () => {
         const newItems = isTableItem?.itemArray.map((item: any) => {
@@ -318,16 +325,22 @@ export default function JournalTable({ type }: Props) {
                         </tr>
                     </thead>
                     <tbody>
-                        {isTableItem?.itemArray.map(
-                            (item: any, index: number) => (
-                                <List
-                                    key={index}
-                                    itemDetail={item}
-                                    type={type}
-                                    isTableItem={isTableItem}
-                                    setTableItem={setTableItem}
-                                />
-                            )
+                        {data?.data.data.length > 0 ? (
+                            <>
+                                {isTableItem?.itemArray.map(
+                                    (item: any, index: number) => (
+                                        <List
+                                            key={index}
+                                            itemDetail={item}
+                                            type={type}
+                                            isTableItem={isTableItem}
+                                            setTableItem={setTableItem}
+                                        />
+                                    )
+                                )}
+                            </>
+                        ) : (
+                            <></>
                         )}
                     </tbody>
                 </table>
