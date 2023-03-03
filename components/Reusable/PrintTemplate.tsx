@@ -3,8 +3,8 @@ import { startOfDay, format } from "date-fns";
 import { useRouter } from "next/router";
 import React, { useContext, useEffect } from "react";
 import { useQuery } from "react-query";
-import api from "../util/api";
-import AppContext from "./Context/AppContext";
+import api from "../../util/api";
+import AppContext from "../Context/AppContext";
 
 type Props = {
     title: string;

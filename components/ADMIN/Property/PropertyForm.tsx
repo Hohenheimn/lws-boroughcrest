@@ -22,10 +22,9 @@ import {
     UpdateDraftProperty,
     UpdateProperty,
 } from "../../ReactQuery/PropertyMethod";
-import Calendar from "../../Calendar";
-import DynamicPopOver from "../../DynamicPopOver";
-import { MdOutlineKeyboardArrowDown } from "react-icons/md";
-import SelectDropdown from "../../SelectDropdown";
+import Calendar from "../../Reusable/Calendar";
+import DynamicPopOver from "../../Reusable/DynamicPopOver";
+import SelectDropdown from "../../Reusable/SelectDropdown";
 
 type Props = {
     DefaultFormData: PropertyDefaultValue;

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import SelectDropdown from "../../../../SelectDropdown";
+import SelectDropdown from "../../../../Reusable/SelectDropdown";
 import CustomerDropdown from "../../../../Dropdowns/CustomerDropdown";
 
 export default function HeaderReceivePayment() {

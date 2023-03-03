@@ -9,12 +9,12 @@ import { getCookie } from "cookies-next";
 import { useQuery } from "react-query";
 import api from "../../../../util/api";
 import { BarLoader, MoonLoader } from "react-spinners";
-import PeriodCalendar from "../../../PeriodCalendar";
-import { Advancefilter, AdvanceFilter } from "../../../AdvanceFilter";
-import PeriodFNS from "../../../PeriodFNS";
-import TableErrorMessage from "../../../TableErrorMessage";
+import PeriodCalendar from "../../../Reusable/PeriodCalendar";
+import { Advancefilter, AdvanceFilter } from "../../../Reusable/AdvanceFilter";
+import PeriodFNS from "../../../Reusable/PeriodFNS";
+import TableErrorMessage from "../../../Reusable/TableErrorMessage";
 import { GetJournal, MultipleUpdate } from "./Query";
-import Pagination from "../../../Pagination";
+import Pagination from "../../../Reusable/Pagination";
 import AppContext from "../../../Context/AppContext";
 
 type Props = {

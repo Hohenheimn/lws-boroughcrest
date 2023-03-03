@@ -5,10 +5,10 @@ import { useForm } from "react-hook-form";
 import { customer } from "../../../types/customerList";
 import Image from "next/image";
 import { AiFillCamera } from "react-icons/ai";
-import Calendar from "../../Calendar";
+import Calendar from "../../Reusable/Calendar";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
-import DynamicPopOver from "../../DynamicPopOver";
-import SelectDropdown from "../../SelectDropdown";
+import DynamicPopOver from "../../Reusable/DynamicPopOver";
+import SelectDropdown from "../../Reusable/SelectDropdown";
 
 type Props = {
     setActiveForm: Function;

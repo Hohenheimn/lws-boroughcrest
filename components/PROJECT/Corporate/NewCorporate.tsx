@@ -13,9 +13,9 @@ import type { firstCorporateForm } from "../../../types/corporateList";
 import type { secondCorporateForm } from "../../../types/corporateList";
 import { ScaleLoader } from "react-spinners";
 import { getCookie } from "cookies-next";
-import DynamicPopOver from "../../DynamicPopOver";
+import DynamicPopOver from "../../Reusable/DynamicPopOver";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
-import SelectDropdown from "../../SelectDropdown";
+import SelectDropdown from "../../Reusable/SelectDropdown";
 
 export default function NewCorporate() {
     const [isNewActive, setNewActive] = useState([true, false]);

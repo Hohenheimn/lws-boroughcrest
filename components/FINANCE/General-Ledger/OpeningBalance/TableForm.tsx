@@ -1,12 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import style from "../../../../styles/finance/Crud-table.module.scss";
 import Image from "next/image";
-import DropdownSearch from "../../../DropdownSearch";
-import DynamicPopOver from "../../../DynamicPopOver";
 import { useQuery } from "react-query";
 import { getCookie } from "cookies-next";
 import api from "../../../../util/api";
 import { BarLoader } from "react-spinners";
+import DynamicPopOver from "../../../Reusable/DynamicPopOver";
 
 type isTableItem = {
     id: number | string;

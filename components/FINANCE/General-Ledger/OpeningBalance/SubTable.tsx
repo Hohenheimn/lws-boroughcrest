@@ -1,17 +1,22 @@
 import React, { useContext, useEffect, useState } from "react";
 import Image from "next/image";
-import Calendar from "../../../Calendar";
-import DynamicPopOver from "../../../DynamicPopOver";
+
 import DropDownCustomer from "../../../Dropdowns/DropDownCustomer";
 import DropDownCharge from "../../../Dropdowns/DropDownCharge";
 import { useQuery, useQueryClient } from "react-query";
 import api from "../../../../util/api";
 import { getCookie } from "cookies-next";
 import { BarLoader, ScaleLoader } from "react-spinners";
-import TableErrorMessage from "../../../TableErrorMessage";
+
 import { CreateUpdateSubledger, GetSubledger } from "./Query";
 import AppContext from "../../../Context/AppContext";
-import { InputNumberForTable, TextNumberDisplay } from "../../../NumberFormat";
+import Calendar from "../../../Reusable/Calendar";
+import DynamicPopOver from "../../../Reusable/DynamicPopOver";
+import {
+    TextNumberDisplay,
+    InputNumberForTable,
+} from "../../../Reusable/NumberFormat";
+import TableErrorMessage from "../../../Reusable/TableErrorMessage";
 
 export type isTableItemArray = isTableItemObj[];
 

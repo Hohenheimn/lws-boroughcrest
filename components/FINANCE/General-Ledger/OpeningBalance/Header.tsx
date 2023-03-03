@@ -10,7 +10,7 @@ import axios from "axios";
 import { getCookie } from "cookies-next";
 import AppContext from "../../../Context/AppContext";
 import { CustomerImport } from "../../../ReactQuery/CustomerMethod";
-import Calendar from "../../../Calendar";
+import Calendar from "../../../Reusable/Calendar";
 
 type HeaderProps = {
     isDate: {

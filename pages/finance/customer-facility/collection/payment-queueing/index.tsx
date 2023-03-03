@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import HeaderCollection from "../../../../../components/FINANCE/CustomerFacility/Collection/HeaderCollection";
-import { TextNumberDisplay } from "../../../../../components/NumberFormat";
+import { TextNumberDisplay } from "../../../../../components/Reusable/NumberFormat";
 
 export default function PaymentQueueing() {
     const [isFilterText, setFilterText] = useState<string[]>([]);

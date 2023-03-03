@@ -12,12 +12,12 @@ import {
 } from "../../../../types/COAList";
 import { ModalSideFade } from "../../../Animation/SimpleAnimation";
 import AppContext from "../../../Context/AppContext";
-import DynamicPopOver from "../../../DynamicPopOver";
 import {
     COACreate,
     COADelete,
     COAUpdate,
 } from "../../../ReactQuery/ChartofAccount";
+import DynamicPopOver from "../../../Reusable/DynamicPopOver";
 import CrudBankAccNum from "./CrudBankAccNum";
 import DefaultAccount from "./DefaultAccount";
 import Parent from "./Parent";

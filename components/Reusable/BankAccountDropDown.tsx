@@ -1,27 +1,35 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { AiOutlineInfoCircle } from "react-icons/ai";
 import { BarLoader } from "react-spinners";
 import DynamicPopOver from "./DynamicPopOver";
-import { GetBA } from "./ReactQuery/BankAccount";
+import { GetBA } from "../ReactQuery/BankAccount";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 
 type Props = {
-    isArrayBA: isObject[];
-    setArrayBA: Function;
+    isObject: {
+        value: string;
+        id: string | number;
+    };
+    setObject: Function;
 };
 
-type isObject = {
-    value: string;
-    id: string | number;
-    select: boolean;
-};
-
-export default function SelectBankAccount({ isArrayBA, setArrayBA }: Props) {
+export default function BankAccountDropDown({ isObject, setObject }: Props) {
     const [isToggle, setToggle] = useState(false);
     const [tempVal, setTempVal] = useState<any>("");
-    const [isAll, setAll] = useState(false);
 
+    const UpdateHandler = (
+        id: string | number,
+        account_no: string | number,
+        branch: string
+    ) => {
+        setTempVal(`${account_no} - ${branch}`);
+        setToggle(false);
+        setObject({
+            id: id,
+            value: `${account_no} - ${branch}`,
+        });
+    };
     return (
         <>
             <DynamicPopOver
@@ -44,11 +52,9 @@ export default function SelectBankAccount({ isArrayBA, setArrayBA }: Props) {
                             <DropdownItems
                                 setToggle={setToggle}
                                 keyword={tempVal}
+                                UpdateHandler={UpdateHandler}
                                 setTempVal={setTempVal}
-                                isArrayBA={isArrayBA}
-                                isAll={isAll}
-                                setAll={setAll}
-                                setArrayBA={setArrayBA}
+                                isObject={isObject}
                             />
                         )}
                     </>
@@ -61,11 +67,16 @@ export default function SelectBankAccount({ isArrayBA, setArrayBA }: Props) {
 type DropdownItems = {
     setToggle: Function;
     keyword: string;
-    isArrayBA: isObject[];
-    setArrayBA: Function;
+    UpdateHandler: (
+        id: string | number,
+        account_no: string | number,
+        branch: string
+    ) => void;
+    isObject: {
+        id: string | number;
+        value: string;
+    };
     setTempVal: Function;
-    isAll: boolean;
-    setAll: Function;
 };
 
 type BankAccount = {
@@ -75,28 +86,21 @@ type BankAccount = {
     status: string;
 };
 
-interface BankAccountSelect extends BankAccount {
-    select: boolean;
-}
-
 const DropdownItems = ({
-    setArrayBA,
     setTempVal,
-    isArrayBA,
+    isObject,
     setToggle,
     keyword,
-    isAll,
-    setAll,
+    UpdateHandler,
 }: DropdownItems) => {
     const { data, isLoading, isError } = GetBA(keyword);
-    const [isBankAccount, setBankAccount] = useState<BankAccountSelect[]>([]);
     const table = useRef<any>();
     // Click out side
     useEffect(() => {
         const clickOutSide = (e: any) => {
             if (!table.current.contains(e.target)) {
                 setToggle(false);
-                // setTempVal(isObject.value);
+                setTempVal(isObject.value);
             }
         };
         document.addEventListener("mousedown", clickOutSide);
@@ -104,76 +108,24 @@ const DropdownItems = ({
             document.removeEventListener("mousedown", clickOutSide);
         };
     });
-
-    // export selected item
-    useEffect(() => {
-        const clone = isBankAccount.filter((item: BankAccountSelect) => {
-            if (item.select === true) {
-                return {
-                    select: true,
-                    value: `${item.bank_acc_no} - ${item.bank_branch}`,
-                    id: item.id,
-                };
-            }
-        });
-        setArrayBA(clone);
-    }, [isBankAccount]);
-
-    useEffect(() => {
-        if (data?.status === 200) {
-            const CloneArray = data?.data.map((item: BankAccount) => {
-                return {
-                    id: item.id,
-                    bank_acc_no: item.bank_acc_no,
-                    bank_branch: item.bank_branch,
-                    status: item.status,
-                    select: isArrayBA.some((el) => el.id === item.id),
-                };
-            });
-            // Additional blank row field
-            setBankAccount(CloneArray);
-        }
-    }, [data?.status]);
-
-    const selectAll = () => {
-        const CloneArray = isBankAccount.map((item: any) => {
-            return {
-                ...item,
-                select: !isAll,
-            };
-        });
-        // Additional blank row field
-        setBankAccount(CloneArray);
-
-        setAll(!isAll);
-    };
     return (
         <>
             <table className="crud-table narrow" ref={table}>
                 <thead>
                     <tr>
-                        <th className="checkbox">
-                            {/* <input
-                                type="checkbox"
-                                checked={isAll}
-                                onChange={selectAll}
-                            /> */}
-                        </th>
-                        <th className="text-white">BANK asda ACCOUNT NO.</th>
+                        <th className="text-white">BANK ACCOUNT NO.</th>
                         <th className="text-white">BANK & BRANCH</th>
                     </tr>
                 </thead>
                 <tbody>
                     {!isLoading && !isError && (
                         <>
-                            {isBankAccount.map(
-                                (item: BankAccountSelect, index: number) => (
+                            {data?.data.map(
+                                (item: BankAccount, index: number) => (
                                     <List
-                                        isBankAccount={isBankAccount}
-                                        setBankAccount={setBankAccount}
                                         itemDetail={item}
                                         key={index}
-                                        setAll={setAll}
+                                        UpdateHandler={UpdateHandler}
                                     />
                                 )
                             )}
@@ -203,26 +155,15 @@ const DropdownItems = ({
 };
 
 type List = {
-    itemDetail: BankAccountSelect;
-    setBankAccount: Function;
-    isBankAccount: BankAccountSelect[];
-    setAll: Function;
+    itemDetail: BankAccount;
+    UpdateHandler: (
+        id: string | number,
+        account_no: string | number,
+        branch: string
+    ) => void;
 };
 
-const List = ({ itemDetail, isBankAccount, setBankAccount, setAll }: List) => {
-    const UpdateField = () => {
-        const clone = isBankAccount.map((item: BankAccountSelect) => {
-            if (itemDetail.id === item.id) {
-                return {
-                    ...item,
-                    select: !itemDetail.select,
-                };
-            }
-            return item;
-        });
-        setBankAccount(clone);
-        setAll(false);
-    };
+const List = ({ itemDetail, UpdateHandler }: List) => {
     return (
         <tr
             className={`cursor-pointer  ${
@@ -230,14 +171,15 @@ const List = ({ itemDetail, isBankAccount, setBankAccount, setAll }: List) => {
                     ? " bg-gray-300"
                     : "hover:bg-ThemeRed50 hover:text-white"
             }`}
+            onClick={(e) =>
+                itemDetail.status !== "No" &&
+                UpdateHandler(
+                    itemDetail.id,
+                    itemDetail.bank_acc_no,
+                    itemDetail.bank_branch
+                )
+            }
         >
-            <td className="checkbox">
-                <input
-                    type="checkbox"
-                    checked={itemDetail.select}
-                    onChange={UpdateField}
-                />
-            </td>
             <td className="relative">
                 {itemDetail.status === "No" && (
                     <Tippy

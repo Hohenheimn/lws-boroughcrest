@@ -10,7 +10,7 @@ import AppProvider from "../components/Context/AppProvider";
 // Page Loading
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
-import UserInfo from "../components/UserInfo";
+import UserInfo from "../components/Reusable/UserInfo";
 
 type ExtendAppProps = AppProps & {
     Component: any;

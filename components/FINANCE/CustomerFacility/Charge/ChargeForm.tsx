@@ -8,7 +8,7 @@ import { ScaleLoader } from "react-spinners";
 import style from "../../../../styles/Popup_Modal.module.scss";
 import { ModalSideFade } from "../../../Animation/SimpleAnimation";
 import AppContext from "../../../Context/AppContext";
-import DynamicPopOver from "../../../DynamicPopOver";
+import DynamicPopOver from "../../../Reusable/DynamicPopOver";
 import { ChargeCreate, ChargeUpdate } from "../../../ReactQuery/Charge";
 import Dropdown from "../../../Dropdowns/withSameKeyDropdown";
 import { ChargePayload, IDstate } from "./Type";

@@ -2,14 +2,14 @@ import React, { useContext, useState } from "react";
 import Link from "next/link";
 import api from "../../../../util/api";
 import { useQuery } from "react-query";
-import Pagination from "../../../Pagination";
 import BarLoader from "react-spinners/BarLoader";
 import { getCookie } from "cookies-next";
 import { HiPencil } from "react-icons/hi";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 import AppContext from "../../../Context/AppContext";
-import TableErrorMessage from "../../../TableErrorMessage";
+import TableErrorMessage from "../../../Reusable/TableErrorMessage";
+import Pagination from "../../../Reusable/Pagination";
 
 type Props = {
     isSearchTable: string;

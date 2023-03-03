@@ -2,8 +2,8 @@ import { deleteCookie, getCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import React, { useContext, useEffect } from "react";
 import { useQuery } from "react-query";
-import api from "../util/api";
-import AppContext from "./Context/AppContext";
+import api from "../../util/api";
+import AppContext from "../Context/AppContext";
 
 export default function UserInfo() {
     const { setPrompt, setUserInfo } = useContext(AppContext);

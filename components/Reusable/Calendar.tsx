@@ -13,7 +13,7 @@ import {
     add,
 } from "date-fns";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import AppContext from "./Context/AppContext";
+import AppContext from "../Context/AppContext";
 
 type Props = {
     value: {

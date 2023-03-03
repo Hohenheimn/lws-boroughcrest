@@ -33,7 +33,17 @@ export default function CorporateId() {
         );
     }
     if (isError) {
-        return;
+        return (
+            <div className="pageDetail">
+                <h1>Something is wrong</h1>
+                <BeatLoader
+                    color={"#8f384d"}
+                    size={20}
+                    aria-label="Loading Spinner"
+                    data-testid="loader"
+                />
+            </div>
+        );
     }
     const CorporateData = data?.data;
 

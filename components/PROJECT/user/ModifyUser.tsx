@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import AppContext from "../../Context/AppContext";
 import { RiArrowDownSFill } from "react-icons/ri";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
-import SelectDropdown from "../../SelectDropdown";
+import SelectDropdown from "../../Reusable/SelectDropdown";
 
 type ModifyUser = {
     setToggleModify: Function;

@@ -5,7 +5,7 @@ import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 import Link from "next/link";
 import Image from "next/image";
-import { TextNumberDisplay } from "../../../NumberFormat";
+import { TextNumberDisplay } from "../../../Reusable/NumberFormat";
 
 type JournalDetail = {
     Detail: {
@@ -64,23 +64,6 @@ export default function JournalDetail({ Detail }: JournalDetail) {
                             </div>
                         </Tippy>
                     </li>
-                    {/* <li>
-                        <Tippy theme="ThemeRed" content="Modify">
-                            <div>
-                                <Link href="/finance/general-ledger/journal/modify-journal/1">
-                                    <a>
-                                        <div className="relative w-8 h-8 transition-all duration-75 hover:scale-[1.1]">
-                                            <Image
-                                                src="/Images/f_modify.png"
-                                                layout="fill"
-                                                alt="Print"
-                                            />
-                                        </div>
-                                    </a>
-                                </Link>
-                            </div>
-                        </Tippy>
-                    </li> */}
                 </ul>
             </div>
             <ul className={`${style.FourRows} ${style.narrow}`}>

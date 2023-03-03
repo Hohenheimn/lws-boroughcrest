@@ -8,7 +8,7 @@ import {
     GetUnitCode,
     PostCustomerDraft,
 } from "../../ReactQuery/CustomerMethod";
-import DynamicPopOver from "../../DynamicPopOver";
+import DynamicPopOver from "../../Reusable/DynamicPopOver";
 
 type NewPropertyInfo = {
     setActiveForm: Function;

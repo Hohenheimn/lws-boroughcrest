@@ -12,10 +12,10 @@ import { PutCustomer, SaveDraftUpdate } from "../../ReactQuery/CustomerMethod";
 import { useRouter } from "next/router";
 import { ScaleLoader } from "react-spinners";
 import { useQueryClient } from "react-query";
-import Calendar from "../../Calendar";
+import Calendar from "../../Reusable/Calendar";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
-import DynamicPopOver from "../../DynamicPopOver";
-import SelectDropdown from "../../SelectDropdown";
+import DynamicPopOver from "../../Reusable/DynamicPopOver";
+import SelectDropdown from "../../Reusable/SelectDropdown";
 
 type ModifyCustomer = {
     setToggleModify: Function;

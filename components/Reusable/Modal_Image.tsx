@@ -1,10 +1,10 @@
 import React, { useRef, useEffect, useContext } from "react";
-import AppContext from "./Context/AppContext";
+import AppContext from "..//Context/AppContext";
 import Image from "next/image";
 
 type Modal_Image = {
     setView: Function;
-    isView: string;
+    isView: string | null | undefined;
 };
 
 export default function Modal_Image({ setView, isView }: Modal_Image) {

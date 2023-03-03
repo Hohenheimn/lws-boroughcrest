@@ -3,15 +3,17 @@ import Image from "next/image";
 import { BsPlusLg } from "react-icons/bs";
 import { HiMinus } from "react-icons/hi";
 import { RiArrowDownSFill } from "react-icons/ri";
-import Calendar from "../../../Calendar";
-import DropdownSearch from "../../../DropdownSearch";
 import DropDownCOA from "../../../Dropdowns/DropdownCOA";
 import { validateCreditDebitField } from "../OpeningBalance/ValidateCreditDebitField";
-import { InputNumberForTable, TextNumberDisplay } from "../../../NumberFormat";
 import AppContext from "../../../Context/AppContext";
 import { CreateDraftJournal, CreateJournal, UpdateJournal } from "./Query";
 import { ScaleLoader } from "react-spinners";
 import { useRouter } from "next/router";
+import Calendar from "../../../Reusable/Calendar";
+import {
+    TextNumberDisplay,
+    InputNumberForTable,
+} from "../../../Reusable/NumberFormat";
 
 export type defaultArray = defaultObject[];
 export type defaultObject = {

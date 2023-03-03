@@ -4,7 +4,7 @@ import Image from "next/image";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 import { useQuery } from "react-query";
-import api from "../util/api";
+import api from "../../util/api";
 import { getCookie } from "cookies-next";
 import { BarLoader } from "react-spinners";
 

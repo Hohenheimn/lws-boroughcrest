@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styleModal from "../../../../styles/Popup_Modal.module.scss";
 import Link from "next/link";
-import { TextNumberDisplay } from "../../../NumberFormat";
+import { TextNumberDisplay } from "../../../Reusable/NumberFormat";
 import { HiPencil } from "react-icons/hi";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";

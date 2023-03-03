@@ -8,12 +8,7 @@ import { useRouter } from "next/router";
 import style from "../../../../styles/SearchFilter.module.scss";
 import { CustomerImport } from "../../../ReactQuery/CustomerMethod";
 import { MoonLoader } from "react-spinners";
-import axios from "axios";
-import { getCookie } from "cookies-next";
-import { PropertyImport } from "../../../ReactQuery/PropertyMethod";
-import { format } from "date-fns";
-import { DynamicExportHandler } from "../../../DynamicExport";
-import { DynamicImport } from "../../../DynamicImport";
+import { DynamicExportHandler } from "../../../Reusable/DynamicExport";
 
 type SearchFilter = {
     page: string;

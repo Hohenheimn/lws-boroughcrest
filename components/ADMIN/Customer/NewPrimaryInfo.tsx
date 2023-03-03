@@ -3,8 +3,8 @@ import NewDefault from "./NewDefault";
 import NewIndividual from "./NewIndividual";
 import style from "../../../styles/Popup_Modal.module.scss";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
-import DynamicPopOver from "../../DynamicPopOver";
-import SelectDropdown from "../../SelectDropdown";
+import DynamicPopOver from "../../Reusable/DynamicPopOver";
+import SelectDropdown from "../../Reusable/SelectDropdown";
 
 type NewPrimaryInfo = {
     setActiveForm: Function;

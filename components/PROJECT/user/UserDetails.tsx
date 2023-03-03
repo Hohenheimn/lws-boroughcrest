@@ -4,11 +4,17 @@ import Image from "next/image";
 import ModifyUser from "./ModifyUser";
 import UserInformation from "./UserInformation";
 import UserRolePermissions from "./UserRolePermissions";
-import Modal_Image from "../../Modal_Image";
-export default function UserDetails() {
+import Modal_Image from "../../Reusable/Modal_Image";
+import { UserDetail } from "./UserTable";
+import Tippy from "@tippy.js/react";
+
+type Props = {
+    UserDetail: UserDetail;
+};
+export default function UserDetails({ UserDetail }: Props) {
     const [toggleModify, setToggleModify] = useState(false);
     const [isToggleInfoRole, setToggleInfoRole] = useState<boolean>(false);
-    const [isView, setView] = useState("");
+    const [isView, setView] = useState<string | null>("");
     return (
         <div>
             {isView !== "" && <Modal_Image setView={setView} isView={isView} />}
@@ -29,7 +35,11 @@ export default function UserDetails() {
                 <li className="w-3/12 480px:w-full p-5 flex justify-center items-center">
                     <aside className=" w-6/12 820px:w-10/12 rounded-full overflow-hidden 480px:w-5/12 aspect-square relative shadow-xl">
                         <Image
-                            src="/Images/sampleProfile.png"
+                            src={
+                                UserDetail.image_photo === null
+                                    ? "/Images/sampleProfile.png"
+                                    : UserDetail.image_photo
+                            }
                             alt=""
                             layout="fill"
                         />
@@ -42,7 +52,7 @@ export default function UserDetails() {
                                 ID
                             </p>
                             <h4 className=" text-gray-500 mb-5 1024px:text-[14px]">
-                                1234
+                                {UserDetail.id}
                             </h4>
                         </li>
                         <li className=" w-6/12 text-start  820px:w-2/4 480px:w-full pr-2">
@@ -50,24 +60,29 @@ export default function UserDetails() {
                                 NAME
                             </p>
                             <h4 className=" text-gray-500 mb-5 1024px:text-[14px]">
-                                Juan Dela Cruz
+                                {UserDetail.name}
                             </h4>
                         </li>
                         <li className=" w-6/12 text-start  820px:w-2/4 480px:w-full pr-2">
                             <p className=" text-gray-400 1024px:text-[14px] mb-1">
                                 STATUS
                             </p>
-                            <div
-                                className=" h-5 w-5 rounded-full border-4 border-[#19d142] mb-5"
-                                style={{ boxShadow: "0 0 15px 0 #19d142" }}
-                            ></div>
+                            <Tippy content={UserDetail.status} theme="ThemeRed">
+                                <div className="w-full flex justify-start">
+                                    <div
+                                        className={`statusCircle ${UserDetail.status}`}
+                                    ></div>
+                                </div>
+                            </Tippy>
                         </li>
                         <li className=" w-6/12 text-start  820px:w-2/4 480px:w-full pr-2">
                             <p className=" text-gray-400 1024px:text-[14px] mb-1">
                                 SIGNATURE
                             </p>
                             <button
-                                onClick={() => setView("view_signature")}
+                                onClick={() =>
+                                    setView(UserDetail.image_signature)
+                                }
                                 className=" px-5 rounded-lg py-1 bg-ThemeRed text-white hover:bg-ThemeRed50 duration-75"
                             >
                                 VIEW
@@ -95,7 +110,7 @@ export default function UserDetails() {
                 </li>
             </ul>
             <ul className=" w-full shadow-lg p-10  bg-white rounded-2xl">
-                {!isToggleInfoRole && <UserInformation />}
+                {!isToggleInfoRole && <UserInformation UserInfo={UserDetail} />}
                 {isToggleInfoRole && <UserRolePermissions />}
             </ul>
         </div>

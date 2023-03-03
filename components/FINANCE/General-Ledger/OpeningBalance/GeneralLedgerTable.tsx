@@ -2,11 +2,13 @@ import React, { useEffect, useState, useContext } from "react";
 import Image from "next/image";
 import { BarLoader, ScaleLoader } from "react-spinners";
 import AppContext from "../../../Context/AppContext";
-import TableErrorMessage from "../../../TableErrorMessage";
 import { CreateUpdateGeneralLedger, GetGeneralLedger } from "./Query";
-import { NumericFormat } from "react-number-format";
-import { InputNumberForTable, TextNumberDisplay } from "../../../NumberFormat";
 import { validateCreditDebitField } from "./ValidateCreditDebitField";
+import {
+    TextNumberDisplay,
+    InputNumberForTable,
+} from "../../../Reusable/NumberFormat";
+import TableErrorMessage from "../../../Reusable/TableErrorMessage";
 
 type isTableItem = isTableItemObj[];
 

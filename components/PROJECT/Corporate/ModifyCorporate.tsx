@@ -18,8 +18,8 @@ import type {
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
-import DynamicPopOver from "../../DynamicPopOver";
-import SelectDropdown from "../../SelectDropdown";
+import DynamicPopOver from "../../Reusable/DynamicPopOver";
+import SelectDropdown from "../../Reusable/SelectDropdown";
 
 type ModifyCorporate = {
     setToggleModify: Function;

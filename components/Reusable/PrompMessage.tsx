@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from "react";
-import AppContext from "./Context/AppContext";
+import AppContext from "../Context/AppContext";
 import { motion } from "framer-motion";
-import { FadeDown } from "../components/Animation/SimpleAnimation";
+import { FadeDown } from "../../components/Animation/SimpleAnimation";
 
 export default function PrompMessage() {
     const { togglePrompt, setPrompt } = useContext(AppContext);

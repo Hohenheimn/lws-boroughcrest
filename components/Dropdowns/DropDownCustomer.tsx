@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useQuery } from "react-query";
 import { BarLoader } from "react-spinners";
 import api from "../../util/api";
-import DynamicPopOver from "../DynamicPopOver";
+import DynamicPopOver from "../Reusable/DynamicPopOver";
 import { isTableItemObj } from "../FINANCE/General-Ledger/OpeningBalance/SubTable";
 
 type DropdownItem = {

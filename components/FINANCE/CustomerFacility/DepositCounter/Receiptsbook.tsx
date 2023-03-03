@@ -1,22 +1,26 @@
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 import React, { useEffect, useState } from "react";
-import PeriodCalendar from "../../../PeriodCalendar";
 import styleSearch from "../../../../styles/SearchFilter.module.scss";
 import Image from "next/image";
 import { GoEye } from "react-icons/go";
-import { InputNumberForTable, TextNumberDisplay } from "../../../NumberFormat";
+
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { GetReceiptsBook } from "./Query";
-import TableErrorMessage from "../../../TableErrorMessage";
-import Pagination from "../../../Pagination";
+
 import { BarLoader } from "react-spinners";
 import { BsPlusLg, BsSearch } from "react-icons/bs";
 import DepositDetail from "./DepositDetail";
 import { HiMinus } from "react-icons/hi";
 import { isTableBankCredit } from "./BankCreditComp";
 import DropdownIndex from "./DropdownIndex";
+import Pagination from "../../../Reusable/Pagination";
+import {
+    TextNumberDisplay,
+    InputNumberForTable,
+} from "../../../Reusable/NumberFormat";
+import TableErrorMessage from "../../../Reusable/TableErrorMessage";
 
 export type isReceiptBookData = {
     itemArray: isTableItemObjRB[];
