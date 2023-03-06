@@ -1,28 +1,97 @@
 import React, { useState, useEffect, useContext } from "react";
 import { AiFillCamera } from "react-icons/ai";
-import Link from "next/link";
 import Image from "next/image";
 import style from "../../../styles/Popup_Modal.module.scss";
-import { RiArrowDownSFill } from "react-icons/ri";
 import { useForm } from "react-hook-form";
 import AppContext from "../../Context/AppContext";
-import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import SelectDropdown from "../../Reusable/SelectDropdown";
+import CorporateDropDown from "../../Dropdowns/CorporateDropDown";
+import { RiArrowDownSFill } from "react-icons/ri";
+import UserRolePermissionsForm from "./UserRolePermissionsForm";
 
-export default function UserForm() {
+export type UserFormType = {
+    profile: any;
+    name: string;
+    signature: any;
+    position: string;
+    employee_id: string | number;
+    department: string | number | null;
+    email: string;
+    mobile: number | string;
+    corporate: string | number;
+    corporate_id: string | number;
+    status: string;
+};
+
+export type UserInfoPayload = {
+    employee_id: string | number;
+    name: string;
+    email: string;
+    corporate_id: string | number;
+    department_id: string | number;
+    contact_no: string | number;
+    position: string;
+    image_photo: undefined | null | File;
+    image_signature: undefined | null | File;
+    status: string;
+};
+
+type Props = {
+    DefaultValue: UserFormType;
+    type: string;
+    setToggle: Function;
+};
+
+export default function UserForm({ DefaultValue, type, setToggle }: Props) {
+    const [isSave, setSave] = useState(false);
+    const [isDepartment, setDepartment] = useState<any>("");
+
+    const [isPayload, setPayload] = useState<UserInfoPayload>({
+        employee_id: "",
+        name: "",
+        email: "",
+        corporate_id: "",
+        department_id: "",
+        contact_no: "",
+        position: "",
+        image_photo: undefined,
+        image_signature: undefined,
+        status: "",
+    });
+
     const { setNewUserToggle } = useContext(AppContext);
+
     const [userForm, setUserForm] = useState([true, false]);
-    const [isLogoStatus, setLogoStatus] = useState("Upload Logo");
-    const [isStatus, setStatus] = useState(true);
+
+    const [isProfileStatus, setProfileStatus] = useState("Upload Profile");
+
+    const [isSignatureStatus, setSignatureStatus] =
+        useState("Upload Signature");
+
+    const [isStatus, setStatus] = useState<string>("Active");
+
+    const [isCorporate, setCorporate] = useState<{
+        id: string | number;
+        value: any;
+    }>({
+        id: "",
+        value: "",
+    });
+    useEffect(() => {
+        setValue("corporate", isCorporate.value);
+    }, [isCorporate]);
 
     const [isProfileUrl, setProfileUrl] = useState("/Images/sampleProfile.png");
-    const DisplayImage = (e: any) => {
+
+    const DisplayImage = (e: any, key: string) => {
         if (e.target.files[0]?.size > 2000000) {
-            setLogoStatus("Image must be 2mb only");
+            key === "profile" && setProfileStatus("Image must be 2mb only");
+            key === "signature" && setSignatureStatus("Image must be 2mb only");
+
             return;
         } else {
-            setLogoStatus("");
-            console.log(e.target.files[0]);
+            key === "profile" && setProfileStatus("Upload Profile");
+            key === "signature" && setSignatureStatus("Upload Signature");
         }
         if (e.target.files.length > 0) {
             let selectedImage = e.target.files[0];
@@ -30,17 +99,44 @@ export default function UserForm() {
                 let ImageReader = new FileReader();
                 ImageReader.readAsDataURL(selectedImage);
                 ImageReader.addEventListener("load", (event: any) => {
-                    setProfileUrl(event.target.result);
+                    key === "profile" && setProfileUrl(event.target.result);
                 });
                 const file = e.target.files;
-                setLogoStatus(file[0].name);
+                if (key === "signature") {
+                    setSignatureStatus(file[0].name);
+                }
+                if (key === "profile") {
+                    setProfileStatus(file[0].name);
+                }
             } else {
-                setLogoStatus("Invalid Image File");
+                key === "profile" && setProfileStatus("Invalid Image File");
+                key === "signature" && setSignatureStatus("Invalid Image File");
             }
         } else {
-            setLogoStatus("Nothing Happens");
+            key === "profile" && setProfileStatus("Nothing Happens");
+            key === "signature" && setSignatureStatus("Nothing Happens");
         }
     };
+
+    useEffect(() => {
+        if (
+            DefaultValue.profile !== "" &&
+            DefaultValue.profile !== null &&
+            DefaultValue.profile !== undefined
+        ) {
+            setProfileUrl(DefaultValue.profile);
+        } else {
+            setProfileUrl("/Images/sampleProfile.png");
+        }
+        setValue("department", DefaultValue.department);
+        setDepartment(DefaultValue.department);
+        setCorporate({
+            id: DefaultValue.corporate_id,
+            value: DefaultValue.corporate,
+        });
+        setValue("corporate", DefaultValue.corporate);
+        setStatus(status);
+    }, []);
 
     const cancel = () => {
         setNewUserToggle(false);
@@ -49,11 +145,45 @@ export default function UserForm() {
     const {
         register,
         handleSubmit,
+        setValue,
         formState: { errors },
-    } = useForm();
+    } = useForm<UserFormType>({
+        defaultValues: DefaultValue,
+    });
 
-    const Next = () => {
-        setUserForm([false, true]);
+    const Next = (data: UserFormType) => {
+        const Payload: UserInfoPayload = {
+            employee_id: data.employee_id,
+            name: data.name,
+            email: data.email,
+            corporate_id: isCorporate.id,
+            department_id: isDepartment,
+            contact_no: data.mobile,
+            position: data.position,
+            image_photo: data.profile[0] === undefined ? null : data.profile[0],
+            image_signature:
+                data.signature[0] === undefined ? null : data.signature[0],
+            status: isStatus,
+        };
+        setPayload({
+            employee_id: data.employee_id,
+            name: data.name,
+            email: data.email,
+            corporate_id: isCorporate.id,
+            department_id: isDepartment,
+            contact_no: data.mobile,
+            position: data.position,
+            image_photo: data.profile[0] === undefined ? null : data.profile[0],
+            image_signature:
+                data.signature[0] === undefined ? null : data.signature[0],
+            status: isStatus,
+        });
+        if (type === "create") {
+            setUserForm([false, true]);
+        }
+        if (type === "modify") {
+            console.log(Payload);
+        }
     };
 
     return (
@@ -69,82 +199,155 @@ export default function UserForm() {
 
                         <div
                             className={`statusCircle ${
-                                isStatus ? "active" : "inactive"
+                                isStatus === "Active" ? "active" : "inactive"
                             }`}
-                            onClick={() => setStatus(!isStatus)}
+                            onClick={() =>
+                                setStatus((prev) =>
+                                    prev === "Active" ? "Inactive" : "Active"
+                                )
+                            }
                         ></div>
                     </h1>
 
                     <ul className={`${style.ThreeRows} items-center`}>
                         <li className=" border flex items-center w-4/12 820px:w-2/4 480px:w-full mb-5">
                             <aside className="w-20 h-20 relative flex mr-4">
-                                <aside className=" bg-white h-full w-full rounded-full object-cover shadow-lg relative">
+                                <label
+                                    className=" bg-white h-full w-full rounded-full object-cover shadow-lg relative"
+                                    htmlFor="profile"
+                                >
                                     <Image
                                         src={isProfileUrl}
                                         alt=""
                                         layout="fill"
                                     />
-                                </aside>
+                                </label>
                                 <input
                                     type="file"
-                                    id="image"
-                                    onChange={DisplayImage}
-                                    className="hidden"
+                                    id="profile"
+                                    {...register("profile")}
+                                    onChange={(e) => DisplayImage(e, "profile")}
+                                    className="absolute z-[-1] opacity-0"
                                 />
                                 <label
-                                    htmlFor="image"
+                                    htmlFor="profile"
                                     className=" cursor-pointer hover:bg-ThemeRed50 p-1 rounded-full text-white bg-ThemeRed absolute text-[12px] right-[-10px] bottom-[-5px]"
                                 >
                                     <AiFillCamera />
                                 </label>
                             </aside>
-                            <p className="text-[12px] mt-1">{isLogoStatus}</p>
+                            <p className="text-[12px] mt-1 w-full text-center">
+                                {isProfileStatus}
+                            </p>
                         </li>
                         <li className="  flex flex-col w-4/12 820px:w-2/4 480px:w-full mb-5">
-                            <label className=" text-[12px] font-semibold mb-1 w-[90%]">
+                            <label className=" text-[12px] mb-1 w-[90%]">
                                 *NAME
                             </label>
-                            <input type="text" className="field" />
+                            <input
+                                type="text"
+                                {...register("name", {
+                                    required: "Required",
+                                })}
+                                className="field"
+                            />
+                            {errors?.name && (
+                                <p className="text-[10px]">
+                                    {errors?.name?.message}
+                                </p>
+                            )}
                         </li>
                         <li className="  flex flex-col  w-4/12 820px:w-2/4 480px:w-full mb-5 justify-center items-end">
                             <label
-                                className=" text-[12px] font-NHU-medium mb-1 uppercase cursor-pointer w-[90%] 480px:w-full"
-                                htmlFor="file"
+                                className=" text-[12px] mb-1 text-center uppercase cursor-pointer w-[90%] 480px:w-full"
+                                htmlFor="signature"
                             >
-                                *Upload Signature
+                                Upload Signature
                             </label>
-                            <input id="file" type="file" className="hidden" />
+                            <input
+                                id="signature"
+                                type="file"
+                                {...register("signature")}
+                                className="absolute z-[-1] opacity-0"
+                                onChange={(e) => DisplayImage(e, "signature")}
+                            />
+                            <p className="text-[10px] text-center w-full">
+                                {isSignatureStatus}
+                            </p>
+                            {errors?.signature && (
+                                <p className="text-[10px] text-center w-full">
+                                    Required
+                                </p>
+                            )}
                         </li>
                     </ul>
                     <ul className={style.ThreeRows}>
                         <li>
                             <label>POSITION</label>
-                            <input type="text" className="field" />
+                            <input
+                                type="text"
+                                className="field"
+                                {...register("position")}
+                            />
+                            {errors?.position && (
+                                <p className="text-[10px]">
+                                    {errors?.position?.message}
+                                </p>
+                            )}
                         </li>
                         <li>
                             <label>EMPLOYEE ID</label>
-                            <input type="text" className="field" />
+                            <input
+                                type="text"
+                                className="field"
+                                {...register("employee_id")}
+                            />
+                            {errors?.employee_id && (
+                                <p className="text-[10px]">
+                                    {errors?.employee_id?.message}
+                                </p>
+                            )}
                         </li>
                         <li>
                             <label>*DEPARTMENT</label>
                             <SelectDropdown
                                 selectHandler={(value: string) => {
-                                    // setReceiptType(value);
+                                    setDepartment(value);
+                                    setValue("department", value);
                                 }}
                                 className=""
                                 inputElement={
                                     <input
                                         className="w-full field"
-                                        value={""}
+                                        value={isDepartment}
                                         readOnly
+                                        {...register("department", {
+                                            required: "Required",
+                                        })}
                                     />
                                 }
-                                listArray={["Department"]}
+                                listArray={["Sample Department"]}
                             />
+                            {errors?.department && (
+                                <p className="text-[10px]">
+                                    {errors?.department?.message}
+                                </p>
+                            )}
                         </li>
                         <li>
                             <label>*EMAIL</label>
-                            <input type="email" className="field w-full" />
+                            <input
+                                type="email"
+                                className="field w-full"
+                                {...register("email", {
+                                    required: "Required",
+                                })}
+                            />
+                            {errors?.email && (
+                                <p className="text-[10px]">
+                                    {errors?.email?.message}
+                                </p>
+                            )}
                         </li>
 
                         <li>
@@ -153,252 +356,116 @@ export default function UserForm() {
                                 type="number"
                                 className="field"
                                 placeholder="+63"
+                                {...register("mobile", {
+                                    required: "Required",
+                                    minLength: {
+                                        value: 11,
+                                        message: "Must be 11 Number",
+                                    },
+                                    maxLength: {
+                                        value: 11,
+                                        message: "Must be 11 Number",
+                                    },
+                                })}
                             />
+                            {errors?.mobile && (
+                                <p className="text-[10px]">
+                                    {errors?.mobile?.message}
+                                </p>
+                            )}
                         </li>
                         <li>
                             <label>*CORPORATE</label>
-                            <SelectDropdown
-                                selectHandler={(value: string) => {
-                                    // setReceiptType(value);
+                            <CorporateDropDown
+                                isCorporate={isCorporate}
+                                setCorporate={setCorporate}
+                                register={{
+                                    ...register("corporate", {
+                                        required: "Required",
+                                    }),
                                 }}
-                                className=""
-                                inputElement={
-                                    <input
-                                        className="w-full field"
-                                        value={""}
-                                        readOnly
-                                    />
-                                }
-                                listArray={["Department"]}
                             />
+                            {errors?.corporate && (
+                                <p className="text-[10px]">
+                                    {errors?.corporate?.message}
+                                </p>
+                            )}
                         </li>
                     </ul>
-                    <div className={style.button_container}>
-                        <aside
-                            className="button_cancel cursor-pointer"
-                            onClick={cancel}
-                        >
-                            CANCEL
-                        </aside>
-                        <button className="buttonRed" type="submit">
-                            NEXT
-                        </button>
-                    </div>
+
+                    {type === "create" ? (
+                        <div className={style.button_container}>
+                            <aside
+                                className="button_cancel cursor-pointer"
+                                onClick={cancel}
+                            >
+                                CANCEL
+                            </aside>
+                            <button className="buttonRed" type="submit">
+                                NEXT
+                            </button>
+                        </div>
+                    ) : (
+                        <div className={style.SaveButton}>
+                            <aside
+                                className={style.back}
+                                onClick={() => {
+                                    setUserForm([true, false]);
+                                    setToggle(false);
+                                }}
+                            >
+                                BACK
+                            </aside>
+
+                            <div className={style.Save}>
+                                <div>
+                                    <button
+                                        type="submit"
+                                        name="save"
+                                        className={style.save_button}
+                                    >
+                                        Save
+                                    </button>
+                                    <aside className={style.Arrow}>
+                                        <RiArrowDownSFill
+                                            onClick={() => setSave(!isSave)}
+                                        />
+                                    </aside>
+                                </div>
+
+                                {isSave && (
+                                    <ul>
+                                        <li>
+                                            <button
+                                                type="submit"
+                                                name="save-new"
+                                            >
+                                                SAVE & NEW
+                                            </button>
+                                        </li>
+                                    </ul>
+                                )}
+                            </div>
+                        </div>
+                    )}
                 </form>
-                <NewRolesPermission
-                    setUserForm={setUserForm}
-                    userForm={userForm}
-                />
+                {type === "create" && (
+                    <UserRolePermissionsForm
+                        setUserForm={setUserForm}
+                        userForm={userForm}
+                        userInfo={isPayload}
+                        type={type}
+                        DefaultTable={[
+                            {
+                                id: 1,
+                                permission: "",
+                                access: "",
+                                duration: "",
+                            },
+                        ]}
+                    />
+                )}
             </section>
         </div>
     );
 }
-
-const NewRolesPermission = ({ setUserForm, userForm }: any) => {
-    const [isTable, setTable] = useState([
-        {
-            id: 1,
-            permissions: "",
-            access: "",
-            duration: "",
-        },
-    ]);
-    const [isRole, setRole] = useState<string>("");
-    const [isSave, setSave] = useState(false);
-    return (
-        <div className={`${userForm[1] === true ? "" : "hidden"}`}>
-            <p className=" text-[16px] mb-3 font-bold">
-                Create Roles & Permissions
-            </p>
-            <ul className=" flex mb-10 justify-between border-b-2 border-white flex-wrap 480px:mb-2 pb-4">
-                <li className=" w-4/12 480px:w-full">
-                    <p className="text-Themered text-[12px] font-semibold mb-1 uppercase">
-                        ROLE
-                    </p>
-                    <SelectDropdown
-                        selectHandler={(value: string) => {
-                            // setReceiptType(value);
-                        }}
-                        className=""
-                        inputElement={
-                            <input
-                                className="w-full field"
-                                value={""}
-                                readOnly
-                            />
-                        }
-                        listArray={[
-                            "Admin",
-                            "Admin Staff",
-                            "Finance",
-                            " Accounting",
-                        ]}
-                    />
-                </li>
-            </ul>
-
-            <table className="w-full mb-20">
-                <thead>
-                    <tr>
-                        <th className=" text-[12px] font-semibold mb-1 uppercase text-start">
-                            PERMISSION
-                        </th>
-                        <th className=" text-[12px] font-semibold mb-1 uppercase text-start">
-                            ACCESS
-                        </th>
-                        <th className=" text-[12px] font-semibold mb-1 uppercase text-start">
-                            DURATION
-                        </th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {isTable.map((item, index) => (
-                        <List
-                            detail={item}
-                            setTable={setTable}
-                            key={index}
-                            isTable={isTable}
-                            index={index}
-                        />
-                    ))}
-                </tbody>
-            </table>
-
-            <div className={style.SaveButton}>
-                <aside
-                    className={style.back}
-                    onClick={() => setUserForm([true, false])}
-                >
-                    BACK
-                </aside>
-
-                <button className={style.Save}>
-                    <div>
-                        <button
-                            type="submit"
-                            name="save"
-                            className={style.save_button}
-                        >
-                            Save
-                        </button>
-                        <aside className={style.Arrow}>
-                            <RiArrowDownSFill
-                                onClick={() => setSave(!isSave)}
-                            />
-                        </aside>
-                    </div>
-                    {isSave && (
-                        <ul>
-                            <li>
-                                <button type="submit" name="save-new">
-                                    SAVE & NEW
-                                </button>
-                            </li>
-                        </ul>
-                    )}
-                </button>
-            </div>
-        </div>
-    );
-};
-
-type List = {
-    detail: any;
-    setTable: Function;
-    isTable: {}[];
-    index: number;
-};
-const List = ({ detail, setTable, isTable, index }: List) => {
-    let newID: any;
-    useEffect(() => {
-        newID = Math.random();
-    });
-
-    const updateValue = (event: any, whatValue: string | undefined) => {
-        const newItems = isTable.map((item: any) => {
-            if (detail.id == item.id) {
-                if (whatValue === "duration")
-                    return { ...item, duration: event.target.value };
-                if (whatValue === "permission")
-                    return { ...item, permissions: event.target.value };
-                if (whatValue === "access")
-                    return { ...item, access: event.target.value };
-            }
-            return item;
-        });
-        setTable(newItems);
-    };
-    return (
-        <tr>
-            <td className=" pr-2">
-                <SelectDropdown
-                    selectHandler={(value: string) => {
-                        // setReceiptType(value);
-                    }}
-                    className=""
-                    inputElement={
-                        <input className="w-full field" value={""} readOnly />
-                    }
-                    listArray={["Admin", "Staff"]}
-                />
-            </td>
-            <td className=" pr-2">
-                <SelectDropdown
-                    selectHandler={(value: string) => {
-                        // setReceiptType(value);
-                    }}
-                    className=""
-                    inputElement={
-                        <input className="w-full field" value={""} readOnly />
-                    }
-                    listArray={["View", "Access"]}
-                />
-            </td>
-            <td className="  pr-2">
-                <input
-                    type="number"
-                    className="field w-full"
-                    value={detail.duration}
-                    placeholder="Number of Days"
-                    onChange={(e) => updateValue(e, "duration")}
-                />
-            </td>
-
-            <td className=" flex justify-start">
-                {isTable.length > 1 && (
-                    <button
-                        className=" text-[32px] text-ThemeRed mr-2"
-                        onClick={() =>
-                            setTable((item: any[]) =>
-                                item.filter(
-                                    (x: { id: any }) => x.id !== detail.id
-                                )
-                            )
-                        }
-                    >
-                        -
-                    </button>
-                )}
-                {isTable.length === index + 1 && (
-                    <button
-                        className=" text-[32px] text-ThemeRed"
-                        onClick={() =>
-                            setTable((item: any) => [
-                                ...item,
-                                {
-                                    id: newID,
-                                    permissions: "",
-                                    access: "",
-                                    duration: "",
-                                },
-                            ])
-                        }
-                    >
-                        +
-                    </button>
-                )}
-            </td>
-        </tr>
-    );
-};

@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { HiPencil } from "react-icons/hi";
 import Image from "next/image";
-import ModifyUser from "./ModifyUser";
 import UserInformation from "./UserInformation";
-import UserRolePermissions from "./UserRolePermissions";
+import UserRolePermissionsForm from "./UserRolePermissionsForm";
 import Modal_Image from "../../Reusable/Modal_Image";
 import { UserDetail } from "./UserTable";
 import Tippy from "@tippy.js/react";
+import UserForm from "./UserForm";
+import UserRolePermissions from "./UserRolePermissions";
 
 type Props = {
     UserDetail: UserDetail;
@@ -18,7 +19,26 @@ export default function UserDetails({ UserDetail }: Props) {
     return (
         <div>
             {isView !== "" && <Modal_Image setView={setView} isView={isView} />}
-            {toggleModify && <ModifyUser setToggleModify={setToggleModify} />}
+            {toggleModify && (
+                <UserForm
+                    setToggle={setToggleModify}
+                    DefaultValue={{
+                        profile: undefined,
+                        name: UserDetail.name,
+                        signature: undefined,
+                        position: UserDetail.position,
+                        employee_id: UserDetail.employee_id,
+                        department: UserDetail.department_id,
+                        email: UserDetail.email,
+                        mobile: UserDetail.contact_no,
+                        corporate: "Sample",
+                        corporate_id: UserDetail.corporate_id,
+                        status: UserDetail.status,
+                    }}
+                    type={"modify"}
+                />
+            )}
+
             <h1 className=" font-bold mb-10 text-[24px] 480px:mb-5">
                 User Details
             </h1>
@@ -68,7 +88,7 @@ export default function UserDetails({ UserDetail }: Props) {
                                 STATUS
                             </p>
                             <Tippy content={UserDetail.status} theme="ThemeRed">
-                                <div className="w-full flex justify-start">
+                                <div className=" inline-block">
                                     <div
                                         className={`statusCircle ${UserDetail.status}`}
                                     ></div>
@@ -111,7 +131,9 @@ export default function UserDetails({ UserDetail }: Props) {
             </ul>
             <ul className=" w-full shadow-lg p-10  bg-white rounded-2xl">
                 {!isToggleInfoRole && <UserInformation UserInfo={UserDetail} />}
-                {isToggleInfoRole && <UserRolePermissions />}
+                {isToggleInfoRole && (
+                    <UserRolePermissions UserDetail={UserDetail} />
+                )}
             </ul>
         </div>
     );
