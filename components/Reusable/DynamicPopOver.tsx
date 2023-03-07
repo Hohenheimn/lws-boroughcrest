@@ -45,20 +45,36 @@ export default function DynamicPopOver({
         ...styles.popper,
         width: `${refWidth}px`,
     };
-    return (
-        <>
-            <div ref={inputField} className={className}>
-                {toRef}
-            </div>
+    if (window.innerWidth <= 1024) {
+        return (
+            <>
+                <div ref={inputField} className={className}>
+                    {toRef}
+                </div>
 
-            <div
-                className="bg-white z-50 shadow-md"
-                ref={toPopOver}
-                style={samewidth ? extendStyle : styles.popper}
-                {...attributes.popper}
-            >
-                {toPop}
-            </div>
-        </>
-    );
+                <div
+                    className="bg-white z-50 shadow-md"
+                    ref={toPopOver}
+                    style={samewidth ? extendStyle : styles.popper}
+                    {...attributes.popper}
+                >
+                    {toPop}
+                </div>
+            </>
+        );
+    } else {
+        return (
+            <>
+                <div ref={inputField} className={className + " relative "}>
+                    {toRef}
+                    <div
+                        className=" fixed mt-2 z-50 bg-white"
+                        style={{ width: `${samewidth ? refWidth : ""}px` }}
+                    >
+                        {toPop}
+                    </div>
+                </div>
+            </>
+        );
+    }
 }

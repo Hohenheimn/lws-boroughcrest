@@ -5,6 +5,7 @@ type InputNumber = {
     value: string | number;
     onChange: (type: string, value: string | number) => void;
     type: string;
+    prefix?: string;
 };
 
 export const InputNumberForTable = ({
@@ -12,11 +13,14 @@ export const InputNumberForTable = ({
     value,
     type,
     onChange,
+    prefix,
 }: InputNumber) => {
     return (
         <div className="withPesoField">
             <NumericFormat
                 className={className + " max-w-[400px]"}
+                prefix={prefix}
+                placeholder="-"
                 value={value}
                 fixedDecimalScale
                 decimalScale={2}
@@ -37,10 +41,17 @@ export const InputNumberForTable = ({
 type TextNumberDisplay = {
     value: number | string;
     className: string;
+    suffix?: string;
 };
-export const TextNumberDisplay = ({ value, className }: TextNumberDisplay) => {
+export const TextNumberDisplay = ({
+    value,
+    className,
+    suffix,
+}: TextNumberDisplay) => {
     return (
         <NumericFormat
+            placeholder="-"
+            suffix={suffix}
             className={className}
             fixedDecimalScale
             value={value}
@@ -48,6 +59,22 @@ export const TextNumberDisplay = ({ value, className }: TextNumberDisplay) => {
             decimalScale={2}
             decimalSeparator="."
             allowNegative={false}
+            thousandSeparator={true}
+        />
+    );
+};
+
+export const TextNumberDisplayPercent = ({
+    value,
+    className,
+    suffix,
+}: TextNumberDisplay) => {
+    return (
+        <NumericFormat
+            placeholder="-"
+            suffix={suffix}
+            className={className}
+            value={value}
             thousandSeparator={true}
         />
     );

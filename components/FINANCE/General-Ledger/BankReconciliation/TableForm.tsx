@@ -439,39 +439,27 @@ const List = ({
     return (
         <tr>
             <td>
-                <DynamicPopOver
-                    className="w-[200px]"
-                    samewidth={false}
-                    toRef={
-                        <article className="calendar relative w-full">
-                            <span className="cal ">
-                                <Image
-                                    src="/Images/CalendarMini.png"
-                                    width={15}
-                                    height={15}
-                                    alt=""
-                                />
-                            </span>
+                <article className="calendar relative w-full">
+                    <span className="cal ">
+                        <Image
+                            src="/Images/CalendarMini.png"
+                            width={15}
+                            height={15}
+                            alt=""
+                        />
+                    </span>
 
-                            <input
-                                type="text"
-                                value={itemData.date}
-                                onChange={() => {}}
-                                placeholder="dd/mm/yyyy"
-                                onClick={() =>
-                                    setDate({ ...isDate, toggle: true })
-                                }
-                            />
-                        </article>
-                    }
-                    toPop={
-                        <>
-                            {isDate.toggle && (
-                                <Calendar value={isDate} setValue={setDate} />
-                            )}
-                        </>
-                    }
-                />
+                    <input
+                        type="text"
+                        value={itemData.date}
+                        onChange={() => {}}
+                        placeholder="dd/mm/yyyy"
+                        onClick={() => setDate({ ...isDate, toggle: true })}
+                    />
+                    {isDate.toggle && (
+                        <Calendar value={isDate} setValue={setDate} />
+                    )}
+                </article>
             </td>
             <td>
                 <InputNumberForTable

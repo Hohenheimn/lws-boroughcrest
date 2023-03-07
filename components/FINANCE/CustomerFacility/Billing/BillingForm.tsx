@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { BsPlusLg } from "react-icons/bs";
 import { HiMinus } from "react-icons/hi";
@@ -6,6 +6,11 @@ import { RiArrowDownSFill } from "react-icons/ri";
 import style from "../../../../styles/finance/Crud-table.module.scss";
 import CustomerDropdown from "../../../Dropdowns/CustomerDropdown";
 import DropDownCharge from "../../../Dropdowns/DropDownCharge";
+import {
+    InputNumberForTable,
+    TextNumberDisplay,
+    TextNumberDisplayPercent,
+} from "../../../Reusable/NumberFormat";
 
 export type customerDD = {
     id: string | number;
@@ -20,11 +25,11 @@ type billingObject = {
     charge_id: string;
     charge: any;
     description: string;
-    unit_price: number;
-    quantity: number;
+    unit_price: number | string;
+    quantity: number | string;
     uom: any;
-    vat: number;
-    amount: number;
+    vat: number | string;
+    amount: number | string;
 };
 type Props = {
     DefaultValue: billingArray;
@@ -36,6 +41,7 @@ export default function JournalForm({
     DefaultCustomer,
     type,
 }: Props) {
+    const [totalAmount, setTotalAmount] = useState<number | string>("");
     const [isSave, setSave] = useState(false);
     const [isBilling, setBilling] = useState<billingArray>(DefaultValue);
     const [isCustomer, setCustomer] = useState<customerDD>({
@@ -44,6 +50,13 @@ export default function JournalForm({
         class: DefaultCustomer?.class,
         property: DefaultCustomer.property,
     });
+
+    useEffect(() => {
+        setTotalAmount("");
+        isBilling.map((item) => {
+            setTotalAmount((prev) => Number(prev) + Number(item.amount));
+        });
+    }, [isBilling]);
 
     return (
         <>
@@ -109,9 +122,13 @@ export default function JournalForm({
                                 alt=""
                             />
                         </aside>
-                        <p className=" text-end w-full text-[#757575] font-NHU-bold text-[18px] 1280px:text-[13px]">
-                            -123123123
-                        </p>
+
+                        <TextNumberDisplay
+                            value={totalAmount}
+                            className={
+                                "text-end w-full text-[#757575] font-NHU-bold text-[18px] 1280px:text-[13px]"
+                            }
+                        />
                     </div>
                 </div>
             </div>
@@ -167,11 +184,11 @@ const List = ({ itemList, setState, isState, index }: List) => {
                 charge_id: "",
                 charge: "",
                 description: "",
-                unit_price: 0,
-                quantity: 0,
+                unit_price: "",
+                quantity: "",
                 uom: "",
-                vat: 0,
-                amount: 0,
+                vat: "",
+                amount: "",
             },
         ]);
     };
@@ -183,11 +200,27 @@ const List = ({ itemList, setState, isState, index }: List) => {
     const updateValue = (key: string, e: any) => {
         const newItems = isState.map((item: any) => {
             if (itemList.id == item.id) {
+                let Amount = 0;
                 if (key === "charge") {
+                    if (
+                        itemList.unit_price !== "" &&
+                        itemList.unit_price !== 0 &&
+                        itemList.quantity !== 0 &&
+                        itemList.quantity !== ""
+                    ) {
+                        Amount =
+                            Number(itemList.unit_price) *
+                                Number(itemList.quantity) +
+                            Number(e.target.getAttribute("data-vat"));
+                    }
                     return {
                         ...item,
                         charge: e.target.innerHTML,
                         charge_id: e.target.getAttribute("data-id"),
+                        description: e.target.getAttribute("data-description"),
+                        uom: e.target.getAttribute("data-uom"),
+                        vat: e.target.getAttribute("data-vat"),
+                        amount: Amount,
                     };
                 } else if (key === "description") {
                     return {
@@ -195,29 +228,34 @@ const List = ({ itemList, setState, isState, index }: List) => {
                         description: e.target.value,
                     };
                 } else if (key === "unit_price") {
+                    if (itemList.quantity !== "" && itemList.quantity !== 0) {
+                        Amount =
+                            Number(e) * Number(itemList.quantity) +
+                            Number(itemList.vat);
+                    } else {
+                        Amount = Number(e) + Number(itemList.vat);
+                    }
                     return {
                         ...item,
-                        unit_price: e.target.value,
+                        unit_price: e,
+                        amount: Amount,
                     };
                 } else if (key === "quantity") {
+                    if (
+                        itemList.unit_price !== "" &&
+                        itemList.unit_price !== 0
+                    ) {
+                        Amount =
+                            Number(e.target.value) *
+                                Number(itemList.unit_price) +
+                            Number(itemList.vat);
+                    } else {
+                        Amount = Number(e.target.value) * Number(itemList.vat);
+                    }
                     return {
                         ...item,
                         quantity: e.target.value,
-                    };
-                } else if (key === "uom") {
-                    return {
-                        ...item,
-                        uom: e.target.value,
-                    };
-                } else if (key === "vat") {
-                    return {
-                        ...item,
-                        vat: e.target.value,
-                    };
-                } else if (key === "amount") {
-                    return {
-                        ...item,
-                        amount: e.target.value,
+                        amount: Amount,
                     };
                 }
             }
@@ -242,11 +280,11 @@ const List = ({ itemList, setState, isState, index }: List) => {
                 />
             </td>
             <td>
-                <input
-                    className="field"
-                    type="number"
+                <InputNumberForTable
+                    className="field number"
                     value={itemList.unit_price}
-                    onChange={(e) => updateValue("unit_price", e)}
+                    onChange={updateValue}
+                    type={"unit_price"}
                 />
             </td>
             <td>
@@ -260,25 +298,23 @@ const List = ({ itemList, setState, isState, index }: List) => {
             <td>
                 <input
                     className="field disabled"
-                    type="number"
+                    type="text"
+                    readOnly
                     value={itemList.uom}
-                    onChange={(e) => updateValue("uom", e)}
                 />
             </td>
             <td>
-                <input
-                    type="number"
-                    className="field disabled"
+                <TextNumberDisplayPercent
+                    className="field disabled w-[500px]"
                     value={itemList.vat}
-                    onChange={(e) => updateValue("vat", e)}
                 />
             </td>
             <td>
-                <input
-                    type="number"
-                    className="field disabled"
+                <InputNumberForTable
                     value={itemList.amount}
-                    onChange={(e) => updateValue("amount", e)}
+                    className={`number field inline-block w-full disabled`}
+                    onChange={() => {}}
+                    type={""}
                 />
             </td>
             <td className="actionIcon">

@@ -460,7 +460,7 @@ export default function PropertyForm({
                                 samewidth={true}
                                 toRef={
                                     <input
-                                        className="field"
+                                        className="field w-full"
                                         type="text"
                                         {...register("developer")}
                                         autoComplete="off"
@@ -509,7 +509,7 @@ export default function PropertyForm({
                                 toRef={
                                     <input
                                         type="text"
-                                        className="field"
+                                        className="field w-full"
                                         onFocus={() => setProject(true)}
                                         onClick={() => setProject(true)}
                                         autoComplete="off"
@@ -556,7 +556,7 @@ export default function PropertyForm({
                                 samewidth={false}
                                 toRef={
                                     <input
-                                        className="field"
+                                        className="field w-full"
                                         type="text"
                                         onFocus={() => setTower(true)}
                                         onClick={() => setTower(true)}
@@ -605,7 +605,7 @@ export default function PropertyForm({
                                 samewidth={false}
                                 toRef={
                                     <input
-                                        className="field"
+                                        className="field w-full"
                                         type="text"
                                         onFocus={() => setFloor(true)}
                                         {...register("floor")}

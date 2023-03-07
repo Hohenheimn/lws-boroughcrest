@@ -124,7 +124,7 @@ export default function Calendar({ value, setValue }: Props) {
     };
 
     return (
-        <div className="absolute z-[60]" ref={modal}>
+        <div className=" fixed mt-2 z-[60]" ref={modal}>
             {/* Ask kung pano naka infinite ung year tas naka focus agad ung year sa current yr */}
             <div
                 className="max-w-[250px] w-full shadow-lg"
@@ -164,8 +164,8 @@ export default function Calendar({ value, setValue }: Props) {
                                     <polyline points="15 6 9 12 15 18" />
                                 </svg>
                             </button>
-                            <ul className="flex">
-                                <li className="relative mr-2  w-[100px] cursor-pointer text-center bg-white rounded-lg font-bold">
+                            <div className="flex">
+                                <div className="relative mr-2  w-[100px] cursor-pointer text-center bg-white rounded-lg font-bold">
                                     <span
                                         className=" py-1 px-2 inline-block text-[14px] text-[#757575]"
                                         onClick={() =>
@@ -200,8 +200,8 @@ export default function Calendar({ value, setValue }: Props) {
                                             ))}
                                         </ul>
                                     )}
-                                </li>
-                                <li className=" relative cursor-pointer bg-white rounded-lg font-bold">
+                                </div>
+                                <div className=" relative cursor-pointer bg-white rounded-lg font-bold">
                                     <span
                                         className=" py-1 px-2 text-[14px] inline-block text-[#757575]"
                                         onClick={() =>
@@ -239,8 +239,8 @@ export default function Calendar({ value, setValue }: Props) {
                                             ))}
                                         </ul>
                                     )}
-                                </li>
-                            </ul>
+                                </div>
+                            </div>
                             <button
                                 aria-label="calendar forward"
                                 onClick={nextMonthHandler}
