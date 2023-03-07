@@ -3,9 +3,9 @@ import "tippy.js/dist/tippy.css";
 import React, { useState } from "react";
 import { BiSearch } from "react-icons/bi";
 import styleModal from "../../../../../styles/Popup_Modal.module.scss";
-import DropdownSearch from "../../../../DropdownSearch";
+import DropdownSearch from "../../../../Reusable/DropdownSearch";
 import Image from "next/image";
-import PeriodCalendar from "../../../../PeriodCalendar";
+import PeriodCalendar from "../../../../Reusable/PeriodCalendar";
 
 type Props = {
     toggle: Function;

@@ -23,6 +23,7 @@ export default function ReceiptsBook() {
                 select: false,
                 variance: "",
                 children: false,
+                childrenID: "",
             },
             {
                 id: 2,
@@ -37,6 +38,7 @@ export default function ReceiptsBook() {
                 select: false,
                 variance: "",
                 children: false,
+                childrenID: "",
             },
         ],
     });

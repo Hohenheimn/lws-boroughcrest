@@ -5,10 +5,10 @@ import Link from "next/link";
 import { GoPencil } from "react-icons/go";
 import api from "../../../util/api";
 import { useQuery } from "react-query";
-import Pagination from "../../Pagination";
 import BarLoader from "react-spinners/BarLoader";
 import { getCookie } from "cookies-next";
-import TableErrorMessage from "../../TableErrorMessage";
+import TableErrorMessage from "../../Reusable/TableErrorMessage";
+import Pagination from "../../Reusable/Pagination";
 
 type Props = {
     isSearchTable: string;

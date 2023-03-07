@@ -2,7 +2,6 @@ import React, { useState, useContext, useRef, useEffect } from "react";
 import AppContext from "../../Context/AppContext";
 import Image from "next/image";
 import Link from "next/link";
-import Pagination from "../../Pagination";
 import { useQuery } from "react-query";
 import { getCookie } from "cookies-next";
 import api from "../../../util/api";
@@ -10,8 +9,8 @@ import BarLoader from "react-spinners/BarLoader";
 import type { customerItemDetail } from "../../../types/customerList";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
-import TableErrorMessage from "../../TableErrorMessage";
-
+import TableErrorMessage from "../../Reusable/TableErrorMessage";
+import Pagination from "../../Reusable/Pagination";
 export default function CustomerTable() {
     const { TableRows, cusTableColumn, isSearchBar, setPrint } =
         useContext(AppContext);

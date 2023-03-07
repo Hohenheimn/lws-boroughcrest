@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { IoMdArrowDropdown, IoMdArrowDropup } from "react-icons/io";
-import PeriodCalendar from "../../../../PeriodCalendar";
-import DropdownSearch from "../../../../DropdownSearch";
+import PeriodCalendar from "../../../../Reusable/PeriodCalendar";
+import DropdownSearch from "../../../../Reusable/DropdownSearch";
 import AppContext from "../../../../Context/AppContext";
 import Image from "next/image";
 import Tippy from "@tippy.js/react";
@@ -10,11 +10,11 @@ import { useRouter } from "next/router";
 import style from "../../../../../styles/SearchFilter.module.scss";
 import { CustomerImport } from "../../../../ReactQuery/CustomerMethod";
 import { MoonLoader } from "react-spinners";
-import { DynamicExportHandler } from "../../../../DynamicExport";
-import { DynamicImport } from "../../../../DynamicImport";
-import DynamicPopOver from "../../../../DynamicPopOver";
+import { DynamicExportHandler } from "../../../../Reusable/DynamicExport";
+import { DynamicImport } from "../../../../Reusable/DynamicImport";
+import DynamicPopOver from "../../../../Reusable/DynamicPopOver";
 import ReadingCrud from "./ReadingCrud";
-import DropDownCharge from "../../../OpeningBalance/DropDownCharge";
+import DropDownCharge from "../../../../Dropdowns/DropDownCharge";
 import { HiPencil } from "react-icons/hi";
 import Readingform from "./Readingform";
 
@@ -275,7 +275,7 @@ const List = () => {
                         <div className="status Posted">
                             <div>
                                 <Image
-                                    src="/Images/f_Posted.png"
+                                    src="/Images/f_posted.png"
                                     width={25}
                                     height={25}
                                     alt="Draft"

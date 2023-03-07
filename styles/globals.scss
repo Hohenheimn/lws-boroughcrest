@@ -573,15 +573,16 @@ input[type="number"] {
         @apply cursor-pointer relative text-white h-auto duration-75 overflow-hidden rounded-md text-[14px];
         div {
             @apply w-[100px] flex;
+
             .ddsave_button {
-                @apply w-[70%] bg-ThemeRed hover:bg-ThemeRed50  text-white flex items-center justify-center h-8;
+                @apply rounded-bl-lg rounded-tl-lg w-[70%] text-[14px] 480px:text-[12px] py-1 bg-ThemeRed hover:bg-ThemeRed50  text-white flex items-center justify-center;
             }
             .ddArrow {
-                @apply w-[30%] text-[24px] hover:bg-ThemeRed50 cursor-pointer  bg-ThemeRed text-white border-l h-8 border-white flex justify-center items-center;
+                @apply rounded-br-lg rounded-tr-lg w-[30%] text-[24px] hover:bg-ThemeRed50 cursor-pointer bg-ThemeRed text-white border-l border-white flex justify-center items-center;
             }
         }
         ul {
-            @apply static top-full left-0 bg-white w-full z-50;
+            @apply absolute w-full top-[110%] bg-white z-50 rounded-lg overflow-hidden;
             li {
                 button {
                     @apply cursor-pointer text-ThemeRed inline-block text-[12px] py-2 w-full text-center hover:bg-ThemeRed hover:text-white duration-75;
@@ -774,6 +775,9 @@ input[type="number"] {
     .item {
         @apply w-2/4 text-center font-NHU-bold py-1 m-0 z-10 cursor-pointer;
         transition: color 0.5s;
+    }
+    .item.ad {
+        display: inline !important;
     }
     .moving {
         @apply absolute top-[5%] left-[2px] right-[90px] h-[90%] 480px:h-full 480px:top-0 bg-white rounded-md;

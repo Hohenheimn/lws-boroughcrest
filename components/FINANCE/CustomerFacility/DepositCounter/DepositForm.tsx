@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import Image from "next/image";
-import Calendar from "../../../Calendar";
-import { TextNumberDisplay } from "../../../NumberFormat";
-import BankAccountDropDown from "../../../BankAccountDropDown";
+import Calendar from "../../../Reusable/Calendar";
+import { TextNumberDisplay } from "../../../Reusable/NumberFormat";
+import BankAccountDropDown from "../../../Reusable/BankAccountDropDown";
 
 type Props = {
     id?: number;

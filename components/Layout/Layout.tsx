@@ -12,9 +12,9 @@ import Image from "next/image";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 import SignOut from "./SignOut";
-import PrompMessage from "../PrompMessage";
 import { FadeSide } from "../Animation/SimpleAnimation";
 import UpperMenu from "../FINANCE/UpperMenu";
+import PrompMessage from "../Reusable/PrompMessage";
 
 type Layout = {
     children: React.ReactNode;

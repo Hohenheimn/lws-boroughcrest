@@ -25,7 +25,7 @@ export default function CreateInvoice() {
                     id: "",
                     name: "",
                     class: "",
-                    property: "",
+                    property: [],
                 }}
             />
         </div>

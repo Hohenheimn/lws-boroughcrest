@@ -3,7 +3,7 @@ import { MdArrowForwardIos } from "react-icons/md";
 import { BsSearch } from "react-icons/bs";
 import Link from "next/link";
 import style from "../../styles/SearchSidebar.module.scss";
-import { GetJournalRecentSearch } from "../FINANCE/Journal/Query";
+import { GetJournalRecentSearch } from "../FINANCE/General-Ledger/Journal/Query";
 import { useRouter } from "next/router";
 import { BeatLoader } from "react-spinners";
 

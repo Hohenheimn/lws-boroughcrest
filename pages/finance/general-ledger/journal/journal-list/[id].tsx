@@ -1,8 +1,8 @@
 import { useRouter } from "next/router";
 import React from "react";
 import { BeatLoader } from "react-spinners";
-import JournalDetail from "../../../../../components/FINANCE/Journal/JournalDetail";
-import { GetJournalDetail } from "../../../../../components/FINANCE/Journal/Query";
+import JournalDetail from "../../../../../components/FINANCE/General-Ledger/Journal/JournalDetail";
+import { GetJournalDetail } from "../../../../../components/FINANCE/General-Ledger/Journal/Query";
 
 export default function Id() {
     const router = useRouter();

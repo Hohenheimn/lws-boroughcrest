@@ -4,14 +4,14 @@ import { BsPlusLg } from "react-icons/bs";
 import { HiMinus } from "react-icons/hi";
 import { RiArrowDownSFill } from "react-icons/ri";
 import style from "../../../../styles/finance/Crud-table.module.scss";
-import CustomerDropdown from "./CustomerDropdown";
-import DropDownCharge from "../../OpeningBalance/DropDownCharge";
+import CustomerDropdown from "../../../Dropdowns/CustomerDropdown";
+import DropDownCharge from "../../../Dropdowns/DropDownCharge";
 
 export type customerDD = {
     id: string | number;
     name: string;
     class: string;
-    property: string;
+    property: string[];
 };
 
 type billingArray = billingObject[];
@@ -39,11 +39,10 @@ export default function JournalForm({
     const [isSave, setSave] = useState(false);
     const [isBilling, setBilling] = useState<billingArray>(DefaultValue);
     const [isCustomer, setCustomer] = useState<customerDD>({
-        id: DefaultCustomer?.id === undefined ? "" : DefaultCustomer?.id,
-        name: DefaultCustomer?.id === undefined ? "" : DefaultCustomer?.name,
-        class: DefaultCustomer?.id === undefined ? "" : DefaultCustomer?.class,
-        property:
-            DefaultCustomer?.id === undefined ? "" : DefaultCustomer?.property,
+        id: DefaultCustomer?.id,
+        name: DefaultCustomer?.name,
+        class: DefaultCustomer?.class,
+        property: DefaultCustomer.property,
     });
 
     return (
@@ -63,7 +62,9 @@ export default function JournalForm({
                     </li>
                     <li className="w-[32%] 820px:w-2/4 820px:mb-2">
                         <p className=" labelField">PROPERTY</p>
-                        <h1>{isCustomer.property}</h1>
+                        <h1>
+                            {isCustomer.property.toString().replace(",", ", ")}
+                        </h1>
                     </li>
                 </ul>
                 <div className="table_container">

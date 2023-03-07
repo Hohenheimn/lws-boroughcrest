@@ -3,7 +3,7 @@ import Image from "next/image";
 import { BsPlusLg } from "react-icons/bs";
 import { HiMinus } from "react-icons/hi";
 import style from "../../../../../styles/finance/Crud-table.module.scss";
-import DropDownCharge from "../../../OpeningBalance/DropDownCharge";
+import DropDownCharge from "../../../../Dropdowns/DropDownCharge";
 
 type defaultArray = defaultObject[];
 type defaultObject = {

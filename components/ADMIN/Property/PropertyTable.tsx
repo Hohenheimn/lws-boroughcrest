@@ -3,8 +3,8 @@ import AppContext from "../../Context/AppContext";
 import Link from "next/link";
 import { GetPropertyList } from "../../ReactQuery/PropertyMethod";
 import { BarLoader } from "react-spinners";
-import Pagination from "../../Pagination";
-import TableErrorMessage from "../../TableErrorMessage";
+import TableErrorMessage from "../../Reusable/TableErrorMessage";
+import Pagination from "../../Reusable/Pagination";
 
 export default function PropertyTable({ isSearchTable }: any) {
     const { propTableColumn, propTableRows, setPrint } = useContext(AppContext);

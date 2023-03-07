@@ -14,8 +14,8 @@ import { CustomerImport } from "../ReactQuery/CustomerMethod";
 import { MoonLoader } from "react-spinners";
 import { PropertyImport } from "../ReactQuery/PropertyMethod";
 import { format } from "date-fns";
-import { DynamicExportHandler } from "../DynamicExport";
-import { DynamicImport } from "../DynamicImport";
+import { DynamicExportHandler } from "../Reusable/DynamicExport";
+import { DynamicImport } from "../Reusable/DynamicImport";
 import Link from "next/link";
 
 type SearchFilter = {

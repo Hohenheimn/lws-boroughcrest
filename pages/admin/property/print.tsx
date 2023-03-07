@@ -7,7 +7,7 @@ import type { property } from "../../../types/PropertyList";
 import Image from "next/image";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
-import PrintTemplate from "../../../components/PrintTemplate";
+import PrintTemplate from "../../../components/Reusable/PrintTemplate";
 
 export default function Print({ keyword }: any) {
     // const Columns = columns.split(",");

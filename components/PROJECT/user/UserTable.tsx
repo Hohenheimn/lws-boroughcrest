@@ -4,10 +4,44 @@ import Link from "next/link";
 import AppContext from "../../Context/AppContext";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
-import Pagination from "../../Pagination";
 
-export default function UserTable() {
+import { GetUser } from "./Query";
+import { BarLoader } from "react-spinners";
+import TableErrorMessage from "../../Reusable/TableErrorMessage";
+import Pagination from "../../Reusable/Pagination";
+
+type Props = {
+    isSearch: string;
+};
+export type UserList = UserDetail[];
+
+export type UserDetail = {
+    id: number;
+    employee_id: number;
+    name: string;
+    email: string;
+    email_verified_at: string;
+    password: string;
+    remember_token: string | null;
+    role_id: number;
+    corporate_id: number;
+    department_id: string | number | null;
+    contact_no: number;
+    position: string;
+    image_photo: null | string;
+    image_signature: null | string;
+    status: string;
+    created_at: string;
+    updated_at: string;
+    deleted_at: string;
+};
+
+export default function UserTable({ isSearch }: Props) {
     const { userTableColumn } = useContext(AppContext);
+    const [TablePage, setTablePage] = useState(1);
+
+    const { data, isLoading, isError } = GetUser(isSearch, TablePage);
+
     return (
         <div className=" w-full overflow-x-auto">
             <div className="table_container">
@@ -22,40 +56,72 @@ export default function UserTable() {
                         </tr>
                     </thead>
                     <tbody>
-                        <List />
+                        {data?.data.data.map(
+                            (item: UserDetail, index: number) => (
+                                <List key={index} itemDetail={item} />
+                            )
+                        )}
                     </tbody>
                 </table>
+                {isLoading && (
+                    <div className="top-0 left-0 absolute w-full h-full flex justify-center items-center">
+                        <aside className="text-center flex justify-center py-5">
+                            <BarLoader
+                                color={"#8f384d"}
+                                height="10px"
+                                width="200px"
+                                aria-label="Loading Spinner"
+                                data-testid="loader"
+                            />
+                        </aside>
+                    </div>
+                )}
+                {isError && <TableErrorMessage />}
             </div>
-            {/* <Pagination /> */}
+            <Pagination
+                setTablePage={setTablePage}
+                TablePage={TablePage}
+                PageNumber={data?.data.last_page}
+                CurrentPage={data?.data.current_page}
+            />
         </div>
     );
 }
 
-const List = () => {
+type ListProps = {
+    itemDetail: UserDetail;
+};
+
+const List = ({ itemDetail }: ListProps) => {
+    const DefaultImage = "/Images/sampleProfile.png";
     const { userTableColumn } = useContext(AppContext);
     return (
         <tr>
             <td>
-                <Link href="/project/user/123">
-                    <a className="item">
+                <Link href={`/project/user/${itemDetail.id}`}>
+                    <a className="item flex items-center">
                         <aside>
                             <Image
-                                src="/Images/sampleProfile.png"
+                                src={`${
+                                    itemDetail.image_photo === null
+                                        ? DefaultImage
+                                        : itemDetail.image_photo
+                                }`}
                                 alt=""
                                 layout="fill"
                             />
                         </aside>
                         <div>
-                            <h2>1234</h2>
+                            <h2>{itemDetail?.id}</h2>
                         </div>
                     </a>
                 </Link>
             </td>
             <td>
-                <Link href="/project/user/123">
+                <Link href={`/project/user/${itemDetail.id}`}>
                     <a className="item">
                         <div>
-                            <h2>Juan Dela Cruz</h2>
+                            <h2>{itemDetail.name}</h2>
                         </div>
                     </a>
                 </Link>
@@ -64,58 +130,58 @@ const List = () => {
             {userTableColumn.map((item: any, index: number) => (
                 <td key={index}>
                     {item === "Department" && (
-                        <Link href="/project/user/123">
+                        <Link href={`/project/user/${itemDetail.id}`}>
                             <a className="item">
                                 <div>
-                                    <h2>Sample</h2>
+                                    <h2>{itemDetail.department_id}</h2>
                                 </div>
                             </a>
                         </Link>
                     )}
                     {item === "Employee ID" && (
-                        <Link href="/project/user/123">
+                        <Link href={`/project/user/${itemDetail.id}`}>
                             <a className="item">
                                 <div>
-                                    <h2>1234567890</h2>
+                                    <h2>{itemDetail.employee_id}</h2>
                                 </div>
                             </a>
                         </Link>
                     )}
                     {item === "Email" && (
-                        <Link href="/project/user/123">
+                        <Link href={`/project/user/${itemDetail.id}`}>
                             <a className="item">
                                 <div>
-                                    <h2>sample@gmail.com</h2>
+                                    <h2>{itemDetail.email}</h2>
                                 </div>
                             </a>
                         </Link>
                     )}
                     {item === "Mobile" && (
-                        <Link href="/project/user/123">
+                        <Link href={`/project/user/${itemDetail.id}`}>
                             <a className="item">
                                 <div>
-                                    <h2>09515151524</h2>
+                                    <h2>{itemDetail.contact_no}</h2>
                                 </div>
                             </a>
                         </Link>
                     )}
                     {item === "Role" && (
-                        <Link href="/project/user/123">
+                        <Link href={`/project/user/${itemDetail.id}`}>
                             <a className="item">
                                 <div>
-                                    <h2>Finance</h2>
+                                    <h2>{itemDetail.role_id}</h2>
                                 </div>
                             </a>
                         </Link>
                     )}
                     {item === "Status" && (
-                        <td>
-                            <Tippy content="Active" theme="ThemeRed">
-                                <div className="w-full flex justify-center">
-                                    <div className="statusCircle active"></div>
-                                </div>
-                            </Tippy>
-                        </td>
+                        <Tippy content={itemDetail.status} theme="ThemeRed">
+                            <div className="w-full flex justify-center">
+                                <div
+                                    className={`statusCircle ${itemDetail.status}`}
+                                ></div>
+                            </div>
+                        </Tippy>
                     )}
                 </td>
             ))}

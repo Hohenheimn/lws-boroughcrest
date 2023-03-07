@@ -18,7 +18,8 @@ import type {
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
-import DynamicPopOver from "../../DynamicPopOver";
+import DynamicPopOver from "../../Reusable/DynamicPopOver";
+import SelectDropdown from "../../Reusable/SelectDropdown";
 
 type ModifyCorporate = {
     setToggleModify: Function;
@@ -151,8 +152,7 @@ const PrimaryInformation = ({
             branch_code: data.branch_code,
             sec_registration_no: data.sec_registration_no,
         });
-        // setNewActive((item: any) => [(item[0] = false), (item[1] = true)]);
-        console.log(modifyCorporate);
+        setNewActive((item: any) => [(item[0] = false), (item[1] = true)]);
     };
 
     const {
@@ -314,7 +314,29 @@ const PrimaryInformation = ({
                 </li>
                 <li>
                     <label>*GST TYPE.</label>
-                    <div className="select">
+                    <SelectDropdown
+                        selectHandler={(value: string) => {
+                            setModifyCorporate({
+                                ...modifyCorporate,
+                                gst_type: value,
+                            });
+                            setValue("gst_type", value);
+                        }}
+                        className=""
+                        inputElement={
+                            <input
+                                className="w-full field"
+                                autoComplete="off"
+                                value={modifyCorporate.gst_type}
+                                {...register("gst_type", {
+                                    required: "Required",
+                                })}
+                                readOnly
+                            />
+                        }
+                        listArray={["VAT", "NON-VAT"]}
+                    />
+                    {/* <div className="select">
                         <span>
                             <MdOutlineKeyboardArrowDown />
                         </span>
@@ -357,7 +379,7 @@ const PrimaryInformation = ({
                             }
                             className=""
                         />
-                    </div>
+                    </div> */}
                     {errors.gst_type && (
                         <p className="text-[10px]">{errors.gst_type.message}</p>
                     )}
@@ -581,9 +603,9 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                     Contact Informations
                 </h1>
                 <ul className={style.twoRows_container}>
-                    <li>
+                    <li className="flex justify-start flex-col">
                         <label>CONTACT NO</label>
-                        <aside>
+                        <aside className="mb-2">
                             <input
                                 type="text"
                                 placeholder="09"
@@ -608,7 +630,7 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                                         contact_no: e.target.value,
                                     })
                                 }
-                                className="field"
+                                className="field mr-2"
                             />
                             <span>*Official</span>
                         </aside>
@@ -617,31 +639,33 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                                 {errors.contact_no.message}
                             </p>
                         )}
-                        <input
-                            type="text"
-                            placeholder="09"
-                            {...register("alt_contact_no", {
-                                minLength: {
-                                    value: 11,
-                                    message: "Must be 11 Numbers",
-                                },
-                                maxLength: {
-                                    value: 11,
-                                    message: "Must be 11 Number",
-                                },
-                                pattern: {
-                                    value: /^(09)\d{9}$/,
-                                    message: "Invalid Contact Number",
-                                },
-                            })}
-                            onChange={(e) =>
-                                setModifyCorporate({
-                                    ...modifyCorporate,
-                                    alt_contact_no: e.target.value,
-                                })
-                            }
-                            className="field"
-                        />
+                        <aside>
+                            <input
+                                type="number"
+                                placeholder="09"
+                                {...register("alt_contact_no", {
+                                    minLength: {
+                                        value: 11,
+                                        message: "Must be 11 Numbers",
+                                    },
+                                    maxLength: {
+                                        value: 11,
+                                        message: "Must be 11 Number",
+                                    },
+                                    pattern: {
+                                        value: /^(09)\d{9}$/,
+                                        message: "Invalid Contact Number",
+                                    },
+                                })}
+                                onChange={(e) =>
+                                    setModifyCorporate({
+                                        ...modifyCorporate,
+                                        alt_contact_no: e.target.value,
+                                    })
+                                }
+                                className="field inline"
+                            />
+                        </aside>
                         {errors.alt_contact_no && (
                             <p className="text-[10px]">
                                 {errors.alt_contact_no.message}
@@ -655,7 +679,7 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                     </li>
                     <li>
                         <label>EMAIL ADDRESS</label>
-                        <aside>
+                        <aside className="mb-2">
                             <input
                                 type="text"
                                 {...register("email", {
@@ -668,7 +692,7 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                                         email: e.target.value,
                                     })
                                 }
-                                className="field"
+                                className="field mr-2"
                             />
                             <span>*Official</span>
                         </aside>
@@ -677,17 +701,19 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                                 {errors.contact_no.message}
                             </p>
                         )}
-                        <input
-                            type="text"
-                            {...register("alt_email", {})}
-                            onChange={(e) =>
-                                setModifyCorporate({
-                                    ...modifyCorporate,
-                                    alt_email: e.target.value,
-                                })
-                            }
-                            className="field"
-                        />
+                        <aside>
+                            <input
+                                type="text"
+                                {...register("alt_email", {})}
+                                onChange={(e) =>
+                                    setModifyCorporate({
+                                        ...modifyCorporate,
+                                        alt_email: e.target.value,
+                                    })
+                                }
+                                className="field"
+                            />
+                        </aside>
                         {errors.alt_contact_no && (
                             <p className="text-[10px]">
                                 {errors.alt_contact_no.message}
@@ -871,10 +897,7 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                         Back
                     </aside>
                     <div className={style.Save}>
-                        <div
-                            onClick={() => setSave(!isSave)}
-                            className="cursor-pointer"
-                        >
+                        <div className="cursor-pointer">
                             <button
                                 type="submit"
                                 name="save"

@@ -1,12 +1,21 @@
 import React, { useState } from "react";
 import { HiPencil } from "react-icons/hi";
-import ModifyRolesPermission from "./MofidyRolesPermission";
+import ModifyRolesPermission from "./ModifyRolesPermission";
+import { UserDetail } from "./UserTable";
 
-export default function UserRolePermissions() {
+type Props = {
+    UserDetail: UserDetail;
+};
+export default function UserRolePermissions({ UserDetail }: Props) {
     const [isToggle, setToggle] = useState(false);
     return (
         <div>
-            {isToggle && <ModifyRolesPermission setToggle={setToggle} />}
+            {isToggle && (
+                <ModifyRolesPermission
+                    setToggle={setToggle}
+                    UserDetail={UserDetail}
+                />
+            )}
             <header className=" flex w-full justify-between items-center mb-5">
                 <aside className=" flex">
                     <p className=" text-gray-400 1024px:text-[14px] mr-2">

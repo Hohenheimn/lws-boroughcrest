@@ -5,13 +5,13 @@ import Image from "next/image";
 import ModifyCustomer from "./ModifyCustomer";
 import CustomerInformation from "./CustomerInformation";
 import CustomerProperty from "./CustomerProperty";
-import Modal_Image from "../../Modal_Image";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 import { GetCustomer, SendPortal } from "../../ReactQuery/CustomerMethod";
 import { useRouter } from "next/router";
 import BeatLoader from "react-spinners/BeatLoader";
 import { customer } from "../../../types/customerList";
+import Modal_Image from "../../Reusable/Modal_Image";
 
 export default function CustomerDetail({ Draft }: any) {
     const { ImgUrl, setModifyCustomer, setPrompt } = useContext(AppContext);

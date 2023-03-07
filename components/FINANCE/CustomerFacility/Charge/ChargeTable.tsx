@@ -7,9 +7,9 @@ import { BarLoader } from "react-spinners";
 import { useQuery } from "react-query";
 import { getCookie } from "cookies-next";
 import api from "../../../../util/api";
-import Pagination from "../../../Pagination";
 import AppContext from "../../../Context/AppContext";
-import TableErrorMessage from "../../../TableErrorMessage";
+import TableErrorMessage from "../../../Reusable/TableErrorMessage";
+import Pagination from "../../../Reusable/Pagination";
 
 type Props = {
     page: string;

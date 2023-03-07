@@ -3,7 +3,8 @@ import NewDefault from "./NewDefault";
 import NewIndividual from "./NewIndividual";
 import style from "../../../styles/Popup_Modal.module.scss";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
-import DynamicPopOver from "../../DynamicPopOver";
+import DynamicPopOver from "../../Reusable/DynamicPopOver";
+import SelectDropdown from "../../Reusable/SelectDropdown";
 
 type NewPrimaryInfo = {
     setActiveForm: Function;
@@ -26,12 +27,6 @@ export default function NewPrimaryInfo({
         setStatus(!status);
     };
 
-    const [isSelect, setSelect] = useState(false);
-    const SelectField = (value: string) => {
-        setType(value);
-        setSelect(false);
-    };
-
     return (
         <div className={`${isActiveForm[0] ? "" : "hidden"}`}>
             <h1 className={style.modal_label_primary}>Primary Informations</h1>
@@ -40,47 +35,21 @@ export default function NewPrimaryInfo({
                     <p className=" text-[12px] font-semibold mb-1 w-[90%]">
                         TYPE
                     </p>
-                    <div className="select">
-                        <span>
-                            <MdOutlineKeyboardArrowDown />
-                        </span>
-                        <DynamicPopOver
-                            toRef={
-                                <input
-                                    type="text"
-                                    autoComplete="off"
-                                    className="field w-full"
-                                    readOnly
-                                    onClick={() => setSelect(true)}
-                                    value={isType}
-                                />
-                            }
-                            samewidth={true}
-                            toPop={
-                                <>
-                                    {isSelect && (
-                                        <ul>
-                                            <li
-                                                onClick={() =>
-                                                    SelectField("individual")
-                                                }
-                                            >
-                                                Individual
-                                            </li>
-                                            <li
-                                                onClick={() =>
-                                                    SelectField("company")
-                                                }
-                                            >
-                                                Company
-                                            </li>
-                                        </ul>
-                                    )}
-                                </>
-                            }
-                            className=""
-                        />
-                    </div>
+                    <SelectDropdown
+                        selectHandler={(value: string) => {
+                            setType(value);
+                        }}
+                        className=""
+                        inputElement={
+                            <input
+                                className="w-full field"
+                                value={isType}
+                                readOnly
+                                autoComplete="off"
+                            />
+                        }
+                        listArray={["Individual", "Company"]}
+                    />
 
                     {isType === "" && (
                         <label className=" font-NHU-bold">

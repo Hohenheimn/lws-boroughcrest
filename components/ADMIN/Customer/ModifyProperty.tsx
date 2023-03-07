@@ -9,7 +9,7 @@ import { GetUnitCode } from "../../ReactQuery/CustomerMethod";
 import { useRouter } from "next/router";
 import AppContext from "../../Context/AppContext";
 import { useQueryClient } from "react-query";
-import DynamicPopOver from "../../DynamicPopOver";
+import DynamicPopOver from "../../Reusable/DynamicPopOver";
 
 type ModifyRolesPermission = {
     setToggle: Function;

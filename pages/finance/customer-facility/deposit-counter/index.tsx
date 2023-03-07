@@ -25,6 +25,7 @@ export default function DepositCounter() {
                 select: false,
                 variance: "",
                 children: false,
+                childrenID: "",
             },
             {
                 id: 2,
@@ -39,6 +40,7 @@ export default function DepositCounter() {
                 select: false,
                 variance: "",
                 children: false,
+                childrenID: "",
             },
         ],
     });

@@ -16,10 +16,10 @@ export default function Id() {
         },
     ];
     const CustomerDefault = {
-        id: "",
-        name: "",
-        class: "",
-        property: "",
+        id: "123",
+        name: "123",
+        class: "123",
+        property: ["sample", "sample 2"],
     };
     return (
         <div>
