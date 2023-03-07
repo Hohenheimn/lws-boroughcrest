@@ -77,7 +77,7 @@ export default function BillingList() {
                                 <Tippy theme="ThemeRed" content="Approved">
                                     <div className={`${style.noFill} mr-5`}>
                                         <Image
-                                            src="/Images/f_Check.png"
+                                            src="/Images/f_check.png"
                                             height={25}
                                             width={30}
                                             alt="Export"
@@ -89,7 +89,7 @@ export default function BillingList() {
                                 <Tippy theme="ThemeRed" content="Reject">
                                     <div className={`${style.noFill} mr-5`}>
                                         <Image
-                                            src="/Images/f_Remove.png"
+                                            src="/Images/f_remove.png"
                                             height={25}
                                             width={25}
                                             alt="Export"
@@ -101,7 +101,7 @@ export default function BillingList() {
                                 <Tippy theme="ThemeRed" content="Process">
                                     <div className={`${style.noFill} mr-5`}>
                                         <Image
-                                            src="/Images/f_Refresh.png"
+                                            src="/Images/f_refresh.png"
                                             height={30}
                                             width={30}
                                             alt="Export"
@@ -113,7 +113,7 @@ export default function BillingList() {
                                 <Tippy theme="ThemeRed" content="Return">
                                     <div className={`${style.noFill} mr-5`}>
                                         <Image
-                                            src="/Images/f_Back.png"
+                                            src="/Images/f_back.png"
                                             height={25}
                                             width={35}
                                             alt="Export"

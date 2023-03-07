@@ -179,7 +179,7 @@ export default function JournalTable({ type }: Props) {
                                         onClick={() => UpdateStatus("Approved")}
                                     >
                                         <Image
-                                            src="/Images/f_Check.png"
+                                            src="/Images/f_check.png"
                                             height={25}
                                             width={30}
                                             alt="Approved"
@@ -196,7 +196,7 @@ export default function JournalTable({ type }: Props) {
                                         }
                                     >
                                         <Image
-                                            src="/Images/f_Refresh.png"
+                                            src="/Images/f_refresh.png"
                                             height={30}
                                             width={30}
                                             alt="In Process"
@@ -211,7 +211,7 @@ export default function JournalTable({ type }: Props) {
                                         onClick={() => UpdateStatus("Pending")}
                                     >
                                         <Image
-                                            src="/Images/f_Back.png"
+                                            src="/Images/f_back.png"
                                             height={25}
                                             width={35}
                                             alt="Return"
@@ -233,7 +233,7 @@ export default function JournalTable({ type }: Props) {
                                                 />
                                             ) : (
                                                 <Image
-                                                    src="/Images/f_Remove.png"
+                                                    src="/Images/f_remove.png"
                                                     height={25}
                                                     width={25}
                                                     alt="Reject"
@@ -241,7 +241,7 @@ export default function JournalTable({ type }: Props) {
                                             )
                                         ) : (
                                             <Image
-                                                src="/Images/f_Remove.png"
+                                                src="/Images/f_remove.png"
                                                 height={25}
                                                 width={25}
                                                 alt="Reject"
@@ -444,7 +444,7 @@ const List = ({ itemDetail, type, isTableItem, setTableItem }: ListProps) => {
                                     <div>
                                         {itemDetail.status === "Pending" && (
                                             <Image
-                                                src={`/Images/f_Pending.png`}
+                                                src={`/Images/f_pending.png`}
                                                 width={15}
                                                 height={15}
                                                 alt={itemDetail.status}
@@ -453,7 +453,7 @@ const List = ({ itemDetail, type, isTableItem, setTableItem }: ListProps) => {
                                         {itemDetail.status ===
                                             "In Progress" && (
                                             <Image
-                                                src={`/Images/f_inprocess.png`}
+                                                src={`/Images/f_InProcess.png`}
                                                 width={15}
                                                 height={15}
                                                 alt={itemDetail.status}
@@ -480,7 +480,7 @@ const List = ({ itemDetail, type, isTableItem, setTableItem }: ListProps) => {
                                 <Tippy theme="ThemeRed" content={"Modify"}>
                                     <div className="icon">
                                         <Image
-                                            src="/Images/f_Modify.png"
+                                            src="/Images/f_modify.png"
                                             height={15}
                                             width={15}
                                             alt="Modify"

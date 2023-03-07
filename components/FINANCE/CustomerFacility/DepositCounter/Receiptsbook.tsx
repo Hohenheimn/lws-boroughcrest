@@ -166,7 +166,7 @@ export default function Receiptsbook({
                                         className={`${styleSearch.noFill} mr-5`}
                                     >
                                         <Image
-                                            src="/Images/f_Back.png"
+                                            src="/Images/f_back.png"
                                             height={25}
                                             width={30}
                                             alt="Export"
@@ -180,7 +180,7 @@ export default function Receiptsbook({
                                         className={`${styleSearch.noFill} mr-5`}
                                     >
                                         <Image
-                                            src="/Images/f_Check.png"
+                                            src="/Images/f_check.png"
                                             height={25}
                                             width={30}
                                             alt="Export"

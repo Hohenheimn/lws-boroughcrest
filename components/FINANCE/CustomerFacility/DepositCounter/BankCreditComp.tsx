@@ -189,7 +189,7 @@ export default function BankCreditComp({
                             <Tippy theme="ThemeRed" content="Return">
                                 <div className={`${styleSearch.noFill} mr-5`}>
                                     <Image
-                                        src="/Images/f_Back.png"
+                                        src="/Images/f_back.png"
                                         height={25}
                                         width={30}
                                         alt="Return"
@@ -201,7 +201,7 @@ export default function BankCreditComp({
                             <Tippy theme="ThemeRed" content="Approved">
                                 <div className={`${styleSearch.noFill} mr-5`}>
                                     <Image
-                                        src="/Images/f_Check.png"
+                                        src="/Images/f_check.png"
                                         height={25}
                                         width={30}
                                         alt="Approved"
@@ -463,7 +463,7 @@ const List = ({
                                 <div>
                                     {itemDetail.status === "Pending" && (
                                         <Image
-                                            src="/Images/f_Pending.png"
+                                            src="/Images/f_pending.png"
                                             width={15}
                                             height={15}
                                             alt="Pending"
