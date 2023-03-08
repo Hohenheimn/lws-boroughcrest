@@ -16,6 +16,7 @@ import TableErrorMessage from "../../../Reusable/TableErrorMessage";
 import { GetJournal, MultipleUpdate } from "./Query";
 import Pagination from "../../../Reusable/Pagination";
 import AppContext from "../../../Context/AppContext";
+import { format, isValid, parse } from "date-fns";
 
 type Props = {
     type: string;
@@ -83,9 +84,10 @@ export default function JournalTable({ type }: Props) {
                             select = itemSelect.select;
                         }
                     });
+                    const date = parse(item.date, "yyyy-MM-dd", new Date());
                     return {
                         id: item.id,
-                        date: item.date,
+                        date: isValid(date) ? format(date, "MMM dd yyyy") : "",
                         particulars: item.particulars,
                         status: item.status,
                         journal_no: item.journal_no,

@@ -16,6 +16,7 @@ import Calendar from "../../Reusable/Calendar";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import DynamicPopOver from "../../Reusable/DynamicPopOver";
 import SelectDropdown from "../../Reusable/SelectDropdown";
+import { format, isValid, parse } from "date-fns";
 
 type ModifyCustomer = {
     setToggleModify: Function;
@@ -71,14 +72,22 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
     };
 
     // Birth Date Field with custom Calendar
+    const date = parse(
+        isModifyCustomer.individual_birth_date,
+        "yyyy-MM-dd",
+        new Date()
+    );
     const [isDate, setDate] = useState({
-        value: isModifyCustomer.individual_birth_date,
+        value: isValid(date) ? format(date, "MMM dd yyyy") : "",
         toggle: false,
     });
     useEffect(() => {
+        const date = parse(isDate.value, "MMM dd yyyy", new Date());
         setModifyCustomer({
             ...isModifyCustomer,
-            individual_birth_date: isDate.value,
+            individual_birth_date: isValid(date)
+                ? format(date, "yyyy-MM-dd")
+                : "",
         });
     }, [isDate.value]);
     // end
@@ -492,7 +501,7 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
                                         type="text"
                                         value={isDate.value}
                                         onChange={() => {}}
-                                        placeholder="dd/mm/yyyy"
+                                        placeholder="MMM dd yyyy"
                                         onClick={() =>
                                             setDate({ ...isDate, toggle: true })
                                         }

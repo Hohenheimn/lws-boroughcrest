@@ -14,6 +14,7 @@ import {
     TextNumberDisplay,
     InputNumberForTable,
 } from "../../../Reusable/NumberFormat";
+import { format, isValid, parse } from "date-fns";
 
 export type defaultArray = defaultObject[];
 export type defaultObject = {
@@ -153,14 +154,15 @@ export default function JournalForm({
                 };
             }
         });
+        const date = parse(isDate.value, "MMM dd yyyy", new Date());
         const PayloadUpdate = {
-            date: isDate.value,
+            date: isValid(date) ? format(date, "yyyy-MM-dd") : "",
             particulars: isParticulars,
             status: DefaultStatus,
             journal: journal,
         };
         const PayloadSave = {
-            date: isDate.value,
+            date: isValid(date) ? format(date, "yyyy-MM-dd") : "",
             particulars: isParticulars,
             journal: journal,
         };
@@ -197,7 +199,7 @@ export default function JournalForm({
                                 type="text"
                                 value={isDate.value}
                                 onChange={() => {}}
-                                placeholder="dd/mm/yyyy"
+                                placeholder="MM dd yyyy"
                                 onClick={() =>
                                     setDate({ ...isDate, toggle: true })
                                 }

@@ -20,6 +20,7 @@ import {
 import { validateCreditDebitField } from "../OpeningBalance/ValidateCreditDebitField";
 import { HiMinus } from "react-icons/hi";
 import { BsPlusLg } from "react-icons/bs";
+import { format, isValid, parse } from "date-fns";
 
 type isTableitemArray = isTableitemObj[];
 
@@ -62,17 +63,20 @@ export default function TableForm() {
         onSucces,
         onError
     );
+    const dateFrom = parse(isPeriod.from, "MMM dd yyyy", new Date());
+    const dateTo = parse(isPeriod.to, "MMM dd yyyy", new Date());
     const { isLoading, isError, data } = GetBR(
-        isPeriod.from,
-        isPeriod.to,
+        isValid(dateFrom) ? format(dateFrom, "yyyy-MM-dd") : "",
+        isValid(dateTo) ? format(dateTo, "yyyy-MM-dd") : "",
         isBankAccount.id
     );
     useEffect(() => {
         if (data?.status === 200) {
             const CloneArray = data?.data.map((item: any, index: number) => {
+                const date = parse(item.date, "yyyy-MM-dd", new Date());
                 return {
                     id: item.id,
-                    date: item.date,
+                    date: isValid(date) ? format(date, "MMM dd yyyy") : "",
                     balance: item.balance,
                     remarks: item.remarks,
                     document_no: "",
@@ -144,9 +148,9 @@ export default function TableForm() {
                 validate = false;
                 return;
             }
-
+            const date = parse(item.date, "MMM dd yyyy", new Date());
             return {
-                date: item.date,
+                date: isValid(date) ? format(date, "yyyy-MM-dd") : "",
                 debit: `${item.debit}`,
                 credit: `${item.credit}`,
                 remarks: item.remarks,

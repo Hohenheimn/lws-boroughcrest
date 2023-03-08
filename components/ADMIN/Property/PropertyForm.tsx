@@ -25,6 +25,7 @@ import {
 import Calendar from "../../Reusable/Calendar";
 import DynamicPopOver from "../../Reusable/DynamicPopOver";
 import SelectDropdown from "../../Reusable/SelectDropdown";
+import { format, isValid, parse } from "date-fns";
 
 type Props = {
     DefaultFormData: PropertyDefaultValue;
@@ -284,14 +285,28 @@ export default function PropertyForm({
     const queryClient = useQueryClient();
 
     const submit = (data: any) => {
+        const acceptance_date = parse(
+            data.acceptance_date,
+            "MMM dd yyyy",
+            new Date()
+        );
+        const turnover_date = parse(
+            data.turnover_date,
+            "MMM dd yyyy",
+            new Date()
+        );
         let Payload = {
             unit_code: data.unit_code,
             address: data.address,
             area: data.area,
             class: data.class,
             type: data.type,
-            acceptance_date: data.acceptance_date,
-            turnover_date: data.turnover_date,
+            acceptance_date: isValid(acceptance_date)
+                ? format(acceptance_date, "yyyy-MM-dd")
+                : "",
+            turnover_date: isValid(turnover_date)
+                ? format(turnover_date, "yyyy-MM-dd")
+                : "",
             status: data.status,
             developer_id: isDevVal.id,
             project_id: isProjectVal.id,
@@ -680,7 +695,7 @@ export default function PropertyForm({
                                     type="text"
                                     {...register("acceptance_date")}
                                     autoComplete="off"
-                                    placeholder="dd/mm/yyyy"
+                                    placeholder="MMM dd yyyy"
                                     onClick={() =>
                                         setAcceptanceDate({
                                             ...acceptanceDate,
@@ -711,7 +726,7 @@ export default function PropertyForm({
                                     type="text"
                                     className="field"
                                     {...register("turnover_date")}
-                                    placeholder="dd/mm/yyyy"
+                                    placeholder="MMM dd yyyy"
                                     autoComplete="off"
                                     onClick={() =>
                                         setTurnoverDate({

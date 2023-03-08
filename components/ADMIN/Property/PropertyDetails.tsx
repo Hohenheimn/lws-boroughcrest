@@ -11,6 +11,7 @@ import {
     PostDraftProperty,
     PostProperty,
 } from "../../ReactQuery/PropertyMethod";
+import { format, isValid, parse } from "date-fns";
 
 type Props = {
     data: property;
@@ -20,14 +21,25 @@ export default function PropertyDetails({ data }: Props) {
     const { newPropToggle, setNewPropToggle, setPrompt } =
         useContext(AppContext);
 
+    const acceptance_date = parse(
+        data?.acceptance_date,
+        "yyyy-MM-dd",
+        new Date()
+    );
+    const turnover_date = parse(data?.turnover_date, "yyyy-MM-dd", new Date());
+
     const DefaultFormData: PropertyDefaultValue = {
         unit_code: data?.unit_code,
         address: data?.address,
         area: data?.area,
         class: data?.class,
         type: data?.type,
-        acceptance_date: data?.acceptance_date,
-        turnover_date: data?.turnover_date,
+        acceptance_date: isValid(acceptance_date)
+            ? format(acceptance_date, "MMM dd yyyy")
+            : "",
+        turnover_date: isValid(turnover_date)
+            ? format(turnover_date, "MMM dd yyyy")
+            : "",
         status: data?.status,
         developer_id: data?.developer?.id,
         project_id: data?.project?.id,

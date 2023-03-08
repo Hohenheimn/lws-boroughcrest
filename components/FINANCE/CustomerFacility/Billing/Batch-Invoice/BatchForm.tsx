@@ -21,7 +21,7 @@ export default function BatchForm({ DefaultValue }: Props) {
     const [isDefault, setDefault] = useState<defaultArray>(DefaultValue);
     return (
         <>
-            <div className="table_container border-b border-gray-300 pb-10 mb-10 1550px:mb-5 1550px:pb-5">
+            <div className="table_container max-half border-b border-gray-300 pb-10 mb-10 1550px:mb-5 1550px:pb-5">
                 <table className="table_list forCrud">
                     <thead className="textRed">
                         <tr>
@@ -46,9 +46,9 @@ export default function BatchForm({ DefaultValue }: Props) {
                         ))}
                     </tbody>
                 </table>
-                <div className="py-2 flex justify-end">
-                    <button className="buttonRed">APPLY</button>
-                </div>
+            </div>
+            <div className="py-2 flex justify-end">
+                <button className="buttonRed">APPLY</button>
             </div>
         </>
     );

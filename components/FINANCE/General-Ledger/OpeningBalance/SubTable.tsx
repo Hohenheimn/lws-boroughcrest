@@ -17,6 +17,7 @@ import {
     InputNumberForTable,
 } from "../../../Reusable/NumberFormat";
 import TableErrorMessage from "../../../Reusable/TableErrorMessage";
+import { format, isValid, parse } from "date-fns";
 
 export type isTableItemArray = isTableItemObj[];
 
@@ -60,12 +61,14 @@ export default function SubTable() {
         if (!isLoading && !isError) {
             const random = Math.random();
             const CloneArray = data?.data.map((item: any, index: number) => {
+                const date = parse(item.date, "yyyy-MM-dd", new Date());
+
                 return {
                     id: index,
                     id_backend: item.id,
                     customer_id: item.customer?.id,
                     customer_name: item.customer?.name,
-                    date: item.date,
+                    date: isValid(date) ? format(date, "MMM dd yyyy") : "",
                     reference_no: item.reference_no,
                     charge_id: item.charge?.id,
                     charge: item.charge?.name,
@@ -83,11 +86,11 @@ export default function SubTable() {
                         customer_id: "",
                         customer_name: "",
                         date: "",
-                        reference_no: 0,
+                        reference_no: "",
                         charge_id: "",
                         charge: "",
                         account: "advance",
-                        amount: 0,
+                        amount: "",
                     },
                 ]);
             } else {
@@ -126,10 +129,11 @@ export default function SubTable() {
                 validate = false;
                 return;
             } else {
+                const date = parse(item.date, "MMM dd yyyy", new Date());
                 return {
                     id: item.id_backend === undefined ? null : item.id_backend,
                     customer_id: parseInt(item.customer_id),
-                    date: item.date,
+                    date: isValid(date) ? format(date, "yyyy-MM-dd") : "",
                     reference_no: item.reference_no,
                     charge_id: parseInt(item.charge_id),
                     account_type: item.account,
@@ -275,8 +279,7 @@ const List = ({ itemDetail, setTableItem, isTableItem, rowNumber }: List) => {
                 if (key === "date") {
                     return {
                         ...item,
-                        date:
-                            isDate.value === "" ? itemData.date : isDate.value,
+                        date: isDate.value,
                     };
                 }
             }
@@ -343,11 +346,9 @@ const List = ({ itemDetail, setTableItem, isTableItem, rowNumber }: List) => {
                     </span>
                     <input
                         type="text"
-                        value={
-                            isDate.value === "" ? itemData.date : isDate.value
-                        }
+                        value={isDate.value}
                         onChange={() => {}}
-                        placeholder="dd/mm/yyyy"
+                        placeholder="MM dd yyyy"
                         onClick={() => setDate({ ...isDate, toggle: true })}
                     />
                     {isDate.toggle && (
