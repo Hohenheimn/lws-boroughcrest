@@ -610,7 +610,7 @@ export default function NewContactInfo({
                         onClick={Back}
                         className=" text-ThemeRed font-semibold text-[14px] mr-5 cursor-pointer"
                     >
-                        Back
+                        BACK
                     </aside>
 
                     <button

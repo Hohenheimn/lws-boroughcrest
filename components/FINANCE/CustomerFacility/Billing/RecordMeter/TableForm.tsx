@@ -17,12 +17,10 @@ import ReadingCrud from "./ReadingCrud";
 import DropDownCharge from "../../../../Dropdowns/DropDownCharge";
 import { HiPencil } from "react-icons/hi";
 import Readingform from "./Readingform";
+import PreviousPeriod from "./PreviousPeriod";
 
 export default function TableForm() {
-    const [isPeriod, setPeriod] = useState({
-        from: "",
-        to: "",
-    });
+    const [isPreviousPeriod, setPreviousPeriod] = useState("");
     const { setPrompt } = useContext(AppContext);
     const router = useRouter();
 
@@ -185,7 +183,10 @@ export default function TableForm() {
                         <input type="text" className="field" />
                     </li>
                     <li className=" 820px:mb-5 flex items-center mb-5">
-                        <PeriodCalendar value={isPeriod} setValue={setPeriod} />
+                        <PreviousPeriod
+                            value={isPreviousPeriod}
+                            setValue={setPreviousPeriod}
+                        />
                     </li>
                 </ul>
                 <div className="table_container">

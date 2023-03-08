@@ -78,7 +78,7 @@ export default function PeriodFNS({ setToggle, isValue, setValue }: PeriodFNS) {
         >
             {/* Ask kung pano naka infinite ung year tas naka focus agad ung year sa current yr */}
             <div className="shadow-lg" style={{ backgroundColor: "#f5f5f5" }}>
-                <div className="flex">
+                <div className="flex 480px:flex-wrap">
                     <CalendarPeriod
                         calendar={calendar}
                         setCalendar={setCalendar}

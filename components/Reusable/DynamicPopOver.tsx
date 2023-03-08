@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { usePopper } from "react-popper";
 
 type Props = {
@@ -6,6 +6,8 @@ type Props = {
     toPop: React.ReactNode;
     samewidth?: boolean;
     className: string;
+    fixed?: boolean;
+    rightPosition?: boolean;
 };
 
 // For Dynamic Positioning only, its your command to toggle it
@@ -15,6 +17,8 @@ export default function DynamicPopOver({
     toPop,
     samewidth,
     className,
+    fixed,
+    rightPosition,
 }: Props) {
     const inputField = useRef<any>();
     const toPopOver = useRef<any>();
@@ -23,7 +27,7 @@ export default function DynamicPopOver({
         inputField.current,
         toPopOver.current,
         {
-            placement: "bottom-start",
+            placement: rightPosition ? "bottom-end" : "bottom-start",
             modifiers: [
                 {
                     name: "offset",
@@ -34,7 +38,9 @@ export default function DynamicPopOver({
                 {
                     name: "flip",
                     options: {
-                        fallbackPlacements: ["top-start"],
+                        fallbackPlacements: rightPosition
+                            ? ["top-end"]
+                            : ["top-start"],
                     },
                 },
             ],
@@ -45,7 +51,8 @@ export default function DynamicPopOver({
         ...styles.popper,
         width: `${refWidth}px`,
     };
-    if (window.innerWidth <= 1024) {
+
+    if (!fixed) {
         return (
             <>
                 <div ref={inputField} className={className}>
