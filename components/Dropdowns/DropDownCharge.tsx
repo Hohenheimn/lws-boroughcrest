@@ -102,6 +102,8 @@ const List = ({
                     key={index}
                     data-id={item.id}
                     data-description={item.description}
+                    data-uom={item.uom}
+                    data-vat={item.vat_percent}
                     onClick={(e) => {
                         UpdateStateHandler("charge", e);
                         setTempSearch(item.name);

@@ -332,41 +332,28 @@ const List = ({ itemDetail, setTableItem, isTableItem, rowNumber }: List) => {
                 />
             </td>
             <td onKeyUp={(e) => AddRowHandler(e)}>
-                <DynamicPopOver
-                    className=""
-                    toRef={
-                        <article className="calendar relative">
-                            <span className="cal ">
-                                <Image
-                                    src="/Images/CalendarMini.png"
-                                    width={15}
-                                    height={15}
-                                    alt=""
-                                />
-                            </span>
-                            <input
-                                type="text"
-                                value={
-                                    isDate.value === ""
-                                        ? itemData.date
-                                        : isDate.value
-                                }
-                                onChange={() => {}}
-                                placeholder="dd/mm/yyyy"
-                                onClick={() =>
-                                    setDate({ ...isDate, toggle: true })
-                                }
-                            />
-                        </article>
-                    }
-                    toPop={
-                        <>
-                            {isDate.toggle && (
-                                <Calendar value={isDate} setValue={setDate} />
-                            )}
-                        </>
-                    }
-                />
+                <article className="calendar  relative">
+                    <span className="cal ">
+                        <Image
+                            src="/Images/CalendarMini.png"
+                            width={15}
+                            height={15}
+                            alt=""
+                        />
+                    </span>
+                    <input
+                        type="text"
+                        value={
+                            isDate.value === "" ? itemData.date : isDate.value
+                        }
+                        onChange={() => {}}
+                        placeholder="dd/mm/yyyy"
+                        onClick={() => setDate({ ...isDate, toggle: true })}
+                    />
+                    {isDate.toggle && (
+                        <Calendar value={isDate} setValue={setDate} />
+                    )}
+                </article>
             </td>
             <td onKeyUp={(e) => AddRowHandler(e)}>
                 <input

@@ -8,11 +8,11 @@ export default function CreateInvoice() {
             charge: "",
             charge_id: "",
             description: "",
-            unit_price: 0,
-            quantity: 0,
+            unit_price: "",
+            quantity: "",
             uom: "",
-            vat: 0,
-            amount: 0,
+            vat: "",
+            amount: "",
         },
     ];
 

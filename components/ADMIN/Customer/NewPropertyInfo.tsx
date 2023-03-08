@@ -272,7 +272,7 @@ export default function NewPropertyInfo({
                                     width="2px"
                                 />
                             ) : (
-                                "Save"
+                                "SAVE"
                             )}
                         </button>
                         <aside className={style.Arrow}>

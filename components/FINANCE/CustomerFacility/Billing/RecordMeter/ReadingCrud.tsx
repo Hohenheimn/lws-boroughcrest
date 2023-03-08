@@ -371,12 +371,12 @@ const List = ({
                             )}
                         </>
                     )}
-                    {loadingDelete ? (
+                    {/* {loadingDelete ? (
                         <div className="icon">
                             <MoonLoader size={10} color="#8f384d" />
                         </div>
                     ) : (
-                        <Tippy theme="ThemeRed" content="Export">
+                        <Tippy theme="ThemeRed" content="Delete">
                             <div>
                                 <MdDeleteOutline
                                     className="icon"
@@ -384,7 +384,7 @@ const List = ({
                                 />
                             </div>
                         </Tippy>
-                    )}
+                    )} */}
                 </div>
             </td>
         </tr>
