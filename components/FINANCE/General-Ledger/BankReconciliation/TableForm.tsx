@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import Image from "next/image";
 import Calendar from "../../../Reusable/Calendar";
-import DynamicPopOver from "../../../Reusable/DynamicPopOver";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 import styleSearch from "../../../../styles/SearchFilter.module.scss";
@@ -21,6 +20,10 @@ import { validateCreditDebitField } from "../OpeningBalance/ValidateCreditDebitF
 import { HiMinus } from "react-icons/hi";
 import { BsPlusLg } from "react-icons/bs";
 import { format, isValid, parse } from "date-fns";
+import { AiOutlineInfoCircle } from "react-icons/ai";
+import Link from "next/link";
+import Details from "./Details";
+import { useRouter } from "next/router";
 
 type isTableitemArray = isTableitemObj[];
 
@@ -32,9 +35,11 @@ type isTableitemObj = {
     balance: string;
     remarks: string;
     document_no: string;
+    status: string;
 };
 
 export default function TableForm() {
+    const router = useRouter();
     const { setPrompt } = useContext(AppContext);
     const [isPeriod, setPeriod] = useState({
         from: "",
@@ -88,6 +93,7 @@ export default function TableForm() {
                         item.credit === 0 || item.credit === "0"
                             ? ""
                             : item.credit,
+                    status: item.status,
                 };
             });
             // Additional blank row field
@@ -102,6 +108,7 @@ export default function TableForm() {
                         document_no: "",
                         debit: "",
                         credit: "",
+                        status: null,
                     },
                 ]);
             } else {
@@ -167,6 +174,7 @@ export default function TableForm() {
 
     return (
         <>
+            {router.query.view !== undefined && <Details />}
             <section className={styleSearch.container}>
                 <div className={styleSearch.period}>
                     <PeriodCalendar value={isPeriod} setValue={setPeriod} />
@@ -440,11 +448,18 @@ const List = ({
         );
     };
 
+    console.log(itemData.status);
+
     return (
         <tr>
             <td>
                 <article className="calendar relative w-full">
-                    <span className="cal ">
+                    <span
+                        className={`cal ${
+                            itemData.status === "Posted" ||
+                            (itemData.status === "Pending" && "disabled")
+                        }`}
+                    >
                         <Image
                             src="/Images/CalendarMini.png"
                             width={15}
@@ -458,6 +473,10 @@ const List = ({
                         value={itemData.date}
                         onChange={() => {}}
                         placeholder="dd/mm/yyyy"
+                        className={`field ${
+                            itemData.status === "Posted" ||
+                            (itemData.status === "Pending" && "disabled")
+                        }`}
                         onClick={() => setDate({ ...isDate, toggle: true })}
                     />
                     {isDate.toggle && (
@@ -467,7 +486,10 @@ const List = ({
             </td>
             <td>
                 <InputNumberForTable
-                    className={`number field inline-block w-full bg-white ${debitValidate}`}
+                    className={`number field inline-block w-full bg-white ${debitValidate} ${
+                        itemData.status === "Posted" ||
+                        (itemData.status === "Pending" && "disabled")
+                    }`}
                     value={itemData.debit}
                     onChange={UpdateStateHandler}
                     type={"debit"}
@@ -475,7 +497,10 @@ const List = ({
             </td>
             <td>
                 <InputNumberForTable
-                    className={`number field inline-block w-full bg-white ${creditValidate}`}
+                    className={`number field inline-block w-full bg-white ${creditValidate} ${
+                        itemData.status === "Posted" ||
+                        (itemData.status === "Pending" && "disabled")
+                    }`}
                     value={itemData.credit}
                     onChange={UpdateStateHandler}
                     type={"credit"}
@@ -490,7 +515,10 @@ const List = ({
             <td>
                 <input
                     type="text"
-                    className="field w-full"
+                    className={`field w-full ${
+                        itemData.status === "Posted" ||
+                        (itemData.status === "Pending" && "disabled")
+                    }`}
                     onChange={(e) => {
                         UpdateStateHandler("remarks", e.target.value);
                     }}
@@ -508,11 +536,25 @@ const List = ({
                 />
             </td>
             <td className="actionIcon">
-                {isTableItem.length > 1 && (
-                    <div onClick={RemoveRowHandler}>
-                        <HiMinus />
-                    </div>
+                {itemData.status === "Posted" ||
+                itemData.status === "Pending" ? (
+                    <Link
+                        href={`/finance/general-ledger/bank-reconciliation?view=${itemData.id}`}
+                    >
+                        <a>
+                            <AiOutlineInfoCircle className=" text-[16px]" />
+                        </a>
+                    </Link>
+                ) : (
+                    <>
+                        {isTableItem.length > 1 && (
+                            <div onClick={RemoveRowHandler}>
+                                <HiMinus />
+                            </div>
+                        )}
+                    </>
                 )}
+
                 {isTableItem.length - 1 === rowNumber && (
                     <div
                         className="ml-5 1024px:ml-2"

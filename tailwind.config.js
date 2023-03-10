@@ -20,6 +20,7 @@ module.exports = {
                 Gray_5: "#d9d9d9",
                 Gray1: "#9F9F9F",
                 Gray2: "#626262",
+                RegularColor: "#545454",
             },
             width: {
                 "300px": "300px",

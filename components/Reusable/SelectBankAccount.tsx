@@ -224,13 +224,7 @@ const List = ({ itemDetail, isBankAccount, setBankAccount, setAll }: List) => {
         setAll(false);
     };
     return (
-        <tr
-            className={`cursor-pointer  ${
-                itemDetail.status === "No"
-                    ? " bg-gray-300"
-                    : "hover:bg-ThemeRed50 hover:text-white"
-            }`}
-        >
+        <tr className={`cursor-pointerhover:bg-ThemeRed50 hover:text-white`}>
             <td className="checkbox">
                 <input
                     type="checkbox"
@@ -239,18 +233,6 @@ const List = ({ itemDetail, isBankAccount, setBankAccount, setAll }: List) => {
                 />
             </td>
             <td className="relative">
-                {itemDetail.status === "No" && (
-                    <Tippy
-                        theme="ThemeRed"
-                        content={
-                            <p className=" text-[12px]">lorem lorem lorem</p>
-                        }
-                    >
-                        <div className="absolute left-[5px] top-[50%] translate-y-[-50%] text-[14px] text-ThemeRed">
-                            <AiOutlineInfoCircle />
-                        </div>
-                    </Tippy>
-                )}
                 <p className=" ml-4">{itemDetail.bank_acc_no}</p>
             </td>
             <td>

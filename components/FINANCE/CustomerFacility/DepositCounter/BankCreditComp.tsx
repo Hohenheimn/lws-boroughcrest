@@ -18,10 +18,11 @@ import Pagination from "../../../Reusable/Pagination";
 import BankAccountDropDown from "../../../Reusable/BankAccountDropDown";
 import DynamicPopOver from "../../../Reusable/DynamicPopOver";
 import { HiMinus } from "react-icons/hi";
-import { BsPlusLg } from "react-icons/bs";
+import { BsPlusLg, BsSearch } from "react-icons/bs";
 import SelectBankAccount from "../../../Reusable/SelectBankAccount";
 import { isReceiptBookData } from "./Receiptsbook";
 import DropdownReceipt_Reference from "./DropdownReceipt_Reference";
+import { format, isValid, parse } from "date-fns";
 
 export type isTableBankCredit = {
     itemArray: isTableItemObjBC[];
@@ -58,11 +59,19 @@ export default function BankCreditComp({
     setBankCredit,
     setChangeData,
 }: Props) {
+    const [isSearch, setSearch] = useState("");
     const [isBank, setBank] = useState({
         id: "",
         value: "",
     });
-    const [isSelectBank, setSelectBank] = useState([]);
+    const [isSelectBank, setSelectBank] = useState<any>([]);
+    const [isSelectBankIDS, setSelectBankIDS] = useState<any[]>([]);
+    useEffect(() => {
+        const selectbandIDS = isSelectBank.map((item: any) => {
+            return item.id;
+        });
+        setSelectBankIDS(selectbandIDS);
+    }, [isSelectBank]);
     const [isPeriod, setPeriod] = useState({
         from: "",
         to: "",
@@ -113,29 +122,40 @@ export default function BankCreditComp({
         });
     };
 
-    const { data, isLoading, isError } = GetBankCredit("", TablePage);
+    const status = type === "bank-credit" ? "matched" : "unmatched";
+
+    const dateFrom = parse(isPeriod.from, "MMM dd yyyy", new Date());
+    const dateTo = parse(isPeriod.to, "MMM dd yyyy", new Date());
+    const { data, isLoading, isError } = GetBankCredit(
+        status,
+        isValid(dateFrom) ? format(dateFrom, "yyyy-MM-dd") : "",
+        isValid(dateTo) ? format(dateTo, "yyyy-MM-dd") : "",
+        isSelectBankIDS,
+        TablePage,
+        isSearch
+    );
     // APPLY DATA FROM API
-    // useEffect(() => {
-    //     if (data?.status === 200) {
-    //         const CloneArray = data?.data.data.map((item: isTableItemObjBC) => {
-    //             return {
-    //                 id: item.id,
-    //                 index: "",
-    //                 bank_account_no: "BDO-555534",
-    //                 credit_date: "SEP 22 2022",
-    //                 credit_amount: 5000,
-    //                 remarks: "Bounce Check",
-    //                 variance: "",
-    //                 status: "Posted",
-    //             };
-    //         });
-    //         // Additional blank row field
-    //         setBankCredit({
-    //             itemArray: CloneArray,
-    //             selectAll: false,
-    //         });
-    //     }
-    // }, [data?.status, TablePage]);
+    useEffect(() => {
+        if (data?.status === 200) {
+            const CloneArray = data?.data.data.map((item: isTableItemObjBC) => {
+                return {
+                    id: item.id,
+                    index: "",
+                    bank_account_no: "BDO-555534",
+                    credit_date: "SEP 22 2022",
+                    credit_amount: 5000,
+                    remarks: "Bounce Check",
+                    variance: "",
+                    status: "Posted",
+                };
+            });
+            // Additional blank row field
+            setBankCredit({
+                itemArray: CloneArray,
+                selectAll: false,
+            });
+        }
+    }, [data?.status, TablePage]);
     return (
         <>
             <section className={`${styleSearch.container}`}>
@@ -153,21 +173,30 @@ export default function BankCreditComp({
                 </div>
             </section>
             <section className={styleSearch.container}>
+                {type === "bank-credit" && (
+                    <div className={styleSearch.searchBar}>
+                        <input
+                            type="text"
+                            placeholder="Search"
+                            value={isSearch}
+                            onChange={(e) => setSearch(e.target.value)}
+                        />
+                        <BsSearch className={styleSearch.searchIcon} />
+                    </div>
+                )}
+
                 <div className={styleSearch.period}>
-                    <PeriodCalendar value={isPeriod} setValue={setPeriod} />
+                    {type !== "bank-credit" && (
+                        <PeriodCalendar value={isPeriod} setValue={setPeriod} />
+                    )}
+
                     <div className="flex items-center ml-5">
                         <p className="labelField">BANK & ACCOUNT NO.</p>
-                        {type === "bank-credit" ? (
-                            <BankAccountDropDown
-                                isObject={isBank}
-                                setObject={setBank}
-                            />
-                        ) : (
-                            <SelectBankAccount
-                                isArrayBA={isSelectBank}
-                                setArrayBA={setSelectBank}
-                            />
-                        )}
+
+                        <SelectBankAccount
+                            isArrayBA={isSelectBank}
+                            setArrayBA={setSelectBank}
+                        />
                     </div>
                 </div>
 
@@ -245,7 +274,7 @@ export default function BankCreditComp({
                     </thead>
                     <tbody>
                         {isBankCredit?.itemArray.map(
-                            (item: any, index: number) => (
+                            (item: isTableItemObjBC, index: number) => (
                                 <List
                                     key={index}
                                     index={index}

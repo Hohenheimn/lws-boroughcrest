@@ -123,13 +123,23 @@ export const GetJournal = (
     keyword: string,
     type: string,
     TablePage: number | string,
-    filterArray: string[]
+    filterArray: string[],
+    dateFrom: string,
+    dateTo: string
 ) => {
     return useQuery(
-        ["journal-list", keyword, type, TablePage, filterArray],
+        [
+            "journal-list",
+            keyword,
+            type,
+            TablePage,
+            filterArray,
+            dateFrom,
+            dateTo,
+        ],
         () => {
             return api.get(
-                `/finance/general-ledger/journal?list_type=${type}&paginate=10&keywords=${keyword}&page=${TablePage}&filters=${filterArray}`,
+                `/finance/general-ledger/journal?list_type=${type}&paginate=10&keywords=${keyword}&page=${TablePage}&filters=${filterArray}&date_from=${dateFrom}&date_to=${dateTo}`,
                 {
                     headers: {
                         Authorization: "Bearer " + getCookie("user"),

@@ -20,6 +20,11 @@ import { format, isValid, parse } from "date-fns";
 
 type Props = {
     type: string;
+    isPeriod: {
+        from: string;
+        to: string;
+    };
+    setPeriod: Function;
 };
 
 type isTable = {
@@ -36,7 +41,7 @@ type isTableItemObj = {
     select: boolean;
 };
 
-export default function JournalTable({ type }: Props) {
+export default function JournalTable({ type, isPeriod, setPeriod }: Props) {
     let buttonClicked = "";
     const { setPrompt } = useContext(AppContext);
     const [isSearch, setSearch] = useState("");
@@ -62,16 +67,15 @@ export default function JournalTable({ type }: Props) {
         setAdvFilter(cloneFilter);
     };
 
-    const [isPeriod, setPeriod] = useState({
-        from: "",
-        to: "",
-    });
-
+    const dateFrom = parse(isPeriod.from, "MMM dd yyyy", new Date());
+    const dateTo = parse(isPeriod.to, "MMM dd yyyy", new Date());
     const { data, isLoading, isError } = GetJournal(
         isSearch,
         type,
         TablePage,
-        isFilterText
+        isFilterText,
+        isValid(dateFrom) ? format(dateFrom, "yyyy-MM-dd") : "",
+        isValid(dateTo) ? format(dateTo, "yyyy-MM-dd") : ""
     );
 
     useEffect(() => {
@@ -100,7 +104,7 @@ export default function JournalTable({ type }: Props) {
                 });
             }
         }
-    }, [data?.status, type, isSearch, TablePage, isFilterText]);
+    }, [data?.status, type, isSearch, TablePage, isFilterText, isPeriod]);
 
     const selectAll = () => {
         const newItems = isTableItem?.itemArray.map((item: any) => {
