@@ -6,19 +6,19 @@ import api from "../../../../util/api";
 import DynamicPopOver from "../../../Reusable/DynamicPopOver";
 
 type Props = {
-    endpoint: string;
     name: string;
     selectHandler: (value: string) => void;
     value: string | number;
     keyType: string;
+    rowID: string | number;
 };
 
 export default function DropdownReceipt_Reference({
-    endpoint,
     name,
     selectHandler,
     value,
     keyType,
+    rowID,
 }: Props) {
     const [toggle, setToggle] = useState(false);
     const [tempSearch, setTempSearch] = useState<string | number>("");
@@ -46,7 +46,6 @@ export default function DropdownReceipt_Reference({
                     <>
                         {toggle && (
                             <ListItem
-                                endpoint={endpoint}
                                 name={name}
                                 tempSearch={tempSearch}
                                 setTempSearch={setTempSearch}
@@ -54,6 +53,7 @@ export default function DropdownReceipt_Reference({
                                 selectHandler={selectHandler}
                                 setToggle={setToggle}
                                 keyType={keyType}
+                                rowID={rowID}
                             />
                         )}
                     </>
@@ -64,7 +64,6 @@ export default function DropdownReceipt_Reference({
 }
 
 type ListItem = {
-    endpoint: string;
     name: string;
     tempSearch: string | number;
     setTempSearch: Function;
@@ -72,10 +71,10 @@ type ListItem = {
     selectHandler: (value: string) => void;
     setToggle: Function;
     keyType: string;
+    rowID: string | number;
 };
 
 const ListItem = ({
-    endpoint,
     name,
     tempSearch,
     selectHandler,
@@ -83,17 +82,42 @@ const ListItem = ({
     setTempSearch,
     setToggle,
     keyType,
+    rowID,
 }: ListItem) => {
     const { isLoading, data, isError } = useQuery(
         ["DC-DD", name, tempSearch],
         () => {
-            return api.get(`${endpoint}?keywords=${tempSearch}`, {
-                headers: {
-                    Authorization: "Bearer " + getCookie("user"),
-                },
-            });
+            return api.get(
+                `/finance/customer-facility/deposit-counter?list_type=receipt_book&status=unmatched?keywords=${tempSearch}`,
+                {
+                    headers: {
+                        Authorization: "Bearer " + getCookie("user"),
+                    },
+                }
+            );
         }
     );
+
+    const [isReceipt, setReceipt] = useState([
+        {
+            receipt_no: "0000000333",
+            reference_no: "RF48489754",
+            id: 2,
+            amount: 1000,
+        },
+        {
+            receipt_no: "0000000334",
+            reference_no: "RF48489755",
+            id: 2,
+            amount: 1000,
+        },
+        {
+            receipt_no: "0000000335",
+            reference_no: "RF48489756",
+            id: 2,
+            amount: 1000,
+        },
+    ]);
 
     const modal = useRef<any>();
     useEffect(() => {
@@ -110,45 +134,25 @@ const ListItem = ({
     });
     return (
         <ul ref={modal} className="dropdown-list w-full">
-            {keyType === "receipt" ? (
-                <>
-                    <li
-                        onClick={() => {
-                            selectHandler("0000000303");
-                            setToggle(false);
-                        }}
-                    >
-                        0000000303
-                    </li>
-                    <li
-                        onClick={() => {
-                            selectHandler("0000000333");
-                            setToggle(false);
-                        }}
-                    >
-                        0000000333
-                    </li>
-                </>
-            ) : (
-                <>
-                    <li
-                        onClick={() => {
-                            selectHandler("RF54897321");
-                            setToggle(false);
-                        }}
-                    >
-                        RF54897321
-                    </li>
-                    <li
-                        onClick={() => {
-                            selectHandler("RF48489754");
-                            setToggle(false);
-                        }}
-                    >
-                        RF48489754
-                    </li>
-                </>
-            )}
+            {isReceipt.map((item, index) => (
+                <li
+                    key={index}
+                    data-ref_ref_id={item.id}
+                    data-receiptno={item.receipt_no}
+                    data-referenceno={item.reference_no}
+                    data-amount={item.amount}
+                    data-rowid={rowID}
+                    onClick={(e: any) => {
+                        selectHandler(e);
+                        setToggle(false);
+                    }}
+                >
+                    {keyType === "receipt"
+                        ? item.receipt_no
+                        : item.reference_no}
+                </li>
+            ))}
+
             {/* {data?.data.map((item: any, index: number) => (
                 <li key={index} onClick={selectHandler} data-id={item.id}>
                     {
@@ -171,8 +175,7 @@ const ListItem = ({
                 </li>
             )}
 
-            {isError && <li>{name} cannot be found!</li>}
-            {data?.data.length <= 0 && <li>{name} cannot be found!</li>}
+            {isError && <li>Receipt Book cannot be found!</li>}
         </ul>
     );
 };

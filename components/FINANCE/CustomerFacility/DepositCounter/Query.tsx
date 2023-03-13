@@ -1,5 +1,5 @@
 import { getCookie } from "cookies-next";
-import { useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import api from "../../../../util/api";
 
 export const GetReceiptsBook = (
@@ -57,6 +57,75 @@ export const GetBankCredit = (
                     },
                 }
             );
+        }
+    );
+};
+
+export const CreateDepositCounter = (onSuccess: any, onError: any) => {
+    const queryCLient = useQueryClient();
+    return useMutation(
+        (Payload: any) => {
+            return api.post(
+                `/finance/customer-facility/deposit-counter`,
+                Payload,
+                {
+                    headers: {
+                        Authorization: "Bearer " + getCookie("user"),
+                    },
+                }
+            );
+        },
+        {
+            onSuccess: () => {
+                onSuccess();
+                queryCLient.invalidateQueries("bank-credit-list");
+                queryCLient.invalidateQueries("receipts-book-list");
+            },
+            onError: onError(),
+        }
+    );
+};
+
+export const MultipleUpdateBankCredit = (onSucces: any, onError: any) => {
+    const queryClient = useQueryClient();
+    return useMutation(
+        (Payload: any) => {
+            return api.put(`/finance/customer-facility/bank-credit`, Payload, {
+                headers: {
+                    Authorization: "Bearer " + getCookie("user"),
+                },
+            });
+        },
+        {
+            onSuccess: () => {
+                onSucces();
+                queryClient.invalidateQueries("bank-credit-list");
+            },
+            onError: onError,
+        }
+    );
+};
+
+export const MultipleUpdateReceiptBook = (onSucces: any, onError: any) => {
+    const queryClient = useQueryClient();
+    return useMutation(
+        (Payload: any) => {
+            return api.put(
+                `/finance/customer-facility/deposit-counter`,
+                Payload,
+                {
+                    headers: {
+                        Authorization: "Bearer " + getCookie("user"),
+                    },
+                }
+            );
+        },
+        {
+            onSuccess: () => {
+                onSucces();
+                queryClient.invalidateQueries("bank-credit-list");
+            },
+            onError: onError,
         }
     );
 };

@@ -130,7 +130,7 @@ select {
 }
 // button
 .buttonRed {
-    @apply uppercase px-5 text-[14px] 480px:text-[12px] 480px:px-2  py-2 rounded-lg bg-ThemeRed text-white leading-none duration-75 hover:bg-ThemeRed50;
+    @apply uppercase px-5 text-[14px] 1550px:text-[12px] 480px:px-2  py-2 rounded-lg bg-ThemeRed text-white leading-none duration-75 hover:bg-ThemeRed50;
 }
 .button_cancel {
     @apply text-ThemeRed font-semibold cursor-pointer text-[14px] mr-5 uppercase;
@@ -177,7 +177,7 @@ select {
     }
 }
 .table_container.max-half {
-    @apply max-h-[30vh];
+    @apply max-h-[30vh] min-h-[300px] 1550px:min-h-[200px];
 }
 .table_container.hAuto {
     @apply h-auto min-h-0 max-h-[300px];

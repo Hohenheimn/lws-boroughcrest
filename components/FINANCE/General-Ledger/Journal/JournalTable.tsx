@@ -231,28 +231,12 @@ export default function JournalTable({ type, isPeriod, setPeriod }: Props) {
                                         className={style.noFill}
                                         onClick={() => UpdateStatus("Rejected")}
                                     >
-                                        {updateLoading ? (
-                                            buttonClicked === "Rejected" ? (
-                                                <MoonLoader
-                                                    size={25}
-                                                    color="#8f384d"
-                                                />
-                                            ) : (
-                                                <Image
-                                                    src="/Images/f_remove.png"
-                                                    height={25}
-                                                    width={25}
-                                                    alt="Reject"
-                                                />
-                                            )
-                                        ) : (
-                                            <Image
-                                                src="/Images/f_remove.png"
-                                                height={25}
-                                                width={25}
-                                                alt="Reject"
-                                            />
-                                        )}
+                                        <Image
+                                            src="/Images/f_remove.png"
+                                            height={25}
+                                            width={25}
+                                            alt="Reject"
+                                        />
                                     </div>
                                 </Tippy>
                             </li>

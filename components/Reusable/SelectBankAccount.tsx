@@ -159,7 +159,7 @@ const DropdownItems = ({
                                 onChange={selectAll}
                             /> */}
                         </th>
-                        <th className="text-white">BANK asda ACCOUNT NO.</th>
+                        <th className="text-white">BANK ACCOUNT NO.</th>
                         <th className="text-white">BANK & BRANCH</th>
                     </tr>
                 </thead>

@@ -3,7 +3,7 @@ import Image from "next/image";
 import Calendar from "../../../Reusable/Calendar";
 import { TextNumberDisplay } from "../../../Reusable/NumberFormat";
 import BankAccountDropDown from "../../../Reusable/BankAccountDropDown";
-import { GetCashReceipt } from "./Query";
+import { CreateDepositCounter, GetCashReceipt } from "./Query";
 import { format, isValid, parse } from "date-fns";
 import { BarLoader } from "react-spinners";
 import TableErrorMessage from "../../../Reusable/TableErrorMessage";
@@ -44,6 +44,14 @@ export default function DepositForm({ id }: Props) {
     });
 
     const { data, isLoading, isError } = GetCashReceipt();
+
+    const onSuccessMutate = () => {};
+
+    const onErrorMutate = () => {};
+    const { mutate, isLoading: MutateLoading } = CreateDepositCounter(
+        onSuccessMutate,
+        onErrorMutate
+    );
 
     const [isAmount, setAmount] = useState(0);
 
@@ -154,7 +162,7 @@ export default function DepositForm({ id }: Props) {
                 type: "draft",
             });
         } else {
-            // Mutate heare
+            mutate(Payload);
         }
     };
 

@@ -1,13 +1,13 @@
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styleSearch from "../../../../styles/SearchFilter.module.scss";
 import Image from "next/image";
 import { GoEye } from "react-icons/go";
 
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { GetReceiptsBook } from "./Query";
+import { GetReceiptsBook, MultipleUpdateReceiptBook } from "./Query";
 
 import { BarLoader } from "react-spinners";
 import { BsPlusLg, BsSearch } from "react-icons/bs";
@@ -21,6 +21,7 @@ import {
     InputNumberForTable,
 } from "../../../Reusable/NumberFormat";
 import TableErrorMessage from "../../../Reusable/TableErrorMessage";
+import AppContext from "../../../Context/AppContext";
 
 export type isReceiptBookData = {
     itemArray: isTableItemObjRB[];
@@ -37,13 +38,18 @@ export type isTableItemObjRB = {
     deposit_date: string;
     deposit_amount: number | string;
     index: string | number;
+    indexID: string | number;
+    indexAmount: string | number;
     select: boolean;
     variance: number | string;
-    childrenBankCredit: {
-        id: 1;
-        index: string;
-    }[];
-    childrenBankCreditIDS: string[] | number[];
+    childrenRB: childType[];
+};
+
+type childType = {
+    id: 1;
+    indexID: string | number;
+    index: string;
+    amount: string | number;
 };
 
 type Props = {
@@ -53,9 +59,6 @@ type Props = {
     isBankCredit: isTableBankCredit;
     setBankCredit: Function;
     setChangeData: Function;
-    isLoading: any;
-    isError: any;
-    data: any;
 };
 
 export default function Receiptsbook({
@@ -63,12 +66,10 @@ export default function Receiptsbook({
     isReceiptBookData,
     setReceiptBookData,
     setChangeData,
-    isLoading,
-    isError,
-    data,
 }: Props) {
+    const { setPrompt } = useContext(AppContext);
     const router = useRouter();
-    const [TablePage, setTablePage] = useState(1);
+    const [TablePage, setTablePage] = useState<string | number>("");
     const [isSearch, setSearch] = useState("");
 
     const selectAll = () => {
@@ -84,27 +85,115 @@ export default function Receiptsbook({
         });
     };
 
+    const { data, isLoading, isError } = GetReceiptsBook(
+        isSearch,
+        TablePage,
+        type,
+        "receipt_book"
+    );
+    // APPLY RECEIPT BOOK DATA FROM API
+    useEffect(() => {
+        if (data?.status === 200) {
+            const CloneArray = data?.data.data.map((item: any) => {
+                let select = false;
+                isReceiptBookData.itemArray.map((itemSelect) => {
+                    if (itemSelect.id === item.id) {
+                        select = itemSelect.select;
+                    }
+                });
+                return {
+                    id: 1,
+                    document_date: item.receipt_date,
+                    depositor: item.depositor.name,
+                    receipt_no: item.receipt_no,
+                    bank_and_account_no: `${item.bank_account.bank_branch} - ${item.bank_account.bank_acc_no}`,
+                    reference_no: item.reference_no,
+                    deposit_date: item.deposit_date,
+                    deposit_amount: item.deposit_amount,
+                    variance: item.deposit_amount,
+                    index: "",
+                    indexID: "",
+                    select: select,
+                    childrenRB: [],
+                };
+            });
+            // Additional blank row field
+            setReceiptBookData({
+                itemArray: [
+                    ...CloneArray,
+                    {
+                        id: 2,
+                        document_date: "Sep 24 2022",
+                        depositor: "Hulio Cadiente",
+                        receipt_no: "0000000333",
+                        bank_and_account_no: "BD0-549888",
+                        reference_no: "RF48489754",
+                        deposit_date: "Sept 28 2022",
+                        deposit_amount: 1000,
+                        select: false,
+                        variance: 1000,
+                        index: "",
+                        indexID: "",
+                        childrenRB: [],
+                    },
+                    {
+                        id: 3,
+                        document_date: "Sep 24 2023",
+                        depositor: "Hulio Cadiente 1",
+                        receipt_no: "0000000334",
+                        bank_and_account_no: "BD0-549888",
+                        reference_no: "RF48489755",
+                        deposit_date: "Sept 28 2022",
+                        deposit_amount: 1000,
+                        select: false,
+                        variance: 1000,
+                        index: "",
+                        indexID: "",
+                        childrenRB: [],
+                    },
+                    {
+                        id: 4,
+                        document_date: "Sep 24 2024",
+                        depositor: "Hulio Cadiente 2",
+                        receipt_no: "0000000335",
+                        bank_and_account_no: "BD0-549888",
+                        reference_no: "RF48489756",
+                        deposit_date: "Sept 28 2022",
+                        deposit_amount: 1000,
+                        select: false,
+                        variance: 1000,
+                        index: "",
+                        indexID: "",
+                        childrenRB: [],
+                    },
+                ],
+                selectAll: false,
+            });
+        }
+    }, [data?.status]);
+
     const AddHandler = (id: string | number) => {
-        const cloneToFilter = isReceiptBookData.itemArray.map(
+        const cloneToAdd = isReceiptBookData.itemArray.map(
             (item: isTableItemObjRB) => {
                 if (item.id === id) {
                     return {
                         ...item,
-                        childrenBankCredit: [
-                            ...item.childrenBankCredit,
+                        childrenRB: [
+                            ...item.childrenRB,
                             {
                                 id: Math.random(),
                                 index: "",
-                                variance: "",
+                                amount: "",
                             },
                         ],
                     };
                 }
+                return item;
             }
         );
         setReceiptBookData({
             ...isReceiptBookData,
-            itemArray: cloneToFilter,
+            itemArray: cloneToAdd,
         });
     };
 
@@ -125,22 +214,65 @@ export default function Receiptsbook({
         const cloneToDelete = isReceiptBookData.itemArray.map(
             (item: isTableItemObjRB) => {
                 if (item.id === parentID) {
-                    const clonetoFilter = item.childrenBankCredit.filter(
+                    const clonetoFilter = item.childrenRB.filter(
                         (filterItem) => filterItem.id !== selectedID
                     );
                     return {
                         ...item,
-                        childrenBankCredit: clonetoFilter,
+                        childrenRB: clonetoFilter,
                     };
                 }
                 return item;
             }
         );
 
+        setChangeData({
+            dataThatChangeID: parentID,
+            parentID: parentID,
+            fromWhere: "receipt book",
+        });
+
         setReceiptBookData({
             ...isReceiptBookData,
             itemArray: cloneToDelete,
         });
+    };
+
+    let buttonClicked = "";
+
+    const onSuccess = () => {
+        setPrompt({
+            message: `Items successfully ${buttonClicked}!`,
+            type: "success",
+            toggle: true,
+        });
+        buttonClicked = "";
+    };
+    const onError = () => {
+        setPrompt({
+            message: `Something is wrong!`,
+            type: "error",
+            toggle: true,
+        });
+        buttonClicked = "";
+    };
+
+    const { isLoading: updateLoading, mutate: updateMutate } =
+        MultipleUpdateReceiptBook(onSuccess, onError);
+
+    const UpdateStatus = (status: string) => {
+        buttonClicked = status;
+        let receiptBook: any[] = [];
+        isReceiptBookData.itemArray.map((item: isTableItemObjRB) => {
+            if (item.select === true) {
+                receiptBook.push(item.id);
+            }
+        });
+        const Payload = {
+            deposit_ids: "[" + receiptBook.toString() + "]",
+            status: status,
+        };
+        updateMutate(Payload);
     };
 
     return (
@@ -171,6 +303,7 @@ export default function Receiptsbook({
                                 <Tippy theme="ThemeRed" content="Return">
                                     <div
                                         className={`${styleSearch.noFill} mr-5`}
+                                        onClick={() => UpdateStatus("Return")}
                                     >
                                         <Image
                                             src="/Images/f_back.png"
@@ -185,6 +318,7 @@ export default function Receiptsbook({
                                 <Tippy theme="ThemeRed" content="Approve">
                                     <div
                                         className={`${styleSearch.noFill} mr-5`}
+                                        onClick={() => UpdateStatus("Posted")}
                                     >
                                         <Image
                                             src="/Images/f_check.png"
@@ -225,7 +359,7 @@ export default function Receiptsbook({
 
             <div
                 className={`table_container ${
-                    type !== "receipts-book" && "hAuto"
+                    type !== "receipts-book" && "max-half"
                 }`}
             >
                 <table className="table_list">
@@ -258,7 +392,7 @@ export default function Receiptsbook({
                     </thead>
                     <tbody>
                         {isReceiptBookData?.itemArray.map(
-                            (item: any, index: number) => (
+                            (item: isTableItemObjRB, index: number) => (
                                 <List
                                     key={index}
                                     itemDetail={item}
@@ -330,53 +464,100 @@ const List = ({
     AddHandler,
     DeleteHandlerChildren,
 }: ListProps) => {
-    const updateValue = (key: string, value: string) => {
-        const newItems = isReceiptBookData?.itemArray.map((item: any) => {
-            if (itemDetail.id == item.id) {
-                if (key === "select") {
-                    return {
-                        ...item,
-                        select: !item.select,
-                    };
+    const updateValue = (key: string, e: any) => {
+        const indexID = e.target.getAttribute("data-indexID");
+        const indexAmount = e.target.getAttribute("data-indexAmount");
+        const index = e.target.getAttribute("data-index");
+        const ChildRowID = e.target.getAttribute("data-rowID");
+        const newItems = isReceiptBookData?.itemArray.map(
+            (item: isTableItemObjRB) => {
+                if (itemDetail.id == item.id) {
+                    if (key === "select") {
+                        return {
+                            ...item,
+                            select: !item.select,
+                        };
+                    }
+                    if (key === "index") {
+                        return {
+                            ...item,
+                            index: index,
+                            indexAmount: indexAmount,
+                            indexID: indexID,
+                        };
+                    }
+                    if (key === "indexChild") {
+                        const childArray = item.childrenRB.map(
+                            (childItem: childType) => {
+                                if (
+                                    Number(childItem.id) === Number(ChildRowID)
+                                ) {
+                                    return {
+                                        ...childItem,
+                                        amount: indexAmount,
+                                        index: index,
+                                        indexID: indexID,
+                                    };
+                                }
+                                return childItem;
+                            }
+                        );
+                        return {
+                            ...item,
+                            childrenRB: childArray,
+                        };
+                    }
                 }
-                if (key === "index") {
-                    return {
-                        ...item,
-                        index: value,
-                    };
-                }
+                return item;
             }
-            return item;
-        });
+        );
         setTableItem({
             itemArray: newItems,
             selectAll: false,
         });
     };
 
-    const SelectHandler = (value: string) => {
-        updateValue("index", value);
+    const SelectHandler = (e: any) => {
+        updateValue("index", e);
         setChangeData({
-            dataThatChange: value,
+            dataThatChangeID: itemDetail.id,
             fromWhere: "receipt book",
-            id: itemDetail.id,
-            key: "",
+            parentID: itemDetail.id,
+            childreID: "",
         });
     };
 
+    const SelectHandlerChildDD = (e: any) => {
+        const ChildRowID = e.target.getAttribute("data-rowID");
+        updateValue("indexChild", e);
+        setChangeData({
+            dataThatChangeID: itemDetail.id,
+            fromWhere: "receipt book",
+            parentID: itemDetail.id,
+            childreID: ChildRowID,
+        });
+    };
+
+    const SelectedIndexFilter: any = itemDetail.childrenRB.map(
+        (selectedIndex) => {
+            return Number(selectedIndex.indexID);
+        }
+    );
+    let SelectedIndex = [Number(itemDetail.indexID), ...SelectedIndexFilter];
+
+    if (itemDetail.indexID === "" && itemDetail.childrenRB.length <= 0) {
+        SelectedIndex = [];
+    }
+
     return (
         <>
-            <tr
-                className={`${
-                    itemDetail.childrenBankCredit.length > 0 && "noBorder"
-                }`}
-            >
+            <tr className={`${itemDetail.childrenRB.length > 0 && "noBorder"}`}>
                 {type === "receipts-book" && (
                     <td className="checkbox">
                         <div className="item">
                             <input
                                 type="checkbox"
-                                onChange={(e: any) => updateValue("select", "")}
+                                onChange={(e: any) => updateValue("select", e)}
                                 checked={itemDetail.select}
                             />
                         </div>
@@ -416,8 +597,9 @@ const List = ({
                         <DropdownIndex
                             name="index"
                             value={itemDetail.index}
+                            selectedIndex={SelectedIndex}
                             selectHandler={SelectHandler}
-                            endpoint="/finance/customer-facility/charges"
+                            rowID={itemDetail.id}
                         />
                     )}
                 </td>
@@ -441,9 +623,17 @@ const List = ({
                             />
                         </div>
 
-                        {itemDetail.variance !== "0" &&
-                            itemDetail.childrenBankCredit.length <= 0 && (
-                                <div className="ml-5 1024px:ml-2">
+                        {itemDetail.variance !== 0 &&
+                            itemDetail.childrenRB.length <= 0 && (
+                                <div
+                                    className={`ml-5 1024px:ml-2 ${
+                                        itemDetail.variance !== "0" &&
+                                        itemDetail.index === "" &&
+                                        itemDetail.variance !== 0 &&
+                                        itemDetail.childrenRB.length <= 0 &&
+                                        "pointer-events-none opacity-[.5]"
+                                    }`}
+                                >
                                     <BsPlusLg
                                         onClick={() =>
                                             AddHandler(itemDetail.id)
@@ -454,75 +644,115 @@ const List = ({
                     </td>
                 )}
             </tr>
-            {itemDetail.childrenBankCredit.map(
-                (itemChildren, index: number) => (
-                    <tr
-                        key={index}
-                        className={`${
-                            itemDetail.childrenBankCredit.length - 1 !==
-                                index && "noBorder"
-                        }`}
-                    >
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>
-                            {type === "receipts-book" ? (
-                                itemChildren.index
-                            ) : (
-                                <DropdownIndex
-                                    name="index"
-                                    value={itemChildren.index}
-                                    selectHandler={SelectHandler}
-                                    endpoint="/finance/customer-facility/charges"
-                                />
-                            )}
-                        </td>
-                        {type !== "receipts-book" && (
-                            <td>
-                                <InputNumberForTable
-                                    onChange={() => {}}
-                                    value={itemDetail.variance}
-                                    className={
-                                        "field disabled w-full max-w-[150px] text-end"
-                                    }
-                                    type={""}
-                                />
-                            </td>
-                        )}
-                        {type !== "receipts-book" && (
-                            <td className="actionIcon">
-                                <div>
-                                    <HiMinus
-                                        onClick={() =>
-                                            DeleteHandlerChildren(
-                                                itemDetail.id,
-                                                itemChildren.id
-                                            )
-                                        }
-                                    />
-                                </div>
-
-                                {itemDetail.variance !== "0" &&
-                                    itemDetail.childrenBankCredit.length - 1 ===
-                                        index && (
-                                        <div className="ml-5 1024px:ml-2">
-                                            <BsPlusLg
-                                                onClick={() =>
-                                                    AddHandler(itemDetail.id)
-                                                }
-                                            />
-                                        </div>
-                                    )}
-                            </td>
-                        )}
-                    </tr>
-                )
-            )}
+            {itemDetail.childrenRB.map((itemChildren, index: number) => (
+                <ChildList
+                    key={index}
+                    itemDetail={itemDetail}
+                    itemChildren={itemChildren}
+                    SelectHandlerChildDD={SelectHandlerChildDD}
+                    index={index}
+                    type={type}
+                    SelectedIndex={SelectedIndex}
+                    DeleteHandlerChildren={DeleteHandlerChildren}
+                    AddHandler={AddHandler}
+                />
+            ))}
         </>
+    );
+};
+
+type ChildListProps = {
+    itemDetail: isTableItemObjRB;
+    index: number;
+    type: string;
+    itemChildren: childType;
+    SelectHandlerChildDD: (e: any) => void;
+    SelectedIndex: number[];
+    AddHandler: (id: string | number) => void;
+    DeleteHandlerChildren: (
+        parentID: string | number,
+        selectedID: string | number
+    ) => void;
+};
+
+const ChildList = ({
+    itemDetail,
+    index,
+    type,
+    itemChildren,
+    SelectHandlerChildDD,
+    SelectedIndex,
+    DeleteHandlerChildren,
+    AddHandler,
+}: ChildListProps) => {
+    return (
+        <tr
+            className={`${
+                itemDetail.childrenRB.length - 1 !== index && "noBorder"
+            }`}
+        >
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>
+                {type === "receipts-book" ? (
+                    itemChildren.index
+                ) : (
+                    <DropdownIndex
+                        name="index"
+                        value={itemChildren.index}
+                        selectHandler={SelectHandlerChildDD}
+                        selectedIndex={SelectedIndex}
+                        rowID={itemChildren.id}
+                    />
+                )}
+            </td>
+            {type !== "receipts-book" && (
+                <td>
+                    <InputNumberForTable
+                        onChange={() => {}}
+                        value={itemDetail.variance}
+                        className={
+                            "field disabled w-full max-w-[150px] text-end"
+                        }
+                        type={""}
+                    />
+                </td>
+            )}
+            {type !== "receipts-book" && (
+                <td className="actionIcon">
+                    <div>
+                        <HiMinus
+                            onClick={() =>
+                                DeleteHandlerChildren(
+                                    itemDetail.id,
+                                    itemChildren.id
+                                )
+                            }
+                        />
+                    </div>
+
+                    {itemDetail.variance !== 0 && (
+                        <div
+                            className={`ml-5 1024px:ml-2 ${
+                                itemDetail.variance !== "0" &&
+                                itemChildren.index === "" &&
+                                itemDetail.variance !== 0 &&
+                                itemDetail.childrenRB.length - 1 === index &&
+                                "pointer-events-none opacity-[.5]"
+                            }`}
+                        >
+                            <BsPlusLg
+                                onClick={() => AddHandler(itemDetail.id)}
+                            />
+                        </div>
+                    )}
+                </td>
+            )}
+        </tr>
     );
 };
