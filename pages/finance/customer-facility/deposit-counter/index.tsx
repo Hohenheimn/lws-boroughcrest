@@ -1,14 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import AppContext from "../../../../components/Context/AppContext";
 import BankCredit, {
     isTableBankCredit,
     isTableItemObjBC,
 } from "../../../../components/FINANCE/CustomerFacility/DepositCounter/BankCreditComp";
+import { SaveTagging } from "../../../../components/FINANCE/CustomerFacility/DepositCounter/Query";
 import Receiptsbook, {
     isReceiptBookData,
     isTableItemObjRB,
 } from "../../../../components/FINANCE/CustomerFacility/DepositCounter/Receiptsbook";
 
+type Payload = {
+    id: number;
+    type_of_id: string;
+    tag_ids: number[];
+};
+
 export default function DepositCounter() {
+    const { setPrompt } = useContext(AppContext);
     const [changeData, setChangeData] = useState({
         dataThatChangeID: "",
         fromWhere: "",
@@ -107,6 +116,64 @@ export default function DepositCounter() {
         return;
     }, [ReceiptBookData.itemArray, isBankCredit.itemArray]);
 
+    const onSuccess = () => {
+        setPrompt({
+            message: `Items successfully updated tagging!`,
+            type: "success",
+            toggle: true,
+        });
+    };
+    const onError = () => {
+        setPrompt({
+            message: `Something is wrong!`,
+            type: "error",
+            toggle: true,
+        });
+    };
+
+    const { mutate, isLoading } = SaveTagging(onSuccess, onError);
+
+    const SaveHandler = () => {
+        const filterReceipt = ReceiptBookData.itemArray.filter(
+            (items) => items.indexID !== ""
+        );
+        const filterBankCredit = isBankCredit.itemArray.filter(
+            (items) => Number(items.rec_ref_id) !== 0
+        );
+        const PayloadRB = filterReceipt.map((itemRB) => {
+            const childrenID = itemRB.childrenRB.map((childItem) => {
+                return childItem.indexID;
+            });
+            return {
+                id: itemRB.id,
+                type_of_id: "receipt_book",
+                tag_ids: [...childrenID, itemRB.indexID],
+            };
+        });
+        const PayloadBC = filterBankCredit.map((itemBC) => {
+            const childrenID = itemBC.childrenBC.map((childItem) => {
+                return childItem.receipt_id;
+            });
+            return {
+                id: itemBC.id,
+                type_of_id: "bank_credit",
+                tag_ids: [...childrenID, itemBC.rec_ref_id],
+            };
+        });
+
+        const Payload = [...PayloadRB, ...PayloadBC];
+
+        if (Payload.length > 0) {
+            mutate(Payload);
+        } else {
+            setPrompt({
+                message: `No tagging happens!`,
+                type: "draft",
+                toggle: true,
+            });
+        }
+    };
+
     return (
         <>
             <Receiptsbook
@@ -116,6 +183,8 @@ export default function DepositCounter() {
                 setReceiptBookData={setReceiptBookData}
                 isBankCredit={isBankCredit}
                 setBankCredit={setBankCredit}
+                SaveHandler={SaveHandler}
+                isLoadingSave={isLoading}
             />
             <div className="my-10 h-[1px] bg-gray-300 w-full"></div>
             <BankCredit

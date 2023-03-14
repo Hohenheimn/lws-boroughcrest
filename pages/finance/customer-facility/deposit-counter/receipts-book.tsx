@@ -24,6 +24,8 @@ export default function ReceiptsBook() {
             setReceiptBookData={setReceiptBookData}
             isBankCredit={isBankCredit}
             setBankCredit={setBankCredit}
+            SaveHandler={() => {}}
+            isLoadingSave={undefined}
         />
     );
 }

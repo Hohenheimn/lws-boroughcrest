@@ -11,6 +11,7 @@ type Props = {
     value: string | number;
     keyType: string;
     rowID: string | number;
+    selecteRefRec: number[];
 };
 
 export default function DropdownReceipt_Reference({
@@ -19,6 +20,7 @@ export default function DropdownReceipt_Reference({
     value,
     keyType,
     rowID,
+    selecteRefRec,
 }: Props) {
     const [toggle, setToggle] = useState(false);
     const [tempSearch, setTempSearch] = useState<string | number>("");
@@ -54,6 +56,7 @@ export default function DropdownReceipt_Reference({
                                 setToggle={setToggle}
                                 keyType={keyType}
                                 rowID={rowID}
+                                selecteRefRec={selecteRefRec}
                             />
                         )}
                     </>
@@ -72,8 +75,14 @@ type ListItem = {
     setToggle: Function;
     keyType: string;
     rowID: string | number;
+    selecteRefRec: number[];
 };
-
+type Receipt = {
+    receipt_no: string;
+    reference_no: string;
+    id: number;
+    amount: number;
+};
 const ListItem = ({
     name,
     tempSearch,
@@ -83,9 +92,10 @@ const ListItem = ({
     setToggle,
     keyType,
     rowID,
+    selecteRefRec,
 }: ListItem) => {
     const { isLoading, data, isError } = useQuery(
-        ["DC-DD", name, tempSearch],
+        ["DC-RB", name, tempSearch],
         () => {
             return api.get(
                 `/finance/customer-facility/deposit-counter?list_type=receipt_book&status=unmatched?keywords=${tempSearch}`,
@@ -98,28 +108,27 @@ const ListItem = ({
         }
     );
 
-    const [isReceipt, setReceipt] = useState([
-        {
-            receipt_no: "0000000333",
-            reference_no: "RF48489754",
-            id: 2,
-            amount: 1000,
-        },
-        {
-            receipt_no: "0000000334",
-            reference_no: "RF48489755",
-            id: 2,
-            amount: 1000,
-        },
-        {
-            receipt_no: "0000000335",
-            reference_no: "RF48489756",
-            id: 2,
-            amount: 1000,
-        },
-    ]);
+    const [isReceipt, setReceipt] = useState<Receipt[]>([]);
+
+    useEffect(() => {
+        if (data?.status === 200) {
+            const CloneArray = data?.data.map((item: any) => {
+                return {
+                    receipt_no: item.receipt_no,
+                    reference_no: item.reference_no,
+                    id: item.id,
+                    amount: item.amount_paid,
+                };
+            });
+            const filterIndex = CloneArray.filter((item: Receipt) => {
+                return !selecteRefRec.includes(item.id);
+            });
+            setReceipt(filterIndex);
+        }
+    }, [data?.status, tempSearch]);
 
     const modal = useRef<any>();
+
     useEffect(() => {
         const clickOutSide = (e: any) => {
             if (!modal?.current?.contains(e.target)) {
@@ -138,7 +147,11 @@ const ListItem = ({
                 <li
                     key={index}
                     data-ref_ref_id={item.id}
-                    data-receiptno={item.receipt_no}
+                    data-receiptno={
+                        item.receipt_no === null
+                            ? item.reference_no
+                            : item.receipt_no
+                    }
                     data-referenceno={item.reference_no}
                     data-amount={item.amount}
                     data-rowid={rowID}
@@ -148,18 +161,12 @@ const ListItem = ({
                     }}
                 >
                     {keyType === "receipt"
-                        ? item.receipt_no
+                        ? item.receipt_no === null
+                            ? item.reference_no
+                            : item.receipt_no
                         : item.reference_no}
                 </li>
             ))}
-
-            {/* {data?.data.map((item: any, index: number) => (
-                <li key={index} onClick={selectHandler} data-id={item.id}>
-                    {
-                        key === 'receipt' ? item.receipt_no : item.reference_no
-                    }
-                </li>
-            ))} */}
 
             {isLoading && (
                 <li>
@@ -176,6 +183,7 @@ const ListItem = ({
             )}
 
             {isError && <li>Receipt Book cannot be found!</li>}
+            {isReceipt.length <= 0 && <li>No Receipt Book unmatched found!</li>}
         </ul>
     );
 };

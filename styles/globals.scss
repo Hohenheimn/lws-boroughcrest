@@ -182,6 +182,9 @@ select {
 .table_container.hAuto {
     @apply h-auto min-h-0 max-h-[300px];
 }
+.table_container.min-zero {
+    @apply h-auto min-h-0;
+}
 .table_container.noMin {
     @apply min-h-0;
 }

@@ -144,12 +144,11 @@ const DropdownItems = ({
                     />
                 </div>
             )}
-            {isError ||
-                (data?.data.length <= 0 && (
-                    <div className="w-full flex justify-center py-3">
-                        <h1>Bank Account cannot be found!</h1>
-                    </div>
-                ))}
+            {isError && (
+                <div className="w-full flex justify-center py-3">
+                    <h1>Bank Account cannot be found!</h1>
+                </div>
+            )}
         </>
     );
 };

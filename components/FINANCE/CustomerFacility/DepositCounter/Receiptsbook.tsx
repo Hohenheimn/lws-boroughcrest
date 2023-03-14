@@ -9,7 +9,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { GetReceiptsBook, MultipleUpdateReceiptBook } from "./Query";
 
-import { BarLoader } from "react-spinners";
+import { BarLoader, ScaleLoader } from "react-spinners";
 import { BsPlusLg, BsSearch } from "react-icons/bs";
 import DepositDetail from "./DepositDetail";
 import { HiMinus } from "react-icons/hi";
@@ -59,6 +59,8 @@ type Props = {
     isBankCredit: isTableBankCredit;
     setBankCredit: Function;
     setChangeData: Function;
+    SaveHandler: () => void;
+    isLoadingSave: any;
 };
 
 export default function Receiptsbook({
@@ -66,6 +68,8 @@ export default function Receiptsbook({
     isReceiptBookData,
     setReceiptBookData,
     setChangeData,
+    SaveHandler,
+    isLoadingSave,
 }: Props) {
     const { setPrompt } = useContext(AppContext);
     const router = useRouter();
@@ -85,10 +89,12 @@ export default function Receiptsbook({
         });
     };
 
+    const displayType = type === "receipts-book" ? "matched" : "unmatched";
+
     const { data, isLoading, isError } = GetReceiptsBook(
         isSearch,
         TablePage,
-        type,
+        displayType,
         "receipt_book"
     );
     // APPLY RECEIPT BOOK DATA FROM API
@@ -102,71 +108,23 @@ export default function Receiptsbook({
                     }
                 });
                 return {
-                    id: 1,
+                    id: item.id,
                     document_date: item.receipt_date,
                     depositor: item.depositor.name,
                     receipt_no: item.receipt_no,
                     bank_and_account_no: `${item.bank_account.bank_branch} - ${item.bank_account.bank_acc_no}`,
                     reference_no: item.reference_no,
                     deposit_date: item.deposit_date,
-                    deposit_amount: item.deposit_amount,
-                    variance: item.deposit_amount,
+                    deposit_amount: item.amount_paid,
+                    variance: item.amount_paid,
                     index: "",
                     indexID: "",
                     select: select,
                     childrenRB: [],
                 };
             });
-            // Additional blank row field
             setReceiptBookData({
-                itemArray: [
-                    ...CloneArray,
-                    {
-                        id: 2,
-                        document_date: "Sep 24 2022",
-                        depositor: "Hulio Cadiente",
-                        receipt_no: "0000000333",
-                        bank_and_account_no: "BD0-549888",
-                        reference_no: "RF48489754",
-                        deposit_date: "Sept 28 2022",
-                        deposit_amount: 1000,
-                        select: false,
-                        variance: 1000,
-                        index: "",
-                        indexID: "",
-                        childrenRB: [],
-                    },
-                    {
-                        id: 3,
-                        document_date: "Sep 24 2023",
-                        depositor: "Hulio Cadiente 1",
-                        receipt_no: "0000000334",
-                        bank_and_account_no: "BD0-549888",
-                        reference_no: "RF48489755",
-                        deposit_date: "Sept 28 2022",
-                        deposit_amount: 1000,
-                        select: false,
-                        variance: 1000,
-                        index: "",
-                        indexID: "",
-                        childrenRB: [],
-                    },
-                    {
-                        id: 4,
-                        document_date: "Sep 24 2024",
-                        depositor: "Hulio Cadiente 2",
-                        receipt_no: "0000000335",
-                        bank_and_account_no: "BD0-549888",
-                        reference_no: "RF48489756",
-                        deposit_date: "Sept 28 2022",
-                        deposit_amount: 1000,
-                        select: false,
-                        variance: 1000,
-                        index: "",
-                        indexID: "",
-                        childrenRB: [],
-                    },
-                ],
+                itemArray: CloneArray,
                 selectAll: false,
             });
         }
@@ -242,7 +200,7 @@ export default function Receiptsbook({
 
     const onSuccess = () => {
         setPrompt({
-            message: `Items successfully ${buttonClicked}!`,
+            message: `Items successfully updated status!`,
             type: "success",
             toggle: true,
         });
@@ -303,7 +261,9 @@ export default function Receiptsbook({
                                 <Tippy theme="ThemeRed" content="Return">
                                     <div
                                         className={`${styleSearch.noFill} mr-5`}
-                                        onClick={() => UpdateStatus("Return")}
+                                        onClick={() =>
+                                            UpdateStatus("In Process")
+                                        }
                                     >
                                         <Image
                                             src="/Images/f_back.png"
@@ -351,7 +311,20 @@ export default function Receiptsbook({
                             <Link href="/finance/customer-facility/deposit-counter/create-deposit">
                                 <a className="buttonRed mr-5">CREATE DEPOSIT</a>
                             </Link>
-                            <button className="buttonRed">SAVE</button>
+                            <button
+                                className="buttonRed"
+                                onClick={() => SaveHandler()}
+                            >
+                                {isLoadingSave ? (
+                                    <ScaleLoader
+                                        color="#fff"
+                                        height="10px"
+                                        width="2px"
+                                    />
+                                ) : (
+                                    "SAVE"
+                                )}
+                            </button>
                         </li>
                     </ul>
                 </section>

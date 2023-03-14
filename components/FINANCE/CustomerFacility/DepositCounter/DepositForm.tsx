@@ -5,12 +5,20 @@ import { TextNumberDisplay } from "../../../Reusable/NumberFormat";
 import BankAccountDropDown from "../../../Reusable/BankAccountDropDown";
 import { CreateDepositCounter, GetCashReceipt } from "./Query";
 import { format, isValid, parse } from "date-fns";
-import { BarLoader } from "react-spinners";
+import { BarLoader, ScaleLoader } from "react-spinners";
 import TableErrorMessage from "../../../Reusable/TableErrorMessage";
 import AppContext from "../../../Context/AppContext";
+import { useRouter } from "next/router";
 
 type Props = {
     id?: number;
+    defDate: string;
+    defReferenceNo: string;
+    defBank: {
+        id: string | number;
+        value: string;
+    };
+    defCashReceipt: CashReceiptsTable;
 };
 
 type CashReceiptsTable = {
@@ -26,7 +34,14 @@ type CashReceiptsObj = {
     select: false;
 };
 
-export default function DepositForm({ id }: Props) {
+export default function DepositForm({
+    id,
+    defDate,
+    defReferenceNo,
+    defBank,
+    defCashReceipt,
+}: Props) {
+    const router = useRouter();
     const { setPrompt } = useContext(AppContext);
     const [isReferenceNo, setReferenceNo] = useState("");
     const [isDate, setDate] = useState({
@@ -45,9 +60,22 @@ export default function DepositForm({ id }: Props) {
 
     const { data, isLoading, isError } = GetCashReceipt();
 
-    const onSuccessMutate = () => {};
+    const onSuccessMutate = () => {
+        setPrompt({
+            message: "Deposit successfully registered",
+            toggle: true,
+            type: "save",
+        });
+        router.push("/finance/customer-facility/deposit-counter");
+    };
 
-    const onErrorMutate = () => {};
+    const onErrorMutate = () => {
+        setPrompt({
+            message: "Something is wrong!",
+            toggle: true,
+            type: "error",
+        });
+    };
     const { mutate, isLoading: MutateLoading } = CreateDepositCounter(
         onSuccessMutate,
         onErrorMutate
@@ -82,37 +110,11 @@ export default function DepositForm({ id }: Props) {
                     receipt_no: item.receipt_no,
                     amount: item.amount_paid,
                     id: item.id,
-                    select: false,
+                    select: select,
                 };
             });
             setCashReceipt({
-                itemArray: [
-                    ...CloneArray,
-                    {
-                        document_date: "123",
-                        customer: "13123",
-                        receipt_no: "1232",
-                        amount: "123123",
-                        id: 0,
-                        select: false,
-                    },
-                    {
-                        document_date: "123",
-                        customer: "13123",
-                        receipt_no: "1232",
-                        amount: "123123",
-                        id: 1,
-                        select: false,
-                    },
-                    {
-                        document_date: "123",
-                        customer: "13123",
-                        receipt_no: "1232",
-                        amount: "123123",
-                        id: 3,
-                        select: false,
-                    },
-                ],
+                itemArray: CloneArray,
                 selectAll: false,
             });
         }
@@ -145,14 +147,14 @@ export default function DepositForm({ id }: Props) {
             reference_no: isReferenceNo,
             amount_paid: isAmount,
             bank_account_id: isBankAccount.id,
-            cash_receipt_ids: `[${ids}]`,
+            cash_receipt_ids: ids,
         };
 
         if (
-            Payload.deposit_date === "" &&
-            Payload.reference_no === "" &&
-            Payload.amount_paid === 0 &&
-            Payload.bank_account_id === "" &&
+            Payload.deposit_date === "" ||
+            Payload.reference_no === "" ||
+            Payload.amount_paid === 0 ||
+            Payload.bank_account_id === "" ||
             ids.length <= 0
         ) {
             setPrompt({
@@ -162,13 +164,14 @@ export default function DepositForm({ id }: Props) {
                 type: "draft",
             });
         } else {
-            mutate(Payload);
+            // mutate(Payload);
+            console.log(Payload);
         }
     };
 
     return (
         <>
-            <h1 className=" text-[24px] 1366px:text-[20px] mb-5 480px:mb-2 flex items-center">
+            <h1 className=" text-[24px] 1550px:text-[20px] mb-5 480px:mb-2 flex items-center">
                 {id !== undefined ? "Modify Deposit" : "Create Deposit"}
             </h1>
             <ul className="flex flex-wrap justify-between pb-8 mb-8">
@@ -221,10 +224,10 @@ export default function DepositForm({ id }: Props) {
                     </h1>
                 </li>
             </ul>
-            <h1 className=" text-[20px] 1366px:text-[17px] mb-5 480px:mb-2 flex items-center lowGray">
+            <h1 className=" text-[20px] 1550px:text-[17px] mb-5 480px:mb-2 flex items-center lowGray">
                 Cash Receipts
             </h1>
-            <div className="table_container">
+            <div className="table_container min-zero">
                 <table className="table_list">
                     <thead className="textRed">
                         <tr>
@@ -281,8 +284,12 @@ export default function DepositForm({ id }: Props) {
             )}
             {isError && <TableErrorMessage />}
             <div className="flex justify-end">
-                <button className="buttonRed" onClick={SubmitHandler}>
-                    SAVE
+                <button className="buttonRed" onClick={() => SubmitHandler()}>
+                    {isLoading ? (
+                        <ScaleLoader color="#fff" height="10px" width="2px" />
+                    ) : (
+                        "SAVE"
+                    )}
                 </button>
             </div>
         </>

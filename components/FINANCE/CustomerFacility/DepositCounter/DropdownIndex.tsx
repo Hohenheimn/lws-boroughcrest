@@ -74,6 +74,12 @@ type ListItem = {
     selectedIndex: number[];
 };
 
+type Index = {
+    index: number | string;
+    id: number;
+    amount: number | string;
+};
+
 const ListItem = ({
     name,
     tempSearch,
@@ -85,10 +91,10 @@ const ListItem = ({
     selectedIndex,
 }: ListItem) => {
     const { isLoading, data, isError } = useQuery(
-        ["DC-DD", name, tempSearch],
+        ["DC-BC", name, tempSearch, "unmatched"],
         () => {
             return api.get(
-                `/finance/customer-facility/bank-credit?status=unmatched?keywords=${tempSearch}`,
+                `/finance/customer-facility/bank-credit?status=unmatched&keywords=${tempSearch}`,
                 {
                     headers: {
                         Authorization: "Bearer " + getCookie("user"),
@@ -98,30 +104,23 @@ const ListItem = ({
         }
     );
 
-    const [isIndex, setIndex] = useState([
-        {
-            index: "0001",
-            id: 1,
-            amount: 500,
-        },
-        {
-            index: "0002",
-            id: 2,
-            amount: 500,
-        },
-        {
-            index: "0003",
-            id: 3,
-            amount: 300,
-        },
-    ]);
+    const [isIndex, setIndex] = useState<Index[]>([]);
 
     useEffect(() => {
-        const filterIndex = isIndex.filter((item) => {
-            return !selectedIndex.includes(item.id);
-        });
-        setIndex(filterIndex);
-    }, []);
+        if (data?.status === 200) {
+            const CloneArray = data?.data.map((item: any) => {
+                return {
+                    index: item.index,
+                    id: item.id,
+                    amount: item.credit,
+                };
+            });
+            const filterIndex = CloneArray.filter((item: Index) => {
+                return !selectedIndex.includes(item.id);
+            });
+            setIndex(filterIndex);
+        }
+    }, [data?.status, tempSearch]);
 
     const modal = useRef<any>();
     useEffect(() => {
@@ -153,13 +152,6 @@ const ListItem = ({
                     {item.index}
                 </li>
             ))}
-
-            {/* {data?.data.map((item: any, index: number) => (
-                <li key={index} onClick={selectHandler} data-id={item.id}>
-                    {item.name}
-                </li>
-            ))} */}
-
             {isLoading && (
                 <li>
                     <div>
@@ -175,6 +167,7 @@ const ListItem = ({
             )}
 
             {isError && <li>Index cannot be found!</li>}
+            {isIndex.length <= 0 && <li>No index unmatched found!</li>}
         </ul>
     );
 };

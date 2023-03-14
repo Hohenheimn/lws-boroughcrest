@@ -40,10 +40,17 @@ export type isTableItemObjBC = {
     status: string;
     select: boolean;
     receipt_no: string;
+    rec_ref_id: string;
     reference_no: string;
     rec_ref_amount: string | number;
     variance: number | string;
     childrenBC: childType[];
+    receipt_book: receipt_book[];
+};
+
+type receipt_book = {
+    receipt_no: number | null | Text;
+    reference_no: number | null | Text;
 };
 
 type childType = {
@@ -167,12 +174,12 @@ export default function BankCreditComp({
         });
     };
 
-    const status = type === "bank-credit" ? "matched" : "unmatched";
+    const displayStatus = type === "bank-credit" ? "matched" : "unmatched";
 
     const dateFrom = parse(isPeriod.from, "MMM dd yyyy", new Date());
     const dateTo = parse(isPeriod.to, "MMM dd yyyy", new Date());
     const { data, isLoading, isError } = GetBankCredit(
-        status,
+        displayStatus,
         isValid(dateFrom) ? format(dateFrom, "yyyy-MM-dd") : "",
         isValid(dateTo) ? format(dateTo, "yyyy-MM-dd") : "",
         isSelectBankIDS,
@@ -187,77 +194,44 @@ export default function BankCreditComp({
                 let referenceno = "";
                 let select = false;
                 let childrenBC: childType[] = [];
+                let rec_ref_id = 0;
                 isBankCredit.itemArray.map((itemSelect) => {
                     if (itemSelect.id === item.id) {
                         receiptno = itemSelect.receipt_no;
                         referenceno = itemSelect.reference_no;
                         select = itemSelect.select;
                         childrenBC = itemSelect.childrenBC;
+                        rec_ref_id = Number(itemSelect.rec_ref_id);
                     }
                 });
 
                 return {
                     id: item.id,
-                    index: "",
+                    index: item.index,
                     bank_account_no: item.bank_account.bank_acc_no,
                     credit_date: item.date,
                     credit_amount: item.credit,
                     remarks: item.remarks,
                     variance: item.credit,
                     status: item.status,
-                    receipt_no: item.receipt_book.receipt_no,
-                    reference_no: item.receipt_book.reference_no,
+                    receipt_no: receiptno,
+                    rec_ref_id: rec_ref_id,
+                    reference_no: referenceno,
                     select: select,
                     childrenBC: childrenBC,
+                    receipt_book: item.receipt_book.map(
+                        (receiptBookItem: any) => {
+                            return {
+                                receipt_no: receiptBookItem.receipt_no,
+                                reference_no: receiptBookItem.reference_no,
+                            };
+                        }
+                    ),
                 };
             });
             // Additional blank row field
             setBankCredit({
-                itemArray: [
-                    ...CloneArray,
-                    {
-                        id: 1,
-                        index: "0001",
-                        bank_account_no: "658651645",
-                        credit_date: "1998-8-16",
-                        credit_amount: 500,
-                        remarks: "Sample remarks",
-                        variance: 500,
-                        status: "Pending",
-                        receipt_no: "",
-                        reference_no: "",
-                        select: false,
-                        childrenBC: [],
-                    },
-                    {
-                        id: 2,
-                        index: "0002",
-                        bank_account_no: "231345",
-                        credit_date: "2015-8-16",
-                        credit_amount: 500,
-                        remarks: "Sample remarks 2",
-                        variance: 500,
-                        status: "Posted",
-                        receipt_no: "",
-                        reference_no: "",
-                        select: false,
-                        childrenBC: [],
-                    },
-                    {
-                        id: 3,
-                        index: "0003",
-                        bank_account_no: "231345",
-                        credit_date: "2015-8-16",
-                        credit_amount: 300,
-                        remarks: "Sample remarks 2",
-                        variance: 300,
-                        status: "Posted",
-                        receipt_no: "",
-                        reference_no: "",
-                        select: false,
-                        childrenBC: [],
-                    },
-                ],
+                itemArray: CloneArray,
                 selectAll: false,
             });
         }
@@ -267,7 +241,7 @@ export default function BankCreditComp({
 
     const onSuccess = () => {
         setPrompt({
-            message: `Items successfully ${buttonClicked}!`,
+            message: `Items successfully updated status`,
             type: "success",
             toggle: true,
         });
@@ -360,7 +334,7 @@ export default function BankCreditComp({
                             <Tippy theme="ThemeRed" content="Return">
                                 <div
                                     className={`${styleSearch.noFill} mr-5`}
-                                    onClick={() => UpdateStatus("Return")}
+                                    onClick={() => UpdateStatus("In Process")}
                                 >
                                     <Image
                                         src="/Images/f_back.png"
@@ -547,6 +521,7 @@ const List = ({
                         receipt_no: receiptno,
                         reference_no: reference_no,
                         rec_ref_amount: amount,
+                        rec_ref_id: rec_ref_id,
                     };
                 }
                 if (key === "rec_ref_Child") {
@@ -579,6 +554,19 @@ const List = ({
         });
     };
 
+    const SelectedRefRecFilter: any = itemDetail.childrenBC.map(
+        (selectedRefRec) => {
+            return Number(selectedRefRec.receipt_id);
+        }
+    );
+    let SelectedRefRec = [
+        Number(itemDetail.rec_ref_id),
+        ...SelectedRefRecFilter,
+    ];
+
+    if (itemDetail.rec_ref_id === "" && itemDetail.childrenBC.length <= 0) {
+        SelectedRefRec = [];
+    }
     return (
         <>
             <tr className={`${itemDetail.childrenBC.length > 0 && "noBorder"}`}>
@@ -606,7 +594,21 @@ const List = ({
                 </td>
                 <td>{itemDetail.remarks}</td>
                 {type === "bank-credit" ? (
-                    <td>{itemDetail.receipt_no}</td>
+                    <td>
+                        {itemDetail.receipt_book?.map(
+                            (item: any, index: number) => (
+                                <span key={index}>
+                                    {item.receipt_no === null
+                                        ? item.reference_no
+                                        : item.receipt_no}{" "}
+                                    {itemDetail?.receipt_book?.length - 1 ===
+                                    index
+                                        ? ""
+                                        : ", "}
+                                </span>
+                            )
+                        )}
+                    </td>
                 ) : (
                     <td className="maxlarge">
                         {isSelect.rec_ref === "" ? (
@@ -670,6 +672,7 @@ const List = ({
                                 selectHandler={SelectHandler}
                                 keyType={isSelect.rec_ref}
                                 rowID={1}
+                                selecteRefRec={SelectedRefRec}
                             />
                         )}
                     </td>
@@ -723,26 +726,13 @@ const List = ({
                             />
                         </div>
 
-                        {itemDetail.variance !== "0" &&
-                            itemDetail.receipt_no !== "" &&
-                            itemDetail.variance !== 0 &&
-                            itemDetail.childrenBC.length <= 0 && (
-                                <div className="ml-5 1024px:ml-2">
-                                    <BsPlusLg
-                                        onClick={() =>
-                                            AddHandler(itemDetail.id)
-                                        }
-                                    />
-                                </div>
-                            )}
-
                         {itemDetail.variance !== 0 &&
                             itemDetail.childrenBC.length <= 0 && (
                                 <div
                                     className={`ml-5 1024px:ml-2 ${
                                         itemDetail.variance !== "0" &&
-                                        itemDetail.receipt_no === "" &&
                                         itemDetail.variance !== 0 &&
+                                        itemDetail.reference_no === "" &&
                                         itemDetail.childrenBC.length <= 0 &&
                                         "pointer-events-none opacity-[.5]"
                                     }`}
@@ -769,6 +759,7 @@ const List = ({
                     DeleteHandler={DeleteHandler}
                     AddHandler={AddHandler}
                     DeleteHandlerChildren={DeleteHandlerChildren}
+                    SelectedRefRec={SelectedRefRec}
                 />
             ))}
         </>
@@ -787,6 +778,7 @@ type ChildList = {
         parentID: string | number,
         selectedID: string | number
     ) => void;
+    SelectedRefRec: number[];
 };
 
 const ChildList = ({
@@ -797,13 +789,18 @@ const ChildList = ({
     AddHandler,
     type,
     index,
+    SelectedRefRec,
 }: ChildList) => {
     const [isSelect, setSelect] = useState({
         rec_ref: "",
         toggle: false,
     });
     return (
-        <tr>
+        <tr
+            className={`${
+                itemDetail.childrenBC.length - 1 !== index && "noBorder"
+            }`}
+        >
             <td></td>
             <td></td>
             <td></td>
@@ -873,6 +870,7 @@ const ChildList = ({
                         selectHandler={SelectHandlerChildDD}
                         keyType={isSelect.rec_ref}
                         rowID={itemChildren.id}
+                        selecteRefRec={SelectedRefRec}
                     />
                 )}
             </td>
@@ -897,21 +895,23 @@ const ChildList = ({
                         />
                     </div>
 
-                    {itemDetail.variance !== 0 && (
-                        <div
-                            className={`ml-5 1024px:ml-2 ${
-                                itemDetail.variance !== "0" &&
-                                itemChildren.receipt_no === "" &&
-                                itemDetail.variance !== 0 &&
-                                itemDetail.childrenBC.length - 1 === index &&
-                                "pointer-events-none opacity-[.5]"
-                            }`}
-                        >
-                            <BsPlusLg
-                                onClick={() => AddHandler(itemDetail.id)}
-                            />
-                        </div>
-                    )}
+                    {itemDetail.variance !== 0 &&
+                        itemDetail.childrenBC.length - 1 === index && (
+                            <div
+                                className={`ml-5 1024px:ml-2 ${
+                                    itemDetail.variance !== "0" &&
+                                    itemChildren.reference_no === "" &&
+                                    itemDetail.variance !== 0 &&
+                                    itemDetail.childrenBC.length - 1 ===
+                                        index &&
+                                    "pointer-events-none opacity-[.5]"
+                                }`}
+                            >
+                                <BsPlusLg
+                                    onClick={() => AddHandler(itemDetail.id)}
+                                />
+                            </div>
+                        )}
                 </td>
             )}
         </tr>
