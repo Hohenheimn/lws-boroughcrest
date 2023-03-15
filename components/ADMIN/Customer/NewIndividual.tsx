@@ -9,6 +9,7 @@ import Calendar from "../../Reusable/Calendar";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import DynamicPopOver from "../../Reusable/DynamicPopOver";
 import SelectDropdown from "../../Reusable/SelectDropdown";
+import { format, isValid, parse } from "date-fns";
 
 type Props = {
     setActiveForm: Function;
@@ -41,9 +42,12 @@ export default function NewIndividual({
         toggle: false,
     });
     useEffect(() => {
+        const date = parse(isDate.value, "MMM dd yyyy", new Date());
         setNewCustomer({
             ...isNewCustomer,
-            individual_birth_date: isDate.value,
+            individual_birth_date: isValid(date)
+                ? format(date, "yyyy-MM-dd")
+                : "",
         });
     }, [isDate.value]);
     // end
@@ -378,7 +382,7 @@ export default function NewIndividual({
                                         type="text"
                                         value={isDate.value}
                                         readOnly
-                                        placeholder="dd/mm/yyyy"
+                                        placeholder="MMM dd yyyy"
                                         onClick={() =>
                                             setDate({ ...isDate, toggle: true })
                                         }

@@ -6,17 +6,19 @@ import api from "../../../../util/api";
 import DynamicPopOver from "../../../Reusable/DynamicPopOver";
 
 type Props = {
-    endpoint: string;
     name: string;
-    selectHandler: (value: string) => void;
+    selectHandler: (e: any) => void;
     value: string | number;
+    selectedIndex: number[];
+    rowID: string | number;
 };
 
 export default function DropdownIndex({
-    endpoint,
     name,
     selectHandler,
     value,
+    rowID,
+    selectedIndex,
 }: Props) {
     const [toggle, setToggle] = useState(false);
     const [tempSearch, setTempSearch] = useState<string | number>("");
@@ -44,13 +46,14 @@ export default function DropdownIndex({
                     <>
                         {toggle && (
                             <ListItem
-                                endpoint={endpoint}
+                                rowID={rowID}
                                 name={name}
                                 tempSearch={tempSearch}
                                 setTempSearch={setTempSearch}
                                 value={value}
                                 selectHandler={selectHandler}
                                 setToggle={setToggle}
+                                selectedIndex={selectedIndex}
                             />
                         )}
                     </>
@@ -61,34 +64,63 @@ export default function DropdownIndex({
 }
 
 type ListItem = {
-    endpoint: string;
     name: string;
     tempSearch: string | number;
     setTempSearch: Function;
     value: string | number;
-    selectHandler: (value: string) => void;
+    selectHandler: (e: any) => void;
     setToggle: Function;
+    rowID: string | number;
+    selectedIndex: number[];
+};
+
+type Index = {
+    index: number | string;
+    id: number;
+    amount: number | string;
 };
 
 const ListItem = ({
-    endpoint,
     name,
     tempSearch,
     selectHandler,
     value,
     setTempSearch,
     setToggle,
+    rowID,
+    selectedIndex,
 }: ListItem) => {
     const { isLoading, data, isError } = useQuery(
-        ["DC-DD", name, tempSearch],
+        ["DC-BC", name, tempSearch, "unmatched"],
         () => {
-            return api.get(`${endpoint}?keywords=${tempSearch}`, {
-                headers: {
-                    Authorization: "Bearer " + getCookie("user"),
-                },
-            });
+            return api.get(
+                `/finance/customer-facility/bank-credit?status=unmatched&keywords=${tempSearch}`,
+                {
+                    headers: {
+                        Authorization: "Bearer " + getCookie("user"),
+                    },
+                }
+            );
         }
     );
+
+    const [isIndex, setIndex] = useState<Index[]>([]);
+
+    useEffect(() => {
+        if (data?.status === 200) {
+            const CloneArray = data?.data.map((item: any) => {
+                return {
+                    index: item.index,
+                    id: item.id,
+                    amount: item.credit,
+                };
+            });
+            const filterIndex = CloneArray.filter((item: Index) => {
+                return !selectedIndex.includes(item.id);
+            });
+            setIndex(filterIndex);
+        }
+    }, [data?.status, tempSearch]);
 
     const modal = useRef<any>();
     useEffect(() => {
@@ -105,28 +137,21 @@ const ListItem = ({
     });
     return (
         <ul ref={modal} className="dropdown-list w-full">
-            <li
-                onClick={() => {
-                    selectHandler("0001");
-                    setToggle(false);
-                }}
-            >
-                0001
-            </li>
-            <li
-                onClick={() => {
-                    selectHandler("0002");
-                    setToggle(false);
-                }}
-            >
-                0002
-            </li>
-            {/* {data?.data.map((item: any, index: number) => (
-                <li key={index} onClick={selectHandler} data-id={item.id}>
-                    {item.name}
+            {isIndex.map((item, index) => (
+                <li
+                    key={index}
+                    data-index={item.index}
+                    data-indexid={item.id}
+                    data-indexamount={item.amount}
+                    data-rowid={rowID}
+                    onClick={(e) => {
+                        selectHandler(e);
+                        setToggle(false);
+                    }}
+                >
+                    {item.index}
                 </li>
-            ))} */}
-
+            ))}
             {isLoading && (
                 <li>
                     <div>
@@ -141,8 +166,8 @@ const ListItem = ({
                 </li>
             )}
 
-            {isError && <li>{name} cannot be found!</li>}
-            {data?.data.length <= 0 && <li>{name} cannot be found!</li>}
+            {isError && <li>Index cannot be found!</li>}
+            {isIndex.length <= 0 && <li>No index unmatched found!</li>}
         </ul>
     );
 };

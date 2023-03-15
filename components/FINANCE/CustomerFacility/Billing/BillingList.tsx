@@ -244,60 +244,102 @@ const List = ({ itemDetail, type }: ListProps) => {
             )}
             {type === "Unposted" && (
                 <td className="checkbox">
-                    <div className="item">
-                        <div>
-                            <h2>Date</h2>
-                        </div>
-                    </div>
+                    <Link
+                        href={`/finance/customer-facility/billing/invoice-list/${itemDetail.id}`}
+                    >
+                        <a>
+                            <div className="item">
+                                <div>
+                                    <h2>Date</h2>
+                                </div>
+                            </div>
+                        </a>
+                    </Link>
                 </td>
             )}
 
             {type !== "Unposted" && (
                 <td>
-                    <div className="item">
-                        <div>
-                            <h2>Billing Date</h2>
-                        </div>
-                    </div>
+                    <Link
+                        href={`/finance/customer-facility/billing/invoice-list/${itemDetail.id}`}
+                    >
+                        <a>
+                            <div className="item">
+                                <div>
+                                    <h2>Billing Date</h2>
+                                </div>
+                            </div>
+                        </a>
+                    </Link>
                 </td>
             )}
             {type !== "Unposted" && (
                 <td>
-                    <div className="item">
-                        <div>
-                            <h2>Invoice No.</h2>
-                        </div>
-                    </div>
+                    <Link
+                        href={`/finance/customer-facility/billing/invoice-list/${itemDetail.id}`}
+                    >
+                        <a>
+                            <div className="item">
+                                <div>
+                                    <h2>Invoice No.</h2>
+                                </div>
+                            </div>
+                        </a>
+                    </Link>
                 </td>
             )}
             <td>
-                <div className="item">
-                    <div>
-                        <h2>Customer</h2>
-                    </div>
-                </div>
+                <Link
+                    href={`/finance/customer-facility/billing/invoice-list/${itemDetail.id}`}
+                >
+                    <a>
+                        <div className="item">
+                            <div>
+                                <h2>Customer</h2>
+                            </div>
+                        </div>
+                    </a>
+                </Link>
             </td>
             <td>
-                <div className="item">
-                    <div>
-                        <h2>Property</h2>
-                    </div>
-                </div>
+                <Link
+                    href={`/finance/customer-facility/billing/invoice-list/${itemDetail.id}`}
+                >
+                    <a>
+                        <div className="item">
+                            <div>
+                                <h2>Property</h2>
+                            </div>
+                        </div>
+                    </a>
+                </Link>
             </td>
             <td>
-                <div className="item">
-                    <div>
-                        <h2>Due Amount</h2>
-                    </div>
-                </div>
+                <Link
+                    href={`/finance/customer-facility/billing/invoice-list/${itemDetail.id}`}
+                >
+                    <a>
+                        <div className="item">
+                            <div>
+                                <h2>Due Amount</h2>
+                            </div>
+                        </div>
+                    </a>
+                </Link>
             </td>
             {type === "Unposted" && (
                 <td>
-                    <div className="item">
-                        <div>
-                            <h2>Applied Advances</h2>
-                        </div>
-                    </div>
+                    <Link
+                        href={`/finance/customer-facility/billing/invoice-list/${itemDetail.id}`}
+                    >
+                        <a>
+                            <div className="item">
+                                <div>
+                                    <h2>Applied Advances</h2>
+                                </div>
+                            </div>
+                        </a>
+                    </Link>
                 </td>
             )}
             <td>
@@ -316,7 +358,13 @@ const List = ({ itemDetail, type }: ListProps) => {
                     </div>
                 ) : (
                     <div>
-                        <h2>Due Date</h2>
+                        <Link
+                            href={`/finance/customer-facility/billing/invoice-list/${itemDetail.id}`}
+                        >
+                            <a>
+                                <h2>Due Date</h2>
+                            </a>
+                        </Link>
                     </div>
                 )}
             </td>
@@ -324,7 +372,7 @@ const List = ({ itemDetail, type }: ListProps) => {
             {type === "Unposted" ? (
                 <td className="icon pr-5">
                     <div className="flex h-full">
-                        <Tippy theme="ThemeRed" content={"View"}>
+                        {/* <Tippy theme="ThemeRed" content={"View"}>
                             <div className="icon mr-5">
                                 <Link
                                     href={`/finance/customer-facility/billing/invoice-list/${itemDetail.id}`}
@@ -334,7 +382,7 @@ const List = ({ itemDetail, type }: ListProps) => {
                                     </a>
                                 </Link>
                             </div>
-                        </Tippy>
+                        </Tippy> */}
                         <Tippy theme="ThemeRed" content={"Modify"}>
                             <div className="icon">
                                 <Link

@@ -67,6 +67,9 @@ h6.lowGray {
     .cal {
         @apply absolute translate-y-[-50%] top-[50%] right-[15px] bg-white pointer-events-none;
     }
+    .disabled {
+        @apply bg-[#e3e3e3] pointer-events-none;
+    }
     // input[type="date"]::-webkit-inner-spin-button,
     // input[type="date"]::-webkit-calendar-picker-indicator {
     //     color: white;
@@ -127,7 +130,7 @@ select {
 }
 // button
 .buttonRed {
-    @apply uppercase px-5 text-[14px] 480px:text-[12px] 480px:px-2  py-2 rounded-lg bg-ThemeRed text-white leading-none duration-75 hover:bg-ThemeRed50;
+    @apply uppercase px-5 text-[14px] 1550px:text-[12px] 480px:px-2  py-2 rounded-lg bg-ThemeRed text-white leading-none duration-75 hover:bg-ThemeRed50;
 }
 .button_cancel {
     @apply text-ThemeRed font-semibold cursor-pointer text-[14px] mr-5 uppercase;
@@ -173,8 +176,17 @@ select {
         }
     }
 }
+.table_container.max-half {
+    @apply max-h-[30vh] min-h-[300px] 1550px:min-h-[200px];
+}
 .table_container.hAuto {
     @apply h-auto min-h-0 max-h-[300px];
+}
+.table_container.min-zero {
+    @apply h-auto min-h-0;
+}
+.table_container.noMin {
+    @apply min-h-0;
 }
 
 .table_list {
@@ -209,6 +221,9 @@ select {
                 @apply text-ThemeRed  1550px:text-[13px];
             }
         }
+    }
+    thead.modalColor {
+        @apply bg-[#e2e3e4];
     }
     thead.capitalizeText {
         tr {
@@ -315,6 +330,21 @@ select {
             .td.wid20 {
                 width: 500px;
             }
+        }
+        tr.noBorder {
+            @apply border-none;
+        }
+    }
+    tbody.textBlack {
+        @apply text-RegularColor;
+        td {
+            @apply text-RegularColor;
+        }
+        h2 {
+            @apply text-RegularColor;
+        }
+        p {
+            @apply text-RegularColor;
         }
     }
 }

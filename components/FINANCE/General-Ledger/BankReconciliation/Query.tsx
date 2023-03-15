@@ -45,3 +45,13 @@ export const GetBR = (
         }
     );
 };
+
+export const ShowBankRecon = (id: string | number) => {
+    return useQuery(["show-bank-reconciliation", id], () => {
+        return api.get(`/finance/customer-facility/deposit-counter/${id}`, {
+            headers: {
+                Authorization: "Bearer " + getCookie("user"),
+            },
+        });
+    });
+};

@@ -9,6 +9,7 @@ import {
     InputNumberForTable,
 } from "../../../Reusable/NumberFormat";
 import TableErrorMessage from "../../../Reusable/TableErrorMessage";
+import { format, isValid, parse } from "date-fns";
 
 type isTableItem = isTableItemObj[];
 
@@ -120,11 +121,12 @@ export default function GeneralLedgerTable({ date }: GeneralLedgerTableProps) {
                 };
             }
         });
+
+        const dateConvert = parse(date, "MMM dd yyyy", new Date());
         const Payload = {
             general_ledger: subledger,
-            date: date,
+            date: isValid(dateConvert) ? format(dateConvert, "yyyy-MM-dd") : "",
         };
-
         if (validate) mutate(Payload);
     };
 

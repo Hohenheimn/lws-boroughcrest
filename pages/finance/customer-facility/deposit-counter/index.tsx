@@ -1,179 +1,196 @@
-import React, { useEffect, useState } from "react";
-import BankCredit from "../../../../components/FINANCE/CustomerFacility/DepositCounter/BankCreditComp";
-import Receiptsbook from "../../../../components/FINANCE/CustomerFacility/DepositCounter/Receiptsbook";
+import React, { useContext, useEffect, useState } from "react";
+import AppContext from "../../../../components/Context/AppContext";
+import BankCredit, {
+    isTableBankCredit,
+    isTableItemObjBC,
+} from "../../../../components/FINANCE/CustomerFacility/DepositCounter/BankCreditComp";
+import { SaveTagging } from "../../../../components/FINANCE/CustomerFacility/DepositCounter/Query";
+import Receiptsbook, {
+    isReceiptBookData,
+    isTableItemObjRB,
+} from "../../../../components/FINANCE/CustomerFacility/DepositCounter/Receiptsbook";
+
+type Payload = {
+    id: number;
+    type_of_id: string;
+    tag_ids: number[];
+};
 
 export default function DepositCounter() {
+    const { setPrompt } = useContext(AppContext);
     const [changeData, setChangeData] = useState({
-        dataThatChange: "",
+        dataThatChangeID: "",
         fromWhere: "",
-        id: "",
-        key: "",
+        parentID: "",
+        childreID: "",
     });
-    const [isReceiptBookData, setReceiptBookData] = useState({
+    const [ReceiptBookData, setReceiptBookData] = useState<isReceiptBookData>({
         selectAll: false,
-        itemArray: [
-            {
-                id: 1,
-                document_date: "Sep 28 2022",
-                depositor: "Juan Carlos",
-                receipt_no: "0000000303",
-                bank_and_account_no: "BD0-549845",
-                reference_no: "RF54897321",
-                deposit_date: "Sept 28 2022",
-                deposit_amount: 10000,
-                index: "",
-                select: false,
-                variance: "",
-                children: false,
-                childrenID: "",
-            },
-            {
-                id: 2,
-                document_date: "Sep 24 2022",
-                depositor: "Hulio Cadiente",
-                receipt_no: "0000000333",
-                bank_and_account_no: "BD0-549888",
-                reference_no: "RF48489754",
-                deposit_date: "Sept 28 2022",
-                deposit_amount: 1000,
-                index: "",
-                select: false,
-                variance: "",
-                children: false,
-                childrenID: "",
-            },
-        ],
+        itemArray: [],
     });
 
-    const [isBankCredit, setBankCredit] = useState({
-        itemArray: [
-            {
-                id: 1,
-                index: "0001",
-                bank_account_no: "BDO-555534",
-                credit_date: "SEP 22 2022",
-                credit_amount: 5000,
-                remarks: "Bounce Check",
-                receipt_reference_no: "Receipt No.",
-                variance: "",
-                select: false,
-                status: "Posted",
-                receipt_no: "",
-                reference_no: "",
-                children: false,
-            },
-            {
-                id: 2,
-                index: "0002",
-                bank_account_no: "BDO-555534",
-                credit_date: "SEP 22 2022",
-                credit_amount: 3000,
-                remarks: "Bounce Check",
-                receipt_reference_no: "Receipt No.",
-                variance: "",
-                select: false,
-                status: "Posted",
-                receipt_no: "",
-                reference_no: "",
-                children: false,
-            },
-        ],
+    const [isBankCredit, setBankCredit] = useState<isTableBankCredit>({
+        itemArray: [],
         selectAll: false,
     });
-
     // Compute Pairing of Receipt Book and Bank Credit
     useEffect(() => {
-        if (changeData.dataThatChange === "") return;
-        // Receipt book's Index to Bank Credit
+        if (changeData.dataThatChangeID === "") return;
+        // // Receipt book's Index to Bank Credit
         if (changeData.fromWhere === "receipt book") {
-            const getBankCreditWithSameIndex = isBankCredit.itemArray.filter(
-                (item) => item.index === changeData.dataThatChange
-            );
-            const cloneReceiptBook = isReceiptBookData.itemArray.map((item) => {
-                if (Number(changeData.id) === item.id) {
-                    let variance = 0;
-                    // Computation for Children row
-                    if (item.children) {
-                        variance =
-                            Number(item.variance) -
-                            Number(getBankCreditWithSameIndex[0].credit_amount);
-                    } else {
-                        // Computation for Main row
-                        variance =
-                            Number(item.deposit_amount) -
-                            Number(getBankCreditWithSameIndex[0].credit_amount);
+            const cloneReceiptBook = ReceiptBookData.itemArray.map(
+                (item: isTableItemObjRB) => {
+                    if (Number(changeData.parentID) === Number(item.id)) {
+                        let variance = item.deposit_amount;
+                        item.childrenRB.map((item) => {
+                            variance = Number(variance) - Number(item.amount);
+                        });
+                        variance = Number(variance) - Number(item.indexAmount);
+
+                        if (Number.isNaN(variance)) {
+                            return {
+                                ...item,
+                                variance: item.deposit_amount,
+                            };
+                        } else {
+                            return {
+                                ...item,
+                                variance: variance <= 0 ? 0 : variance,
+                            };
+                        }
                     }
-                    return {
-                        ...item,
-                        variance: `${variance <= 0 ? 0 : variance}`,
-                    };
+                    return item;
                 }
-                return item;
-            });
+            );
+
             setReceiptBookData({
                 selectAll: false,
                 itemArray: cloneReceiptBook,
             });
             setChangeData({
-                dataThatChange: "",
+                dataThatChangeID: "",
                 fromWhere: "",
-                id: "",
-                key: "",
+                parentID: "",
+                childreID: "",
             });
         }
         // Bank Credit's Reference no and receipt no to Receipt Book
         if (changeData.fromWhere === "bank credit") {
-            const getReceiptBookWithSameRecRef =
-                changeData.key === "receipt"
-                    ? isReceiptBookData.itemArray.filter(
-                          (item) =>
-                              item.receipt_no === changeData.dataThatChange
-                      )
-                    : isReceiptBookData.itemArray.filter(
-                          (item) =>
-                              item.reference_no === changeData.dataThatChange
-                      );
-            const cloneBankCredit = isBankCredit.itemArray.map((item) => {
-                if (Number(changeData.id) === item.id) {
-                    const variance =
-                        Number(item.credit_amount) -
-                        Number(getReceiptBookWithSameRecRef[0].deposit_amount);
-                    return {
-                        ...item,
-                        variance: `${variance <= 0 ? 0 : variance}`,
-                    };
+            const cloneBankCredit = isBankCredit.itemArray.map(
+                (item: isTableItemObjBC) => {
+                    if (Number(changeData.parentID) === Number(item.id)) {
+                        let variance = item.credit_amount;
+                        item.childrenBC.map((item) => {
+                            variance = Number(variance) - Number(item.amount);
+                        });
+                        variance =
+                            Number(variance) - Number(item.rec_ref_amount);
+                        if (Number.isNaN(variance)) {
+                            return {
+                                ...item,
+                                variance: item.credit_amount,
+                            };
+                        } else {
+                            return {
+                                ...item,
+                                variance: variance <= 0 ? 0 : variance,
+                            };
+                        }
+                    }
+                    return item;
                 }
-                return item;
-            });
+            );
+
             setBankCredit({
                 selectAll: false,
                 itemArray: cloneBankCredit,
             });
+
             setChangeData({
-                dataThatChange: "",
+                dataThatChangeID: "",
                 fromWhere: "",
-                id: "",
-                key: "",
+                parentID: "",
+                childreID: "",
             });
         }
         return;
-    }, [isReceiptBookData.itemArray, isBankCredit.itemArray]);
+    }, [ReceiptBookData.itemArray, isBankCredit.itemArray]);
+
+    const onSuccess = () => {
+        setPrompt({
+            message: `Items successfully updated tagging!`,
+            type: "success",
+            toggle: true,
+        });
+    };
+    const onError = () => {
+        setPrompt({
+            message: `Something is wrong!`,
+            type: "error",
+            toggle: true,
+        });
+    };
+
+    const { mutate, isLoading } = SaveTagging(onSuccess, onError);
+
+    const SaveHandler = () => {
+        const filterReceipt = ReceiptBookData.itemArray.filter(
+            (items) => items.indexID !== ""
+        );
+        const filterBankCredit = isBankCredit.itemArray.filter(
+            (items) => Number(items.rec_ref_id) !== 0
+        );
+        const PayloadRB = filterReceipt.map((itemRB) => {
+            const childrenID = itemRB.childrenRB.map((childItem) => {
+                return childItem.indexID;
+            });
+            return {
+                id: itemRB.id,
+                type_of_id: "receipt_book",
+                tag_ids: [...childrenID, itemRB.indexID],
+            };
+        });
+        const PayloadBC = filterBankCredit.map((itemBC) => {
+            const childrenID = itemBC.childrenBC.map((childItem) => {
+                return childItem.receipt_id;
+            });
+            return {
+                id: itemBC.id,
+                type_of_id: "bank_credit",
+                tag_ids: [...childrenID, itemBC.rec_ref_id],
+            };
+        });
+
+        const Payload = [...PayloadRB, ...PayloadBC];
+
+        if (Payload.length > 0) {
+            mutate(Payload);
+        } else {
+            setPrompt({
+                message: `No tagging happens!`,
+                type: "draft",
+                toggle: true,
+            });
+        }
+    };
 
     return (
         <>
             <Receiptsbook
-                type=""
+                type="unmatched"
                 setChangeData={setChangeData}
-                isReceiptBookData={isReceiptBookData}
+                isReceiptBookData={ReceiptBookData}
                 setReceiptBookData={setReceiptBookData}
                 isBankCredit={isBankCredit}
                 setBankCredit={setBankCredit}
+                SaveHandler={SaveHandler}
+                isLoadingSave={isLoading}
             />
             <div className="my-10 h-[1px] bg-gray-300 w-full"></div>
             <BankCredit
                 type=""
                 setChangeData={setChangeData}
-                isReceiptBookData={isReceiptBookData}
+                isReceiptBookData={ReceiptBookData}
                 setReceiptBookData={setReceiptBookData}
                 isBankCredit={isBankCredit}
                 setBankCredit={setBankCredit}

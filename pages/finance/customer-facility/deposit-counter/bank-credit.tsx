@@ -8,38 +8,7 @@ export default function BankCredit() {
         selectAll: false,
     });
     const [isBankCredit, setBankCredit] = useState({
-        itemArray: [
-            {
-                id: 1,
-                index: "0001",
-                bank_account_no: "BDO-555534",
-                credit_date: "SEP 22 2022",
-                credit_amount: 5000,
-                remarks: "Bounce Check",
-                receipt_reference_no: "Receipt No.",
-                variance: "",
-                select: false,
-                status: "Posted",
-                receipt_no: "",
-                reference_no: "",
-                children: false,
-            },
-            {
-                id: 2,
-                index: "0002",
-                bank_account_no: "BDO-555534",
-                credit_date: "SEP 22 2022",
-                credit_amount: 5000,
-                remarks: "Bounce Check",
-                receipt_reference_no: "Receipt No.",
-                variance: "",
-                select: false,
-                status: "Posted",
-                receipt_no: "",
-                reference_no: "",
-                children: false,
-            },
-        ],
+        itemArray: [],
         selectAll: false,
     });
     return (

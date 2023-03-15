@@ -36,7 +36,7 @@ export default function PeriodCalendar({
                             <input
                                 value={value.from}
                                 readOnly
-                                className=" outline-none w-[90px] font-NHU-medium text-[#545454] 1550px:text-[14px]"
+                                className=" outline-none w-[120px] text-center font-NHU-medium text-[#545454] 1550px:text-[14px]"
                             />
                             <p className=" text-ThemeRed font-NHU-regular mx-2">
                                 -
@@ -44,7 +44,7 @@ export default function PeriodCalendar({
                             <input
                                 value={value.to}
                                 readOnly
-                                className=" outline-none w-[100px] font-NHU-medium text-[#545454] 1550px:text-[14px]"
+                                className=" outline-none w-[120px] text-center font-NHU-medium text-[#545454] 1550px:text-[14px]"
                             />
                             <Image
                                 src="/Images/CalendarMini.png"

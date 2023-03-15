@@ -6,6 +6,7 @@ import "tippy.js/dist/tippy.css";
 import Link from "next/link";
 import Image from "next/image";
 import { TextNumberDisplay } from "../../../Reusable/NumberFormat";
+import { format, isValid, parse } from "date-fns";
 
 type JournalDetail = {
     Detail: {
@@ -48,6 +49,8 @@ export default function JournalDetail({ Detail }: JournalDetail) {
             setTotalCredit((value) => value + Number(item.credit));
         });
     }, []);
+
+    const date = parse(Detail.date, "yyyy-MM-dd", new Date());
     return (
         <div>
             <div className="flex justify-between items-center mb-5">
@@ -92,7 +95,9 @@ export default function JournalDetail({ Detail }: JournalDetail) {
                 <li className={style.noMb}>
                     <div className={style.row}>
                         <p className="label_text">DATE</p>
-                        <h4 className="main_text">{Detail?.date}</h4>
+                        <h4 className="main_text">
+                            {isValid(date) ? format(date, "MMM dd yyyy") : ""}
+                        </h4>
                     </div>
                     <div className={style.row}>
                         <p className="label_text">JOURNAL NO.</p>

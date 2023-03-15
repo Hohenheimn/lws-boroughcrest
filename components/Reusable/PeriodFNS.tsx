@@ -66,8 +66,8 @@ export default function PeriodFNS({ setToggle, isValue, setValue }: PeriodFNS) {
 
     const setDatehandler = () => {
         setValue({
-            from: format(isDateRange.from.value, "MM/dd/yyyy"),
-            to: format(isDateRange.to.value, "MM/dd/yyyy"),
+            from: format(isDateRange.from.value, "MMM dd yyyy"),
+            to: format(isDateRange.to.value, "MMM dd yyyy"),
         });
         setToggle(false);
     };

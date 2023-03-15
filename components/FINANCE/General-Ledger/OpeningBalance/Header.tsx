@@ -83,7 +83,7 @@ export default function Header({ isDate, setDate }: HeaderProps) {
                                     type="text"
                                     value={isDate.value}
                                     onChange={() => {}}
-                                    placeholder="dd/mm/yyyy"
+                                    placeholder="MMM dd yyyy"
                                     onClick={() =>
                                         setDate({ ...isDate, toggle: true })
                                     }

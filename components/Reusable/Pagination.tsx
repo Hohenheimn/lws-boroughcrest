@@ -5,7 +5,7 @@ import "tippy.js/dist/tippy.css";
 
 type Pagination = {
     setTablePage: Function;
-    TablePage: number;
+    TablePage: number | string;
     PageNumber: number;
     CurrentPage: number;
 };
