@@ -91,7 +91,7 @@ const ListItem = ({
     selectedIndex,
 }: ListItem) => {
     const { isLoading, data, isError } = useQuery(
-        ["DC-BC", name, tempSearch, "unmatched"],
+        ["DD-BC", name, tempSearch, "unmatched"],
         () => {
             return api.get(
                 `/finance/customer-facility/bank-credit?status=unmatched&keywords=${tempSearch}`,
@@ -166,8 +166,10 @@ const ListItem = ({
                 </li>
             )}
 
-            {isError && <li>Index cannot be found!</li>}
-            {isIndex.length <= 0 && <li>No index unmatched found!</li>}
+            {isError && <li>Something is wrong!</li>}
+            {isIndex.length <= 0 && !isLoading && (
+                <li>No index unmatched found!</li>
+            )}
         </ul>
     );
 };

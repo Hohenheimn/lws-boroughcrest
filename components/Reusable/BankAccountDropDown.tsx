@@ -16,7 +16,7 @@ type Props = {
 
 export default function BankAccountDropDown({ isObject, setObject }: Props) {
     const [isToggle, setToggle] = useState(false);
-    const [tempVal, setTempVal] = useState<any>("");
+    const [tempVal, setTempVal] = useState<any>(isObject.value);
 
     const UpdateHandler = (
         id: string | number,

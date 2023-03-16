@@ -20,22 +20,31 @@ export const GetReceiptsBook = (
                     },
                 }
             );
+        },
+        {
+            refetchOnWindowFocus: false,
         }
     );
 };
 
 export const GetCashReceipt = () => {
-    return useQuery(["cash-receipts-list"], () => {
-        return api.get(
-            `/finance/customer-facility/deposit-counter?list_type=cash_receipt`,
+    return useQuery(
+        ["cash-receipts-list"],
+        () => {
+            return api.get(
+                `/finance/customer-facility/deposit-counter?list_type=cash_receipt`,
 
-            {
-                headers: {
-                    Authorization: "Bearer " + getCookie("user"),
-                },
-            }
-        );
-    });
+                {
+                    headers: {
+                        Authorization: "Bearer " + getCookie("user"),
+                    },
+                }
+            );
+        },
+        {
+            refetchOnWindowFocus: false,
+        }
+    );
 };
 
 export const GetBankCredit = (
@@ -59,12 +68,15 @@ export const GetBankCredit = (
                     },
                 }
             );
+        },
+        {
+            refetchOnWindowFocus: false,
         }
     );
 };
 
 export const CreateDepositCounter = (onSuccess: any, onError: any) => {
-    const queryCLient = useQueryClient();
+    const queryClient = useQueryClient();
     return useMutation(
         (Payload: any) => {
             return api.post(
@@ -80,8 +92,22 @@ export const CreateDepositCounter = (onSuccess: any, onError: any) => {
         {
             onSuccess: () => {
                 onSuccess();
-                queryCLient.invalidateQueries("bank-credit-list");
-                queryCLient.invalidateQueries("receipts-book-list");
+                queryClient.invalidateQueries([
+                    "bank-credit-list",
+                    "unmatched",
+                    "",
+                    "",
+                    [],
+                    1,
+                    "",
+                ]);
+                queryClient.invalidateQueries([
+                    "receipts-book-list",
+                    "",
+                    "",
+                    "receipt_book",
+                    "unmatched",
+                ]);
             },
             onError: () => {
                 onError();
@@ -93,7 +119,7 @@ export const CreateDepositCounter = (onSuccess: any, onError: any) => {
 export const UpdateDepositCounter = (
     onSucces: any,
     onError: any,
-    id: string | number
+    id: string | number | undefined
 ) => {
     const queryClient = useQueryClient();
     return useMutation(
@@ -111,8 +137,22 @@ export const UpdateDepositCounter = (
         {
             onSuccess: () => {
                 onSucces();
-                queryClient.invalidateQueries("bank-credit-list");
-                queryClient.invalidateQueries("receipts-book-list");
+                queryClient.invalidateQueries([
+                    "bank-credit-list",
+                    "unmatched",
+                    "",
+                    "",
+                    [],
+                    1,
+                    "",
+                ]);
+                queryClient.invalidateQueries([
+                    "receipts-book-list",
+                    "",
+                    "",
+                    "receipt_book",
+                    "unmatched",
+                ]);
             },
             onError: onError,
         }
@@ -200,8 +240,22 @@ export const SaveTagging = (onSuccess: any, onError: any) => {
         {
             onSuccess: () => {
                 onSuccess();
-                queryClient.invalidateQueries("bank-credit-list");
-                queryClient.invalidateQueries("receipts-book-list");
+                queryClient.invalidateQueries([
+                    "bank-credit-list",
+                    "unmatched",
+                    "",
+                    "",
+                    [],
+                    1,
+                    "",
+                ]);
+                queryClient.invalidateQueries([
+                    "receipts-book-list",
+                    "",
+                    "",
+                    "receipt_book",
+                    "unmatched",
+                ]);
             },
             onError: onError,
         }

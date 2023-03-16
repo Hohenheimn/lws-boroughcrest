@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import HeaderCollection from "../../../../components/FINANCE/CustomerFacility/Collection/HeaderCollection";
-import HeaderReceivePayment from "../../../../components/FINANCE/CustomerFacility/Collection/ReceivePayment/HeaderReceivePayment";
+import ReceivePaymentForm from "../../../../components/FINANCE/CustomerFacility/Collection/ReceivePayment/ReceivePaymentForm";
 
 export default function ReceivePayment() {
     const [isFilterText, setFilterText] = useState<string[]>([]);
@@ -14,7 +14,7 @@ export default function ReceivePayment() {
                 FilterEndpoint=""
                 page="receive-payment"
             />
-            <HeaderReceivePayment />
+            <ReceivePaymentForm />
         </>
     );
 }

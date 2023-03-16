@@ -10,10 +10,7 @@ export default function CreateDeposit() {
                 id: "",
                 value: "",
             }}
-            defCashReceipt={{
-                selectAll: false,
-                itemArray: [],
-            }}
+            defCashReceipt={[]}
         />
     );
 }

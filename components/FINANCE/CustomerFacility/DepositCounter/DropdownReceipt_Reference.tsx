@@ -95,10 +95,10 @@ const ListItem = ({
     selecteRefRec,
 }: ListItem) => {
     const { isLoading, data, isError } = useQuery(
-        ["DC-RB", name, tempSearch],
+        ["DD-RB", "Receipt-Book-dropdown", tempSearch],
         () => {
             return api.get(
-                `/finance/customer-facility/deposit-counter?list_type=receipt_book&status=unmatched?keywords=${tempSearch}`,
+                `/finance/customer-facility/deposit-counter?list_type=receipt_book&status=unmatched&keywords=${tempSearch}`,
                 {
                     headers: {
                         Authorization: "Bearer " + getCookie("user"),
@@ -125,7 +125,7 @@ const ListItem = ({
             });
             setReceipt(filterIndex);
         }
-    }, [data?.status, tempSearch]);
+    }, [data, tempSearch]);
 
     const modal = useRef<any>();
 
@@ -182,8 +182,10 @@ const ListItem = ({
                 </li>
             )}
 
-            {isError && <li>Receipt Book cannot be found!</li>}
-            {isReceipt.length <= 0 && <li>No Receipt Book unmatched found!</li>}
+            {isError && <li>Something is wrong!</li>}
+            {isReceipt.length <= 0 && !isLoading && (
+                <li>No Receipt Book unmatched found!</li>
+            )}
         </ul>
     );
 };

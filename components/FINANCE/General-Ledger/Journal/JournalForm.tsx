@@ -15,6 +15,7 @@ import {
     InputNumberForTable,
 } from "../../../Reusable/NumberFormat";
 import { format, isValid, parse } from "date-fns";
+import { TableTwoTotal } from "../../../Reusable/TableTotal";
 
 export type defaultArray = defaultObject[];
 export type defaultObject = {
@@ -246,23 +247,7 @@ export default function JournalForm({
                         </tbody>
                     </table>
                 </div>
-                <div className="flex flex-wrap justify-end py-5 480px:justify-start">
-                    <h1 className="text-start text-[16px] min-w-[200px] 1280px:text-[13px] text-ThemeRed pb-1">
-                        TOTAL
-                    </h1>
-                    <div className="withPeso relative flex items-center text-[#757575] font-NHU-bold mr-10">
-                        <TextNumberDisplay
-                            value={totalDebit}
-                            className="text-end w-full text-[#757575] font-NHU-bold text-[18px] 1280px:text-[13px]"
-                        />
-                    </div>
-                    <div className="withPeso relative flex items-center text-[#757575] font-NHU-bold">
-                        <TextNumberDisplay
-                            value={totalCredit}
-                            className="text-end w-full text-[#757575] font-NHU-bold text-[18px] 1280px:text-[13px]"
-                        />
-                    </div>
-                </div>
+                <TableTwoTotal total1={totalDebit} total2={totalCredit} />
             </div>
             <div className="DropDownSave">
                 <button className="ddback">CANCEL</button>

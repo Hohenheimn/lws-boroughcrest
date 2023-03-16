@@ -105,11 +105,15 @@ const List = ({
     });
     return (
         <ul className="dropdown-list" ref={PopOver}>
-            {data?.data.map((item: customerDD, index: number) => (
-                <li key={index} onClick={() => selectedItem(item)}>
-                    {item.name}
-                </li>
-            ))}
+            {!isLoading && (
+                <>
+                    {data?.data.map((item: customerDD, index: number) => (
+                        <li key={index} onClick={() => selectedItem(item)}>
+                            {item.name}
+                        </li>
+                    ))}
+                </>
+            )}
             {isLoading && (
                 <li>
                     <div>

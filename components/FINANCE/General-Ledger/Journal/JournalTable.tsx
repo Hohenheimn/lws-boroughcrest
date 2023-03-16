@@ -33,7 +33,7 @@ type isTable = {
 };
 
 type isTableItemObj = {
-    id: string | number;
+    id: number;
     date: string;
     particulars: string;
     status: string;
@@ -50,6 +50,13 @@ export default function JournalTable({ type, isPeriod, setPeriod }: Props) {
         itemArray: [],
         selectAll: false,
     });
+
+    const [isSelectedIDs, setSelectedIDs] = useState<number[]>([]);
+
+    useEffect(() => {
+        console.log(isSelectedIDs);
+    }, [isSelectedIDs]);
+
     // ADVANCE FILTER
     const [isAdvFilter, setAdvFilter] = useState<Advancefilter>([]);
 
@@ -80,14 +87,13 @@ export default function JournalTable({ type, isPeriod, setPeriod }: Props) {
 
     useEffect(() => {
         if (data?.status === 200) {
+            let selectAll = false;
             if (data.data.data.length > 0) {
                 let CloneArray = data?.data.data.map((item: isTableItemObj) => {
                     let select = false;
-                    isTableItem.itemArray.map((itemSelect) => {
-                        if (itemSelect.id === item.id) {
-                            select = itemSelect.select;
-                        }
-                    });
+                    if (isSelectedIDs.includes(item.id)) {
+                        select = true;
+                    }
                     const date = parse(item.date, "yyyy-MM-dd", new Date());
                     return {
                         id: item.id,
@@ -98,15 +104,29 @@ export default function JournalTable({ type, isPeriod, setPeriod }: Props) {
                         select: select,
                     };
                 });
+                if (CloneArray.length === isSelectedIDs.length) {
+                    selectAll = true;
+                }
+
                 setTableItem({
                     itemArray: CloneArray,
-                    selectAll: false,
+                    selectAll: selectAll,
                 });
             }
         }
-    }, [data?.status, type, isSearch, TablePage, isFilterText, isPeriod]);
+    }, [data]);
 
     const selectAll = () => {
+        if (isTableItem.selectAll) {
+            // remove
+            setSelectedIDs([]);
+        } else {
+            // add
+            const ReceiptBookIDs = isTableItem.itemArray.map((item) => {
+                return Number(item.id);
+            });
+            setSelectedIDs(ReceiptBookIDs);
+        }
         const newItems = isTableItem?.itemArray.map((item: any) => {
             return {
                 ...item,
@@ -120,6 +140,17 @@ export default function JournalTable({ type, isPeriod, setPeriod }: Props) {
     };
 
     const onSuccess = () => {
+        const tableArray = isTableItem.itemArray.map((item) => {
+            return {
+                ...item,
+                select: false,
+            };
+        });
+        setTableItem({
+            itemArray: tableArray,
+            selectAll: false,
+        });
+        setSelectedIDs([]);
         setPrompt({
             message: `Items successfully ${buttonClicked}!`,
             type: "success",
@@ -142,17 +173,19 @@ export default function JournalTable({ type, isPeriod, setPeriod }: Props) {
 
     const UpdateStatus = (button: string) => {
         buttonClicked = button;
-        let journalIds: any[] = [];
-        isTableItem.itemArray.map((item: isTableItemObj) => {
-            if (item.select === true) {
-                journalIds.push(item.id);
-            }
-        });
         const Payload = {
-            journal_ids: "[" + journalIds.toString() + "]",
+            journal_ids: "[" + isSelectedIDs + "]",
             status: button,
         };
-        updateMutate(Payload);
+        if (isSelectedIDs.length > 0) {
+            updateMutate(Payload);
+        } else {
+            setPrompt({
+                message: "Select a Journal!",
+                type: "draft",
+                toggle: true,
+            });
+        }
     };
 
     return (
@@ -325,6 +358,8 @@ export default function JournalTable({ type, isPeriod, setPeriod }: Props) {
                                             type={type}
                                             isTableItem={isTableItem}
                                             setTableItem={setTableItem}
+                                            setSelectedIDs={setSelectedIDs}
+                                            isSelectedIDs={isSelectedIDs}
                                         />
                                     )
                                 )}
@@ -364,12 +399,31 @@ type ListProps = {
     isTableItem: isTable;
     type: string;
     setTableItem: Function;
+    isSelectedIDs: number[];
+    setSelectedIDs: Function;
 };
 
-const List = ({ itemDetail, type, isTableItem, setTableItem }: ListProps) => {
+const List = ({
+    itemDetail,
+    type,
+    isTableItem,
+    setTableItem,
+    isSelectedIDs,
+    setSelectedIDs,
+}: ListProps) => {
     const updateValue = (e: any) => {
         const newItems = isTableItem?.itemArray.map((item: any) => {
             if (itemDetail.id == item.id) {
+                if (item.select) {
+                    // remove
+                    const filterSelected = isSelectedIDs.filter(
+                        (itemFilt) => Number(item.id) !== itemFilt
+                    );
+                    setSelectedIDs(filterSelected);
+                } else {
+                    // add
+                    setSelectedIDs([...isSelectedIDs, item.id]);
+                }
                 return {
                     ...item,
                     select: !item.select,

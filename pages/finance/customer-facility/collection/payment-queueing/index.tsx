@@ -11,7 +11,7 @@ export default function PaymentQueueing() {
                 setFilterText={setFilterText}
                 isSearch={isSearch}
                 setSearch={setSearch}
-                FilterEndpoint=""
+                FilterEndpoint="/finance/general-ledger/journal/filter-options"
                 page="payment-queueing"
             />
             <div className="table_container">

@@ -76,6 +76,14 @@ export default function ChargeTable({ page, setCreate }: Props) {
                             <th>Base Rate</th>
                             <th>UOM</th>
                             <th>VAT%</th>
+                            <th>Receivable</th>
+                            <th>Discounts</th>
+                            <th>Revenue</th>
+                            <th>Advances</th>
+                            <th>Minimum</th>
+                            <th>Interest</th>
+                            <th>Payment Heirarchy</th>
+                            <th>SOA Sort Order</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -200,6 +208,94 @@ const List = ({ itemDetail }: ListProps) => {
                     <a className="item">
                         <div>
                             <h2>{itemDetail.vat_percent}</h2>
+                        </div>
+                    </a>
+                </Link>
+            </td>
+            <td className="xLarge">
+                <Link
+                    href={`/finance/customer-facility/charge?modify=${itemDetail.id}`}
+                >
+                    <a className="item">
+                        <div>
+                            <h2>{itemDetail.receivable_coa.account_name}</h2>
+                        </div>
+                    </a>
+                </Link>
+            </td>
+            <td className="xLarge">
+                <Link
+                    href={`/finance/customer-facility/charge?modify=${itemDetail.id}`}
+                >
+                    <a className="item">
+                        <div>
+                            <h2>{itemDetail.discounts_coa.account_name}</h2>
+                        </div>
+                    </a>
+                </Link>
+            </td>
+            <td className="xLarge">
+                <Link
+                    href={`/finance/customer-facility/charge?modify=${itemDetail.id}`}
+                >
+                    <a className="item">
+                        <div>
+                            <h2>{itemDetail.revenue_coa.account_name}</h2>
+                        </div>
+                    </a>
+                </Link>
+            </td>
+            <td className="xLarge">
+                <Link
+                    href={`/finance/customer-facility/charge?modify=${itemDetail.id}`}
+                >
+                    <a className="item">
+                        <div>
+                            <h2>{itemDetail.advances_coa.account_name}</h2>
+                        </div>
+                    </a>
+                </Link>
+            </td>
+            <td>
+                <Link
+                    href={`/finance/customer-facility/charge?modify=${itemDetail.id}`}
+                >
+                    <a className="item">
+                        <div>
+                            <h2>{itemDetail.minimum}</h2>
+                        </div>
+                    </a>
+                </Link>
+            </td>
+            <td>
+                <Link
+                    href={`/finance/customer-facility/charge?modify=${itemDetail.id}`}
+                >
+                    <a className="item">
+                        <div>
+                            <h2>{itemDetail.interest}</h2>
+                        </div>
+                    </a>
+                </Link>
+            </td>
+            <td>
+                <Link
+                    href={`/finance/customer-facility/charge?modify=${itemDetail.id}`}
+                >
+                    <a className="item">
+                        <div>
+                            <h2>{itemDetail.payment_heirarchy}</h2>
+                        </div>
+                    </a>
+                </Link>
+            </td>
+            <td>
+                <Link
+                    href={`/finance/customer-facility/charge?modify=${itemDetail.id}`}
+                >
+                    <a className="item">
+                        <div>
+                            <h2>{itemDetail.soa_sort_order}</h2>
                         </div>
                     </a>
                 </Link>

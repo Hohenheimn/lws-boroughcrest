@@ -22,6 +22,7 @@ import {
 } from "../../../Reusable/NumberFormat";
 import TableErrorMessage from "../../../Reusable/TableErrorMessage";
 import AppContext from "../../../Context/AppContext";
+import { useQueryClient } from "react-query";
 
 export type isReceiptBookData = {
     itemArray: isTableItemObjRB[];
@@ -37,6 +38,7 @@ export type isTableItemObjRB = {
     reference_no: string;
     deposit_date: string;
     deposit_amount: number | string;
+    status: string;
     index: string | number;
     indexID: string | number;
     indexAmount: string | number;
@@ -76,7 +78,19 @@ export default function Receiptsbook({
     const [TablePage, setTablePage] = useState<string | number>("");
     const [isSearch, setSearch] = useState("");
 
+    const [isSelectedIDs, setSelectedIDs] = useState<number[]>([]);
+
     const selectAll = () => {
+        if (isReceiptBookData.selectAll) {
+            // remove
+            setSelectedIDs([]);
+        } else {
+            // add
+            const ReceiptBookIDs = isReceiptBookData.itemArray.map((item) => {
+                return Number(item.id);
+            });
+            setSelectedIDs(ReceiptBookIDs);
+        }
         const newItems = isReceiptBookData?.itemArray.map((item: any) => {
             return {
                 ...item,
@@ -99,14 +113,13 @@ export default function Receiptsbook({
     );
     // APPLY RECEIPT BOOK DATA FROM API
     useEffect(() => {
-        if (data?.status === 200) {
+        if (data?.status === 200 || !isLoading) {
+            let selectAll = false;
             const CloneArray = data?.data.data.map((item: any) => {
                 let select = false;
-                isReceiptBookData.itemArray.map((itemSelect) => {
-                    if (itemSelect.id === item.id) {
-                        select = itemSelect.select;
-                    }
-                });
+                if (isSelectedIDs.includes(item.id)) {
+                    select = true;
+                }
                 return {
                     id: item.id,
                     document_date: item.receipt_date,
@@ -117,18 +130,31 @@ export default function Receiptsbook({
                     deposit_date: item.deposit_date,
                     deposit_amount: item.amount_paid,
                     variance: item.amount_paid,
+                    status: item.status,
                     index: "",
                     indexID: "",
                     select: select,
-                    childrenRB: [],
+                    childrenRB: item.bank_credit.map((itemChild: any) => {
+                        return {
+                            id: itemChild.id,
+                            indexID: itemChild.id,
+                            index: itemChild.index,
+                            amount: itemChild.credit,
+                        };
+                    }),
                 };
             });
+
+            if (CloneArray.length === isSelectedIDs.length) {
+                selectAll = true;
+            }
+
             setReceiptBookData({
                 itemArray: CloneArray,
-                selectAll: false,
+                selectAll: selectAll,
             });
         }
-    }, [data?.status]);
+    }, [data]);
 
     const AddHandler = (id: string | number) => {
         const cloneToAdd = isReceiptBookData.itemArray.map(
@@ -220,17 +246,19 @@ export default function Receiptsbook({
 
     const UpdateStatus = (status: string) => {
         buttonClicked = status;
-        let receiptBook: any[] = [];
-        isReceiptBookData.itemArray.map((item: isTableItemObjRB) => {
-            if (item.select === true) {
-                receiptBook.push(item.id);
-            }
-        });
         const Payload = {
-            deposit_ids: "[" + receiptBook.toString() + "]",
+            deposit_ids: isSelectedIDs,
             status: status,
         };
-        updateMutate(Payload);
+        if (isSelectedIDs.length > 0) {
+            updateMutate(Payload);
+        } else {
+            setPrompt({
+                message: "Select a Bank Credit!",
+                type: "draft",
+                toggle: true,
+            });
+        }
     };
 
     return (
@@ -379,6 +407,8 @@ export default function Receiptsbook({
                                     DeleteHandlerChildren={
                                         DeleteHandlerChildren
                                     }
+                                    setSelectedIDs={setSelectedIDs}
+                                    isSelectedIDs={isSelectedIDs}
                                 />
                             )
                         )}
@@ -424,6 +454,8 @@ type ListProps = {
         parentID: string | number,
         selectedID: string | number
     ) => void;
+    isSelectedIDs: number[];
+    setSelectedIDs: Function;
 };
 
 const List = ({
@@ -436,6 +468,8 @@ const List = ({
     DeleteHandler,
     AddHandler,
     DeleteHandlerChildren,
+    isSelectedIDs,
+    setSelectedIDs,
 }: ListProps) => {
     const updateValue = (key: string, e: any) => {
         const indexID = e.target.getAttribute("data-indexID");
@@ -446,6 +480,16 @@ const List = ({
             (item: isTableItemObjRB) => {
                 if (itemDetail.id == item.id) {
                     if (key === "select") {
+                        if (item.select) {
+                            // remove
+                            const filterSelected = isSelectedIDs.filter(
+                                (itemFilt) => Number(item.id) !== itemFilt
+                            );
+                            setSelectedIDs(filterSelected);
+                        } else {
+                            // add
+                            setSelectedIDs([...isSelectedIDs, item.id]);
+                        }
                         return {
                             ...item,
                             select: !item.select,
@@ -528,11 +572,15 @@ const List = ({
                 {type === "receipts-book" && (
                     <td className="checkbox">
                         <div className="item">
-                            <input
-                                type="checkbox"
-                                onChange={(e: any) => updateValue("select", e)}
-                                checked={itemDetail.select}
-                            />
+                            {itemDetail.status !== "Posted" && (
+                                <input
+                                    type="checkbox"
+                                    onChange={(e: any) =>
+                                        updateValue("select", e)
+                                    }
+                                    checked={itemDetail.select}
+                                />
+                            )}
                         </div>
                     </td>
                 )}
@@ -659,73 +707,84 @@ const ChildList = ({
     AddHandler,
 }: ChildListProps) => {
     return (
-        <tr
-            className={`${
-                itemDetail.childrenRB.length - 1 !== index && "noBorder"
-            }`}
-        >
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>
-                {type === "receipts-book" ? (
-                    itemChildren.index
-                ) : (
-                    <DropdownIndex
-                        name="index"
-                        value={itemChildren.index}
-                        selectHandler={SelectHandlerChildDD}
-                        selectedIndex={SelectedIndex}
-                        rowID={itemChildren.id}
-                    />
-                )}
-            </td>
-            {type !== "receipts-book" && (
-                <td>
-                    <InputNumberForTable
-                        onChange={() => {}}
-                        value={itemDetail.variance}
-                        className={
-                            "field disabled w-full max-w-[150px] text-end"
-                        }
-                        type={""}
-                    />
-                </td>
-            )}
-            {type !== "receipts-book" && (
-                <td className="actionIcon">
-                    <div>
-                        <HiMinus
-                            onClick={() =>
-                                DeleteHandlerChildren(
-                                    itemDetail.id,
-                                    itemChildren.id
-                                )
-                            }
+        <>
+            <tr
+                className={`${
+                    itemDetail.childrenRB.length - 1 !== index && "noBorder"
+                }`}
+            >
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                {type === "receipts-book" && (
+                    <td>
+                        <TextNumberDisplay
+                            value={itemChildren.amount}
+                            className="withPeso"
                         />
-                    </div>
-
-                    {itemDetail.variance !== 0 && (
-                        <div
-                            className={`ml-5 1024px:ml-2 ${
-                                itemDetail.variance !== "0" &&
-                                itemChildren.index === "" &&
-                                itemDetail.variance !== 0 &&
-                                itemDetail.childrenRB.length - 1 === index &&
-                                "pointer-events-none opacity-[.5]"
-                            }`}
-                        >
-                            <BsPlusLg
-                                onClick={() => AddHandler(itemDetail.id)}
-                            />
-                        </div>
+                    </td>
+                )}
+                <td>
+                    {type === "receipts-book" ? (
+                        itemChildren.index
+                    ) : (
+                        <DropdownIndex
+                            name="index"
+                            value={itemChildren.index}
+                            selectHandler={SelectHandlerChildDD}
+                            selectedIndex={SelectedIndex}
+                            rowID={itemChildren.id}
+                        />
                     )}
                 </td>
-            )}
-        </tr>
+                {type !== "receipts-book" && (
+                    <td>
+                        <InputNumberForTable
+                            onChange={() => {}}
+                            value={itemDetail.variance}
+                            className={
+                                "field disabled w-full max-w-[150px] text-end"
+                            }
+                            type={""}
+                        />
+                    </td>
+                )}
+                {type !== "receipts-book" && (
+                    <td className="actionIcon">
+                        <div>
+                            <HiMinus
+                                onClick={() =>
+                                    DeleteHandlerChildren(
+                                        itemDetail.id,
+                                        itemChildren.id
+                                    )
+                                }
+                            />
+                        </div>
+
+                        {itemDetail.variance !== 0 && (
+                            <div
+                                className={`ml-5 1024px:ml-2 ${
+                                    itemDetail.variance !== "0" &&
+                                    itemChildren.index === "" &&
+                                    itemDetail.variance !== 0 &&
+                                    itemDetail.childrenRB.length - 1 ===
+                                        index &&
+                                    "pointer-events-none opacity-[.5]"
+                                }`}
+                            >
+                                <BsPlusLg
+                                    onClick={() => AddHandler(itemDetail.id)}
+                                />
+                            </div>
+                        )}
+                    </td>
+                )}
+            </tr>
+        </>
     );
 };

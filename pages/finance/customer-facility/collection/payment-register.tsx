@@ -11,7 +11,7 @@ export default function PaymentRegister() {
                 setFilterText={setFilterText}
                 isSearch={isSearch}
                 setSearch={setSearch}
-                FilterEndpoint=""
+                FilterEndpoint="/finance/general-ledger/journal/filter-options"
                 page="payment-register"
             />
             <div className="table_container">

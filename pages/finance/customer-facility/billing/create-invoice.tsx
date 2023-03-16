@@ -7,6 +7,7 @@ export default function CreateInvoice() {
             id: 0,
             charge: "",
             charge_id: "",
+            charge_vat: "",
             description: "",
             unit_price: "",
             quantity: "",

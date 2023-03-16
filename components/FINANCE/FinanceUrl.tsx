@@ -83,7 +83,21 @@ export const CustomerFacility = [
     {
         name: "Collection",
         activeUrl: "collection",
-        url: "#",
+        url: "/finance/customer-facility/collection/receive-payment",
+        submenu: [
+            {
+                name: "Receive Payment",
+                url: "/finance/customer-facility/collection/receive-payment",
+            },
+            {
+                name: "Payment Register",
+                url: "/finance/customer-facility/collection/payment-register",
+            },
+            {
+                name: "Payment Queueing",
+                url: "/finance/customer-facility/collection/payment-queueing",
+            },
+        ],
     },
     {
         name: "Deposit Counter",

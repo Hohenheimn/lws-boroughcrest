@@ -139,6 +139,9 @@ select {
 .pageTitle {
     @apply text-[24px] 480px:text-[18px];
 }
+.SectionTitle {
+    @apply text-[20px] 1366px:text-[20px] flex items-center;
+}
 .label_text {
     @apply text-start text-gray-400 text-[14px] 1024px:text-[14px] font-medium;
 }
@@ -195,7 +198,7 @@ select {
         @apply shadow-md sticky top-0 bg-[#fbfbfb] z-[40];
         tr {
             th {
-                @apply text-start px-2 py-4 1550px:py-2 480px:py-3 1280px:px-3 text-[#545454] text-[14px] 1280px:text-[13px];
+                @apply text-start px-2 py-4 1550px:py-2 480px:py-3 1280px:px-3 text-[#545454] text-[15px] 1280px:text-[13px];
             }
             th.checkbox {
                 @apply w-3 min-w-0;
@@ -244,7 +247,7 @@ select {
         tr {
             @apply border-b border-gray-300 relative text-[16px] 1550px:text-[14px] 480px:text-[12px];
             td {
-                @apply py-2 px-2 text-[#2E4364] font-NHU-regular 1550px:min-w-[100px] max-w-[350px];
+                @apply py-2 px-2 text-[#2E4364] font-NHU-regular min-w-[150px] max-w-[350px];
 
                 aside {
                     @apply w-10 h-10 480px:w-8 480px:h-8 rounded-full overflow-hidden relative shadow-lg mr-3;
@@ -321,12 +324,13 @@ select {
             td.large {
                 @apply min-w-[200px] 480px:min-w-[150px];
             }
-            td.x2large {
-                @apply min-w-[400px] 480px:min-w-[300px];
-            }
             td.xLarge {
                 @apply min-w-[300px] 480px:min-w-[350px];
             }
+            td.x2large {
+                @apply min-w-[400px] 480px:min-w-[300px];
+            }
+
             .td.wid20 {
                 width: 500px;
             }
@@ -501,41 +505,50 @@ input[type="number"] {
 }
 .crud-table {
     @apply w-[300px] static;
-    th {
-        @apply bg-ThemeRed px-3 py-1 text-[10px] font-NHU-regular font-light border border-gray-300;
-    }
-    th.checkbox {
-        @apply w-3 min-w-0;
-        input[type="checkbox"] {
-            border: 1px solid rgb(216, 216, 216) !important;
-            @apply bg-white relative h-3 w-3 rounded-sm shadow-md overflow-hidden after:text-white after:flex after:justify-center mr-0 after:items-center checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
-            &:checked {
-                border: none !important;
+    thead {
+        tr {
+            th {
+                @apply bg-ThemeRed px-3 py-1 text-[10px] text-white font-NHU-regular font-light border border-gray-300;
+            }
+            th.checkbox {
+                @apply w-3 min-w-0;
+                input[type="checkbox"] {
+                    border: 1px solid rgb(216, 216, 216) !important;
+                    @apply bg-white relative h-3 w-3 rounded-sm shadow-md overflow-hidden after:text-white after:flex after:justify-center mr-0 after:items-center checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
+                    &:checked {
+                        border: none !important;
+                    }
+                }
             }
         }
     }
-    td {
-        @apply border border-gray-300 px-2 py-0;
-        input[type="text"],
-        input[type="number"],
-        input[type="email"] {
-            @apply border border-gray-500 text-[12px] z-10 hover:text-white bg-transparent;
-            font-size: 12px !important;
-        }
-        input.disabled {
-            @apply border-none pointer-events-none shadow-none bg-transparent outline-none;
-        }
-        p {
-            @apply text-[#545454];
-            font-size: 12px !important;
-        }
-        .dropdown {
-            @apply relative;
 
-            ul {
-                @apply absolute top-full left-0 w-full text-ThemeRed z-10 bg-white border max-h-[200px] overflow-auto;
-                li {
-                    @apply text-[12px] border-b py-1 px-2 w-full mb-0 hover:bg-ThemeRed hover:text-white transition-all duration-75;
+    tbody {
+        tr {
+            td {
+                @apply border border-gray-300 px-2 py-0;
+                input[type="text"],
+                input[type="number"],
+                input[type="email"] {
+                    @apply border border-gray-500 text-[12px] z-10 hover:text-white bg-transparent;
+                    font-size: 12px !important;
+                }
+                input.disabled {
+                    @apply border-none pointer-events-none shadow-none bg-transparent outline-none;
+                }
+                p {
+                    @apply text-[#545454];
+                    font-size: 12px !important;
+                }
+                .dropdown {
+                    @apply relative;
+
+                    ul {
+                        @apply absolute top-full left-0 w-full text-ThemeRed z-10 bg-white border max-h-[200px] overflow-auto;
+                        li {
+                            @apply text-[12px] border-b py-1 px-2 w-full mb-0 hover:bg-ThemeRed hover:text-white transition-all duration-75;
+                        }
+                    }
                 }
             }
         }

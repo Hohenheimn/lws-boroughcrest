@@ -448,8 +448,6 @@ const List = ({
         );
     };
 
-    console.log(itemData.status);
-
     return (
         <tr>
             <td>

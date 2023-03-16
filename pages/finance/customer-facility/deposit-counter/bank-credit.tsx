@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import BankCreditComp from "../../../../components/FINANCE/CustomerFacility/DepositCounter/BankCreditComp";
 
 export default function BankCredit() {
+    const [triggerRefresh, setTriggerRefresh] = useState(false);
     const [isChangeData, setChangeData] = useState({});
     const [isReceiptBookData, setReceiptBookData] = useState({
         itemArray: [],
