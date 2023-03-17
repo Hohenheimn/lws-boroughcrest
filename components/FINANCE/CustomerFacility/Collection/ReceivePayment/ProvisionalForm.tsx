@@ -152,7 +152,7 @@ export default function ProvisionalForm({ Error, headerForm }: Props) {
                 )}
                 {isError && <TableErrorMessage />}
             </div>
-            <TableOneTotal total={123123} />
+            <TableOneTotal total={123123} label="Total" redBG={false} />
             <div className="DropDownSave">
                 <button className="ddback">CANCEL</button>
 

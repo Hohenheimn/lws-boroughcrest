@@ -56,7 +56,7 @@ export const InputNumberForForm = ({
             <NumericFormat
                 className={className + " max-w-[400px]"}
                 prefix={prefix}
-                value={isValue}
+                value={isValue === 0 ? "" : isValue}
                 placeholder="-"
                 fixedDecimalScale
                 decimalScale={2}
@@ -90,7 +90,7 @@ export const TextNumberDisplay = ({
             suffix={suffix}
             className={className}
             fixedDecimalScale
-            value={value}
+            value={value === 0 || value === "" ? "-" : value}
             displayType="text"
             decimalScale={2}
             decimalSeparator="."
@@ -110,7 +110,7 @@ export const TextNumberDisplayPercent = ({
             placeholder="-"
             suffix={suffix}
             className={className}
-            value={value}
+            value={value === 0 ? "" : value}
             thousandSeparator={true}
         />
     );

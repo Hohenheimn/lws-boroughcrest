@@ -7,6 +7,8 @@ import { InputNumberForForm } from "../../../../Reusable/NumberFormat";
 import { useForm } from "react-hook-form";
 import ProvisionalForm, { isProvisionalTable } from "./ProvisionalForm";
 import AppContext from "../../../../Context/AppContext";
+import AcknowledgementForm from "./AcknowledgementForm";
+import OfficialForm from "./OfficialForm/OfficialForm";
 
 export type ReceivePaymentForm = {
     description: string;
@@ -392,6 +394,27 @@ export default function ReceivePaymentForm() {
             </div>
             {HeaderForm.receipt_type === "Provisional" && (
                 <ProvisionalForm
+                    Error={ErrorToggleHandler}
+                    headerForm={HeaderForm}
+                />
+            )}
+            {HeaderForm.receipt_type === "Acknowledgement" && (
+                <AcknowledgementForm
+                    DefaultValue={[
+                        {
+                            id: 1,
+                            charge: "",
+                            charge_id: "",
+                            description: "",
+                            amount: 0,
+                        },
+                    ]}
+                    Error={ErrorToggleHandler}
+                    headerForm={HeaderForm}
+                />
+            )}
+            {HeaderForm.receipt_type === "Official" && (
+                <OfficialForm
                     Error={ErrorToggleHandler}
                     headerForm={HeaderForm}
                 />
