@@ -5,18 +5,14 @@ import Image from "next/image";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 import Link from "next/link";
-import { getCookie } from "cookies-next";
-import { useQuery } from "react-query";
-import api from "../../../../util/api";
-import { BarLoader, MoonLoader } from "react-spinners";
+import { BarLoader } from "react-spinners";
 import PeriodCalendar from "../../../Reusable/PeriodCalendar";
 import { Advancefilter, AdvanceFilter } from "../../../Reusable/AdvanceFilter";
-import PeriodFNS from "../../../Reusable/PeriodFNS";
 import TableErrorMessage from "../../../Reusable/TableErrorMessage";
-import { GetJournal, MultipleUpdate } from "./Query";
 import Pagination from "../../../Reusable/Pagination";
 import AppContext from "../../../Context/AppContext";
 import { format, isValid, parse } from "date-fns";
+import { GetJournal, MultipleUpdate } from "../../General-Ledger/Journal/Query";
 
 type Props = {
     type: string;
@@ -41,7 +37,7 @@ type isTableItemObj = {
     select: boolean;
 };
 
-export default function JournalTable({ type, isPeriod, setPeriod }: Props) {
+export default function AdjustmentTable({ type, isPeriod, setPeriod }: Props) {
     let buttonClicked = "";
     const { setPrompt } = useContext(AppContext);
     const [isSearch, setSearch] = useState("");
@@ -169,19 +165,19 @@ export default function JournalTable({ type, isPeriod, setPeriod }: Props) {
 
     const UpdateStatus = (button: string) => {
         buttonClicked = button;
-        const Payload = {
-            journal_ids: "[" + isSelectedIDs + "]",
-            status: button,
-        };
-        if (isSelectedIDs.length > 0) {
-            updateMutate(Payload);
-        } else {
-            setPrompt({
-                message: "Select a Journal!",
-                type: "draft",
-                toggle: true,
-            });
-        }
+        // const Payload = {
+        //     journal_ids: "[" + isSelectedIDs + "]",
+        //     status: button,
+        // };
+        // if (isSelectedIDs.length > 0) {
+        //     updateMutate(Payload);
+        // } else {
+        //     setPrompt({
+        //         message: "Select a Journal!",
+        //         type: "draft",
+        //         toggle: true,
+        //     });
+        // }
     };
 
     return (
@@ -318,29 +314,24 @@ export default function JournalTable({ type, isPeriod, setPeriod }: Props) {
                 <table className="table_list journal">
                     <thead>
                         <tr>
-                            {type === "unposted" ? (
-                                <>
-                                    <th className="checkbox">
-                                        <div className="item">
-                                            <input
-                                                type="checkbox"
-                                                checked={isTableItem.selectAll}
-                                                onChange={selectAll}
-                                            />
-                                        </div>
-                                    </th>
-                                    <th>Date</th>
-                                    <th>Particulars</th>
-                                    <th>Status</th>
-                                    <th></th>
-                                </>
-                            ) : (
-                                <>
-                                    <th>Date</th>
-                                    <th>Journal No.</th>
-                                    <th>Particulars</th>
-                                </>
+                            {type === "unposted" && (
+                                <th className="checkbox">
+                                    <div className="item">
+                                        <input
+                                            type="checkbox"
+                                            checked={isTableItem.selectAll}
+                                            onChange={selectAll}
+                                        />
+                                    </div>
+                                </th>
                             )}
+                            <th>
+                                {type === "unposted" ? "Status" : "Memo No."}
+                            </th>
+                            <th>Date</th>
+                            <th>Customer</th>
+                            <th>Property</th>
+                            <th>Description</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -450,28 +441,6 @@ const List = ({
                     href={`/finance/general-ledger/journal/journal-list/${itemDetail.id}`}
                 >
                     <a className="item">
-                        <div>
-                            <h2>{itemDetail.date}</h2>
-                        </div>
-                    </a>
-                </Link>
-            </td>
-            <td>
-                <Link
-                    href={`/finance/general-ledger/journal/journal-list/${itemDetail.id}`}
-                >
-                    <a className="item">
-                        <div>
-                            <h2>{itemDetail.particulars}</h2>
-                        </div>
-                    </a>
-                </Link>
-            </td>
-            <td>
-                <Link
-                    href={`/finance/general-ledger/journal/journal-list/${itemDetail.id}`}
-                >
-                    <a className="item">
                         {type !== "posted" ? (
                             <div className="finance_status">
                                 <div
@@ -510,28 +479,50 @@ const List = ({
                     </a>
                 </Link>
             </td>
-            {type !== "posted" && (
-                <td className="icon">
-                    {itemDetail.status !== "In Progress" && (
-                        <Link
-                            href={`/finance/general-ledger/journal/modify-journal/${itemDetail.id}`}
-                        >
-                            <a>
-                                <Tippy theme="ThemeRed" content={"Modify"}>
-                                    <div className="icon">
-                                        <Image
-                                            src="/Images/f_modify.png"
-                                            height={15}
-                                            width={15}
-                                            alt="Modify"
-                                        />
-                                    </div>
-                                </Tippy>
-                            </a>
-                        </Link>
-                    )}
-                </td>
-            )}
+            <td>
+                <Link
+                    href={`/finance/general-ledger/journal/journal-list/${itemDetail.id}`}
+                >
+                    <a className="item">
+                        <div>
+                            <h2>{itemDetail.date}</h2>
+                        </div>
+                    </a>
+                </Link>
+            </td>
+            <td>
+                <Link
+                    href={`/finance/general-ledger/journal/journal-list/${itemDetail.id}`}
+                >
+                    <a className="item">
+                        <div>
+                            <h2>Customer</h2>
+                        </div>
+                    </a>
+                </Link>
+            </td>
+            <td>
+                <Link
+                    href={`/finance/general-ledger/journal/journal-list/${itemDetail.id}`}
+                >
+                    <a className="item">
+                        <div>
+                            <h2>Property</h2>
+                        </div>
+                    </a>
+                </Link>
+            </td>
+            <td>
+                <Link
+                    href={`/finance/general-ledger/journal/journal-list/${itemDetail.id}`}
+                >
+                    <a className="item">
+                        <div>
+                            <h2>Description</h2>
+                        </div>
+                    </a>
+                </Link>
+            </td>
         </tr>
     );
 };

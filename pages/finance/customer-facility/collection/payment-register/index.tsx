@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import HeaderCollection from "../../../../components/FINANCE/CustomerFacility/Collection/HeaderCollection";
-import { TextNumberDisplay } from "../../../../components/Reusable/NumberFormat";
+import HeaderCollection from "../../../../../components/FINANCE/CustomerFacility/Collection/HeaderCollection";
+import { TextNumberDisplay } from "../../../../../components/Reusable/NumberFormat";
 
 export default function PaymentRegister() {
     const [isFilterText, setFilterText] = useState<string[]>([]);

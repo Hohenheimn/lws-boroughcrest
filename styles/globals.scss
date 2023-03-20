@@ -151,6 +151,9 @@ select {
         @apply text-gray-400 text-[12px];
     }
 }
+.main_text.noMB {
+    @apply mb-0;
+}
 
 *::-webkit-scrollbar {
     height: 5px;
@@ -191,7 +194,9 @@ select {
 .table_container.noMin {
     @apply min-h-0;
 }
-
+.table_container.noMB {
+    @apply mb-0;
+}
 .table_list {
     @apply min-w-full;
     thead {

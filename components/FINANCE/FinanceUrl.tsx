@@ -108,5 +108,15 @@ export const CustomerFacility = [
         name: "Adjustment",
         activeUrl: "adjustment",
         url: "/finance/customer-facility/adjustment",
+        submenu: [
+            {
+                name: "Create Customer Adjustment",
+                url: "/finance/customer-facility/adjustment/create-adjustment",
+            },
+            {
+                name: "Adjustment List",
+                url: "/finance/customer-facility/adjustment/adjustment-list",
+            },
+        ],
     },
 ];
