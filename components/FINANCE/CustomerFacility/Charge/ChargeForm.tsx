@@ -12,11 +12,28 @@ import DynamicPopOver from "../../../Reusable/DynamicPopOver";
 import { ChargeCreate, ChargeUpdate } from "../../../ReactQuery/Charge";
 import Dropdown from "../../../Dropdowns/withSameKeyDropdown";
 import { ChargePayload, IDstate } from "./Type";
+import UOMDropdown from "../../../Dropdowns/UOMDropdown";
+import { useForm } from "react-hook-form";
 
 type Props = {
     setCreate: Function;
     isDefaultValue: ChargePayload;
     type: string;
+};
+type Error = {
+    code: string;
+    type: string;
+    name: string;
+    base_rate: string;
+    uom: string;
+    vat_percent: string;
+    receivable: string;
+    discounts: string;
+    revenue: string;
+    advances: string;
+    interest: string;
+    payment_heirarchy: string;
+    soa_sort_order: string;
 };
 export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
     const { setPrompt } = useContext(AppContext);
@@ -26,6 +43,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
     });
     const SelectField = (value: string, key: string) => {
         if (key === "type") {
+            setValue("type", value);
             setSelect({
                 ...isSelect,
                 type: false,
@@ -36,6 +54,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
             });
         }
         if (key === "interest") {
+            setValue("interest", value);
             setSelect({
                 ...isSelect,
                 interest: false,
@@ -64,18 +83,6 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
     const back = () => {
         setForm([true, false]);
     };
-    const ErrorDefault = {
-        code: "",
-        type: "",
-        name: "",
-        uom: "",
-        interest: "",
-        payment_heirarchy: "",
-        soa_sort_order: "",
-    };
-    const [isError, setError] = useState({
-        ...ErrorDefault,
-    });
 
     const [fieldValue, setFieldValue] = useState<ChargePayload>({
         ...isDefaultValue,
@@ -87,6 +94,9 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
         firstVal: isDefaultValue.discounts_coa_value,
         firstID: isDefaultValue.discounts_coa_id,
     });
+    useEffect(() => {
+        setValue("discounts", isDiscount.firstVal);
+    }, [isDiscount]);
     const [isRevenue, setRevenue] = useState<IDstate>({
         value: isDefaultValue.revenue_coa_value,
         id: isDefaultValue.revenue_coa_id,
@@ -94,6 +104,9 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
         firstVal: isDefaultValue.revenue_coa_value,
         firstID: isDefaultValue.revenue_coa_id,
     });
+    useEffect(() => {
+        setValue("revenue", isRevenue.firstVal);
+    }, [isRevenue]);
     const [isAdvance, setAdvance] = useState<IDstate>({
         value: isDefaultValue.advances_coa_value,
         id: isDefaultValue.advances_coa_id,
@@ -101,6 +114,9 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
         firstVal: isDefaultValue.advances_coa_value,
         firstID: isDefaultValue.advances_coa_id,
     });
+    useEffect(() => {
+        setValue("advances", isAdvance.firstVal);
+    }, [isAdvance]);
     const [isReceivable, setReceivable] = useState<IDstate>({
         value: isDefaultValue.receivable_coa_value,
         id: isDefaultValue.receivable_coa_id,
@@ -108,6 +124,17 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
         firstVal: isDefaultValue.receivable_coa_value,
         firstID: isDefaultValue.receivable_coa_id,
     });
+    useEffect(() => {
+        setValue("receivable", isReceivable.firstVal);
+    }, [isReceivable]);
+    const [isUOM, setUOM] = useState({
+        value: isDefaultValue.charge_uom_id,
+        id: isDefaultValue.charge_uom_value,
+        toggle: false,
+    });
+    useEffect(() => {
+        setValue("uom", isUOM.value);
+    }, [isUOM]);
 
     const onSuccess = () => {
         queryClient.invalidateQueries("charge-list");
@@ -125,7 +152,6 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                 toggle: true,
             });
         }
-        setError({ ...ErrorDefault });
         if (ButtonType === "new") {
             // Clear Field
             setFieldValue({
@@ -152,6 +178,11 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                 firstVal: "",
                 firstID: "",
             });
+            setUOM({
+                value: "",
+                id: "",
+                toggle: false,
+            });
             setReceivable({
                 value: "",
                 id: "",
@@ -170,10 +201,6 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
         }
     };
     const onError = (e: any) => {
-        const error = e.response.data;
-        setError({
-            ...error,
-        });
         if (e.response.status === 422) {
             setPrompt({
                 message: "Please check required fields",
@@ -199,11 +226,30 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
         router.query.modify
     );
 
+    const {
+        register,
+        handleSubmit,
+        setValue,
+        formState: { errors },
+    } = useForm<Error>();
+
     const SubmitHandler = (typeButton: string) => {
         ButtonType = typeButton;
+    };
+
+    const SubmitForm = () => {
         setSave(false);
-        const Payload: ChargePayload = {
-            ...fieldValue,
+        const Payload = {
+            code: fieldValue.code,
+            type: fieldValue.type,
+            name: fieldValue.name,
+            description: fieldValue.description,
+            base_rate: fieldValue.base_rate,
+            vat_percent: fieldValue.vat_percent,
+            minimum: fieldValue.minimum,
+            interest: fieldValue.interest,
+            payment_heirarchy: fieldValue.payment_heirarchy,
+            soa_sort_order: fieldValue.soa_sort_order,
             receivable_coa_id:
                 isReceivable === undefined ? "" : parseInt(isReceivable.id),
             discounts_coa_id:
@@ -212,6 +258,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                 isRevenue === undefined ? "" : parseInt(isRevenue.id),
             advances_coa_id:
                 isAdvance === undefined ? "" : parseInt(isAdvance.id),
+            charge_uom_id: isUOM === undefined ? "" : parseInt(isUOM.id),
         };
         if (router.query.modify === undefined) {
             Save(Payload);
@@ -221,7 +268,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
     };
 
     return (
-        <div className={style.container}>
+        <form className={style.container} onSubmit={handleSubmit(SubmitForm)}>
             <section>
                 <p className={style.modal_title}>{type} Charge</p>
                 <motion.div
@@ -239,6 +286,9 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                 <label>*CODE</label>
                                 <input
                                     className="field"
+                                    {...register("code", {
+                                        required: "Required!",
+                                    })}
                                     type="text"
                                     value={fieldValue.code}
                                     onChange={(e: any) => {
@@ -249,9 +299,9 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                             });
                                     }}
                                 />
-                                {isError?.code !== "" && (
+                                {errors?.code && (
                                     <p className="text-[12px]">
-                                        {isError?.code}
+                                        {errors?.code.message}
                                     </p>
                                 )}
                             </li>
@@ -267,6 +317,9 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                                 type="text"
                                                 autoComplete="off"
                                                 className="field w-full"
+                                                {...register("type", {
+                                                    required: "Required!",
+                                                })}
                                                 readOnly
                                                 onClick={() =>
                                                     setSelect({
@@ -309,10 +362,9 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                         className=""
                                     />
                                 </div>
-
-                                {isError?.type !== "" && (
+                                {errors?.type && (
                                     <p className="text-[12px]">
-                                        {isError?.type}
+                                        {errors?.type.message}
                                     </p>
                                 )}
                             </li>
@@ -321,6 +373,9 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                 <input
                                     className="field"
                                     type="text"
+                                    {...register("name", {
+                                        required: "Required!",
+                                    })}
                                     value={fieldValue.name}
                                     onChange={(e: any) => {
                                         setFieldValue({
@@ -329,9 +384,9 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                         });
                                     }}
                                 />
-                                {isError?.name !== "" && (
+                                {errors?.name && (
                                     <p className="text-[12px]">
-                                        {isError?.name}
+                                        {errors?.name.message}
                                     </p>
                                 )}
                             </li>
@@ -354,6 +409,9 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                 <input
                                     className="field"
                                     type="number"
+                                    {...register("base_rate", {
+                                        required: "Required!",
+                                    })}
                                     value={fieldValue.base_rate}
                                     onChange={(e: any) => {
                                         setFieldValue({
@@ -364,23 +422,51 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                         });
                                     }}
                                 />
+                                {errors?.base_rate && (
+                                    <p className="text-[12px]">
+                                        {errors?.base_rate.message}
+                                    </p>
+                                )}
                             </li>
                             <li>
                                 <label>*UOM</label>
-                                <input
-                                    className="field"
-                                    type="text"
-                                    value={fieldValue.uom}
-                                    onChange={(e: any) => {
-                                        setFieldValue({
-                                            ...fieldValue,
-                                            uom: e.target.value,
-                                        });
-                                    }}
-                                />
-                                {isError?.uom !== "" && (
+                                <div
+                                    className={`${style.Dropdown} ${style.full}`}
+                                >
+                                    <input
+                                        className="field w-full"
+                                        type="text"
+                                        {...register("uom", {
+                                            required: "Required!",
+                                        })}
+                                        value={isUOM.value}
+                                        onChange={(e: any) =>
+                                            setUOM({
+                                                ...isUOM,
+                                                value: e.target.value,
+                                            })
+                                        }
+                                        onClick={() =>
+                                            setUOM({
+                                                ...isUOM,
+                                                toggle: true,
+                                            })
+                                        }
+                                    />
+                                    {isUOM.toggle && (
+                                        <UOMDropdown
+                                            endpoint={
+                                                "/finance/customer-facility/charges/uom-options"
+                                            }
+                                            name={"Unit of measure"}
+                                            value={isUOM.value}
+                                            setFunction={setUOM}
+                                        />
+                                    )}
+                                </div>
+                                {errors?.uom && (
                                     <p className="text-[12px]">
-                                        {isError?.uom}
+                                        {errors?.uom.message}
                                     </p>
                                 )}
                             </li>
@@ -389,6 +475,9 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                 <input
                                     className="field"
                                     type="number"
+                                    {...register("vat_percent", {
+                                        required: "Required!",
+                                    })}
                                     value={fieldValue.vat_percent}
                                     onChange={(e: any) => {
                                         setFieldValue({
@@ -399,6 +488,11 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                         });
                                     }}
                                 />
+                                {errors?.vat_percent && (
+                                    <p className="text-[12px]">
+                                        {errors?.vat_percent.message}
+                                    </p>
+                                )}
                             </li>
                             <li>
                                 <label>*RECEIVABLE</label>
@@ -408,6 +502,9 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                     <input
                                         className="field w-full"
                                         type="text"
+                                        {...register("receivable", {
+                                            required: "Required!",
+                                        })}
                                         value={isReceivable.value}
                                         onChange={(e: any) =>
                                             setReceivable({
@@ -431,6 +528,11 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                             endpoint="/finance/customer-facility/charges/coa-options/receivable"
                                         />
                                     )}
+                                    {errors?.receivable && (
+                                        <p className="text-[12px]">
+                                            {errors?.receivable.message}
+                                        </p>
+                                    )}
                                 </div>
                             </li>
                         </ul>
@@ -439,9 +541,12 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                             <aside className="button_cancel" onClick={cancel}>
                                 CANCEL
                             </aside>
-                            <button className="buttonRed" onClick={next}>
+                            <div
+                                className="buttonRed cursor-pointer"
+                                onClick={next}
+                            >
                                 NEXT
-                            </button>
+                            </div>
                         </div>
                     </div>
                     <div className={isForm[1] ? "" : "hidden"}>
@@ -456,6 +561,9 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                 >
                                     <input
                                         className="field w-full"
+                                        {...register("discounts", {
+                                            required: "Required!",
+                                        })}
                                         type="text"
                                         value={isDiscount.value}
                                         onChange={(e: any) =>
@@ -480,6 +588,11 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                             endpoint="/finance/customer-facility/charges/coa-options/discounts"
                                         />
                                     )}
+                                    {errors?.discounts && (
+                                        <p className="text-[12px]">
+                                            {errors?.discounts.message}
+                                        </p>
+                                    )}
                                 </div>
                             </li>
                             <li>
@@ -490,6 +603,9 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                     <input
                                         className="field w-full"
                                         type="text"
+                                        {...register("revenue", {
+                                            required: "Required!",
+                                        })}
                                         value={isRevenue.value}
                                         onChange={(e: any) =>
                                             setRevenue({
@@ -513,6 +629,11 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                             endpoint="/finance/customer-facility/charges/coa-options/revenue"
                                         />
                                     )}
+                                    {errors?.revenue && (
+                                        <p className="text-[12px]">
+                                            {errors?.revenue.message}
+                                        </p>
+                                    )}
                                 </div>
                             </li>
                             <li>
@@ -523,6 +644,9 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                     <input
                                         className="field w-full"
                                         type="text"
+                                        {...register("advances", {
+                                            required: "Required!",
+                                        })}
                                         value={isAdvance.value}
                                         onChange={(e: any) =>
                                             setAdvance({
@@ -545,6 +669,11 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                             setFunction={setAdvance}
                                             endpoint="/finance/customer-facility/charges/coa-options/advances"
                                         />
+                                    )}
+                                    {errors?.advances && (
+                                        <p className="text-[12px]">
+                                            {errors?.advances.message}
+                                        </p>
                                     )}
                                 </div>
                             </li>
@@ -574,6 +703,9 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                                 type="text"
                                                 autoComplete="off"
                                                 className="field w-full"
+                                                {...register("interest", {
+                                                    required: "Required!",
+                                                })}
                                                 readOnly
                                                 onClick={() =>
                                                     setSelect({
@@ -616,10 +748,9 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                         className=""
                                     />
                                 </div>
-
-                                {isError?.interest !== "" && (
+                                {errors?.interest && (
                                     <p className="text-[12px]">
-                                        {isError?.interest}
+                                        {errors?.interest.message}
                                     </p>
                                 )}
                             </li>
@@ -628,6 +759,9 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                 <input
                                     className="field"
                                     type="number"
+                                    {...register("payment_heirarchy", {
+                                        required: "Required!",
+                                    })}
                                     value={fieldValue.payment_heirarchy}
                                     onChange={(e: any) => {
                                         setFieldValue({
@@ -638,9 +772,9 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                         });
                                     }}
                                 />
-                                {isError?.payment_heirarchy !== "" && (
+                                {errors?.payment_heirarchy && (
                                     <p className="text-[12px]">
-                                        {isError?.payment_heirarchy}
+                                        {errors?.payment_heirarchy.message}
                                     </p>
                                 )}
                             </li>
@@ -649,6 +783,9 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                 <input
                                     className="field"
                                     type="number"
+                                    {...register("soa_sort_order", {
+                                        required: "Required!",
+                                    })}
                                     value={fieldValue.soa_sort_order}
                                     onChange={(e: any) => {
                                         setFieldValue({
@@ -659,9 +796,9 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                         });
                                     }}
                                 />
-                                {isError?.soa_sort_order !== "" && (
+                                {errors?.soa_sort_order && (
                                     <p className="text-[12px]">
-                                        {isError?.soa_sort_order}
+                                        {errors?.soa_sort_order.message}
                                     </p>
                                 )}
                             </li>
@@ -714,6 +851,6 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                     </div>
                 </motion.div>
             </section>
-        </div>
+        </form>
     );
 }

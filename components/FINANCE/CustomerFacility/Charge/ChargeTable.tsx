@@ -195,7 +195,7 @@ const List = ({ itemDetail }: ListProps) => {
                 >
                     <a className="item">
                         <div>
-                            <h2>{itemDetail.uom}</h2>
+                            <h2>{itemDetail?.uom?.name}</h2>
                         </div>
                     </a>
                 </Link>

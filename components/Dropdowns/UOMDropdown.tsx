@@ -1,5 +1,5 @@
 import { getCookie } from "cookies-next";
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useQuery } from "react-query";
 import { BarLoader } from "react-spinners";
 import api from "../../util/api";
@@ -8,21 +8,25 @@ import { IDstate } from "../FINANCE/CustomerFacility/Charge/Type";
 type Props = {
     endpoint: string;
     name: string;
-    searchValue: string;
+    value: string;
     setFunction: Function;
-    fieldObject: IDstate;
 };
 
-export default function Dropdown({
+export default function UOMDropdown({
     endpoint,
     name,
-    searchValue,
+    value,
     setFunction,
-    fieldObject,
 }: Props) {
     const modal = useRef<any>();
 
-    const { isLoading, data, isError } = useQuery([name, searchValue], () => {
+    const [isSearchTemp, setSearchTemp] = useState("");
+
+    useEffect(() => {
+        setSearchTemp(value);
+    }, [value]);
+
+    const { isLoading, data, isError } = useQuery([name, isSearchTemp], () => {
         return api.get(`${endpoint}?keywords=`, {
             headers: {
                 Authorization: "Bearer " + getCookie("user"),
@@ -33,12 +37,7 @@ export default function Dropdown({
     useEffect(() => {
         const clickOutSide = (e: any) => {
             if (!modal?.current?.contains(e.target)) {
-                setFunction({
-                    ...fieldObject,
-                    toggle: false,
-                    value: fieldObject.firstVal,
-                    id: fieldObject.firstID,
-                });
+                setSearchTemp(value);
             }
         };
         document.addEventListener("mousedown", clickOutSide);
@@ -51,12 +50,8 @@ export default function Dropdown({
         const id = e.target.getAttribute("data-id");
         const value = e.target.innerHTML;
         setFunction({
-            ...fieldObject,
-            toggle: false,
-            value: value,
             id: id,
-            firstVal: value,
-            firstID: id,
+            value: value,
         });
     };
 
@@ -64,7 +59,7 @@ export default function Dropdown({
         <ul ref={modal} className="dropdown-list">
             {data?.data.map((item: any, index: number) => (
                 <li key={index} onClick={onClickHandler} data-id={item.id}>
-                    {item.account_name}
+                    {item.name}
                 </li>
             ))}
 
