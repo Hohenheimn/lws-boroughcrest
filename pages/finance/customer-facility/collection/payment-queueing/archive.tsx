@@ -5,6 +5,10 @@ import { TextNumberDisplay } from "../../../../../components/Reusable/NumberForm
 export default function Archive() {
     const [isFilterText, setFilterText] = useState<string[]>([]);
     const [isSearch, setSearch] = useState("");
+    const [isPeriod, setPeriod] = useState({
+        from: "",
+        to: "",
+    });
     return (
         <>
             <HeaderCollection
@@ -13,6 +17,8 @@ export default function Archive() {
                 setSearch={setSearch}
                 FilterEndpoint=""
                 page="archive"
+                isPeriod={isPeriod}
+                setPeriod={setPeriod}
             />
             <h1 className="font-bold mb-5 text-[24px] 480px:text-[20px] 1550px:mb-2">
                 Archive

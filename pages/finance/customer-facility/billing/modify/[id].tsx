@@ -8,6 +8,7 @@ export default function Id() {
             charge: "",
             description: "",
             charge_id: "",
+            charge_vat: "",
             unit_price: 0,
             quantity: 0,
             uom: "",

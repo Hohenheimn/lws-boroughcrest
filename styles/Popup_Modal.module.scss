@@ -230,6 +230,9 @@
     section.wide {
         @apply max-w-[1200px];
     }
+    section.narrow {
+        @apply max-w-[500px];
+    }
 }
 
 .button_container {

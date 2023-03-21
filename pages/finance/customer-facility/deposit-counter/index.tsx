@@ -17,6 +17,8 @@ type Payload = {
 };
 
 export default function DepositCounter() {
+    // use to trigger refresh of table of bank credit and receipt book
+    const [isTriggerRefresh, setTriggerRefresh] = useState(false);
     const { setPrompt } = useContext(AppContext);
     const [changeData, setChangeData] = useState({
         dataThatChangeID: "",

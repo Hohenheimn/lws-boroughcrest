@@ -1,10 +1,14 @@
 import React, { useState } from "react";
 import HeaderCollection from "../../../../components/FINANCE/CustomerFacility/Collection/HeaderCollection";
-import HeaderReceivePayment from "../../../../components/FINANCE/CustomerFacility/Collection/ReceivePayment/HeaderReceivePayment";
+import ReceivePaymentForm from "../../../../components/FINANCE/CustomerFacility/Collection/ReceivePayment/ReceivePaymentForm";
 
 export default function ReceivePayment() {
     const [isFilterText, setFilterText] = useState<string[]>([]);
     const [isSearch, setSearch] = useState("");
+    const [isPeriod, setPeriod] = useState({
+        from: "",
+        to: "",
+    });
     return (
         <>
             <HeaderCollection
@@ -13,8 +17,10 @@ export default function ReceivePayment() {
                 setSearch={setSearch}
                 FilterEndpoint=""
                 page="receive-payment"
+                isPeriod={isPeriod}
+                setPeriod={setPeriod}
             />
-            <HeaderReceivePayment />
+            <ReceivePaymentForm />
         </>
     );
 }

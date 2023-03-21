@@ -15,7 +15,6 @@ import {
 import { GetBankCredit, MultipleUpdateBankCredit } from "./Query";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import Pagination from "../../../Reusable/Pagination";
-import BankAccountDropDown from "../../../Reusable/BankAccountDropDown";
 import DynamicPopOver from "../../../Reusable/DynamicPopOver";
 import { HiMinus } from "react-icons/hi";
 import { BsPlusLg, BsSearch } from "react-icons/bs";
@@ -78,11 +77,12 @@ export default function BankCreditComp({
 }: Props) {
     const { setPrompt } = useContext(AppContext);
     const [isSearch, setSearch] = useState("");
-    const [isBank, setBank] = useState({
-        id: "",
-        value: "",
-    });
+    const [isSelectedBankCreditIDs, setSelectedBankCreditIDs] = useState<
+        number[]
+    >([]);
+
     const [isSelectBank, setSelectBank] = useState<any>([]);
+
     const [isSelectBankIDS, setSelectBankIDS] = useState<any[]>([]);
     useEffect(() => {
         const selectbandIDS = isSelectBank.map((item: any) => {
@@ -90,12 +90,25 @@ export default function BankCreditComp({
         });
         setSelectBankIDS(selectbandIDS);
     }, [isSelectBank]);
+
     const [isPeriod, setPeriod] = useState({
         from: "",
         to: "",
     });
+
     const [TablePage, setTablePage] = useState(1);
+
     const selectAll = () => {
+        if (isBankCredit.selectAll) {
+            // remove
+            setSelectedBankCreditIDs([]);
+        } else {
+            // add
+            const BankCreditIDs = isBankCredit.itemArray.map((item) => {
+                return Number(item.id);
+            });
+            setSelectedBankCreditIDs(BankCreditIDs);
+        }
         const newItems = isBankCredit?.itemArray.map((item: any) => {
             return {
                 ...item,
@@ -189,22 +202,12 @@ export default function BankCreditComp({
     // APPLY DATA FROM API
     useEffect(() => {
         if (data?.status === 200) {
+            let selectAll = false;
             const CloneArray = data?.data.data.map((item: any) => {
-                let receiptno = "";
-                let referenceno = "";
                 let select = false;
-                let childrenBC: childType[] = [];
-                let rec_ref_id = 0;
-                isBankCredit.itemArray.map((itemSelect) => {
-                    if (itemSelect.id === item.id) {
-                        receiptno = itemSelect.receipt_no;
-                        referenceno = itemSelect.reference_no;
-                        select = itemSelect.select;
-                        childrenBC = itemSelect.childrenBC;
-                        rec_ref_id = Number(itemSelect.rec_ref_id);
-                    }
-                });
-
+                if (isSelectedBankCreditIDs.includes(item.id)) {
+                    select = true;
+                }
                 return {
                     id: item.id,
                     index: item.index,
@@ -214,28 +217,32 @@ export default function BankCreditComp({
                     remarks: item.remarks,
                     variance: item.credit,
                     status: item.status,
-                    receipt_no: receiptno,
-                    rec_ref_id: rec_ref_id,
-                    reference_no: referenceno,
+                    receipt_no: item.receipt_no,
+                    rec_ref_id: "",
+                    reference_no: item.reference_no,
                     select: select,
-                    childrenBC: childrenBC,
-                    receipt_book: item.receipt_book.map(
+                    childrenBC: item.receipt_book.map(
                         (receiptBookItem: any) => {
                             return {
                                 receipt_no: receiptBookItem.receipt_no,
                                 reference_no: receiptBookItem.reference_no,
+                                amount: receiptBookItem.amount_paid,
                             };
                         }
                     ),
                 };
             });
-            // Additional blank row field
+
+            if (CloneArray.length === isSelectedBankCreditIDs.length) {
+                selectAll = true;
+            }
+
             setBankCredit({
                 itemArray: CloneArray,
-                selectAll: false,
+                selectAll: selectAll,
             });
         }
-    }, [data?.status, TablePage, isBank, isPeriod]);
+    }, [data]);
 
     let buttonClicked = "";
 
@@ -260,23 +267,25 @@ export default function BankCreditComp({
 
     const UpdateStatus = (status: string) => {
         buttonClicked = status;
-        let bankCreditIDs: any[] = [];
-        isBankCredit.itemArray.map((item: isTableItemObjBC) => {
-            if (item.select === true) {
-                bankCreditIDs.push(item.id);
-            }
-        });
         const Payload = {
-            bank_credit_ids: "[" + bankCreditIDs.toString() + "]",
+            deposit_ids: isSelectedBankCreditIDs,
             status: status,
         };
-        updateMutate(Payload);
+        if (isSelectedBankCreditIDs.length > 0) {
+            updateMutate(Payload);
+        } else {
+            setPrompt({
+                message: "Select a Bank Credit!",
+                type: "draft",
+                toggle: true,
+            });
+        }
     };
     return (
         <>
             <section className={`${styleSearch.container}`}>
                 <div className={styleSearch.period}>
-                    <h1 className=" text-[20px] 1366px:text-[20px] flex items-center">
+                    <h1 className="SectionTitle">
                         Bank Credit{" "}
                         {type !== "bank-credit" && (
                             <Link href="/finance/customer-facility/deposit-counter/bank-credit">
@@ -410,6 +419,12 @@ export default function BankCreditComp({
                                     DeleteHandlerChildren={
                                         DeleteHandlerChildren
                                     }
+                                    isSelectedBankCreditIDs={
+                                        isSelectedBankCreditIDs
+                                    }
+                                    setSelectedBankCreditIDs={
+                                        setSelectedBankCreditIDs
+                                    }
                                 />
                             )
                         )}
@@ -455,6 +470,8 @@ type ListProps = {
         parentID: string | number,
         selectedID: string | number
     ) => void;
+    isSelectedBankCreditIDs: number[];
+    setSelectedBankCreditIDs: Function;
 };
 
 const List = ({
@@ -467,6 +484,8 @@ const List = ({
     AddHandler,
     DeleteHandler,
     DeleteHandlerChildren,
+    isSelectedBankCreditIDs,
+    setSelectedBankCreditIDs,
 }: ListProps) => {
     const [isSelect, setSelect] = useState({
         toggle: false,
@@ -510,6 +529,20 @@ const List = ({
         const newItems = isTableItem?.itemArray.map((item: any) => {
             if (itemDetail.id == item.id) {
                 if (key === "select") {
+                    if (item.select) {
+                        // remove
+                        const filterSelectedBCIDs =
+                            isSelectedBankCreditIDs.filter(
+                                (itemFilt) => Number(item.id) !== itemFilt
+                            );
+                        setSelectedBankCreditIDs(filterSelectedBCIDs);
+                    } else {
+                        // add
+                        setSelectedBankCreditIDs([
+                            ...isSelectedBankCreditIDs,
+                            item.id,
+                        ]);
+                    }
                     return {
                         ...item,
                         select: !item.select,
@@ -573,11 +606,15 @@ const List = ({
                 {type === "bank-credit" && (
                     <td className="checkbox">
                         <div className="item">
-                            <input
-                                type="checkbox"
-                                onChange={(e: any) => updateValue("select", e)}
-                                checked={itemDetail.select}
-                            />
+                            {itemDetail.status !== "Posted" && (
+                                <input
+                                    type="checkbox"
+                                    onChange={(e: any) =>
+                                        updateValue("select", e)
+                                    }
+                                    checked={itemDetail.select}
+                                />
+                            )}
                         </div>
                     </td>
                 )}
@@ -626,7 +663,7 @@ const List = ({
                                             onClick={() =>
                                                 setSelect({
                                                     ...isSelect,
-                                                    toggle: true,
+                                                    toggle: !isSelect.toggle,
                                                 })
                                             }
                                         />
@@ -805,114 +842,131 @@ const ChildList = ({
             <td></td>
             <td></td>
             <td></td>
-            <td></td>
-            <td className="maxlarge">
-                {isSelect.rec_ref === "" ? (
-                    <div className="select">
-                        <span>
-                            <MdOutlineKeyboardArrowDown />
-                        </span>
-                        <DynamicPopOver
-                            toRef={
-                                <input
-                                    type="text"
-                                    autoComplete="off"
-                                    className="field w-full"
-                                    readOnly
-                                    onClick={() =>
-                                        setSelect({
-                                            ...isSelect,
-                                            toggle: true,
-                                        })
-                                    }
-                                />
-                            }
-                            samewidth={true}
-                            toPop={
-                                <>
-                                    {isSelect.toggle && (
-                                        <ul>
-                                            <li
-                                                onClick={() =>
-                                                    setSelect({
-                                                        rec_ref: "receipt",
-                                                        toggle: false,
-                                                    })
-                                                }
-                                            >
-                                                Receipt No.
-                                            </li>
-                                            <li
-                                                onClick={() =>
-                                                    setSelect({
-                                                        rec_ref: "reference",
-                                                        toggle: false,
-                                                    })
-                                                }
-                                            >
-                                                Reference No.
-                                            </li>
-                                        </ul>
-                                    )}
-                                </>
-                            }
-                            className=""
-                        />
-                    </div>
-                ) : (
-                    <DropdownReceipt_Reference
-                        name="index"
-                        value={
-                            isSelect.rec_ref === "receipt"
-                                ? itemChildren.receipt_no
-                                : itemChildren.reference_no
-                        }
-                        selectHandler={SelectHandlerChildDD}
-                        keyType={isSelect.rec_ref}
-                        rowID={itemChildren.id}
-                        selecteRefRec={SelectedRefRec}
-                    />
-                )}
-            </td>
             <td>
-                <InputNumberForTable
-                    onChange={() => {}}
-                    value={itemDetail.variance}
-                    className={"field disabled w-full text-end"}
-                    type={""}
+                <TextNumberDisplay
+                    value={itemChildren.amount}
+                    className="withPeso"
                 />
             </td>
+            <td></td>
+            <td>
+                {itemChildren.receipt_no === null
+                    ? itemChildren.reference_no
+                    : itemChildren.receipt_no}
+            </td>
             {type !== "bank-credit" && (
-                <td className="actionIcon">
-                    <div>
-                        <HiMinus
-                            onClick={() =>
-                                DeleteHandlerChildren(
-                                    itemDetail.id,
-                                    itemChildren.id
-                                )
-                            }
-                        />
-                    </div>
-
-                    {itemDetail.variance !== 0 &&
-                        itemDetail.childrenBC.length - 1 === index && (
-                            <div
-                                className={`ml-5 1024px:ml-2 ${
-                                    itemDetail.variance !== "0" &&
-                                    itemChildren.reference_no === "" &&
-                                    itemDetail.variance !== 0 &&
-                                    itemDetail.childrenBC.length - 1 ===
-                                        index &&
-                                    "pointer-events-none opacity-[.5]"
-                                }`}
-                            >
-                                <BsPlusLg
-                                    onClick={() => AddHandler(itemDetail.id)}
+                <>
+                    <td className="maxlarge">
+                        {isSelect.rec_ref === "" ? (
+                            <div className="select">
+                                <span>
+                                    <MdOutlineKeyboardArrowDown />
+                                </span>
+                                <DynamicPopOver
+                                    toRef={
+                                        <input
+                                            type="text"
+                                            autoComplete="off"
+                                            className="field w-full"
+                                            readOnly
+                                            onClick={() =>
+                                                setSelect({
+                                                    ...isSelect,
+                                                    toggle: !isSelect.toggle,
+                                                })
+                                            }
+                                        />
+                                    }
+                                    samewidth={true}
+                                    toPop={
+                                        <>
+                                            {isSelect.toggle && (
+                                                <ul>
+                                                    <li
+                                                        onClick={() =>
+                                                            setSelect({
+                                                                rec_ref:
+                                                                    "receipt",
+                                                                toggle: false,
+                                                            })
+                                                        }
+                                                    >
+                                                        Receipt No.
+                                                    </li>
+                                                    <li
+                                                        onClick={() =>
+                                                            setSelect({
+                                                                rec_ref:
+                                                                    "reference",
+                                                                toggle: false,
+                                                            })
+                                                        }
+                                                    >
+                                                        Reference No.
+                                                    </li>
+                                                </ul>
+                                            )}
+                                        </>
+                                    }
+                                    className=""
                                 />
                             </div>
+                        ) : (
+                            <DropdownReceipt_Reference
+                                name="index"
+                                value={
+                                    isSelect.rec_ref === "receipt"
+                                        ? itemChildren.receipt_no
+                                        : itemChildren.reference_no
+                                }
+                                selectHandler={SelectHandlerChildDD}
+                                keyType={isSelect.rec_ref}
+                                rowID={itemChildren.id}
+                                selecteRefRec={SelectedRefRec}
+                            />
                         )}
-                </td>
+                    </td>
+                    <td>
+                        <InputNumberForTable
+                            onChange={() => {}}
+                            value={itemDetail.variance}
+                            className={"field disabled w-full text-end"}
+                            type={""}
+                        />
+                    </td>
+                    <td className="actionIcon">
+                        <div>
+                            <HiMinus
+                                onClick={() =>
+                                    DeleteHandlerChildren(
+                                        itemDetail.id,
+                                        itemChildren.id
+                                    )
+                                }
+                            />
+                        </div>
+
+                        {itemDetail.variance !== 0 &&
+                            itemDetail.childrenBC.length - 1 === index && (
+                                <div
+                                    className={`ml-5 1024px:ml-2 ${
+                                        itemDetail.variance !== "0" &&
+                                        itemChildren.reference_no === "" &&
+                                        itemDetail.variance !== 0 &&
+                                        itemDetail.childrenBC.length - 1 ===
+                                            index &&
+                                        "pointer-events-none opacity-[.5]"
+                                    }`}
+                                >
+                                    <BsPlusLg
+                                        onClick={() =>
+                                            AddHandler(itemDetail.id)
+                                        }
+                                    />
+                                </div>
+                            )}
+                    </td>
+                </>
             )}
         </tr>
     );

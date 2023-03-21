@@ -3,7 +3,11 @@ import Image from "next/image";
 import Calendar from "../../../Reusable/Calendar";
 import { TextNumberDisplay } from "../../../Reusable/NumberFormat";
 import BankAccountDropDown from "../../../Reusable/BankAccountDropDown";
-import { CreateDepositCounter, GetCashReceipt } from "./Query";
+import {
+    CreateDepositCounter,
+    GetCashReceipt,
+    UpdateDepositCounter,
+} from "./Query";
 import { format, isValid, parse } from "date-fns";
 import { BarLoader, ScaleLoader } from "react-spinners";
 import TableErrorMessage from "../../../Reusable/TableErrorMessage";
@@ -18,7 +22,7 @@ type Props = {
         id: string | number;
         value: string;
     };
-    defCashReceipt: CashReceiptsTable;
+    defCashReceipt: CashReceiptsObj[];
 };
 
 type CashReceiptsTable = {
@@ -43,14 +47,14 @@ export default function DepositForm({
 }: Props) {
     const router = useRouter();
     const { setPrompt } = useContext(AppContext);
-    const [isReferenceNo, setReferenceNo] = useState("");
+    const [isReferenceNo, setReferenceNo] = useState(defReferenceNo);
     const [isDate, setDate] = useState({
         toggle: false,
-        value: "",
+        value: defDate,
     });
     const [isBankAccount, setBankAccount] = useState({
-        id: "",
-        value: "",
+        id: defBank.id,
+        value: defBank.value,
     });
 
     const [isCashReceipt, setCashReceipt] = useState<CashReceiptsTable>({
@@ -64,7 +68,7 @@ export default function DepositForm({
         setPrompt({
             message: "Deposit successfully registered",
             toggle: true,
-            type: "save",
+            type: "success",
         });
         router.push("/finance/customer-facility/deposit-counter");
     };
@@ -76,10 +80,13 @@ export default function DepositForm({
             type: "error",
         });
     };
-    const { mutate, isLoading: MutateLoading } = CreateDepositCounter(
+    const { mutate: SaveMutate, isLoading: SaveLoading } = CreateDepositCounter(
         onSuccessMutate,
         onErrorMutate
     );
+
+    const { mutate: UpdateMutate, isLoading: UpdateLoading } =
+        UpdateDepositCounter(onSuccessMutate, onErrorMutate, id);
 
     const [isAmount, setAmount] = useState(0);
 
@@ -114,7 +121,7 @@ export default function DepositForm({
                 };
             });
             setCashReceipt({
-                itemArray: CloneArray,
+                itemArray: [...CloneArray, ...defCashReceipt],
                 selectAll: false,
             });
         }
@@ -149,7 +156,6 @@ export default function DepositForm({
             bank_account_id: isBankAccount.id,
             cash_receipt_ids: ids,
         };
-
         if (
             Payload.deposit_date === "" ||
             Payload.reference_no === "" ||
@@ -164,8 +170,11 @@ export default function DepositForm({
                 type: "draft",
             });
         } else {
-            // mutate(Payload);
-            console.log(Payload);
+            if (id !== undefined || id !== "") {
+                UpdateMutate(Payload);
+            } else {
+                SaveMutate(Payload);
+            }
         }
     };
 
@@ -285,7 +294,7 @@ export default function DepositForm({
             {isError && <TableErrorMessage />}
             <div className="flex justify-end">
                 <button className="buttonRed" onClick={() => SubmitHandler()}>
-                    {isLoading ? (
+                    {SaveLoading || UpdateLoading ? (
                         <ScaleLoader color="#fff" height="10px" width="2px" />
                     ) : (
                         "SAVE"

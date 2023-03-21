@@ -23,7 +23,7 @@ export default function Dropdown({
     const modal = useRef<any>();
 
     const { isLoading, data, isError } = useQuery([name, searchValue], () => {
-        return api.get(`${endpoint}?keywords=${searchValue}`, {
+        return api.get(`${endpoint}?keywords=`, {
             headers: {
                 Authorization: "Bearer " + getCookie("user"),
             },
@@ -82,8 +82,8 @@ export default function Dropdown({
                 </li>
             )}
 
-            {isError && <li>{name} cannot be found!</li>}
-            {data?.data.length <= 0 && <li>{name} cannot be found!</li>}
+            {isError && <li>Something is wrong!</li>}
+            {data?.data.length <= 0 && <li>no {name} found!</li>}
         </ul>
     );
 }

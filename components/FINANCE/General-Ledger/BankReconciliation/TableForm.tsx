@@ -129,8 +129,9 @@ export default function TableForm() {
             isTableItem.map((item: isTableitemObj) => {
                 setTotalDebit((temp) => Number(temp) + Number(item.debit));
                 setTotalCredit((temp) => Number(temp) + Number(item.credit));
-                setTotalBalance((temp) => Number(temp) + Number(item.balance));
             });
+            const totalBalance = Number(totalCredit) - Number(totalDebit);
+            setTotalBalance(totalBalance);
         }
     }, [isTableItem]);
 
@@ -447,8 +448,6 @@ const List = ({
             item.filter((x: any) => x.id !== itemData.id)
         );
     };
-
-    console.log(itemData.status);
 
     return (
         <tr>

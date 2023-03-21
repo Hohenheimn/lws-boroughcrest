@@ -63,7 +63,8 @@ export default function Layout({ children }: Layout) {
             router.asPath.includes("property/") ||
             router.pathname.includes("journal-list/[id]") ||
             router.pathname.includes("billing/invoice-list/[id]") ||
-            router.pathname.includes("/roles")
+            router.pathname.includes("/roles") ||
+            router.pathname.includes("/payment-register/[id]")
         ) {
             setProfileSearch(true);
         } else {

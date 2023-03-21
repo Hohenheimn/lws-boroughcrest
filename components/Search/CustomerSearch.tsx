@@ -49,7 +49,7 @@ export default function CustomerSearch() {
                     <div>
                         <input
                             type="text"
-                            placeholder="Search anything here..."
+                            placeholder="Search"
                             value={search}
                             onChange={(e) => {
                                 setSearch((text) => (text = e.target.value));

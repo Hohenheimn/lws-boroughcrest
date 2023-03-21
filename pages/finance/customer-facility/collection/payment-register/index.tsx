@@ -1,18 +1,25 @@
+import { useRouter } from "next/router";
 import React, { useState } from "react";
-import HeaderCollection from "../../../../components/FINANCE/CustomerFacility/Collection/HeaderCollection";
-import { TextNumberDisplay } from "../../../../components/Reusable/NumberFormat";
+import HeaderCollection from "../../../../../components/FINANCE/CustomerFacility/Collection/HeaderCollection";
+import { TextNumberDisplay } from "../../../../../components/Reusable/NumberFormat";
 
 export default function PaymentRegister() {
     const [isFilterText, setFilterText] = useState<string[]>([]);
     const [isSearch, setSearch] = useState("");
+    const [isPeriod, setPeriod] = useState({
+        from: "",
+        to: "",
+    });
     return (
         <>
             <HeaderCollection
                 setFilterText={setFilterText}
                 isSearch={isSearch}
                 setSearch={setSearch}
-                FilterEndpoint=""
+                FilterEndpoint="/finance/general-ledger/journal/filter-options"
                 page="payment-register"
+                isPeriod={isPeriod}
+                setPeriod={setPeriod}
             />
             <div className="table_container">
                 <table className="table_list journal">
@@ -28,34 +35,7 @@ export default function PaymentRegister() {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Sept 28 2022</td>
-                            <td>000000</td>
-                            <td>Juan Dela Cruz</td>
-                            <td>Lorem ipsum</td>
-                            <td>
-                                <TextNumberDisplay
-                                    className="withPeso w-full"
-                                    value={2500}
-                                />
-                            </td>
-                            <td>Cash</td>
-                            <td>InBound Default</td>
-                        </tr>
-                        <tr>
-                            <td>Sept 28 2022</td>
-                            <td>000000</td>
-                            <td>Juan Dela Cruz</td>
-                            <td>Lorem ipsum</td>
-                            <td>
-                                <TextNumberDisplay
-                                    className="withPeso w-full"
-                                    value={2500}
-                                />
-                            </td>
-                            <td>Cash</td>
-                            <td>InBound Default</td>
-                        </tr>
+                        <List />
                     </tbody>
                 </table>
 
@@ -77,3 +57,25 @@ export default function PaymentRegister() {
         </>
     );
 }
+
+const List = () => {
+    const router = useRouter();
+    const redirect = () => {
+        router.push(
+            `/finance/customer-facility/collection/payment-register/${1}`
+        );
+    };
+    return (
+        <tr onClick={redirect} className="cursor-pointer">
+            <td>Sept 28 2022</td>
+            <td>000000</td>
+            <td>Juan Dela Cruz</td>
+            <td>Lorem ipsum</td>
+            <td>
+                <TextNumberDisplay className="withPeso w-full" value={2500} />
+            </td>
+            <td>Cash</td>
+            <td>InBound Default</td>
+        </tr>
+    );
+};

@@ -22,7 +22,8 @@ export default function Modify({ setCreate }: Props) {
         name: data?.data.name,
         description: data?.data.description,
         base_rate: data?.data.base_rate,
-        uom: data?.data.uom,
+        charge_uom_id: data?.data.uom.id,
+        charge_uom_value: data?.data.uom.name,
         vat_percent: data?.data.vat_percent,
         minimum: data?.data.minimum,
         interest: data?.data.interest,
@@ -41,7 +42,7 @@ export default function Modify({ setCreate }: Props) {
         return (
             <div className={style.container}>
                 <section>
-                    <p className={style.modal_title}>Create Account</p>
+                    <p className={style.modal_title}>Modify Account</p>
                     <h1 className={style.modal_label_primaryRed}>
                         Primary Information
                     </h1>

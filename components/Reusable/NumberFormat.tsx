@@ -21,7 +21,7 @@ export const InputNumberForTable = ({
                 className={className + " max-w-[400px]"}
                 prefix={prefix}
                 placeholder="-"
-                value={value}
+                value={value === 0 ? "" : value}
                 fixedDecimalScale
                 decimalScale={2}
                 decimalSeparator="."
@@ -32,6 +32,42 @@ export const InputNumberForTable = ({
                     // value ie, 2223
                     const { formattedValue, value } = values;
                     onChange(type, value);
+                }}
+            />
+        </div>
+    );
+};
+type InputNumberField = {
+    className: string;
+    prefix: string;
+    isValue: string | number;
+    setValue: (key: string, value: number) => void;
+    keyField: string;
+};
+export const InputNumberForForm = ({
+    className,
+    prefix,
+    isValue,
+    setValue,
+    keyField,
+}: InputNumberField) => {
+    return (
+        <div className="withPesoField">
+            <NumericFormat
+                className={className + " max-w-[400px]"}
+                prefix={prefix}
+                value={isValue === 0 ? "" : isValue}
+                placeholder="-"
+                fixedDecimalScale
+                decimalScale={2}
+                decimalSeparator="."
+                allowNegative={false}
+                thousandSeparator={true}
+                onValueChange={(values) => {
+                    // formattedValue = $2,223
+                    // value ie, 2223
+                    const { formattedValue, value } = values;
+                    setValue(keyField, Number(value));
                 }}
             />
         </div>
@@ -52,9 +88,9 @@ export const TextNumberDisplay = ({
         <NumericFormat
             placeholder="-"
             suffix={suffix}
-            className={className}
+            className={" min-h-[12px] " + className}
             fixedDecimalScale
-            value={value}
+            value={value === 0 || value === "" ? "-" : value}
             displayType="text"
             decimalScale={2}
             decimalSeparator="."
@@ -74,7 +110,7 @@ export const TextNumberDisplayPercent = ({
             placeholder="-"
             suffix={suffix}
             className={className}
-            value={value}
+            value={value === 0 ? "" : value}
             thousandSeparator={true}
         />
     );

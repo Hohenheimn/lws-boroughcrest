@@ -24,6 +24,7 @@ type billingObject = {
     id: number;
     charge_id: string;
     charge: any;
+    charge_vat: string | number;
     description: string;
     unit_price: number | string;
     quantity: number | string;
@@ -175,6 +176,29 @@ type List = {
 };
 
 const List = ({ itemList, setState, isState, index }: List) => {
+    // Computation of Amount and Vat
+    useEffect(() => {
+        const Vat =
+            Number(itemList.unit_price) *
+            Number(itemList.quantity) *
+            Number(itemList.charge_vat);
+        const Amount =
+            Number(itemList.unit_price) * Number(itemList.quantity) +
+            Number(Vat);
+
+        const CloneToUpdate = isState.map((item) => {
+            if (item.id === itemList.id) {
+                return {
+                    ...item,
+                    amount: Amount,
+                    vat: Vat,
+                };
+            }
+            return item;
+        });
+        setState(CloneToUpdate);
+    }, [itemList.charge_vat, itemList.quantity, itemList.unit_price]);
+
     const AddJournal = () => {
         const random = Math.random();
         setState((temp: any) => [
@@ -183,6 +207,7 @@ const List = ({ itemList, setState, isState, index }: List) => {
                 id: random,
                 charge_id: "",
                 charge: "",
+                charge_vat: "",
                 description: "",
                 unit_price: "",
                 quantity: "",
@@ -200,27 +225,14 @@ const List = ({ itemList, setState, isState, index }: List) => {
     const updateValue = (key: string, e: any) => {
         const newItems = isState.map((item: any) => {
             if (itemList.id == item.id) {
-                let Amount = 0;
                 if (key === "charge") {
-                    if (
-                        itemList.unit_price !== "" &&
-                        itemList.unit_price !== 0 &&
-                        itemList.quantity !== 0 &&
-                        itemList.quantity !== ""
-                    ) {
-                        Amount =
-                            Number(itemList.unit_price) *
-                                Number(itemList.quantity) +
-                            Number(e.target.getAttribute("data-vat"));
-                    }
                     return {
                         ...item,
                         charge: e.target.innerHTML,
                         charge_id: e.target.getAttribute("data-id"),
                         description: e.target.getAttribute("data-description"),
                         uom: e.target.getAttribute("data-uom"),
-                        vat: e.target.getAttribute("data-vat"),
-                        amount: Amount,
+                        charge_vat: e.target.getAttribute("data-vat"),
                     };
                 } else if (key === "description") {
                     return {
@@ -228,34 +240,14 @@ const List = ({ itemList, setState, isState, index }: List) => {
                         description: e.target.value,
                     };
                 } else if (key === "unit_price") {
-                    if (itemList.quantity !== "" && itemList.quantity !== 0) {
-                        Amount =
-                            Number(e) * Number(itemList.quantity) +
-                            Number(itemList.vat);
-                    } else {
-                        Amount = Number(e) + Number(itemList.vat);
-                    }
                     return {
                         ...item,
                         unit_price: e,
-                        amount: Amount,
                     };
                 } else if (key === "quantity") {
-                    if (
-                        itemList.unit_price !== "" &&
-                        itemList.unit_price !== 0
-                    ) {
-                        Amount =
-                            Number(e.target.value) *
-                                Number(itemList.unit_price) +
-                            Number(itemList.vat);
-                    } else {
-                        Amount = Number(e.target.value) * Number(itemList.vat);
-                    }
                     return {
                         ...item,
                         quantity: e.target.value,
-                        amount: Amount,
                     };
                 }
             }
@@ -282,7 +274,7 @@ const List = ({ itemList, setState, isState, index }: List) => {
             <td>
                 <InputNumberForTable
                     className="field number"
-                    value={itemList.unit_price}
+                    value={Number(itemList.unit_price)}
                     onChange={updateValue}
                     type={"unit_price"}
                 />

@@ -8,11 +8,13 @@ import DynamicPopOver from "../Reusable/DynamicPopOver";
 type DropdownItem = {
     UpdateStateHandler: (key: string, e: any) => void;
     itemDetail: any;
+    className?: string;
 };
 
 export default function DropDownCharge({
     UpdateStateHandler,
     itemDetail,
+    className,
 }: DropdownItem) {
     const [isToggle, setToggle] = useState(false);
     const [tempSearch, setTempSearch] = useState(itemDetail.charge);
@@ -22,12 +24,12 @@ export default function DropDownCharge({
     return (
         <>
             <DynamicPopOver
-                className="w-full"
+                className={"w-full "}
                 samewidth={true}
                 toRef={
                     <input
                         type="text"
-                        className="field w-full"
+                        className={"field w-full " + className}
                         onClick={() => setToggle(true)}
                         value={tempSearch}
                         onChange={(e) => {
@@ -81,6 +83,7 @@ const List = ({
             );
         }
     );
+
     const PopOver = useRef<any>();
 
     useEffect(() => {

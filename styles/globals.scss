@@ -52,6 +52,13 @@ h6.lowGray {
         height: 25px;
     }
 }
+.field.mini {
+    font-size: 14px !important;
+    @media (max-width: 1550px) {
+        font-size: 13px !important;
+        height: 25px;
+    }
+}
 .number {
     @apply text-end;
 }
@@ -139,6 +146,9 @@ select {
 .pageTitle {
     @apply text-[24px] 480px:text-[18px];
 }
+.SectionTitle {
+    @apply text-[20px] 1366px:text-[20px] flex items-center;
+}
 .label_text {
     @apply text-start text-gray-400 text-[14px] 1024px:text-[14px] font-medium;
 }
@@ -147,6 +157,9 @@ select {
     span {
         @apply text-gray-400 text-[12px];
     }
+}
+.main_text.noMB {
+    @apply mb-0;
 }
 
 *::-webkit-scrollbar {
@@ -169,7 +182,7 @@ select {
 }
 // Table
 .table_container {
-    @apply w-full overflow-x-auto mb-10 480px:mb-5 overflow-y-auto min-h-[300px] max-h-[60vh] relative;
+    @apply overflow-x-auto mb-10 480px:mb-5 overflow-y-auto min-h-[300px] max-h-[60vh] relative;
     table {
         thead {
             @apply sticky top-0 z-[40];
@@ -188,14 +201,16 @@ select {
 .table_container.noMin {
     @apply min-h-0;
 }
-
+.table_container.noMB {
+    @apply mb-0;
+}
 .table_list {
     @apply min-w-full;
     thead {
         @apply shadow-md sticky top-0 bg-[#fbfbfb] z-[40];
         tr {
             th {
-                @apply text-start px-2 py-4 1550px:py-2 480px:py-3 1280px:px-3 text-[#545454] text-[14px] 1280px:text-[13px];
+                @apply text-start px-2 py-4 1550px:py-2 480px:py-3 1280px:px-3 text-[#545454] text-[15px] 1280px:text-[13px];
             }
             th.checkbox {
                 @apply w-3 min-w-0;
@@ -244,7 +259,7 @@ select {
         tr {
             @apply border-b border-gray-300 relative text-[16px] 1550px:text-[14px] 480px:text-[12px];
             td {
-                @apply py-2 px-2 text-[#2E4364] font-NHU-regular 1550px:min-w-[100px] max-w-[350px];
+                @apply py-2 px-2 text-[#2E4364] font-NHU-regular min-w-[150px] max-w-[350px];
 
                 aside {
                     @apply w-10 h-10 480px:w-8 480px:h-8 rounded-full overflow-hidden relative shadow-lg mr-3;
@@ -321,12 +336,13 @@ select {
             td.large {
                 @apply min-w-[200px] 480px:min-w-[150px];
             }
-            td.x2large {
-                @apply min-w-[400px] 480px:min-w-[300px];
-            }
             td.xLarge {
                 @apply min-w-[300px] 480px:min-w-[350px];
             }
+            td.x2large {
+                @apply min-w-[400px] 480px:min-w-[300px];
+            }
+
             .td.wid20 {
                 width: 500px;
             }
@@ -501,41 +517,50 @@ input[type="number"] {
 }
 .crud-table {
     @apply w-[300px] static;
-    th {
-        @apply bg-ThemeRed px-3 py-1 text-[10px] font-NHU-regular font-light border border-gray-300;
-    }
-    th.checkbox {
-        @apply w-3 min-w-0;
-        input[type="checkbox"] {
-            border: 1px solid rgb(216, 216, 216) !important;
-            @apply bg-white relative h-3 w-3 rounded-sm shadow-md overflow-hidden after:text-white after:flex after:justify-center mr-0 after:items-center checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
-            &:checked {
-                border: none !important;
+    thead {
+        tr {
+            th {
+                @apply bg-ThemeRed px-3 py-1 text-[10px] text-white font-NHU-regular font-light border border-gray-300;
+            }
+            th.checkbox {
+                @apply w-3 min-w-0;
+                input[type="checkbox"] {
+                    border: 1px solid rgb(216, 216, 216) !important;
+                    @apply bg-white relative h-3 w-3 rounded-sm shadow-md overflow-hidden after:text-white after:flex after:justify-center mr-0 after:items-center checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
+                    &:checked {
+                        border: none !important;
+                    }
+                }
             }
         }
     }
-    td {
-        @apply border border-gray-300 px-2 py-0;
-        input[type="text"],
-        input[type="number"],
-        input[type="email"] {
-            @apply border border-gray-500 text-[12px] z-10 hover:text-white bg-transparent;
-            font-size: 12px !important;
-        }
-        input.disabled {
-            @apply border-none pointer-events-none shadow-none bg-transparent outline-none;
-        }
-        p {
-            @apply text-[#545454];
-            font-size: 12px !important;
-        }
-        .dropdown {
-            @apply relative;
 
-            ul {
-                @apply absolute top-full left-0 w-full text-ThemeRed z-10 bg-white border max-h-[200px] overflow-auto;
-                li {
-                    @apply text-[12px] border-b py-1 px-2 w-full mb-0 hover:bg-ThemeRed hover:text-white transition-all duration-75;
+    tbody {
+        tr {
+            td {
+                @apply border border-gray-300 px-2 py-0;
+                input[type="text"],
+                input[type="number"],
+                input[type="email"] {
+                    @apply border border-gray-500 text-[12px] z-10 hover:text-white bg-transparent;
+                    font-size: 12px !important;
+                }
+                input.disabled {
+                    @apply border-none pointer-events-none shadow-none bg-transparent outline-none;
+                }
+                p {
+                    @apply text-[#545454];
+                    font-size: 12px !important;
+                }
+                .dropdown {
+                    @apply relative;
+
+                    ul {
+                        @apply absolute top-full left-0 w-full text-ThemeRed z-10 bg-white border max-h-[200px] overflow-auto;
+                        li {
+                            @apply text-[12px] border-b py-1 px-2 w-full mb-0 hover:bg-ThemeRed hover:text-white transition-all duration-75;
+                        }
+                    }
                 }
             }
         }
@@ -595,7 +620,7 @@ input[type="number"] {
 }
 // Save Drop Down Button
 .DropDownSave {
-    @apply w-full flex justify-end mt-14 480px:mt-10;
+    @apply w-full flex justify-end mt-14 480px:mt-10 mb-5;
     .ddback {
         @apply text-ThemeRed font-semibold text-[14px] h-8 mr-5 cursor-pointer flex items-center;
     }
@@ -846,6 +871,13 @@ input[type="number"] {
         background-image: url(../public/Images/peso.png);
     }
 }
+.withPesoWhite {
+    @apply relative pl-[20px];
+    &::before {
+        @apply content-[''] w-5 h-full absolute top-0 left-0 bg-no-repeat bg-center;
+        background-image: url(../public/Images/pesowhite.png);
+    }
+}
 .withPesoField {
     @apply relative;
     &::before {
@@ -937,4 +969,17 @@ input[type="number"] {
     padding-right: 0;
     border-radius: 21px;
     display: inline-block;
+}
+
+.switchButton {
+    @apply flex justify-start;
+    li:nth-child(1) {
+        @apply mr-2;
+    }
+    li {
+        @apply w-3 h-3 rounded-full bg-gray-400 duration-300 ease-in-out;
+    }
+    li.active {
+        @apply w-20 rounded-lg bg-ThemeRed;
+    }
 }
