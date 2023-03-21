@@ -3,7 +3,6 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { useQuery } from "react-query";
 import { BarLoader } from "react-spinners";
 import api from "../../util/api";
-import { IDstate } from "../FINANCE/CustomerFacility/Charge/Type";
 
 type Props = {
     endpoint: string;

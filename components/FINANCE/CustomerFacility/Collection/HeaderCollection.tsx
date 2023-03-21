@@ -15,6 +15,11 @@ type Props = {
     FilterEndpoint: string;
     setFilterText: Function;
     page: string;
+    isPeriod: {
+        from: string;
+        to: string;
+    };
+    setPeriod: Function;
 };
 
 export default function HeaderCollection({
@@ -23,6 +28,8 @@ export default function HeaderCollection({
     FilterEndpoint,
     setFilterText,
     page,
+    isPeriod,
+    setPeriod,
 }: Props) {
     const [isAdvFilter, setAdvFilter] = useState<Advancefilter>([]);
     useEffect(() => {
@@ -35,11 +42,6 @@ export default function HeaderCollection({
         const cloneFilter = isAdvFilter.filter((item) => item.value !== value);
         setAdvFilter(cloneFilter);
     };
-
-    const [isPeriod, setPeriod] = useState({
-        from: "",
-        to: "",
-    });
 
     return (
         <>

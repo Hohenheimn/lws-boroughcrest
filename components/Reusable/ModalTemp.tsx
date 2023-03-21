@@ -9,7 +9,9 @@ type Props = {
 export default function ModalTemp({ children, narrow }: Props) {
     return (
         <div className={`${style.container}`}>
-            <section className={`${narrow && "narrow"}`}>{children}</section>
+            <section className={`${narrow && style.narrow}`}>
+                {children}
+            </section>
         </div>
     );
 }

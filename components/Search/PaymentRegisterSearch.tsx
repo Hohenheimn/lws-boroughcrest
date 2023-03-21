@@ -9,7 +9,7 @@ import { getCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import BeatLoader from "react-spinners/BeatLoader";
 
-export default function CustomerSearch() {
+export default function PaymentRegisterSearch() {
     const [search, setSearch] = useState<string>("");
     let dataSearch;
     const router = useRouter();
@@ -37,12 +37,12 @@ export default function CustomerSearch() {
         <div className={style.container}>
             <div className={style.header}>
                 <aside className={style.title}>
-                    <Link href="/admin/customer">
+                    <Link href="/finance/customer-facility/collection/payment-register">
                         <a>
                             <MdArrowForwardIos className={style.arrow} />
                         </a>
                     </Link>
-                    <h1>Customer</h1>
+                    <h1>Payment Register</h1>
                 </aside>
 
                 <aside className={style.searchBar}>
@@ -71,7 +71,10 @@ export default function CustomerSearch() {
                     </div>
                 ) : (
                     dataSearch?.map((item: any, index: number) => (
-                        <Link key={index} href={`/admin/customer/${item.id}`}>
+                        <Link
+                            key={index}
+                            href={`/finance/customer-facility/collection/payment-register/${item.id}`}
+                        >
                             <a className={style.searchedItem}>
                                 <ul>
                                     <li>

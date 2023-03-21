@@ -6,21 +6,21 @@ import api from "../../util/api";
 import DynamicPopOver from "../Reusable/DynamicPopOver";
 
 type DropdownItem = {
-    UpdateStateHandler: (key: string, e: any) => void;
-    itemDetail: any;
-    className?: string;
+    className: string;
+    value: string;
+    setValue: Function;
 };
 
-export default function DropDownCharge({
-    UpdateStateHandler,
-    itemDetail,
+export default function DropdownFieldCOA({
     className,
+    value,
+    setValue,
 }: DropdownItem) {
     const [isToggle, setToggle] = useState(false);
-    const [tempSearch, setTempSearch] = useState(itemDetail.charge);
+    const [tempSearch, setTempSearch] = useState(value);
     useEffect(() => {
-        setTempSearch(itemDetail.charge);
-    }, [itemDetail.charge]);
+        setTempSearch(value);
+    }, [value]);
     return (
         <>
             <DynamicPopOver
@@ -44,8 +44,8 @@ export default function DropDownCharge({
                                 setToggle={setToggle}
                                 tempSearch={tempSearch}
                                 setTempSearch={setTempSearch}
-                                UpdateStateHandler={UpdateStateHandler}
-                                itemDetail={itemDetail}
+                                setValue={setValue}
+                                value={value}
                             />
                         )}
                     </>
@@ -58,23 +58,23 @@ export default function DropDownCharge({
 type List = {
     setToggle: Function;
     setTempSearch: Function;
-    UpdateStateHandler: (key: string, e: any) => void;
-    itemDetail: any;
     tempSearch: string;
+    value: string;
+    setValue: Function;
 };
 
 const List = ({
     setToggle,
     tempSearch,
     setTempSearch,
-    UpdateStateHandler,
-    itemDetail,
+    value,
+    setValue,
 }: List) => {
     const { data, isLoading, isError } = useQuery(
-        ["charge-list-dd", tempSearch],
+        ["coa-list-dd", tempSearch],
         () => {
             return api.get(
-                `/finance/customer-facility/charges?keywords=${tempSearch}`,
+                `/finance/general-ledger/chart-of-accounts?keywords=${tempSearch}`,
                 {
                     headers: {
                         Authorization: "Bearer " + getCookie("user"),
@@ -90,7 +90,7 @@ const List = ({
         const clickOutSide = (e: any) => {
             if (!PopOver.current.contains(e.target)) {
                 setToggle(false);
-                setTempSearch(itemDetail.charge);
+                setTempSearch(value);
             }
         };
         document.addEventListener("mousedown", clickOutSide);
@@ -103,17 +103,16 @@ const List = ({
             {data?.data.map((item: any, index: number) => (
                 <li
                     key={index}
-                    data-id={item.id}
-                    data-description={item.description}
-                    data-uom={item.uom}
-                    data-vat={item.vat_percent}
                     onClick={(e) => {
-                        UpdateStateHandler("charge", e);
+                        setValue({
+                            id: item.id,
+                            value: item.account_name,
+                        });
                         setTempSearch(item.name);
                         setToggle(false);
                     }}
                 >
-                    {item.name}
+                    {item.account_name}
                 </li>
             ))}
             {isLoading && (
@@ -132,7 +131,7 @@ const List = ({
             {isError ||
                 (data?.data.length <= 0 && (
                     <li>
-                        <h1>Charge name cannot be found!</h1>
+                        <h1>Chart of account cannot be found!</h1>
                     </li>
                 ))}
         </ul>

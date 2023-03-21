@@ -4,11 +4,11 @@ import CustomerDropdown from "../../../../Dropdowns/CustomerDropdown";
 import Calendar from "../../../../Reusable/Calendar";
 import Image from "next/image";
 import { InputNumberForForm } from "../../../../Reusable/NumberFormat";
-import { useForm } from "react-hook-form";
 import ProvisionalForm, { isProvisionalTable } from "./ProvisionalForm";
-import AppContext from "../../../../Context/AppContext";
 import AcknowledgementForm from "./AcknowledgementForm";
 import OfficialForm from "./OfficialForm/OfficialForm";
+import DiscountForm from "./DiscountForm";
+import DropdownFieldCOA from "../../../../Dropdowns/DropdownFieldCOA";
 
 export type ReceivePaymentForm = {
     description: string;
@@ -28,7 +28,7 @@ export type HeaderForm = {
     description: string;
     mode_of_payment: string;
     deposit_date: string;
-    cash_account: string;
+    chart_of_account_id: string;
     reference_no: string;
     amount_paid: number | string;
     credit_tax: number | string;
@@ -38,12 +38,12 @@ export default function ReceivePaymentForm() {
     const [HeaderForm, setHeaderForm] = useState<HeaderForm>({
         customer_id: "",
         receipt_type: "",
-        receipt_date: "Sept 28 2022",
+        receipt_date: "Sep 28 2022",
         receipt_no: "OR000258",
         description: "",
         mode_of_payment: "",
         deposit_date: "",
-        cash_account: "",
+        chart_of_account_id: "",
         reference_no: "",
         amount_paid: "",
         credit_tax: "",
@@ -51,11 +51,18 @@ export default function ReceivePaymentForm() {
 
     const [isErrorToggle, setErrorToggle] = useState(false);
 
+    const [isDiscountToggle, setDiscountToggle] = useState(false);
+
     const [isCustomer, setCustomer] = useState({
         id: "",
         name: "",
         class: "",
         property: [],
+    });
+
+    const [isCOA, setCOA] = useState({
+        id: "",
+        value: "",
     });
 
     const [isDepositDate, setDepositDate] = useState({
@@ -69,6 +76,13 @@ export default function ReceivePaymentForm() {
             deposit_date: isDepositDate.value,
         });
     }, [isDepositDate]);
+
+    useEffect(() => {
+        setHeaderForm({
+            ...HeaderForm,
+            chart_of_account_id: isCOA.value,
+        });
+    }, [isCOA]);
 
     useEffect(() => {
         setHeaderForm({
@@ -95,7 +109,7 @@ export default function ReceivePaymentForm() {
     const ErrorToggleHandler = () => {
         if (
             HeaderForm.amount_paid === "" ||
-            HeaderForm.cash_account === "" ||
+            HeaderForm.chart_of_account_id === "" ||
             HeaderForm.credit_tax === "" ||
             HeaderForm.customer_id === "" ||
             HeaderForm.deposit_date === "" ||
@@ -114,6 +128,9 @@ export default function ReceivePaymentForm() {
 
     return (
         <>
+            {isDiscountToggle && (
+                <DiscountForm setDiscountToggle={setDiscountToggle} />
+            )}
             <div className="flex flex-wrap border-b border-gray-300 pb-10 mb-10">
                 <ul className="w-[25%] flex flex-col pr-10 border-r border-gray-300">
                     <li className="w-full mb-5">
@@ -229,11 +246,7 @@ export default function ReceivePaymentForm() {
                                                 readOnly
                                             />
                                         }
-                                        listArray={[
-                                            "Official",
-                                            "Acknowledgement",
-                                            "Provisional",
-                                        ]}
+                                        listArray={["Cash", "Deposit"]}
                                     />
                                     {HeaderForm.mode_of_payment === "" &&
                                         isErrorToggle && (
@@ -294,7 +307,12 @@ export default function ReceivePaymentForm() {
                                             isValue={HeaderForm.amount_paid}
                                             setValue={onChangeNumber}
                                         />
-                                        <div className=" cursor-pointer absolute left-full top-[50%] translate-y-[-50%] w-5 h-5 flex justify-center items-center pl-1">
+                                        <div
+                                            onClick={() =>
+                                                setDiscountToggle(true)
+                                            }
+                                            className=" cursor-pointer absolute left-full top-[50%] translate-y-[-50%] w-5 h-5 flex justify-center items-center pl-1"
+                                        >
                                             <Image
                                                 src="/Images/f_percent_tag.png"
                                                 alt=""
@@ -315,27 +333,12 @@ export default function ReceivePaymentForm() {
                             <li className="w-[30%]  -mt-1">
                                 <label htmlFor="" className="labelField">
                                     CASH ACCOUNT
-                                    <SelectDropdown
-                                        selectHandler={(value: string) => {
-                                            setHeaderForm({
-                                                ...HeaderForm,
-                                                cash_account: value,
-                                            });
-                                        }}
+                                    <DropdownFieldCOA
+                                        value={isCOA.value}
+                                        setValue={setCOA}
                                         className=""
-                                        inputElement={
-                                            <input
-                                                className="w-full field"
-                                                readOnly
-                                            />
-                                        }
-                                        listArray={[
-                                            "Official",
-                                            "Acknowledgement",
-                                            "Provisional",
-                                        ]}
                                     />
-                                    {HeaderForm.cash_account === "" &&
+                                    {HeaderForm.chart_of_account_id === "" &&
                                         isErrorToggle && (
                                             <p className="text-[10px] text-ThemeRed">
                                                 Required!

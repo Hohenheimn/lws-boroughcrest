@@ -7,10 +7,12 @@ import { TableOneTotal, TableTwoTotal } from "../../../Reusable/TableTotal";
 import Authorization from "./Authorization";
 
 export default function PaymentRegisterDetail() {
-    const [isToggle, setToggle] = useState<number | string>("");
+    const [isToggleID, setToggle] = useState<number | string>("");
     return (
         <div>
-            <Authorization />
+            {isToggleID !== "" && (
+                <Authorization id={isToggleID} setState={setToggle} />
+            )}
             <div>
                 <div className="flex justify-between flex-wrap">
                     <h1 className="pageTitle mb-5">Payment Details</h1>

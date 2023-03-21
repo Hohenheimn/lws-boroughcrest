@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
+import { format, isValid, parse } from "date-fns";
+import React, { useContext, useEffect, useState } from "react";
 import { BsPlusLg } from "react-icons/bs";
 import { HiMinus } from "react-icons/hi";
 import { RiArrowDownSFill } from "react-icons/ri";
 import { ScaleLoader } from "react-spinners";
 import index from "../../../../../pages/project";
+import AppContext from "../../../../Context/AppContext";
 import DropDownCharge from "../../../../Dropdowns/DropDownCharge";
 import { InputNumberForTable } from "../../../../Reusable/NumberFormat";
 import { TableOneTotal } from "../../../../Reusable/TableTotal";
@@ -28,6 +30,7 @@ export default function AcknowledgementForm({
     Error,
     headerForm,
 }: Props) {
+    const { setPrompt } = useContext(AppContext);
     const [isTable, setTable] = useState<isTableItem[]>([
         {
             id: 1,
@@ -44,7 +47,73 @@ export default function AcknowledgementForm({
 
     const [isSave, setSave] = useState(false);
 
-    const SaveHandler = (button: string) => {};
+    const SaveHandler = (button: string) => {
+        let validate = true;
+        isTable.map((provItem: isTableItem) => {
+            if (
+                provItem.amount === "" ||
+                provItem.charge === "" ||
+                provItem.charge_id === "" ||
+                provItem.description === ""
+            ) {
+                setPrompt({
+                    toggle: true,
+                    message: "Fill out the fields!",
+                    type: "draft",
+                });
+                validate = false;
+                return;
+            }
+        });
+        if (
+            headerForm.amount_paid === "" ||
+            headerForm.chart_of_account_id === "" ||
+            headerForm.customer_id === "" ||
+            headerForm.deposit_date === "" ||
+            headerForm.description === "" ||
+            headerForm.mode_of_payment === "" ||
+            headerForm.receipt_date === "" ||
+            headerForm.receipt_no === "" ||
+            headerForm.receipt_type === "" ||
+            headerForm.reference_no === ""
+        ) {
+            setPrompt({
+                toggle: true,
+                message: "Fill out the fields!",
+                type: "draft",
+            });
+            validate = false;
+            return;
+        }
+        const receipt_date = parse(
+            headerForm.receipt_date,
+            "MMM dd yyyy",
+            new Date()
+        );
+        const deposit_date = parse(
+            headerForm.deposit_date,
+            "MMM dd yyyy",
+            new Date()
+        );
+
+        const Payload = {
+            customer_id: headerForm.customer_id,
+            receipt_type: headerForm.receipt_type,
+            receipt_date: isValid(receipt_date)
+                ? format(receipt_date, "yyyy-MM-dd")
+                : "",
+            receipt_no: headerForm.receipt_no,
+            description: headerForm.description,
+            mode_of_payment: headerForm.mode_of_payment,
+            deposit_date: isValid(deposit_date)
+                ? format(deposit_date, "yyyy-MM-dd")
+                : "",
+            amount_paid: headerForm.amount_paid,
+            chart_of_account_id: headerForm.chart_of_account_id,
+            reference_no: headerForm.reference_no,
+        };
+        if (validate) console.log(Payload);
+    };
 
     return (
         <>

@@ -12,6 +12,9 @@ import { BsPlusLg } from "react-icons/bs";
 import { RiArrowDownSFill } from "react-icons/ri";
 import { HeaderForm } from "./ReceivePaymentForm";
 import AppContext from "../../../../Context/AppContext";
+import CreateDeposit from "../../../../../pages/finance/customer-facility/deposit-counter/create-deposit";
+import { CreateCollection } from "./Query";
+import { format, isValid, parse } from "date-fns";
 
 export type isProvisionalTable = {
     id: string | number;
@@ -35,33 +38,19 @@ export default function ProvisionalForm({ Error, headerForm }: Props) {
     const [isTable, setTable] = useState<isProvisionalTable[]>([
         {
             id: 1,
-            check_date: "123132",
-            description: "123213",
-            check_no: "123",
-            bank_branch: "132",
-            bank_branch_id: "123",
-            amount: 3215,
+            check_date: "",
+            description: "",
+            check_no: "",
+            bank_branch: "",
+            bank_branch_id: "",
+            amount: 0,
         },
     ]);
-    const { isLoading, data, isError } = GetPropertyList(1, "");
 
-    // useEffect(() => {
-    //     if (data?.status === 200) {
-    //         const CloneArray = data?.data.data.map((item: any) => {
-    //             return {
-    //                 id: item.id,
-    //                 check_date: "123132",
-    //                 description: "123213",
-    //                 check_no: "123",
-    //                 bank_branch: "132",
-    //                 bank_branch_id: "123",
-    //                 amount: "11323",
-    //             };
-    //         });
+    const onSuccess = () => {};
+    const onError = () => {};
 
-    //         setTable(CloneArray);
-    //     }
-    // }, [data?.status]);
+    const { isLoading, mutate } = CreateCollection(onSuccess, onError);
 
     const SaveHandler = (button: string) => {
         buttonClicked = button;
@@ -99,13 +88,29 @@ export default function ProvisionalForm({ Error, headerForm }: Props) {
             validate = false;
             return;
         }
+        const receipt_date = parse(
+            headerForm.receipt_date,
+            "MMM dd yyyy",
+            new Date()
+        );
         const Payload = {
             customer_id: headerForm.customer_id,
             receipt_type: headerForm.receipt_type,
-            receipt_date: headerForm.receipt_date,
+            receipt_date: isValid(receipt_date)
+                ? format(receipt_date, "yyyy-MM-dd")
+                : "",
             receipt_no: headerForm.receipt_no,
             description: headerForm.description,
-            wareHouse: isTable,
+            wareHouse: isTable.map((item: isProvisionalTable) => {
+                const date = parse(item.check_date, "MMM dd yyyy", new Date());
+                return {
+                    check_date: isValid(date) ? format(date, "yyyy-MM-dd") : "",
+                    description: item.description,
+                    check_no: item.check_no,
+                    bank_branch_id: item.bank_branch_id,
+                    amount: item.amount,
+                };
+            }),
         };
         if (validate) console.log(Payload);
     };
@@ -137,20 +142,6 @@ export default function ProvisionalForm({ Error, headerForm }: Props) {
                         ))}
                     </tbody>
                 </table>
-                {isLoading && (
-                    <div className="w-full flex justify-center items-center">
-                        <aside className="text-center flex justify-center py-5">
-                            <BarLoader
-                                color={"#8f384d"}
-                                height="10px"
-                                width="200px"
-                                aria-label="Loading Spinner"
-                                data-testid="loader"
-                            />
-                        </aside>
-                    </div>
-                )}
-                {isError && <TableErrorMessage />}
             </div>
             <TableOneTotal total={123123} label="Total" redBG={false} />
             <div className="DropDownSave">
@@ -247,6 +238,10 @@ const List = ({ itemDetail, isTable, setTable, index }: ListProps) => {
     useEffect(() => {
         updateValue("date", isDate.value);
     }, [isDate]);
+
+    useEffect(() => {
+        updateValue("bank_branch", isBank.value);
+    }, [isBank]);
 
     const updateValue = (keyField: string, value: string | number) => {
         const closeToUpdate = isTable.map((item: isProvisionalTable) => {

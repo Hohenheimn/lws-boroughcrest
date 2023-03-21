@@ -5,6 +5,10 @@ import { TextNumberDisplay } from "../../../../../components/Reusable/NumberForm
 export default function PaymentQueueing() {
     const [isFilterText, setFilterText] = useState<string[]>([]);
     const [isSearch, setSearch] = useState("");
+    const [isPeriod, setPeriod] = useState({
+        from: "",
+        to: "",
+    });
     return (
         <>
             <HeaderCollection
@@ -13,6 +17,8 @@ export default function PaymentQueueing() {
                 setSearch={setSearch}
                 FilterEndpoint="/finance/general-ledger/journal/filter-options"
                 page="payment-queueing"
+                isPeriod={isPeriod}
+                setPeriod={setPeriod}
             />
             <div className="table_container">
                 <table className="table_list journal">

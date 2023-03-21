@@ -88,7 +88,7 @@ export const TextNumberDisplay = ({
         <NumericFormat
             placeholder="-"
             suffix={suffix}
-            className={className}
+            className={" min-h-[12px] " + className}
             fixedDecimalScale
             value={value === 0 || value === "" ? "-" : value}
             displayType="text"

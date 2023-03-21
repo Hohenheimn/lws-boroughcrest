@@ -5,6 +5,10 @@ import ReceivePaymentForm from "../../../../components/FINANCE/CustomerFacility/
 export default function ReceivePayment() {
     const [isFilterText, setFilterText] = useState<string[]>([]);
     const [isSearch, setSearch] = useState("");
+    const [isPeriod, setPeriod] = useState({
+        from: "",
+        to: "",
+    });
     return (
         <>
             <HeaderCollection
@@ -13,6 +17,8 @@ export default function ReceivePayment() {
                 setSearch={setSearch}
                 FilterEndpoint=""
                 page="receive-payment"
+                isPeriod={isPeriod}
+                setPeriod={setPeriod}
             />
             <ReceivePaymentForm />
         </>
