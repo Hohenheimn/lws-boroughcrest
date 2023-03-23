@@ -1,9 +1,12 @@
+import { useRouter } from "next/router";
 import React, { useState } from "react";
+import JournalCopy from "../../../../components/FINANCE/General-Ledger/Journal/JournalCopy";
 import JournalForm, {
     defaultArray,
 } from "../../../../components/FINANCE/General-Ledger/Journal/JournalForm";
 
 export default function CreateJournal() {
+    const router = useRouter();
     const [isJournalList, setJournalList] = useState<defaultArray>([
         {
             id: 1,
@@ -17,15 +20,19 @@ export default function CreateJournal() {
 
     return (
         <>
-            <JournalForm
-                id=""
-                JournalList={isJournalList}
-                setJournalList={setJournalList}
-                DefaultParticulars=""
-                DefaultDateValue=""
-                DefaultStatus=""
-                type="create"
-            />
+            {router.query.copy == undefined ? (
+                <JournalForm
+                    id=""
+                    JournalList={isJournalList}
+                    setJournalList={setJournalList}
+                    DefaultParticulars=""
+                    DefaultDateValue=""
+                    DefaultStatus=""
+                    type="create"
+                />
+            ) : (
+                <JournalCopy />
+            )}
         </>
     );
 }

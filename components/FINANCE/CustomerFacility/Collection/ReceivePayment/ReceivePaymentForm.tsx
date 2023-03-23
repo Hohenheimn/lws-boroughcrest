@@ -9,6 +9,12 @@ import AcknowledgementForm from "./AcknowledgementForm";
 import OfficialForm from "./OfficialForm/OfficialForm";
 import DiscountForm from "./DiscountForm";
 import DropdownFieldCOA from "../../../../Dropdowns/DropdownFieldCOA";
+import AppContext from "../../../../Context/AppContext";
+import { format, startOfDay } from "date-fns";
+import BankAccountDropDown from "../../../../Reusable/BankAccountDropDown";
+import { Outstanding } from "./OfficialForm/OutStandingBalance";
+import { Outright } from "./OfficialForm/OutrightAndAdvances/OutRight";
+import { AdvancesType } from "./OfficialForm/OutrightAndAdvances/Advances";
 
 export type ReceivePaymentForm = {
     description: string;
@@ -21,46 +27,155 @@ export type ReceivePaymentForm = {
 };
 
 export type HeaderForm = {
-    customer_id: string;
+    customer_id: string | number;
     receipt_type: string;
     receipt_date: string;
     receipt_no: string;
     description: string;
     mode_of_payment: string;
     deposit_date: string;
-    chart_of_account_id: string;
-    reference_no: string;
+    bank_account_id: string | number | any;
+    reference_no: string | number | any;
     amount_paid: number | string;
     credit_tax: number | string;
 };
 
-export default function ReceivePaymentForm() {
+type Deposits = {
+    id: number;
+    charge: string;
+    charge_id: string;
+    description: string;
+    amount: number;
+};
+
+export type DefaultOfficial = {
+    Outright: Outright[];
+    Advances: AdvancesType[];
+};
+
+type Props = {
+    DefaultCustomer: {
+        id: string;
+        name: string;
+        class: string;
+        property: string[] | number[];
+    };
+    DefaultValHeaderForm: HeaderForm;
+    DefaultValAcknowledgement: Deposits[];
+    DefaultProvisional: isProvisionalTable[];
+    DefaultOfficial: DefaultOfficial;
+    type: string;
+};
+
+export default function ReceivePaymentForm({
+    DefaultCustomer,
+    DefaultValHeaderForm,
+    DefaultValAcknowledgement,
+    DefaultOfficial,
+    DefaultProvisional,
+}: Props) {
+    const { setPrompt } = useContext(AppContext);
+
+    const date = new Date();
+    let today = startOfDay(date);
+
     const [HeaderForm, setHeaderForm] = useState<HeaderForm>({
-        customer_id: "",
-        receipt_type: "",
-        receipt_date: "Sep 28 2022",
-        receipt_no: "OR000258",
-        description: "",
-        mode_of_payment: "",
-        deposit_date: "",
-        chart_of_account_id: "",
-        reference_no: "",
-        amount_paid: "",
-        credit_tax: "",
+        customer_id: DefaultValHeaderForm.customer_id,
+        receipt_type: DefaultValHeaderForm.receipt_type,
+        receipt_date: DefaultValHeaderForm.receipt_date,
+        receipt_no: DefaultValHeaderForm.receipt_no,
+        description: DefaultValHeaderForm.description,
+        mode_of_payment: DefaultValHeaderForm.mode_of_payment,
+        deposit_date: DefaultValHeaderForm.deposit_date,
+        bank_account_id: DefaultValHeaderForm.bank_account_id,
+        reference_no: DefaultValHeaderForm.reference_no,
+        amount_paid: DefaultValHeaderForm.amount_paid,
+        credit_tax: DefaultValHeaderForm.credit_tax,
     });
 
-    const [isErrorToggle, setErrorToggle] = useState(false);
-
-    const [isDiscountToggle, setDiscountToggle] = useState(false);
-
-    const [isCustomer, setCustomer] = useState({
+    const [isCustomer, setCustomer] = useState<any>({
         id: "",
         name: "",
         class: "",
         property: [],
     });
 
-    const [isCOA, setCOA] = useState({
+    const [isOutStanding, setOutstanding] = useState<Outstanding[]>([
+        {
+            id: 1,
+            charge: "Electricity",
+            charge_id: "12",
+            description: "sample description",
+            due_amount: 1000,
+            applied_amount: 0,
+            balance: 0,
+            document_no: "sample document",
+        },
+        {
+            id: 2,
+            charge: "Electricity",
+            charge_id: "12",
+            description: "sample description",
+            due_amount: 800,
+            applied_amount: 0,
+            balance: 0,
+            document_no: "sample document",
+        },
+    ]);
+
+    useEffect(() => {
+        setHeaderForm({
+            customer_id: DefaultValHeaderForm.customer_id,
+            receipt_type: DefaultValHeaderForm.receipt_type,
+            receipt_date: DefaultValHeaderForm.receipt_date,
+            receipt_no: DefaultValHeaderForm.receipt_no,
+            description: DefaultValHeaderForm.description,
+            mode_of_payment: DefaultValHeaderForm.mode_of_payment,
+            deposit_date: DefaultValHeaderForm.deposit_date,
+            bank_account_id: DefaultValHeaderForm.bank_account_id,
+            reference_no: DefaultValHeaderForm.reference_no,
+            amount_paid: DefaultValHeaderForm.amount_paid,
+            credit_tax: DefaultValHeaderForm.credit_tax,
+        });
+    }, [DefaultValHeaderForm]);
+
+    useEffect(() => {
+        setCustomer({
+            id: DefaultCustomer.id,
+            name: DefaultCustomer.name,
+            class: DefaultCustomer.class,
+            property: DefaultCustomer.property,
+        });
+    }, [DefaultCustomer]);
+
+    const ResetField = () => {
+        setCustomer({
+            id: "",
+            name: "",
+            class: "",
+            property: [],
+        });
+        setErrorToggle(false);
+        setHeaderForm({
+            customer_id: "",
+            receipt_type: "",
+            receipt_date: format(today, "MMM dd yyyy"),
+            receipt_no: "",
+            description: "",
+            mode_of_payment: "",
+            deposit_date: "",
+            bank_account_id: "",
+            reference_no: "",
+            amount_paid: "",
+            credit_tax: "",
+        });
+    };
+
+    const [isErrorToggle, setErrorToggle] = useState(false);
+
+    const [isDiscountToggle, setDiscountToggle] = useState(false);
+
+    const [isBank, setBank] = useState({
         id: "",
         value: "",
     });
@@ -80,9 +195,9 @@ export default function ReceivePaymentForm() {
     useEffect(() => {
         setHeaderForm({
             ...HeaderForm,
-            chart_of_account_id: isCOA.value,
+            bank_account_id: isBank.id,
         });
-    }, [isCOA]);
+    }, [isBank]);
 
     useEffect(() => {
         setHeaderForm({
@@ -90,6 +205,18 @@ export default function ReceivePaymentForm() {
             customer_id: isCustomer.id,
         });
     }, [isCustomer]);
+
+    const OpenDiscount = () => {
+        if (isCustomer.id === "") {
+            setPrompt({
+                message: "Choose a customer first",
+                type: "draft",
+                toggle: true,
+            });
+        } else {
+            setDiscountToggle(true);
+        }
+    };
 
     const onChangeNumber = (key: string, value: number) => {
         if (key === "amount_paid") {
@@ -109,11 +236,10 @@ export default function ReceivePaymentForm() {
     const ErrorToggleHandler = () => {
         if (
             HeaderForm.amount_paid === "" ||
-            HeaderForm.chart_of_account_id === "" ||
+            HeaderForm.bank_account_id === "" ||
             HeaderForm.credit_tax === "" ||
             HeaderForm.customer_id === "" ||
             HeaderForm.deposit_date === "" ||
-            HeaderForm.description === "" ||
             HeaderForm.mode_of_payment === "" ||
             HeaderForm.receipt_date === "" ||
             HeaderForm.receipt_no === "" ||
@@ -129,13 +255,16 @@ export default function ReceivePaymentForm() {
     return (
         <>
             {isDiscountToggle && (
-                <DiscountForm setDiscountToggle={setDiscountToggle} />
+                <DiscountForm
+                    setDiscountToggle={setDiscountToggle}
+                    customer_id={isCustomer.id}
+                />
             )}
             <div className="flex flex-wrap border-b border-gray-300 pb-10 mb-10">
                 <ul className="w-[25%] flex flex-col pr-10 border-r border-gray-300">
                     <li className="w-full mb-5">
                         <label htmlFor="" className="labelField">
-                            CUSTOMER
+                            *CUSTOMER
                         </label>
                         <CustomerDropdown
                             isCustomer={isCustomer}
@@ -156,14 +285,16 @@ export default function ReceivePaymentForm() {
                             PROPERTIES
                         </label>
                         <h1>
-                            {isCustomer.property.toString().replace(",", ", ")}
+                            {isCustomer?.property
+                                ?.toString()
+                                .replace(",", ", ")}
                         </h1>
                     </li>
                 </ul>
                 <ul className=" flex flex-wrap justify-between w-[75%] pl-10">
                     <li className="w-[30%]">
                         <label htmlFor="" className="labelField">
-                            RECEIPT TYPE
+                            *RECEIPT TYPE
                             <SelectDropdown
                                 selectHandler={(value: string) => {
                                     setHeaderForm({
@@ -216,11 +347,6 @@ export default function ReceivePaymentForm() {
                             }}
                             className="field w-full"
                         />
-                        {HeaderForm.description === "" && isErrorToggle && (
-                            <p className="text-[10px] text-ThemeRed">
-                                Required!
-                            </p>
-                        )}
                     </li>
 
                     {(HeaderForm.receipt_type === "Official" ||
@@ -228,7 +354,7 @@ export default function ReceivePaymentForm() {
                         <>
                             <li className="w-[30%] -mt-1">
                                 <label htmlFor="" className="labelField">
-                                    MODE OF PAYMENT
+                                    *MODE OF PAYMENT
                                     <SelectDropdown
                                         selectHandler={(value: string) => {
                                             setHeaderForm({
@@ -258,7 +384,7 @@ export default function ReceivePaymentForm() {
                             </li>
                             <li className="w-[30%]">
                                 <label className="labelField flex flex-col">
-                                    DEPOSIT DATE
+                                    *DEPOSIT DATE
                                     <div className="calendar">
                                         <span className="cal">
                                             <Image
@@ -298,7 +424,7 @@ export default function ReceivePaymentForm() {
                             </li>
                             <li className="w-[30%]">
                                 <label className="labelField flex flex-col">
-                                    AMOUNT PAID
+                                    *AMOUNT PAID
                                     <div className="relative">
                                         <InputNumberForForm
                                             className=" field w-full text-end"
@@ -308,9 +434,7 @@ export default function ReceivePaymentForm() {
                                             setValue={onChangeNumber}
                                         />
                                         <div
-                                            onClick={() =>
-                                                setDiscountToggle(true)
-                                            }
+                                            onClick={OpenDiscount}
                                             className=" cursor-pointer absolute left-full top-[50%] translate-y-[-50%] w-5 h-5 flex justify-center items-center pl-1"
                                         >
                                             <Image
@@ -332,13 +456,12 @@ export default function ReceivePaymentForm() {
                             </li>
                             <li className="w-[30%]  -mt-1">
                                 <label htmlFor="" className="labelField">
-                                    CASH ACCOUNT
-                                    <DropdownFieldCOA
-                                        value={isCOA.value}
-                                        setValue={setCOA}
-                                        className=""
+                                    *CASH ACCOUNT
+                                    <BankAccountDropDown
+                                        isObject={isBank}
+                                        setObject={setBank}
                                     />
-                                    {HeaderForm.chart_of_account_id === "" &&
+                                    {HeaderForm.bank_account_id === "" &&
                                         isErrorToggle && (
                                             <p className="text-[10px] text-ThemeRed">
                                                 Required!
@@ -348,9 +471,9 @@ export default function ReceivePaymentForm() {
                             </li>
                             <li className="w-[30%]">
                                 <label className="labelField flex flex-col">
-                                    REFERENCE NO.
+                                    *REFERENCE NO.
                                     <input
-                                        type="number"
+                                        type="text"
                                         value={HeaderForm.reference_no}
                                         onChange={(e) => {
                                             setHeaderForm({
@@ -374,7 +497,7 @@ export default function ReceivePaymentForm() {
                             {HeaderForm.receipt_type === "Official" && (
                                 <li className="w-[30%]">
                                     <label className="labelField flex flex-col">
-                                        CREDIT TAX
+                                        *CREDIT TAX
                                         <InputNumberForForm
                                             className=" field w-full text-end"
                                             prefix=""
@@ -399,27 +522,26 @@ export default function ReceivePaymentForm() {
                 <ProvisionalForm
                     Error={ErrorToggleHandler}
                     headerForm={HeaderForm}
+                    ResetField={ResetField}
+                    DefaultProvisional={DefaultProvisional}
                 />
             )}
             {HeaderForm.receipt_type === "Acknowledgement" && (
                 <AcknowledgementForm
-                    DefaultValue={[
-                        {
-                            id: 1,
-                            charge: "",
-                            charge_id: "",
-                            description: "",
-                            amount: 0,
-                        },
-                    ]}
+                    DefaultValue={DefaultValAcknowledgement}
                     Error={ErrorToggleHandler}
                     headerForm={HeaderForm}
+                    ResetField={ResetField}
                 />
             )}
             {HeaderForm.receipt_type === "Official" && (
                 <OfficialForm
+                    ResetField={ResetField}
                     Error={ErrorToggleHandler}
                     headerForm={HeaderForm}
+                    DefaultOfficial={DefaultOfficial}
+                    Outstanding={isOutStanding}
+                    setOutstanding={setOutstanding}
                 />
             )}
         </>

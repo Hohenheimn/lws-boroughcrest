@@ -79,9 +79,6 @@ const List = () => {
                     </div>
 
                     <div className="ml-5 1024px:ml-2">
-                        <BsPlusLg className="text-[13px]" />
-                    </div>
-                    <div className="ml-5 1024px:ml-2">
                         <HiPencil className="text-[13px]" />
                     </div>
                 </div>

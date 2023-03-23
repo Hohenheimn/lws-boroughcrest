@@ -1,6 +1,38 @@
+import { format, isValid, parse } from "date-fns";
+import { useRouter } from "next/router";
 import React, { useState } from "react";
+import { BarLoader } from "react-spinners";
 import HeaderCollection from "../../../../../components/FINANCE/CustomerFacility/Collection/HeaderCollection";
+import { GetCollectionList } from "../../../../../components/FINANCE/CustomerFacility/Collection/ReceivePayment/Query";
+import { GetCustomer } from "../../../../../components/ReactQuery/CustomerMethod";
 import { TextNumberDisplay } from "../../../../../components/Reusable/NumberFormat";
+import Pagination from "../../../../../components/Reusable/Pagination";
+import TableErrorMessage from "../../../../../components/Reusable/TableErrorMessage";
+import { customer } from "../../../../../types/customerList";
+
+export type CollectionItem = {
+    id: number;
+    corporate_id: number;
+    depositor_type: string;
+    customer_id: number;
+    user_id: number;
+    type: string;
+    receipt_type: string;
+    receipt_date: string;
+    receipt_no: string;
+    description: string;
+    mode_of_payment: string;
+    deposit_date: string;
+    amount_paid: number;
+    reference_no: number | null;
+    credit_tax: number;
+    status: string;
+    bank_account_id: number | null;
+    parent_id: number | null;
+    remarks: string;
+    updated_at: string;
+    created_at: string;
+};
 
 export default function PaymentQueueing() {
     const [isFilterText, setFilterText] = useState<string[]>([]);
@@ -9,6 +41,16 @@ export default function PaymentQueueing() {
         from: "",
         to: "",
     });
+
+    const [TablePage, setTablePage] = useState(1);
+
+    const { isLoading, data, isError } = GetCollectionList(
+        isSearch,
+        "",
+        "",
+        TablePage
+    );
+
     return (
         <>
             <HeaderCollection
@@ -34,37 +76,15 @@ export default function PaymentQueueing() {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Juan Dela Cruz</td>
-                            <td>Owner</td>
-                            <td>0001, 0002, 0003</td>
-                            <td>
-                                <TextNumberDisplay
-                                    className="withPeso w-full"
-                                    value={2500}
-                                />
-                            </td>
-                            <td>Sep 28 2022</td>
-                            <td>RN00000001</td>
-                            <td>Inbound Default</td>
-                        </tr>
-                        <tr>
-                            <td>Juan Dela Cruz</td>
-                            <td>Owner</td>
-                            <td>0001, 0002, 0003</td>
-                            <td>
-                                <TextNumberDisplay
-                                    className="withPeso w-full"
-                                    value={2500}
-                                />
-                            </td>
-                            <td>Sep 28 2022</td>
-                            <td>RN00000001</td>
-                            <td>Inbound Default</td>
-                        </tr>
+                        {data?.data.data.map(
+                            (item: CollectionItem, index: number) => (
+                                <List key={index} itemDetail={item} />
+                            )
+                        )}
                     </tbody>
                 </table>
-                {/* {isLoading && (
+
+                {isLoading && (
                     <div className="w-full flex justify-center items-center">
                         <aside className="text-center flex justify-center py-5">
                             <BarLoader
@@ -77,8 +97,58 @@ export default function PaymentQueueing() {
                         </aside>
                     </div>
                 )}
-                {isError && <TableErrorMessage />} */}
+                {isError && <TableErrorMessage />}
             </div>
+            <Pagination
+                setTablePage={setTablePage}
+                TablePage={TablePage}
+                PageNumber={data?.data.meta.last_page}
+                CurrentPage={data?.data.meta.current_page}
+            />
         </>
     );
 }
+
+type ListProps = {
+    itemDetail: CollectionItem;
+};
+
+const List = ({ itemDetail }: ListProps) => {
+    const router = useRouter();
+
+    const redirect = () => {
+        router.push(
+            `/finance/customer-facility/collection/receive-payment/${itemDetail.id}`
+        );
+    };
+
+    const date = parse(itemDetail.deposit_date, "yyyy-MM-dd", new Date());
+
+    const { data } = GetCustomer(itemDetail.customer_id);
+
+    const CustomerDetail: customer = data?.data;
+
+    return (
+        <tr onClick={redirect} className="cursor-pointer">
+            <td>{CustomerDetail.name}</td>
+            <td>{CustomerDetail.class}</td>
+            <td>
+                {CustomerDetail.properties.map((item: any, index: number) =>
+                    CustomerDetail.properties.length - 1 === index
+                        ? item.unit_code
+                        : item.unit_code + ", "
+                )}
+            </td>
+            <td>
+                <TextNumberDisplay
+                    className="withPeso w-full"
+                    value={itemDetail.amount_paid}
+                />
+            </td>
+            <td>{isValid(date) ? format(date, "MMM dd yyyy") : ""}</td>
+            <td>{itemDetail.reference_no}</td>
+            <td>{itemDetail.remarks}</td>
+            <td></td>
+        </tr>
+    );
+};

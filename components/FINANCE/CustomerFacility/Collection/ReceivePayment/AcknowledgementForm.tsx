@@ -1,4 +1,5 @@
 import { format, isValid, parse } from "date-fns";
+import { useRouter } from "next/router";
 import React, { useContext, useEffect, useState } from "react";
 import { BsPlusLg } from "react-icons/bs";
 import { HiMinus } from "react-icons/hi";
@@ -9,12 +10,14 @@ import AppContext from "../../../../Context/AppContext";
 import DropDownCharge from "../../../../Dropdowns/DropDownCharge";
 import { InputNumberForTable } from "../../../../Reusable/NumberFormat";
 import { TableOneTotal } from "../../../../Reusable/TableTotal";
+import { CreateCollection } from "./Query";
 import { HeaderForm } from "./ReceivePaymentForm";
 
 type Props = {
     DefaultValue: isTableItem[];
     Error: () => void;
     headerForm: HeaderForm;
+    ResetField: () => void;
 };
 
 type isTableItem = {
@@ -29,32 +32,60 @@ export default function AcknowledgementForm({
     DefaultValue,
     Error,
     headerForm,
+    ResetField,
 }: Props) {
     const { setPrompt } = useContext(AppContext);
-    const [isTable, setTable] = useState<isTableItem[]>([
-        {
-            id: 1,
-            charge: "",
-            charge_id: "",
-            description: "",
-            amount: 0,
-        },
-    ]);
-
+    const [isTable, setTable] = useState<isTableItem[]>([]);
+    let buttonClicked = "";
     useEffect(() => {
         setTable(DefaultValue);
     }, []);
 
     const [isSave, setSave] = useState(false);
 
+    const router = useRouter();
+
+    const onSuccess = () => {
+        setPrompt({
+            message: "Collection successfully registered!",
+            type: "success",
+            toggle: true,
+        });
+        if (buttonClicked === "new") {
+            ResetField();
+            setTable([
+                {
+                    id: 1,
+                    charge: "",
+                    charge_id: "",
+                    description: "",
+                    amount: 0,
+                },
+            ]);
+        } else {
+            router.push(
+                "/finance/customer-facility/collection/payment-register"
+            );
+        }
+    };
+    const onError = () => {
+        setPrompt({
+            message: "Something is wrong!",
+            type: "error",
+            toggle: true,
+        });
+    };
+
+    const { isLoading, mutate } = CreateCollection(onSuccess, onError);
+
     const SaveHandler = (button: string) => {
+        buttonClicked = button;
         let validate = true;
         isTable.map((provItem: isTableItem) => {
             if (
                 provItem.amount === "" ||
                 provItem.charge === "" ||
-                provItem.charge_id === "" ||
-                provItem.description === ""
+                provItem.charge_id === ""
             ) {
                 setPrompt({
                     toggle: true,
@@ -67,14 +98,11 @@ export default function AcknowledgementForm({
         });
         if (
             headerForm.amount_paid === "" ||
-            headerForm.chart_of_account_id === "" ||
+            headerForm.bank_account_id === "" ||
             headerForm.customer_id === "" ||
             headerForm.deposit_date === "" ||
-            headerForm.description === "" ||
             headerForm.mode_of_payment === "" ||
             headerForm.receipt_date === "" ||
-            headerForm.receipt_no === "" ||
-            headerForm.receipt_type === "" ||
             headerForm.reference_no === ""
         ) {
             setPrompt({
@@ -98,21 +126,26 @@ export default function AcknowledgementForm({
 
         const Payload = {
             customer_id: headerForm.customer_id,
-            receipt_type: headerForm.receipt_type,
             receipt_date: isValid(receipt_date)
                 ? format(receipt_date, "yyyy-MM-dd")
                 : "",
-            receipt_no: headerForm.receipt_no,
             description: headerForm.description,
             mode_of_payment: headerForm.mode_of_payment,
             deposit_date: isValid(deposit_date)
                 ? format(deposit_date, "yyyy-MM-dd")
                 : "",
             amount_paid: headerForm.amount_paid,
-            chart_of_account_id: headerForm.chart_of_account_id,
+            bank_account_id: headerForm.bank_account_id,
             reference_no: headerForm.reference_no,
+            deposits: isTable.map((item: isTableItem) => {
+                return {
+                    charge_id: item.charge_id,
+                    description: item.description,
+                    amount: item.amount,
+                };
+            }),
         };
-        if (validate) console.log(Payload);
+        if (validate) mutate(Payload);
     };
 
     return (
@@ -158,7 +191,15 @@ export default function AcknowledgementForm({
                                 setSave(false);
                             }}
                         >
-                            SAVE
+                            {isLoading ? (
+                                <ScaleLoader
+                                    color="#fff"
+                                    height="10px"
+                                    width="2px"
+                                />
+                            ) : (
+                                "SAVE"
+                            )}
                         </button>
                         <aside className="ddArrow">
                             <RiArrowDownSFill
@@ -177,7 +218,15 @@ export default function AcknowledgementForm({
                                         setSave(false);
                                     }}
                                 >
-                                    SAVE & NEW
+                                    {isLoading ? (
+                                        <ScaleLoader
+                                            color="#fff"
+                                            height="10px"
+                                            width="2px"
+                                        />
+                                    ) : (
+                                        "SAVE & NEW"
+                                    )}
                                 </button>
                             </li>
                         </ul>
@@ -215,19 +264,19 @@ const List = ({ setTable, isTable, itemDetail, index }: List) => {
         );
     };
 
-    const updateValue = (keyField: string, value: string | number) => {
+    const updateValue = (keyField: string, value: any) => {
         const closeToUpdate = isTable.map((item: isTableItem) => {
             if (item.id === itemDetail.id) {
                 if (keyField === "charge") {
+                    const charge_id = value.target.getAttribute("data-id");
+                    const charge = value.target.innerHTML;
+                    const description =
+                        value.target.getAttribute("data-description");
                     return {
                         ...item,
-                        charge: value,
-                    };
-                }
-                if (keyField === "charge_id") {
-                    return {
-                        ...item,
-                        charge_id: value,
+                        charge: charge,
+                        charge_id: charge_id,
+                        description: description,
                     };
                 }
                 if (keyField === "description") {
@@ -248,20 +297,11 @@ const List = ({ setTable, isTable, itemDetail, index }: List) => {
         setTable(closeToUpdate);
     };
 
-    const GetCharge = (key: string, event: any) => {
-        const charge_id = event.target.getAttribute("data-id");
-        const charge = event.target.innerHTML;
-        const description = event.target.getAttribute("data-description");
-        updateValue("charge", charge);
-        updateValue("charge_id", charge_id);
-        updateValue("description", description);
-    };
-
     return (
         <tr>
             <td>
                 <DropDownCharge
-                    UpdateStateHandler={GetCharge}
+                    UpdateStateHandler={updateValue}
                     itemDetail={itemDetail}
                 />
             </td>

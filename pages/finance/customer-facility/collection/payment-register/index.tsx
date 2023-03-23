@@ -1,7 +1,37 @@
+import { format, isValid, parse } from "date-fns";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
+import { BarLoader } from "react-spinners";
 import HeaderCollection from "../../../../../components/FINANCE/CustomerFacility/Collection/HeaderCollection";
+import { GetCollectionList } from "../../../../../components/FINANCE/CustomerFacility/Collection/ReceivePayment/Query";
+import { GetCustomer } from "../../../../../components/ReactQuery/CustomerMethod";
 import { TextNumberDisplay } from "../../../../../components/Reusable/NumberFormat";
+import Pagination from "../../../../../components/Reusable/Pagination";
+import TableErrorMessage from "../../../../../components/Reusable/TableErrorMessage";
+import { customer } from "../../../../../types/customerList";
+
+export type CollectionItem = {
+    id: number;
+    corporate_id: number;
+    depositor_type: string;
+    customer_id: number;
+    user_id: number;
+    type: string;
+    receipt_type: string;
+    receipt_date: string;
+    receipt_no: string;
+    description: string;
+    mode_of_payment: string;
+    deposit_date: string;
+    amount_paid: number;
+    reference_no: number | null;
+    credit_tax: number;
+    status: string;
+    bank_account_id: number | null;
+    parent_id: number | null;
+    updated_at: string;
+    created_at: string;
+};
 
 export default function PaymentRegister() {
     const [isFilterText, setFilterText] = useState<string[]>([]);
@@ -10,6 +40,16 @@ export default function PaymentRegister() {
         from: "",
         to: "",
     });
+
+    const [TablePage, setTablePage] = useState(1);
+
+    const { isLoading, data, isError } = GetCollectionList(
+        isSearch,
+        isPeriod.from,
+        isPeriod.to,
+        TablePage
+    );
+
     return (
         <>
             <HeaderCollection
@@ -35,11 +75,15 @@ export default function PaymentRegister() {
                         </tr>
                     </thead>
                     <tbody>
-                        <List />
+                        {data?.data.data.map(
+                            (item: CollectionItem, index: number) => (
+                                <List key={index} itemDetail={item} />
+                            )
+                        )}
                     </tbody>
                 </table>
 
-                {/* {isLoading && (
+                {isLoading && (
                     <div className="w-full flex justify-center items-center">
                         <aside className="text-center flex justify-center py-5">
                             <BarLoader
@@ -52,30 +96,49 @@ export default function PaymentRegister() {
                         </aside>
                     </div>
                 )}
-                {isError && <TableErrorMessage />} */}
+                {isError && <TableErrorMessage />}
             </div>
+            <Pagination
+                setTablePage={setTablePage}
+                TablePage={TablePage}
+                PageNumber={data?.data.meta.last_page}
+                CurrentPage={data?.data.meta.current_page}
+            />
         </>
     );
 }
 
-const List = () => {
-    const router = useRouter();
-    const redirect = () => {
-        router.push(
-            `/finance/customer-facility/collection/payment-register/${1}`
-        );
-    };
+type ListProps = {
+    itemDetail: CollectionItem;
+};
+
+const List = ({ itemDetail }: ListProps) => {
+    const date = parse(itemDetail.receipt_date, "yyyy-MM-dd", new Date());
+
+    const { data } = GetCustomer(itemDetail.customer_id);
+
+    const CustomerDetail: customer = data?.data;
+
     return (
-        <tr onClick={redirect} className="cursor-pointer">
-            <td>Sept 28 2022</td>
-            <td>000000</td>
-            <td>Juan Dela Cruz</td>
-            <td>Lorem ipsum</td>
+        <tr>
+            <td>{isValid(date) ? format(date, "MMM dd yyyy") : ""}</td>
+            <td>{itemDetail.receipt_no}</td>
+            <td>{CustomerDetail.name}</td>
             <td>
-                <TextNumberDisplay className="withPeso w-full" value={2500} />
+                {CustomerDetail.properties.map((item: any, index: number) =>
+                    CustomerDetail.properties.length - 1 === index
+                        ? item.unit_code
+                        : item.unit_code + ", "
+                )}
             </td>
-            <td>Cash</td>
-            <td>InBound Default</td>
+            <td>
+                <TextNumberDisplay
+                    className="withPeso w-full"
+                    value={itemDetail.amount_paid}
+                />
+            </td>
+            <td>{itemDetail.mode_of_payment}</td>
+            <td>Sample cash account</td>
         </tr>
     );
 };

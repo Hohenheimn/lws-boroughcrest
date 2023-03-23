@@ -26,7 +26,7 @@ export default function UOMDropdown({
     }, [value]);
 
     const { isLoading, data, isError } = useQuery([name, isSearchTemp], () => {
-        return api.get(`${endpoint}?keywords=`, {
+        return api.get(`${endpoint}?keywords=${value}`, {
             headers: {
                 Authorization: "Bearer " + getCookie("user"),
             },

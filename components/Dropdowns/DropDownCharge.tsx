@@ -105,7 +105,7 @@ const List = ({
                     key={index}
                     data-id={item.id}
                     data-description={item.description}
-                    data-uom={item.uom}
+                    data-uom={item.uom.name}
                     data-vat={item.vat_percent}
                     onClick={(e) => {
                         UpdateStateHandler("charge", e);

@@ -26,7 +26,7 @@ export default function Id() {
         <div>
             <BillingForm
                 DefaultValue={Value}
-                type="create"
+                type="modify"
                 DefaultCustomer={CustomerDefault}
             />
         </div>

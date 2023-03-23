@@ -14,9 +14,9 @@ import { HeaderForm } from "./ReceivePaymentForm";
 import AppContext from "../../../../Context/AppContext";
 import DropDownCharge from "../../../../Dropdowns/DropDownCharge";
 import ModalTemp from "../../../../Reusable/ModalTemp";
-import { GetDiscountList } from "./Query";
+import { CreateDiscount, DeleteDiscount, GetDiscountList } from "./Query";
 
-export type isProvisionalTable = {
+export type isDiscountTable = {
     id: string | number;
     charge: string;
     charge_id: string | number;
@@ -26,32 +26,107 @@ export type isProvisionalTable = {
 };
 type Props = {
     setDiscountToggle: Function;
+    customer_id: number | string;
 };
 
-export default function DiscountForm({ setDiscountToggle }: Props) {
+export default function DiscountForm({
+    setDiscountToggle,
+    customer_id,
+}: Props) {
     const { setPrompt } = useContext(AppContext);
-    const [isSave, setSave] = useState(false);
-    const [isTable, setTable] = useState<isProvisionalTable[]>([]);
+    const [isTotal, setTotal] = useState(0);
+    const [isTable, setTable] = useState<isDiscountTable[]>([]);
+
+    const onSuccess = () => {
+        setPrompt({
+            message: "Discounts successfully registered!",
+            type: "success",
+            toggle: true,
+        });
+        setDiscountToggle(false);
+    };
+    const onError = () => {
+        setPrompt({
+            message: "Something is wrong!",
+            type: "error",
+            toggle: true,
+        });
+    };
+
+    const { isLoading: MutateLoading, mutate } = CreateDiscount(
+        onSuccess,
+        onError,
+        customer_id
+    );
+
+    const { isLoading: MutateDeleteLoading, mutate: mutateDelete } =
+        DeleteDiscount(onSuccess, onError);
+
     const { isLoading, data, isError } = GetDiscountList();
+
+    useEffect(() => {
+        setTotal(0);
+        isTable.map((item) => {
+            setTotal((prevValue) => Number(prevValue) + Number(item.amount));
+        });
+    }, [isTable]);
 
     useEffect(() => {
         if (data?.status === 200) {
             const CloneArray = data?.data.data.map((item: any) => {
                 return {
-                    id: 1,
-                    back_id: "",
-                    charge: "",
-                    charge_id: "",
-                    description: "",
-                    amount: 0,
+                    id: item.id,
+                    back_id: item.id,
+                    charge: item.charge,
+                    charge_id: item.charge_id,
+                    description: item.description,
+                    amount: item.amount,
                 };
             });
-
-            setTable(CloneArray);
+            if (CloneArray.length <= 0) {
+                setTable([
+                    ...CloneArray,
+                    {
+                        id: 1,
+                        back_id: "",
+                        charge: "",
+                        charge_id: "",
+                        description: "",
+                        amount: 0,
+                    },
+                ]);
+            } else {
+                setTable(CloneArray);
+            }
         }
-    }, [data?.status]);
+    }, [data]);
 
-    const SaveHandler = () => {};
+    const SaveHandler = () => {
+        let Validate = true;
+        const CloneToPayload = isTable.map((item: isDiscountTable) => {
+            if (item.charge_id === "" || item.amount === 0) {
+                Validate = false;
+            }
+            return {
+                charge_id: item.charge_id,
+                description: item.description,
+                amount: item.amount,
+            };
+        });
+        const Payload = {
+            discounts: CloneToPayload,
+        };
+
+        if (Validate) {
+            mutate(Payload);
+        } else {
+            setPrompt({
+                message: "Please fill out all required fields!",
+                toggle: true,
+                type: "draft",
+            });
+        }
+    };
 
     return (
         <ModalTemp>
@@ -75,6 +150,8 @@ export default function DiscountForm({ setDiscountToggle }: Props) {
                                     isTable={isTable}
                                     setTable={setTable}
                                     index={index}
+                                    mutateDelete={mutateDelete}
+                                    mutateDeleteLoading={MutateDeleteLoading}
                                 />
                             ))}
                         </tbody>
@@ -94,7 +171,11 @@ export default function DiscountForm({ setDiscountToggle }: Props) {
                     )}
                     {isError && <TableErrorMessage />}
                 </div>
-                <TableOneTotal total={0} label="Total Discount" redBG={false} />
+                <TableOneTotal
+                    total={isTotal}
+                    label="Total Discount"
+                    redBG={false}
+                />
                 <div className="DropDownSave">
                     <button
                         className="ddback"
@@ -104,7 +185,7 @@ export default function DiscountForm({ setDiscountToggle }: Props) {
                     </button>
 
                     <button className="buttonRed" onClick={SaveHandler}>
-                        {isLoading ? (
+                        {MutateLoading ? (
                             <ScaleLoader
                                 color="#fff"
                                 height="10px"
@@ -121,13 +202,22 @@ export default function DiscountForm({ setDiscountToggle }: Props) {
 }
 
 type ListProps = {
-    itemDetail: isProvisionalTable;
-    isTable: isProvisionalTable[];
+    itemDetail: isDiscountTable;
+    isTable: isDiscountTable[];
     setTable: Function;
     index: number;
+    mutateDelete: any;
+    mutateDeleteLoading: any;
 };
 
-const List = ({ itemDetail, isTable, setTable, index }: ListProps) => {
+const List = ({
+    itemDetail,
+    isTable,
+    setTable,
+    index,
+    mutateDelete,
+    mutateDeleteLoading,
+}: ListProps) => {
     const AddRow = (e: any) => {
         const random = Math.random();
         setTable([
@@ -143,13 +233,17 @@ const List = ({ itemDetail, isTable, setTable, index }: ListProps) => {
         ]);
     };
     const RemoveRow = () => {
-        setTable((item: isProvisionalTable[]) =>
-            item.filter((x: isProvisionalTable) => x.id !== itemDetail.id)
-        );
+        if (itemDetail.back_id === "") {
+            setTable((item: isDiscountTable[]) =>
+                item.filter((x: isDiscountTable) => x.id !== itemDetail.id)
+            );
+        } else {
+            mutateDelete(itemDetail.back_id);
+        }
     };
 
     const updateValue = (keyField: string, value: any) => {
-        const closeToUpdate = isTable.map((item: isProvisionalTable) => {
+        const closeToUpdate = isTable.map((item: isDiscountTable) => {
             if (item.id === itemDetail.id) {
                 if (keyField === "description") {
                     return {

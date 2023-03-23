@@ -119,19 +119,21 @@ const AdvFilterList = ({
                 value={isSearch}
                 onChange={(e) => setSearch(e.target.value)}
             />
+            {isSearch !== "" && (
+                <ul>
+                    {data?.data.map((item: isAdvFilter, index: number) => (
+                        <li
+                            className=" text-Gray2 hover:text-ThemeRed hover:underline cursor-pointer text-[14px]"
+                            key={index}
+                            onClick={() => AddToFilter(item.key, item.value)}
+                        >
+                            {item.value} -{" "}
+                            <span className=" text-Gray1">{item.key}</span>
+                        </li>
+                    ))}
+                </ul>
+            )}
 
-            <ul>
-                {data?.data.map((item: isAdvFilter, index: number) => (
-                    <li
-                        className=" text-Gray2 hover:text-ThemeRed hover:underline cursor-pointer text-[14px]"
-                        key={index}
-                        onClick={() => AddToFilter(item.key, item.value)}
-                    >
-                        {item.value} -{" "}
-                        <span className=" text-Gray1">{item.key}</span>
-                    </li>
-                ))}
-            </ul>
             {isLoading && (
                 <div className="w-full flex justify-center items-center">
                     <aside className="text-center flex justify-center py-5">

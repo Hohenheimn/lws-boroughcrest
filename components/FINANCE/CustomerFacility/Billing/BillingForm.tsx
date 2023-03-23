@@ -134,8 +134,12 @@ export default function JournalForm({
                 </div>
             </div>
 
-            <div className="DropDownSave">
-                <button className="ddback">CANCEL</button>
+            <div className="flex w-full justify-end items-center mt-14 480px:mt-10 ">
+                <button className="button_cancel">CANCEL</button>
+
+                {type === "modify" && (
+                    <button className="buttonRed mr-5">DELETE</button>
+                )}
 
                 <div className="ddSave">
                     <div>

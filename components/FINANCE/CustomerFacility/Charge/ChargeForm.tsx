@@ -260,6 +260,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                 isAdvance === undefined ? "" : parseInt(isAdvance.id),
             charge_uom_id: isUOM === undefined ? "" : parseInt(isUOM.id),
         };
+
         if (router.query.modify === undefined) {
             Save(Payload);
         } else {
@@ -292,7 +293,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                     type="text"
                                     value={fieldValue.code}
                                     onChange={(e: any) => {
-                                        e.target.value.length <= 10 &&
+                                        e.target.value.length <= 4 &&
                                             setFieldValue({
                                                 ...fieldValue,
                                                 code: e.target.value,
@@ -502,6 +503,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                     <input
                                         className="field w-full"
                                         type="text"
+                                        autoComplete="off"
                                         {...register("receivable", {
                                             required: "Required!",
                                         })}
@@ -564,6 +566,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                         {...register("discounts", {
                                             required: "Required!",
                                         })}
+                                        autoComplete="off"
                                         type="text"
                                         value={isDiscount.value}
                                         onChange={(e: any) =>
@@ -603,6 +606,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                     <input
                                         className="field w-full"
                                         type="text"
+                                        autoComplete="off"
                                         {...register("revenue", {
                                             required: "Required!",
                                         })}
@@ -644,6 +648,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                     <input
                                         className="field w-full"
                                         type="text"
+                                        autoComplete="off"
                                         {...register("advances", {
                                             required: "Required!",
                                         })}

@@ -67,3 +67,55 @@ export const CreateCollection = (onSuccess: any, onError: any) => {
         }
     );
 };
+
+export const DeleteDiscount = (onSuccess: any, onError: any) => {
+    const queryClient = useQueryClient();
+    return useMutation(
+        (id: number) => {
+            return api.delete(
+                `/finance/customer-facility/collection/discount/${id}`,
+                {
+                    headers: {
+                        Authorization: "Bearer " + getCookie("user"),
+                    },
+                }
+            );
+        },
+        {
+            onSuccess: () => {
+                onSuccess();
+                queryClient.invalidateQueries(["discount-list"]);
+            },
+            onError: () => {
+                onError();
+            },
+        }
+    );
+};
+
+export const GetCollectionList = (
+    search: string,
+    date_from: string,
+    date_to: string,
+    page: number
+) => {
+    return useQuery(
+        ["collection-list", search, date_from, date_to, page],
+        () => {
+            return api.get(
+                `/finance/customer-facility/collection?search=${search}&date_from=${date_from}&date_to=${date_to}&paginate=10&page=${page}`,
+                {
+                    headers: { Authorization: "Bearer " + getCookie("user") },
+                }
+            );
+        }
+    );
+};
+
+export const GetCollectionDetail = (id: number) => {
+    return useQuery(["collection-detail", id], () => {
+        return api.get(`/finance/customer-facility/collection/${id}`, {
+            headers: { Authorization: "Bearer " + getCookie("user") },
+        });
+    });
+};

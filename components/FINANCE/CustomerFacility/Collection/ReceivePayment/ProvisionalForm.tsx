@@ -15,6 +15,7 @@ import AppContext from "../../../../Context/AppContext";
 import CreateDeposit from "../../../../../pages/finance/customer-facility/deposit-counter/create-deposit";
 import { CreateCollection } from "./Query";
 import { format, isValid, parse } from "date-fns";
+import { useRouter } from "next/router";
 
 export type isProvisionalTable = {
     id: string | number;
@@ -29,28 +30,68 @@ export type isProvisionalTable = {
 type Props = {
     Error: () => void;
     headerForm: HeaderForm;
+    DefaultProvisional: isProvisionalTable[];
+    ResetField: () => void;
 };
 
-export default function ProvisionalForm({ Error, headerForm }: Props) {
+export default function ProvisionalForm({
+    Error,
+    headerForm,
+    ResetField,
+    DefaultProvisional,
+}: Props) {
     const { setPrompt } = useContext(AppContext);
+    const router = useRouter();
     let buttonClicked = "";
     const [isSave, setSave] = useState(false);
-    const [isTable, setTable] = useState<isProvisionalTable[]>([
-        {
-            id: 1,
-            check_date: "",
-            description: "",
-            check_no: "",
-            bank_branch: "",
-            bank_branch_id: "",
-            amount: 0,
-        },
-    ]);
+    const [isTotal, setTotal] = useState(0);
+    const [isTable, setTable] = useState<isProvisionalTable[]>([]);
 
-    const onSuccess = () => {};
-    const onError = () => {};
+    useEffect(() => {
+        setTable(DefaultProvisional);
+    }, [DefaultProvisional]);
+
+    const onSuccess = () => {
+        setPrompt({
+            message: "Collection successfully registered!",
+            type: "success",
+            toggle: true,
+        });
+        if (buttonClicked === "new") {
+            ResetField();
+            setTable([
+                {
+                    id: 1,
+                    check_date: "",
+                    description: "",
+                    check_no: "",
+                    bank_branch: "",
+                    bank_branch_id: "",
+                    amount: 0,
+                },
+            ]);
+        } else {
+            router.push(
+                "/finance/customer-facility/collection/payment-register"
+            );
+        }
+    };
+    const onError = () => {
+        setPrompt({
+            message: "Something is wrong!",
+            type: "error",
+            toggle: true,
+        });
+    };
 
     const { isLoading, mutate } = CreateCollection(onSuccess, onError);
+
+    useEffect(() => {
+        setTotal(0);
+        isTable.map((item) => {
+            setTotal((prevValue) => Number(prevValue) + Number(item.amount));
+        });
+    }, [isTable]);
 
     const SaveHandler = (button: string) => {
         buttonClicked = button;
@@ -75,9 +116,7 @@ export default function ProvisionalForm({ Error, headerForm }: Props) {
         });
         if (
             headerForm.customer_id === "" ||
-            headerForm.description === "" ||
             headerForm.receipt_date === "" ||
-            headerForm.receipt_no === "" ||
             headerForm.receipt_type === ""
         ) {
             setPrompt({
@@ -93,26 +132,27 @@ export default function ProvisionalForm({ Error, headerForm }: Props) {
             "MMM dd yyyy",
             new Date()
         );
+        const wareHouse = isTable.map((item: isProvisionalTable) => {
+            const date = parse(item.check_date, "MMM dd yyyy", new Date());
+            return {
+                check_date: isValid(date) ? format(date, "yyyy-MM-dd") : "",
+                description: item.description,
+                check_no: item.check_no,
+                bank_branch: item.bank_branch_id,
+                amount: item.amount,
+            };
+        });
         const Payload = {
             customer_id: headerForm.customer_id,
             receipt_type: headerForm.receipt_type,
             receipt_date: isValid(receipt_date)
                 ? format(receipt_date, "yyyy-MM-dd")
                 : "",
-            receipt_no: headerForm.receipt_no,
             description: headerForm.description,
-            wareHouse: isTable.map((item: isProvisionalTable) => {
-                const date = parse(item.check_date, "MMM dd yyyy", new Date());
-                return {
-                    check_date: isValid(date) ? format(date, "yyyy-MM-dd") : "",
-                    description: item.description,
-                    check_no: item.check_no,
-                    bank_branch_id: item.bank_branch_id,
-                    amount: item.amount,
-                };
-            }),
+            check_warehouses: wareHouse,
         };
-        if (validate) console.log(Payload);
+
+        if (validate) mutate(Payload);
     };
 
     return (
@@ -143,7 +183,7 @@ export default function ProvisionalForm({ Error, headerForm }: Props) {
                     </tbody>
                 </table>
             </div>
-            <TableOneTotal total={123123} label="Total" redBG={false} />
+            <TableOneTotal total={isTotal} label="Total" redBG={false} />
             <div className="DropDownSave">
                 <button className="ddback">CANCEL</button>
 
@@ -186,7 +226,15 @@ export default function ProvisionalForm({ Error, headerForm }: Props) {
                                         setSave(false);
                                     }}
                                 >
-                                    SAVE & NEW
+                                    {isLoading ? (
+                                        <ScaleLoader
+                                            color="#fff"
+                                            height="10px"
+                                            width="2px"
+                                        />
+                                    ) : (
+                                        "SAVE & NEW"
+                                    )}
                                 </button>
                             </li>
                         </ul>

@@ -512,24 +512,22 @@ const List = ({
             </td>
             {type !== "posted" && (
                 <td className="icon">
-                    {itemDetail.status !== "In Progress" && (
-                        <Link
-                            href={`/finance/general-ledger/journal/modify-journal/${itemDetail.id}`}
-                        >
-                            <a>
-                                <Tippy theme="ThemeRed" content={"Modify"}>
-                                    <div className="icon">
-                                        <Image
-                                            src="/Images/f_modify.png"
-                                            height={15}
-                                            width={15}
-                                            alt="Modify"
-                                        />
-                                    </div>
-                                </Tippy>
-                            </a>
-                        </Link>
-                    )}
+                    <Link
+                        href={`/finance/general-ledger/journal/create-journal?copy=${itemDetail.id}`}
+                    >
+                        <a>
+                            <Tippy theme="ThemeRed" content={"Copy"}>
+                                <div className="icon">
+                                    <Image
+                                        src="/Images/f_modify.png"
+                                        height={15}
+                                        width={15}
+                                        alt="copy"
+                                    />
+                                </div>
+                            </Tippy>
+                        </a>
+                    </Link>
                 </td>
             )}
         </tr>

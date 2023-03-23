@@ -86,18 +86,6 @@ export default function BillingList() {
                                 </Tippy>
                             </li>
                             <li className={style.importExportPrint}>
-                                <Tippy theme="ThemeRed" content="Reject">
-                                    <div className={`${style.noFill} mr-5`}>
-                                        <Image
-                                            src="/Images/f_remove.png"
-                                            height={25}
-                                            width={25}
-                                            alt="Export"
-                                        />
-                                    </div>
-                                </Tippy>
-                            </li>
-                            <li className={style.importExportPrint}>
                                 <Tippy theme="ThemeRed" content="Process">
                                     <div className={`${style.noFill} mr-5`}>
                                         <Image

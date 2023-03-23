@@ -90,7 +90,7 @@ export const TextNumberDisplay = ({
             suffix={suffix}
             className={" min-h-[12px] " + className}
             fixedDecimalScale
-            value={value === 0 || value === "" ? "-" : value}
+            value={value}
             displayType="text"
             decimalScale={2}
             decimalSeparator="."

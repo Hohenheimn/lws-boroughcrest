@@ -80,7 +80,9 @@ export default function JournalDetail({ Detail }: JournalDetail) {
                                 }
                             >
                                 <div>
-                                    <Link href="/finance/general-ledger/journal/modify-journal/1">
+                                    <Link
+                                        href={`/finance/general-ledger/journal/modify-journal/${Detail.id}`}
+                                    >
                                         <a>
                                             <HiPencil
                                                 className={style.pencil}
@@ -134,13 +136,13 @@ export default function JournalDetail({ Detail }: JournalDetail) {
                                 <td>
                                     <TextNumberDisplay
                                         value={totalDebit}
-                                        className="main_text font-NHU-bold"
+                                        className="main_text font-NHU-bold withPeso"
                                     />
                                 </td>
                                 <td>
                                     <TextNumberDisplay
                                         value={totalCredit}
-                                        className="main_text font-NHU-bold"
+                                        className="main_text font-NHU-bold withPeso"
                                     />
                                 </td>
                             </tr>
@@ -180,10 +182,16 @@ const List = ({ journal_list }: ListProps) => {
                 </h4>
             </td>
             <td>
-                <h4 className="main_text">{journal_list?.debit}</h4>
+                <TextNumberDisplay
+                    value={journal_list?.debit}
+                    className={"withPeso main_text font-NHU-bold"}
+                />
             </td>
             <td>
-                <h4 className="main_text">{journal_list?.credit}</h4>
+                <TextNumberDisplay
+                    value={journal_list?.credit}
+                    className={"withPeso main_text font-NHU-bold"}
+                />
             </td>
         </tr>
     );

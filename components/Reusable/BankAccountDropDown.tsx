@@ -38,7 +38,7 @@ export default function BankAccountDropDown({ isObject, setObject }: Props) {
                 toRef={
                     <input
                         type="text"
-                        className=" field"
+                        className=" field w-full"
                         onClick={() => setToggle(true)}
                         value={tempVal}
                         onChange={(e) => {
