@@ -1,7 +1,10 @@
+import Tippy from "@tippy.js/react";
 import React, { useState } from "react";
 import { HiPencil } from "react-icons/hi";
 import ModifyRolesPermission from "./ModifyRolesPermission";
 import { UserDetail } from "./UserTable";
+import Image from "next/image";
+import { PencilButton } from "../../Reusable/Icons";
 
 type Props = {
     UserDetail: UserDetail;
@@ -25,10 +28,13 @@ export default function UserRolePermissions({ UserDetail }: Props) {
                         Admin Staff
                     </h4>
                 </aside>
-                <HiPencil
-                    className=" text-ThemeRed font-bold text-[32px] 480px:text-[24px] cursor-pointer"
-                    onClick={() => setToggle(true)}
-                />
+
+                <div>
+                    <PencilButton
+                        FunctionOnClick={() => setToggle(true)}
+                        title={"Modify"}
+                    />
+                </div>
             </header>
             <div className=" overflow-auto w-full">
                 <table className=" w-full 480px:w-[550px]">

@@ -8,6 +8,7 @@ import { UserDetail } from "./UserTable";
 import Tippy from "@tippy.js/react";
 import UserForm from "./UserForm";
 import UserRolePermissions from "./UserRolePermissions";
+import { PencilButton } from "../../Reusable/Icons";
 
 type Props = {
     UserDetail: UserDetail;
@@ -47,10 +48,13 @@ export default function UserDetails({ UserDetail }: Props) {
                     <h1 className=" font-bold text-[24px] 480px:mb-0 480px:text-[16px]">
                         Primary Information
                     </h1>
-                    <HiPencil
-                        className=" text-ThemeRed font-bold text-[32px] 480px:text-[24px] cursor-pointer"
-                        onClick={() => setToggleModify(true)}
-                    />
+
+                    <div>
+                        <PencilButton
+                            FunctionOnClick={() => setToggleModify(true)}
+                            title={"Modify"}
+                        />
+                    </div>
                 </li>
                 <li className="w-3/12 480px:w-full p-5 flex justify-center items-center">
                     <aside className=" w-6/12 820px:w-10/12 rounded-full overflow-hidden 480px:w-5/12 aspect-square relative shadow-xl">

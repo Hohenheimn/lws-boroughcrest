@@ -167,7 +167,7 @@ export const GetJournalRecentSearch = (
     id: string | number,
     keyword: string
 ) => {
-    return useQuery(["journal-recend-search", id, keyword], () => {
+    return useQuery(["journal-recent-search", id, keyword], () => {
         return api.get(
             `/finance/general-ledger/journal/recent-search/${id}?keywords=${keyword}`,
             {

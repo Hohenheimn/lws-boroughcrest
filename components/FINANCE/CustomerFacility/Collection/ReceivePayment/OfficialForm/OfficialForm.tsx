@@ -223,6 +223,7 @@ export default function OfficialForm({
     return (
         <>
             <OutStandingBalance
+                customer_id={headerForm.customer_id}
                 amount_paid={Number(headerForm.amount_paid)}
                 DefaultOutstanding={Outstanding}
                 setDefaultValue={setOutstanding}
@@ -235,7 +236,11 @@ export default function OfficialForm({
                 DefaultAdvances={isAdvance}
                 Error={Error}
             />
-            <PaymentSummary Error={Error} headerForm={headerForm} />
+            <PaymentSummary
+                Error={Error}
+                headerForm={headerForm}
+                customer_id={headerForm.customer_id}
+            />
             <div className="DropDownSave">
                 <button className="ddback">CANCEL</button>
                 <div className="ddSave">

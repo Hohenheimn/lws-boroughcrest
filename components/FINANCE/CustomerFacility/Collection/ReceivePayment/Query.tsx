@@ -119,3 +119,20 @@ export const GetCollectionDetail = (id: number) => {
         });
     });
 };
+
+export const GetCustomerOutstanding = (id: number) => {
+    return useQuery(
+        ["collection-outstanding", id],
+        () => {
+            return api.get(
+                `/finance/customer-facility/collection?customer_id=${id}`,
+                {
+                    headers: { Authorization: "Bearer " + getCookie("user") },
+                }
+            );
+        },
+        {
+            enabled: !!id,
+        }
+    );
+};

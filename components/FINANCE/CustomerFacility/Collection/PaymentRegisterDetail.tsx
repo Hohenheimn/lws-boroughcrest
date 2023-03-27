@@ -74,20 +74,23 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
                     <li className="w-[25%] 640px:w-full 640px:mb-5 640px:flex justify-between rounded-2xl p-10 480px:p-8 bg-white  shadow-lg">
                         <div className=" 640px:w-[32%]">
                             <p className="label_text">CUSTOMER</p>
-                            <h4 className="main_text">{CustomerDetail.name}</h4>
+                            <h4 className="main_text">
+                                {CustomerDetail?.name}
+                            </h4>
                         </div>
                         <div className=" 640px:w-[32%]">
                             <p className="label_text">CLASS</p>
                             <h4 className="main_text">
-                                {CustomerDetail.class}
+                                {CustomerDetail?.class}
                             </h4>
                         </div>
                         <div className=" 640px:w-[32%]">
                             <p className="label_text">PROPERTY</p>
                             <h4 className="main_text">
-                                {CustomerDetail.properties.map(
+                                {CustomerDetail?.properties.map(
                                     (item: any, index: number) =>
-                                        CustomerDetail.properties.length - 1 ===
+                                        CustomerDetail?.properties.length -
+                                            1 ===
                                         index
                                             ? item.unit_code
                                             : item.unit_code + ", "

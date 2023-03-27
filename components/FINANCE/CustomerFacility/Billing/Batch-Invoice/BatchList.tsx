@@ -1,6 +1,10 @@
 import React from "react";
 import { BsPlusLg } from "react-icons/bs";
 import { HiMinus, HiPencil } from "react-icons/hi";
+import {
+    MinusButtonTable,
+    PencilButtonTable,
+} from "../../../../Reusable/Icons";
 
 export default function BatchList() {
     return (
@@ -75,11 +79,11 @@ const List = () => {
             <td className="action">
                 <div className="item">
                     <div>
-                        <HiMinus className="text-[13px]" />
+                        <MinusButtonTable />
                     </div>
 
                     <div className="ml-5 1024px:ml-2">
-                        <HiPencil className="text-[13px]" />
+                        <PencilButtonTable />
                     </div>
                 </div>
             </td>

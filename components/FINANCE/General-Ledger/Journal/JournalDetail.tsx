@@ -7,6 +7,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { TextNumberDisplay } from "../../../Reusable/NumberFormat";
 import { format, isValid, parse } from "date-fns";
+import { PencilButton } from "../../../Reusable/Icons";
 
 type JournalDetail = {
     Detail: {
@@ -72,25 +73,17 @@ export default function JournalDetail({ Detail }: JournalDetail) {
             <ul className={`${style.FourRows} ${style.narrow}`}>
                 {Detail.status !== "Approved" &&
                     Detail.status !== "In Progress" && (
-                        <aside>
-                            <Tippy
-                                theme="ThemeRed"
-                                content={
-                                    <span className="capitalize">Modify</span>
-                                }
+                        <aside className=" mt-[-15px]">
+                            <Link
+                                href={`/finance/general-ledger/journal/modify-journal/${Detail.id}`}
                             >
-                                <div>
-                                    <Link
-                                        href={`/finance/general-ledger/journal/modify-journal/${Detail.id}`}
-                                    >
-                                        <a>
-                                            <HiPencil
-                                                className={style.pencil}
-                                            />
-                                        </a>
-                                    </Link>
-                                </div>
-                            </Tippy>
+                                <a>
+                                    <PencilButton
+                                        FunctionOnClick={() => {}}
+                                        title={"Modify"}
+                                    />
+                                </a>
+                            </Link>
                         </aside>
                     )}
 

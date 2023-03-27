@@ -10,6 +10,7 @@ import "tippy.js/dist/tippy.css";
 import AppContext from "../../../Context/AppContext";
 import TableErrorMessage from "../../../Reusable/TableErrorMessage";
 import Pagination from "../../../Reusable/Pagination";
+import Image from "next/image";
 
 type Props = {
     isSearchTable: string;
@@ -251,20 +252,23 @@ const List = ({ itemDetail, isFilterTable }: ListProps) => {
                 </td>
 
                 {!isFilterTable && (
-                    <td className="large">
-                        {isHover && (
-                            <Link
-                                href={`/finance/general-ledger/chart-of-account?modify=${itemDetail.id}`}
-                            >
-                                <a>
-                                    <Tippy theme="ThemeRed" content={"Modify"}>
-                                        <div className="pencil">
-                                            <HiPencil />
-                                        </div>
-                                    </Tippy>
-                                </a>
-                            </Link>
-                        )}
+                    <td className="icon">
+                        <Link
+                            href={`/finance/general-ledger/chart-of-account?modify=${itemDetail.id}`}
+                        >
+                            <a className="w-full flex justify-center">
+                                <Tippy theme="ThemeRed" content={"Modify"}>
+                                    <div>
+                                        <Image
+                                            src="/Images/f_pencil.png"
+                                            width={12}
+                                            height={12}
+                                            alt="Modify"
+                                        />
+                                    </div>
+                                </Tippy>
+                            </a>
+                        </Link>
                     </td>
                 )}
             </tr>

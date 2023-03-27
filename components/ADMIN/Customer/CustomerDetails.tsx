@@ -12,6 +12,7 @@ import { useRouter } from "next/router";
 import BeatLoader from "react-spinners/BeatLoader";
 import { customer } from "../../../types/customerList";
 import Modal_Image from "../../Reusable/Modal_Image";
+import { PencilButton } from "../../Reusable/Icons";
 
 export default function CustomerDetail({ Draft }: any) {
     const { ImgUrl, setModifyCustomer, setPrompt } = useContext(AppContext);
@@ -103,32 +104,25 @@ export default function CustomerDetail({ Draft }: any) {
                     <h1 className=" font-bold text-[24px] 480px:mb-0 480px:text-[16px]">
                         Primary Informations
                     </h1>
-                    <Tippy
-                        theme="ThemeRed"
-                        content={<span className="capitalize">Modify</span>}
-                    >
-                        <div>
-                            <HiPencil
-                                className=" text-ThemeRed font-bold text-[32px] 480px:text-[24px] cursor-pointer"
-                                // If theres a draft, draft data will be restore on the modifyfields else its customer data
-                                onClick={() => {
-                                    Draft
-                                        ? setModifyCustomer({
-                                              ...Draft.values,
-                                              tin: data.tin.replaceAll("-", ""),
-                                              id: router.query.id,
-                                              _method: "PUT",
-                                          })
-                                        : setModifyCustomer({
-                                              ...data,
-                                              tin: data.tin.replaceAll("-", ""),
-                                              _method: "PUT",
-                                          });
-                                    setToggleModify(true);
-                                }}
-                            />
-                        </div>
-                    </Tippy>
+
+                    <PencilButton
+                        FunctionOnClick={() => {
+                            Draft
+                                ? setModifyCustomer({
+                                      ...Draft.values,
+                                      tin: data.tin.replaceAll("-", ""),
+                                      id: router.query.id,
+                                      _method: "PUT",
+                                  })
+                                : setModifyCustomer({
+                                      ...data,
+                                      tin: data.tin.replaceAll("-", ""),
+                                      _method: "PUT",
+                                  });
+                            setToggleModify(true);
+                        }}
+                        title={"Modify"}
+                    />
                 </li>
                 <li className="w-3/12 1280px:w-4/12 flex-col 480px:w-full p-5 flex justify-center items-center">
                     <aside className=" w-6/12 820px:w-10/12 rounded-full overflow-hidden 480px:w-5/12 aspect-square relative shadow-xl">

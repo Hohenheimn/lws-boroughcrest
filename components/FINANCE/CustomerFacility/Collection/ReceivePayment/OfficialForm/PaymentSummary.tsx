@@ -14,6 +14,7 @@ import { HeaderForm } from "../ReceivePaymentForm";
 type Props = {
     Error: () => void;
     headerForm: HeaderForm;
+    customer_id: string | number;
 };
 
 type isTableItem = {
@@ -23,7 +24,11 @@ type isTableItem = {
     total: number;
 };
 
-export default function PaymentSummary({ Error, headerForm }: Props) {
+export default function PaymentSummary({
+    Error,
+    headerForm,
+    customer_id,
+}: Props) {
     const [isTable, setTable] = useState<isTableItem[]>([
         {
             base: 0,
@@ -48,9 +53,13 @@ export default function PaymentSummary({ Error, headerForm }: Props) {
                             </tr>
                         </thead>
                         <tbody>
-                            {isTable.map((item, index) => (
-                                <List key={index} itemDetail={item} />
-                            ))}
+                            {customer_id !== "" && (
+                                <>
+                                    {isTable.map((item, index) => (
+                                        <List key={index} itemDetail={item} />
+                                    ))}
+                                </>
+                            )}
                         </tbody>
                     </table>
                 </div>

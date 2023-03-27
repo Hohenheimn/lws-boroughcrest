@@ -5,6 +5,10 @@ import { HiMinus } from "react-icons/hi";
 import { FadeSide } from "../../../../../../Animation/SimpleAnimation";
 import DropDownCharge from "../../../../../../Dropdowns/DropDownCharge";
 import {
+    MinusButtonTable,
+    PlusButtonTable,
+} from "../../../../../../Reusable/Icons";
+import {
     InputNumberForTable,
     TextNumberDisplay,
 } from "../../../../../../Reusable/NumberFormat";
@@ -32,9 +36,13 @@ export default function OutRight({
     DefaultOutRight,
     setDefaultValue,
 }: Props) {
-    const [isSave, setSave] = useState(false);
-
-    const SaveHandler = (button: string) => {};
+    const [isTotal, setTotal] = useState(0);
+    useEffect(() => {
+        setTotal(0);
+        DefaultOutRight.map((item: Outright) => {
+            setTotal((prevValue) => Number(prevValue) + item.amount);
+        });
+    }, [DefaultOutRight]);
 
     return (
         <motion.div
@@ -71,7 +79,7 @@ export default function OutRight({
                     </tbody>
                 </table>
             </div>
-            <TableOneTotal total={123} label={"SUB TOTAL"} redBG={false} />
+            <TableOneTotal total={isTotal} label={"SUB TOTAL"} redBG={false} />
         </motion.div>
     );
 }
@@ -195,7 +203,7 @@ const List = ({ setTable, isTable, itemDetail, index }: List) => {
             <td className="actionIcon">
                 {isTable.length > 1 && (
                     <div onClick={RemoveRow}>
-                        <HiMinus />
+                        <MinusButtonTable />
                     </div>
                 )}
                 {isTable.length - 1 === index && (
@@ -203,7 +211,7 @@ const List = ({ setTable, isTable, itemDetail, index }: List) => {
                         className="ml-5 1024px:ml-2"
                         onClick={(e) => AddRow(e)}
                     >
-                        <BsPlusLg />
+                        <PlusButtonTable />
                     </div>
                 )}
             </td>

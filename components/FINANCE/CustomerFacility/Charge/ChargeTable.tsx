@@ -10,6 +10,7 @@ import api from "../../../../util/api";
 import AppContext from "../../../Context/AppContext";
 import TableErrorMessage from "../../../Reusable/TableErrorMessage";
 import Pagination from "../../../Reusable/Pagination";
+import { TextNumberDisplay } from "../../../Reusable/NumberFormat";
 
 type Props = {
     page: string;
@@ -207,7 +208,13 @@ const List = ({ itemDetail }: ListProps) => {
                 >
                     <a className="item">
                         <div>
-                            <h2>{itemDetail.vat_percent}</h2>
+                            <h2>
+                                <TextNumberDisplay
+                                    value={itemDetail.vat_percent}
+                                    className="w-full"
+                                    suffix="%"
+                                />
+                            </h2>
                         </div>
                     </a>
                 </Link>

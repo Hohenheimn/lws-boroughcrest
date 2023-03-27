@@ -4,6 +4,7 @@ import { BsPlusLg } from "react-icons/bs";
 import { HiMinus } from "react-icons/hi";
 import style from "../../../../../styles/finance/Crud-table.module.scss";
 import DropDownCharge from "../../../../Dropdowns/DropDownCharge";
+import { MinusButtonTable, PlusButtonTable } from "../../../../Reusable/Icons";
 
 type defaultArray = defaultObject[];
 type defaultObject = {
@@ -134,12 +135,12 @@ const List = ({ itemList, setDefault, isDefault, index }: List) => {
             <td className="actionIcon">
                 {isDefault.length > 1 && (
                     <div onClick={RemoveJournal}>
-                        <HiMinus />
+                        <MinusButtonTable />
                     </div>
                 )}
                 {isDefault.length - 1 === index && (
                     <div className="ml-5 1024px:ml-2" onClick={AddJournal}>
-                        <BsPlusLg />
+                        <PlusButtonTable />
                     </div>
                 )}
             </td>

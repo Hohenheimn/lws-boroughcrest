@@ -1,10 +1,14 @@
+import Tippy from "@tippy.js/react";
 import { format, isValid, parse } from "date-fns";
+import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { BarLoader } from "react-spinners";
 import HeaderCollection from "../../../../../components/FINANCE/CustomerFacility/Collection/HeaderCollection";
 import { GetCollectionList } from "../../../../../components/FINANCE/CustomerFacility/Collection/ReceivePayment/Query";
 import { GetCustomer } from "../../../../../components/ReactQuery/CustomerMethod";
+import ModalTemp from "../../../../../components/Reusable/ModalTemp";
 import { TextNumberDisplay } from "../../../../../components/Reusable/NumberFormat";
 import Pagination from "../../../../../components/Reusable/Pagination";
 import TableErrorMessage from "../../../../../components/Reusable/TableErrorMessage";
@@ -35,6 +39,7 @@ export type CollectionItem = {
 };
 
 export default function PaymentQueueing() {
+    const router = useRouter();
     const [isFilterText, setFilterText] = useState<string[]>([]);
     const [isSearch, setSearch] = useState("");
     const [isPeriod, setPeriod] = useState({
@@ -53,6 +58,22 @@ export default function PaymentQueueing() {
 
     return (
         <>
+            {router.query.remark !== undefined && (
+                <ModalTemp narrow={true}>
+                    <h1 className="text-ThemeRed mb-2">Remarks</h1>
+                    <textarea
+                        name=""
+                        id=""
+                        className="field w-full mb-5"
+                    ></textarea>
+                    <div className="flex justify-end items-center w-full">
+                        <Link href="">
+                            <a className="button_cancel">CANCEL</a>
+                        </Link>
+                        <button className="buttonRed">ARCHIVE</button>
+                    </div>
+                </ModalTemp>
+            )}
             <HeaderCollection
                 setFilterText={setFilterText}
                 isSearch={isSearch}
@@ -73,6 +94,7 @@ export default function PaymentQueueing() {
                             <th>Deposit Date</th>
                             <th>Reference No.</th>
                             <th>Remarks</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -89,7 +111,7 @@ export default function PaymentQueueing() {
                         <aside className="text-center flex justify-center py-5">
                             <BarLoader
                                 color={"#8f384d"}
-                                height="10px"
+                                height="6px"
                                 width="200px"
                                 aria-label="Loading Spinner"
                                 data-testid="loader"
@@ -148,7 +170,54 @@ const List = ({ itemDetail }: ListProps) => {
             <td>{isValid(date) ? format(date, "MMM dd yyyy") : ""}</td>
             <td>{itemDetail.reference_no}</td>
             <td>{itemDetail.remarks}</td>
-            <td></td>
+            <td className="icon">
+                <ul className="flex items-center justify-around">
+                    <Tippy content={"Remark"} theme="ThemeRed">
+                        <li>
+                            <Link
+                                href={`/finance/customer-facility/collection/payment-queueing?remark=1`}
+                            >
+                                <a>
+                                    <Image
+                                        src="/Images/f_remark.png"
+                                        width={20}
+                                        height={20}
+                                        alt="Remark"
+                                    />
+                                </a>
+                            </Link>
+                        </li>
+                    </Tippy>
+
+                    <Tippy content={"Modify"} theme="ThemeRed">
+                        <li>
+                            <Link
+                                href={`/finance/customer-facility/collection/receive-payment/id`}
+                            >
+                                <a>
+                                    <Image
+                                        src="/Images/f_opposite_arrow.png"
+                                        width={22}
+                                        height={18}
+                                        alt="Modify"
+                                    />
+                                </a>
+                            </Link>
+                        </li>
+                    </Tippy>
+
+                    <Tippy content={"Attachment"} theme="ThemeRed">
+                        <li>
+                            <Image
+                                src="/Images/f_attach.png"
+                                width={20}
+                                height={20}
+                                alt="Attach"
+                            />
+                        </li>
+                    </Tippy>
+                </ul>
+            </td>
         </tr>
     );
 };

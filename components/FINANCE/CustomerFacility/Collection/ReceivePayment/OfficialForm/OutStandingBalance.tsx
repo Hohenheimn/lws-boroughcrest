@@ -1,23 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { BsPlusLg } from "react-icons/bs";
-import { HiMinus } from "react-icons/hi";
-import { RiArrowDownSFill } from "react-icons/ri";
-import DropDownCharge from "../../../../../Dropdowns/DropDownCharge";
 import {
     InputNumberForTable,
     TextNumberDisplay,
 } from "../../../../../Reusable/NumberFormat";
-import {
-    TableOneTotal,
-    TableThreeTotal,
-} from "../../../../../Reusable/TableTotal";
-import { HeaderForm } from "../ReceivePaymentForm";
+import { TableThreeTotal } from "../../../../../Reusable/TableTotal";
 
 type Props = {
     Error: () => void;
     DefaultOutstanding: Outstanding[];
     setDefaultValue: Function;
     amount_paid: number;
+    customer_id: string | number;
 };
 
 export type Outstanding = {
@@ -35,6 +28,7 @@ export default function OutStandingBalance({
     DefaultOutstanding,
     setDefaultValue,
     amount_paid,
+    customer_id,
 }: Props) {
     const [isToggle, setToggle] = useState(false);
     const SetToggleHandler = () => {
@@ -101,16 +95,20 @@ export default function OutStandingBalance({
                         </tr>
                     </thead>
                     <tbody>
-                        {DefaultOutstanding.map((item, index) => (
-                            <List
-                                key={index}
-                                itemDetail={item}
-                                isTable={DefaultOutstanding}
-                                setTable={setDefaultValue}
-                                index={index}
-                                isToggle={isToggle}
-                            />
-                        ))}
+                        {customer_id !== "" && (
+                            <>
+                                {DefaultOutstanding.map((item, index) => (
+                                    <List
+                                        key={index}
+                                        itemDetail={item}
+                                        isTable={DefaultOutstanding}
+                                        setTable={setDefaultValue}
+                                        index={index}
+                                        isToggle={isToggle}
+                                    />
+                                ))}
+                            </>
+                        )}
                     </tbody>
                 </table>
             </div>

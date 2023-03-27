@@ -16,6 +16,7 @@ import CreateDeposit from "../../../../../pages/finance/customer-facility/deposi
 import { CreateCollection } from "./Query";
 import { format, isValid, parse } from "date-fns";
 import { useRouter } from "next/router";
+import { MinusButtonTable, PlusButtonTable } from "../../../../Reusable/Icons";
 
 export type isProvisionalTable = {
     id: string | number;
@@ -392,7 +393,7 @@ const List = ({ itemDetail, isTable, setTable, index }: ListProps) => {
             <td className="actionIcon">
                 {isTable.length > 1 && (
                     <div onClick={RemoveRow}>
-                        <HiMinus />
+                        <MinusButtonTable />
                     </div>
                 )}
                 {isTable.length - 1 === index && (
@@ -400,7 +401,7 @@ const List = ({ itemDetail, isTable, setTable, index }: ListProps) => {
                         className="ml-5 1024px:ml-2"
                         onClick={(e) => AddRow(e)}
                     >
-                        <BsPlusLg />
+                        <PlusButtonTable />
                     </div>
                 )}
             </td>

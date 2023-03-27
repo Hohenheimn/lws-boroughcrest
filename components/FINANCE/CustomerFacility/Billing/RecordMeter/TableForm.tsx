@@ -1,7 +1,5 @@
 import React, { useState, useContext } from "react";
-import { IoMdArrowDropdown, IoMdArrowDropup } from "react-icons/io";
-import PeriodCalendar from "../../../../Reusable/PeriodCalendar";
-import DropdownSearch from "../../../../Reusable/DropdownSearch";
+import { IoMdArrowDropdown } from "react-icons/io";
 import AppContext from "../../../../Context/AppContext";
 import Image from "next/image";
 import Tippy from "@tippy.js/react";
@@ -18,6 +16,7 @@ import DropDownCharge from "../../../../Dropdowns/DropDownCharge";
 import { HiPencil } from "react-icons/hi";
 import Readingform from "./Readingform";
 import PreviousPeriod from "./PreviousPeriod";
+import { PencilButton } from "../../../../Reusable/Icons";
 
 export default function TableForm() {
     const [isPreviousPeriod, setPreviousPeriod] = useState("");
@@ -149,11 +148,10 @@ export default function TableForm() {
                         </div>
                     </li>
                     <li className={style.importExportPrint}>
-                        <Tippy theme="ThemeRed" content="Modify">
-                            <div className={style.icon} onClick={exportHandler}>
-                                <HiPencil />
-                            </div>
-                        </Tippy>
+                        <PencilButton
+                            FunctionOnClick={exportHandler}
+                            title="Modify"
+                        />
 
                         <input
                             type="file"

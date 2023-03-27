@@ -16,6 +16,7 @@ import {
 } from "../../../Reusable/NumberFormat";
 import { format, isValid, parse } from "date-fns";
 import { TableTwoTotal } from "../../../Reusable/TableTotal";
+import { MinusButtonTable, PlusButtonTable } from "../../../Reusable/Icons";
 
 export type defaultArray = defaultObject[];
 export type defaultObject = {
@@ -420,10 +421,10 @@ const List = ({ itemList, setDefault, isDefault, index }: List) => {
                     type={"credit"}
                 />
             </td>
-            <td className="actionIcon">
+            <td className="actionIcon flex items-center">
                 {isDefault.length > 1 && (
                     <div onClick={RemoveJournal}>
-                        <HiMinus />
+                        <MinusButtonTable />
                     </div>
                 )}
                 {isDefault.length - 1 === index && (
@@ -431,7 +432,7 @@ const List = ({ itemList, setDefault, isDefault, index }: List) => {
                         className="ml-5 1024px:ml-2"
                         onClick={(e) => AddJournal(e)}
                     >
-                        <BsPlusLg />
+                        <PlusButtonTable />
                     </div>
                 )}
             </td>

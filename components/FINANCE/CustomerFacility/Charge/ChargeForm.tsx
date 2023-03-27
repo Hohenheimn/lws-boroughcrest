@@ -473,22 +473,25 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                             </li>
                             <li>
                                 <label>*VAT%</label>
-                                <input
-                                    className="field"
-                                    type="number"
-                                    {...register("vat_percent", {
-                                        required: "Required!",
-                                    })}
-                                    value={fieldValue.vat_percent}
-                                    onChange={(e: any) => {
-                                        setFieldValue({
-                                            ...fieldValue,
-                                            vat_percent: parseFloat(
-                                                e.target.value
-                                            ),
-                                        });
-                                    }}
-                                />
+
+                                <div className="percentage w-full">
+                                    <input
+                                        className="field w-full"
+                                        type="number"
+                                        {...register("vat_percent", {
+                                            required: "Required!",
+                                        })}
+                                        value={fieldValue.vat_percent}
+                                        onChange={(e: any) => {
+                                            setFieldValue({
+                                                ...fieldValue,
+                                                vat_percent: parseFloat(
+                                                    e.target.value
+                                                ),
+                                            });
+                                        }}
+                                    />
+                                </div>
                                 {errors?.vat_percent && (
                                     <p className="text-[12px]">
                                         {errors?.vat_percent.message}

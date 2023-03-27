@@ -8,6 +8,7 @@ import { ScaleLoader } from "react-spinners";
 import index from "../../../../../pages/project";
 import AppContext from "../../../../Context/AppContext";
 import DropDownCharge from "../../../../Dropdowns/DropDownCharge";
+import { MinusButtonTable, PlusButtonTable } from "../../../../Reusable/Icons";
 import { InputNumberForTable } from "../../../../Reusable/NumberFormat";
 import { TableOneTotal } from "../../../../Reusable/TableTotal";
 import { CreateCollection } from "./Query";
@@ -326,7 +327,7 @@ const List = ({ setTable, isTable, itemDetail, index }: List) => {
             <td className="actionIcon">
                 {isTable.length > 1 && (
                     <div onClick={RemoveRow}>
-                        <HiMinus />
+                        <MinusButtonTable />
                     </div>
                 )}
                 {isTable.length - 1 === index && (
@@ -334,7 +335,7 @@ const List = ({ setTable, isTable, itemDetail, index }: List) => {
                         className="ml-5 1024px:ml-2"
                         onClick={(e) => AddRow(e)}
                     >
-                        <BsPlusLg />
+                        <PlusButtonTable />
                     </div>
                 )}
             </td>

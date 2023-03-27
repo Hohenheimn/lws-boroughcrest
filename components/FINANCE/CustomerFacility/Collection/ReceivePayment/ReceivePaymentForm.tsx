@@ -15,6 +15,7 @@ import BankAccountDropDown from "../../../../Reusable/BankAccountDropDown";
 import { Outstanding } from "./OfficialForm/OutStandingBalance";
 import { Outright } from "./OfficialForm/OutrightAndAdvances/OutRight";
 import { AdvancesType } from "./OfficialForm/OutrightAndAdvances/Advances";
+import { GetCustomerOutstanding } from "./Query";
 
 export type ReceivePaymentForm = {
     description: string;
@@ -100,28 +101,29 @@ export default function ReceivePaymentForm({
         property: [],
     });
 
+    useEffect(() => {
+        setCustomer({
+            id: DefaultCustomer.id,
+            name: DefaultCustomer.name,
+            class: DefaultCustomer.class,
+            property: DefaultCustomer.property,
+        });
+    }, [DefaultCustomer]);
+
     const [isOutStanding, setOutstanding] = useState<Outstanding[]>([
         {
             id: 1,
-            charge: "Electricity",
-            charge_id: "12",
-            description: "sample description",
-            due_amount: 1000,
+            document_no: "",
+            charge: "",
+            charge_id: "",
+            description: "",
+            due_amount: 0,
             applied_amount: 0,
             balance: 0,
-            document_no: "sample document",
-        },
-        {
-            id: 2,
-            charge: "Electricity",
-            charge_id: "12",
-            description: "sample description",
-            due_amount: 800,
-            applied_amount: 0,
-            balance: 0,
-            document_no: "sample document",
         },
     ]);
+
+    const { isLoading, data, isError } = GetCustomerOutstanding(isCustomer.id);
 
     useEffect(() => {
         setHeaderForm({
@@ -138,15 +140,6 @@ export default function ReceivePaymentForm({
             credit_tax: DefaultValHeaderForm.credit_tax,
         });
     }, [DefaultValHeaderForm]);
-
-    useEffect(() => {
-        setCustomer({
-            id: DefaultCustomer.id,
-            name: DefaultCustomer.name,
-            class: DefaultCustomer.class,
-            property: DefaultCustomer.property,
-        });
-    }, [DefaultCustomer]);
 
     const ResetField = () => {
         setCustomer({

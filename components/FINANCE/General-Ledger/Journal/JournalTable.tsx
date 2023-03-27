@@ -17,6 +17,8 @@ import { GetJournal, MultipleUpdate } from "./Query";
 import Pagination from "../../../Reusable/Pagination";
 import AppContext from "../../../Context/AppContext";
 import { format, isValid, parse } from "date-fns";
+import ModalTemp from "../../../Reusable/ModalTemp";
+import { CopyButtonTable } from "../../../Reusable/Icons";
 
 type Props = {
     type: string;
@@ -42,7 +44,7 @@ type isTableItemObj = {
 };
 
 export default function JournalTable({ type, isPeriod, setPeriod }: Props) {
-    let buttonClicked = "";
+    const [ButtonClicked, setButtonClicked] = useState("");
     const { setPrompt } = useContext(AppContext);
     const [isSearch, setSearch] = useState("");
     const [TablePage, setTablePage] = useState(1);
@@ -148,11 +150,11 @@ export default function JournalTable({ type, isPeriod, setPeriod }: Props) {
         });
         setSelectedIDs([]);
         setPrompt({
-            message: `Items successfully ${buttonClicked}!`,
+            message: `Items successfully ${ButtonClicked}!`,
             type: "success",
             toggle: true,
         });
-        buttonClicked = "";
+        setButtonClicked("");
     };
     const onError = () => {
         setPrompt({
@@ -160,21 +162,24 @@ export default function JournalTable({ type, isPeriod, setPeriod }: Props) {
             type: "error",
             toggle: true,
         });
-        buttonClicked = "";
+        setButtonClicked("");
     };
     const { isLoading: updateLoading, mutate: updateMutate } = MultipleUpdate(
         onSuccess,
         onError
     );
 
+    const [isRejectNoticeToggle, setRejectNoticeToggle] = useState(false);
+
     const UpdateStatus = (button: string) => {
-        buttonClicked = button;
-        const Payload = {
-            journal_ids: "[" + isSelectedIDs + "]",
-            status: button,
-        };
+        setButtonClicked(button);
+
         if (isSelectedIDs.length > 0) {
-            updateMutate(Payload);
+            if (button === "Rejected") {
+                setRejectNoticeToggle(true);
+            } else {
+                Confirm(button);
+            }
         } else {
             setPrompt({
                 message: "Select a Journal!",
@@ -183,9 +188,38 @@ export default function JournalTable({ type, isPeriod, setPeriod }: Props) {
             });
         }
     };
-
+    const Confirm = (button: string) => {
+        const Payload = {
+            journal_ids: "[" + isSelectedIDs + "]",
+            status: button,
+        };
+        updateMutate(Payload);
+    };
     return (
         <>
+            {isRejectNoticeToggle && (
+                <ModalTemp narrow={true}>
+                    <h1 className="text-center mb-5">
+                        Journal will be deleted and changes is not reversible.
+                        Are you sure of this action?
+                    </h1>
+                    <div className="flex justify-end items-center w-full">
+                        <button
+                            className="button_cancel"
+                            onClick={() => setRejectNoticeToggle(false)}
+                        >
+                            CANCEL
+                        </button>
+                        <button
+                            className="buttonRed"
+                            onClick={() => Confirm("Rejected")}
+                        >
+                            CONFIRM
+                        </button>
+                    </div>
+                </ModalTemp>
+            )}
+
             <section className={style.container}>
                 <div className={style.searchBarAdvF}>
                     <div className={style.searchBar}>
@@ -213,12 +247,21 @@ export default function JournalTable({ type, isPeriod, setPeriod }: Props) {
                                         className={`${style.noFill} mr-5`}
                                         onClick={() => UpdateStatus("Approved")}
                                     >
-                                        <Image
-                                            src="/Images/f_check.png"
-                                            height={25}
-                                            width={30}
-                                            alt="Approved"
-                                        />
+                                        {updateLoading &&
+                                        ButtonClicked === "Approved" ? (
+                                            <MoonLoader
+                                                className="text-ThemeRed mr-2"
+                                                color="#8f384d"
+                                                size={16}
+                                            />
+                                        ) : (
+                                            <Image
+                                                src="/Images/f_check.png"
+                                                height={25}
+                                                width={30}
+                                                alt="Approved"
+                                            />
+                                        )}
                                     </div>
                                 </Tippy>
                             </li>
@@ -227,15 +270,24 @@ export default function JournalTable({ type, isPeriod, setPeriod }: Props) {
                                     <div
                                         className={`${style.noFill} mr-5`}
                                         onClick={() =>
-                                            UpdateStatus("In Progress")
+                                            UpdateStatus("In Process")
                                         }
                                     >
-                                        <Image
-                                            src="/Images/f_refresh.png"
-                                            height={30}
-                                            width={30}
-                                            alt="In Process"
-                                        />
+                                        {updateLoading &&
+                                        ButtonClicked === "In Process" ? (
+                                            <MoonLoader
+                                                className="text-ThemeRed mr-2"
+                                                color="#8f384d"
+                                                size={16}
+                                            />
+                                        ) : (
+                                            <Image
+                                                src="/Images/f_refresh.png"
+                                                height={30}
+                                                width={30}
+                                                alt="In Process"
+                                            />
+                                        )}
                                     </div>
                                 </Tippy>
                             </li>
@@ -245,12 +297,21 @@ export default function JournalTable({ type, isPeriod, setPeriod }: Props) {
                                         className={`${style.noFill} mr-5`}
                                         onClick={() => UpdateStatus("Pending")}
                                     >
-                                        <Image
-                                            src="/Images/f_back.png"
-                                            height={25}
-                                            width={35}
-                                            alt="Return"
-                                        />
+                                        {updateLoading &&
+                                        ButtonClicked === "Pending" ? (
+                                            <MoonLoader
+                                                className="text-ThemeRed mr-2"
+                                                color="#8f384d"
+                                                size={16}
+                                            />
+                                        ) : (
+                                            <Image
+                                                src="/Images/f_back.png"
+                                                height={25}
+                                                width={30}
+                                                alt="Return"
+                                            />
+                                        )}
                                     </div>
                                 </Tippy>
                             </li>
@@ -260,12 +321,21 @@ export default function JournalTable({ type, isPeriod, setPeriod }: Props) {
                                         className={style.noFill}
                                         onClick={() => UpdateStatus("Rejected")}
                                     >
-                                        <Image
-                                            src="/Images/f_remove.png"
-                                            height={25}
-                                            width={25}
-                                            alt="Reject"
-                                        />
+                                        {updateLoading &&
+                                        ButtonClicked === "Rejected" ? (
+                                            <MoonLoader
+                                                className="text-ThemeRed mr-2"
+                                                color="#8f384d"
+                                                size={16}
+                                            />
+                                        ) : (
+                                            <Image
+                                                src="/Images/f_remove.png"
+                                                height={25}
+                                                width={25}
+                                                alt="Return"
+                                            />
+                                        )}
                                     </div>
                                 </Tippy>
                             </li>
@@ -476,7 +546,7 @@ const List = ({
                             <div className="finance_status">
                                 <div
                                     className={`status ${
-                                        itemDetail.status === "In Progress"
+                                        itemDetail.status === "In Process"
                                             ? "InProcess"
                                             : itemDetail.status
                                     }`}
@@ -490,8 +560,7 @@ const List = ({
                                                 alt={itemDetail.status}
                                             />
                                         )}
-                                        {itemDetail.status ===
-                                            "In Progress" && (
+                                        {itemDetail.status === "In Process" && (
                                             <Image
                                                 src={`/Images/f_InProcess.png`}
                                                 width={15}
@@ -516,16 +585,7 @@ const List = ({
                         href={`/finance/general-ledger/journal/create-journal?copy=${itemDetail.id}`}
                     >
                         <a>
-                            <Tippy theme="ThemeRed" content={"Copy"}>
-                                <div className="icon">
-                                    <Image
-                                        src="/Images/f_modify.png"
-                                        height={15}
-                                        width={15}
-                                        alt="copy"
-                                    />
-                                </div>
-                            </Tippy>
+                            <CopyButtonTable />
                         </a>
                     </Link>
                 </td>

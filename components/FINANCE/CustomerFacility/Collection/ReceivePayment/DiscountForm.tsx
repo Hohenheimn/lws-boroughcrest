@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { BarLoader, ScaleLoader } from "react-spinners";
+import { BarLoader, MoonLoader, ScaleLoader } from "react-spinners";
 import { TableOneTotal } from "../../../../Reusable/TableTotal";
 import Image from "next/image";
 import Calendar from "../../../../Reusable/Calendar";
@@ -15,6 +15,7 @@ import AppContext from "../../../../Context/AppContext";
 import DropDownCharge from "../../../../Dropdowns/DropDownCharge";
 import ModalTemp from "../../../../Reusable/ModalTemp";
 import { CreateDiscount, DeleteDiscount, GetDiscountList } from "./Query";
+import { MinusButtonTable, PlusButtonTable } from "../../../../Reusable/Icons";
 
 export type isDiscountTable = {
     id: string | number;
@@ -23,6 +24,7 @@ export type isDiscountTable = {
     description: string;
     amount: number;
     back_id: string | number;
+    isLoading: false;
 };
 type Props = {
     setDiscountToggle: Function;
@@ -59,8 +61,23 @@ export default function DiscountForm({
         customer_id
     );
 
+    const onSuccessDelete = () => {
+        setPrompt({
+            message: "Discounts successfully deleted!",
+            type: "success",
+            toggle: true,
+        });
+    };
+    const onErrorDelete = () => {
+        setPrompt({
+            message: "Something is wrong!",
+            type: "error",
+            toggle: true,
+        });
+    };
+
     const { isLoading: MutateDeleteLoading, mutate: mutateDelete } =
-        DeleteDiscount(onSuccess, onError);
+        DeleteDiscount(onSuccessDelete, onErrorDelete);
 
     const { isLoading, data, isError } = GetDiscountList();
 
@@ -81,6 +98,7 @@ export default function DiscountForm({
                     charge_id: item.charge_id,
                     description: item.description,
                     amount: item.amount,
+                    isLoading: false,
                 };
             });
             if (CloneArray.length <= 0) {
@@ -229,10 +247,12 @@ const List = ({
                 charge_id: "",
                 description: "",
                 amount: 0,
+                isLoading: false,
             },
         ]);
     };
     const RemoveRow = () => {
+        updateValue("isLoading", "");
         if (itemDetail.back_id === "") {
             setTable((item: isDiscountTable[]) =>
                 item.filter((x: isDiscountTable) => x.id !== itemDetail.id)
@@ -270,6 +290,13 @@ const List = ({
                         amount: Number(value),
                     };
                 }
+
+                if (keyField === "isLoading") {
+                    return {
+                        ...item,
+                        isLoading: true,
+                    };
+                }
             }
             return item;
         });
@@ -304,17 +331,26 @@ const List = ({
                 />
             </td>
             <td className="actionIcon">
-                {isTable.length > 1 && (
-                    <div onClick={RemoveRow}>
-                        <HiMinus className=" text-ThemeRed" />
+                {itemDetail.isLoading ? (
+                    <div>
+                        <MoonLoader size={12} className="text-ThemeRed" />
                     </div>
+                ) : (
+                    <>
+                        {isTable.length > 1 && (
+                            <div onClick={RemoveRow}>
+                                <MinusButtonTable />
+                            </div>
+                        )}
+                    </>
                 )}
+
                 {isTable.length - 1 === index && (
                     <div
                         className="ml-5 1024px:ml-2"
                         onClick={(e) => AddRow(e)}
                     >
-                        <BsPlusLg className=" text-ThemeRed" />
+                        <PlusButtonTable />
                     </div>
                 )}
             </td>

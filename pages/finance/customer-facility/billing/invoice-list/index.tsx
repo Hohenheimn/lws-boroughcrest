@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import BillingList from "../../../../../components/FINANCE/CustomerFacility/Billing/BillingList";
 
-export default function Id() {
+export default function Index() {
     return (
         <div>
             <BillingList />
