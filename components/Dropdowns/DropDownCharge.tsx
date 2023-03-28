@@ -11,6 +11,7 @@ type DropdownItem = {
     className?: string;
     forCrudTableDD?: boolean;
     displayID?: boolean;
+    filter?: boolean;
 };
 
 export default function DropDownCharge({
@@ -19,6 +20,7 @@ export default function DropDownCharge({
     className,
     forCrudTableDD,
     displayID,
+    filter,
 }: DropdownItem) {
     const [isToggle, setToggle] = useState(false);
     const [tempSearch, setTempSearch] = useState(itemDetail.charge);
@@ -54,6 +56,7 @@ export default function DropDownCharge({
                                 setTempSearch={setTempSearch}
                                 UpdateStateHandler={UpdateStateHandler}
                                 itemDetail={itemDetail}
+                                filter={filter}
                             />
                         )}
                     </>
@@ -69,6 +72,7 @@ type List = {
     UpdateStateHandler: (key: string, e: any) => void;
     itemDetail: any;
     tempSearch: string;
+    filter?: boolean;
 };
 
 const List = ({
@@ -77,12 +81,15 @@ const List = ({
     setTempSearch,
     UpdateStateHandler,
     itemDetail,
+    filter,
 }: List) => {
     const { data, isLoading, isError } = useQuery(
         ["charge-list-dd", tempSearch],
         () => {
             return api.get(
-                `/finance/customer-facility/charges?keywords=${tempSearch}`,
+                `/finance/customer-facility/charges?keywords=${tempSearch}${
+                    filter ? "&meter_reading=1" : ""
+                }`,
                 {
                     headers: {
                         Authorization: "Bearer " + getCookie("user"),
@@ -115,6 +122,7 @@ const List = ({
                     data-description={item.description}
                     data-uom={item.uom.name}
                     data-vat={item.vat_percent}
+                    data-rate={item.base_rate}
                     onClick={(e) => {
                         UpdateStateHandler("charge", e);
                         setTempSearch(item.name);

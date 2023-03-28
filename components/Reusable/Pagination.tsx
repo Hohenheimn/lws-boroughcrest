@@ -49,7 +49,7 @@ export default function Pagination({
                                     CurrentPage === index + 1
                                         ? "text-white bg-ThemeRed"
                                         : "text-ThemeRed bg-[#eeeff2]"
-                                } font-bold h-8 w-8 1550px:w-5 1550px:h-5 480px:w-6 480px:h-6 1550px:text-[12px] flex justify-center items-center border-r border-white cursor-pointer`}
+                                } font-bold h-5 w-5 1550px:w-5 1550px:h-5 480px:w-6 480px:h-6 text-[13px] flex justify-center items-center border-r border-white cursor-pointer`}
                             >
                                 {index + 1}
                             </div>

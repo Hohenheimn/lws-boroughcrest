@@ -64,9 +64,7 @@ export default function BillingDetail({ InvoiceDetail }: Props) {
             </div>
             <ul className={`${style.ThreeRows} relative ${style.narrow}`}>
                 {InvoiceDetail.status === "Pending" && (
-                    <Link
-                        href={`/finance/customer-facility/billing/modify/${InvoiceDetail.id}`}
-                    >
+                    <Link href={``}>
                         <a>
                             <div className=" absolute top-[15px] right-[15px]">
                                 <PencilButton

@@ -102,7 +102,10 @@ export default function JournalTable({ type, isPeriod, setPeriod }: Props) {
                         select: select,
                     };
                 });
-                if (CloneArray.length === isSelectedIDs.length) {
+                if (
+                    CloneArray.length === isSelectedIDs.length &&
+                    CloneArray.length !== 0
+                ) {
                     selectAll = true;
                 }
 

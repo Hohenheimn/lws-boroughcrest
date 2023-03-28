@@ -259,11 +259,11 @@ const List = ({
             name: itemDetail.charge,
         };
 
-        if (itemDetail.displayID === "----") {
-            mutateSave(Payload);
-        } else {
-            mutateUpdate(Payload);
-        }
+        // if (itemDetail.displayID === "----") {
+        //     mutateSave(Payload);
+        // } else {
+        //     mutateUpdate(Payload);
+        // }
     };
 
     return (
@@ -283,6 +283,7 @@ const List = ({
                     itemDetail={itemDetail}
                     forCrudTableDD={true}
                     displayID={true}
+                    filter={true}
                     className={`${!isModify && "disabled"} text-center`}
                 />
             </td>

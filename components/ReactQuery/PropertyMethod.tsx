@@ -6,7 +6,7 @@ import { getCookie } from "cookies-next";
 export const GetPropertyList = (PageNumber: any, Keyword: any) => {
     return useQuery(["Property-List", PageNumber, Keyword], () => {
         return api.get(
-            `/admin/property/unit?paginate=${PageNumber}&keywords=${Keyword}`,
+            `/admin/property/unit?page=${PageNumber}&paginate=10&keywords=${Keyword}`,
             {
                 headers: {
                     Authorization: "Bearer " + getCookie("user"),

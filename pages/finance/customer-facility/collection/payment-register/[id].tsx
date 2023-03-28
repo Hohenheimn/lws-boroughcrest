@@ -24,12 +24,6 @@ export default function PaymentRegisterShow() {
         return (
             <div className="pageDetail">
                 <h1>Something is wrong</h1>
-                <BeatLoader
-                    color={"#8f384d"}
-                    size={20}
-                    aria-label="Loading Spinner"
-                    data-testid="loader"
-                />
             </div>
         );
     }
