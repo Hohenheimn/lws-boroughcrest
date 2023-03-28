@@ -1,20 +1,22 @@
 import React, { useEffect, useState, useRef, useContext } from "react";
 import { BiEdit } from "react-icons/bi";
-import { MdDeleteOutline } from "react-icons/md";
 import { BarLoader, MoonLoader } from "react-spinners";
 import { MdSaveAlt } from "react-icons/md";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
-
-import { useQueryClient } from "react-query";
 import AppContext from "../../../../Context/AppContext";
 // Palitin
-import {
-    DeleteBA,
-    GetBA,
-    CreateBA,
-    UpdateBA,
-} from "../../../../ReactQuery/BankAccount";
+import { CreateReadingDD, GetReadingDD, UpdateReadingDD } from "./Query";
+import DropDownCharge from "../../../../Dropdowns/DropDownCharge";
+import { useQueryClient } from "react-query";
+
+type readingCharge = {
+    id: number;
+    displayID: string;
+    charge_id: string;
+    charge: string;
+    reading_name: string;
+};
 
 type Props = {
     isObject: {
@@ -30,7 +32,7 @@ type Props = {
 const ReadingCrud = ({ isObject, setObject }: Props) => {
     const modal = useRef<any>();
 
-    const [isArray, setArray] = useState<any>([]);
+    const [isArray, setArray] = useState<readingCharge[]>([]);
     const [isWarning, setWarning] = useState("");
 
     // Click out side
@@ -62,15 +64,15 @@ const ReadingCrud = ({ isObject, setObject }: Props) => {
             ...isArray,
             {
                 id: Math.random(),
-                displayId: "----",
-                column1: "",
-                column2: "",
-                tagged: "",
+                displayID: "----",
+                charge_id: "",
+                reading_name: "",
+                charge: "",
             },
         ]);
     };
 
-    const { isLoading, data, isError } = GetBA(isObject.value);
+    const { isLoading, data, isError } = GetReadingDD(isObject.value);
 
     // Set Data from backend to array of front end
     useEffect(() => {
@@ -78,9 +80,10 @@ const ReadingCrud = ({ isObject, setObject }: Props) => {
             const cloneArray = data?.data.map((item: any) => {
                 return {
                     id: item.id,
-                    displayId: item.assigned_bank_account_id,
-                    column1: item.bank_acc_no,
-                    column2: item.bank_branch,
+                    displayID: item.id,
+                    charge_id: item.charge.id,
+                    charge: item.charge.name,
+                    reading_name: item.charge.name,
                 };
             });
             setArray(cloneArray);
@@ -98,23 +101,17 @@ const ReadingCrud = ({ isObject, setObject }: Props) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {isLoading ? (
-                        <tr></tr>
-                    ) : (
-                        <>
-                            {isArray.map((item: any, index: number) => (
-                                <List
-                                    itemDetail={item}
-                                    key={index}
-                                    setArray={setArray}
-                                    isArray={isArray}
-                                    setWarning={setWarning}
-                                    isFieldObj={isObject}
-                                    setFieldObj={setObject}
-                                />
-                            ))}
-                        </>
-                    )}
+                    {isArray.map((item: any, index: number) => (
+                        <List
+                            itemDetail={item}
+                            key={index}
+                            setArray={setArray}
+                            isArray={isArray}
+                            setWarning={setWarning}
+                            isFieldObj={isObject}
+                            setFieldObj={setObject}
+                        />
+                    ))}
                 </tbody>
             </table>
             {isLoading && (
@@ -128,12 +125,11 @@ const ReadingCrud = ({ isObject, setObject }: Props) => {
                     />
                 </div>
             )}
-            {isError ||
-                (data?.data.length <= 0 && (
-                    <div className="w-full flex justify-center py-3">
-                        <h1>Bank Account number cannot be found!</h1>
-                    </div>
-                ))}
+            {isError && (
+                <div className="w-full flex justify-center py-3">
+                    <h1>Something is wrong!</h1>
+                </div>
+            )}
             {isWarning !== "" && (
                 <p className="text-[12px] text-ThemeRed">{isWarning}</p>
             )}
@@ -147,17 +143,17 @@ const ReadingCrud = ({ isObject, setObject }: Props) => {
     );
 };
 type List = {
-    itemDetail: any;
-    setArray: any;
-    isArray: any;
-    setWarning: any;
+    itemDetail: readingCharge;
+    setArray: Function;
+    isArray: readingCharge[];
+    setWarning: Function;
     setFieldObj: Function;
     isFieldObj: {
         toggle: boolean;
-        id: any;
-        value: any;
-        firstVal: any;
-        firstID: any;
+        id: string | number;
+        value: string | number;
+        firstVal: string | number;
+        firstID: string | number;
     };
 };
 const List = ({
@@ -169,15 +165,14 @@ const List = ({
     setWarning,
 }: List) => {
     const [isModify, setModify] = useState(false);
-    const clientQuery = useQueryClient();
     const { setPrompt } = useContext(AppContext);
 
     // Auto editable field when add row
     useEffect(() => {
-        if (itemDetail.column1 === "") {
+        if (itemDetail.charge_id === "") {
             setModify(true);
         }
-    }, [itemDetail.column1]);
+    }, [itemDetail.charge_id]);
     // Toggle Modify Button
     const Edit = () => {
         setModify(!isModify);
@@ -196,19 +191,22 @@ const List = ({
     };
 
     // Functions // Edit Array from front end
-    const ModifyArray = (event: any, type: string) => {
+    const ModifyArray = (key: string, value: any) => {
         const newItems = isArray.map((item: any) => {
             if (itemDetail.id == item.id) {
-                if (type === "column1") {
+                if (key === "charge") {
+                    const charge_id = value.target.getAttribute("data-id");
+                    const charge = value.target.innerHTML;
                     return {
                         ...item,
-                        column1: event.target.value,
+                        charge_id: charge_id,
+                        charge: charge,
                     };
                 }
-                if (type === "column2") {
+                if (key === "reading_name") {
                     return {
                         ...item,
-                        column2: event.target.value,
+                        reading_name: value,
                     };
                 }
             }
@@ -217,51 +215,32 @@ const List = ({
         setArray(newItems);
     };
 
+    const queryClient = useQueryClient();
+    const messageHandler = (action: string) => {
+        setPrompt({
+            message: `Reading successfully ${action}!`,
+            type: "success",
+            toggle: true,
+        });
+        queryClient.invalidateQueries("reading-list");
+    };
     // Mutation
     const onSuccessSave = () => {
-        clientQuery.invalidateQueries("get-bank-account");
-        setPrompt({
-            message: "Reading successfully registered!",
-            type: "success",
-            toggle: true,
-        });
-    };
-    const onSuccessDelete = () => {
-        clientQuery.invalidateQueries("get-bank-account");
-        setPrompt({
-            message: "Reading successfully deleted!",
-            type: "success",
-            toggle: true,
-        });
+        messageHandler("registered");
     };
     const onSuccessUpdate = () => {
-        clientQuery.invalidateQueries("get-bank-account");
-        setPrompt({
-            message: "Reading successfully Updated!",
-            type: "success",
-            toggle: true,
-        });
+        messageHandler("updated");
     };
     const onError = () => {
         setWarning("Reading has already been registered");
-        setPrompt({
-            message: "Something is wrong!",
-            type: "error",
-            toggle: true,
-        });
     };
     // Save
-    const { isLoading: loadingSave, mutate: mutateSave } = CreateBA(
+    const { isLoading: loadingSave, mutate: mutateSave } = CreateReadingDD(
         onSuccessSave,
         onError
     );
-    // Delete
-    const { isLoading: loadingDelete, mutate: mutateDelete } = DeleteBA(
-        onSuccessDelete,
-        onError
-    );
     // Update
-    const { isLoading: loadingUpdate, mutate: mutateUpdate } = UpdateBA(
+    const { isLoading: loadingUpdate, mutate: mutateUpdate } = UpdateReadingDD(
         onSuccessUpdate,
         onError,
         itemDetail.id
@@ -269,45 +248,24 @@ const List = ({
 
     const Save = () => {
         // prevent here the function if field is empty
-        if (itemDetail.column1 === "" && itemDetail.column2 === "") {
+        if (itemDetail.charge_id === "" && itemDetail.charge === "") {
             setWarning("Cannot save with empty Charge and Reading");
             return;
         }
         setModify(!isModify);
         setWarning("");
         const Payload = {
-            charge_id: itemDetail.displayId,
-            reading: itemDetail.column2,
+            charge_id: itemDetail.charge_id,
+            name: itemDetail.charge,
         };
-        console.log(Payload);
 
-        // if (itemDetail.displayId === "----") {
-        //     mutateSave(Payload);
-        // } else {
-        //     mutateUpdate(Payload);
-        // }
-    };
-    const Delete = () => {
-        if (itemDetail.displayId === "----") {
-            // Only delete from array
-            setArray((item: any[]) =>
-                item.filter((x: { id: any }) => x.id !== itemDetail.id)
-            );
+        if (itemDetail.displayID === "----") {
+            mutateSave(Payload);
         } else {
-            // Delete from API
-            mutateDelete(itemDetail.id);
-
-            // Check if selected item will be delete then, it will reset the select item back to blank
-            if (itemDetail.id === isFieldObj.id) {
-                setFieldObj({
-                    id: "",
-                    value: "",
-                    firstVal: "",
-                    firstID: "",
-                });
-            }
+            mutateUpdate(Payload);
         }
     };
+
     return (
         <tr
             className={`cursor-pointer container ${
@@ -316,28 +274,31 @@ const List = ({
         >
             <td
                 onClick={(e) =>
-                    !isModify && Selected(itemDetail.id, itemDetail.column2)
+                    !isModify && Selected(itemDetail.id, itemDetail.charge)
                 }
                 className="bg-hover"
             >
-                <input
-                    type="text"
-                    className={`${!isModify && "disabled"}`}
-                    value={itemDetail.column1}
-                    onChange={(e) => ModifyArray(e, "column1")}
+                <DropDownCharge
+                    UpdateStateHandler={ModifyArray}
+                    itemDetail={itemDetail}
+                    forCrudTableDD={true}
+                    displayID={true}
+                    className={`${!isModify && "disabled"} text-center`}
                 />
             </td>
             <td
                 onClick={(e) =>
-                    !isModify && Selected(itemDetail.id, itemDetail.column2)
+                    !isModify && Selected(itemDetail.id, itemDetail.charge)
                 }
                 className="bg-hover"
             >
                 <input
                     type="text"
                     className={`${!isModify && "disabled"}`}
-                    value={itemDetail.column2}
-                    onChange={(e) => ModifyArray(e, "column2")}
+                    value={itemDetail.reading_name}
+                    onChange={(e) =>
+                        ModifyArray("reading_name", e.target.value)
+                    }
                 />
             </td>
             <td className="action">
@@ -371,20 +332,6 @@ const List = ({
                             )}
                         </>
                     )}
-                    {/* {loadingDelete ? (
-                        <div className="icon">
-                            <MoonLoader size={10} color="#8f384d" />
-                        </div>
-                    ) : (
-                        <Tippy theme="ThemeRed" content="Delete">
-                            <div>
-                                <MdDeleteOutline
-                                    className="icon"
-                                    onClick={Delete}
-                                />
-                            </div>
-                        </Tippy>
-                    )} */}
                 </div>
             </td>
         </tr>

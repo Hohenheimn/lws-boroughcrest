@@ -551,7 +551,7 @@ input[type="number"] {
                 input[type="text"],
                 input[type="number"],
                 input[type="email"] {
-                    @apply border border-gray-500 text-[12px] z-10 hover:text-white bg-transparent;
+                    @apply border p-[2px] border-gray-300 rounded-sm text-[12px] outline-none z-10 hover:text-white bg-transparent mb-1;
                     font-size: 12px !important;
                 }
                 input.disabled {
@@ -565,7 +565,7 @@ input[type="number"] {
                     @apply relative;
 
                     ul {
-                        @apply absolute top-full left-0 w-full text-ThemeRed z-10 bg-white border max-h-[200px] overflow-auto;
+                        @apply fixed w-[150px] text-ThemeRed z-10 bg-white border max-h-[200px] overflow-auto;
                         li {
                             @apply text-[12px] border-b py-1 px-2 w-full mb-0 hover:bg-ThemeRed hover:text-white transition-all duration-75;
                         }
@@ -574,10 +574,12 @@ input[type="number"] {
             }
         }
     }
-    tr:hover > .bg-hover {
-        @apply bg-ThemeRed50;
-        * {
-            @apply text-white;
+    tr:hover .bg-hover {
+        @apply bg-ThemeRed50 text-white;
+        p,
+        input[type="text"],
+        input[type="number"],
+        input[type="email"] {
             color: white !important;
         }
         .dropdown {

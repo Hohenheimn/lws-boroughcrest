@@ -43,10 +43,13 @@ export default function PaymentRegister() {
 
     const [TablePage, setTablePage] = useState(1);
 
+    const dateFrom = parse(isPeriod.from, "MMM dd yyyy", new Date());
+    const dateTo = parse(isPeriod.to, "MMM dd yyyy", new Date());
+
     const { isLoading, data, isError } = GetCollectionList(
         isSearch,
-        isPeriod.from,
-        isPeriod.to,
+        isValid(dateFrom) ? format(dateFrom, "yyyy-MM-dd") : "",
+        isValid(dateTo) ? format(dateTo, "yyyy-MM-dd") : "",
         TablePage
     );
 
@@ -113,19 +116,19 @@ type ListProps = {
 };
 
 const List = ({ itemDetail }: ListProps) => {
-    const date = parse(itemDetail.receipt_date, "yyyy-MM-dd", new Date());
+    const date = parse(itemDetail?.receipt_date, "yyyy-MM-dd", new Date());
 
-    const { data } = GetCustomer(itemDetail.customer_id);
+    const { data } = GetCustomer(itemDetail?.customer_id);
 
     const CustomerDetail: customer = data?.data;
 
     return (
         <tr>
             <td>{isValid(date) ? format(date, "MMM dd yyyy") : ""}</td>
-            <td>{itemDetail.receipt_no}</td>
-            <td>{CustomerDetail.name}</td>
+            <td>{itemDetail?.receipt_no}</td>
+            <td>{CustomerDetail?.name}</td>
             <td>
-                {CustomerDetail.properties.map((item: any, index: number) =>
+                {CustomerDetail?.properties.map((item: any, index: number) =>
                     CustomerDetail.properties.length - 1 === index
                         ? item.unit_code
                         : item.unit_code + ", "
@@ -134,10 +137,10 @@ const List = ({ itemDetail }: ListProps) => {
             <td>
                 <TextNumberDisplay
                     className="withPeso w-full"
-                    value={itemDetail.amount_paid}
+                    value={itemDetail?.amount_paid}
                 />
             </td>
-            <td>{itemDetail.mode_of_payment}</td>
+            <td>{itemDetail?.mode_of_payment}</td>
             <td>Sample cash account</td>
         </tr>
     );

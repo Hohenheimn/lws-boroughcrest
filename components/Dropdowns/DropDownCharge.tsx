@@ -9,17 +9,23 @@ type DropdownItem = {
     UpdateStateHandler: (key: string, e: any) => void;
     itemDetail: any;
     className?: string;
+    forCrudTableDD?: boolean;
+    displayID?: boolean;
 };
 
 export default function DropDownCharge({
     UpdateStateHandler,
     itemDetail,
     className,
+    forCrudTableDD,
+    displayID,
 }: DropdownItem) {
     const [isToggle, setToggle] = useState(false);
     const [tempSearch, setTempSearch] = useState(itemDetail.charge);
     useEffect(() => {
-        setTempSearch(itemDetail.charge);
+        displayID
+            ? setTempSearch(itemDetail.charge_id)
+            : setTempSearch(itemDetail.charge);
     }, [itemDetail.charge]);
     return (
         <>
@@ -29,7 +35,9 @@ export default function DropDownCharge({
                 toRef={
                     <input
                         type="text"
-                        className={"field w-full " + className}
+                        className={
+                            `${!forCrudTableDD && "field"} w-full ` + className
+                        }
                         onClick={() => setToggle(true)}
                         value={tempSearch}
                         onChange={(e) => {

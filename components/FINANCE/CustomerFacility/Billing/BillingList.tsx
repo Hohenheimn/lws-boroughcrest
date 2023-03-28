@@ -220,7 +220,7 @@ export default function BillingList() {
     const Confirm = (button: string) => {
         const dueDate = parse(updateDueDate.value, "MMM dd yyyy", new Date());
         const Payload = {
-            invoice_ids: "[" + isSelectedIDs + "]",
+            invoice_ids: isSelectedIDs,
             status: button,
             due_date: isValid(dueDate) ? format(dueDate, "yyyy-MM-dd") : null,
         };
