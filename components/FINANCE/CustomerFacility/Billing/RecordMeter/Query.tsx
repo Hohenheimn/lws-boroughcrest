@@ -5,7 +5,7 @@ import api from "../../../../../util/api";
 export const GetReadingDD = (keyword: string) => {
     return useQuery(["reading-list", keyword], () => {
         return api.get(
-            `/finance/customer-facility/billing/record-meter-reading/reading-charge`,
+            `/finance/customer-facility/billing/record-meter-reading/reading-charge?keywords=${keyword}`,
             {
                 headers: {
                     Authorization: "Bearer " + getCookie("user"),
@@ -124,4 +124,24 @@ export const ShowRecordMeter = (id: any) => {
             }
         );
     });
+};
+
+export const ApplyRecordMeter = (onSucces: any, onError: any) => {
+    return useMutation(
+        (Payload: any) => {
+            return api.put(
+                `/finance/customer-facility/billing/record-meter-reading/apply`,
+                Payload,
+                {
+                    headers: {
+                        Authorization: "Bearer " + getCookie("user"),
+                    },
+                }
+            );
+        },
+        {
+            onSuccess: onSucces,
+            onError: onError,
+        }
+    );
 };

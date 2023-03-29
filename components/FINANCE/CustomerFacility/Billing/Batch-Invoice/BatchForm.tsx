@@ -1,27 +1,41 @@
-import React, { useState } from "react";
-import Image from "next/image";
-import { BsPlusLg } from "react-icons/bs";
-import { HiMinus } from "react-icons/hi";
-import style from "../../../../../styles/finance/Crud-table.module.scss";
+import React, { useEffect, useState } from "react";
 import DropDownCharge from "../../../../Dropdowns/DropDownCharge";
 import { MinusButtonTable, PlusButtonTable } from "../../../../Reusable/Icons";
+import SelectGroup from "./SelectGroup";
 
-type defaultArray = defaultObject[];
-type defaultObject = {
+export type batchForm = {
     id: number;
     charge_id: string | number;
-    charge: number;
+    charge: string;
     description: string;
-    application: string;
+    application: {
+        name: string;
+        id: number;
+    }[];
 };
 type Props = {
-    DefaultValue: defaultArray;
+    DefaultValue: batchForm[];
 };
 
 export default function BatchForm({ DefaultValue }: Props) {
-    const [isDefault, setDefault] = useState<defaultArray>(DefaultValue);
+    const [isDefault, setDefault] = useState<batchForm[]>(DefaultValue);
+    const [selectedID, setSelectedID] = useState<boolean | number>(false);
+
+    const ApplyHandler = () => {
+        console.log(isDefault);
+    };
+
     return (
         <>
+            {selectedID !== false && (
+                <SelectGroup
+                    isArray={isDefault}
+                    setArray={setDefault}
+                    id={selectedID}
+                    toggle={setSelectedID}
+                />
+            )}
+
             <div className="table_container max-half border-b border-gray-300 pb-10 mb-10 1550px:mb-5 1550px:pb-5">
                 <table className="table_list forCrud">
                     <thead className="textRed">
@@ -43,13 +57,16 @@ export default function BatchForm({ DefaultValue }: Props) {
                                 setDefault={setDefault}
                                 itemList={item}
                                 isDefault={isDefault}
+                                setSelectedID={setSelectedID}
                             />
                         ))}
                     </tbody>
                 </table>
             </div>
             <div className="py-2 flex justify-end">
-                <button className="buttonRed">APPLY</button>
+                <button className="buttonRed" onClick={ApplyHandler}>
+                    APPLY
+                </button>
             </div>
         </>
     );
@@ -57,17 +74,19 @@ export default function BatchForm({ DefaultValue }: Props) {
 
 type List = {
     index: number;
-    itemList: defaultObject;
+    itemList: batchForm;
     setDefault: Function;
-    isDefault: defaultArray;
+    isDefault: batchForm[];
+    setSelectedID: Function;
 };
 
-const List = ({ itemList, setDefault, isDefault, index }: List) => {
-    const [isCharge, setCharge] = useState({
-        charge: "",
-        id: "",
-        description: "",
-    });
+const List = ({
+    itemList,
+    setDefault,
+    isDefault,
+    index,
+    setSelectedID,
+}: List) => {
     const AddJournal = () => {
         const random = Math.random();
         setDefault((temp: any) => [
@@ -76,7 +95,7 @@ const List = ({ itemList, setDefault, isDefault, index }: List) => {
                 id: random,
                 charge: 0,
                 description: "",
-                application: "SELECT",
+                application: [],
             },
         ]);
     };
@@ -86,12 +105,12 @@ const List = ({ itemList, setDefault, isDefault, index }: List) => {
         );
     };
     const updateValue = (key: string, e: any) => {
-        const newItems = isDefault.map((item: any) => {
+        const newItems = isDefault.map((item: batchForm) => {
             if (itemList.id == item.id) {
                 if (key === "charge") {
                     return {
                         ...item,
-                        charge: e.target.value,
+                        charge: e.target.innerHTML,
                         charge_id: e.target.getAttribute("data-id"),
                         description: e.target.getAttribute("data-description"),
                     };
@@ -114,7 +133,7 @@ const List = ({ itemList, setDefault, isDefault, index }: List) => {
             <td className="flex items-center">
                 <DropDownCharge
                     UpdateStateHandler={updateValue}
-                    itemDetail={isCharge}
+                    itemDetail={itemList}
                 />
             </td>
             <td>
@@ -128,8 +147,18 @@ const List = ({ itemList, setDefault, isDefault, index }: List) => {
             <td>
                 <input
                     type="text"
-                    value={itemList.application}
-                    className="field disabled text-center"
+                    readOnly
+                    className=" bg-ThemeRed text-white text-center"
+                    value={
+                        itemList.application.length <= 0
+                            ? "SELECT GROUP"
+                            : itemList?.application.map((item, index) =>
+                                  itemList.application.length - 1 === index
+                                      ? item.name
+                                      : item.name + " "
+                              )
+                    }
+                    onClick={() => setSelectedID(itemList.id)}
                 />
             </td>
             <td className="actionIcon">

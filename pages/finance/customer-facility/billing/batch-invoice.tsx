@@ -6,10 +6,10 @@ export default function BatchInvoice() {
     const defaultValue = [
         {
             id: 0,
-            charge: 0,
+            charge: "",
             charge_id: 0,
             description: "",
-            application: "SELECT",
+            application: [],
         },
     ];
     return (

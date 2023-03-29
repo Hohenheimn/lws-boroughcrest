@@ -6,24 +6,21 @@ import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 import { useRouter } from "next/router";
 import style from "../../../../../styles/SearchFilter.module.scss";
-import { CustomerImport } from "../../../../ReactQuery/CustomerMethod";
-import { BarLoader, MoonLoader } from "react-spinners";
-import { DynamicExportHandler } from "../../../../Reusable/DynamicExport";
-import { DynamicImport } from "../../../../Reusable/DynamicImport";
+import { BarLoader, ScaleLoader } from "react-spinners";
 import DynamicPopOver from "../../../../Reusable/DynamicPopOver";
 import ReadingCrud from "./ReadingCrud";
 import DropDownCharge from "../../../../Dropdowns/DropDownCharge";
-import { HiPencil } from "react-icons/hi";
 import Readingform from "./Readingform";
 import PreviousPeriod from "./PreviousPeriod";
-import { CopyButtonTable, PencilButton } from "../../../../Reusable/Icons";
+import { PencilButton } from "../../../../Reusable/Icons";
 import { TextNumberDisplay } from "../../../../Reusable/NumberFormat";
 import Pagination from "../../../../Reusable/Pagination";
 import TableErrorMessage from "../../../../Reusable/TableErrorMessage";
 import Link from "next/link";
 import { format, isValid, parse } from "date-fns";
-import { GetRecordMeterList } from "./Query";
+import { ApplyRecordMeter, GetRecordMeterList } from "./Query";
 import Modify from "./Modify";
+import { useQueryClient } from "react-query";
 
 type isTable = {
     itemArray: isTableItemObj[];
@@ -46,6 +43,7 @@ type isTableItemObj = {
 };
 
 export default function TableForm() {
+    const queryClient = useQueryClient();
     const [isPreviousPeriod, setPreviousPeriod] = useState({
         year: "",
         from: "",
@@ -57,18 +55,14 @@ export default function TableForm() {
 
     // Reading
     const [isReading, setReading] = useState({
-        toggle: false,
-        value: "",
-        id: "",
-        firstVal: "",
-        firstID: "",
+        reading_id: "",
+        reading_name: "",
+        reading_serial: "",
+        charge_name: "",
+        charge_id: "",
+        base_rate: 0,
     });
-    // Charge
-    const [isCharge, setCharge] = useState({
-        id: "",
-        charge: "",
-        rate: "",
-    });
+
     const [toggleReading, setToggleReading] = useState(false);
 
     const [isTableItem, setTableItem] = useState<isTable>({
@@ -76,6 +70,23 @@ export default function TableForm() {
         selectAll: false,
     });
     const [isSelectedIDs, setSelectedIDs] = useState<number[]>([]);
+
+    useEffect(() => {
+        if (
+            isSelectedIDs.length === isTableItem.itemArray.length &&
+            isTableItem.itemArray.length > 0
+        ) {
+            setTableItem({
+                ...isTableItem,
+                selectAll: true,
+            });
+        } else {
+            setTableItem({
+                ...isTableItem,
+                selectAll: false,
+            });
+        }
+    }, [isSelectedIDs]);
 
     const dateFrom = parse(
         `${isPreviousPeriod.from} ${isPreviousPeriod.year}`,
@@ -88,7 +99,7 @@ export default function TableForm() {
         new Date()
     );
     const { data, isLoading, isError } = GetRecordMeterList(
-        isCharge.id,
+        isReading.charge_id,
         isValid(dateFrom) ? format(dateFrom, "yyyy-MM-dd") : "",
         isValid(dateTo) ? format(dateTo, "yyyy-MM-dd") : "",
         TablePage
@@ -97,13 +108,12 @@ export default function TableForm() {
     useEffect(() => {
         if (data?.status === 200) {
             let selectAll = false;
-            if (isCharge.id !== "") {
+            if (isReading.charge_id !== "") {
                 let CloneArray = data?.data.data.map((item: isTableItemObj) => {
                     let select = false;
                     if (isSelectedIDs.includes(item.id)) {
                         select = true;
                     }
-
                     return {
                         id: item.id,
                         select: select,
@@ -157,6 +167,75 @@ export default function TableForm() {
             selectAll: !isTableItem.selectAll,
         });
     };
+
+    const ToggleNewReading = () => {
+        if (isReading.reading_id !== "") {
+            setToggleReading(true);
+        } else {
+            setPrompt({
+                message: "Select a reading!",
+                type: "draft",
+                toggle: true,
+            });
+        }
+    };
+
+    const ToggleModify = () => {
+        if (isPreviousPeriod.from !== "" && isPreviousPeriod.to) {
+            router.push(
+                `/finance/customer-facility/billing/record-meter-reading?modify=`
+            );
+        } else {
+            setPrompt({
+                message: "Select a Previous Reading!",
+                type: "draft",
+                toggle: true,
+            });
+        }
+    };
+
+    const onSuccess = () => {
+        setPreviousPeriod({
+            from: "",
+            to: "",
+            year: "",
+        });
+        queryClient.invalidateQueries(["record-meter-list"]);
+        setPrompt({
+            message: `Record meter reading successfully applied!`,
+            type: "success",
+            toggle: true,
+        });
+    };
+
+    const onError = () => {
+        setPrompt({
+            message: "Something is wrong!",
+            type: "error",
+            toggle: true,
+        });
+    };
+
+    const { isLoading: applyLoading, mutate: applyMutate } = ApplyRecordMeter(
+        onSuccess,
+        onError
+    );
+
+    const ApplyHandler = () => {
+        const Payload = {
+            charge_id: Number(isReading.charge_id),
+            reading_ids: isSelectedIDs,
+        };
+        if (isSelectedIDs.length <= 0) {
+            setPrompt({
+                message: "Please select a reading!",
+                type: "draft",
+                toggle: true,
+            });
+            return;
+        }
+        applyMutate(Payload);
+    };
     return (
         <>
             {toggleReading && (
@@ -165,9 +244,9 @@ export default function TableForm() {
                     toggle={setToggleReading}
                     externalDefaultValue={{
                         charge: {
-                            charge: "",
-                            rate: 0,
-                            id: 0,
+                            charge: isReading.charge_name,
+                            rate: Number(isReading.base_rate),
+                            id: isReading.charge_id,
                         },
                         period: {
                             from: "",
@@ -182,47 +261,17 @@ export default function TableForm() {
             <section className={`${style.container} 1280px:flex-wrap`}>
                 <div className=" flex items-center 1280px:w-2/4 640px:w-full 1280px:mb-5">
                     <p className="labelField">READING:</p>
-                    <DynamicPopOver
-                        className="w-full"
-                        toRef={
-                            <>
-                                <input
-                                    type="text"
-                                    autoComplete="off"
-                                    onClick={() =>
-                                        setReading({
-                                            ...isReading,
-                                            toggle: true,
-                                        })
-                                    }
-                                    className="field"
-                                    value={isReading.value}
-                                    onChange={(e: any) =>
-                                        setReading({
-                                            ...isReading,
-                                            value: e.target.value,
-                                        })
-                                    }
-                                />
-                            </>
-                        }
-                        toPop={
-                            <>
-                                {isReading.toggle && (
-                                    <ReadingCrud
-                                        isObject={isReading}
-                                        setObject={setReading}
-                                    />
-                                )}
-                            </>
-                        }
+
+                    <ReadingCrud
+                        value={isReading.reading_name}
+                        setvalue={setReading}
                     />
                 </div>
                 <aside className="1280px:w-2/4 640px:w-full">
                     <p className=" labelField">
-                        READING SERIAL:{" "}
+                        READING SERIAL:
                         <span className=" text-[#2e4364] font-NHU-medium">
-                            0001011
+                            {isReading.reading_serial}
                         </span>
                     </p>
                 </aside>
@@ -242,21 +291,13 @@ export default function TableForm() {
                     </li>
 
                     <li className={`${style.new} mr-0`}>
-                        <div onClick={() => setToggleReading(!toggleReading)}>
-                            NEW READING
-                        </div>
+                        <div onClick={ToggleNewReading}>NEW READING</div>
                     </li>
                     <li className={style.importExportPrint}>
-                        <Link
-                            href={`/finance/customer-facility/billing/record-meter-reading?modify=${1}`}
-                        >
-                            <a>
-                                <PencilButton
-                                    FunctionOnClick={() => {}}
-                                    title="Modify"
-                                />
-                            </a>
-                        </Link>
+                        <PencilButton
+                            FunctionOnClick={ToggleModify}
+                            title="Modify"
+                        />
                     </li>
                 </ul>
             </section>
@@ -264,16 +305,11 @@ export default function TableForm() {
                 <ul className=" flex mb-5 flex-wrap">
                     <li className="mr-5 820px:mb-5 flex items-center mb-5">
                         <p className=" labelField">CHARGE</p>
-                        <DropDownCharge
-                            UpdateStateHandler={(key, e) => {
-                                setCharge({
-                                    charge: e.target.innerHTML,
-                                    id: e.target.getAttribute("data-id"),
-                                    rate: e.target.getAttribute("data-rate"),
-                                });
-                            }}
-                            filter={true}
-                            itemDetail={isCharge}
+                        <input
+                            type="text"
+                            readOnly
+                            value={isReading.charge_name}
+                            className="field disabled min-w-[150px]"
                         />
                     </li>
                     <li className="mr-5 820px:mb-5 flex items-center mb-5">
@@ -281,7 +317,7 @@ export default function TableForm() {
                         <TextNumberDisplay
                             className="min-w-[150px] text-end field disabled"
                             suffix="%"
-                            value={Number(isCharge.rate)}
+                            value={Number(isReading.base_rate)}
                         />
                     </li>
                     <li className=" 820px:mb-5 flex items-center mb-5">
@@ -349,7 +385,17 @@ export default function TableForm() {
                     CurrentPage={data?.data.current_page}
                 />
                 <div className="w-full flex justify-end mt-5">
-                    <button className="buttonRed">APPLY</button>
+                    <button className="buttonRed" onClick={ApplyHandler}>
+                        {applyLoading ? (
+                            <ScaleLoader
+                                color="#fff"
+                                height="10px"
+                                width="2px"
+                            />
+                        ) : (
+                            "APPLY"
+                        )}
+                    </button>
                 </div>
             </div>
         </>
@@ -452,19 +498,31 @@ const List = ({
                     </h2>
                 </div>
             </td>
-            <td>
+            <td className="flex">
                 {itemDetail.status === "Posted" && (
-                    <div className="item w-[100px]">
-                        <div className="finance_status">
-                            <div className="status Posted">
-                                <div>
-                                    <Image
-                                        src="/Images/f_posted.png"
-                                        width={25}
-                                        height={25}
-                                        alt="Draft"
-                                    />
-                                </div>
+                    <div className="finance_status">
+                        <div className="status Posted">
+                            <div>
+                                <Image
+                                    src="/Images/f_posted.png"
+                                    width={25}
+                                    height={25}
+                                    alt="Draft"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                )}
+                {itemDetail.status === "In Process" && (
+                    <div className="finance_status">
+                        <div className="status PostedInProcess ">
+                            <div className=" ">
+                                <Image
+                                    src="/Images/f_inprocess_sent.png"
+                                    width={25}
+                                    height={25}
+                                    alt="Draft"
+                                />
                             </div>
                         </div>
                     </div>

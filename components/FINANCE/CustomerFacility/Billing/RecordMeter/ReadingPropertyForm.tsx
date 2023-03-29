@@ -156,19 +156,11 @@ export default function ReadingPropertyForm({
             <ul className="flex flex-wrap mb-5">
                 <li className=" flex items-center mr-5 mb-5 1024px:mb-2">
                     <p className=" labelField">CHARGE:</p>
-                    <DropDownCharge
-                        UpdateStateHandler={(key, e) => {
-                            setDefaultValue({
-                                ...DefaultValue,
-                                charge: {
-                                    charge: e.target.innerHTML,
-                                    id: e.target.getAttribute("data-id"),
-                                    rate: e.target.getAttribute("data-rate"),
-                                },
-                            });
-                        }}
-                        filter={true}
-                        itemDetail={DefaultValue.charge}
+                    <input
+                        type="text"
+                        readOnly
+                        value={DefaultValue.charge.charge}
+                        className="field disabled min-w-[150px]"
                     />
                 </li>
                 <li className=" flex items-center mr-5 mb-5 1024px:mb-2">

@@ -78,6 +78,42 @@ export function CopyButtonTable() {
     );
 }
 
+export function EyeButton() {
+    return (
+        <Tippy
+            theme="ThemeRed"
+            content={<span className="text-[12px]">View</span>}
+        >
+            <div className=" inline-block">
+                <Image
+                    src="/Images/f_eye.png"
+                    width={15}
+                    height={12}
+                    alt="View"
+                />
+            </div>
+        </Tippy>
+    );
+}
+
+export function DeleteButton() {
+    return (
+        <Tippy
+            theme="ThemeRed"
+            content={<span className="text-[12px]">Delete</span>}
+        >
+            <div className=" inline-block cursor-pointer">
+                <Image
+                    src="/Images/f_delete.png"
+                    width={13}
+                    height={15}
+                    alt="Delete"
+                />
+            </div>
+        </Tippy>
+    );
+}
+
 export function PencilButtonTable() {
     return (
         <Tippy

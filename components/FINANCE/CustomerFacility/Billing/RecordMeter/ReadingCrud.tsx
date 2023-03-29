@@ -9,29 +9,76 @@ import AppContext from "../../../../Context/AppContext";
 import { CreateReadingDD, GetReadingDD, UpdateReadingDD } from "./Query";
 import DropDownCharge from "../../../../Dropdowns/DropDownCharge";
 import { useQueryClient } from "react-query";
+import DynamicPopOver from "../../../../Reusable/DynamicPopOver";
 
 type readingCharge = {
     id: number;
     displayID: string;
     charge_id: string;
+    base_rate: number;
+    reading_serial: string;
     charge: string;
     reading_name: string;
 };
 
 type Props = {
-    isObject: {
-        id: string;
-        value: string;
-        firstVal: string;
-        firstID: string;
-        toggle: boolean;
-    };
-    setObject: Function;
+    value: string;
+    setvalue: Function;
 };
 
-const ReadingCrud = ({ isObject, setObject }: Props) => {
-    const modal = useRef<any>();
+const ReadingCrud = ({ setvalue, value }: Props) => {
+    const [isToggle, setToggle] = useState(false);
+    const [tempSearch, setTempSearch] = useState("");
+    useEffect(() => {
+        setTempSearch(value);
+    }, [value]);
 
+    return (
+        <DynamicPopOver
+            toRef={
+                <input
+                    type="text"
+                    autoComplete="off"
+                    onClick={() => setToggle(true)}
+                    className="field"
+                    value={tempSearch}
+                    onChange={(e: any) => setTempSearch(e.target.value)}
+                />
+            }
+            toPop={
+                <>
+                    {isToggle && (
+                        <ReadingCrudList
+                            value={value}
+                            setTempSearch={setTempSearch}
+                            tempSearch={tempSearch}
+                            setToggle={setToggle}
+                            setvalue={setvalue}
+                        />
+                    )}
+                </>
+            }
+            className={""}
+        />
+    );
+};
+
+type ReadingCrudList = {
+    value: string;
+    tempSearch: string;
+    setToggle: Function;
+    setTempSearch: Function;
+    setvalue: Function;
+};
+
+const ReadingCrudList = ({
+    tempSearch,
+    setToggle,
+    setTempSearch,
+    value,
+    setvalue,
+}: ReadingCrudList) => {
+    const modal = useRef<any>();
     const [isArray, setArray] = useState<readingCharge[]>([]);
     const [isWarning, setWarning] = useState("");
 
@@ -44,11 +91,8 @@ const ReadingCrud = ({ isObject, setObject }: Props) => {
                     itemList.filter((item: any) => item.name !== "")
                 );
                 // put back to first val and close
-                setObject({
-                    ...isObject,
-                    value: isObject.firstVal,
-                    toggle: false,
-                });
+                setTempSearch(value);
+                setToggle(false);
                 // Blank warning
                 setWarning("");
             }
@@ -68,11 +112,13 @@ const ReadingCrud = ({ isObject, setObject }: Props) => {
                 charge_id: "",
                 reading_name: "",
                 charge: "",
+                base_rate: 0,
+                reading_serial: "",
             },
         ]);
     };
 
-    const { isLoading, data, isError } = GetReadingDD(isObject.value);
+    const { isLoading, data, isError } = GetReadingDD(tempSearch);
 
     // Set Data from backend to array of front end
     useEffect(() => {
@@ -83,7 +129,9 @@ const ReadingCrud = ({ isObject, setObject }: Props) => {
                     displayID: item.id,
                     charge_id: item.charge.id,
                     charge: item.charge.name,
-                    reading_name: item.charge.name,
+                    reading_name: "item.reading_name",
+                    base_rate: " item.charge.base_rate",
+                    reading_serial: "item.reading_serial",
                 };
             });
             setArray(cloneArray);
@@ -108,8 +156,8 @@ const ReadingCrud = ({ isObject, setObject }: Props) => {
                             setArray={setArray}
                             isArray={isArray}
                             setWarning={setWarning}
-                            isFieldObj={isObject}
-                            setFieldObj={setObject}
+                            setvalue={setvalue}
+                            setToggle={setToggle}
                         />
                     ))}
                 </tbody>
@@ -147,22 +195,16 @@ type List = {
     setArray: Function;
     isArray: readingCharge[];
     setWarning: Function;
-    setFieldObj: Function;
-    isFieldObj: {
-        toggle: boolean;
-        id: string | number;
-        value: string | number;
-        firstVal: string | number;
-        firstID: string | number;
-    };
+    setvalue: Function;
+    setToggle: Function;
 };
 const List = ({
-    setFieldObj,
-    isFieldObj,
     itemDetail,
     setArray,
     isArray,
     setWarning,
+    setvalue,
+    setToggle,
 }: List) => {
     const [isModify, setModify] = useState(false);
     const { setPrompt } = useContext(AppContext);
@@ -179,15 +221,23 @@ const List = ({
     };
 
     // Get Selected Data
-    const Selected = (id: string | number, name: string) => {
-        setFieldObj({
-            ...isFieldObj,
-            id: id,
-            value: name,
-            firstVal: name,
-            firstID: id,
-            toggle: false,
+    const Selected = (
+        id: string | number,
+        name: string,
+        serial: string,
+        charge_name: string,
+        charge_id: string,
+        base_rate: number
+    ) => {
+        setvalue({
+            reading_id: id,
+            reading_name: name,
+            reading_serial: serial,
+            charge_name: charge_name,
+            base_rate: base_rate,
+            charge_id: charge_id,
         });
+        setToggle(false);
     };
 
     // Functions // Edit Array from front end
@@ -267,14 +317,18 @@ const List = ({
     };
 
     return (
-        <tr
-            className={`cursor-pointer container ${
-                isFieldObj.id === itemDetail.id ? "active" : ""
-            }`}
-        >
+        <tr className={`cursor-pointer container`}>
             <td
                 onClick={(e) =>
-                    !isModify && Selected(itemDetail.id, itemDetail.charge)
+                    !isModify &&
+                    Selected(
+                        itemDetail.id,
+                        itemDetail.reading_name,
+                        itemDetail.reading_serial,
+                        itemDetail.charge,
+                        itemDetail.charge_id,
+                        itemDetail.base_rate
+                    )
                 }
                 className="bg-hover"
             >
@@ -282,14 +336,21 @@ const List = ({
                     UpdateStateHandler={ModifyArray}
                     itemDetail={itemDetail}
                     forCrudTableDD={true}
-                    displayID={true}
                     filter={true}
                     className={`${!isModify && "disabled"} text-center`}
                 />
             </td>
             <td
                 onClick={(e) =>
-                    !isModify && Selected(itemDetail.id, itemDetail.charge)
+                    !isModify &&
+                    Selected(
+                        itemDetail.id,
+                        itemDetail.reading_name,
+                        itemDetail.reading_serial,
+                        itemDetail.charge,
+                        itemDetail.charge_id,
+                        itemDetail.base_rate
+                    )
                 }
                 className="bg-hover"
             >

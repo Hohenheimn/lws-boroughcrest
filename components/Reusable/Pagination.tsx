@@ -35,7 +35,7 @@ export default function Pagination({
                                 setTablePage((page: number) => page - 1)
                             }
                         >
-                            <RiArrowLeftSLine className=" text-[32px] 1550px:text-[24px] text-ThemeRed cursor-pointer" />
+                            <RiArrowLeftSLine className="text-[24px] text-ThemeRed cursor-pointer" />
                         </button>
                     </li>
                 </Tippy>
@@ -68,7 +68,7 @@ export default function Pagination({
                             }
                             disabled={CurrentPage === PageNumber}
                         >
-                            <RiArrowRightSLine className=" text-[32px]  1550px:text-[24px] text-ThemeRed cursor-pointer" />
+                            <RiArrowRightSLine className=" text-[24px] text-ThemeRed cursor-pointer" />
                         </button>
                     </li>
                 </Tippy>
