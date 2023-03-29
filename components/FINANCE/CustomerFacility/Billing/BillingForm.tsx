@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Image from "next/image";
 import { BsPlusLg } from "react-icons/bs";
 import { HiMinus } from "react-icons/hi";
@@ -11,6 +11,16 @@ import {
     TextNumberDisplay,
     TextNumberDisplayPercent,
 } from "../../../Reusable/NumberFormat";
+import { MinusButtonTable, PlusButtonTable } from "../../../Reusable/Icons";
+import AppContext from "../../../Context/AppContext";
+import { useRouter } from "next/router";
+import {
+    CreateInvoiceBilling,
+    DeleteInvoice,
+    ModifyInvoiceBilling,
+} from "./Query";
+import { ScaleLoader } from "react-spinners";
+import ModalTemp from "../../../Reusable/ModalTemp";
 
 export type customerDD = {
     id: string | number;
@@ -21,8 +31,8 @@ export type customerDD = {
 
 type billingArray = billingObject[];
 type billingObject = {
-    id: number;
-    charge_id: string;
+    id: number | string;
+    charge_id: string | number;
     charge: any;
     charge_vat: string | number;
     description: string;
@@ -34,14 +44,18 @@ type billingObject = {
 };
 type Props = {
     DefaultValue: billingArray;
-    type: string;
+    formType: string;
     DefaultCustomer: customerDD;
 };
 export default function JournalForm({
     DefaultValue,
     DefaultCustomer,
-    type,
+    formType,
 }: Props) {
+    const { setPrompt } = useContext(AppContext);
+    const [deleteToggle, setDeleteToggle] = useState(false);
+    const router = useRouter();
+    const [buttonClicked, setButtonClicked] = useState("");
     const [totalAmount, setTotalAmount] = useState<number | string>("");
     const [isSave, setSave] = useState(false);
     const [isBilling, setBilling] = useState<billingArray>(DefaultValue);
@@ -59,8 +73,148 @@ export default function JournalForm({
         });
     }, [isBilling]);
 
+    const onSuccess = () => {
+        setPrompt({
+            message: `Invoice successfully ${
+                formType === "create" ? "registered" : "updated"
+            }`,
+            type: "success",
+            toggle: true,
+        });
+        if (buttonClicked === "save") {
+            router.push("/finance/customer-facility/billing/invoice-list");
+        } else {
+            if (formType === "create") {
+                setCustomer({
+                    id: "",
+                    name: "",
+                    class: "",
+                    property: [],
+                });
+                setBilling([
+                    {
+                        id: 0,
+                        charge: "",
+                        charge_id: "",
+                        charge_vat: "",
+                        description: "",
+                        unit_price: "",
+                        quantity: "",
+                        uom: "",
+                        vat: "",
+                        amount: "",
+                    },
+                ]);
+            } else if (formType === "modify") {
+                router.push("/finance/customer-facility/billing/invoice-list");
+            }
+        }
+    };
+
+    const onError = () => {
+        setPrompt({
+            message: "Something is wrong",
+            type: "error",
+            toggle: true,
+        });
+    };
+
+    const { isLoading: isLoadingSave, mutate: mutateSave } =
+        CreateInvoiceBilling(onSuccess, onError);
+
+    const { isLoading: isLoadingModify, mutate: mutateModify } =
+        ModifyInvoiceBilling(onSuccess, onError, router.query.modify);
+
+    const Submit = (button: string) => {
+        let validate = true;
+        setButtonClicked(button);
+        const Payload = {
+            customer_id: isCustomer.id,
+            due_amount: Number(totalAmount),
+            invoice_list: isBilling.map((item: billingObject) => {
+                return {
+                    charge_id: Number(item.charge_id),
+                    description: item.description,
+                    unit_price: Number(item.unit_price),
+                    quantity: Number(item.quantity),
+                    vat: Number(item.vat),
+                    amount: Number(item.amount),
+                };
+            }),
+        };
+        if (isCustomer.id === "") {
+            setPrompt({
+                message: "Fill out all fields",
+                type: "draft",
+                toggle: true,
+            });
+            return;
+        }
+        isBilling.map((item: billingObject) => {
+            if (
+                item.charge_id === "" ||
+                item.unit_price <= 0 ||
+                item.quantity <= 0
+            ) {
+                validate = false;
+                setPrompt({
+                    message: "Fill out all fields",
+                    type: "draft",
+                    toggle: true,
+                });
+            }
+        });
+        if (validate) {
+            formType === "create" && mutateSave(Payload);
+            formType === "modify" && mutateModify(Payload);
+        }
+    };
+
+    const onSuccessDelete = () => {
+        router.push("/finance/customer-facility/billing/invoice-list");
+    };
+
+    const { isLoading: deleteLoading, mutate: mutateDelete } = DeleteInvoice(
+        onSuccessDelete,
+        onError
+    );
+    const deleteID: any = router.query.modify;
+    const DeleteHandler = () => {
+        mutateDelete(deleteID);
+    };
+
     return (
         <>
+            {deleteToggle && (
+                <ModalTemp narrow={true}>
+                    <h1 className="text-center mb-5">
+                        Invoice will be deleted and changes is not reversible.
+                        Are you sure of this action?
+                    </h1>
+                    <div className="flex justify-end items-center w-full">
+                        <button
+                            className="button_cancel"
+                            onClick={() => setDeleteToggle(false)}
+                        >
+                            CANCEL
+                        </button>
+                        <button
+                            className="buttonRed"
+                            onClick={() => DeleteHandler()}
+                        >
+                            {deleteLoading ? (
+                                <ScaleLoader
+                                    color="#fff"
+                                    height="10px"
+                                    width="2px"
+                                />
+                            ) : (
+                                "CONFIRM"
+                            )}
+                        </button>
+                    </div>
+                </ModalTemp>
+            )}
             <div>
                 <ul className="flex flex-wrap justify-between pb-8 mb-8 border-b border-gray-300">
                     <li className="w-[32%] 820px:w-2/4 820px:mb-2 480px:w-full">
@@ -134,8 +288,17 @@ export default function JournalForm({
                 </div>
             </div>
 
-            <div className="DropDownSave">
-                <button className="ddback">CANCEL</button>
+            <div className="flex w-full justify-end items-center mt-14 480px:mt-10 ">
+                <button className="button_cancel">CANCEL</button>
+
+                {formType === "modify" && (
+                    <button
+                        className="buttonRed mr-5"
+                        onClick={() => setDeleteToggle(true)}
+                    >
+                        DELETE
+                    </button>
+                )}
 
                 <div className="ddSave">
                     <div>
@@ -144,10 +307,18 @@ export default function JournalForm({
                             name="save"
                             className="ddsave_button"
                             onClick={() => {
-                                console.log(isBilling);
+                                Submit("save");
                             }}
                         >
-                            SAVE
+                            {isLoadingSave || isLoadingModify ? (
+                                <ScaleLoader
+                                    color="#fff"
+                                    height="10px"
+                                    width="2px"
+                                />
+                            ) : (
+                                "SAVE"
+                            )}
                         </button>
                         <aside className="ddArrow">
                             <RiArrowDownSFill
@@ -158,7 +329,14 @@ export default function JournalForm({
                     {isSave && (
                         <ul>
                             <li>
-                                <button type="submit">SAVE & NEW</button>
+                                <button
+                                    type="submit"
+                                    onClick={() => {
+                                        Submit("new");
+                                    }}
+                                >
+                                    SAVE & NEW
+                                </button>
                             </li>
                         </ul>
                     )}
@@ -312,12 +490,12 @@ const List = ({ itemList, setState, isState, index }: List) => {
             <td className="actionIcon">
                 {isState.length > 1 && (
                     <div onClick={RemoveJournal}>
-                        <HiMinus />
+                        <MinusButtonTable />
                     </div>
                 )}
                 {isState.length - 1 === index && (
                     <div className="ml-5 1024px:ml-2" onClick={AddJournal}>
-                        <BsPlusLg />
+                        <PlusButtonTable />
                     </div>
                 )}
             </td>

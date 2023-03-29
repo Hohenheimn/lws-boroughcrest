@@ -23,7 +23,7 @@ export default function Dropdown({
     const modal = useRef<any>();
 
     const { isLoading, data, isError } = useQuery([name, searchValue], () => {
-        return api.get(`${endpoint}?keywords=`, {
+        return api.get(`${endpoint}?keywords=${searchValue}`, {
             headers: {
                 Authorization: "Bearer " + getCookie("user"),
             },

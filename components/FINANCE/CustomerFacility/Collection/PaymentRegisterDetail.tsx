@@ -5,9 +5,34 @@ import Image from "next/image";
 import { TextNumberDisplay } from "../../../Reusable/NumberFormat";
 import { TableOneTotal, TableTwoTotal } from "../../../Reusable/TableTotal";
 import Authorization from "./Authorization";
+import { CollectionItem } from "../../../../pages/finance/customer-facility/collection/payment-register";
+import { GetCustomer } from "../../../ReactQuery/CustomerMethod";
+import { customer } from "../../../../types/customerList";
+import { format, isValid, parse } from "date-fns";
 
-export default function PaymentRegisterDetail() {
+type Props = {
+    CollectionDetail: CollectionItem;
+};
+
+export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
+    const { data } = GetCustomer(CollectionDetail.customer_id);
+
+    const CustomerDetail: customer = data?.data;
+
     const [isToggleID, setToggle] = useState<number | string>("");
+
+    const receipt_date = parse(
+        CollectionDetail.receipt_date,
+        "yyyy-MM-dd",
+        new Date()
+    );
+
+    const deposit_date = parse(
+        CollectionDetail.deposit_date,
+        "yyyy-MM-dd",
+        new Date()
+    );
+
     return (
         <div>
             {isToggleID !== "" && (
@@ -49,68 +74,94 @@ export default function PaymentRegisterDetail() {
                     <li className="w-[25%] 640px:w-full 640px:mb-5 640px:flex justify-between rounded-2xl p-10 480px:p-8 bg-white  shadow-lg">
                         <div className=" 640px:w-[32%]">
                             <p className="label_text">CUSTOMER</p>
-                            <h4 className="main_text">Juan Dela Cruz</h4>
+                            <h4 className="main_text">
+                                {CustomerDetail?.name}
+                            </h4>
                         </div>
                         <div className=" 640px:w-[32%]">
                             <p className="label_text">CLASS</p>
-                            <h4 className="main_text">Owner</h4>
+                            <h4 className="main_text">
+                                {CustomerDetail?.class}
+                            </h4>
                         </div>
                         <div className=" 640px:w-[32%]">
                             <p className="label_text">PROPERTY</p>
-                            <h4 className="main_text">0001, 0002</h4>
+                            <h4 className="main_text">
+                                {CustomerDetail?.properties.map(
+                                    (item: any, index: number) =>
+                                        CustomerDetail?.properties.length -
+                                            1 ===
+                                        index
+                                            ? item.unit_code
+                                            : item.unit_code + ", "
+                                )}
+                            </h4>
                         </div>
                     </li>
                     <li className="w-[70%] 640px:w-full rounded-2xl p-10 480px:p-8 bg-white  shadow-lg">
                         <ul className="flex flex-wrap">
                             <li className="w-[32%]">
                                 <p className="label_text">RECEIPT DATE</p>
-                                <h4 className="main_text">Sep 22 2018</h4>
+                                <h4 className="main_text">
+                                    {isValid(receipt_date)
+                                        ? format(receipt_date, "MMM dd yyyy")
+                                        : ""}
+                                </h4>
                             </li>
                             <li className="w-[32%]">
                                 <p className="label_text">RECEIPT NO.</p>
-                                <h4 className="main_text">0000000</h4>
+                                <h4 className="main_text">
+                                    {CollectionDetail.receipt_no}
+                                </h4>
                             </li>
                         </ul>
                         <ul className="flex flex-wrap">
                             <li className="w-full">
                                 <p className="label_text">DESCRIPTION</p>
                                 <h4 className="main_text">
-                                    Lorem, ipsum dolor sit amet consectetur
-                                    adipisicing elit. Quas, cum.
+                                    {CollectionDetail.description}
                                 </h4>
                             </li>
                         </ul>
                         <ul className="flex justify-between flex-wrap">
                             <li className="w-[32%]">
                                 <p className="label_text">MODE OF PAYMENT</p>
-                                <h4 className="main_text">Deposit</h4>
+                                <h4 className="main_text">
+                                    {CollectionDetail.mode_of_payment}
+                                </h4>
                             </li>
                             <li className="w-[32%]">
                                 <p className="label_text">DEPOSIT DATE</p>
-                                <h4 className="main_text">Sep 22 2018</h4>
+                                <h4 className="main_text">
+                                    {isValid(deposit_date)
+                                        ? format(deposit_date, "MMM dd yyyy")
+                                        : ""}
+                                </h4>
                             </li>
                             <li className="w-[32%]">
                                 <p className="label_text">PAID AMOUNT</p>
 
                                 <TextNumberDisplay
                                     className="main_text font-NHU-bold"
-                                    value={12312}
+                                    value={CollectionDetail.amount_paid}
                                 />
                             </li>
                             <li className="w-[32%]">
                                 <p className="label_text">CASH ACCOUNT</p>
-                                <h4 className="main_text">Petty Cash</h4>
+                                <h4 className="main_text">Sample</h4>
                             </li>
                             <li className="w-[32%]">
                                 <p className="label_text">REFERENCE NO</p>
-                                <h4 className="main_text">00001</h4>
+                                <h4 className="main_text">
+                                    {CollectionDetail.reference_no}
+                                </h4>
                             </li>
                             <li className="w-[32%]">
                                 <p className="label_text">CREDIT TAX</p>
 
                                 <TextNumberDisplay
                                     className="main_text font-NHU-bold"
-                                    value={12312}
+                                    value={CollectionDetail.credit_tax}
                                 />
                             </li>
                         </ul>
@@ -349,12 +400,10 @@ export default function PaymentRegisterDetail() {
                     <li className="w-full rounded-2xl p-10 480px:p-8 bg-white  shadow-lg">
                         <p className="label_text">TRAIL</p>
                         <h1 className="main_text noMB">
-                            Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit. Explicabo, voluptatem!
+                            {CollectionDetail.created_at}
                         </h1>
                         <h1 className="main_text noMB">
-                            Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit. Explicabo, voluptatem!
+                            {CollectionDetail.updated_at}
                         </h1>
                     </li>
                 </ul>

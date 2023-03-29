@@ -39,23 +39,28 @@ export const InputNumberForTable = ({
 };
 type InputNumberField = {
     className: string;
-    prefix: string;
+    prefix?: string;
+    suffix?: string;
     isValue: string | number;
     setValue: (key: string, value: number) => void;
     keyField: string;
+    noPeso?: boolean;
 };
 export const InputNumberForForm = ({
     className,
     prefix,
+    suffix,
     isValue,
     setValue,
     keyField,
+    noPeso,
 }: InputNumberField) => {
     return (
-        <div className="withPesoField">
+        <div className={noPeso ? "" : "withPesoField"}>
             <NumericFormat
                 className={className + " max-w-[400px]"}
                 prefix={prefix}
+                suffix={suffix}
                 value={isValue === 0 ? "" : isValue}
                 placeholder="-"
                 fixedDecimalScale
@@ -90,7 +95,7 @@ export const TextNumberDisplay = ({
             suffix={suffix}
             className={" min-h-[12px] " + className}
             fixedDecimalScale
-            value={value === 0 || value === "" ? "-" : value}
+            value={value}
             displayType="text"
             decimalScale={2}
             decimalSeparator="."

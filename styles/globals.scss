@@ -43,7 +43,7 @@ h6.lowGray {
     @apply text-ThemeRed mr-3 font-NHU-medium 1550px:text-[13px] 640px:text-[12px];
 }
 .field {
-    @apply p-1 px-2 text-[#545454] font-NHU-medium 1550px:min-w-[70px] rounded-md outline-none shadow-md;
+    @apply p-1 px-2 text-[#545454] font-NHU-medium duration-300 1550px:min-w-[70px] rounded-md outline-none shadow-md;
     color: #545454 !important;
     height: 30px !important;
     font-size: 16px !important;
@@ -51,6 +51,15 @@ h6.lowGray {
         font-size: 14px !important;
         height: 25px;
     }
+}
+.percentage {
+    @apply relative;
+    &::after {
+        @apply content-['%'] absolute top-[50%] translate-y-[-50%] right-1;
+    }
+}
+textarea.field {
+    height: 100px !important;
 }
 .field.mini {
     font-size: 14px !important;
@@ -370,13 +379,22 @@ select {
         tr {
             th {
                 @apply text-start text-[14px] 1550px:text-[13px] 1280px:text-[13px] px-1 py-1;
+                input[type="checkbox"] {
+                    @apply bg-white;
+                }
             }
         }
     }
     tbody {
         tr {
             td {
-                @apply text-[14px] py-1 px-1 text-[#545454];
+                @apply text-[14px] min-w-[100px] py-1 px-1 text-[#545454];
+                input[type="checkbox"] {
+                    @apply bg-white;
+                }
+            }
+            td.checkbox {
+                @apply min-w-[0];
             }
         }
     }
@@ -542,7 +560,7 @@ input[type="number"] {
                 input[type="text"],
                 input[type="number"],
                 input[type="email"] {
-                    @apply border border-gray-500 text-[12px] z-10 hover:text-white bg-transparent;
+                    @apply border p-[2px] border-gray-300 rounded-sm text-[12px] outline-none z-10 hover:text-white bg-transparent mb-1;
                     font-size: 12px !important;
                 }
                 input.disabled {
@@ -556,7 +574,7 @@ input[type="number"] {
                     @apply relative;
 
                     ul {
-                        @apply absolute top-full left-0 w-full text-ThemeRed z-10 bg-white border max-h-[200px] overflow-auto;
+                        @apply fixed w-[150px] text-ThemeRed z-10 bg-white border max-h-[200px] overflow-auto;
                         li {
                             @apply text-[12px] border-b py-1 px-2 w-full mb-0 hover:bg-ThemeRed hover:text-white transition-all duration-75;
                         }
@@ -565,10 +583,12 @@ input[type="number"] {
             }
         }
     }
-    tr:hover > .bg-hover {
-        @apply bg-ThemeRed50;
-        * {
-            @apply text-white;
+    tr:hover .bg-hover {
+        @apply bg-ThemeRed50 text-white;
+        p,
+        input[type="text"],
+        input[type="number"],
+        input[type="email"] {
             color: white !important;
         }
         .dropdown {
@@ -620,31 +640,31 @@ input[type="number"] {
 }
 // Save Drop Down Button
 .DropDownSave {
-    @apply w-full flex justify-end mt-14 480px:mt-10 mb-5;
+    @apply w-full flex items-center justify-end mt-14 480px:mt-10 mb-5;
     .ddback {
         @apply text-ThemeRed font-semibold text-[14px] h-8 mr-5 cursor-pointer flex items-center;
     }
-    .ddSave {
-        @apply cursor-pointer relative text-white h-auto duration-75 rounded-md text-[14px];
-        div {
-            @apply w-[100px] flex;
+}
+.ddSave {
+    @apply cursor-pointer relative text-white h-auto duration-75 rounded-md text-[14px];
+    div {
+        @apply w-[100px] flex;
 
-            .ddsave_button {
-                @apply rounded-bl-lg rounded-tl-lg w-[70%] text-[14px] 480px:text-[12px] py-1 bg-ThemeRed hover:bg-ThemeRed50  text-white flex items-center justify-center;
-            }
-            .ddArrow {
-                @apply rounded-br-lg rounded-tr-lg w-[30%] text-[24px] hover:bg-ThemeRed50 cursor-pointer bg-ThemeRed text-white border-l border-white flex justify-center items-center;
-            }
+        .ddsave_button {
+            @apply rounded-bl-lg rounded-tl-lg w-[70%] text-[14px] 480px:text-[12px] py-[5px] bg-ThemeRed hover:bg-ThemeRed50  text-white flex items-center justify-center;
         }
-        ul {
-            @apply absolute w-full top-[110%] bg-white z-50 rounded-lg overflow-hidden;
-            li {
-                button {
-                    @apply cursor-pointer text-ThemeRed inline-block text-[12px] py-2 w-full text-center hover:bg-ThemeRed hover:text-white duration-75;
-                }
-                .disabled {
-                    @apply pointer-events-none bg-[#e3e3e3];
-                }
+        .ddArrow {
+            @apply rounded-br-lg rounded-tr-lg w-[30%] text-[24px] hover:bg-ThemeRed50 cursor-pointer bg-ThemeRed text-white border-l border-white flex justify-center items-center;
+        }
+    }
+    ul {
+        @apply absolute w-full top-[110%] bg-white z-50 rounded-lg overflow-hidden;
+        li {
+            button {
+                @apply cursor-pointer text-ThemeRed inline-block text-[12px] py-2 w-full text-center hover:bg-ThemeRed hover:text-white duration-75;
+            }
+            .disabled {
+                @apply pointer-events-none bg-[#e3e3e3];
             }
         }
     }

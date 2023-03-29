@@ -23,6 +23,7 @@ import { isReceiptBookData } from "./Receiptsbook";
 import DropdownReceipt_Reference from "./DropdownReceipt_Reference";
 import { format, isValid, parse } from "date-fns";
 import AppContext from "../../../Context/AppContext";
+import { MinusButtonTable, PlusButtonTable } from "../../../Reusable/Icons";
 
 export type isTableBankCredit = {
     itemArray: isTableItemObjBC[];
@@ -757,10 +758,8 @@ const List = ({
                 </td>
                 {type !== "bank-credit" && (
                     <td className="actionIcon">
-                        <div>
-                            <HiMinus
-                                onClick={() => DeleteHandler(itemDetail.id)}
-                            />
+                        <div onClick={() => DeleteHandler(itemDetail.id)}>
+                            <MinusButtonTable />
                         </div>
 
                         {itemDetail.variance !== 0 &&
@@ -774,11 +773,13 @@ const List = ({
                                         "pointer-events-none opacity-[.5]"
                                     }`}
                                 >
-                                    <BsPlusLg
+                                    <div
                                         onClick={() =>
                                             AddHandler(itemDetail.id)
                                         }
-                                    />
+                                    >
+                                        <PlusButtonTable />
+                                    </div>
                                 </div>
                             )}
                     </td>
@@ -935,15 +936,15 @@ const ChildList = ({
                         />
                     </td>
                     <td className="actionIcon">
-                        <div>
-                            <HiMinus
-                                onClick={() =>
-                                    DeleteHandlerChildren(
-                                        itemDetail.id,
-                                        itemChildren.id
-                                    )
-                                }
-                            />
+                        <div
+                            onClick={() =>
+                                DeleteHandlerChildren(
+                                    itemDetail.id,
+                                    itemChildren.id
+                                )
+                            }
+                        >
+                            <MinusButtonTable />
                         </div>
 
                         {itemDetail.variance !== 0 &&
@@ -958,11 +959,13 @@ const ChildList = ({
                                         "pointer-events-none opacity-[.5]"
                                     }`}
                                 >
-                                    <BsPlusLg
+                                    <div
                                         onClick={() =>
                                             AddHandler(itemDetail.id)
                                         }
-                                    />
+                                    >
+                                        <PlusButtonTable />
+                                    </div>
                                 </div>
                             )}
                     </td>

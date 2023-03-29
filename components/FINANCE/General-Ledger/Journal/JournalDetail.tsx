@@ -7,6 +7,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { TextNumberDisplay } from "../../../Reusable/NumberFormat";
 import { format, isValid, parse } from "date-fns";
+import { PencilButton } from "../../../Reusable/Icons";
 
 type JournalDetail = {
     Detail: {
@@ -72,23 +73,17 @@ export default function JournalDetail({ Detail }: JournalDetail) {
             <ul className={`${style.FourRows} ${style.narrow}`}>
                 {Detail.status !== "Approved" &&
                     Detail.status !== "In Progress" && (
-                        <aside>
-                            <Tippy
-                                theme="ThemeRed"
-                                content={
-                                    <span className="capitalize">Modify</span>
-                                }
+                        <aside className=" mt-[-15px]">
+                            <Link
+                                href={`/finance/general-ledger/journal/modify-journal/${Detail.id}`}
                             >
-                                <div>
-                                    <Link href="/finance/general-ledger/journal/modify-journal/1">
-                                        <a>
-                                            <HiPencil
-                                                className={style.pencil}
-                                            />
-                                        </a>
-                                    </Link>
-                                </div>
-                            </Tippy>
+                                <a>
+                                    <PencilButton
+                                        FunctionOnClick={() => {}}
+                                        title={"Modify"}
+                                    />
+                                </a>
+                            </Link>
                         </aside>
                     )}
 
@@ -134,13 +129,13 @@ export default function JournalDetail({ Detail }: JournalDetail) {
                                 <td>
                                     <TextNumberDisplay
                                         value={totalDebit}
-                                        className="main_text font-NHU-bold"
+                                        className="main_text font-NHU-bold withPeso"
                                     />
                                 </td>
                                 <td>
                                     <TextNumberDisplay
                                         value={totalCredit}
-                                        className="main_text font-NHU-bold"
+                                        className="main_text font-NHU-bold withPeso"
                                     />
                                 </td>
                             </tr>
@@ -180,10 +175,16 @@ const List = ({ journal_list }: ListProps) => {
                 </h4>
             </td>
             <td>
-                <h4 className="main_text">{journal_list?.debit}</h4>
+                <TextNumberDisplay
+                    value={journal_list?.debit}
+                    className={"withPeso main_text font-NHU-bold"}
+                />
             </td>
             <td>
-                <h4 className="main_text">{journal_list?.credit}</h4>
+                <TextNumberDisplay
+                    value={journal_list?.credit}
+                    className={"withPeso main_text font-NHU-bold"}
+                />
             </td>
         </tr>
     );

@@ -14,7 +14,7 @@ export default function PrompMessage() {
                         toggle: false,
                     })
             );
-        }, 3000);
+        }, 2000);
         return () => clearInterval(intervalPrompt);
     });
     return (

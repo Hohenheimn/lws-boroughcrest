@@ -19,6 +19,7 @@ export type Advancefilter = isAdvFilter[];
 type isAdvFilter = {
     key: string;
     value: string;
+    display: string;
 };
 
 export function AdvanceFilter({
@@ -94,12 +95,13 @@ const AdvFilterList = ({
         };
     });
 
-    const AddToFilter = (key: string, value: string) => {
+    const AddToFilter = (key: string, value: string, display: string) => {
         setAdvFilter([
             ...isAdvFilter,
             {
                 key: key,
                 value: value,
+                display: display,
             },
         ]);
     };
@@ -119,19 +121,23 @@ const AdvFilterList = ({
                 value={isSearch}
                 onChange={(e) => setSearch(e.target.value)}
             />
+            {isSearch !== "" && (
+                <ul>
+                    {data?.data.map((item: isAdvFilter, index: number) => (
+                        <li
+                            className=" text-Gray2 hover:text-ThemeRed hover:underline cursor-pointer text-[14px]"
+                            key={index}
+                            onClick={() =>
+                                AddToFilter(item.key, item.value, item.display)
+                            }
+                        >
+                            {item.value} -{" "}
+                            <span className=" text-Gray1">{item.display}</span>
+                        </li>
+                    ))}
+                </ul>
+            )}
 
-            <ul>
-                {data?.data.map((item: isAdvFilter, index: number) => (
-                    <li
-                        className=" text-Gray2 hover:text-ThemeRed hover:underline cursor-pointer text-[14px]"
-                        key={index}
-                        onClick={() => AddToFilter(item.key, item.value)}
-                    >
-                        {item.value} -{" "}
-                        <span className=" text-Gray1">{item.key}</span>
-                    </li>
-                ))}
-            </ul>
             {isLoading && (
                 <div className="w-full flex justify-center items-center">
                     <aside className="text-center flex justify-center py-5">

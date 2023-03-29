@@ -44,13 +44,19 @@ export const PostCustomerDraft = (Success: any) => {
 };
 
 export const GetCustomer = (id: any) => {
-    return useQuery(["get-customer-detail", id], () => {
-        return api.get(`/admin/customer/${id}`, {
-            headers: {
-                Authorization: "Bearer " + getCookie("user"),
-            },
-        });
-    });
+    return useQuery(
+        ["get-customer-detail", id],
+        () => {
+            return api.get(`/admin/customer/${id}`, {
+                headers: {
+                    Authorization: "Bearer " + getCookie("user"),
+                },
+            });
+        },
+        {
+            enabled: !!id,
+        }
+    );
 };
 export const GetCustomerDraft = (id: any) => {
     return useQuery(["get-customer-draft", id], () => {

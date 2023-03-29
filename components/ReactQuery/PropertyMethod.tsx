@@ -6,7 +6,7 @@ import { getCookie } from "cookies-next";
 export const GetPropertyList = (PageNumber: any, Keyword: any) => {
     return useQuery(["Property-List", PageNumber, Keyword], () => {
         return api.get(
-            `/admin/property/unit?paginate=${PageNumber}&keywords=${Keyword}`,
+            `/admin/property/unit?page=${PageNumber}&paginate=10&keywords=${Keyword}`,
             {
                 headers: {
                     Authorization: "Bearer " + getCookie("user"),
@@ -183,13 +183,19 @@ export const PostTower = (success: any, error: any) => {
 };
 // Get Tower
 export const GetTower = (Keyword: string) => {
-    return useQuery(["get-tower", Keyword], () => {
-        return api.get(`/admin/property/tower?keywords=${Keyword}`, {
-            headers: {
-                Authorization: "Bearer " + getCookie("user"),
-            },
-        });
-    });
+    return useQuery(
+        ["get-tower", Keyword],
+        () => {
+            return api.get(`/admin/property/tower?keywords=${Keyword}`, {
+                headers: {
+                    Authorization: "Bearer " + getCookie("user"),
+                },
+            });
+        },
+        {
+            refetchOnWindowFocus: false,
+        }
+    );
 };
 // Delete Tower
 export const DeleteTower = (success: any, error: any) => {

@@ -2,9 +2,12 @@ import { motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import { BsPlusLg } from "react-icons/bs";
 import { HiMinus } from "react-icons/hi";
-import { RiArrowDownSFill } from "react-icons/ri";
 import { FadeSide } from "../../../../../../Animation/SimpleAnimation";
 import DropDownCharge from "../../../../../../Dropdowns/DropDownCharge";
+import {
+    MinusButtonTable,
+    PlusButtonTable,
+} from "../../../../../../Reusable/Icons";
 import {
     InputNumberForTable,
     TextNumberDisplay,
@@ -13,9 +16,11 @@ import { TableOneTotal } from "../../../../../../Reusable/TableTotal";
 
 type Props = {
     Error: () => void;
+    DefaultOutRight: Outright[];
+    setDefaultValue: Function;
 };
 
-type isTableItem = {
+export type Outright = {
     id: string | number;
     charge: string;
     charge_id: string;
@@ -26,23 +31,18 @@ type isTableItem = {
     amount: number;
 };
 
-export default function OutRight({ Error }: Props) {
-    const [isTable, setTable] = useState<isTableItem[]>([
-        {
-            id: 1,
-            charge: "",
-            charge_id: "",
-            description: "",
-            uom: "",
-            unit_price: 0,
-            qty: 0,
-            amount: 0,
-        },
-    ]);
-
-    const [isSave, setSave] = useState(false);
-
-    const SaveHandler = (button: string) => {};
+export default function OutRight({
+    Error,
+    DefaultOutRight,
+    setDefaultValue,
+}: Props) {
+    const [isTotal, setTotal] = useState(0);
+    useEffect(() => {
+        setTotal(0);
+        DefaultOutRight.map((item: Outright) => {
+            setTotal((prevValue) => Number(prevValue) + item.amount);
+        });
+    }, [DefaultOutRight]);
 
     return (
         <motion.div
@@ -67,27 +67,27 @@ export default function OutRight({ Error }: Props) {
                         </tr>
                     </thead>
                     <tbody>
-                        {isTable.map((item, index) => (
+                        {DefaultOutRight.map((item, index) => (
                             <List
                                 key={index}
                                 itemDetail={item}
-                                isTable={isTable}
-                                setTable={setTable}
+                                isTable={DefaultOutRight}
+                                setTable={setDefaultValue}
                                 index={index}
                             />
                         ))}
                     </tbody>
                 </table>
             </div>
-            <TableOneTotal total={123} label={"SUB TOTAL"} redBG={false} />
+            <TableOneTotal total={isTotal} label={"SUB TOTAL"} redBG={false} />
         </motion.div>
     );
 }
 
 type List = {
     setTable: Function;
-    isTable: isTableItem[];
-    itemDetail: isTableItem;
+    isTable: Outright[];
+    itemDetail: Outright;
     index: number;
 };
 
@@ -109,13 +109,13 @@ const List = ({ setTable, isTable, itemDetail, index }: List) => {
         ]);
     };
     const RemoveRow = () => {
-        setTable((item: isTableItem[]) =>
-            item.filter((x: isTableItem) => x.id !== itemDetail.id)
+        setTable((item: Outright[]) =>
+            item.filter((x: Outright) => x.id !== itemDetail.id)
         );
     };
 
     const updateValue = (keyField: string, value: any) => {
-        const closeToUpdate = isTable.map((item: isTableItem) => {
+        const closeToUpdate = isTable.map((item: Outright) => {
             if (item.id === itemDetail.id) {
                 if (keyField === "charge") {
                     const charge_id = value.target.getAttribute("data-id");
@@ -131,34 +131,27 @@ const List = ({ setTable, isTable, itemDetail, index }: List) => {
                         uom: uom,
                     };
                 }
-                if (keyField === "charge_id") {
-                    return {
-                        ...item,
-                        charge_id: value,
-                    };
-                }
                 if (keyField === "description") {
                     return {
                         ...item,
                         description: value,
                     };
                 }
-                if (keyField === "uom") {
-                    return {
-                        ...item,
-                        uom: value,
-                    };
-                }
                 if (keyField === "qty") {
+                    const amount =
+                        Number(value) * Number(itemDetail.unit_price);
                     return {
                         ...item,
                         qty: value,
+                        amount: amount,
                     };
                 }
-                if (keyField === "amount") {
+                if (keyField === "unit_price") {
+                    const amount = Number(value) * Number(itemDetail.qty);
                     return {
                         ...item,
-                        amount: Number(value),
+                        unit_price: value,
+                        amount: amount,
                     };
                 }
             }
@@ -210,7 +203,7 @@ const List = ({ setTable, isTable, itemDetail, index }: List) => {
             <td className="actionIcon">
                 {isTable.length > 1 && (
                     <div onClick={RemoveRow}>
-                        <HiMinus />
+                        <MinusButtonTable />
                     </div>
                 )}
                 {isTable.length - 1 === index && (
@@ -218,7 +211,7 @@ const List = ({ setTable, isTable, itemDetail, index }: List) => {
                         className="ml-5 1024px:ml-2"
                         onClick={(e) => AddRow(e)}
                     >
-                        <BsPlusLg />
+                        <PlusButtonTable />
                     </div>
                 )}
             </td>

@@ -297,7 +297,7 @@ const List = ({
         >
             <td onClick={(e) => !isModify && Selected(e)} className="bg-hover">
                 {/* <p>{itemDetail.displayId}</p> */}
-                <p>{itemDetail.project_id}</p>
+                <p>{itemDetail.displayId}</p>
             </td>
             <td onClick={(e) => !isModify && Selected(e)} className="bg-hover">
                 <input

@@ -4,7 +4,11 @@ import Image from "next/image";
 import { eachYearOfInterval, format, startOfDay } from "date-fns";
 
 type Props = {
-    value: string;
+    value: {
+        from: string;
+        to: string;
+        year: string;
+    };
     setValue: Function;
 };
 
@@ -31,7 +35,15 @@ export default function PreviousPeriod({ value, setValue }: Props) {
                         onClick={() => setOpen([true, true, false])}
                     >
                         <input
-                            value={value}
+                            value={
+                                value.from === ""
+                                    ? ""
+                                    : value.from +
+                                      " - " +
+                                      value.to +
+                                      ", " +
+                                      value.year
+                            }
                             readOnly
                             className=" outline-none w-[200px] font-NHU-medium text-[#545454] 1550px:text-[14px]"
                         />
@@ -52,6 +64,7 @@ export default function PreviousPeriod({ value, setValue }: Props) {
                             setValue={setValue}
                             open={open}
                             setOpen={setOpen}
+                            value={value}
                         />
                     )}
                 </>
@@ -65,6 +78,11 @@ type DateSelectionPros = {
     setValue: Function;
     open: boolean[];
     setOpen: Function;
+    value: {
+        from: string;
+        to: string;
+        year: string;
+    };
 };
 
 const DateSelection = ({
@@ -72,6 +90,7 @@ const DateSelection = ({
     open,
     setOpen,
     setValue,
+    value,
 }: DateSelectionPros) => {
     const modal = useRef<any>();
 
@@ -98,6 +117,10 @@ const DateSelection = ({
                                 className=" w-1/4 text-[15px] hover:text-ThemeRed text-center cursor-pointer py-2"
                                 onClick={() => {
                                     setOpen([true, false, true]);
+                                    setValue({
+                                        ...value,
+                                        year: format(year, "yyyy"),
+                                    });
                                 }}
                             >
                                 {format(year, "yyyy")}
@@ -117,7 +140,11 @@ const DateSelection = ({
                                 key={index}
                                 className=" w-full border-b text-[15px] hover:text-ThemeRed text-center cursor-pointer py-1"
                                 onClick={() => {
-                                    setValue("Jan 15 - Feb 15");
+                                    setValue({
+                                        ...value,
+                                        from: "Jan 15",
+                                        to: "Feb 15",
+                                    });
                                     setOpen([false, false, false]);
                                 }}
                             >

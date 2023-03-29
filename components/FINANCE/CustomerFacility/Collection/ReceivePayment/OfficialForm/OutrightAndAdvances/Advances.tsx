@@ -4,14 +4,20 @@ import { BsPlusLg } from "react-icons/bs";
 import { HiMinus } from "react-icons/hi";
 import { FadeSide } from "../../../../../../Animation/SimpleAnimation";
 import DropDownCharge from "../../../../../../Dropdowns/DropDownCharge";
+import {
+    MinusButtonTable,
+    PlusButtonTable,
+} from "../../../../../../Reusable/Icons";
 import { InputNumberForTable } from "../../../../../../Reusable/NumberFormat";
 import { TableOneTotal } from "../../../../../../Reusable/TableTotal";
 
 type Props = {
     Error: () => void;
+    DefaultAdvances: AdvancesType[];
+    setDefaultValue: Function;
 };
 
-type isTableItem = {
+export type AdvancesType = {
     id: string | number;
     charge: string;
     charge_id: string;
@@ -19,21 +25,18 @@ type isTableItem = {
     amount: number;
 };
 
-export default function Advances({ Error }: Props) {
-    const [isTable, setTable] = useState<isTableItem[]>([
-        {
-            id: 1,
-            charge: "",
-            charge_id: "",
-            description: "",
-            amount: 0,
-        },
-    ]);
-
-    const [isSave, setSave] = useState(false);
-
-    const SaveHandler = (button: string) => {};
-
+export default function Advances({
+    Error,
+    DefaultAdvances,
+    setDefaultValue,
+}: Props) {
+    const [isTotal, setTotal] = useState(0);
+    useEffect(() => {
+        setTotal(0);
+        DefaultAdvances.map((item: AdvancesType) => {
+            setTotal((prevValue) => Number(prevValue) + item.amount);
+        });
+    }, [DefaultAdvances]);
     return (
         <motion.div
             variants={FadeSide}
@@ -54,27 +57,27 @@ export default function Advances({ Error }: Props) {
                         </tr>
                     </thead>
                     <tbody>
-                        {isTable.map((item, index) => (
+                        {DefaultAdvances.map((item, index) => (
                             <List
                                 key={index}
                                 itemDetail={item}
-                                isTable={isTable}
-                                setTable={setTable}
+                                isTable={DefaultAdvances}
+                                setTable={setDefaultValue}
                                 index={index}
                             />
                         ))}
                     </tbody>
                 </table>
             </div>
-            <TableOneTotal total={123} label={"SUB TOTAL"} redBG={false} />
+            <TableOneTotal total={isTotal} label={"SUB TOTAL"} redBG={false} />
         </motion.div>
     );
 }
 
 type List = {
     setTable: Function;
-    isTable: isTableItem[];
-    itemDetail: isTableItem;
+    isTable: AdvancesType[];
+    itemDetail: AdvancesType;
     index: number;
 };
 
@@ -84,7 +87,7 @@ const List = ({ setTable, isTable, itemDetail, index }: List) => {
         setTable([
             ...isTable,
             {
-                id: 1,
+                id: random,
                 charge: "",
                 charge_id: "",
                 description: "",
@@ -93,13 +96,13 @@ const List = ({ setTable, isTable, itemDetail, index }: List) => {
         ]);
     };
     const RemoveRow = () => {
-        setTable((item: isTableItem[]) =>
-            item.filter((x: isTableItem) => x.id !== itemDetail.id)
+        setTable((item: AdvancesType[]) =>
+            item.filter((x: AdvancesType) => x.id !== itemDetail.id)
         );
     };
 
     const updateValue = (keyField: string, value: any) => {
-        const closeToUpdate = isTable.map((item: isTableItem) => {
+        const closeToUpdate = isTable.map((item: AdvancesType) => {
             if (item.id === itemDetail.id) {
                 if (keyField === "charge") {
                     const charge_id = value.target.getAttribute("data-id");
@@ -161,7 +164,7 @@ const List = ({ setTable, isTable, itemDetail, index }: List) => {
             <td className="actionIcon">
                 {isTable.length > 1 && (
                     <div onClick={RemoveRow}>
-                        <HiMinus />
+                        <MinusButtonTable />
                     </div>
                 )}
                 {isTable.length - 1 === index && (
@@ -169,7 +172,7 @@ const List = ({ setTable, isTable, itemDetail, index }: List) => {
                         className="ml-5 1024px:ml-2"
                         onClick={(e) => AddRow(e)}
                     >
-                        <BsPlusLg />
+                        <PlusButtonTable />
                     </div>
                 )}
             </td>

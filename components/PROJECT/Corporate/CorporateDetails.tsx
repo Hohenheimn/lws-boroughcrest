@@ -9,6 +9,7 @@ import "tippy.js/dist/tippy.css";
 import { FadeIn } from "../../../components/Animation/SimpleAnimation";
 import { motion } from "framer-motion";
 import type { corporateColumns } from "../../../types/corporateList";
+import { PencilButton } from "../../Reusable/Icons";
 
 type Props = {
     CorporateData: corporateColumns;
@@ -73,17 +74,11 @@ export default function CorporateDetails({ CorporateData }: Props) {
             <ul className={style.primary}>
                 <li className={style.head}>
                     <h1>Primary Information</h1>
-                    <Tippy
-                        theme="ThemeRed"
-                        content={<span className="capitalize">Modify</span>}
-                    >
-                        <div>
-                            <HiPencil
-                                className={style.pencil}
-                                onClick={setFieldValue}
-                            />
-                        </div>
-                    </Tippy>
+
+                    <PencilButton
+                        FunctionOnClick={setFieldValue}
+                        title={"Modify"}
+                    />
                 </li>
                 <li className={style.image}>
                     <aside>

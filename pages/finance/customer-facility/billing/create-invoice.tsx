@@ -21,7 +21,7 @@ export default function CreateInvoice() {
         <div>
             <BillingForm
                 DefaultValue={Value}
-                type="create"
+                formType="create"
                 DefaultCustomer={{
                     id: "",
                     name: "",

@@ -63,7 +63,7 @@ export default function JournalSearch() {
 const List = ({ item }: any) => {
     const date = parse(item.date, "yyyy-MM-dd", new Date());
     return (
-        <Link href={`/finance/general-ledger/journal/${item.id}`}>
+        <Link href={`/finance/general-ledger/journal/journal-list/${item.id}`}>
             <a className={style.searchedItem}>
                 <ul>
                     <li>

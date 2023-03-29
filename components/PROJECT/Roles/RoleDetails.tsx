@@ -6,6 +6,7 @@ import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 import RoleForm from "./RoleForm";
 import RoleModify from "./RoleModify";
+import { PencilButton } from "../../Reusable/Icons";
 export default function RoleDetails() {
     const [isModify, setModify] = useState(false);
     const [isNew, setNew] = useState(false);
@@ -22,17 +23,10 @@ export default function RoleDetails() {
             </header>
             <section className={style.container}>
                 <div className={style.pencilCon}>
-                    <Tippy
-                        theme="ThemeRed"
-                        content={<span className="capitalize">Modify</span>}
-                    >
-                        <div>
-                            <HiPencil
-                                className={style.pencil}
-                                onClick={() => setModify(true)}
-                            />
-                        </div>
-                    </Tippy>
+                    <PencilButton
+                        FunctionOnClick={() => setModify(true)}
+                        title={"Modify"}
+                    />
                 </div>
                 <ul>
                     <li>

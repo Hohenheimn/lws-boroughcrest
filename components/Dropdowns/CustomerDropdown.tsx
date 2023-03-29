@@ -14,6 +14,9 @@ type Props = {
 export default function CustomerDropdown({ isCustomer, setCustomer }: Props) {
     const [isToggle, setToggle] = useState(false);
     const [isSearchTemp, setSearchTemp] = useState(isCustomer.name);
+    useEffect(() => {
+        setSearchTemp(isCustomer.name);
+    }, [isCustomer]);
     const selectedItem = (CustomerObject: any) => {
         const cloneToGetProperties = CustomerObject?.properties.map(
             (item: any) => {

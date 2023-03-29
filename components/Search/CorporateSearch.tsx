@@ -11,23 +11,21 @@ import BeatLoader from "react-spinners/BeatLoader";
 
 export default function CorporateSearch() {
     const [search, setSearch] = useState<string>("");
-    let dataSearch;
     const router = useRouter();
 
-    const {
-        isLoading,
-        data: RecentData,
-        isError,
-    } = useQuery(["recent-customer", router.query.id, search], () => {
-        return api.get(
-            `/project/corporate/recent-search/${router.query.id}&keywords=${search}&paginate=3`,
-            {
-                headers: {
-                    Authorization: "Bearer " + getCookie("user"),
-                },
-            }
-        );
-    });
+    const { isLoading, data: RecentData } = useQuery(
+        ["recent-customer", router.query.id, search],
+        () => {
+            return api.get(
+                `/project/corporate/recent-search/${router.query.id}&keywords=${search}&paginate=3`,
+                {
+                    headers: {
+                        Authorization: "Bearer " + getCookie("user"),
+                    },
+                }
+            );
+        }
+    );
 
     return (
         <div className={style.container}>

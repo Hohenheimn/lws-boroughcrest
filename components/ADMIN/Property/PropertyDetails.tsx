@@ -12,6 +12,7 @@ import {
     PostProperty,
 } from "../../ReactQuery/PropertyMethod";
 import { format, isValid, parse } from "date-fns";
+import { PencilButton } from "../../Reusable/Icons";
 
 type Props = {
     data: property;
@@ -58,18 +59,11 @@ export default function PropertyDetails({ data }: Props) {
             )}
             <h1 className="pageTitle mb-5">Property Details</h1>
             <ul className={style.FourRows}>
-                <aside>
-                    <Tippy
-                        theme="ThemeRed"
-                        content={<span className="capitalize">Modify</span>}
-                    >
-                        <div>
-                            <HiPencil
-                                className={style.pencil}
-                                onClick={() => setNewPropToggle(true)}
-                            />
-                        </div>
-                    </Tippy>
+                <aside className="-mt-4">
+                    <PencilButton
+                        FunctionOnClick={() => setNewPropToggle(true)}
+                        title={"Modify"}
+                    />
                 </aside>
                 <li>
                     <p className="label_text">ID</p>

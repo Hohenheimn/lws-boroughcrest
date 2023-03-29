@@ -1,23 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { BsPlusLg } from "react-icons/bs";
-import { HiMinus } from "react-icons/hi";
-import { RiArrowDownSFill } from "react-icons/ri";
-import DropDownCharge from "../../../../../Dropdowns/DropDownCharge";
 import {
     InputNumberForTable,
     TextNumberDisplay,
 } from "../../../../../Reusable/NumberFormat";
-import {
-    TableOneTotal,
-    TableThreeTotal,
-} from "../../../../../Reusable/TableTotal";
-import { HeaderForm } from "../ReceivePaymentForm";
+import { TableThreeTotal } from "../../../../../Reusable/TableTotal";
 
 type Props = {
     Error: () => void;
+    DefaultOutstanding: Outstanding[];
+    setDefaultValue: Function;
+    amount_paid: number;
+    customer_id: string | number;
 };
 
-type isTableItem = {
+export type Outstanding = {
     id: string | number;
     document_no: string;
     charge: string;
@@ -28,31 +24,50 @@ type isTableItem = {
     balance: number;
 };
 
-export default function OutStandingBalance({ Error }: Props) {
+export default function OutStandingBalance({
+    DefaultOutstanding,
+    setDefaultValue,
+    amount_paid,
+    customer_id,
+}: Props) {
     const [isToggle, setToggle] = useState(false);
-    const [isTable, setTable] = useState<isTableItem[]>([
-        {
-            id: 1,
-            charge: "Electricity",
-            charge_id: "12",
-            description: "sample description",
-            due_amount: 1000,
-            applied_amount: 0,
-            balance: 10000,
-            document_no: "sample document",
-        },
-    ]);
+    const SetToggleHandler = () => {
+        setToggle(!isToggle);
+        if (!isToggle) {
+            console.log("Open lang wlang mangyayare");
+        } else {
+            console.log("Divide uli");
+        }
+    };
 
-    const [isSave, setSave] = useState(false);
-
-    const SaveHandler = (button: string) => {};
+    useEffect(() => {
+        const AppliedAmount =
+            Number(amount_paid) / Number(DefaultOutstanding.length);
+        const CloneToUpdate = DefaultOutstanding.map((item: Outstanding) => {
+            const balance = Number(item.due_amount) - Number(AppliedAmount);
+            if (!isToggle) {
+                return {
+                    ...item,
+                    applied_amount: AppliedAmount,
+                    balance: balance <= 0 ? 0 : balance,
+                };
+            } else {
+                return {
+                    ...item,
+                    applied_amount: 0,
+                    balance: item.due_amount,
+                };
+            }
+        });
+        setDefaultValue(CloneToUpdate);
+    }, [amount_paid]);
 
     return (
         <div className="border-b border-gray-300">
             <div className=" flex justify-between items-center">
                 <h1 className="SectionTitle mb-5">Outstanding Balance</h1>
                 <div
-                    onClick={() => setToggle(!isToggle)}
+                    onClick={SetToggleHandler}
                     className={`cursor-pointer duration-300 ease-in-out delay-100 text-[#828282] relative h-[28px]  py-[2px] px-[10px] rounded-[50px] ${
                         !isToggle
                             ? "pr-[30px] bg-[#4a4a4a]"
@@ -80,16 +95,20 @@ export default function OutStandingBalance({ Error }: Props) {
                         </tr>
                     </thead>
                     <tbody>
-                        {isTable.map((item, index) => (
-                            <List
-                                key={index}
-                                itemDetail={item}
-                                isTable={isTable}
-                                setTable={setTable}
-                                index={index}
-                                isToggle={isToggle}
-                            />
-                        ))}
+                        {customer_id !== "" && (
+                            <>
+                                {DefaultOutstanding.map((item, index) => (
+                                    <List
+                                        key={index}
+                                        itemDetail={item}
+                                        isTable={DefaultOutstanding}
+                                        setTable={setDefaultValue}
+                                        index={index}
+                                        isToggle={isToggle}
+                                    />
+                                ))}
+                            </>
+                        )}
                     </tbody>
                 </table>
             </div>
@@ -106,39 +125,22 @@ export default function OutStandingBalance({ Error }: Props) {
 
 type List = {
     setTable: Function;
-    isTable: isTableItem[];
-    itemDetail: isTableItem;
+    isTable: Outstanding[];
+    itemDetail: Outstanding;
     index: number;
     isToggle: boolean;
 };
 
 const List = ({ setTable, isTable, itemDetail, index, isToggle }: List) => {
-    const AddRow = (e: any) => {
-        const random = Math.random();
-        setTable([
-            ...isTable,
-            {
-                id: random,
-                charge: "",
-                charge_id: "",
-                description: "",
-                amount: 0,
-            },
-        ]);
-    };
-    const RemoveRow = () => {
-        setTable((item: isTableItem[]) =>
-            item.filter((x: isTableItem) => x.id !== itemDetail.id)
-        );
-    };
-
     const updateValue = (keyField: string, value: string | number) => {
-        const closeToUpdate = isTable.map((item: isTableItem) => {
+        const closeToUpdate = isTable.map((item: Outstanding) => {
             if (item.id === itemDetail.id) {
                 if (keyField === "applied_payment") {
+                    const balance = Number(item.due_amount) - Number(value);
                     return {
                         ...item,
                         applied_amount: value,
+                        balance: balance <= 0 ? 0 : balance,
                     };
                 }
             }
