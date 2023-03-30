@@ -21,3 +21,43 @@ export const GetBatchInvoiceGroupList = (
         }
     );
 };
+
+export const CreateGroup = (onSucces: any, onError: any) => {
+    return useMutation(
+        (Payload: any) => {
+            return api.post(
+                `/finance/customer-facility/billing/batch/groups`,
+                Payload,
+                {
+                    headers: {
+                        Authorization: "Bearer " + getCookie("user"),
+                    },
+                }
+            );
+        },
+        {
+            onSuccess: onSucces,
+            onError: onError,
+        }
+    );
+};
+
+export const UpdateGroup = (onSucces: any, onError: any, id: number) => {
+    return useMutation(
+        (Payload: any) => {
+            return api.put(
+                `/finance/customer-facility/billing/batch/groups/${id}`,
+                Payload,
+                {
+                    headers: {
+                        Authorization: "Bearer " + getCookie("user"),
+                    },
+                }
+            );
+        },
+        {
+            onSuccess: onSucces,
+            onError: onError,
+        }
+    );
+};

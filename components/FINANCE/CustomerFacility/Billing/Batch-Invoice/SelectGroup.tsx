@@ -28,9 +28,18 @@ type Props = {
     setArray: Function;
     isArray: batchForm[];
     id: number | boolean;
+    setEditID: Function;
+    setTypBatchForm: Function;
 };
 
-export default function Readingform({ toggle, setArray, isArray, id }: Props) {
+export default function SelectGroup({
+    toggle,
+    setArray,
+    isArray,
+    id,
+    setTypBatchForm,
+    setEditID,
+}: Props) {
     const { setPrompt } = useContext(AppContext);
     const [TablePage, setTablePage] = useState(1);
     const [isSearch, setSearch] = useState("");
@@ -127,7 +136,7 @@ export default function Readingform({ toggle, setArray, isArray, id }: Props) {
                 selectAll: selectAll,
             });
         }
-    }, [data?.status, isSearch]);
+    }, [data?.data.data, isSearch]);
 
     const SaveHandler = () => {
         if (isSelectedIDs.length <= 0) {
@@ -168,7 +177,12 @@ export default function Readingform({ toggle, setArray, isArray, id }: Props) {
                         />
                         <BiSearch className="text-[16px] text-gray-400" />
                     </div>
-                    <button className="buttonRed">ADD GROUP</button>
+                    <button
+                        className="buttonRed"
+                        onClick={() => setTypBatchForm("add")}
+                    >
+                        ADD GROUP
+                    </button>
                 </div>
 
                 <div className="w-full overflow-auto max-h-[50vh]">
@@ -198,6 +212,8 @@ export default function Readingform({ toggle, setArray, isArray, id }: Props) {
                                         setTableItem={setTableItem}
                                         setSelectedIDs={setSelectedIDs}
                                         isSelectedIDs={isSelectedIDs}
+                                        setTypBatchForm={setTypBatchForm}
+                                        setEditID={setEditID}
                                     />
                                 )
                             )}
@@ -249,6 +265,8 @@ type ListProps = {
     setTableItem: Function;
     isSelectedIDs: { id: number; name: string }[];
     setSelectedIDs: Function;
+    setTypBatchForm: Function;
+    setEditID: Function;
 };
 const TableList = ({
     itemDetail,
@@ -256,6 +274,8 @@ const TableList = ({
     setTableItem,
     isSelectedIDs,
     setSelectedIDs,
+    setTypBatchForm,
+    setEditID,
 }: ListProps) => {
     const updateValue = (e: any) => {
         const newItems = isTableItem?.itemArray.map((item: any) => {
@@ -302,10 +322,16 @@ const TableList = ({
             </td>
             <td className=" text-DarkBlue">{itemDetail.name}</td>
             <td className="flex justify-end items-center w-full">
-                <div className=" mr-3">
+                <div className=" mr-3" onClick={() => setTypBatchForm("view")}>
                     <EyeButton />
                 </div>
-                <div className=" mr-3">
+                <div
+                    className=" mr-3"
+                    onClick={() => {
+                        setEditID(itemDetail.id);
+                        setTypBatchForm("edit");
+                    }}
+                >
                     <PencilButtonTable />
                 </div>
                 <div>

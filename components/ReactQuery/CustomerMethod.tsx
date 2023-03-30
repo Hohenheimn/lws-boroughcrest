@@ -58,6 +58,27 @@ export const GetCustomer = (id: any) => {
         }
     );
 };
+
+export const GetCustomerList = (
+    TablePage: number,
+    isSearchBar: string,
+    TableRows: number
+) => {
+    return useQuery(
+        ["get-customer-list", TablePage, isSearchBar, TableRows],
+        () => {
+            return api.get(
+                `/admin/customer?keywords=${isSearchBar}&paginate=${TableRows}&page=${TablePage}`,
+                {
+                    headers: {
+                        Authorization: "Bearer " + getCookie("user"),
+                    },
+                }
+            );
+        }
+    );
+};
+
 export const GetCustomerDraft = (id: any) => {
     return useQuery(["get-customer-draft", id], () => {
         return api.get(`/admin/customer/${id}`, {

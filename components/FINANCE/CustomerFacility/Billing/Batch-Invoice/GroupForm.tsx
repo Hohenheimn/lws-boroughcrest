@@ -2,87 +2,93 @@ import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 import React, { useContext, useEffect, useState } from "react";
 import { BiSearch } from "react-icons/bi";
-import styleModal from "../../../../../styles/Popup_Modal.module.scss";
 import Image from "next/image";
 import { GetPropertyList } from "../../../../ReactQuery/PropertyMethod";
-import { property } from "../../../../../types/PropertyList";
-import { BarLoader } from "react-spinners";
+import { BarLoader, ScaleLoader } from "react-spinners";
 import TableErrorMessage from "../../../../Reusable/TableErrorMessage";
 import Pagination from "../../../../Reusable/Pagination";
 import AppContext from "../../../../Context/AppContext";
 import NameIDDropdown from "../../../../Dropdowns/NameIDDropdown";
 import SelectDropdown from "../../../../Reusable/SelectDropdown";
-import ReadingPropertyForm, {
-    DefaultValuePropertyReadingForm,
-    isTableForm,
-} from "../RecordMeter/ReadingPropertyForm";
 import ModalTemp from "../../../../Reusable/ModalTemp";
+import { customer } from "../../../../../types/customerList";
+import { GetCustomerList } from "../../../../ReactQuery/CustomerMethod";
+import { CreateGroup, UpdateGroup } from "./Query";
+import { useQueryClient } from "react-query";
+import { useRouter } from "next/router";
 
 type Props = {
     toggle: Function;
-    externalDefaultValue: DefaultValuePropertyReadingForm;
+    externalDefaultValue: isTableItemObj[];
     formType: string;
+    id: number;
+    groupName: string;
 };
 
 type isTable = {
     itemArray: isTableItemObj[];
+    group_name: string;
     selectAll: boolean;
 };
 
-interface isTableItemObj extends property {
+type isTableItemObj = {
     select: boolean;
-}
+    id: number;
+    name: string;
+    email: string;
+    class: string;
+};
 
-export default function Readingform({
+export default function GroupForm({
     toggle,
     externalDefaultValue,
     formType,
+    id,
+    groupName,
 }: Props) {
     const { setPrompt } = useContext(AppContext);
     const [TablePage, setTablePage] = useState(1);
     const [isSearch, setSearch] = useState("");
-    const [formActive, setFormActive] = useState([true, false]);
 
     const [isTableItem, setTableItem] = useState<isTable>({
         itemArray: [],
+        group_name: groupName,
         selectAll: false,
     });
 
+    const [isSelectedIDs, setSelectedIDs] = useState<number[]>([]);
+
     useEffect(() => {
-        if (formType === "modify") {
-            setFormActive([false, true]);
-        }
-        const addExistingID = DefaultValue.properties.map((item) => {
-            return {
-                id: item.property_unit_id,
-                project: item.property,
-                tower: item.property,
-            };
-        });
+        const addExistingID = externalDefaultValue.map(
+            (item: isTableItemObj) => {
+                return Number(item.id);
+            }
+        );
         setSelectedIDs(addExistingID);
     }, []);
 
-    const [DefaultValue, setDefaultValue] =
-        useState<DefaultValuePropertyReadingForm>(externalDefaultValue);
-
-    const [isSelectedIDs, setSelectedIDs] = useState<
-        { id: number; project: string; tower: string }[]
-    >([]);
-
     const selectAll = () => {
         if (isTableItem.selectAll) {
-            // remove
-            setSelectedIDs([]);
-        } else {
-            // add
-            const ReceiptBookIDs = isTableItem.itemArray.map((item) => {
-                return {
-                    id: Number(item.id),
-                    project: item.project.name,
-                    tower: item.tower.name,
-                };
+            // get ids need to remove
+            const toRemove = isTableItem.itemArray.map((mapItem) => {
+                return mapItem.id;
             });
-            setSelectedIDs(ReceiptBookIDs);
+            // remove those ids from selectedIDS
+            const remove = isSelectedIDs.filter((filter) => {
+                return !toRemove.includes(filter);
+            });
+            setSelectedIDs(remove);
+        } else {
+            // get those ids that not in the selectedIDS
+            const cloneToUpdateValue = isTableItem.itemArray.filter(
+                (item) => !isSelectedIDs.includes(item.id)
+            );
+            // convert to ids array
+            const newSelectAll = cloneToUpdateValue.map((item) => {
+                return item.id;
+            });
+            // add selectedids
+            setSelectedIDs([...newSelectAll, ...isSelectedIDs]);
         }
         const newItems = isTableItem?.itemArray.map((item: any) => {
             return {
@@ -91,81 +97,17 @@ export default function Readingform({
             };
         });
         setTableItem({
+            ...isTableItem,
             itemArray: newItems,
             selectAll: !isTableItem.selectAll,
         });
     };
 
-    const { isLoading, isError, data } = GetPropertyList(TablePage, isSearch);
-
-    useEffect(() => {
-        if (data?.status === 200) {
-            let selectAll = false;
-
-            let CloneArray = data?.data.data.map((item: isTableItemObj) => {
-                let select = false;
-                if (isSelectedIDs.some((someIDs) => someIDs.id === item.id)) {
-                    select = true;
-                }
-
-                return {
-                    id: item.id,
-                    unit_code: item.unit_code,
-                    project: {
-                        name: item.project.name,
-                    },
-                    developer: {
-                        name: item.developer.name,
-                    },
-                    tower: {
-                        name: item.tower.name,
-                    },
-                    floor: {
-                        name: item.floor.name,
-                    },
-                    class: item.class,
-                    type: item.type,
-                    select: select,
-                };
-            });
-            if (
-                CloneArray.length === isSelectedIDs.length &&
-                CloneArray.length !== 0
-            ) {
-                selectAll = true;
-            }
-
-            setTableItem({
-                itemArray: CloneArray,
-                selectAll: selectAll,
-            });
-        }
-    }, [data?.status, isSearch]);
-
-    const NextHandler = () => {
-        if (isSelectedIDs.length <= 0) {
-            setPrompt({
-                toggle: true,
-                message: "Select a property",
-                type: "draft",
-            });
-            return;
-        }
-        const cloneToPass: isTableForm[] = isSelectedIDs.map((item) => {
-            return {
-                property: item.project === "" ? item.tower : item.project,
-                property_unit_id: Number(item.id),
-                previous_reading: 0,
-                current_reading: 0,
-                consumption: 0,
-            };
-        });
-        setDefaultValue({
-            ...DefaultValue,
-            properties: cloneToPass,
-        });
-        setFormActive([false, true]);
-    };
+    const { isLoading, isError, data } = GetCustomerList(
+        TablePage,
+        isSearch,
+        10
+    );
 
     const [isFilterbyCategory, setFilterbyCategory] = useState("");
 
@@ -174,12 +116,130 @@ export default function Readingform({
         id: "",
     });
 
+    useEffect(() => {
+        if (data?.status === 200) {
+            let selectAll = false;
+
+            let CloneArray = data?.data.data.map((item: customer) => {
+                let select = false;
+                if (isSelectedIDs.some((someIDs) => someIDs === item.id)) {
+                    select = true;
+                }
+                return {
+                    id: item.id,
+                    name: item.name,
+                    email: item.preferred_email,
+                    class: item.class,
+                    select: select,
+                };
+            });
+
+            if (
+                CloneArray.length !== 0 &&
+                CloneArray.every((val: any) => isSelectedIDs.includes(val.id))
+            ) {
+                selectAll = true;
+            } else {
+                selectAll = false;
+            }
+
+            setTableItem({
+                ...isTableItem,
+                itemArray: CloneArray,
+                selectAll: selectAll,
+            });
+        }
+    }, [
+        data?.status,
+        isSearch,
+        TablePage,
+        isFilterbyCategory,
+        isCategoryList.value,
+    ]);
+
+    const queryClient = useQueryClient();
+
+    const onSuccess = () => {
+        queryClient.invalidateQueries(["group-application-list"]);
+        setPrompt({
+            message: `Group successfully ${
+                formType === "add" ? "registered" : "updated"
+            }!`,
+            type: "success",
+            toggle: true,
+        });
+        toggle("");
+    };
+
+    const onError = () => {
+        setPrompt({
+            message: "Something is wrong!",
+            type: "error",
+            toggle: true,
+        });
+    };
+
+    const { mutate: createMutate, isLoading: createLoading } = CreateGroup(
+        onSuccess,
+        onError
+    );
+    const { mutate: updateMutate, isLoading: updateLoading } = UpdateGroup(
+        onSuccess,
+        onError,
+        id
+    );
+
+    const CreateHandler = () => {
+        if (isSelectedIDs.length <= 0) {
+            setPrompt({
+                message: "Select a customer!",
+                type: "draft",
+                toggle: true,
+            });
+            return;
+        }
+        if (isTableItem.group_name === "") {
+            setPrompt({
+                message: "Fill out the group name!",
+                type: "draft",
+                toggle: true,
+            });
+            return;
+        }
+
+        const Payload = {
+            name: isTableItem.group_name,
+            customer_ids: isSelectedIDs,
+        };
+        if (formType === "add") {
+            createMutate(Payload);
+        } else {
+            console.log(Payload);
+        }
+    };
+
     return (
         <ModalTemp wide={true}>
             <div>
-                <h3 className="mb-5 text-ThemeRed">Select Property</h3>
+                <h3 className="mb-5 text-ThemeRed">Create Group</h3>
                 <ul className="mb-5 flex justify-between 640px:flex-col 640px:items-end">
-                    <li className=" flex items-center 640px:order-2 640px:w-full">
+                    <li className=" flex items-center  640px:w-full">
+                        <p className=" text-ThemeRed text-[12px] font-NHU-bold mr-3">
+                            GROUP NAME:
+                        </p>
+                        <input
+                            type="text"
+                            value={isTableItem.group_name}
+                            onChange={(e) => {
+                                setTableItem({
+                                    ...isTableItem,
+                                    group_name: e.target.value,
+                                });
+                            }}
+                            className="field mini"
+                        />
+                    </li>
+                    <li className=" flex items-center 640px:w-full">
                         <p className=" text-ThemeRed text-[12px] font-NHU-bold mr-3">
                             FILTER BY:
                         </p>
@@ -213,22 +273,6 @@ export default function Readingform({
                             }
                         />
                     </li>
-                    <li className="640px:mb-5">
-                        <input
-                            type="file"
-                            className=" absolute opacity-0"
-                            id="import"
-                        />
-                        <Tippy theme="ThemeRed" content="Import">
-                            <label className="iconNav" htmlFor="import">
-                                <Image
-                                    src="/Images/Import.png"
-                                    layout="fill"
-                                    alt="Import"
-                                />
-                            </label>
-                        </Tippy>
-                    </li>
                 </ul>
                 <div className="mb-5 flex items-center shadow-lg px-2 h-8 1550px:h-8 bg-white flex-1 max-w-[300px] 640px:max-w-[unset] rounded-lg">
                     <input
@@ -254,14 +298,10 @@ export default function Readingform({
                                         />
                                     </div>
                                 </th>
-                                <th className="text-start">ID</th>
-                                <th>Unit Code</th>
-                                <th>Project</th>
-                                <th>Developer</th>
-                                <th>Tower</th>
-                                <th>Floor</th>
+                                <th className="text-start">Customer ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
                                 <th>Class</th>
-                                <th>Type</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -306,12 +346,20 @@ export default function Readingform({
                 <div className="flex justify-end py-5 mt-10">
                     <button
                         className="button_cancel"
-                        onClick={() => toggle(false)}
+                        onClick={() => toggle("")}
                     >
                         Cancel
                     </button>
-                    <button className="buttonRed" onClick={NextHandler}>
-                        NEXT
+                    <button className="buttonRed" onClick={CreateHandler}>
+                        {createLoading || updateLoading ? (
+                            <ScaleLoader
+                                color="#fff"
+                                height="10px"
+                                width="2px"
+                            />
+                        ) : (
+                            "CREATE"
+                        )}
                     </button>
                 </div>
             </div>
@@ -323,7 +371,7 @@ type ListProps = {
     itemDetail: isTableItemObj;
     isTableItem: isTable;
     setTableItem: Function;
-    isSelectedIDs: { id: number; project: string; tower: string }[];
+    isSelectedIDs: number[];
     setSelectedIDs: Function;
 };
 const TableList = ({
@@ -339,19 +387,12 @@ const TableList = ({
                 if (item.select) {
                     // remove
                     const filterSelected = isSelectedIDs.filter(
-                        (itemFilt) => Number(item.id) !== itemFilt.id
+                        (itemFilt) => Number(item.id) !== itemFilt
                     );
                     setSelectedIDs(filterSelected);
                 } else {
                     // add
-                    setSelectedIDs([
-                        ...isSelectedIDs,
-                        {
-                            id: item.id,
-                            project: item.project.name,
-                            tower: item.tower.name,
-                        },
-                    ]);
+                    setSelectedIDs([...isSelectedIDs, item.id]);
                 }
                 return {
                     ...item,
@@ -361,6 +402,7 @@ const TableList = ({
             return item;
         });
         setTableItem({
+            ...isTableItem,
             itemArray: newItems,
             selectAll: false,
         });
@@ -378,13 +420,9 @@ const TableList = ({
             </td>
 
             <td>{itemDetail.id}</td>
-            <td>{itemDetail.unit_code}</td>
-            <td>{itemDetail.project.name}</td>
-            <td>{itemDetail.developer.name}</td>
-            <td>{itemDetail.tower.name}</td>
-            <td>{itemDetail.floor.name}</td>
+            <td>{itemDetail.name}</td>
+            <td>{itemDetail.email}</td>
             <td>{itemDetail.class}</td>
-            <td>{itemDetail.type}</td>
         </tr>
     );
 };

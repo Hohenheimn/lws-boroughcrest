@@ -11,23 +11,17 @@ import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 import TableErrorMessage from "../../Reusable/TableErrorMessage";
 import Pagination from "../../Reusable/Pagination";
+import { GetCustomerList } from "../../ReactQuery/CustomerMethod";
 export default function CustomerTable() {
     const { TableRows, cusTableColumn, isSearchBar, setPrint } =
         useContext(AppContext);
     const [TablePage, setTablePage] = useState(1);
-    const { data, isLoading, isError } = useQuery(
-        ["get-customer-list", TablePage, isSearchBar, TableRows],
-        () => {
-            return api.get(
-                `/admin/customer?keywords=${isSearchBar}&paginate=${TableRows}&page=${TablePage}`,
-                {
-                    headers: {
-                        Authorization: "Bearer " + getCookie("user"),
-                    },
-                }
-            );
-        }
+    const { data, isLoading, isError } = GetCustomerList(
+        TablePage,
+        isSearchBar,
+        TableRows
     );
+
     // Set parameter for print
     useEffect(() => {
         setPrint({

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import DropDownCharge from "../../../../Dropdowns/DropDownCharge";
 import { MinusButtonTable, PlusButtonTable } from "../../../../Reusable/Icons";
+import SelectAndFormGroup from "./SelectAndFormGroup";
 import SelectGroup from "./SelectGroup";
 
 export type batchForm = {
@@ -28,7 +29,7 @@ export default function BatchForm({ DefaultValue }: Props) {
     return (
         <>
             {selectedID !== false && (
-                <SelectGroup
+                <SelectAndFormGroup
                     isArray={isDefault}
                     setArray={setDefault}
                     id={selectedID}
@@ -148,7 +149,7 @@ const List = ({
                 <input
                     type="text"
                     readOnly
-                    className=" bg-ThemeRed text-white text-center"
+                    className=" bg-ThemeRed text-white text-center cursor-pointer"
                     value={
                         itemList.application.length <= 0
                             ? "SELECT GROUP"

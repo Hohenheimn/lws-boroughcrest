@@ -138,7 +138,7 @@ const List = ({ itemDetail }: ListProps) => {
                 >
                     <a className="item">
                         <div>
-                            <h2>{itemDetail.code}</h2>
+                            <h2>{itemDetail?.code}</h2>
                         </div>
                     </a>
                 </Link>
@@ -149,7 +149,7 @@ const List = ({ itemDetail }: ListProps) => {
                 >
                     <a className="item">
                         <div>
-                            <h2>{itemDetail.type}</h2>
+                            <h2>{itemDetail?.type}</h2>
                         </div>
                     </a>
                 </Link>
@@ -160,19 +160,7 @@ const List = ({ itemDetail }: ListProps) => {
                 >
                     <a className="item">
                         <div>
-                            <h2>{itemDetail.name}</h2>
-                        </div>
-                    </a>
-                </Link>
-            </td>
-
-            <td>
-                <Link
-                    href={`/finance/customer-facility/charge?modify=${itemDetail.id}`}
-                >
-                    <a className="item">
-                        <div>
-                            <h2>{itemDetail.description}</h2>
+                            <h2>{itemDetail?.name}</h2>
                         </div>
                     </a>
                 </Link>
@@ -184,7 +172,19 @@ const List = ({ itemDetail }: ListProps) => {
                 >
                     <a className="item">
                         <div>
-                            <h2>{itemDetail.base_rate}</h2>
+                            <h2>{itemDetail?.description}</h2>
+                        </div>
+                    </a>
+                </Link>
+            </td>
+
+            <td>
+                <Link
+                    href={`/finance/customer-facility/charge?modify=${itemDetail.id}`}
+                >
+                    <a className="item">
+                        <div>
+                            <h2>{itemDetail?.base_rate}</h2>
                         </div>
                     </a>
                 </Link>
@@ -210,7 +210,7 @@ const List = ({ itemDetail }: ListProps) => {
                         <div>
                             <h2>
                                 <TextNumberDisplay
-                                    value={itemDetail.vat_percent}
+                                    value={itemDetail?.vat_percent}
                                     className="w-full"
                                     suffix="%"
                                 />
@@ -225,7 +225,7 @@ const List = ({ itemDetail }: ListProps) => {
                 >
                     <a className="item">
                         <div>
-                            <h2>{itemDetail.receivable_coa.account_name}</h2>
+                            <h2>{itemDetail?.receivable_coa?.account_name}</h2>
                         </div>
                     </a>
                 </Link>
@@ -236,7 +236,7 @@ const List = ({ itemDetail }: ListProps) => {
                 >
                     <a className="item">
                         <div>
-                            <h2>{itemDetail.discounts_coa.account_name}</h2>
+                            <h2>{itemDetail?.discounts_coa?.account_name}</h2>
                         </div>
                     </a>
                 </Link>
@@ -247,7 +247,7 @@ const List = ({ itemDetail }: ListProps) => {
                 >
                     <a className="item">
                         <div>
-                            <h2>{itemDetail.revenue_coa.account_name}</h2>
+                            <h2>{itemDetail?.revenue_coa?.account_name}</h2>
                         </div>
                     </a>
                 </Link>
@@ -258,7 +258,7 @@ const List = ({ itemDetail }: ListProps) => {
                 >
                     <a className="item">
                         <div>
-                            <h2>{itemDetail.advances_coa.account_name}</h2>
+                            <h2>{itemDetail?.advances_coa?.account_name}</h2>
                         </div>
                     </a>
                 </Link>
@@ -269,7 +269,7 @@ const List = ({ itemDetail }: ListProps) => {
                 >
                     <a className="item">
                         <div>
-                            <h2>{itemDetail.minimum}</h2>
+                            <h2>{itemDetail?.minimum}</h2>
                         </div>
                     </a>
                 </Link>
@@ -280,7 +280,7 @@ const List = ({ itemDetail }: ListProps) => {
                 >
                     <a className="item">
                         <div>
-                            <h2>{itemDetail.interest}</h2>
+                            <h2>{itemDetail?.interest}</h2>
                         </div>
                     </a>
                 </Link>
@@ -291,7 +291,7 @@ const List = ({ itemDetail }: ListProps) => {
                 >
                     <a className="item">
                         <div>
-                            <h2>{itemDetail.payment_heirarchy}</h2>
+                            <h2>{itemDetail?.payment_heirarchy}</h2>
                         </div>
                     </a>
                 </Link>
@@ -302,7 +302,7 @@ const List = ({ itemDetail }: ListProps) => {
                 >
                     <a className="item">
                         <div>
-                            <h2>{itemDetail.soa_sort_order}</h2>
+                            <h2>{itemDetail?.soa_sort_order}</h2>
                         </div>
                     </a>
                 </Link>
