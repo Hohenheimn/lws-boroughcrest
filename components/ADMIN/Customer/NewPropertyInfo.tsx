@@ -9,6 +9,7 @@ import {
     PostCustomerDraft,
 } from "../../ReactQuery/CustomerMethod";
 import DynamicPopOver from "../../Reusable/DynamicPopOver";
+import { ErrorSubmit } from "../../Reusable/ErrorMessage";
 
 type NewPropertyInfo = {
     setActiveForm: Function;
@@ -85,19 +86,10 @@ export default function NewPropertyInfo({
 
     const onError = (e: any) => {
         const ErrorField = e.response.data;
-        let message: any;
         if (ErrorField > 0 || ErrorField !== null || ErrorField !== undefined) {
             setCusError({ ...ErrorField });
-            message = "Please check all the fields!";
-        } else {
-            message = "Something is wrong!";
         }
-        setPrompt((prev: any) => ({
-            ...prev,
-            message: message,
-            type: "error",
-            toggle: true,
-        }));
+        ErrorSubmit(e, setPrompt);
     };
 
     const Back = () => {

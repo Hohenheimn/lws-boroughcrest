@@ -17,6 +17,7 @@ import { format } from "date-fns";
 import { DynamicExportHandler } from "../Reusable/DynamicExport";
 import { DynamicImport } from "../Reusable/DynamicImport";
 import Link from "next/link";
+import { useQueryClient } from "react-query";
 
 type SearchFilter = {
     page: string;
@@ -94,12 +95,17 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
         }
     };
 
+    const [isImport, setImport] = useState<any>();
+    const queryClient = useQueryClient();
     const ImportSuccess = () => {
         setPrompt({
             type: "success",
             message: "Successfully imported!",
             toggle: true,
         });
+        queryClient.invalidateQueries(["Property-List"]);
+        queryClient.invalidateQueries(["get-customer-list"]);
+        setImport("");
     };
     const ImportError = () => {
         setPrompt({
@@ -107,6 +113,7 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
             message: "The given data was invalid",
             toggle: true,
         });
+        setImport("");
     };
     // Imports
     const { isLoading: CusLoading, mutate: CusMutate } = CustomerImport(
@@ -127,6 +134,7 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
     };
     const importHandler = (e: any) => {
         DynamicImport(e, setPrompt, ImportMutate);
+        // setImport(e);
     };
 
     //Exports
@@ -191,6 +199,7 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
                             <input
                                 type="file"
                                 id="import"
+                                value={isImport}
                                 onChange={importHandler}
                                 className="hidden"
                             />

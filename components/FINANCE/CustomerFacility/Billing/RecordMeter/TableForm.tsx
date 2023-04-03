@@ -21,6 +21,7 @@ import { format, isValid, parse } from "date-fns";
 import { ApplyRecordMeter, GetRecordMeterList } from "./Query";
 import Modify from "./Modify";
 import { useQueryClient } from "react-query";
+import { ErrorSubmit } from "../../../../Reusable/ErrorMessage";
 
 type isTable = {
     itemArray: isTableItemObj[];
@@ -62,6 +63,7 @@ export default function TableForm() {
         charge_id: "",
         base_rate: 0,
     });
+    const [periodReadingID, setPeriodReadingID] = useState(0);
 
     const [toggleReading, setToggleReading] = useState(false);
 
@@ -89,17 +91,14 @@ export default function TableForm() {
     }, [isSelectedIDs]);
 
     const dateFrom = parse(
-        `${isPreviousPeriod.from} ${isPreviousPeriod.year}`,
+        `${isPreviousPeriod.from}`,
         "MMM dd yyyy",
         new Date()
     );
-    const dateTo = parse(
-        `${isPreviousPeriod.to} ${isPreviousPeriod.year}`,
-        "MMM dd yyyy",
-        new Date()
-    );
+    const dateTo = parse(`${isPreviousPeriod.to}`, "MMM dd yyyy", new Date());
+
     const { data, isLoading, isError } = GetRecordMeterList(
-        isReading.charge_id,
+        isReading.reading_id,
         isValid(dateFrom) ? format(dateFrom, "yyyy-MM-dd") : "",
         isValid(dateTo) ? format(dateTo, "yyyy-MM-dd") : "",
         TablePage
@@ -108,42 +107,53 @@ export default function TableForm() {
     useEffect(() => {
         if (data?.status === 200) {
             let selectAll = false;
-            if (isReading.charge_id !== "") {
-                let CloneArray = data?.data.data.map((item: isTableItemObj) => {
-                    let select = false;
-                    if (isSelectedIDs.includes(item.id)) {
-                        select = true;
+            if (
+                isReading.charge_id !== "" &&
+                isPreviousPeriod.from !== "" &&
+                isPreviousPeriod.to !== ""
+            ) {
+                let CloneArray = data?.data?.records?.data.map(
+                    (item: isTableItemObj) => {
+                        let select = false;
+                        if (isSelectedIDs.includes(item.id)) {
+                            select = true;
+                        }
+                        return {
+                            id: item.id,
+                            select: select,
+                            property: {
+                                id: item.property.id,
+                                unit_code: item.property.unit_code,
+                            },
+                            previous_reading: item.previous_reading,
+                            current_reading: item.current_reading,
+                            consumption: item.consumption,
+                            moving_average_consumption:
+                                item.moving_average_consumption,
+                            status: item.status,
+                            percentage: item.percentage,
+                        };
                     }
-                    return {
-                        id: item.id,
-                        select: select,
-                        property: {
-                            id: item.property.id,
-                            unit_code: item.property.unit_code,
-                        },
-                        previous_reading: item.previous_reading,
-                        current_reading: item.current_reading,
-                        consumption: item.consumption,
-                        moving_average_consumption:
-                            item.moving_average_consumption,
-                        status: item.status,
-                        percentage: item.percentage,
-                    };
-                });
+                );
+
                 if (
-                    CloneArray.length === isSelectedIDs.length &&
-                    CloneArray.length !== 0
+                    CloneArray?.length === isSelectedIDs.length &&
+                    CloneArray?.length !== 0
                 ) {
                     selectAll = true;
                 }
-
                 setTableItem({
                     itemArray: CloneArray,
                     selectAll: selectAll,
                 });
+                setReading({
+                    ...isReading,
+                    reading_serial: data?.data?.reading?.reading_serial,
+                });
+                setPeriodReadingID(data?.data?.reading?.id);
             }
         }
-    }, [data]);
+    }, [data, isPreviousPeriod]);
 
     const selectAll = () => {
         if (isTableItem.selectAll) {
@@ -181,13 +191,17 @@ export default function TableForm() {
     };
 
     const ToggleModify = () => {
-        if (isPreviousPeriod.from !== "" && isPreviousPeriod.to) {
+        if (
+            isPreviousPeriod.from !== "" &&
+            isPreviousPeriod.to !== "" &&
+            periodReadingID !== 0
+        ) {
             router.push(
-                `/finance/customer-facility/billing/record-meter-reading?modify=`
+                `/finance/customer-facility/billing/record-meter-reading?modify=${periodReadingID}`
             );
         } else {
             setPrompt({
-                message: "Select a Previous Reading!",
+                message: "Select a Previous Reading and Reading!",
                 type: "draft",
                 toggle: true,
             });
@@ -208,12 +222,8 @@ export default function TableForm() {
         });
     };
 
-    const onError = () => {
-        setPrompt({
-            message: "Something is wrong!",
-            type: "error",
-            toggle: true,
-        });
+    const onError = (e: any) => {
+        ErrorSubmit(e, setPrompt);
     };
 
     const { isLoading: applyLoading, mutate: applyMutate } = ApplyRecordMeter(
@@ -243,6 +253,7 @@ export default function TableForm() {
                     formType="create"
                     toggle={setToggleReading}
                     externalDefaultValue={{
+                        reading_id: Number(isReading.reading_id),
                         charge: {
                             charge: isReading.charge_name,
                             rate: Number(isReading.base_rate),
@@ -324,6 +335,8 @@ export default function TableForm() {
                         <PreviousPeriod
                             value={isPreviousPeriod}
                             setValue={setPreviousPeriod}
+                            year={isPreviousPeriod.year}
+                            reading_id={Number(isReading.reading_id)}
                         />
                     </li>
                 </ul>
@@ -349,7 +362,7 @@ export default function TableForm() {
                             </tr>
                         </thead>
                         <tbody>
-                            {isTableItem?.itemArray.map(
+                            {isTableItem?.itemArray?.map(
                                 (item: any, index: number) => (
                                     <List
                                         key={index}

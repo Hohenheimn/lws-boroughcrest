@@ -40,7 +40,7 @@ h6.lowGray {
     @apply text-[#6f6f6f];
 }
 .labelField {
-    @apply text-ThemeRed mr-3 font-NHU-medium 1550px:text-[13px] 640px:text-[12px];
+    @apply text-ThemeRed mr-3 font-NHU-medium 1550px:text-[14px] 640px:text-[12px];
 }
 .field {
     @apply p-1 px-2 text-[#545454] font-NHU-medium duration-300 1550px:min-w-[70px] rounded-md outline-none shadow-md;
@@ -151,7 +151,7 @@ select {
     color: white !important;
 }
 .button_cancel {
-    @apply text-ThemeRed font-semibold cursor-pointer text-[14px] mr-5 uppercase;
+    @apply text-ThemeRed font-semibold cursor-pointer text-[14px] 1550px:text-[12px] mr-5 uppercase;
 }
 // Text
 .pageTitle {
@@ -336,7 +336,7 @@ select {
                 }
             }
             td.actionIcon {
-                @apply flex items-center mt-2 text-ThemeRed text-[13px] w-[80px] min-w-0 cursor-pointer;
+                @apply flex items-center mt-2 text-ThemeRed text-[13px] w-[80px] min-w-0;
             }
             td.icon {
                 @apply w-[50px];
@@ -416,12 +416,20 @@ select {
         @apply hidden;
     }
     .printThis {
-        @apply my-10;
+        margin: 0 0;
     }
     @page {
-        margin: 0;
+        margin: 20px 0;
+    }
+
+    .printHeader {
+    }
+    .printBody {
+    }
+    .printFooter {
     }
 }
+
 .table_list.headNoBg {
     thead {
         @apply shadow-none;

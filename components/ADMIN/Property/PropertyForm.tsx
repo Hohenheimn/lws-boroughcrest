@@ -26,6 +26,7 @@ import Calendar from "../../Reusable/Calendar";
 import DynamicPopOver from "../../Reusable/DynamicPopOver";
 import SelectDropdown from "../../Reusable/SelectDropdown";
 import { format, isValid, parse } from "date-fns";
+import { ErrorSubmit } from "../../Reusable/ErrorMessage";
 
 type Props = {
     DefaultFormData: PropertyDefaultValue;
@@ -235,19 +236,10 @@ export default function PropertyForm({
     };
     const onError = (e: any) => {
         const ErrorField = e.response.data;
-        let message: any;
         if (ErrorField > 0 || ErrorField !== null || ErrorField !== undefined) {
             setError({ ...ErrorField });
-            message = "Please check all the fields!";
-        } else {
-            message = "Something is wrong!";
         }
-        setPrompt((prev: any) => ({
-            ...prev,
-            message: message,
-            type: "error",
-            toggle: true,
-        }));
+        ErrorSubmit(e, setPrompt);
     };
 
     // Save Mutation
@@ -440,7 +432,7 @@ export default function PropertyForm({
                                         autoComplete="off"
                                     />
                                 }
-                                listArray={["Saleable", "Leaseable"]}
+                                listArray={["Saleable", "Leasable"]}
                             />
 
                             {errors.class && (

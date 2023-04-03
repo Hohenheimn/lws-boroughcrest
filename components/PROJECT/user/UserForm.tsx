@@ -424,7 +424,7 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
                                         name="save"
                                         className={style.save_button}
                                     >
-                                        Save
+                                        SAVE
                                     </button>
                                     <aside className={style.Arrow}>
                                         <RiArrowDownSFill

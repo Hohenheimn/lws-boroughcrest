@@ -13,6 +13,7 @@ import { InputNumberForTable } from "../../../../Reusable/NumberFormat";
 import { TableOneTotal } from "../../../../Reusable/TableTotal";
 import { CreateCollection } from "./Query";
 import { HeaderForm } from "./ReceivePaymentForm";
+import { ErrorSubmit } from "../../../../Reusable/ErrorMessage";
 
 type Props = {
     DefaultValue: isTableItem[];
@@ -36,7 +37,21 @@ export default function AcknowledgementForm({
     ResetField,
 }: Props) {
     const { setPrompt } = useContext(AppContext);
+    const [isSubDue, setSubDue] = useState(0);
+    const [isVariance, setVariance] = useState(0);
     const [isTable, setTable] = useState<isTableItem[]>([]);
+    useEffect(() => {
+        setSubDue(0);
+        setVariance(0);
+        isTable.map((item) => {
+            setSubDue((prev) => Number(prev) + Number(item.amount));
+        });
+    }, [isTable]);
+
+    useEffect(() => {
+        setVariance(Number(headerForm.amount_paid) - Number(isSubDue));
+    }, [isSubDue]);
+
     let buttonClicked = "";
     useEffect(() => {
         setTable(DefaultValue);
@@ -69,12 +84,8 @@ export default function AcknowledgementForm({
             );
         }
     };
-    const onError = () => {
-        setPrompt({
-            message: "Something is wrong!",
-            type: "error",
-            toggle: true,
-        });
+    const onError = (e: any) => {
+        ErrorSubmit(e, setPrompt);
     };
 
     const { isLoading, mutate } = CreateCollection(onSuccess, onError);
@@ -126,6 +137,7 @@ export default function AcknowledgementForm({
         );
 
         const Payload = {
+            receipt_type: headerForm.receipt_type,
             customer_id: headerForm.customer_id,
             receipt_date: isValid(receipt_date)
                 ? format(receipt_date, "yyyy-MM-dd")
@@ -176,8 +188,8 @@ export default function AcknowledgementForm({
                 </table>
             </div>
 
-            <TableOneTotal total={6545646} label="SUB DUE" redBG={false} />
-            <TableOneTotal total={6545646} label="VARIANCE" redBG={true} />
+            <TableOneTotal total={isSubDue} label="SUB DUE" redBG={false} />
+            <TableOneTotal total={isVariance} label="VARIANCE" redBG={true} />
             <div className="DropDownSave">
                 <button className="ddback">CANCEL</button>
                 <div className="ddSave">

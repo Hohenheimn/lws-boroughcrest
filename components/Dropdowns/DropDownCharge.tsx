@@ -118,11 +118,11 @@ const List = ({
             {data?.data.map((item: any, index: number) => (
                 <li
                     key={index}
-                    data-id={item.id}
-                    data-description={item.description}
-                    data-uom={item.uom.name}
-                    data-vat={item.vat_percent}
-                    data-rate={item.base_rate}
+                    data-id={item?.id}
+                    data-description={item?.description}
+                    data-uom={item?.uom?.name}
+                    data-vat={item?.vat_percent}
+                    data-rate={item?.base_rate}
                     onClick={(e) => {
                         UpdateStateHandler("charge", e);
                         setTempSearch(item.name);

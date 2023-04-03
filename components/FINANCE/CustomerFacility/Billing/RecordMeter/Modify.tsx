@@ -35,18 +35,23 @@ export default function Modify() {
         );
     }
 
-    const dateFrom = parse(data?.data.period_from, "yyyy-MM-dd", new Date());
-    const dateTo = parse(data?.data.period_to, "yyyy-MM-dd", new Date());
+    const dateFrom = parse(
+        data?.data.record.period_from,
+        "yyyy-MM-dd",
+        new Date()
+    );
+    const dateTo = parse(data?.data.record.period_to, "yyyy-MM-dd", new Date());
 
     return (
         <Readingform
             toggle={toggle}
             formType="modify"
             externalDefaultValue={{
+                reading_id: 1,
                 charge: {
-                    charge: data?.data.charge.name,
-                    rate: data?.data.charge.base_rate,
-                    id: data?.data.charge.id,
+                    charge: data?.data?.record.charge?.name,
+                    rate: data?.data?.record?.rate,
+                    id: data?.data?.record?.charge_id,
                 },
                 period: {
                     from: isValid(dateFrom)
@@ -54,15 +59,16 @@ export default function Modify() {
                         : "",
                     to: isValid(dateTo) ? format(dateFrom, "MMM dd yyyy") : "",
                 },
-                properties: [
-                    {
-                        property: "sample",
-                        property_unit_id: 4,
-                        previous_reading: 0,
-                        current_reading: 0,
-                        consumption: 0,
-                    },
-                ],
+                properties: data?.data?.readings.map((item: any) => {
+                    return {
+                        id: item.id,
+                        property: item.property.unit_code,
+                        property_unit_id: item.property_unit_id,
+                        previous_reading: item.previous_reading,
+                        current_reading: item.current_reading,
+                        consumption: item.consumption,
+                    };
+                }),
             }}
         />
     );

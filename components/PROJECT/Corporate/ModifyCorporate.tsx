@@ -20,6 +20,7 @@ import { useRouter } from "next/router";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import DynamicPopOver from "../../Reusable/DynamicPopOver";
 import SelectDropdown from "../../Reusable/SelectDropdown";
+import { ErrorSubmit } from "../../Reusable/ErrorMessage";
 
 type ModifyCorporate = {
     setToggleModify: Function;
@@ -537,12 +538,7 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                 }
             },
             onError: (error: any) => {
-                setPrompt((prev: any) => ({
-                    ...prev,
-                    type: "error",
-                    message: `Something is wrong!, ${error.message}`,
-                    toggle: true,
-                }));
+                ErrorSubmit(error, setPrompt);
             },
         }
     );

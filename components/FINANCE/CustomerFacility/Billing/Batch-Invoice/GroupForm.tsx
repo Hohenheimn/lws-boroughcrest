@@ -16,27 +16,29 @@ import { GetCustomerList } from "../../../../ReactQuery/CustomerMethod";
 import { CreateGroup, UpdateGroup } from "./Query";
 import { useQueryClient } from "react-query";
 import { useRouter } from "next/router";
+import { ErrorSubmit } from "../../../../Reusable/ErrorMessage";
 
 type Props = {
     toggle: Function;
-    externalDefaultValue: isTableItemObj[];
+    externalDefaultValue: CustomerGroup[];
     formType: string;
     id: number;
     groupName: string;
 };
 
 type isTable = {
-    itemArray: isTableItemObj[];
+    itemArray: CustomerGroup[];
     group_name: string;
     selectAll: boolean;
 };
 
-type isTableItemObj = {
+export type CustomerGroup = {
     select: boolean;
     id: number;
     name: string;
     email: string;
     class: string;
+    preferred_email?: string;
 };
 
 export default function GroupForm({
@@ -57,15 +59,6 @@ export default function GroupForm({
     });
 
     const [isSelectedIDs, setSelectedIDs] = useState<number[]>([]);
-
-    useEffect(() => {
-        const addExistingID = externalDefaultValue.map(
-            (item: isTableItemObj) => {
-                return Number(item.id);
-            }
-        );
-        setSelectedIDs(addExistingID);
-    }, []);
 
     const selectAll = () => {
         if (isTableItem.selectAll) {
@@ -117,12 +110,29 @@ export default function GroupForm({
     });
 
     useEffect(() => {
+        const addExistingID = externalDefaultValue?.map(
+            (item: CustomerGroup) => {
+                return Number(item.id);
+            }
+        );
+        setSelectedIDs(addExistingID);
+    }, [
+        data?.status,
+        isSearch,
+        TablePage,
+        isFilterbyCategory,
+        isCategoryList.value,
+        externalDefaultValue,
+        id,
+    ]);
+
+    useEffect(() => {
         if (data?.status === 200) {
             let selectAll = false;
 
             let CloneArray = data?.data.data.map((item: customer) => {
                 let select = false;
-                if (isSelectedIDs.some((someIDs) => someIDs === item.id)) {
+                if (isSelectedIDs?.some((someIDs) => someIDs === item.id)) {
                     select = true;
                 }
                 return {
@@ -145,6 +155,7 @@ export default function GroupForm({
 
             setTableItem({
                 ...isTableItem,
+                group_name: groupName,
                 itemArray: CloneArray,
                 selectAll: selectAll,
             });
@@ -155,6 +166,8 @@ export default function GroupForm({
         TablePage,
         isFilterbyCategory,
         isCategoryList.value,
+        externalDefaultValue,
+        id,
     ]);
 
     const queryClient = useQueryClient();
@@ -171,12 +184,8 @@ export default function GroupForm({
         toggle("");
     };
 
-    const onError = () => {
-        setPrompt({
-            message: "Something is wrong!",
-            type: "error",
-            toggle: true,
-        });
+    const onError = (e: any) => {
+        ErrorSubmit(e, setPrompt);
     };
 
     const { mutate: createMutate, isLoading: createLoading } = CreateGroup(
@@ -214,14 +223,16 @@ export default function GroupForm({
         if (formType === "add") {
             createMutate(Payload);
         } else {
-            console.log(Payload);
+            updateMutate(Payload);
         }
     };
 
     return (
         <ModalTemp wide={true}>
             <div>
-                <h3 className="mb-5 text-ThemeRed">Create Group</h3>
+                <h3 className="mb-5 text-ThemeRed">
+                    {formType === "edit" ? "Edit" : "Create"} Group
+                </h3>
                 <ul className="mb-5 flex justify-between 640px:flex-col 640px:items-end">
                     <li className=" flex items-center  640px:w-full">
                         <p className=" text-ThemeRed text-[12px] font-NHU-bold mr-3">
@@ -306,7 +317,7 @@ export default function GroupForm({
                         </thead>
                         <tbody>
                             {isTableItem?.itemArray.map(
-                                (item: isTableItemObj, index: number) => (
+                                (item: CustomerGroup, index: number) => (
                                     <TableList
                                         key={index}
                                         itemDetail={item}
@@ -336,7 +347,7 @@ export default function GroupForm({
                     {isError && <TableErrorMessage />}
                 </div>
 
-                <div className="mb-5"></div>
+                <div className="mb-5 1550px:mb-3"></div>
                 <Pagination
                     setTablePage={setTablePage}
                     TablePage={TablePage}
@@ -357,6 +368,8 @@ export default function GroupForm({
                                 height="10px"
                                 width="2px"
                             />
+                        ) : formType === "edit" ? (
+                            "EDIT"
                         ) : (
                             "CREATE"
                         )}
@@ -368,7 +381,7 @@ export default function GroupForm({
 }
 
 type ListProps = {
-    itemDetail: isTableItemObj;
+    itemDetail: CustomerGroup;
     isTableItem: isTable;
     setTableItem: Function;
     isSelectedIDs: number[];

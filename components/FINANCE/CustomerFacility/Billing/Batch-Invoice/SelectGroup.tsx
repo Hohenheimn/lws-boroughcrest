@@ -1,17 +1,19 @@
 import React, { useContext, useEffect, useState } from "react";
 import { BiSearch } from "react-icons/bi";
-import { BarLoader } from "react-spinners";
+import { BarLoader, MoonLoader } from "react-spinners";
 import TableErrorMessage from "../../../../Reusable/TableErrorMessage";
 import Pagination from "../../../../Reusable/Pagination";
 import AppContext from "../../../../Context/AppContext";
 import ModalTemp from "../../../../Reusable/ModalTemp";
-import { GetBatchInvoiceGroupList } from "./Query";
+import { DeleteGroup, GetBatchInvoiceGroupList } from "./Query";
 import {
     DeleteButton,
     EyeButton,
     PencilButtonTable,
 } from "../../../../Reusable/Icons";
 import { batchForm } from "./BatchForm";
+import { useQueryClient } from "react-query";
+import { ErrorSubmit } from "../../../../Reusable/ErrorMessage";
 
 type isTable = {
     itemArray: isTableItemObj[];
@@ -43,17 +45,13 @@ export default function SelectGroup({
     const { setPrompt } = useContext(AppContext);
     const [TablePage, setTablePage] = useState(1);
     const [isSearch, setSearch] = useState("");
-    const [isSelectedIDs, setSelectedIDs] = useState<
-        { id: number; name: string }[]
-    >([]);
+    const [isSelectedIDs, setSelectedIDs] = useState<number[]>([]);
 
     useEffect(() => {
-        const getSpecificBatch = isArray.filter(
-            (item: batchForm) => item.id === id
-        );
-        getSpecificBatch[0].application.map((gsbItem) => {
-            setSelectedIDs([...isSelectedIDs, gsbItem]);
+        const addExistingID = isArray[0].application?.map((item) => {
+            return item.id;
         });
+        setSelectedIDs(addExistingID);
     }, []);
 
     const [isTableItem, setTableItem] = useState<isTable>({
@@ -85,10 +83,7 @@ export default function SelectGroup({
         } else {
             // add
             const cloneToGetIDS = isTableItem.itemArray.map((item) => {
-                return {
-                    id: item.id,
-                    name: item.name,
-                };
+                return item.id;
             });
             setSelectedIDs(cloneToGetIDS);
         }
@@ -104,6 +99,13 @@ export default function SelectGroup({
         });
     };
 
+    useEffect(() => {
+        const addExistingID = isArray[0]?.application.map((item) => {
+            return Number(item.id);
+        });
+        setSelectedIDs(addExistingID);
+    }, [isSearch, TablePage, id]);
+
     const { isLoading, isError, data } = GetBatchInvoiceGroupList(
         isSearch,
         TablePage
@@ -115,7 +117,7 @@ export default function SelectGroup({
 
             const CloneArray = data?.data.data.map((item: isTableItemObj) => {
                 let select = false;
-                if (isSelectedIDs.some((someIDs) => someIDs.id === item.id)) {
+                if (isSelectedIDs.some((someIDs) => someIDs === item.id)) {
                     select = true;
                 }
                 return {
@@ -147,16 +149,31 @@ export default function SelectGroup({
             });
             return;
         }
+        const filter = isTableItem.itemArray.filter(
+            (filteritem) =>
+                isSelectedIDs.includes(filteritem.id) && {
+                    name: filteritem.name,
+                    id: filteritem.id,
+                }
+        );
+
+        const cloneToRemoveSelect = filter.map((item) => {
+            return {
+                name: item.name,
+                id: item.id,
+            };
+        });
         const cloneToUpdateValue = isArray.map((item: batchForm) => {
             if (item.id === id) {
                 return {
                     ...item,
-                    application: isSelectedIDs,
+                    application: cloneToRemoveSelect,
                 };
             }
             return item;
         });
         setArray(cloneToUpdateValue);
+
         toggle(false);
     };
 
@@ -263,7 +280,7 @@ type ListProps = {
     itemDetail: isTableItemObj;
     isTableItem: isTable;
     setTableItem: Function;
-    isSelectedIDs: { id: number; name: string }[];
+    isSelectedIDs: number[];
     setSelectedIDs: Function;
     setTypBatchForm: Function;
     setEditID: Function;
@@ -277,24 +294,19 @@ const TableList = ({
     setTypBatchForm,
     setEditID,
 }: ListProps) => {
+    const { setPrompt } = useContext(AppContext);
     const updateValue = (e: any) => {
         const newItems = isTableItem?.itemArray.map((item: any) => {
             if (itemDetail.id == item.id) {
                 if (item.select) {
                     // remove
                     const filterSelected = isSelectedIDs.filter(
-                        (itemFilt) => Number(item.id) !== itemFilt.id
+                        (itemFilt) => Number(item.id) !== itemFilt
                     );
                     setSelectedIDs(filterSelected);
                 } else {
                     // add
-                    setSelectedIDs([
-                        ...isSelectedIDs,
-                        {
-                            id: item.id,
-                            name: item.name,
-                        },
-                    ]);
+                    setSelectedIDs([...isSelectedIDs, item.id]);
                 }
                 return {
                     ...item,
@@ -309,6 +321,25 @@ const TableList = ({
             selectAll: false,
         });
     };
+    const queryClient = useQueryClient();
+
+    const onSuccess = () => {
+        queryClient.invalidateQueries(["group-application-list"]);
+        setPrompt({
+            message: `Group successfully Deleted`,
+            type: "success",
+            toggle: true,
+        });
+    };
+
+    const onError = (e: any) => {
+        ErrorSubmit(e, setPrompt);
+    };
+    const { mutate, isLoading } = DeleteGroup(onSuccess, onError);
+
+    const DeleteHandler = () => {
+        mutate(itemDetail.id);
+    };
     return (
         <tr>
             <td className="checkbox">
@@ -322,7 +353,13 @@ const TableList = ({
             </td>
             <td className=" text-DarkBlue">{itemDetail.name}</td>
             <td className="flex justify-end items-center w-full">
-                <div className=" mr-3" onClick={() => setTypBatchForm("view")}>
+                <div
+                    className=" mr-3"
+                    onClick={() => {
+                        setEditID(itemDetail.id);
+                        setTypBatchForm("view");
+                    }}
+                >
                     <EyeButton />
                 </div>
                 <div
@@ -334,8 +371,8 @@ const TableList = ({
                 >
                     <PencilButtonTable />
                 </div>
-                <div>
-                    <DeleteButton />
+                <div onClick={DeleteHandler}>
+                    {isLoading ? <MoonLoader size={12} /> : <DeleteButton />}
                 </div>
             </td>
         </tr>

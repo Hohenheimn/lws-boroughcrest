@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { batchForm } from "./BatchForm";
 import GroupForm from "./GroupForm";
-import Modify from "./Modify";
 import SelectGroup from "./SelectGroup";
+import Edit from "./Edit";
 import View from "./View";
 
 type Props = {
@@ -41,8 +41,20 @@ export default function SelectAndFormGroup({
                     groupName={""}
                 />
             )}
-            {typeBatchForm === "edit" && <Modify />}
-            {typeBatchForm === "view" && <View />}
+            {typeBatchForm === "edit" && (
+                <Edit
+                    typeBatchForm={typeBatchForm}
+                    id={isEditID}
+                    toggle={setTypBatchForm}
+                />
+            )}
+            {typeBatchForm === "view" && (
+                <View
+                    id={isEditID}
+                    toggleChangeForm={setTypBatchForm}
+                    toggleForm={toggle}
+                />
+            )}
         </>
     );
 }

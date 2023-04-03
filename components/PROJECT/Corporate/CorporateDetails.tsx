@@ -1,11 +1,8 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import AppContext from "../../Context/AppContext";
-import { HiPencil } from "react-icons/hi";
 import Image from "next/image";
 import ModifyCorporate from "./ModifyCorporate";
 import style from "../../../styles/Project/CorporateDetails.module.scss";
-import Tippy from "@tippy.js/react";
-import "tippy.js/dist/tippy.css";
 import { FadeIn } from "../../../components/Animation/SimpleAnimation";
 import { motion } from "framer-motion";
 import type { corporateColumns } from "../../../types/corporateList";

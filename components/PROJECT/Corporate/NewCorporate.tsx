@@ -16,6 +16,7 @@ import { getCookie } from "cookies-next";
 import DynamicPopOver from "../../Reusable/DynamicPopOver";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import SelectDropdown from "../../Reusable/SelectDropdown";
+import { ErrorSubmit } from "../../Reusable/ErrorMessage";
 
 export default function NewCorporate() {
     const [isNewActive, setNewActive] = useState([true, false]);
@@ -392,6 +393,10 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
         ResetContactForm();
     }, [corpReset]);
 
+    const onErrorHandler = (e: any) => {
+        ErrorSubmit(e, setPrompt);
+    };
+
     const {
         isLoading: MutateLoading,
         mutate,
@@ -437,6 +442,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                     ]);
                 }
             },
+            onError: onErrorHandler,
         }
     );
     if (isError) {

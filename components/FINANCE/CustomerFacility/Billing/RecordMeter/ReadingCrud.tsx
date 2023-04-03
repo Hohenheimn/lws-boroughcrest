@@ -10,13 +10,13 @@ import { CreateReadingDD, GetReadingDD, UpdateReadingDD } from "./Query";
 import DropDownCharge from "../../../../Dropdowns/DropDownCharge";
 import { useQueryClient } from "react-query";
 import DynamicPopOver from "../../../../Reusable/DynamicPopOver";
+import { ErrorSubmit } from "../../../../Reusable/ErrorMessage";
 
 type readingCharge = {
     id: number;
     displayID: string;
     charge_id: string;
     base_rate: number;
-    reading_serial: string;
     charge: string;
     reading_name: string;
 };
@@ -113,7 +113,6 @@ const ReadingCrudList = ({
                 reading_name: "",
                 charge: "",
                 base_rate: 0,
-                reading_serial: "",
             },
         ]);
     };
@@ -125,13 +124,12 @@ const ReadingCrudList = ({
         if (data?.status === 200) {
             const cloneArray = data?.data.map((item: any) => {
                 return {
-                    id: item.id,
-                    displayID: item.id,
-                    charge_id: item.charge.id,
-                    charge: item.charge.name,
-                    reading_name: "item.reading_name",
-                    base_rate: " item.charge.base_rate",
-                    reading_serial: "item.reading_serial",
+                    id: item?.id,
+                    displayID: item?.id,
+                    charge_id: item.charge?.id,
+                    charge: item?.charge?.name,
+                    reading_name: item?.reading_name,
+                    base_rate: item?.charge?.base_rate,
                 };
             });
             setArray(cloneArray);
@@ -224,7 +222,7 @@ const List = ({
     const Selected = (
         id: string | number,
         name: string,
-        serial: string,
+
         charge_name: string,
         charge_id: string,
         base_rate: number
@@ -232,7 +230,7 @@ const List = ({
         setvalue({
             reading_id: id,
             reading_name: name,
-            reading_serial: serial,
+
             charge_name: charge_name,
             base_rate: base_rate,
             charge_id: charge_id,
@@ -272,7 +270,7 @@ const List = ({
             type: "success",
             toggle: true,
         });
-        queryClient.invalidateQueries("reading-list");
+        queryClient.invalidateQueries(["reading-list"]);
     };
     // Mutation
     const onSuccessSave = () => {
@@ -281,8 +279,8 @@ const List = ({
     const onSuccessUpdate = () => {
         messageHandler("updated");
     };
-    const onError = () => {
-        setWarning("Reading has already been registered");
+    const onError = (e: any) => {
+        ErrorSubmit(e, setPrompt);
     };
     // Save
     const { isLoading: loadingSave, mutate: mutateSave } = CreateReadingDD(
@@ -306,14 +304,14 @@ const List = ({
         setWarning("");
         const Payload = {
             charge_id: itemDetail.charge_id,
-            name: itemDetail.charge,
+            reading_name: itemDetail.reading_name,
         };
 
-        // if (itemDetail.displayID === "----") {
-        //     mutateSave(Payload);
-        // } else {
-        //     mutateUpdate(Payload);
-        // }
+        if (itemDetail.displayID === "----") {
+            mutateSave(Payload);
+        } else {
+            mutateUpdate(Payload);
+        }
     };
 
     return (
@@ -324,7 +322,6 @@ const List = ({
                     Selected(
                         itemDetail.id,
                         itemDetail.reading_name,
-                        itemDetail.reading_serial,
                         itemDetail.charge,
                         itemDetail.charge_id,
                         itemDetail.base_rate
@@ -346,7 +343,7 @@ const List = ({
                     Selected(
                         itemDetail.id,
                         itemDetail.reading_name,
-                        itemDetail.reading_serial,
+
                         itemDetail.charge,
                         itemDetail.charge_id,
                         itemDetail.base_rate

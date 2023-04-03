@@ -14,7 +14,7 @@ export function PencilButton({ FunctionOnClick, title }: Props) {
                 <div onClick={FunctionOnClick}>
                     <Image
                         src="/Images/big_pencil.png"
-                        width={22}
+                        width={20}
                         height={18}
                         alt="Modify"
                     />

@@ -14,7 +14,7 @@ export default function PrompMessage() {
                         toggle: false,
                     })
             );
-        }, 2000);
+        }, 3000);
         return () => clearInterval(intervalPrompt);
     });
     return (
@@ -27,9 +27,9 @@ export default function PrompMessage() {
                 togglePrompt.type === "error" && "bg-[#8f384d]"
             } ${
                 togglePrompt.type === "draft" && "bg-[#f19308]"
-            } transition duration-75 fixed top-10 right-10 480px:top-5 480px:right-5 z-[99] 820px:px-7 820px:py-3 opacity-90 px-10 py-5 shadow-lg rounded-lg`}
+            } transition duration-75 fixed top-10 right-10 480px:top-5 480px:right-5 z-[99999] 820px:px-7 820px:py-3 opacity-90 px-10 py-5 shadow-lg rounded-lg`}
         >
-            <h1 className="text-white 820px:text-[12px] max-w-[300px]">
+            <h1 className="text-white 820px:text-[12px] max-w-[500px]">
                 {togglePrompt.message}
             </h1>
         </motion.div>

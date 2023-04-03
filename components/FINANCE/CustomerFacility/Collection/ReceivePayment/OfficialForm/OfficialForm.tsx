@@ -11,6 +11,7 @@ import { Outright } from "./OutrightAndAdvances/OutRight";
 import OutrightAndAdvances from "./OutrightAndAdvances/OutrightAndAdvances";
 import OutStandingBalance, { Outstanding } from "./OutStandingBalance";
 import PaymentSummary from "./PaymentSummary";
+import { ErrorSubmit } from "../../../../../Reusable/ErrorMessage";
 
 type Props = {
     Error: () => void;
@@ -83,12 +84,8 @@ export default function OfficialForm({
             );
         }
     };
-    const onError = () => {
-        setPrompt({
-            message: "Something is wrong!",
-            type: "error",
-            toggle: true,
-        });
+    const onError = (e: any) => {
+        ErrorSubmit(e, setPrompt);
     };
     const { isLoading, mutate, isError } = CreateCollection(onSuccess, onError);
 

@@ -61,3 +61,40 @@ export const UpdateGroup = (onSucces: any, onError: any, id: number) => {
         }
     );
 };
+
+export const ShowGroup = (id: number) => {
+    return useQuery(
+        ["show-group", id],
+        () => {
+            return api.get(
+                `/finance/customer-facility/billing/batch/groups/${id}`,
+                {
+                    headers: { Authorization: "Bearer " + getCookie("user") },
+                }
+            );
+        },
+        {
+            enabled: !!id,
+        }
+    );
+};
+
+export const DeleteGroup = (onSucces: any, onError: any) => {
+    return useMutation(
+        (id: any) => {
+            return api.delete(
+                `/finance/customer-facility/billing/batch/groups/${id}`,
+
+                {
+                    headers: {
+                        Authorization: "Bearer " + getCookie("user"),
+                    },
+                }
+            );
+        },
+        {
+            onSuccess: onSucces,
+            onError: onError,
+        }
+    );
+};

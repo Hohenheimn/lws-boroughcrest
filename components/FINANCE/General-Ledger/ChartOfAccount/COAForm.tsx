@@ -21,6 +21,7 @@ import DynamicPopOver from "../../../Reusable/DynamicPopOver";
 import CrudBankAccNum from "./CrudBankAccNum";
 import DefaultAccount from "./DefaultAccount";
 import Parent from "./Parent";
+import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
 
 type Props = {
     setCreate: Function;
@@ -157,13 +158,8 @@ export default function COAForm({
         setError({
             ...e.response?.data,
         });
-        if (!e.response?.data) {
-            setPrompt({
-                message: "Something is wrong!",
-                toggle: true,
-                type: "error",
-            });
-        }
+
+        ErrorSubmit(e, setPrompt);
     };
 
     const delSuccess = () => {
@@ -225,8 +221,6 @@ export default function COAForm({
             apply_to_sub_acc: isStatus,
             bank_account_id: isBankAccountVal.id,
         };
-
-        console.log(Payload);
 
         if (router.query.modify === undefined) {
             // Save

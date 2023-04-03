@@ -47,8 +47,8 @@ export default function Pagination({
                                 key={index}
                                 className={`${
                                     CurrentPage === index + 1
-                                        ? "text-white bg-ThemeRed"
-                                        : "text-ThemeRed bg-[#eeeff2]"
+                                        ? " text-ThemeRed"
+                                        : " text-RegularColor"
                                 } font-bold h-5 w-5 1550px:w-5 1550px:h-5 480px:w-6 480px:h-6 text-[13px] flex justify-center items-center border-r border-white cursor-pointer`}
                             >
                                 {index + 1}

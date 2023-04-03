@@ -6,8 +6,6 @@ import { customer } from "../../../types/customerList";
 import Image from "next/image";
 import { AiFillCamera } from "react-icons/ai";
 import Calendar from "../../Reusable/Calendar";
-import { MdOutlineKeyboardArrowDown } from "react-icons/md";
-import DynamicPopOver from "../../Reusable/DynamicPopOver";
 import SelectDropdown from "../../Reusable/SelectDropdown";
 import { format, isValid, parse } from "date-fns";
 

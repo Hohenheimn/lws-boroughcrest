@@ -18,6 +18,7 @@ import {
 } from "../../../Reusable/NumberFormat";
 import TableErrorMessage from "../../../Reusable/TableErrorMessage";
 import { format, isValid, parse } from "date-fns";
+import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
 
 export type isTableItemArray = isTableItemObj[];
 
@@ -43,12 +44,8 @@ export default function SubTable() {
             type: "success",
         });
     };
-    const onError = () => {
-        setPrompt({
-            toggle: true,
-            message: "Something is wrong!",
-            type: "error",
-        });
+    const onError = (e: any) => {
+        ErrorSubmit(e, setPrompt);
     };
     const { data, isLoading, isError } = GetSubledger();
     const { isLoading: mutateLoading, mutate } = CreateUpdateSubledger(

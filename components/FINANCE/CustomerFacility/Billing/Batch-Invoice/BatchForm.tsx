@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import DropDownCharge from "../../../../Dropdowns/DropDownCharge";
 import { MinusButtonTable, PlusButtonTable } from "../../../../Reusable/Icons";
 import SelectAndFormGroup from "./SelectAndFormGroup";
-import SelectGroup from "./SelectGroup";
 
 export type batchForm = {
     id: number;
@@ -14,6 +13,7 @@ export type batchForm = {
         id: number;
     }[];
 };
+
 type Props = {
     DefaultValue: batchForm[];
 };
@@ -94,7 +94,8 @@ const List = ({
             ...temp,
             {
                 id: random,
-                charge: 0,
+                charge: "",
+                charge_id: 0,
                 description: "",
                 application: [],
             },
