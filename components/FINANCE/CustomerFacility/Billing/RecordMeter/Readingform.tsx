@@ -109,21 +109,21 @@ export default function Readingform({
 
                 return {
                     id: item.id,
-                    unit_code: item.unit_code,
+                    unit_code: item?.unit_code,
                     project: {
-                        name: item.project.name,
+                        name: item?.project?.name,
                     },
                     developer: {
-                        name: item.developer.name,
+                        name: item?.developer?.name,
                     },
                     tower: {
-                        name: item.tower.name,
+                        name: item?.tower?.name,
                     },
                     floor: {
-                        name: item.floor.name,
+                        name: item?.floor?.name,
                     },
-                    class: item.class,
-                    type: item.type,
+                    class: item?.class,
+                    type: item?.type,
                     select: select,
                 };
             });

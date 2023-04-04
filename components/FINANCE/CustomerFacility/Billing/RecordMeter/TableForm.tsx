@@ -7,16 +7,13 @@ import "tippy.js/dist/tippy.css";
 import { useRouter } from "next/router";
 import style from "../../../../../styles/SearchFilter.module.scss";
 import { BarLoader, ScaleLoader } from "react-spinners";
-import DynamicPopOver from "../../../../Reusable/DynamicPopOver";
 import ReadingCrud from "./ReadingCrud";
-import DropDownCharge from "../../../../Dropdowns/DropDownCharge";
 import Readingform from "./Readingform";
 import PreviousPeriod from "./PreviousPeriod";
 import { PencilButton } from "../../../../Reusable/Icons";
 import { TextNumberDisplay } from "../../../../Reusable/NumberFormat";
 import Pagination from "../../../../Reusable/Pagination";
 import TableErrorMessage from "../../../../Reusable/TableErrorMessage";
-import Link from "next/link";
 import { format, isValid, parse } from "date-fns";
 import { ApplyRecordMeter, GetRecordMeterList } from "./Query";
 import Modify from "./Modify";
@@ -135,7 +132,6 @@ export default function TableForm() {
                         };
                     }
                 );
-
                 if (
                     CloneArray?.length === isSelectedIDs.length &&
                     CloneArray?.length !== 0
@@ -157,14 +153,26 @@ export default function TableForm() {
 
     const selectAll = () => {
         if (isTableItem.selectAll) {
-            // remove
-            setSelectedIDs([]);
-        } else {
-            // add
-            const ReceiptBookIDs = isTableItem.itemArray.map((item) => {
-                return Number(item.id);
+            // get ids need to remove
+            const toRemove = isTableItem.itemArray.map((mapItem) => {
+                return mapItem.id;
             });
-            setSelectedIDs(ReceiptBookIDs);
+            // remove those ids from selectedIDS
+            const remove = isSelectedIDs.filter((filter) => {
+                return !toRemove.includes(filter);
+            });
+            setSelectedIDs(remove);
+        } else {
+            // get those ids that not in the selectedIDS
+            const cloneToUpdateValue = isTableItem.itemArray.filter(
+                (item) => !isSelectedIDs.includes(item.id)
+            );
+            // convert to ids array
+            const newSelectAll = cloneToUpdateValue.map((item) => {
+                return item.id;
+            });
+            // add selectedids
+            setSelectedIDs([...newSelectAll, ...isSelectedIDs]);
         }
         const newItems = isTableItem?.itemArray.map((item: any) => {
             return {
@@ -173,6 +181,7 @@ export default function TableForm() {
             };
         });
         setTableItem({
+            ...isTableItem,
             itemArray: newItems,
             selectAll: !isTableItem.selectAll,
         });
@@ -214,12 +223,21 @@ export default function TableForm() {
             to: "",
             year: "",
         });
+        setReading({
+            reading_id: "",
+            reading_name: "",
+            reading_serial: "",
+            charge_name: "",
+            charge_id: "",
+            base_rate: 0,
+        });
         queryClient.invalidateQueries(["record-meter-list"]);
         setPrompt({
             message: `Record meter reading successfully applied!`,
             type: "success",
             toggle: true,
         });
+        router.push("/finance/customer-facility/billing/invoice-list");
     };
 
     const onError = (e: any) => {
@@ -233,7 +251,6 @@ export default function TableForm() {
 
     const ApplyHandler = () => {
         const Payload = {
-            charge_id: Number(isReading.charge_id),
             reading_ids: isSelectedIDs,
         };
         if (isSelectedIDs.length <= 0) {
@@ -394,8 +411,8 @@ export default function TableForm() {
                 <Pagination
                     setTablePage={setTablePage}
                     TablePage={TablePage}
-                    PageNumber={data?.data.last_page}
-                    CurrentPage={data?.data.current_page}
+                    PageNumber={data?.data?.records?.last_page}
+                    CurrentPage={data?.data?.records?.current_page}
                 />
                 <div className="w-full flex justify-end mt-5">
                     <button className="buttonRed" onClick={ApplyHandler}>

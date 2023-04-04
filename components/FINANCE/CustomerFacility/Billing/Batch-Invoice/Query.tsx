@@ -7,7 +7,7 @@ export const GetBatchInvoiceGroupList = (
     PageNumber: number
 ) => {
     return useQuery(
-        ["group-application-list", keyword],
+        ["group-application-list", keyword, PageNumber],
         () => {
             return api.get(
                 `/finance/customer-facility/billing/batch/groups?keywords=${keyword}&paginate=10&page=${PageNumber}`,
@@ -95,6 +95,98 @@ export const DeleteGroup = (onSucces: any, onError: any) => {
         {
             onSuccess: onSucces,
             onError: onError,
+        }
+    );
+};
+
+export const CreateUpdateBatchInvoice = (onSucces: any, onError: any) => {
+    return useMutation(
+        (Payload: any) => {
+            return api.post(
+                `/finance/customer-facility/billing/batch`,
+                Payload,
+                {
+                    headers: {
+                        Authorization: "Bearer " + getCookie("user"),
+                    },
+                }
+            );
+        },
+        {
+            onSuccess: onSucces,
+            onError: onError,
+        }
+    );
+};
+
+export const GetBatchInvoiceList = (PageNumber: number) => {
+    return useQuery(
+        ["batch-invoice-list", PageNumber],
+        () => {
+            return api.get(
+                `/finance/customer-facility/billing/batch?paginate=10&page=${PageNumber}`,
+                {
+                    headers: { Authorization: "Bearer " + getCookie("user") },
+                }
+            );
+        },
+        {
+            refetchOnWindowFocus: false,
+        }
+    );
+};
+
+export const DeleteBatchInvoice = (onSucces: any, onError: any) => {
+    return useMutation(
+        (id: any) => {
+            return api.delete(
+                `/finance/customer-facility/billing/batch/${id}`,
+
+                {
+                    headers: {
+                        Authorization: "Bearer " + getCookie("user"),
+                    },
+                }
+            );
+        },
+        {
+            onSuccess: onSucces,
+            onError: onError,
+        }
+    );
+};
+
+export const UpdateBatchInvoice = (onSucces: any, onError: any) => {
+    return useMutation(
+        (Payload: any) => {
+            return api.put(
+                `/finance/customer-facility/billing/batch/apply`,
+                Payload,
+
+                {
+                    headers: {
+                        Authorization: "Bearer " + getCookie("user"),
+                    },
+                }
+            );
+        },
+        {
+            onSuccess: onSucces,
+            onError: onError,
+        }
+    );
+};
+
+export const ShowBatchInvoice = (id: number) => {
+    return useQuery(
+        ["show-batch-invoice", id],
+        () => {
+            return api.get(`/finance/customer-facility/billing/batch/${id}`, {
+                headers: { Authorization: "Bearer " + getCookie("user") },
+            });
+        },
+        {
+            enabled: !!id,
         }
     );
 };

@@ -5,7 +5,10 @@ import Image from "next/image";
 import { TextNumberDisplay } from "../../../Reusable/NumberFormat";
 import { TableOneTotal, TableTwoTotal } from "../../../Reusable/TableTotal";
 import Authorization from "./Authorization";
-import { CollectionItem } from "../../../../pages/finance/customer-facility/collection/payment-register";
+import {
+    CollectionItem,
+    PaymentSummaryHistories,
+} from "../../../../pages/finance/customer-facility/collection/payment-register";
 import { GetCustomer } from "../../../ReactQuery/CustomerMethod";
 import { customer } from "../../../../types/customerList";
 import { format, isValid, parse } from "date-fns";
@@ -364,62 +367,14 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td>
-                                                    <TextNumberDisplay
-                                                        className="w-full withPeso"
-                                                        value={1000}
+                                            {CollectionDetail.histories.map(
+                                                (item, index) => (
+                                                    <PaymentSummaryList
+                                                        key={index}
+                                                        item={item}
                                                     />
-                                                </td>
-                                                <td>
-                                                    <TextNumberDisplay
-                                                        className="w-full"
-                                                        value={10}
-                                                        suffix="%"
-                                                    />
-                                                </td>
-                                                <td>
-                                                    <TextNumberDisplay
-                                                        className="w-full withPeso"
-                                                        value={1000}
-                                                    />
-                                                </td>
-                                                <td>
-                                                    {" "}
-                                                    <TextNumberDisplay
-                                                        className="w-full withPeso"
-                                                        value={1000}
-                                                    />
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <TextNumberDisplay
-                                                        className="w-full withPeso"
-                                                        value={1000}
-                                                    />
-                                                </td>
-                                                <td>
-                                                    <TextNumberDisplay
-                                                        className="w-full"
-                                                        value={10}
-                                                        suffix="%"
-                                                    />
-                                                </td>
-                                                <td>
-                                                    <TextNumberDisplay
-                                                        className="w-full withPeso"
-                                                        value={1000}
-                                                    />
-                                                </td>
-                                                <td>
-                                                    {" "}
-                                                    <TextNumberDisplay
-                                                        className="w-full withPeso"
-                                                        value={1000}
-                                                    />
-                                                </td>
-                                            </tr>
+                                                )
+                                            )}
                                         </tbody>
                                     </table>
                                 </div>
@@ -510,3 +465,47 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
         </div>
     );
 }
+
+type PaymentSummaryList = {
+    item: PaymentSummaryHistories;
+};
+
+const PaymentSummaryList = ({ item }: PaymentSummaryList) => {
+    useEffect(() => {
+        console.log(item);
+    }, []);
+
+    // const total = 0;
+    // const vatPercentage = 0;
+    // const vatAmount = 0;
+    // const base = total / ((vat + 100) / 100);
+
+    const total = 0;
+    const vatPercentage = 0;
+    const vatAmount = 0;
+    const base = 0;
+
+    return (
+        <tr>
+            <td>
+                <TextNumberDisplay className="w-full withPeso" value={base} />
+            </td>
+            <td>
+                <TextNumberDisplay
+                    className="w-full"
+                    value={vatPercentage}
+                    suffix="%"
+                />
+            </td>
+            <td>
+                <TextNumberDisplay
+                    className="w-full withPeso"
+                    value={vatAmount}
+                />
+            </td>
+            <td>
+                <TextNumberDisplay className="w-full withPeso" value={total} />
+            </td>
+        </tr>
+    );
+};

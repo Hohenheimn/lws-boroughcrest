@@ -43,7 +43,10 @@ export type CollectionItem = {
     parent_id: number | null;
     updated_at: string;
     created_at: string;
+    histories: PaymentSummaryHistories[];
 };
+
+export type PaymentSummaryHistories = CollectionItem;
 
 export default function PaymentRegister() {
     const [isFilterText, setFilterText] = useState<string[]>([]);

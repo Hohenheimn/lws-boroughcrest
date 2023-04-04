@@ -15,7 +15,8 @@ import BankAccountDropDown from "../../../../Reusable/BankAccountDropDown";
 import { Outstanding } from "./OfficialForm/OutStandingBalance";
 import { Outright } from "./OfficialForm/OutrightAndAdvances/OutRight";
 import { AdvancesType } from "./OfficialForm/OutrightAndAdvances/Advances";
-import { GetCustomerOutstanding } from "./Query";
+import { GetCustomerOutstanding, GetCustomerSummary } from "./Query";
+import { useRouter } from "next/router";
 
 export type ReceivePaymentForm = {
     description: string;
@@ -110,20 +111,31 @@ export default function ReceivePaymentForm({
         });
     }, [DefaultCustomer]);
 
-    const [isOutStanding, setOutstanding] = useState<Outstanding[]>([
-        {
-            id: 1,
-            document_no: "",
-            charge: "",
-            charge_id: "",
-            description: "",
-            due_amount: 0,
-            applied_amount: 0,
-            balance: 0,
-        },
-    ]);
+    const [isOutStanding, setOutstanding] = useState<Outstanding[]>([]);
+
+    const router = useRouter();
 
     const { isLoading, data, isError } = GetCustomerOutstanding(isCustomer.id);
+
+    useEffect(() => {
+        if (data?.status === 200) {
+            const getCustomerOutstanding = data?.data[0]?.invoice_list?.map(
+                (item: any) => {
+                    return {
+                        id: item.id,
+                        document_no: data?.data[0].invoice_no,
+                        charge: item.charge.name,
+                        charge_id: item.charge_id,
+                        description: item.description,
+                        due_amount: item.amount,
+                        applied_amount: 0,
+                        balance: item.amount,
+                    };
+                }
+            );
+            setOutstanding(getCustomerOutstanding);
+        }
+    }, [data]);
 
     useEffect(() => {
         setHeaderForm({
@@ -535,6 +547,8 @@ export default function ReceivePaymentForm({
                     DefaultOfficial={DefaultOfficial}
                     Outstanding={isOutStanding}
                     setOutstanding={setOutstanding}
+                    outStandingLoading={isLoading}
+                    outStandingError={isError}
                 />
             )}
         </>

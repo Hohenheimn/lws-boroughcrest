@@ -1,10 +1,17 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import DropDownCharge from "../../../../Dropdowns/DropDownCharge";
 import { MinusButtonTable, PlusButtonTable } from "../../../../Reusable/Icons";
 import SelectAndFormGroup from "./SelectAndFormGroup";
+import { CreateUpdateBatchInvoice } from "./Query";
+import AppContext from "../../../../Context/AppContext";
+import { useQuery, useQueryClient } from "react-query";
+import { ErrorSubmit } from "../../../../Reusable/ErrorMessage";
+import { ScaleLoader } from "react-spinners";
+import { useRouter } from "next/router";
 
 export type batchForm = {
     id: number;
+    backend_id: number | null;
     charge_id: string | number;
     charge: string;
     description: string;
@@ -21,9 +28,65 @@ type Props = {
 export default function BatchForm({ DefaultValue }: Props) {
     const [isDefault, setDefault] = useState<batchForm[]>(DefaultValue);
     const [selectedID, setSelectedID] = useState<boolean | number>(false);
+    const { setPrompt } = useContext(AppContext);
+    const queryClient = useQueryClient();
+    const router = useRouter();
+
+    const onSuccess = () => {
+        queryClient.invalidateQueries(["batch-invoice-list"]);
+        if (router.query.modify !== undefined) {
+            router.push("/finance/customer-facility/billing/batch-invoice");
+        }
+        setPrompt({
+            message: `Batch invoice successfully ${
+                router.query.modify !== undefined ? "updated" : "registered"
+            }`,
+            type: "success",
+            toggle: true,
+        });
+        setDefault([
+            {
+                id: 0,
+                backend_id: null,
+                charge: "",
+                charge_id: 0,
+                description: "",
+                application: [],
+            },
+        ]);
+    };
+
+    const onError = (e: any) => {
+        ErrorSubmit(e, setPrompt);
+    };
+
+    const { isLoading, mutate } = CreateUpdateBatchInvoice(onSuccess, onError);
 
     const ApplyHandler = () => {
-        console.log(isDefault);
+        let validate = true;
+        const Payload = isDefault.map((item) => {
+            return {
+                charge_id: item.charge_id,
+                billing_group_ids: item.application.map((item) => item.id),
+                description: item.description,
+                id: item.backend_id,
+            };
+        });
+        Payload.map((item) => {
+            if (item.charge_id === 0 || item.billing_group_ids.length <= 0) {
+                validate = false;
+                return;
+            }
+        });
+        if (validate) {
+            mutate(Payload);
+        } else {
+            setPrompt({
+                type: "draft",
+                message: "Fill out all fields",
+                toggle: true,
+            });
+        }
     };
 
     return (
@@ -41,9 +104,9 @@ export default function BatchForm({ DefaultValue }: Props) {
                 <table className="table_list forCrud">
                     <thead className="textRed">
                         <tr>
-                            <th className="checkbox">
+                            {/* <th className="checkbox">
                                 <input type="checkbox" />
-                            </th>
+                            </th> */}
                             <th>CHARGE</th>
                             <th>DESCRIPTION</th>
                             <th>APPLICATION</th>
@@ -66,7 +129,11 @@ export default function BatchForm({ DefaultValue }: Props) {
             </div>
             <div className="py-2 flex justify-end">
                 <button className="buttonRed" onClick={ApplyHandler}>
-                    APPLY
+                    {isLoading ? (
+                        <ScaleLoader color="#fff" height="10px" width="2px" />
+                    ) : (
+                        "APPLY"
+                    )}
                 </button>
             </div>
         </>
@@ -94,6 +161,7 @@ const List = ({
             ...temp,
             {
                 id: random,
+                backend_id: null,
                 charge: "",
                 charge_id: 0,
                 description: "",
@@ -129,9 +197,9 @@ const List = ({
     };
     return (
         <tr>
-            <td className="checkbox">
+            {/* <td className="checkbox">
                 <input type="checkbox" />
-            </td>
+            </td> */}
             <td className="flex items-center">
                 <DropDownCharge
                     UpdateStateHandler={updateValue}

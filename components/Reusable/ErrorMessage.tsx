@@ -8,6 +8,7 @@ export const ErrorSubmit = (e: any, setPrompt: Function) => {
             ? item
             : item.replace(".", "") + ", ";
     });
+    console.log(e.response);
     if (e.response.status === 422) {
         setPrompt({
             message: message,

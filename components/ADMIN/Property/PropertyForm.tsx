@@ -191,11 +191,7 @@ export default function PropertyForm({
 
     // Mutation
     const onSuccess = () => {
-        queryClient.invalidateQueries([
-            "Property-List",
-            propTableRows,
-            isSearchTable,
-        ]);
+        queryClient.invalidateQueries(["Property-List"]);
         setError({ ...ErrorDefault });
         setUnitCode("");
         reset();
@@ -432,7 +428,7 @@ export default function PropertyForm({
                                         autoComplete="off"
                                     />
                                 }
-                                listArray={["Saleable", "Leasable"]}
+                                listArray={["Saleable", "Leasable", "Common"]}
                             />
 
                             {errors.class && (

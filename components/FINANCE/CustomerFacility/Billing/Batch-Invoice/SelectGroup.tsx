@@ -47,18 +47,12 @@ export default function SelectGroup({
     const [isSearch, setSearch] = useState("");
     const [isSelectedIDs, setSelectedIDs] = useState<number[]>([]);
 
-    useEffect(() => {
-        const addExistingID = isArray[0].application?.map((item) => {
-            return item.id;
-        });
-        setSelectedIDs(addExistingID);
-    }, []);
-
     const [isTableItem, setTableItem] = useState<isTable>({
         itemArray: [],
         selectAll: false,
     });
 
+    // select all checkbox
     useEffect(() => {
         if (
             isTableItem.itemArray.length === isSelectedIDs.length &&
@@ -78,14 +72,26 @@ export default function SelectGroup({
 
     const selectAll = () => {
         if (isTableItem.selectAll) {
-            // remove
-            setSelectedIDs([]);
+            // get ids need to remove
+            const toRemove = isTableItem.itemArray.map((mapItem) => {
+                return mapItem.id;
+            });
+            // remove those ids from selectedIDS
+            const remove = isSelectedIDs.filter((filter) => {
+                return !toRemove.includes(filter);
+            });
+            setSelectedIDs(remove);
         } else {
-            // add
-            const cloneToGetIDS = isTableItem.itemArray.map((item) => {
+            // get those ids that not in the selectedIDS
+            const cloneToUpdateValue = isTableItem.itemArray.filter(
+                (item) => !isSelectedIDs.includes(item.id)
+            );
+            // convert to ids array
+            const newSelectAll = cloneToUpdateValue.map((item) => {
                 return item.id;
             });
-            setSelectedIDs(cloneToGetIDS);
+            // add selectedids
+            setSelectedIDs([...newSelectAll, ...isSelectedIDs]);
         }
         const newItems = isTableItem?.itemArray.map((item: any) => {
             return {
@@ -94,13 +100,15 @@ export default function SelectGroup({
             };
         });
         setTableItem({
+            ...isTableItem,
             itemArray: newItems,
             selectAll: !isTableItem.selectAll,
         });
     };
 
     useEffect(() => {
-        const addExistingID = isArray[0]?.application.map((item) => {
+        const getSelectedRow = isArray.filter((item) => item.id === id);
+        const addExistingID = getSelectedRow[0]?.application.map((item) => {
             return Number(item.id);
         });
         setSelectedIDs(addExistingID);
@@ -114,10 +122,10 @@ export default function SelectGroup({
     useEffect(() => {
         if (data?.status === 200) {
             let selectAll = false;
-
             const CloneArray = data?.data.data.map((item: isTableItemObj) => {
                 let select = false;
-                if (isSelectedIDs.some((someIDs) => someIDs === item.id)) {
+                // check if item has a id in selectedids
+                if (isSelectedIDs.includes(item.id)) {
                     select = true;
                 }
                 return {
@@ -138,7 +146,7 @@ export default function SelectGroup({
                 selectAll: selectAll,
             });
         }
-    }, [data?.data.data, isSearch]);
+    }, [data?.data.data, isSearch, isSelectedIDs]);
 
     const SaveHandler = () => {
         if (isSelectedIDs.length <= 0) {
@@ -163,6 +171,7 @@ export default function SelectGroup({
                 id: item.id,
             };
         });
+
         const cloneToUpdateValue = isArray.map((item: batchForm) => {
             if (item.id === id) {
                 return {
@@ -172,8 +181,8 @@ export default function SelectGroup({
             }
             return item;
         });
-        setArray(cloneToUpdateValue);
 
+        setArray(cloneToUpdateValue);
         toggle(false);
     };
 
