@@ -86,12 +86,12 @@ export default function Receiptsbook({
             setSelectedIDs([]);
         } else {
             // add
-            const ReceiptBookIDs = isReceiptBookData.itemArray.map((item) => {
+            const ReceiptBookIDs = isReceiptBookData?.itemArray?.map((item) => {
                 return Number(item.id);
             });
             setSelectedIDs(ReceiptBookIDs);
         }
-        const newItems = isReceiptBookData?.itemArray.map((item: any) => {
+        const newItems = isReceiptBookData?.itemArray?.map((item: any) => {
             return {
                 ...item,
                 select: !isReceiptBookData.selectAll,
@@ -122,19 +122,19 @@ export default function Receiptsbook({
                 }
                 return {
                     id: item.id,
-                    document_date: item.receipt_date,
-                    depositor: item.depositor.name,
-                    receipt_no: item.receipt_no,
-                    bank_and_account_no: `${item.bank_account.bank_branch} - ${item.bank_account.bank_acc_no}`,
-                    reference_no: item.reference_no,
-                    deposit_date: item.deposit_date,
-                    deposit_amount: item.amount_paid,
-                    variance: item.amount_paid,
-                    status: item.status,
+                    document_date: item?.receipt_date,
+                    depositor: item?.depositor.name,
+                    receipt_no: item?.receipt_no,
+                    bank_and_account_no: `${item?.bank_account?.bank_branch} - ${item?.bank_account?.bank_acc_no}`,
+                    reference_no: item?.reference_no,
+                    deposit_date: item?.deposit_date,
+                    deposit_amount: item?.amount_paid,
+                    variance: item?.amount_paid,
+                    status: item?.status,
                     index: "",
                     indexID: "",
                     select: select,
-                    childrenRB: item.bank_credit.map((itemChild: any) => {
+                    childrenRB: item?.bank_credit?.map((itemChild: any) => {
                         return {
                             id: itemChild.id,
                             indexID: itemChild.id,
@@ -145,7 +145,7 @@ export default function Receiptsbook({
                 };
             });
 
-            if (CloneArray.length === isSelectedIDs.length) {
+            if (CloneArray.length === isSelectedIDs?.length) {
                 selectAll = true;
             }
 
@@ -157,7 +157,7 @@ export default function Receiptsbook({
     }, [data]);
 
     const AddHandler = (id: string | number) => {
-        const cloneToAdd = isReceiptBookData.itemArray.map(
+        const cloneToAdd = isReceiptBookData?.itemArray?.map(
             (item: isTableItemObjRB) => {
                 if (item.id === id) {
                     return {
@@ -195,7 +195,7 @@ export default function Receiptsbook({
         parentID: string | number,
         selectedID: string | number
     ) => {
-        const cloneToDelete = isReceiptBookData.itemArray.map(
+        const cloneToDelete = isReceiptBookData?.itemArray?.map(
             (item: isTableItemObjRB) => {
                 if (item.id === parentID) {
                     const clonetoFilter = item.childrenRB.filter(
@@ -250,7 +250,7 @@ export default function Receiptsbook({
             deposit_ids: isSelectedIDs,
             status: status,
         };
-        if (isSelectedIDs.length > 0) {
+        if (isSelectedIDs?.length > 0) {
             updateMutate(Payload);
         } else {
             setPrompt({
@@ -392,7 +392,7 @@ export default function Receiptsbook({
                         </tr>
                     </thead>
                     <tbody>
-                        {isReceiptBookData?.itemArray.map(
+                        {isReceiptBookData?.itemArray?.map(
                             (item: isTableItemObjRB, index: number) => (
                                 <List
                                     key={index}
@@ -476,7 +476,7 @@ const List = ({
         const indexAmount = e.target.getAttribute("data-indexAmount");
         const index = e.target.getAttribute("data-index");
         const ChildRowID = e.target.getAttribute("data-rowID");
-        const newItems = isReceiptBookData?.itemArray.map(
+        const newItems = isReceiptBookData?.itemArray?.map(
             (item: isTableItemObjRB) => {
                 if (itemDetail.id == item.id) {
                     if (key === "select") {
@@ -492,7 +492,7 @@ const List = ({
                         }
                         return {
                             ...item,
-                            select: !item.select,
+                            select: !item?.select,
                         };
                     }
                     if (key === "index") {
@@ -504,7 +504,7 @@ const List = ({
                         };
                     }
                     if (key === "indexChild") {
-                        const childArray = item.childrenRB.map(
+                        const childArray = item?.childrenRB?.map(
                             (childItem: childType) => {
                                 if (
                                     Number(childItem.id) === Number(ChildRowID)
@@ -555,69 +555,82 @@ const List = ({
         });
     };
 
-    const SelectedIndexFilter: any = itemDetail.childrenRB.map(
+    const SelectedIndexFilter: any = itemDetail?.childrenRB?.map(
         (selectedIndex) => {
             return Number(selectedIndex.indexID);
         }
     );
-    let SelectedIndex = [Number(itemDetail.indexID), ...SelectedIndexFilter];
 
-    if (itemDetail.indexID === "" && itemDetail.childrenRB.length <= 0) {
+    let SelectedIndex: number[] = [];
+    useEffect(() => {
+        if (SelectedIndexFilter) {
+            SelectedIndex = [
+                Number(itemDetail.indexID),
+                ...SelectedIndexFilter,
+            ];
+        }
+    });
+
+    if (itemDetail?.indexID === "" && itemDetail?.childrenRB?.length <= 0) {
         SelectedIndex = [];
     }
 
     return (
         <>
-            <tr className={`${itemDetail.childrenRB.length > 0 && "noBorder"}`}>
+            <tr
+                className={`${
+                    itemDetail?.childrenRB?.length > 0 && "noBorder"
+                }`}
+            >
                 {type === "receipts-book" && (
                     <td className="checkbox">
                         <div className="item">
-                            {itemDetail.status !== "Posted" && (
+                            {itemDetail?.status !== "Posted" && (
                                 <input
                                     type="checkbox"
                                     onChange={(e: any) =>
                                         updateValue("select", e)
                                     }
-                                    checked={itemDetail.select}
+                                    checked={itemDetail?.select}
                                 />
                             )}
                         </div>
                     </td>
                 )}
 
-                <td>{itemDetail.document_date}</td>
-                <td>{itemDetail.depositor}</td>
-                <td>{itemDetail.receipt_no}</td>
-                <td>{itemDetail.bank_and_account_no}</td>
+                <td>{itemDetail?.document_date}</td>
+                <td>{itemDetail?.depositor}</td>
+                <td>{itemDetail?.receipt_no}</td>
+                <td>{itemDetail?.bank_and_account_no}</td>
                 <td>
                     {type === "receipts-book" ? (
-                        itemDetail.reference_no
+                        itemDetail?.reference_no
                     ) : (
                         <>
                             <Link
                                 href={`/finance/customer-facility/deposit-counter?detail=${itemDetail.id}`}
                             >
-                                <a>{itemDetail.reference_no}</a>
+                                <a>{itemDetail?.reference_no}</a>
                             </Link>
                         </>
                     )}
                 </td>
-                <td>{itemDetail.deposit_date}</td>
+                <td>{itemDetail?.deposit_date}</td>
                 <td>
                     <TextNumberDisplay
-                        value={itemDetail.deposit_amount}
+                        value={itemDetail?.deposit_amount}
                         className={
-                            itemDetail.deposit_amount === "" ? "" : "withPeso"
+                            itemDetail?.deposit_amount === "" ? "" : "withPeso"
                         }
                     />
                 </td>
                 <td>
                     {type === "receipts-book" ? (
-                        itemDetail.index
+                        itemDetail?.index
                     ) : (
                         <DropdownIndex
                             name="index"
-                            value={itemDetail.index}
+                            value={itemDetail?.index}
                             selectedIndex={SelectedIndex}
                             selectHandler={SelectHandler}
                             rowID={itemDetail.id}
@@ -628,7 +641,7 @@ const List = ({
                     <td>
                         <InputNumberForTable
                             onChange={() => {}}
-                            value={itemDetail.variance}
+                            value={itemDetail?.variance}
                             className={
                                 "field disabled w-full max-w-[150px] text-end"
                             }
@@ -644,20 +657,20 @@ const List = ({
                             />
                         </div>
 
-                        {itemDetail.variance !== 0 &&
-                            itemDetail.childrenRB.length <= 0 && (
+                        {itemDetail?.variance !== 0 &&
+                            itemDetail?.childrenRB?.length <= 0 && (
                                 <div
                                     className={`ml-5 1024px:ml-2 ${
-                                        itemDetail.variance !== "0" &&
-                                        itemDetail.index === "" &&
-                                        itemDetail.variance !== 0 &&
-                                        itemDetail.childrenRB.length <= 0 &&
+                                        itemDetail?.variance !== "0" &&
+                                        itemDetail?.index === "" &&
+                                        itemDetail?.variance !== 0 &&
+                                        itemDetail?.childrenRB?.length <= 0 &&
                                         "pointer-events-none opacity-[.5]"
                                     }`}
                                 >
                                     <BsPlusLg
                                         onClick={() =>
-                                            AddHandler(itemDetail.id)
+                                            AddHandler(itemDetail?.id)
                                         }
                                     />
                                 </div>
@@ -665,7 +678,7 @@ const List = ({
                     </td>
                 )}
             </tr>
-            {itemDetail.childrenRB.map((itemChildren, index: number) => (
+            {itemDetail?.childrenRB?.map((itemChildren, index: number) => (
                 <ChildList
                     key={index}
                     itemDetail={itemDetail}
@@ -710,7 +723,7 @@ const ChildList = ({
         <>
             <tr
                 className={`${
-                    itemDetail.childrenRB.length - 1 !== index && "noBorder"
+                    itemDetail?.childrenRB?.length - 1 !== index && "noBorder"
                 }`}
             >
                 <td></td>
@@ -745,7 +758,7 @@ const ChildList = ({
                     <td>
                         <InputNumberForTable
                             onChange={() => {}}
-                            value={itemDetail.variance}
+                            value={itemDetail?.variance}
                             className={
                                 "field disabled w-full max-w-[150px] text-end"
                             }
@@ -766,13 +779,13 @@ const ChildList = ({
                             />
                         </div>
 
-                        {itemDetail.variance !== 0 && (
+                        {itemDetail?.variance !== 0 && (
                             <div
                                 className={`ml-5 1024px:ml-2 ${
-                                    itemDetail.variance !== "0" &&
+                                    itemDetail?.variance !== "0" &&
                                     itemChildren.index === "" &&
-                                    itemDetail.variance !== 0 &&
-                                    itemDetail.childrenRB.length - 1 ===
+                                    itemDetail?.variance !== 0 &&
+                                    itemDetail?.childrenRB?.length - 1 ===
                                         index &&
                                     "pointer-events-none opacity-[.5]"
                                 }`}

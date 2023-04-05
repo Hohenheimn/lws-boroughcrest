@@ -152,11 +152,11 @@ const List = ({ itemDetail }: ListProps) => {
 
     return (
         <tr onClick={redirect} className="cursor-pointer">
-            <td>{CustomerDetail.name}</td>
-            <td>{CustomerDetail.class}</td>
+            <td>{CustomerDetail?.name}</td>
+            <td>{CustomerDetail?.class}</td>
             <td>
-                {CustomerDetail.properties.map((item: any, index: number) =>
-                    CustomerDetail.properties.length - 1 === index
+                {CustomerDetail?.properties.map((item: any, index: number) =>
+                    CustomerDetail?.properties.length - 1 === index
                         ? item.unit_code
                         : item.unit_code + ", "
                 )}
@@ -168,8 +168,8 @@ const List = ({ itemDetail }: ListProps) => {
                 />
             </td>
             <td>{isValid(date) ? format(date, "MMM dd yyyy") : ""}</td>
-            <td>{itemDetail.reference_no}</td>
-            <td>{itemDetail.remarks}</td>
+            <td>{itemDetail?.reference_no}</td>
+            <td>{itemDetail?.remarks}</td>
             <td className="icon">
                 <ul className="flex items-center justify-around">
                     <Tippy content={"Remark"} theme="ThemeRed">

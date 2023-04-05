@@ -3,7 +3,6 @@ import "tippy.js/dist/tippy.css";
 import React, { useContext, useEffect, useState } from "react";
 import { BiSearch } from "react-icons/bi";
 import styleModal from "../../../../../styles/Popup_Modal.module.scss";
-import DropdownSearch from "../../../../Reusable/DropdownSearch";
 import Image from "next/image";
 import { GetPropertyList } from "../../../../ReactQuery/PropertyMethod";
 import { property } from "../../../../../types/PropertyList";
@@ -15,6 +14,8 @@ import ReadingPropertyForm, {
     DefaultValuePropertyReadingForm,
     isTableForm,
 } from "./ReadingPropertyForm";
+import NameIDDropdown from "../../../../Dropdowns/NameIDDropdown";
+import SelectDropdown from "../../../../Reusable/SelectDropdown";
 
 type Props = {
     toggle: Function;
@@ -108,21 +109,21 @@ export default function Readingform({
 
                 return {
                     id: item.id,
-                    unit_code: item.unit_code,
+                    unit_code: item?.unit_code,
                     project: {
-                        name: item.project.name,
+                        name: item?.project?.name,
                     },
                     developer: {
-                        name: item.developer.name,
+                        name: item?.developer?.name,
                     },
                     tower: {
-                        name: item.tower.name,
+                        name: item?.tower?.name,
                     },
                     floor: {
-                        name: item.floor.name,
+                        name: item?.floor?.name,
                     },
-                    class: item.class,
-                    type: item.type,
+                    class: item?.class,
+                    type: item?.type,
                     select: select,
                 };
             });
@@ -165,6 +166,13 @@ export default function Readingform({
         setFormActive([false, true]);
     };
 
+    const [isFilterbyCategory, setFilterbyCategory] = useState("");
+
+    const [isCategoryList, setCategoryList] = useState({
+        value: "",
+        id: "",
+    });
+
     return (
         <div className={styleModal.container}>
             <section className={styleModal.wide}>
@@ -172,8 +180,38 @@ export default function Readingform({
                     <h3 className="mb-5 text-ThemeRed">Select Property</h3>
                     <ul className="mb-5 flex justify-between 640px:flex-col 640px:items-end">
                         <li className=" flex items-center 640px:order-2 640px:w-full">
-                            <p className="labelField">FILTER BY:</p>
-                            <DropdownSearch />
+                            <p className=" text-ThemeRed text-[12px] font-NHU-bold mr-3">
+                                FILTER BY:
+                            </p>
+
+                            <SelectDropdown
+                                selectHandler={(value: string) => {
+                                    setFilterbyCategory(value);
+                                }}
+                                className="w-[150px]"
+                                inputElement={
+                                    <input
+                                        className="w-full field mini"
+                                        readOnly
+                                        value={isFilterbyCategory}
+                                        autoComplete="off"
+                                    />
+                                }
+                                listArray={["Tower", "Project"]}
+                            />
+                            <div className="mr-2"></div>
+                            <NameIDDropdown
+                                setValue={setCategoryList}
+                                value={isCategoryList.value}
+                                width="w-[150px]"
+                                className="mini"
+                                placeholder="Tower"
+                                endpoint={
+                                    isFilterbyCategory === "Tower"
+                                        ? "/admin/property/tower"
+                                        : "/admin/property/project"
+                                }
+                            />
                         </li>
                         <li className="640px:mb-5">
                             <input
@@ -198,7 +236,7 @@ export default function Readingform({
                             placeholder="Search"
                             value={isSearch}
                             onChange={(e) => setSearch(e.target.value)}
-                            className="flex-1 outline-none text-[12px] shadow-none"
+                            className="flex-1 outline-none text-[#545454] text-[12px] shadow-none"
                             style={{ boxShadow: "none" }}
                         />
                         <BiSearch className="text-[16px] text-gray-400" />

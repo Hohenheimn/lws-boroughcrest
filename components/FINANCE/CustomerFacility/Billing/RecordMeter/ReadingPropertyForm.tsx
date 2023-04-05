@@ -11,8 +11,11 @@ import {
 } from "../../../../Reusable/NumberFormat";
 import PeriodCalendar from "../../../../Reusable/PeriodCalendar";
 import { CreateRecordMeter, UpdateRecordMeter } from "./Query";
+import { ErrorSubmit } from "../../../../Reusable/ErrorMessage";
+import { useQueryClient } from "react-query";
 
 export type isTableForm = {
+    id?: number;
     property: string;
     property_unit_id: number;
     previous_reading: number;
@@ -29,6 +32,7 @@ type Props = {
 };
 
 export type DefaultValuePropertyReadingForm = {
+    reading_id: number;
     charge: {
         rate: number;
         charge: string;
@@ -62,9 +66,13 @@ export default function ReadingPropertyForm({
         });
     }, [DefaultValue.period]);
 
+    const queryClient = useQueryClient();
     const onSuccess = () => {
+        queryClient.invalidateQueries(["record-meter-list"]);
         setPrompt({
-            message: `Reading successfully registered!`,
+            message: `Reading successfully ${
+                router.query.modify === undefined ? "registered" : "updated"
+            }!`,
             type: "success",
             toggle: true,
         });
@@ -72,12 +80,8 @@ export default function ReadingPropertyForm({
         router.push("/finance/customer-facility/billing/record-meter-reading");
     };
 
-    const onError = () => {
-        setPrompt({
-            message: "Something is wrong!",
-            type: "error",
-            toggle: true,
-        });
+    const onError = (e: any) => {
+        ErrorSubmit(e, setPrompt);
     };
 
     const { isLoading: createloading, mutate: createMutate } =
@@ -119,6 +123,8 @@ export default function ReadingPropertyForm({
         const dateFrom = parse(periodProperty.from, "MMM dd yyyy", new Date());
         const dateTo = parse(periodProperty.to, "MMM dd yyyy", new Date());
         const Payload = {
+            billing_readings_name_id: DefaultValue.reading_id,
+            rate: DefaultValue.charge.rate,
             charge_id: DefaultValue.charge.id,
             period_from: isValid(dateFrom)
                 ? format(dateFrom, "yyyy-MM-dd")
@@ -126,6 +132,7 @@ export default function ReadingPropertyForm({
             period_to: isValid(dateTo) ? format(dateTo, "yyyy-MM-dd") : "",
             readings: DefaultValue.properties.map((item) => {
                 return {
+                    id: item.id,
                     property_unit_id: item.property_unit_id,
                     previous_reading: item.previous_reading,
                     current_reading: item.current_reading,
@@ -156,19 +163,11 @@ export default function ReadingPropertyForm({
             <ul className="flex flex-wrap mb-5">
                 <li className=" flex items-center mr-5 mb-5 1024px:mb-2">
                     <p className=" labelField">CHARGE:</p>
-                    <DropDownCharge
-                        UpdateStateHandler={(key, e) => {
-                            setDefaultValue({
-                                ...DefaultValue,
-                                charge: {
-                                    charge: e.target.innerHTML,
-                                    id: e.target.getAttribute("data-id"),
-                                    rate: e.target.getAttribute("data-rate"),
-                                },
-                            });
-                        }}
-                        filter={true}
-                        itemDetail={DefaultValue.charge}
+                    <input
+                        type="text"
+                        readOnly
+                        value={DefaultValue.charge.charge}
+                        className="field disabled min-w-[150px]"
                     />
                 </li>
                 <li className=" flex items-center mr-5 mb-5 1024px:mb-2">

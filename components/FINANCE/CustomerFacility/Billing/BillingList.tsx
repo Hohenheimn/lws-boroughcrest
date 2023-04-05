@@ -17,6 +17,7 @@ import { CopyButtonTable } from "../../../Reusable/Icons";
 import { GetInvoiceList, MultipleUpdateBillingList } from "./Query";
 import { TextNumberDisplay } from "../../../Reusable/NumberFormat";
 import Calendar from "../../../Reusable/Calendar";
+import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
 
 type isTable = {
     itemArray: isTableItemObj[];
@@ -187,12 +188,9 @@ export default function BillingList() {
             toggle: false,
         });
     };
-    const onError = () => {
-        setPrompt({
-            message: `Something is wrong!`,
-            type: "error",
-            toggle: true,
-        });
+    const onError = (e: any) => {
+        ErrorSubmit(e, setPrompt);
+
         setButtonClicked("");
     };
     const { isLoading: updateLoading, mutate: updateMutate } =

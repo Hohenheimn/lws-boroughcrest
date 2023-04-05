@@ -10,6 +10,7 @@ import {
 } from "../../../Reusable/NumberFormat";
 import TableErrorMessage from "../../../Reusable/TableErrorMessage";
 import { format, isValid, parse } from "date-fns";
+import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
 
 type isTableItem = isTableItemObj[];
 
@@ -36,12 +37,8 @@ export default function GeneralLedgerTable({ date }: GeneralLedgerTableProps) {
             type: "success",
         });
     };
-    const onError = () => {
-        setPrompt({
-            toggle: true,
-            message: "Something is wrong!",
-            type: "error",
-        });
+    const onError = (e: any) => {
+        ErrorSubmit(e, setPrompt);
     };
     const { isLoading: mutateLoading, mutate } = CreateUpdateGeneralLedger(
         onSucces,

@@ -51,7 +51,14 @@ export default function UserTable({ isSearch }: Props) {
                             <th>ID</th>
                             <th>Name</th>
                             {userTableColumn.map((item: any, index: number) => (
-                                <th key={index}>{item}</th>
+                                <th
+                                    key={index}
+                                    className={
+                                        item === "Status" ? "center" : ""
+                                    }
+                                >
+                                    {item}
+                                </th>
                             ))}
                         </tr>
                     </thead>

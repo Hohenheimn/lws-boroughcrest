@@ -211,23 +211,23 @@ export default function BankCreditComp({
                 }
                 return {
                     id: item.id,
-                    index: item.index,
-                    bank_account_no: item.bank_account.bank_acc_no,
-                    credit_date: item.date,
-                    credit_amount: item.credit,
-                    remarks: item.remarks,
-                    variance: item.credit,
-                    status: item.status,
-                    receipt_no: item.receipt_no,
+                    index: item?.index,
+                    bank_account_no: item?.bank_account?.bank_acc_no,
+                    credit_date: item?.date,
+                    credit_amount: item?.credit,
+                    remarks: item?.remarks,
+                    variance: item?.credit,
+                    status: item?.status,
+                    receipt_no: item?.receipt_no,
                     rec_ref_id: "",
-                    reference_no: item.reference_no,
+                    reference_no: item?.reference_no,
                     select: select,
-                    childrenBC: item.receipt_book.map(
+                    childrenBC: item?.receipt_book.map(
                         (receiptBookItem: any) => {
                             return {
-                                receipt_no: receiptBookItem.receipt_no,
-                                reference_no: receiptBookItem.reference_no,
-                                amount: receiptBookItem.amount_paid,
+                                receipt_no: receiptBookItem?.receipt_no,
+                                reference_no: receiptBookItem?.reference_no,
+                                amount: receiptBookItem?.amount_paid,
                             };
                         }
                     ),

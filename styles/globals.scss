@@ -40,11 +40,12 @@ h6.lowGray {
     @apply text-[#6f6f6f];
 }
 .labelField {
-    @apply text-ThemeRed mr-3 font-NHU-medium 1550px:text-[13px] 640px:text-[12px];
+    @apply text-ThemeRed mr-3 font-NHU-medium 1550px:text-[14px] 640px:text-[12px];
 }
 .field {
     @apply p-1 px-2 text-[#545454] font-NHU-medium duration-300 1550px:min-w-[70px] rounded-md outline-none shadow-md;
     color: #545454 !important;
+    transition: background-color;
     height: 30px !important;
     font-size: 16px !important;
     @media (max-width: 1550px) {
@@ -62,9 +63,9 @@ textarea.field {
     height: 100px !important;
 }
 .field.mini {
-    font-size: 14px !important;
+    font-size: 12px !important;
     @media (max-width: 1550px) {
-        font-size: 13px !important;
+        font-size: 12px !important;
         height: 25px;
     }
 }
@@ -147,9 +148,10 @@ select {
 // button
 .buttonRed {
     @apply uppercase px-5 text-[14px] 1550px:text-[12px] 480px:px-2  py-2 rounded-lg bg-ThemeRed text-white leading-none duration-75 hover:bg-ThemeRed50;
+    color: white !important;
 }
 .button_cancel {
-    @apply text-ThemeRed font-semibold cursor-pointer text-[14px] mr-5 uppercase;
+    @apply text-ThemeRed font-semibold cursor-pointer text-[14px] 1550px:text-[12px] mr-5 uppercase;
 }
 // Text
 .pageTitle {
@@ -268,16 +270,16 @@ select {
         tr {
             @apply border-b border-gray-300 relative text-[16px] 1550px:text-[14px] 480px:text-[12px];
             td {
-                @apply py-2 px-2 text-[#2E4364] font-NHU-regular min-w-[150px] max-w-[350px];
+                @apply py-2 px-2 text-DarkBlue font-NHU-regular min-w-[150px] max-w-[350px];
 
                 aside {
                     @apply w-10 h-10 480px:w-8 480px:h-8 rounded-full overflow-hidden relative shadow-lg mr-3;
                 }
                 h2 {
-                    @apply text-[#2E4364] font-NHU-regular pr-1 mr-1;
+                    @apply text-DarkBlue font-NHU-regular pr-1 mr-1;
                 }
                 p {
-                    @apply text-[#2E4364] font-NHU-regular;
+                    @apply text-DarkBlue font-NHU-regular;
                 }
                 input[type="text"],
                 input[type="number"],
@@ -288,14 +290,14 @@ select {
                     @apply text-end;
                 }
                 .property {
-                    @apply flex flex-wrap text-[#2e4364] px-4 py-4 480px:py-2 480px:px-2;
+                    @apply flex flex-wrap text-DarkBlue px-4 py-4 480px:py-2 480px:px-2;
                     .property-container {
                         @apply flex w-full mb-3;
                         .half {
                             @apply w-2/4;
                             div {
                                 h2 {
-                                    @apply text-[#2E4364] font-NHU-medium  480px:text-[12px] pr-1 mr-1;
+                                    @apply text-DarkBlue font-NHU-medium  480px:text-[12px] pr-1 mr-1;
                                     line-height: 70%;
                                 }
                                 h2.unitCode {
@@ -334,7 +336,7 @@ select {
                 }
             }
             td.actionIcon {
-                @apply flex items-center mt-2 text-ThemeRed text-[13px] w-[80px] min-w-0 cursor-pointer;
+                @apply flex items-center mt-2 text-ThemeRed text-[13px] w-[80px] min-w-0;
             }
             td.icon {
                 @apply w-[50px];
@@ -414,12 +416,20 @@ select {
         @apply hidden;
     }
     .printThis {
-        @apply my-10;
+        margin: 0 0;
     }
     @page {
-        margin: 0;
+        margin: 20px 0;
+    }
+
+    .printHeader {
+    }
+    .printBody {
+    }
+    .printFooter {
     }
 }
+
 .table_list.headNoBg {
     thead {
         @apply shadow-none;
@@ -763,9 +773,19 @@ input[type="number"] {
             @apply bg-transparent;
         }
     }
+    .PostedInProcess {
+        &::after {
+            @apply bg-transparent;
+        }
+    }
     .Posted:hover {
         &::after {
             @apply content-['Posted'] w-[95px] pl-[35px] bg-ThemeRed50 text-white;
+        }
+    }
+    .PostedInProcess:hover {
+        &::after {
+            @apply content-['In_Process'] w-[120px] pl-[35px] bg-[#bababa] text-[#545454];
         }
     }
     .PendingDC {

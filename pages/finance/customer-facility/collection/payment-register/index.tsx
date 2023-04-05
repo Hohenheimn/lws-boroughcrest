@@ -27,11 +27,26 @@ export type CollectionItem = {
     reference_no: number | null;
     credit_tax: number;
     status: string;
+    deposits: {
+        charge_id: string;
+        charge_name: string;
+        amount: number;
+        description: string;
+    }[];
+    check_warehouses: {
+        check_date: string;
+        description: string;
+        check_no: number;
+        amount: number;
+    }[];
     bank_account_id: number | null;
     parent_id: number | null;
     updated_at: string;
     created_at: string;
+    histories: PaymentSummaryHistories[];
 };
+
+export type PaymentSummaryHistories = CollectionItem;
 
 export default function PaymentRegister() {
     const [isFilterText, setFilterText] = useState<string[]>([]);
@@ -122,8 +137,17 @@ const List = ({ itemDetail }: ListProps) => {
 
     const CustomerDetail: customer = data?.data;
 
+    const router = useRouter();
+
     return (
-        <tr>
+        <tr
+            className="cursor-pointer"
+            onClick={() => {
+                router.push(
+                    `/finance/customer-facility/collection/payment-register/${itemDetail.id}`
+                );
+            }}
+        >
             <td>{isValid(date) ? format(date, "MMM dd yyyy") : ""}</td>
             <td>{itemDetail?.receipt_no}</td>
             <td>{CustomerDetail?.name}</td>

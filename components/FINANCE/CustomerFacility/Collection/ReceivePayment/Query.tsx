@@ -122,7 +122,24 @@ export const GetCollectionDetail = (id: number) => {
 
 export const GetCustomerOutstanding = (id: number) => {
     return useQuery(
-        ["collection-outstanding", id],
+        ["billing-outstanding", id],
+        () => {
+            return api.get(
+                `/finance/customer-facility/billing?customer_id=${id}&list_type=posted`,
+                {
+                    headers: { Authorization: "Bearer " + getCookie("user") },
+                }
+            );
+        },
+        {
+            enabled: !!id,
+        }
+    );
+};
+
+export const GetCustomerSummary = (id: number) => {
+    return useQuery(
+        ["customer-collection", id],
         () => {
             return api.get(
                 `/finance/customer-facility/collection?customer_id=${id}`,

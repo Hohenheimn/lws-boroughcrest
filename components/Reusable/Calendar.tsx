@@ -11,9 +11,9 @@ import {
     startOfWeek,
     parse,
     add,
+    compareDesc,
 } from "date-fns";
-import React, { useContext, useEffect, useRef, useState } from "react";
-import AppContext from "../Context/AppContext";
+import React, { useEffect, useRef, useState } from "react";
 
 type Props = {
     value: {
@@ -21,13 +21,17 @@ type Props = {
         toggle: boolean;
     };
     setValue: Function;
+    period?: {
+        from: Date;
+        to: Date;
+    };
 };
 
 const todayStyle = "bg-ThemeRed text-white font-bold";
 const sameMonth = "font-bold";
 const selectedDay = "bg-[#545454] text-white font-bold";
 
-export default function Calendar({ value, setValue }: Props) {
+export default function Calendar({ value, setValue, period }: Props) {
     const modal = useRef<any>();
 
     useEffect(() => {
@@ -317,6 +321,22 @@ export default function Calendar({ value, setValue }: Props) {
                                         isSameMonth(day, today) &&
                                         !isToday(day) &&
                                         "bg-white"
+                                    } ${
+                                        period !== undefined &&
+                                        ` ${
+                                            (compareDesc(period.from, day) ===
+                                                1 ||
+                                                compareDesc(
+                                                    period.from,
+                                                    day
+                                                ) === 0) &&
+                                            (compareDesc(period.to, day) ===
+                                                0 ||
+                                                compareDesc(period.to, day) ===
+                                                    -1)
+                                                ? ""
+                                                : " pointer-events-none"
+                                        }`
                                     }`}
                                 >
                                     <time dateTime={format(day, "yyyy-MM-dd")}>

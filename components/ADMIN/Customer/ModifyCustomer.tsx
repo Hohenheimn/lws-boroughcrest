@@ -17,6 +17,7 @@ import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import DynamicPopOver from "../../Reusable/DynamicPopOver";
 import SelectDropdown from "../../Reusable/SelectDropdown";
 import { format, isValid, parse } from "date-fns";
+import { ErrorSubmit } from "../../Reusable/ErrorMessage";
 
 type ModifyCustomer = {
     setToggleModify: Function;
@@ -691,19 +692,10 @@ const Contact = ({
 
     const onError = (e: any) => {
         const ErrorField = e.response.data;
-        let message: any;
         if (ErrorField > 0 || ErrorField !== null || ErrorField !== undefined) {
             setCusError({ ...ErrorField });
-            message = "Please check all the fields!";
-        } else {
-            message = "Something is wrong!";
         }
-        setPrompt((prev: any) => ({
-            ...prev,
-            message: message,
-            type: "error",
-            toggle: true,
-        }));
+        ErrorSubmit(e, setPrompt);
     };
 
     const { isLoading, mutate } = PutCustomer(

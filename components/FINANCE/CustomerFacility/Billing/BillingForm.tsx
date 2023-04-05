@@ -21,6 +21,7 @@ import {
 } from "./Query";
 import { ScaleLoader } from "react-spinners";
 import ModalTemp from "../../../Reusable/ModalTemp";
+import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
 
 export type customerDD = {
     id: string | number;
@@ -111,12 +112,8 @@ export default function JournalForm({
         }
     };
 
-    const onError = () => {
-        setPrompt({
-            message: "Something is wrong",
-            type: "error",
-            toggle: true,
-        });
+    const onError = (e: any) => {
+        ErrorSubmit(e, setPrompt);
     };
 
     const { isLoading: isLoadingSave, mutate: mutateSave } =
@@ -151,11 +148,7 @@ export default function JournalForm({
             return;
         }
         isBilling.map((item: billingObject) => {
-            if (
-                item.charge_id === "" ||
-                item.unit_price <= 0 ||
-                item.quantity <= 0
-            ) {
+            if (item.charge_id === "") {
                 validate = false;
                 setPrompt({
                     message: "Fill out all fields",
@@ -359,7 +352,7 @@ const List = ({ itemList, setState, isState, index }: List) => {
         const Vat =
             Number(itemList.unit_price) *
             Number(itemList.quantity) *
-            Number(itemList.charge_vat);
+            (Number(itemList.charge_vat) / 100);
         const Amount =
             Number(itemList.unit_price) * Number(itemList.quantity) +
             Number(Vat);

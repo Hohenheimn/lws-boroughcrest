@@ -1,11 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 import Image from "next/image";
 import { TextNumberDisplay } from "../../../Reusable/NumberFormat";
 import { TableOneTotal, TableTwoTotal } from "../../../Reusable/TableTotal";
 import Authorization from "./Authorization";
-import { CollectionItem } from "../../../../pages/finance/customer-facility/collection/payment-register";
+import {
+    CollectionItem,
+    PaymentSummaryHistories,
+} from "../../../../pages/finance/customer-facility/collection/payment-register";
 import { GetCustomer } from "../../../ReactQuery/CustomerMethod";
 import { customer } from "../../../../types/customerList";
 import { format, isValid, parse } from "date-fns";
@@ -32,6 +35,25 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
         "yyyy-MM-dd",
         new Date()
     );
+
+    const [isDepositsTotal, setDepositsTotal] = useState(0);
+    const [isCheckwareHouseTotal, setCheckwareHouseTotal] = useState(0);
+
+    useEffect(() => {
+        setDepositsTotal(0);
+        CollectionDetail?.deposits?.map((item) => {
+            setDepositsTotal((prev) => Number(prev) + Number(item.amount));
+        });
+    }, [CollectionDetail?.deposits]);
+
+    useEffect(() => {
+        setCheckwareHouseTotal(0);
+        CollectionDetail?.check_warehouses?.map((item) => {
+            setCheckwareHouseTotal(
+                (prev) => Number(prev) + Number(item.amount)
+            );
+        });
+    }, [CollectionDetail?.check_warehouses]);
 
     return (
         <div>
@@ -168,88 +190,168 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
                     </li>
                 </ul>
                 <ul className=" flex justify-between relative w-full mb-10 flex-wrap">
-                    <li className="w-full rounded-2xl p-10 480px:p-8 bg-white  shadow-lg mb-10 640px:mb-5">
-                        <h1 className="SectionTitle mb-5">
-                            Outstanding Balance
-                        </h1>
-                        <div className="table_container min-zero border-b border-ThemeRed50 pb-10">
-                            <table className="table_list ">
-                                <thead className="textRed ">
-                                    <tr>
-                                        <th>CHARGE</th>
-                                        <th>DESCRIPTION</th>
-                                        <th>AMOUNT</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Water</td>
-                                        <td>Lorem, ipsum.</td>
-                                        <td>
-                                            <TextNumberDisplay
-                                                className="withPeso w-full text-end"
-                                                value={1000}
-                                            />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Electricity</td>
-                                        <td>Lorem, ipsum.</td>
-                                        <td>
-                                            <TextNumberDisplay
-                                                className="withPeso w-full text-end"
-                                                value={2000}
-                                            />
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <TableOneTotal
-                            total={3000}
-                            label={"SUBTOTAL"}
-                            redBG={false}
-                        />
-                        <h1 className="SectionTitle mb-5">Advances</h1>
-                        <div className="table_container min-zero border-b border-ThemeRed50 pb-10">
-                            <table className="table_list ">
-                                <thead className="textRed ">
-                                    <tr>
-                                        <th>CHARGE</th>
-                                        <th>DESCRIPTION</th>
-                                        <th>AMOUNT</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Water</td>
-                                        <td>Lorem, ipsum.</td>
-                                        <td>
-                                            <TextNumberDisplay
-                                                className="withPeso w-full text-end"
-                                                value={1000}
-                                            />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Electricity</td>
-                                        <td>Lorem, ipsum.</td>
-                                        <td>
-                                            <TextNumberDisplay
-                                                className="withPeso w-full text-end"
-                                                value={2000}
-                                            />
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <TableOneTotal
-                            total={3000}
-                            label={"SUBTOTAL"}
-                            redBG={false}
-                        />
-                    </li>
+                    {CollectionDetail.receipt_type === "Official" && (
+                        <li className="w-full rounded-2xl p-10 480px:p-8 bg-white  shadow-lg mb-10 640px:mb-5">
+                            <h1 className="SectionTitle mb-5">
+                                Outstanding Balance
+                            </h1>
+                            <div className="table_container min-zero border-b border-ThemeRed50 pb-10">
+                                <table className="table_list ">
+                                    <thead className="textRed ">
+                                        <tr>
+                                            <th>CHARGE</th>
+                                            <th>DESCRIPTION</th>
+                                            <th>AMOUNT</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Water</td>
+                                            <td>Lorem, ipsum.</td>
+                                            <td>
+                                                <TextNumberDisplay
+                                                    className="withPeso w-full text-end"
+                                                    value={1000}
+                                                />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Electricity</td>
+                                            <td>Lorem, ipsum.</td>
+                                            <td>
+                                                <TextNumberDisplay
+                                                    className="withPeso w-full text-end"
+                                                    value={2000}
+                                                />
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <TableOneTotal
+                                total={3000}
+                                label={"SUBTOTAL"}
+                                redBG={false}
+                            />
+                            <h1 className="SectionTitle mb-5">Advances</h1>
+                            <div className="table_container min-zero border-b border-ThemeRed50 pb-10">
+                                <table className="table_list ">
+                                    <thead className="textRed ">
+                                        <tr>
+                                            <th>CHARGE</th>
+                                            <th>DESCRIPTION</th>
+                                            <th>AMOUNT</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Water</td>
+                                            <td>Lorem, ipsum.</td>
+                                            <td>
+                                                <TextNumberDisplay
+                                                    className="withPeso w-full text-end"
+                                                    value={1000}
+                                                />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Electricity</td>
+                                            <td>Lorem, ipsum.</td>
+                                            <td>
+                                                <TextNumberDisplay
+                                                    className="withPeso w-full text-end"
+                                                    value={2000}
+                                                />
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <TableOneTotal
+                                total={3000}
+                                label={"SUBTOTAL"}
+                                redBG={false}
+                            />
+                        </li>
+                    )}
+                    {CollectionDetail.receipt_type === "Acknowledgement" && (
+                        <li className="w-full rounded-2xl p-10 480px:p-8 bg-white  shadow-lg mb-10 640px:mb-5">
+                            <h1 className="SectionTitle mb-5">Deposit</h1>
+                            <div className="table_container min-zero border-b border-ThemeRed50 pb-10">
+                                <table className="table_list ">
+                                    <thead className="textRed ">
+                                        <tr>
+                                            <th>CHARGE</th>
+                                            <th>DESCRIPTION</th>
+                                            <th>AMOUNT</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {CollectionDetail?.deposits.map(
+                                            (item, index) => (
+                                                <tr key={index}>
+                                                    <td>{item.charge_name}</td>
+                                                    <td>{item.description}</td>
+                                                    <td>
+                                                        <TextNumberDisplay
+                                                            className="withPeso w-full text-end"
+                                                            value={item.amount}
+                                                        />
+                                                    </td>
+                                                </tr>
+                                            )
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <TableOneTotal
+                                total={isDepositsTotal}
+                                label={"SUBTOTAL"}
+                                redBG={false}
+                            />
+                        </li>
+                    )}
+                    {CollectionDetail.receipt_type === "Provisional" && (
+                        <li className="w-full rounded-2xl p-10 480px:p-8 bg-white  shadow-lg mb-10 640px:mb-5">
+                            <h1 className="SectionTitle mb-5">
+                                Check Warehouse
+                            </h1>
+                            <div className="table_container min-zero border-b border-ThemeRed50 pb-10">
+                                <table className="table_list ">
+                                    <thead className="textRed ">
+                                        <tr>
+                                            <th>Check No.</th>
+                                            <th>Check Date</th>
+                                            <th>Description</th>
+                                            <th>Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {CollectionDetail.check_warehouses.map(
+                                            (item, index) => (
+                                                <tr key={index}>
+                                                    <td>{item.check_no}</td>
+                                                    <td>{item.check_date}</td>
+                                                    <td>{item.description}</td>
+                                                    <td>
+                                                        <TextNumberDisplay
+                                                            className="withPeso w-full text-end"
+                                                            value={item.amount}
+                                                        />
+                                                    </td>
+                                                </tr>
+                                            )
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <TableOneTotal
+                                total={isCheckwareHouseTotal}
+                                label={"SUBTOTAL"}
+                                redBG={false}
+                            />
+                        </li>
+                    )}
                     <li className="w-full rounded-2xl p-10 480px:p-8 bg-white mb-10 640px:mb-5 shadow-lg">
                         <h1 className="SectionTitle mb-5">Payment Summary</h1>
                         <div className="flex flex-wrap justify-between">
@@ -265,62 +367,14 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td>
-                                                    <TextNumberDisplay
-                                                        className="w-full withPeso"
-                                                        value={1000}
+                                            {CollectionDetail.histories.map(
+                                                (item, index) => (
+                                                    <PaymentSummaryList
+                                                        key={index}
+                                                        item={item}
                                                     />
-                                                </td>
-                                                <td>
-                                                    <TextNumberDisplay
-                                                        className="w-full"
-                                                        value={10}
-                                                        suffix="%"
-                                                    />
-                                                </td>
-                                                <td>
-                                                    <TextNumberDisplay
-                                                        className="w-full withPeso"
-                                                        value={1000}
-                                                    />
-                                                </td>
-                                                <td>
-                                                    {" "}
-                                                    <TextNumberDisplay
-                                                        className="w-full withPeso"
-                                                        value={1000}
-                                                    />
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <TextNumberDisplay
-                                                        className="w-full withPeso"
-                                                        value={1000}
-                                                    />
-                                                </td>
-                                                <td>
-                                                    <TextNumberDisplay
-                                                        className="w-full"
-                                                        value={10}
-                                                        suffix="%"
-                                                    />
-                                                </td>
-                                                <td>
-                                                    <TextNumberDisplay
-                                                        className="w-full withPeso"
-                                                        value={1000}
-                                                    />
-                                                </td>
-                                                <td>
-                                                    {" "}
-                                                    <TextNumberDisplay
-                                                        className="w-full withPeso"
-                                                        value={1000}
-                                                    />
-                                                </td>
-                                            </tr>
+                                                )
+                                            )}
                                         </tbody>
                                     </table>
                                 </div>
@@ -411,3 +465,47 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
         </div>
     );
 }
+
+type PaymentSummaryList = {
+    item: PaymentSummaryHistories;
+};
+
+const PaymentSummaryList = ({ item }: PaymentSummaryList) => {
+    useEffect(() => {
+        console.log(item);
+    }, []);
+
+    // const total = 0;
+    // const vatPercentage = 0;
+    // const vatAmount = 0;
+    // const base = total / ((vat + 100) / 100);
+
+    const total = 0;
+    const vatPercentage = 0;
+    const vatAmount = 0;
+    const base = 0;
+
+    return (
+        <tr>
+            <td>
+                <TextNumberDisplay className="w-full withPeso" value={base} />
+            </td>
+            <td>
+                <TextNumberDisplay
+                    className="w-full"
+                    value={vatPercentage}
+                    suffix="%"
+                />
+            </td>
+            <td>
+                <TextNumberDisplay
+                    className="w-full withPeso"
+                    value={vatAmount}
+                />
+            </td>
+            <td>
+                <TextNumberDisplay className="w-full withPeso" value={total} />
+            </td>
+        </tr>
+    );
+};

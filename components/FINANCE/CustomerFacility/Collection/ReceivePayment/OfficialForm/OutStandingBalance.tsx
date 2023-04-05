@@ -4,6 +4,8 @@ import {
     TextNumberDisplay,
 } from "../../../../../Reusable/NumberFormat";
 import { TableThreeTotal } from "../../../../../Reusable/TableTotal";
+import { BarLoader } from "react-spinners";
+import TableErrorMessage from "../../../../../Reusable/TableErrorMessage";
 
 type Props = {
     Error: () => void;
@@ -11,6 +13,8 @@ type Props = {
     setDefaultValue: Function;
     amount_paid: number;
     customer_id: string | number;
+    outStandingError: boolean;
+    outStandingLoading: boolean;
 };
 
 export type Outstanding = {
@@ -29,21 +33,37 @@ export default function OutStandingBalance({
     setDefaultValue,
     amount_paid,
     customer_id,
+    outStandingError,
+    outStandingLoading,
 }: Props) {
     const [isToggle, setToggle] = useState(false);
+    const [isDueAmountTotal, setDueAmountTotal] = useState(0);
+    const [isAppliedAmount, setAppliedAmount] = useState(0);
+    const [isBalanceTotal, setBalanceAmount] = useState(0);
+    useEffect(() => {
+        setDueAmountTotal(0);
+        setAppliedAmount(0);
+        setBalanceAmount(0);
+        DefaultOutstanding?.map((item) => {
+            setDueAmountTotal((prev) => Number(prev) + Number(item.due_amount));
+            setAppliedAmount(
+                (prev) => Number(prev) + Number(item.applied_amount)
+            );
+            setBalanceAmount((prev) => Number(prev) + Number(item.balance));
+        });
+    }, [DefaultOutstanding]);
+
     const SetToggleHandler = () => {
         setToggle(!isToggle);
-        if (!isToggle) {
-            console.log("Open lang wlang mangyayare");
-        } else {
-            console.log("Divide uli");
+        if (isToggle) {
+            Compute();
         }
     };
 
-    useEffect(() => {
+    const Compute = () => {
         const AppliedAmount =
-            Number(amount_paid) / Number(DefaultOutstanding.length);
-        const CloneToUpdate = DefaultOutstanding.map((item: Outstanding) => {
+            Number(amount_paid) / Number(DefaultOutstanding?.length);
+        const CloneToUpdate = DefaultOutstanding?.map((item: Outstanding) => {
             const balance = Number(item.due_amount) - Number(AppliedAmount);
             if (!isToggle) {
                 return {
@@ -60,7 +80,11 @@ export default function OutStandingBalance({
             }
         });
         setDefaultValue(CloneToUpdate);
-    }, [amount_paid]);
+    };
+
+    useEffect(() => {
+        Compute();
+    }, [amount_paid, isToggle]);
 
     return (
         <div className="border-b border-gray-300">
@@ -97,7 +121,7 @@ export default function OutStandingBalance({
                     <tbody>
                         {customer_id !== "" && (
                             <>
-                                {DefaultOutstanding.map((item, index) => (
+                                {DefaultOutstanding?.map((item, index) => (
                                     <List
                                         key={index}
                                         itemDetail={item}
@@ -111,11 +135,25 @@ export default function OutStandingBalance({
                         )}
                     </tbody>
                 </table>
+                {outStandingLoading && (
+                    <div className="w-full flex justify-center items-center">
+                        <aside className="text-center flex justify-center py-5">
+                            <BarLoader
+                                color={"#8f384d"}
+                                height="10px"
+                                width="200px"
+                                aria-label="Loading Spinner"
+                                data-testid="loader"
+                            />
+                        </aside>
+                    </div>
+                )}
+                {outStandingError && <TableErrorMessage />}
             </div>
             <TableThreeTotal
-                total1={123123}
-                total2={123}
-                total3={123}
+                total1={isDueAmountTotal}
+                total2={isAppliedAmount}
+                total3={isBalanceTotal}
                 label={"SUB DUE"}
                 redBG={false}
             />
@@ -133,7 +171,7 @@ type List = {
 
 const List = ({ setTable, isTable, itemDetail, index, isToggle }: List) => {
     const updateValue = (keyField: string, value: string | number) => {
-        const closeToUpdate = isTable.map((item: Outstanding) => {
+        const closeToUpdate = isTable?.map((item: Outstanding) => {
             if (item.id === itemDetail.id) {
                 if (keyField === "applied_payment") {
                     const balance = Number(item.due_amount) - Number(value);

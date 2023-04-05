@@ -17,6 +17,7 @@ import {
 import { format, isValid, parse } from "date-fns";
 import { TableTwoTotal } from "../../../Reusable/TableTotal";
 import { MinusButtonTable, PlusButtonTable } from "../../../Reusable/Icons";
+import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
 
 export type defaultArray = defaultObject[];
 export type defaultObject = {
@@ -96,12 +97,8 @@ export default function JournalForm({
             router.push("/finance/general-ledger/journal/journal-list");
         }
     };
-    const onError = () => {
-        setPrompt({
-            toggle: true,
-            message: "Something is wrong!",
-            type: "error",
-        });
+    const onError = (e: any) => {
+        ErrorSubmit(e, setPrompt);
     };
 
     const { isLoading: saveLoading, mutate: saveMutate } = CreateJournal(

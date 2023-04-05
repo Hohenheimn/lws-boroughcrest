@@ -14,7 +14,7 @@ export function PencilButton({ FunctionOnClick, title }: Props) {
                 <div onClick={FunctionOnClick}>
                     <Image
                         src="/Images/big_pencil.png"
-                        width={22}
+                        width={20}
                         height={18}
                         alt="Modify"
                     />
@@ -72,6 +72,42 @@ export function CopyButtonTable() {
                     width={15}
                     height={15}
                     alt="Copy"
+                />
+            </div>
+        </Tippy>
+    );
+}
+
+export function EyeButton() {
+    return (
+        <Tippy
+            theme="ThemeRed"
+            content={<span className="text-[12px]">View</span>}
+        >
+            <div className=" inline-block">
+                <Image
+                    src="/Images/f_eye.png"
+                    width={15}
+                    height={12}
+                    alt="View"
+                />
+            </div>
+        </Tippy>
+    );
+}
+
+export function DeleteButton() {
+    return (
+        <Tippy
+            theme="ThemeRed"
+            content={<span className="text-[12px]">Delete</span>}
+        >
+            <div className=" inline-block cursor-pointer">
+                <Image
+                    src="/Images/f_delete.png"
+                    width={13}
+                    height={15}
+                    alt="Delete"
                 />
             </div>
         </Tippy>

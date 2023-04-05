@@ -19,6 +19,7 @@ import AppContext from "../../../Context/AppContext";
 import { format, isValid, parse } from "date-fns";
 import ModalTemp from "../../../Reusable/ModalTemp";
 import { CopyButtonTable } from "../../../Reusable/Icons";
+import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
 
 type Props = {
     type: string;
@@ -159,12 +160,8 @@ export default function JournalTable({ type, isPeriod, setPeriod }: Props) {
         });
         setButtonClicked("");
     };
-    const onError = () => {
-        setPrompt({
-            message: `Something is wrong!`,
-            type: "error",
-            toggle: true,
-        });
+    const onError = (e: any) => {
+        ErrorSubmit(e, setPrompt);
         setButtonClicked("");
     };
     const { isLoading: updateLoading, mutate: updateMutate } = MultipleUpdate(

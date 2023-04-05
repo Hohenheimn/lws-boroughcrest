@@ -11,6 +11,7 @@ import { Outright } from "./OutrightAndAdvances/OutRight";
 import OutrightAndAdvances from "./OutrightAndAdvances/OutrightAndAdvances";
 import OutStandingBalance, { Outstanding } from "./OutStandingBalance";
 import PaymentSummary from "./PaymentSummary";
+import { ErrorSubmit } from "../../../../../Reusable/ErrorMessage";
 
 type Props = {
     Error: () => void;
@@ -19,6 +20,8 @@ type Props = {
     Outstanding: Outstanding[];
     setOutstanding: Function;
     ResetField: () => void;
+    outStandingLoading: boolean;
+    outStandingError: boolean;
 };
 
 export default function OfficialForm({
@@ -28,6 +31,8 @@ export default function OfficialForm({
     DefaultOfficial,
     Outstanding,
     setOutstanding,
+    outStandingLoading,
+    outStandingError,
 }: Props) {
     const router = useRouter();
 
@@ -83,12 +88,8 @@ export default function OfficialForm({
             );
         }
     };
-    const onError = () => {
-        setPrompt({
-            message: "Something is wrong!",
-            type: "error",
-            toggle: true,
-        });
+    const onError = (e: any) => {
+        ErrorSubmit(e, setPrompt);
     };
     const { isLoading, mutate, isError } = CreateCollection(onSuccess, onError);
 
@@ -120,69 +121,68 @@ export default function OfficialForm({
                 };
         });
 
-        PayloadAdvances.map((provItem: AdvancesType) => {
-            if (
-                provItem.amount <= 0 ||
-                provItem.charge === "" ||
-                provItem.charge_id === ""
-            ) {
-                setPrompt({
-                    toggle: true,
-                    message: "Fill out the fields!",
-                    type: "draft",
-                });
-                validate = false;
-                return;
-            }
-        });
-        PayloadOutRight.map((provItem: Outright) => {
-            if (
-                provItem.amount <= 0 ||
-                provItem.charge === "" ||
-                provItem.charge_id === "" ||
-                provItem.unit_price <= 0 ||
-                provItem.qty <= 0
-            ) {
-                setPrompt({
-                    toggle: true,
-                    message: "Fill out the fields!",
-                    type: "draft",
-                });
-                validate = false;
-                return;
-            }
-        });
-        Outstanding.map((provItem: Outstanding) => {
-            if (provItem.applied_amount <= 0) {
-                setPrompt({
-                    toggle: true,
-                    message: "Fill out the fields!",
-                    type: "draft",
-                });
-                validate = false;
-                return;
-            }
-        });
-        if (
-            headerForm.amount_paid === "" ||
-            headerForm.bank_account_id === "" ||
-            headerForm.credit_tax === "" ||
-            headerForm.customer_id === "" ||
-            headerForm.deposit_date === "" ||
-            headerForm.mode_of_payment === "" ||
-            headerForm.receipt_date === "" ||
-            headerForm.receipt_no === "" ||
-            headerForm.receipt_type === "" ||
-            headerForm.reference_no === ""
-        ) {
-            setPrompt({
-                toggle: true,
-                message: "Fill out the fields!",
-                type: "draft",
-            });
-            validate = false;
-            return;
-        }
+        // PayloadAdvances.map((provItem: AdvancesType) => {
+        //     if (
+        //         provItem.amount <= 0 ||
+        //         provItem.charge === "" ||
+        //         provItem.charge_id === ""
+        //     ) {
+        //         setPrompt({
+        //             toggle: true,
+        //             message: "Fill out the fields!",
+        //             type: "draft",
+        //         });
+        //         validate = false;
+        //         return;
+        //     }
+        // });
+        // PayloadOutRight.map((provItem: Outright) => {
+        //     if (
+        //         provItem.amount <= 0 ||
+        //         provItem.charge === "" ||
+        //         provItem.charge_id === "" ||
+        //         provItem.unit_price <= 0 ||
+        //         provItem.qty <= 0
+        //     ) {
+        //         setPrompt({
+        //             toggle: true,
+        //             message: "Fill out the fields!",
+        //             type: "draft",
+        //         });
+        //         validate = false;
+        //         return;
+        //     }
+        // });
+        // Outstanding.map((provItem: Outstanding) => {
+        //     if (provItem.applied_amount <= 0) {
+        //         setPrompt({
+        //             toggle: true,
+        //             message: "Fill out the fields!",
+        //             type: "draft",
+        //         });
+        //         validate = false;
+        //         return;
+        //     }
+        // });
+        // if (
+        //     headerForm.amount_paid === "" ||
+        //     headerForm.bank_account_id === "" ||
+        //     headerForm.credit_tax === "" ||
+        //     headerForm.customer_id === "" ||
+        //     headerForm.deposit_date === "" ||
+        //     headerForm.mode_of_payment === "" ||
+        //     headerForm.receipt_date === "" ||
+        //     headerForm.receipt_no === "" ||
+        //     headerForm.reference_no === ""
+        // ) {
+        //     setPrompt({
+        //         toggle: true,
+        //         message: "Fill out the fields!",
+        //         type: "draft",
+        //     });
+        //     validate = false;
+        //     return;
+        // }
 
         const receipt_date = parse(
             headerForm.receipt_date,
@@ -217,7 +217,8 @@ export default function OfficialForm({
                 };
             }),
         };
-        if (validate) mutate(Payload);
+        // if (validate) mutate(Payload);
+        console.log(Payload);
     };
 
     return (
@@ -228,6 +229,8 @@ export default function OfficialForm({
                 DefaultOutstanding={Outstanding}
                 setDefaultValue={setOutstanding}
                 Error={Error}
+                outStandingLoading={outStandingLoading}
+                outStandingError={outStandingError}
             />
             <OutrightAndAdvances
                 DefaultOutright={isOutright}

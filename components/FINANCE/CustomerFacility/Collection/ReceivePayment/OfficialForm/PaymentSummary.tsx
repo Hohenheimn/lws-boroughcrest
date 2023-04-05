@@ -10,6 +10,9 @@ import {
 } from "../../../../../Reusable/NumberFormat";
 import { TableOneTotal } from "../../../../../Reusable/TableTotal";
 import { HeaderForm } from "../ReceivePaymentForm";
+import { GetCustomerSummary } from "../Query";
+import { tr } from "date-fns/locale";
+import { BarLoader } from "react-spinners";
 
 type Props = {
     Error: () => void;
@@ -38,6 +41,10 @@ export default function PaymentSummary({
         },
     ]);
 
+    const { isLoading, data, isError } = GetCustomerSummary(
+        Number(headerForm.customer_id)
+    );
+
     return (
         <>
             <h1 className="SectionTitle mb-5 pt-10">Payment Summary</h1>
@@ -55,10 +62,31 @@ export default function PaymentSummary({
                         <tbody>
                             {customer_id !== "" && (
                                 <>
-                                    {isTable.map((item, index) => (
-                                        <List key={index} itemDetail={item} />
-                                    ))}
+                                    {data?.data?.data?.map(
+                                        (item: any, index: number) => (
+                                            <List
+                                                key={index}
+                                                itemDetail={item}
+                                            />
+                                        )
+                                    )}
                                 </>
+                            )}
+                            {isLoading && (
+                                <tr>
+                                    <td
+                                        colSpan={4}
+                                        className="w-full flex justify-center"
+                                    >
+                                        <BarLoader
+                                            color={"#8f384d"}
+                                            height="10px"
+                                            width="200px"
+                                            aria-label="Loading Spinner"
+                                            data-testid="loader"
+                                        />
+                                    </td>
+                                </tr>
                             )}
                         </tbody>
                     </table>
@@ -140,6 +168,14 @@ type List = {
 };
 
 const List = ({ itemDetail }: List) => {
+    const base = 0;
+    const vatPercentage = 0;
+    const vatAmount = 0;
+    const total = 0;
+
+    useEffect(() => {
+        console.log(itemDetail);
+    }, []);
     return (
         <tr>
             <td>

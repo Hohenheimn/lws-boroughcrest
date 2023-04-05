@@ -42,17 +42,17 @@ export default function DepositCounter() {
         if (changeData.fromWhere === "receipt book") {
             const cloneReceiptBook = ReceiptBookData.itemArray.map(
                 (item: isTableItemObjRB) => {
-                    if (Number(changeData.parentID) === Number(item.id)) {
-                        let variance = item.deposit_amount;
-                        item.childrenRB.map((item) => {
-                            variance = Number(variance) - Number(item.amount);
+                    if (Number(changeData.parentID) === Number(item?.id)) {
+                        let variance = item?.deposit_amount;
+                        item?.childrenRB.map((item) => {
+                            variance = Number(variance) - Number(item?.amount);
                         });
-                        variance = Number(variance) - Number(item.indexAmount);
+                        variance = Number(variance) - Number(item?.indexAmount);
 
                         if (Number.isNaN(variance)) {
                             return {
                                 ...item,
-                                variance: item.deposit_amount,
+                                variance: item?.deposit_amount,
                             };
                         } else {
                             return {
@@ -80,17 +80,17 @@ export default function DepositCounter() {
         if (changeData.fromWhere === "bank credit") {
             const cloneBankCredit = isBankCredit.itemArray.map(
                 (item: isTableItemObjBC) => {
-                    if (Number(changeData.parentID) === Number(item.id)) {
-                        let variance = item.credit_amount;
-                        item.childrenBC.map((item) => {
-                            variance = Number(variance) - Number(item.amount);
+                    if (Number(changeData.parentID) === Number(item?.id)) {
+                        let variance = item?.credit_amount;
+                        item?.childrenBC.map((item) => {
+                            variance = Number(variance) - Number(item?.amount);
                         });
                         variance =
-                            Number(variance) - Number(item.rec_ref_amount);
+                            Number(variance) - Number(item?.rec_ref_amount);
                         if (Number.isNaN(variance)) {
                             return {
                                 ...item,
-                                variance: item.credit_amount,
+                                variance: item?.credit_amount,
                             };
                         } else {
                             return {
@@ -144,7 +144,7 @@ export default function DepositCounter() {
         );
         const PayloadRB = filterReceipt.map((itemRB) => {
             const childrenID = itemRB.childrenRB.map((childItem) => {
-                return childItem.indexID;
+                return childItem?.indexID;
             });
             return {
                 id: itemRB.id,
@@ -154,7 +154,7 @@ export default function DepositCounter() {
         });
         const PayloadBC = filterBankCredit.map((itemBC) => {
             const childrenID = itemBC.childrenBC.map((childItem) => {
-                return childItem.receipt_id;
+                return childItem?.receipt_id;
             });
             return {
                 id: itemBC.id,

@@ -8,12 +8,13 @@ import Pagination from "../../Reusable/Pagination";
 
 export default function PropertyTable({ isSearchTable }: any) {
     const { propTableColumn, propTableRows, setPrint } = useContext(AppContext);
+
+    const [TablePage, setTablePage] = useState(1);
     const { isLoading, data, isError } = GetPropertyList(
-        propTableRows,
+        TablePage,
         isSearchTable
     );
     const PropertyData = data?.data?.data;
-    const [TablePage, setTablePage] = useState(1);
     // Set parameter for print
     useEffect(() => {
         setPrint({

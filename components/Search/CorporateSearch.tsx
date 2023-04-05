@@ -17,7 +17,7 @@ export default function CorporateSearch() {
         ["recent-customer", router.query.id, search],
         () => {
             return api.get(
-                `/project/corporate/recent-search/${router.query.id}&keywords=${search}&paginate=3`,
+                `/project/corporate/recent-search/${router.query.id}?keywords=${search}&paginate=3`,
                 {
                     headers: {
                         Authorization: "Bearer " + getCookie("user"),
@@ -64,7 +64,7 @@ export default function CorporateSearch() {
                         />
                     </div>
                 ) : (
-                    RecentData?.data.map((item: any, index: number) => (
+                    RecentData?.data?.data.map((item: any, index: number) => (
                         <Link
                             key={index}
                             href={`/project/corporate/${item.id}`}

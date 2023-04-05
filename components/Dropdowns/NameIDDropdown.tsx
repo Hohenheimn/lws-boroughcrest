@@ -6,40 +6,37 @@ import api from "../../util/api";
 import DynamicPopOver from "../Reusable/DynamicPopOver";
 
 type DropdownItem = {
-    UpdateStateHandler: (key: string, e: any) => void;
-    itemDetail: any;
+    value: string;
+    setValue: Function;
     className?: string;
-    forCrudTableDD?: boolean;
-    displayID?: boolean;
-    filter?: boolean;
+    width: string;
+    placeholder: string;
+    endpoint: string;
 };
 
-export default function DropDownCharge({
-    UpdateStateHandler,
-    itemDetail,
+export default function NameIDDropdown({
+    value,
+    setValue,
     className,
-    forCrudTableDD,
-    displayID,
-    filter,
+    width,
+    placeholder,
+    endpoint,
 }: DropdownItem) {
     const [isToggle, setToggle] = useState(false);
-    const [tempSearch, setTempSearch] = useState(itemDetail.charge);
+    const [tempSearch, setTempSearch] = useState(value);
     useEffect(() => {
-        displayID !== undefined && displayID !== false
-            ? setTempSearch(itemDetail.charge_id)
-            : setTempSearch(itemDetail.charge);
-    }, [itemDetail.charge]);
+        setTempSearch(value);
+    }, [value]);
     return (
         <>
             <DynamicPopOver
-                className={"w-full "}
+                className={"w-full " + width}
                 samewidth={true}
                 toRef={
                     <input
                         type="text"
-                        className={
-                            `${!forCrudTableDD && "field"} w-full ` + className
-                        }
+                        className={`field w-full ` + className}
+                        placeholder={placeholder}
                         onClick={() => setToggle(true)}
                         value={tempSearch}
                         onChange={(e) => {
@@ -54,9 +51,10 @@ export default function DropDownCharge({
                                 setToggle={setToggle}
                                 tempSearch={tempSearch}
                                 setTempSearch={setTempSearch}
-                                UpdateStateHandler={UpdateStateHandler}
-                                itemDetail={itemDetail}
-                                filter={filter}
+                                value={value}
+                                endpoint={endpoint}
+                                setValue={setValue}
+                                name={placeholder}
                             />
                         )}
                     </>
@@ -69,33 +67,30 @@ export default function DropDownCharge({
 type List = {
     setToggle: Function;
     setTempSearch: Function;
-    UpdateStateHandler: (key: string, e: any) => void;
-    itemDetail: any;
+    value: string;
+    setValue: Function;
     tempSearch: string;
-    filter?: boolean;
+    endpoint: string;
+    name: string;
 };
 
 const List = ({
     setToggle,
     tempSearch,
     setTempSearch,
-    UpdateStateHandler,
-    itemDetail,
-    filter,
+    value,
+    setValue,
+    endpoint,
+    name,
 }: List) => {
     const { data, isLoading, isError } = useQuery(
-        ["charge-list-dd", tempSearch],
+        ["get-dropdown", name, tempSearch],
         () => {
-            return api.get(
-                `/finance/customer-facility/charges?keywords=${tempSearch}${
-                    filter ? "&meter_reading=1" : ""
-                }`,
-                {
-                    headers: {
-                        Authorization: "Bearer " + getCookie("user"),
-                    },
-                }
-            );
+            return api.get(`${endpoint}?keywords=${tempSearch}`, {
+                headers: {
+                    Authorization: "Bearer " + getCookie("user"),
+                },
+            });
         }
     );
 
@@ -105,7 +100,7 @@ const List = ({
         const clickOutSide = (e: any) => {
             if (!PopOver.current.contains(e.target)) {
                 setToggle(false);
-                setTempSearch(itemDetail.charge);
+                setTempSearch(value);
             }
         };
         document.addEventListener("mousedown", clickOutSide);
@@ -118,13 +113,11 @@ const List = ({
             {data?.data.map((item: any, index: number) => (
                 <li
                     key={index}
-                    data-id={item?.id}
-                    data-description={item?.description}
-                    data-uom={item?.uom?.name}
-                    data-vat={item?.vat_percent}
-                    data-rate={item?.base_rate}
                     onClick={(e) => {
-                        UpdateStateHandler("charge", e);
+                        setValue({
+                            id: item.id,
+                            value: item.name,
+                        });
                         setTempSearch(item.name);
                         setToggle(false);
                     }}
@@ -148,7 +141,7 @@ const List = ({
             {isError ||
                 (data?.data.length <= 0 && (
                     <li>
-                        <h1>Charge name cannot be found!</h1>
+                        <h1>{name} cannot be found!</h1>
                     </li>
                 ))}
         </ul>

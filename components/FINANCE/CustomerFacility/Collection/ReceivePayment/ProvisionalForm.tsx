@@ -17,6 +17,7 @@ import { CreateCollection } from "./Query";
 import { format, isValid, parse } from "date-fns";
 import { useRouter } from "next/router";
 import { MinusButtonTable, PlusButtonTable } from "../../../../Reusable/Icons";
+import { ErrorSubmit } from "../../../../Reusable/ErrorMessage";
 
 export type isProvisionalTable = {
     id: string | number;
@@ -77,12 +78,8 @@ export default function ProvisionalForm({
             );
         }
     };
-    const onError = () => {
-        setPrompt({
-            message: "Something is wrong!",
-            type: "error",
-            toggle: true,
-        });
+    const onError = (e: any) => {
+        ErrorSubmit(e, setPrompt);
     };
 
     const { isLoading, mutate } = CreateCollection(onSuccess, onError);

@@ -166,7 +166,7 @@ export default function UserRolePermissionsForm({
                                 Savehandler("save");
                             }}
                         >
-                            Save
+                            SAVE
                         </button>
                         <aside className={style.Arrow}>
                             <RiArrowDownSFill

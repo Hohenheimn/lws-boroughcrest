@@ -5,7 +5,7 @@ import api from "../../../../../util/api";
 export const GetReadingDD = (keyword: string) => {
     return useQuery(["reading-list", keyword], () => {
         return api.get(
-            `/finance/customer-facility/billing/record-meter-reading/reading-charge`,
+            `/finance/customer-facility/billing/record-meter-reading/reading-charge?keywords=${keyword}`,
             {
                 headers: {
                     Authorization: "Bearer " + getCookie("user"),
@@ -56,14 +56,14 @@ export const UpdateReadingDD = (onSucces: any, onError: any, id: number) => {
 };
 
 export const GetRecordMeterList = (
-    charde_id: string,
+    reading_id: string,
     from: string,
     to: string,
     page: number
 ) => {
-    return useQuery(["record-meter-list", charde_id, from, to, page], () => {
+    return useQuery(["record-meter-list", reading_id, from, to, page], () => {
         return api.get(
-            `/finance/customer-facility/billing/record-meter-reading?charge_id=${charde_id}&period_from=${from}&period_to=${to}&paginate=10&page=${page}`,
+            `/finance/customer-facility/billing/record-meter-reading?billing_readings_name_id=${reading_id}&period_from=${from}&period_to=${to}&paginate=10&page=${page}`,
             {
                 headers: {
                     Authorization: "Bearer " + getCookie("user"),
@@ -117,6 +117,39 @@ export const ShowRecordMeter = (id: any) => {
     return useQuery(["reading-show", id], () => {
         return api.get(
             `/finance/customer-facility/billing/record-meter-reading/${id}`,
+            {
+                headers: {
+                    Authorization: "Bearer " + getCookie("user"),
+                },
+            }
+        );
+    });
+};
+
+export const ApplyRecordMeter = (onSucces: any, onError: any) => {
+    return useMutation(
+        (Payload: any) => {
+            return api.put(
+                `/finance/customer-facility/billing/record-meter-reading/apply`,
+                Payload,
+                {
+                    headers: {
+                        Authorization: "Bearer " + getCookie("user"),
+                    },
+                }
+            );
+        },
+        {
+            onSuccess: onSucces,
+            onError: onError,
+        }
+    );
+};
+
+export const GetPreviousPeriod = (id: number, year: string) => {
+    return useQuery(["previous-period-list", id, year], () => {
+        return api.get(
+            `/finance/customer-facility/billing/record-meter-reading/period-options?billing_readings_name_id=${id}&year=${year}`,
             {
                 headers: {
                     Authorization: "Bearer " + getCookie("user"),

@@ -24,6 +24,8 @@ import { AiOutlineInfoCircle } from "react-icons/ai";
 import Link from "next/link";
 import Details from "./Details";
 import { useRouter } from "next/router";
+import { PencilButton } from "../../../Reusable/Icons";
+import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
 
 type isTableitemArray = isTableitemObj[];
 
@@ -40,6 +42,7 @@ type isTableitemObj = {
 
 export default function TableForm() {
     const router = useRouter();
+    const [isEdit, setEdit] = useState(false);
     const { setPrompt } = useContext(AppContext);
     const [isPeriod, setPeriod] = useState({
         from: "",
@@ -57,12 +60,8 @@ export default function TableForm() {
             type: "success",
         });
     };
-    const onError = () => {
-        setPrompt({
-            toggle: true,
-            message: "Something is wrong!",
-            type: "error",
-        });
+    const onError = (e: any) => {
+        ErrorSubmit(e, setPrompt);
     };
     const { isLoading: mutateLoading, mutate } = CreateUpdateBR(
         onSucces,
@@ -138,7 +137,7 @@ export default function TableForm() {
     const SubmitHandler = () => {
         let validate = true;
         const bank_recon = isTableItem.map((item: isTableitemObj) => {
-            if (item.date === "" || item.remarks === "") {
+            if (item.date === "") {
                 setPrompt({
                     toggle: true,
                     message: "Fill out the fields!",
@@ -190,6 +189,12 @@ export default function TableForm() {
 
                 <ul className={styleSearch.navigation}>
                     <li className={styleSearch.importExportPrint}>
+                        <div className="mr-5">
+                            <PencilButton
+                                FunctionOnClick={() => setEdit(true)}
+                                title={"Edit"}
+                            />
+                        </div>
                         <Tippy theme="ThemeRed" content="Export">
                             <div className={styleSearch.icon}>
                                 <Image
@@ -263,7 +268,9 @@ export default function TableForm() {
                                 </div>
                             </td>
                         </tr>
-                        {isBankAccount.id === "" ? (
+                        {isBankAccount.id === "" &&
+                        isPeriod.from === "" &&
+                        isPeriod.to === "" ? (
                             <></>
                         ) : (
                             <>
@@ -276,6 +283,8 @@ export default function TableForm() {
                                         rowNumber={index}
                                         setPrevBalance={setPrevBalance}
                                         prevBalance={prevBalance}
+                                        dateFrom={dateFrom}
+                                        dateTo={dateTo}
                                     />
                                 ))}
                             </>
@@ -297,20 +306,30 @@ export default function TableForm() {
                 )}
                 {isError && <TableErrorMessage />}
             </div>
-            <div className="flex justify-end py-5 mt-20">
-                <button className="button_cancel">Cancel</button>
-                <button
-                    className="buttonRed disabled:bg-ThemeRed50 disabled:pointer-events-none"
-                    disabled={isBankAccount.id === "" ? true : false}
-                    onClick={SubmitHandler}
-                >
-                    {mutateLoading ? (
-                        <ScaleLoader color="#fff" height="10px" width="2px" />
-                    ) : (
-                        "SAVE"
-                    )}
-                </button>
-            </div>
+            {isEdit && (
+                <div className="flex justify-end py-5 mt-20">
+                    <button
+                        className="button_cancel"
+                        onClick={() => setEdit(false)}
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        className="buttonRed disabled:bg-ThemeRed50 disabled:pointer-events-none"
+                        onClick={SubmitHandler}
+                    >
+                        {mutateLoading ? (
+                            <ScaleLoader
+                                color="#fff"
+                                height="10px"
+                                width="2px"
+                            />
+                        ) : (
+                            "SAVE"
+                        )}
+                    </button>
+                </div>
+            )}
         </>
     );
 }
@@ -322,6 +341,8 @@ type ListProps = {
     rowNumber: number;
     setPrevBalance: Function;
     prevBalance: number | string;
+    dateFrom: Date;
+    dateTo: Date;
 };
 
 const List = ({
@@ -331,6 +352,8 @@ const List = ({
     rowNumber,
     setPrevBalance,
     prevBalance,
+    dateFrom,
+    dateTo,
 }: ListProps) => {
     const { setPrompt } = useContext(AppContext);
     const itemData: isTableitemObj = itemDetail;
@@ -414,7 +437,7 @@ const List = ({
             return;
         }
         const random = Math.random();
-        if (itemData.date === "" || itemData.remarks === "") {
+        if (itemData.date === "") {
             setPrompt({
                 toggle: true,
                 message: "Fill out the fields!",
@@ -479,7 +502,14 @@ const List = ({
                         onClick={() => setDate({ ...isDate, toggle: true })}
                     />
                     {isDate.toggle && (
-                        <Calendar value={isDate} setValue={setDate} />
+                        <Calendar
+                            value={isDate}
+                            setValue={setDate}
+                            period={{
+                                from: dateFrom,
+                                to: dateTo,
+                            }}
+                        />
                     )}
                 </article>
             </td>
@@ -547,7 +577,10 @@ const List = ({
                 ) : (
                     <>
                         {isTableItem.length > 1 && (
-                            <div onClick={RemoveRowHandler}>
+                            <div
+                                className=" cursor-pointer"
+                                onClick={RemoveRowHandler}
+                            >
                                 <HiMinus />
                             </div>
                         )}
@@ -556,7 +589,7 @@ const List = ({
 
                 {isTableItem.length - 1 === rowNumber && (
                     <div
-                        className="ml-5 1024px:ml-2"
+                        className="ml-5 1024px:ml-2 cursor-pointer"
                         onClick={(e) => AddRowHandler(e)}
                     >
                         <BsPlusLg />
