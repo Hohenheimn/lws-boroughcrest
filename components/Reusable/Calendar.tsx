@@ -88,6 +88,7 @@ export default function Calendar({ value, setValue, period }: Props) {
 
     const SelectedDateHandler = (day: any) => {
         setSelect(day);
+        console.log(value);
         setValue({
             value: format(day, "MMM dd yyyy"),
             toggle: false,
@@ -186,7 +187,7 @@ export default function Calendar({ value, setValue, period }: Props) {
                                             {Months.map((month, index) => (
                                                 <li
                                                     key={index}
-                                                    className={`py-1 px-2 text-[12px] cursor-pointer hover:bg-ThemeRed50 ${
+                                                    className={`py-1 px-2 text-[12px] cursor-pointer hover:bg-ThemeRed50 hover:text-white ${
                                                         currentMonth === month
                                                             ? " bg-ThemeRed text-white"
                                                             : "text-[#757575]"
@@ -222,7 +223,7 @@ export default function Calendar({ value, setValue, period }: Props) {
                                             {Years.map((year, index) => (
                                                 <li
                                                     key={index}
-                                                    className={`py-1 px-2 text-[12px] cursor-pointer hover:bg-ThemeRed50 ${
+                                                    className={`py-1 px-2 text-[12px] cursor-pointer hover:bg-ThemeRed50 hover:text-white ${
                                                         currenYear ===
                                                         format(year, "yyyy")
                                                             ? " bg-ThemeRed text-white"

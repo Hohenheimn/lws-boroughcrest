@@ -135,12 +135,13 @@ export default function SelectGroup({
                 };
             });
             if (
-                CloneArray.length === isSelectedIDs.length &&
-                CloneArray.length !== 0
+                CloneArray.length !== 0 &&
+                CloneArray.every((val: any) => isSelectedIDs.includes(val.id))
             ) {
                 selectAll = true;
+            } else {
+                selectAll = false;
             }
-
             setTableItem({
                 itemArray: CloneArray,
                 selectAll: selectAll,

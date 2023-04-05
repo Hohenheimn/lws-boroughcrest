@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { BeatLoader } from "react-spinners";
 import ModalTemp from "../../../../Reusable/ModalTemp";
 import { ShowRecordMeter } from "./Query";
-import Readingform from "./Readingform";
+import SelectProperty from "./SelectProperty";
 
 export default function Modify() {
     const [isToggle, toggle] = useState();
@@ -43,7 +43,7 @@ export default function Modify() {
     const dateTo = parse(data?.data.record.period_to, "yyyy-MM-dd", new Date());
 
     return (
-        <Readingform
+        <SelectProperty
             toggle={toggle}
             formType="modify"
             externalDefaultValue={{

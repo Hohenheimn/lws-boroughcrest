@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import style from "../../../../../styles/SearchFilter.module.scss";
 import { BarLoader, ScaleLoader } from "react-spinners";
 import ReadingCrud from "./ReadingCrud";
-import Readingform from "./Readingform";
+import SelectProperty from "./SelectProperty";
 import PreviousPeriod from "./PreviousPeriod";
 import { PencilButton } from "../../../../Reusable/Icons";
 import { TextNumberDisplay } from "../../../../Reusable/NumberFormat";
@@ -266,7 +266,7 @@ export default function TableForm() {
     return (
         <>
             {toggleReading && (
-                <Readingform
+                <SelectProperty
                     formType="create"
                     toggle={setToggleReading}
                     externalDefaultValue={{
@@ -321,12 +321,14 @@ export default function TableForm() {
                     <li className={`${style.new} mr-0`}>
                         <div onClick={ToggleNewReading}>NEW READING</div>
                     </li>
-                    <li className={style.importExportPrint}>
-                        <PencilButton
-                            FunctionOnClick={ToggleModify}
-                            title="Modify"
-                        />
-                    </li>
+                    {isPreviousPeriod.from !== "" && isPreviousPeriod.to && (
+                        <li className={style.importExportPrint}>
+                            <PencilButton
+                                FunctionOnClick={ToggleModify}
+                                title="Modify"
+                            />
+                        </li>
+                    )}
                 </ul>
             </section>
             <div>
@@ -393,19 +395,21 @@ export default function TableForm() {
                             )}
                         </tbody>
                     </table>
-                    {isLoading && (
-                        <div className="w-full flex justify-center items-center">
-                            <aside className="text-center flex justify-center py-5">
-                                <BarLoader
-                                    color={"#8f384d"}
-                                    height="10px"
-                                    width="200px"
-                                    aria-label="Loading Spinner"
-                                    data-testid="loader"
-                                />
-                            </aside>
-                        </div>
-                    )}
+                    {isLoading &&
+                        isReading.reading_id !== "" &&
+                        isPreviousPeriod.from !== "" && (
+                            <div className="w-full flex justify-center items-center">
+                                <aside className="text-center flex justify-center py-5">
+                                    <BarLoader
+                                        color={"#8f384d"}
+                                        height="10px"
+                                        width="200px"
+                                        aria-label="Loading Spinner"
+                                        data-testid="loader"
+                                    />
+                                </aside>
+                            </div>
+                        )}
                     {isError && <TableErrorMessage />}
                 </div>
                 <Pagination
