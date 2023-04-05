@@ -80,8 +80,10 @@ export default function Layout({ children }: Layout) {
             setWide(false);
         }
         // Show finance Upper Menu
-        const finance = router.pathname.split("/")[1];
-        if (finance === "finance") {
+        if (
+            router.pathname.includes("finance") &&
+            !router.pathname.includes("/policy")
+        ) {
             setFinanceMenu(true);
         } else {
             setFinanceMenu(false);

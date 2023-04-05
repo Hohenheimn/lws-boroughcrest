@@ -73,6 +73,11 @@ export const SidebarLinks = [
                 url: "/finance/customer-facility/charge",
                 ActiveName: "customer-facility",
             },
+            {
+                name: "Policy",
+                url: "/finance/policy",
+                ActiveName: "policy",
+            },
         ],
     },
 ];

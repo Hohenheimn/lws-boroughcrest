@@ -53,6 +53,9 @@ h6.lowGray {
         height: 25px;
     }
 }
+.field.noStyle {
+    @apply shadow-none pointer-events-none;
+}
 .percentage {
     @apply relative;
     &::after {
@@ -164,7 +167,7 @@ select {
     @apply text-start text-gray-400 text-[14px] 1024px:text-[14px] font-medium;
 }
 .main_text {
-    @apply text-[#6b7280] mb-5 1024px:text-[14px];
+    @apply text-[#6b7280] mb-5 1550px:text-[14px];
     span {
         @apply text-gray-400 text-[12px];
     }

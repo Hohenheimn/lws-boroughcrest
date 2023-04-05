@@ -1,16 +1,9 @@
-import React, { useContext, useState } from "react";
-import { HiPencil } from "react-icons/hi";
-import Image from "next/image";
+import React, { useContext } from "react";
 import style from "../../../styles/Project/PropertyDetails.module.scss";
-import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 import PropertyForm from "./PropertyForm";
 import AppContext from "../../Context/AppContext";
 import { property, PropertyDefaultValue } from "../../../types/PropertyList";
-import {
-    PostDraftProperty,
-    PostProperty,
-} from "../../ReactQuery/PropertyMethod";
 import { format, isValid, parse } from "date-fns";
 import { PencilButton } from "../../Reusable/Icons";
 
