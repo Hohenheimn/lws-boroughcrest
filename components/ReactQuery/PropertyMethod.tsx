@@ -4,16 +4,22 @@ import { getCookie } from "cookies-next";
 
 // List of Property
 export const GetPropertyList = (PageNumber: any, Keyword: any) => {
-    return useQuery(["Property-List", PageNumber, Keyword], () => {
-        return api.get(
-            `/admin/property/unit?page=${PageNumber}&paginate=10&keywords=${Keyword}`,
-            {
-                headers: {
-                    Authorization: "Bearer " + getCookie("user"),
-                },
-            }
-        );
-    });
+    return useQuery(
+        ["Property-List", PageNumber, Keyword],
+        () => {
+            return api.get(
+                `/admin/property/unit?page=${PageNumber}&paginate=10&keywords=${Keyword}`,
+                {
+                    headers: {
+                        Authorization: "Bearer " + getCookie("user"),
+                    },
+                }
+            );
+        },
+        {
+            refetchOnWindowFocus: false,
+        }
+    );
 };
 // Import
 export const PropertyImport = (onSuccess: any, ImportError: any) => {

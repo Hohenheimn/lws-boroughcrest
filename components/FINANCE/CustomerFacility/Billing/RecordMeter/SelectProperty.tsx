@@ -16,6 +16,7 @@ import ReadingPropertyForm, {
 } from "./ReadingPropertyForm";
 import NameIDDropdown from "../../../../Dropdowns/NameIDDropdown";
 import SelectDropdown from "../../../../Reusable/SelectDropdown";
+import { useRouter } from "next/router";
 
 type Props = {
     toggle: Function;
@@ -32,7 +33,7 @@ interface isTableItemObj extends property {
     select: boolean;
 }
 
-export default function Readingform({
+export default function SelectProperty({
     toggle,
     externalDefaultValue,
     formType,
@@ -41,11 +42,19 @@ export default function Readingform({
     const [TablePage, setTablePage] = useState(1);
     const [isSearch, setSearch] = useState("");
     const [formActive, setFormActive] = useState([true, false]);
+    const router = useRouter();
 
     const [isTableItem, setTableItem] = useState<isTable>({
         itemArray: [],
         selectAll: false,
     });
+
+    const [DefaultValue, setDefaultValue] =
+        useState<DefaultValuePropertyReadingForm>(externalDefaultValue);
+
+    const [isSelectedIDs, setSelectedIDs] = useState<
+        { id: number; project: string; tower: string }[]
+    >([]);
 
     useEffect(() => {
         if (formType === "modify") {
@@ -59,14 +68,7 @@ export default function Readingform({
             };
         });
         setSelectedIDs(addExistingID);
-    }, []);
-
-    const [DefaultValue, setDefaultValue] =
-        useState<DefaultValuePropertyReadingForm>(externalDefaultValue);
-
-    const [isSelectedIDs, setSelectedIDs] = useState<
-        { id: number; project: string; tower: string }[]
-    >([]);
+    }, [DefaultValue.properties]);
 
     const selectAll = () => {
         if (isTableItem.selectAll) {
@@ -106,7 +108,6 @@ export default function Readingform({
                 if (isSelectedIDs.some((someIDs) => someIDs.id === item.id)) {
                     select = true;
                 }
-
                 return {
                     id: item.id,
                     unit_code: item?.unit_code,
@@ -128,10 +129,12 @@ export default function Readingform({
                 };
             });
             if (
-                CloneArray.length === isSelectedIDs.length &&
-                CloneArray.length !== 0
+                CloneArray.length !== 0 &&
+                CloneArray.every((val: any) => isSelectedIDs.includes(val.id))
             ) {
                 selectAll = true;
+            } else {
+                selectAll = false;
             }
 
             setTableItem({
@@ -139,7 +142,7 @@ export default function Readingform({
                 selectAll: selectAll,
             });
         }
-    }, [data?.status, isSearch]);
+    }, [data, isSearch, formType]);
 
     const NextHandler = () => {
         if (isSelectedIDs.length <= 0) {
@@ -150,20 +153,34 @@ export default function Readingform({
             });
             return;
         }
-        const cloneToPass: isTableForm[] = isSelectedIDs.map((item) => {
-            return {
-                property: item.project === "" ? item.tower : item.project,
-                property_unit_id: Number(item.id),
-                previous_reading: 0,
-                current_reading: 0,
-                consumption: 0,
-            };
+        const cloneToPass = isSelectedIDs.map((item) => {
+            if (
+                DefaultValue.properties.some(
+                    (someItem) => someItem.property_unit_id === item.id
+                )
+            ) {
+                const cloneToFilter = DefaultValue.properties.filter(
+                    (filterItem) =>
+                        Number(filterItem.property_unit_id) === item.id
+                );
+                return cloneToFilter[0];
+            } else {
+                return {
+                    property: item.project === "" ? item.tower : item.project,
+                    property_unit_id: Number(item.id),
+                    previous_reading: 0,
+                    current_reading: 0,
+                    consumption: 0,
+                };
+            }
         });
+
         setDefaultValue({
             ...DefaultValue,
             properties: cloneToPass,
         });
         setFormActive([false, true]);
+        console.log(cloneToPass);
     };
 
     const [isFilterbyCategory, setFilterbyCategory] = useState("");
@@ -304,12 +321,16 @@ export default function Readingform({
                         CurrentPage={data?.data.current_page}
                     />
                     <div className="flex justify-end py-5 mt-10">
-                        <button
-                            className="button_cancel"
-                            onClick={() => toggle(false)}
-                        >
-                            Cancel
-                        </button>
+                        {router.query.modify === undefined && (
+                            <button
+                                className="button_cancel"
+                                onClick={() => {
+                                    toggle(false);
+                                }}
+                            >
+                                Cancel
+                            </button>
+                        )}
                         <button className="buttonRed" onClick={NextHandler}>
                             NEXT
                         </button>

@@ -133,7 +133,11 @@ export default function ReceivePaymentForm({
                     };
                 }
             );
-            setOutstanding(getCustomerOutstanding);
+            setOutstanding(
+                getCustomerOutstanding === undefined
+                    ? []
+                    : getCustomerOutstanding
+            );
         }
     }, [data]);
 

@@ -97,7 +97,6 @@ export default function OfficialForm({
         buttonClicked = button;
         let validate = true;
         Error();
-
         const PayloadOutRight = isOutright.filter((item: Outright) => {
             if (item.charge_id !== "")
                 return {
@@ -120,69 +119,38 @@ export default function OfficialForm({
                     amount: 0,
                 };
         });
-
-        // PayloadAdvances.map((provItem: AdvancesType) => {
-        //     if (
-        //         provItem.amount <= 0 ||
-        //         provItem.charge === "" ||
-        //         provItem.charge_id === ""
-        //     ) {
-        //         setPrompt({
-        //             toggle: true,
-        //             message: "Fill out the fields!",
-        //             type: "draft",
-        //         });
-        //         validate = false;
-        //         return;
-        //     }
-        // });
-        // PayloadOutRight.map((provItem: Outright) => {
-        //     if (
-        //         provItem.amount <= 0 ||
-        //         provItem.charge === "" ||
-        //         provItem.charge_id === "" ||
-        //         provItem.unit_price <= 0 ||
-        //         provItem.qty <= 0
-        //     ) {
-        //         setPrompt({
-        //             toggle: true,
-        //             message: "Fill out the fields!",
-        //             type: "draft",
-        //         });
-        //         validate = false;
-        //         return;
-        //     }
-        // });
-        // Outstanding.map((provItem: Outstanding) => {
-        //     if (provItem.applied_amount <= 0) {
-        //         setPrompt({
-        //             toggle: true,
-        //             message: "Fill out the fields!",
-        //             type: "draft",
-        //         });
-        //         validate = false;
-        //         return;
-        //     }
-        // });
-        // if (
-        //     headerForm.amount_paid === "" ||
-        //     headerForm.bank_account_id === "" ||
-        //     headerForm.credit_tax === "" ||
-        //     headerForm.customer_id === "" ||
-        //     headerForm.deposit_date === "" ||
-        //     headerForm.mode_of_payment === "" ||
-        //     headerForm.receipt_date === "" ||
-        //     headerForm.receipt_no === "" ||
-        //     headerForm.reference_no === ""
-        // ) {
-        //     setPrompt({
-        //         toggle: true,
-        //         message: "Fill out the fields!",
-        //         type: "draft",
-        //     });
-        //     validate = false;
-        //     return;
-        // }
+        if (Outstanding.length > 0) {
+            Outstanding.map((provItem: Outstanding) => {
+                if (provItem.applied_amount <= 0) {
+                    setPrompt({
+                        toggle: true,
+                        message: "Fill out the fields on Outstanding!",
+                        type: "draft",
+                    });
+                    validate = false;
+                    return;
+                }
+            });
+            return;
+        }
+        if (
+            headerForm.amount_paid === "" ||
+            headerForm.bank_account_id === "" ||
+            headerForm.credit_tax === "" ||
+            headerForm.customer_id === "" ||
+            headerForm.deposit_date === "" ||
+            headerForm.mode_of_payment === "" ||
+            headerForm.receipt_date === "" ||
+            headerForm.reference_no === ""
+        ) {
+            setPrompt({
+                toggle: true,
+                message: "Fill out the fields on the top!",
+                type: "draft",
+            });
+            validate = false;
+            return;
+        }
 
         const receipt_date = parse(
             headerForm.receipt_date,
@@ -211,14 +179,54 @@ export default function OfficialForm({
             outrights: [...PayloadOutRight, ...PayloadAdvances],
             balances: Outstanding.map((item: Outstanding) => {
                 return {
-                    billing_invoice_id: "",
+                    billing_invoice_id: item.id,
                     payment_amount: item.applied_amount,
                     balance: item.balance,
                 };
             }),
         };
-        // if (validate) mutate(Payload);
-        console.log(Payload);
+        if (Payload.outrights.length <= 0) {
+            PayloadAdvances.map((provItem: AdvancesType) => {
+                if (
+                    provItem.amount <= 0 ||
+                    provItem.charge === "" ||
+                    provItem.charge_id === ""
+                ) {
+                    setPrompt({
+                        toggle: true,
+                        message:
+                            "Fill out the all fields on Outright or Advances!",
+                        type: "draft",
+                    });
+                    validate = false;
+                    return;
+                }
+            });
+            PayloadOutRight.map((provItem: Outright) => {
+                if (
+                    provItem.amount <= 0 ||
+                    provItem.charge === "" ||
+                    provItem.charge_id === "" ||
+                    provItem.unit_price <= 0 ||
+                    provItem.qty <= 0
+                ) {
+                    setPrompt({
+                        toggle: true,
+                        message: "Fill out the fields on Outright or Advances!",
+                        type: "draft",
+                    });
+                    validate = false;
+                    return;
+                }
+            });
+            setPrompt({
+                toggle: true,
+                message: "Fill out the all fields on Outright or Advances!",
+                type: "draft",
+            });
+            return;
+        }
+        if (validate) mutate(Payload);
     };
 
     return (

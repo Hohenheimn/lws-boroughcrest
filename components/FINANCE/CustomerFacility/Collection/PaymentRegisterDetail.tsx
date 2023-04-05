@@ -12,6 +12,9 @@ import {
 import { GetCustomer } from "../../../ReactQuery/CustomerMethod";
 import { customer } from "../../../../types/customerList";
 import { format, isValid, parse } from "date-fns";
+import { GetCustomerOutstanding } from "./ReceivePayment/Query";
+import TableErrorMessage from "../../../Reusable/TableErrorMessage";
+import { BarLoader } from "react-spinners";
 
 type Props = {
     CollectionDetail: CollectionItem;
@@ -54,6 +57,12 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
             );
         });
     }, [CollectionDetail?.check_warehouses]);
+
+    const {
+        isLoading: OSloading,
+        data: OSdata,
+        isError: OSerror,
+    } = GetCustomerOutstanding(CollectionDetail.customer_id);
 
     return (
         <div>
@@ -205,28 +214,36 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>Water</td>
-                                            <td>Lorem, ipsum.</td>
-                                            <td>
-                                                <TextNumberDisplay
-                                                    className="withPeso w-full text-end"
-                                                    value={1000}
-                                                />
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Electricity</td>
-                                            <td>Lorem, ipsum.</td>
-                                            <td>
-                                                <TextNumberDisplay
-                                                    className="withPeso w-full text-end"
-                                                    value={2000}
-                                                />
-                                            </td>
-                                        </tr>
+                                        {data?.data[0]?.invoice_list?.map(
+                                            (item: any, index: number) => (
+                                                <tr key={index}>
+                                                    <td>{item.charge.name}</td>
+                                                    <td>{item.description}</td>
+                                                    <td>
+                                                        <TextNumberDisplay
+                                                            className="withPeso w-full text-end"
+                                                            value={item.amount}
+                                                        />
+                                                    </td>
+                                                </tr>
+                                            )
+                                        )}
                                     </tbody>
                                 </table>
+                                {OSloading && (
+                                    <div className="w-full flex justify-center items-center">
+                                        <aside className="text-center flex justify-center py-5">
+                                            <BarLoader
+                                                color={"#8f384d"}
+                                                height="10px"
+                                                width="200px"
+                                                aria-label="Loading Spinner"
+                                                data-testid="loader"
+                                            />
+                                        </aside>
+                                    </div>
+                                )}
+                                {OSerror && <TableErrorMessage />}
                             </div>
                             <TableOneTotal
                                 total={3000}
