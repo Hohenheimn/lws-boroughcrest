@@ -172,10 +172,6 @@ const List = ({ itemDetail }: List) => {
     const vatPercentage = 0;
     const vatAmount = 0;
     const total = 0;
-
-    useEffect(() => {
-        console.log(itemDetail);
-    }, []);
     return (
         <tr>
             <td>

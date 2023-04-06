@@ -17,6 +17,7 @@ import { Outright } from "./OfficialForm/OutrightAndAdvances/OutRight";
 import { AdvancesType } from "./OfficialForm/OutrightAndAdvances/Advances";
 import { GetCustomerOutstanding, GetCustomerSummary } from "./Query";
 import { useRouter } from "next/router";
+import DynamicPopOver from "../../../../Reusable/DynamicPopOver";
 
 export type ReceivePaymentForm = {
     description: string;
@@ -189,7 +190,10 @@ export default function ReceivePaymentForm({
         value: "",
     });
 
-    const [isDepositDate, setDepositDate] = useState({
+    const [DepositDateRP, setDepositDateRP] = useState<{
+        value: string;
+        toggle: boolean;
+    }>({
         value: "",
         toggle: false,
     });
@@ -197,9 +201,9 @@ export default function ReceivePaymentForm({
     useEffect(() => {
         setHeaderForm({
             ...HeaderForm,
-            deposit_date: isDepositDate.value,
+            deposit_date: DepositDateRP.value,
         });
-    }, [isDepositDate]);
+    }, [DepositDateRP]);
 
     useEffect(() => {
         setHeaderForm({
@@ -392,38 +396,50 @@ export default function ReceivePaymentForm({
                                 </label>
                             </li>
                             <li className="w-[30%]">
-                                <label className="labelField flex flex-col">
-                                    *DEPOSIT DATE
-                                    <div className="calendar">
-                                        <span className="cal">
-                                            <Image
-                                                src="/Images/CalendarMini.png"
-                                                width={15}
-                                                height={15}
-                                            />
-                                        </span>
-                                        <input
-                                            autoComplete="off"
-                                            type="text"
-                                            value={HeaderForm.deposit_date}
-                                            readOnly
-                                            placeholder="MM dd yyyy"
-                                            onClick={() =>
-                                                setDepositDate({
-                                                    ...isDepositDate,
-                                                    toggle: true,
-                                                })
-                                            }
-                                            className="field w-full"
-                                        />
-                                        {isDepositDate.toggle && (
-                                            <Calendar
-                                                value={isDepositDate}
-                                                setValue={setDepositDate}
-                                            />
-                                        )}
-                                    </div>
-                                </label>
+                                <DynamicPopOver
+                                    toRef={
+                                        <label className="labelField flex flex-col">
+                                            *DEPOSIT DATE
+                                            <div className="calendar">
+                                                <span className="cal">
+                                                    <Image
+                                                        src="/Images/CalendarMini.png"
+                                                        width={15}
+                                                        height={15}
+                                                    />
+                                                </span>
+                                                <input
+                                                    autoComplete="off"
+                                                    type="text"
+                                                    value={
+                                                        HeaderForm.deposit_date
+                                                    }
+                                                    readOnly
+                                                    placeholder="MM dd yyyy"
+                                                    onClick={() =>
+                                                        setDepositDateRP({
+                                                            ...DepositDateRP,
+                                                            toggle: true,
+                                                        })
+                                                    }
+                                                    className="field w-full"
+                                                />
+                                            </div>
+                                        </label>
+                                    }
+                                    toPop={
+                                        <>
+                                            {DepositDateRP.toggle === true && (
+                                                <Calendar
+                                                    value={DepositDateRP}
+                                                    setValue={setDepositDateRP}
+                                                />
+                                            )}
+                                        </>
+                                    }
+                                    className={""}
+                                />
+
                                 {HeaderForm.deposit_date === "" &&
                                     isErrorToggle && (
                                         <p className="text-[10px] text-ThemeRed">

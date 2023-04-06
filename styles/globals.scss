@@ -1020,7 +1020,7 @@ input[type="number"] {
         @apply mr-2;
     }
     li {
-        @apply w-3 h-3 rounded-full bg-gray-400 duration-300 ease-in-out;
+        @apply w-3 h-3 rounded-full bg-gray-400 duration-300 ease-in-out cursor-pointer;
     }
     li.active {
         @apply w-20 rounded-lg bg-ThemeRed;

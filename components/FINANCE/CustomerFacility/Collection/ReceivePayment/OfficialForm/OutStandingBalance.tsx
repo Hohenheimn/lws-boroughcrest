@@ -98,7 +98,7 @@ export default function OutStandingBalance({
                             : "pl-[30px] bg-[#b7b7b7]"
                     }`}
                 >
-                    <p className=" -mt-[1px]">Heirachy</p>
+                    <p className=" -mt-[1px]">Heirarchy</p>
                     <div
                         className={`h-[20px] duration-300 ease-in-out w-[20px] bg-ThemeRed rounded-full absolute top-[50%] translate-y-[-50%] ${
                             !isToggle ? "right-[5px]" : "right-[78px]"

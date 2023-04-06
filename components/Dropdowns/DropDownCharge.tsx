@@ -23,12 +23,12 @@ export default function DropDownCharge({
     filter,
 }: DropdownItem) {
     const [isToggle, setToggle] = useState(false);
-    const [tempSearch, setTempSearch] = useState(itemDetail.charge);
+    const [tempSearch, setTempSearch] = useState(itemDetail?.charge);
     useEffect(() => {
         displayID !== undefined && displayID !== false
-            ? setTempSearch(itemDetail.charge_id)
-            : setTempSearch(itemDetail.charge);
-    }, [itemDetail.charge]);
+            ? setTempSearch(itemDetail?.charge_id)
+            : setTempSearch(itemDetail?.charge);
+    }, [itemDetail?.charge]);
     return (
         <>
             <DynamicPopOver
@@ -105,7 +105,7 @@ const List = ({
         const clickOutSide = (e: any) => {
             if (!PopOver.current.contains(e.target)) {
                 setToggle(false);
-                setTempSearch(itemDetail.charge);
+                setTempSearch(itemDetail?.charge);
             }
         };
         document.addEventListener("mousedown", clickOutSide);
