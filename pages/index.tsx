@@ -1,13 +1,16 @@
-import type { NextPage } from "next";
-import { useEffect } from "react";
-import { useRouter } from "next/router";
+import type { GetServerSideProps, NextPage } from "next";
+import { requiredAuthentication } from "../components/HOC/Authentication";
 
-const Home: NextPage = () => {
-    const router = useRouter();
-    useEffect(() => {
-        router.push("/login");
-    });
-    return <div></div>;
-};
-
-export default Home;
+export default function Index() {
+    return <div>Index</div>;
+}
+export const getServerSideProps: GetServerSideProps = requiredAuthentication(
+    async (context) => {
+        return {
+            redirect: {
+                permanent: false,
+                destination: "/login",
+            },
+        };
+    }
+);

@@ -13,6 +13,7 @@ import Pagination from "../../../Reusable/Pagination";
 import AppContext from "../../../Context/AppContext";
 import { format, isValid, parse } from "date-fns";
 import { GetJournal, MultipleUpdate } from "../../General-Ledger/Journal/Query";
+import { useRouter } from "next/router";
 
 type Props = {
     type: string;
@@ -423,8 +424,16 @@ const List = ({
             selectAll: false,
         });
     };
+    const router = useRouter();
     return (
-        <tr>
+        <tr
+            className=" cursor-pointer"
+            onClick={() => {
+                router.push(
+                    `/finance/customer-facility/adjustment/adjustment-list/${itemDetail.id}`
+                );
+            }}
+        >
             {type === "unposted" && (
                 <td className="checkbox">
                     <div className="item">
@@ -437,91 +446,60 @@ const List = ({
                 </td>
             )}
             <td>
-                <Link
-                    href={`/finance/general-ledger/journal/journal-list/${itemDetail.id}`}
-                >
-                    <a className="item">
-                        {type !== "posted" ? (
-                            <div className="finance_status">
-                                <div
-                                    className={`status ${
-                                        itemDetail.status === "In Progress"
-                                            ? "InProcess"
-                                            : itemDetail.status
-                                    }`}
-                                >
-                                    <div>
-                                        {itemDetail.status === "Pending" && (
-                                            <Image
-                                                src={`/Images/f_pending.png`}
-                                                width={15}
-                                                height={15}
-                                                alt={itemDetail.status}
-                                            />
-                                        )}
-                                        {itemDetail.status ===
-                                            "In Progress" && (
-                                            <Image
-                                                src={`/Images/f_InProcess.png`}
-                                                width={15}
-                                                height={15}
-                                                alt={itemDetail.status}
-                                            />
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-                        ) : (
+                {type !== "posted" ? (
+                    <div className="finance_status">
+                        <div
+                            className={`status ${
+                                itemDetail.status === "In Progress"
+                                    ? "InProcess"
+                                    : itemDetail.status
+                            }`}
+                        >
                             <div>
-                                <h2>{itemDetail.journal_no}</h2>
+                                {itemDetail.status === "Pending" && (
+                                    <Image
+                                        src={`/Images/f_pending.png`}
+                                        width={15}
+                                        height={15}
+                                        alt={itemDetail.status}
+                                    />
+                                )}
+                                {itemDetail.status === "In Progress" && (
+                                    <Image
+                                        src={`/Images/f_InProcess.png`}
+                                        width={15}
+                                        height={15}
+                                        alt={itemDetail.status}
+                                    />
+                                )}
                             </div>
-                        )}
-                    </a>
-                </Link>
+                        </div>
+                    </div>
+                ) : (
+                    <div>
+                        <h2>{itemDetail.journal_no}</h2>
+                    </div>
+                )}
             </td>
             <td>
-                <Link
-                    href={`/finance/general-ledger/journal/journal-list/${itemDetail.id}`}
-                >
-                    <a className="item">
-                        <div>
-                            <h2>{itemDetail.date}</h2>
-                        </div>
-                    </a>
-                </Link>
+                <div>
+                    <h2>{itemDetail.date}</h2>
+                </div>
             </td>
             <td>
-                <Link
-                    href={`/finance/general-ledger/journal/journal-list/${itemDetail.id}`}
-                >
-                    <a className="item">
-                        <div>
-                            <h2>Customer</h2>
-                        </div>
-                    </a>
-                </Link>
+                <div>
+                    <h2>Customer</h2>
+                </div>
             </td>
             <td>
-                <Link
-                    href={`/finance/general-ledger/journal/journal-list/${itemDetail.id}`}
-                >
-                    <a className="item">
-                        <div>
-                            <h2>Property</h2>
-                        </div>
-                    </a>
-                </Link>
+                <div>
+                    <h2>Property</h2>
+                </div>
             </td>
             <td>
-                <Link
-                    href={`/finance/general-ledger/journal/journal-list/${itemDetail.id}`}
-                >
-                    <a className="item">
-                        <div>
-                            <h2>Description</h2>
-                        </div>
-                    </a>
-                </Link>
+                <div>
+                    <h2>Description</h2>
+                </div>
             </td>
         </tr>
     );

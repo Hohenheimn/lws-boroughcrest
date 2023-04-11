@@ -8,6 +8,7 @@ import api from "../util/api";
 import { setCookie } from "cookies-next";
 import { ScaleLoader, MoonLoader } from "react-spinners";
 import { SendLink } from "../components/ReactQuery/ForgotPassword";
+import { useForm } from "react-hook-form";
 
 export default function Login() {
     const router = useRouter();
@@ -121,16 +122,6 @@ export default function Login() {
                                 width={400}
                                 height={150}
                             />
-
-                            {/* <p className="text-center text-white -mt-3 mb-10 text-[14px] 640px:mb-2">
-                                lorem ipsum
-                            </p>
-                            <p className="text-center text-white text-[14px] leading-tight">
-                                Lorem ipsum dolor sit amet, consectetur
-                                adipiscing elit. Et nec bibendum congue aliquet
-                                augue diam mauris lobortis. Morbi mattis
-                                tincidunt ut dignissim lacinia..
-                            </p> */}
                         </li>
                         <li className=" w-8/12 820px:w-7/12 bg-[#e5e4e455] flex flex-col 640px:w-full">
                             <section className=" p-16 820px:p-10 640px:p-5 flex flex-col items-start justify-center flex-1">
@@ -151,6 +142,7 @@ export default function Login() {
                                         value={isUsername}
                                         required
                                         onChange={(e: any) =>
+                                            e.target.value.length <= 25 &&
                                             setUsername(e.target.value)
                                         }
                                         name="username"
@@ -169,6 +161,7 @@ export default function Login() {
                                         name="password"
                                         required
                                         onChange={(e: any) =>
+                                            e.target.value.length <= 15 &&
                                             setPassword(e.target.value)
                                         }
                                         className="flex-1 outline-none text-16px"

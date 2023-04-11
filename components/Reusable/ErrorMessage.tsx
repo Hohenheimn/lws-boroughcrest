@@ -1,6 +1,3 @@
-import { useContext } from "react";
-import AppContext from "../Context/AppContext";
-
 export const ErrorSubmit = (e: any, setPrompt: Function) => {
     const propertyValues = Object.values(e.response.data);
     const message = propertyValues.map((item: any, index) => {
@@ -8,7 +5,6 @@ export const ErrorSubmit = (e: any, setPrompt: Function) => {
             ? item
             : item.replace(".", "") + ", ";
     });
-    console.log(e.response);
     if (e.response.status === 422) {
         setPrompt({
             message: message,

@@ -31,6 +31,11 @@ export default function UserInfo() {
             name: data?.data.name,
             email: data?.data.email,
             email_verified: data?.data.email_verified,
+            image_url: data?.data.image_photo,
+            image_signature_url: data?.data.image_signature,
+            position: data?.data.position,
+            contact_no: data?.data.contact_no,
+            status: data?.data.status,
             created_at: data?.data.created_at,
             updated_at: data?.data.updated_at,
         });

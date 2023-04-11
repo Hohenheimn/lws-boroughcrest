@@ -12,7 +12,8 @@ export default function PropertyTable({ isSearchTable }: any) {
     const [TablePage, setTablePage] = useState(1);
     const { isLoading, data, isError } = GetPropertyList(
         TablePage,
-        isSearchTable
+        isSearchTable,
+        propTableRows
     );
     const PropertyData = data?.data?.data;
     // Set parameter for print
@@ -22,8 +23,9 @@ export default function PropertyTable({ isSearchTable }: any) {
             page: TablePage,
             limit: propTableRows,
             url: "/admin/property/print",
+            columns: propTableColumn,
         });
-    }, [isSearchTable, TablePage, propTableRows]);
+    }, [isSearchTable, TablePage, propTableRows, propTableColumn]);
     return (
         <>
             <div className="table_container">

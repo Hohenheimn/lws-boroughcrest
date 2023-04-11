@@ -83,37 +83,12 @@ textarea.field {
     color: #554e50 !important;
 }
 .calendar {
-    @apply relative inline-block;
+    @apply relative;
     .cal {
         @apply absolute translate-y-[-50%] top-[50%] right-[15px] bg-white pointer-events-none;
     }
     .disabled {
         @apply bg-[#e3e3e3] pointer-events-none;
-    }
-    // input[type="date"]::-webkit-inner-spin-button,
-    // input[type="date"]::-webkit-calendar-picker-indicator {
-    //     color: white;
-    // }
-    input[type="text"] {
-        @apply p-1 px-2 text-[#545454] font-NHU-medium 1550px:min-w-[100px] w-full rounded-md outline-none shadow-md;
-        color: #545454 !important;
-        height: 30px !important;
-        font-size: 16px !important;
-        @media (max-width: 1550px) {
-            font-size: 14px !important;
-            height: 25px;
-        }
-    }
-    input[type="date"]::-webkit-calendar-picker-indicator {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        width: auto;
-        height: auto;
-        color: transparent;
-        background: transparent;
     }
 }
 
@@ -424,10 +399,12 @@ select {
     @page {
         margin: 20px 0;
     }
-
-    .printHeader {
+    @page :blank {
+        @top-center {
+            content: "This page is intentionally left blank.";
+        }
     }
-    .printBody {
+    .printHeader {
     }
     .printFooter {
     }
