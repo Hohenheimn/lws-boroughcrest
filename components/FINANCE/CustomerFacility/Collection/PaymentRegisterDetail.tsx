@@ -41,7 +41,6 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
 
     const [isDepositsTotal, setDepositsTotal] = useState(0);
     const [isCheckwareHouseTotal, setCheckwareHouseTotal] = useState(0);
-
     useEffect(() => {
         setDepositsTotal(0);
         CollectionDetail?.deposits?.map((item) => {
@@ -63,6 +62,32 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
         data: OSdata,
         isError: OSerror,
     } = GetCustomerOutstanding(CollectionDetail.customer_id);
+
+    // TOTAL
+    // Payment Summary
+    const [PStotal, setPStotal] = useState<number>(0);
+    const [PSVatTotal, setPSVatTotal] = useState<number>(0);
+
+    // Outright
+    const [OATotal, setOATotal] = useState(0);
+
+    const [TotalDue, setTotalDue] = useState(0);
+
+    useEffect(() => {
+        setPSVatTotal(0);
+        setPStotal(0);
+        setOATotal(0);
+        CollectionDetail.histories.map((item) => {
+            setPStotal((temp) => Number(temp) + Number(item.amount_paid));
+            setPSVatTotal((temp) => Number(temp) + Number(item.credit_tax));
+        });
+        CollectionDetail.outright_advances.map((item) => {
+            setOATotal((temp) => Number(temp) + Number(item.amount));
+        });
+    }, [CollectionDetail]);
+    useEffect(() => {
+        setTotalDue(Number(CollectionDetail.amount_paid) + Number(OATotal));
+    });
 
     return (
         <div>
@@ -246,7 +271,7 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
                                 {OSerror && <TableErrorMessage />}
                             </div>
                             <TableOneTotal
-                                total={3000}
+                                total={0}
                                 label={"SUBTOTAL"}
                                 redBG={false}
                             />
@@ -261,31 +286,25 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>Water</td>
-                                            <td>Lorem, ipsum.</td>
-                                            <td>
-                                                <TextNumberDisplay
-                                                    className="withPeso w-full text-end"
-                                                    value={1000}
-                                                />
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Electricity</td>
-                                            <td>Lorem, ipsum.</td>
-                                            <td>
-                                                <TextNumberDisplay
-                                                    className="withPeso w-full text-end"
-                                                    value={2000}
-                                                />
-                                            </td>
-                                        </tr>
+                                        {CollectionDetail.outright_advances.map(
+                                            (item, index) => (
+                                                <tr key={index}>
+                                                    <td>{item.charge_name}</td>
+                                                    <td>{item.description}</td>
+                                                    <td>
+                                                        <TextNumberDisplay
+                                                            value={item.amount}
+                                                            className="withPeso w-full text-end"
+                                                        />
+                                                    </td>
+                                                </tr>
+                                            )
+                                        )}
                                     </tbody>
                                 </table>
                             </div>
                             <TableOneTotal
-                                total={3000}
+                                total={OATotal}
                                 label={"SUBTOTAL"}
                                 redBG={false}
                             />
@@ -395,7 +414,10 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
                                         </tbody>
                                     </table>
                                 </div>
-                                <TableTwoTotal total1={2000} total2={2000} />
+                                <TableTwoTotal
+                                    total1={PSVatTotal}
+                                    total2={PStotal}
+                                />
                             </div>
                             <div className="table_container min-zero  noMB w-[29%] 640px:w-full 640px:mt-5">
                                 <table className="table_list journal">
@@ -405,7 +427,7 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
                                             <th>
                                                 <TextNumberDisplay
                                                     className="withPeso w-full text-RegularColor font-NHU-regular font-normal"
-                                                    value={564564}
+                                                    value={TotalDue}
                                                 />
                                             </th>
                                         </tr>
@@ -420,7 +442,9 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
                                             <td>
                                                 <TextNumberDisplay
                                                     className="withPeso w-full text-RegularColor"
-                                                    value={564564}
+                                                    value={
+                                                        CollectionDetail.credit_tax
+                                                    }
                                                 />
                                             </td>
                                         </tr>
@@ -445,12 +469,12 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
                                             </td>
                                             <td>
                                                 <TextNumberDisplay
-                                                    className="withPeso w-full text-RegularColor"
+                                                    className="withPesoWhite w-full text-white bg-ThemeRed px-2 pb-[2px]"
                                                     value={564564}
                                                 />
                                             </td>
                                         </tr>
-                                        <tr>
+                                        {/* <tr>
                                             <td>
                                                 <h1 className=" text-ThemeRed">
                                                     VARIANCE
@@ -462,7 +486,7 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
                                                     value={564564}
                                                 />
                                             </td>
-                                        </tr>
+                                        </tr> */}
                                     </tbody>
                                 </table>
                             </div>
@@ -488,19 +512,10 @@ type PaymentSummaryList = {
 };
 
 const PaymentSummaryList = ({ item }: PaymentSummaryList) => {
-    useEffect(() => {
-        console.log(item);
-    }, []);
-
-    // const total = 0;
-    // const vatPercentage = 0;
-    // const vatAmount = 0;
-    // const base = total / ((vat + 100) / 100);
-
-    const total = 0;
-    const vatPercentage = 0;
-    const vatAmount = 0;
-    const base = 0;
+    const vatAmount = item.credit_tax;
+    const base = item.amount_paid;
+    const vatPercentage = (Number(vatAmount) / Number(base)) * 100;
+    const total = Number(base) + Number(vatAmount);
 
     return (
         <tr>

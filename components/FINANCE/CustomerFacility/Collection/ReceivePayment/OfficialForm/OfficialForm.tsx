@@ -97,42 +97,34 @@ export default function OfficialForm({
         buttonClicked = button;
         let validate = true;
         Error();
-        const PayloadOutRight = isOutright.filter((item: Outright) => {
-            if (item.charge_id !== "")
-                return {
-                    charge_id: item.charge_id,
-                    type: "Outright",
-                    description: item.description,
-                    unit_price: item.unit_price,
-                    quantity: item.qty,
-                    amount: item.amount,
-                };
+        const PayloadOutRightFilter = isOutright.filter(
+            (item: Outright) => item.charge_id !== ""
+        );
+        const PayloadOutRight = PayloadOutRightFilter.map((item) => {
+            return {
+                charge_id: item.charge_id,
+                type: "Outright",
+                description: item.description,
+                unit_price: item.unit_price,
+                quantity: item.qty,
+                amount: item.amount,
+            };
         });
-        const PayloadAdvances = isAdvance.filter((item: AdvancesType) => {
-            if (item.charge_id !== "")
-                return {
-                    charge_id: item.charge_id,
-                    type: "Advances",
-                    description: item.description,
-                    unit_price: 0,
-                    quantity: 0,
-                    amount: 0,
-                };
+
+        const PayloadAdvancesFilter = isAdvance.filter(
+            (item: AdvancesType) => item.charge_id !== ""
+        );
+        const PayloadAdvances = PayloadAdvancesFilter.map((item) => {
+            return {
+                charge_id: item.charge_id,
+                type: "Advances",
+                description: item.description,
+                unit_price: 0,
+                quantity: 0,
+                amount: 0,
+            };
         });
-        if (Outstanding.length > 0) {
-            Outstanding.map((provItem: Outstanding) => {
-                if (provItem.applied_amount <= 0) {
-                    setPrompt({
-                        toggle: true,
-                        message: "Fill out the fields on Outstanding!",
-                        type: "draft",
-                    });
-                    validate = false;
-                    return;
-                }
-            });
-            return;
-        }
+
         if (
             headerForm.amount_paid === "" ||
             headerForm.bank_account_id === "" ||
@@ -141,7 +133,8 @@ export default function OfficialForm({
             headerForm.deposit_date === "" ||
             headerForm.mode_of_payment === "" ||
             headerForm.receipt_date === "" ||
-            headerForm.reference_no === ""
+            headerForm.reference_no === "" ||
+            headerForm.receipt_type === ""
         ) {
             setPrompt({
                 toggle: true,
@@ -167,6 +160,7 @@ export default function OfficialForm({
             receipt_date: isValid(receipt_date)
                 ? format(receipt_date, "yyyy-MM-dd")
                 : "",
+            receipt_type: headerForm.receipt_type,
             description: headerForm.description,
             mode_of_payment: headerForm.mode_of_payment,
             deposit_date: isValid(deposit_date)
@@ -179,6 +173,7 @@ export default function OfficialForm({
             outrights: [...PayloadOutRight, ...PayloadAdvances],
             balances: Outstanding.map((item: Outstanding) => {
                 return {
+                    charge_id: item.charge_id,
                     billing_invoice_id: item.id,
                     payment_amount: item.applied_amount,
                     balance: item.balance,
@@ -186,12 +181,8 @@ export default function OfficialForm({
             }),
         };
         if (Payload.outrights.length <= 0) {
-            PayloadAdvances.map((provItem: AdvancesType) => {
-                if (
-                    provItem.amount <= 0 ||
-                    provItem.charge === "" ||
-                    provItem.charge_id === ""
-                ) {
+            PayloadAdvances.map((provItem) => {
+                if (provItem.amount <= 0 || provItem.charge_id === "") {
                     setPrompt({
                         toggle: true,
                         message:
@@ -202,13 +193,12 @@ export default function OfficialForm({
                     return;
                 }
             });
-            PayloadOutRight.map((provItem: Outright) => {
+            PayloadOutRight.map((provItem) => {
                 if (
                     provItem.amount <= 0 ||
-                    provItem.charge === "" ||
                     provItem.charge_id === "" ||
                     provItem.unit_price <= 0 ||
-                    provItem.qty <= 0
+                    provItem.quantity <= 0
                 ) {
                     setPrompt({
                         toggle: true,

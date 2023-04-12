@@ -11,8 +11,8 @@ export const SendLink = (Success: any, Error: any) => {
             onSuccess: () => {
                 Success();
             },
-            onError: () => {
-                Error();
+            onError: (e) => {
+                Error(e);
             },
         }
     );

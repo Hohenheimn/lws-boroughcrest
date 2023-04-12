@@ -53,7 +53,8 @@ export default function PaymentQueueing() {
         isSearch,
         "",
         "",
-        TablePage
+        TablePage,
+        []
     );
 
     return (

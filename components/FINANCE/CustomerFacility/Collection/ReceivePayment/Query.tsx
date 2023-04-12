@@ -97,13 +97,14 @@ export const GetCollectionList = (
     search: string,
     date_from: string,
     date_to: string,
-    page: number
+    page: number,
+    filterArray: string[]
 ) => {
     return useQuery(
-        ["collection-list", search, date_from, date_to, page],
+        ["collection-list", search, date_from, date_to, page, filterArray],
         () => {
             return api.get(
-                `/finance/customer-facility/collection?search=${search}&date_from=${date_from}&date_to=${date_to}&paginate=10&page=${page}`,
+                `/finance/customer-facility/collection?search=${search}&date_from=${date_from}&date_to=${date_to}&paginate=10&page=${page}&filters=${filterArray}`,
                 {
                     headers: { Authorization: "Bearer " + getCookie("user") },
                 }

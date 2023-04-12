@@ -34,12 +34,6 @@ export default function ResetPassword({ token }: any) {
 
     const { mutate, isLoading } = ChangePassword(token, OnSuccess, OnError);
 
-    useEffect(() => {
-        if (token === "") {
-            router.push("/login");
-        }
-    }, []);
-
     const Submit = (e: any) => {
         e.preventDefault();
         if (confirmPass === isPassword) {
@@ -150,7 +144,9 @@ export default function ResetPassword({ token }: any) {
                                     </div>
                                 </div>
                                 {inValid && (
-                                    <p className=" text-[12px] text-ThemeRed mb-5">
+                                    <p
+                                        className={`text-[16px] text-ThemeRed font-NHU-bold mb-5`}
+                                    >
                                         Password and Confirm password are not
                                         the same
                                     </p>
@@ -201,11 +197,12 @@ export async function getServerSideProps(context: any) {
     // const router = useRouter();
     const token = context.query.token;
     if (!token) {
-        const { res } = context;
-        res.setHeader("location", "/login");
-        res.statusCode = 302;
-        res.end();
-        return;
+        return {
+            redirect: {
+                permanent: false,
+                destination: "/login",
+            },
+        };
     }
     return {
         props: {

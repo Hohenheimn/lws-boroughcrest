@@ -130,7 +130,7 @@ export default function HeaderCollection({
                         className="px-3 text-[14px] text-ThemeRed py-1 bg-[#d9d9d9] mb-5 mr-3 rounded-[50px] relative pr-[25px]"
                     >
                         {item.value} -{" "}
-                        <span className="text-ThemeRed50">{item.key}</span>
+                        <span className="text-ThemeRed50">{item.display}</span>
                         <span
                             onClick={() => removeItemFromFilter(item.value)}
                             className="text-[28px] hover:text-ThemeRed50 cursor-pointer rotate-45 absolute right-1 top-[48%] translate-y-[-50%]"

@@ -25,14 +25,13 @@ type Props = {
         from: Date;
         to: Date;
     };
+    forTable?: boolean;
 };
 
-const todayStyle = "bg-ThemeRed text-white font-bold";
-const sameMonth = "font-bold";
-const selectedDay = "bg-[#545454] text-white font-bold";
-
-export default function Calendar({ value, setValue, period }: Props) {
+export default function Calendar({ value, setValue, period, forTable }: Props) {
     const modal = useRef<any>();
+
+    const currentValue = parse(value.value, "MMM dd yyyy", new Date());
 
     useEffect(() => {
         const clickOutSide = (e: any) => {
@@ -128,11 +127,18 @@ export default function Calendar({ value, setValue, period }: Props) {
     };
 
     return (
-        <div className=" fixed mt-2 z-[60]" ref={modal}>
+        <div
+            className={` z-[60] ${
+                forTable
+                    ? "fixed top-0 left-0 w-full h-full z-[99] bg-[#00000040] flex justify-center items-center"
+                    : "absolute mt-2 "
+            }`}
+        >
             {/* Ask kung pano naka infinite ung year tas naka focus agad ung year sa current yr */}
             <div
-                className="max-w-[250px] w-full shadow-lg"
+                className="max-w-[250px] w-full shadow-lg rounded-lg overflow-hidden"
                 style={{ backgroundColor: "#f5f5f5" }}
+                ref={modal}
             >
                 <div className="p-3 bg-[#f5f5f5] rounded-t">
                     <div className="mb-5 flex items-center justify-between">
@@ -309,15 +315,16 @@ export default function Calendar({ value, setValue, period }: Props) {
                             >
                                 <button
                                     onClick={() => SelectedDateHandler(day)}
-                                    className={` hover:bg-gray-300 w-[90%] flex justify-center items-center m-0 aspect-square text-[14px] rounded-lg ${
-                                        isToday(day)
-                                            ? todayStyle
-                                            : "text-[#757575]"
-                                    } ${isSameMonth(day, today) && sameMonth} ${
-                                        isEqual(day, isSelected) &&
-                                        !isToday(day) &&
-                                        selectedDay
-                                    } ${
+                                    className={` w-[90%] flex justify-center items-center m-0 aspect-square text-[14px] rounded-lg 
+                                    ${
+                                        isEqual(day, today)
+                                            ? " bg-ThemeRed text-white"
+                                            : isEqual(day, currentValue)
+                                            ? " bg-RegularColor text-white"
+                                            : "hover:bg-gray-300"
+                                    }
+                            
+                                    ${
                                         isSameMonth(day, today) &&
                                         !isToday(day) &&
                                         "bg-white"

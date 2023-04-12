@@ -87,6 +87,9 @@ textarea.field {
     .cal {
         @apply absolute translate-y-[-50%] top-[50%] right-[15px] bg-white pointer-events-none;
     }
+    input {
+        @extend .field;
+    }
     .disabled {
         @apply bg-[#e3e3e3] pointer-events-none;
     }
