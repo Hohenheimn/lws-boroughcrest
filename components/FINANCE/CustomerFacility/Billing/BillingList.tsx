@@ -11,9 +11,8 @@ import { Advancefilter, AdvanceFilter } from "../../../Reusable/AdvanceFilter";
 import TableErrorMessage from "../../../Reusable/TableErrorMessage";
 import Pagination from "../../../Reusable/Pagination";
 import AppContext from "../../../Context/AppContext";
-import { format, isValid, parse, startOfDay } from "date-fns";
+import { format, isValid, parse } from "date-fns";
 import ModalTemp from "../../../Reusable/ModalTemp";
-import { CopyButtonTable } from "../../../Reusable/Icons";
 import { GetInvoiceList, MultipleUpdateBillingList } from "./Query";
 import { TextNumberDisplay } from "../../../Reusable/NumberFormat";
 import Calendar from "../../../Reusable/Calendar";
@@ -172,6 +171,7 @@ export default function BillingList() {
                 select: false,
             };
         });
+        setInProcesNoticeToggle(false);
         setTableItem({
             itemArray: tableArray,
             selectAll: false,
@@ -190,7 +190,6 @@ export default function BillingList() {
     };
     const onError = (e: any) => {
         ErrorSubmit(e, setPrompt);
-
         setButtonClicked("");
     };
     const { isLoading: updateLoading, mutate: updateMutate } =

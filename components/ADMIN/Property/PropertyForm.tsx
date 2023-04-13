@@ -27,6 +27,11 @@ import DynamicPopOver from "../../Reusable/DynamicPopOver";
 import SelectDropdown from "../../Reusable/SelectDropdown";
 import { format, isValid, parse } from "date-fns";
 import { ErrorSubmit } from "../../Reusable/ErrorMessage";
+import {
+    InputNumberForm,
+    InputTextForm,
+    NumberBlockInvalidKey,
+} from "../../Reusable/InputField";
 
 type Props = {
     DefaultFormData: PropertyDefaultValue;
@@ -267,6 +272,7 @@ export default function PropertyForm({
         formState: { errors },
         reset,
         setValue,
+        watch,
     } = useForm<PropertyDefaultValue>({
         defaultValues: DefaultFormData,
     });
@@ -394,9 +400,9 @@ export default function PropertyForm({
                             <input
                                 className="field"
                                 type="text"
-                                placeholder="---"
                                 value={isUnitCode}
                                 {...register("unit_code")}
+                                onKeyDown={NumberBlockInvalidKey}
                                 onChange={(e: any) =>
                                     e.target.value.length <= 3 &&
                                     setUnitCode(e.target.value)
@@ -442,10 +448,11 @@ export default function PropertyForm({
                         </li>
                         <li>
                             <label>*ADDRESS</label>
-                            <input
-                                type="text"
-                                {...register("address")}
+                            <InputTextForm
+                                register={{ ...register("address") }}
+                                defaultValue={watch("address")}
                                 className="field"
+                                limitation={50}
                             />
                             {errors.address && (
                                 <p className="text-[10px]">
@@ -652,11 +659,17 @@ export default function PropertyForm({
                         </li>
                         <li>
                             <label>*AREA</label>
-                            <input
-                                type="text"
+                            <InputNumberForm
                                 className="field"
-                                {...register("area")}
+                                register={{ ...register("area") }}
+                                defaultValue={watch("area")}
+                                limitation={10}
                             />
+                            {/* <input
+                                type="text"
+                              
+                                {...register("area")}
+                            /> */}
                             {errors.area && (
                                 <p className="text-[10px]">
                                     {errors.area.message}
@@ -679,7 +692,7 @@ export default function PropertyForm({
                                     />
                                 </span>
                                 <input
-                                    className="field"
+                                    className="field w-full"
                                     type="text"
                                     {...register("acceptance_date")}
                                     autoComplete="off"
@@ -712,7 +725,7 @@ export default function PropertyForm({
                                 </span>
                                 <input
                                     type="text"
-                                    className="field"
+                                    className="field w-full"
                                     {...register("turnover_date")}
                                     placeholder="MMM dd yyyy"
                                     autoComplete="off"

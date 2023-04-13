@@ -2,9 +2,13 @@ import { format, isValid, parse } from "date-fns";
 import { useRouter } from "next/router";
 import React, { useContext, useEffect, useState } from "react";
 import { RiArrowDownSFill } from "react-icons/ri";
-import { ScaleLoader } from "react-spinners";
+import { BarLoader, ScaleLoader } from "react-spinners";
 import AppContext from "../../../../../Context/AppContext";
-import { CreateCollection } from "../Query";
+import {
+    CreateCollection,
+    GetCollectionByCustomer,
+    GetCollectionList,
+} from "../Query";
 import { DefaultOfficial, HeaderForm } from "../ReceivePaymentForm";
 import { AdvancesType } from "./OutrightAndAdvances/Advances";
 import { Outright } from "./OutrightAndAdvances/OutRight";
@@ -12,11 +16,12 @@ import OutrightAndAdvances from "./OutrightAndAdvances/OutrightAndAdvances";
 import OutStandingBalance, { Outstanding } from "./OutStandingBalance";
 import PaymentSummary from "./PaymentSummary";
 import { ErrorSubmit } from "../../../../../Reusable/ErrorMessage";
+import PaymentSummaryTable from "./PaymentSummary";
 
 type Props = {
     Error: () => void;
     headerForm: HeaderForm;
-    DefaultOfficial: DefaultOfficial;
+    DefaultOfficialOutrightAdvances: DefaultOfficial;
     Outstanding: Outstanding[];
     setOutstanding: Function;
     ResetField: () => void;
@@ -28,29 +33,45 @@ export default function OfficialForm({
     Error,
     ResetField,
     headerForm,
-    DefaultOfficial,
+    DefaultOfficialOutrightAdvances,
     Outstanding,
     setOutstanding,
     outStandingLoading,
     outStandingError,
 }: Props) {
     const router = useRouter();
-
     const { setPrompt } = useContext(AppContext);
-
     const [isSave, setSave] = useState(false);
-
     let buttonClicked = "";
+
+    // Outstanding Totals
+    const [isDueAmountTotal, setDueAmountTotal] = useState(0);
+    const [isAppliedAmount, setAppliedAmount] = useState(0);
+    const [isBalanceTotal, setBalanceAmount] = useState(0);
+    // Outrights and Advances Total
+    const [OATotal, setOATotal] = useState(0);
 
     const [isOutright, setOutright] = useState<Outright[]>([]);
     useEffect(() => {
-        setOutright(DefaultOfficial.Outright);
-    }, [DefaultOfficial.Outright]);
+        setOutright(DefaultOfficialOutrightAdvances.Outright);
+    }, [DefaultOfficialOutrightAdvances.Outright]);
 
     const [isAdvance, setAdvance] = useState<AdvancesType[]>([]);
     useEffect(() => {
-        setAdvance(DefaultOfficial.Advances);
-    }, [DefaultOfficial.Advances]);
+        setAdvance(DefaultOfficialOutrightAdvances.Advances);
+    }, [DefaultOfficialOutrightAdvances.Advances]);
+
+    useEffect(() => {
+        let totalOutright = 0;
+        let totalAdvances = 0;
+        isOutright.map((item) => {
+            totalOutright = totalOutright + item.amount;
+        });
+        isAdvance.map((item) => {
+            totalAdvances = totalAdvances + item.amount;
+        });
+        setOATotal(Number(totalOutright) + Number(totalAdvances));
+    }, [isOutright, isAdvance]);
 
     const onSuccess = () => {
         setPrompt({
@@ -117,11 +138,11 @@ export default function OfficialForm({
         const PayloadAdvances = PayloadAdvancesFilter.map((item) => {
             return {
                 charge_id: item.charge_id,
-                type: "Advances",
+                type: "Advance",
                 description: item.description,
                 unit_price: 0,
                 quantity: 0,
-                amount: 0,
+                amount: item.amount,
             };
         });
 
@@ -179,6 +200,7 @@ export default function OfficialForm({
                     balance: item.balance,
                 };
             }),
+            discount: headerForm.discount,
         };
         if (Payload.outrights.length <= 0) {
             PayloadAdvances.map((provItem) => {
@@ -198,7 +220,7 @@ export default function OfficialForm({
                     provItem.amount <= 0 ||
                     provItem.charge_id === "" ||
                     provItem.unit_price <= 0 ||
-                    provItem.quantity <= 0
+                    Number(provItem.quantity) <= 0
                 ) {
                     setPrompt({
                         toggle: true,
@@ -219,6 +241,12 @@ export default function OfficialForm({
         if (validate) mutate(Payload);
     };
 
+    const {
+        data: CDdata,
+        isLoading: CDloading,
+        isError: CDerror,
+    } = GetCollectionByCustomer(headerForm.customer_id);
+
     return (
         <>
             <OutStandingBalance
@@ -227,8 +255,15 @@ export default function OfficialForm({
                 DefaultOutstanding={Outstanding}
                 setDefaultValue={setOutstanding}
                 Error={Error}
+                // Totals
                 outStandingLoading={outStandingLoading}
                 outStandingError={outStandingError}
+                setDueAmountTotal={setDueAmountTotal}
+                isDueAmountTotal={isDueAmountTotal}
+                setAppliedAmount={setAppliedAmount}
+                isAppliedAmount={isAppliedAmount}
+                setBalanceAmount={setBalanceAmount}
+                isBalanceTotal={isBalanceTotal}
             />
             <OutrightAndAdvances
                 DefaultOutright={isOutright}
@@ -237,11 +272,29 @@ export default function OfficialForm({
                 DefaultAdvances={isAdvance}
                 Error={Error}
             />
-            <PaymentSummary
-                Error={Error}
-                headerForm={headerForm}
-                customer_id={headerForm.customer_id}
-            />
+            <div className="mb-10 1550px:mb-5 640px:mb-3"></div>
+            {!CDloading && !CDerror && (
+                <PaymentSummaryTable
+                    SummaryItems={CDdata?.data?.data}
+                    CreditTax={Number(headerForm.credit_tax)}
+                    TotalDue={Number(headerForm.amount_paid) + Number(OATotal)}
+                    triggerID={Number(headerForm.customer_id)}
+                    LessDiscount={headerForm.discount}
+                />
+            )}
+            {CDloading && (
+                <div className="w-full flex justify-center items-center">
+                    <aside className="text-center flex justify-center py-5">
+                        <BarLoader
+                            color={"#8f384d"}
+                            height="10px"
+                            width="200px"
+                            aria-label="Loading Spinner"
+                            data-testid="loader"
+                        />
+                    </aside>
+                </div>
+            )}
             <div className="DropDownSave">
                 <button className="ddback">CANCEL</button>
                 <div className="ddSave">

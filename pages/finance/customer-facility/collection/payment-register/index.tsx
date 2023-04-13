@@ -60,7 +60,11 @@ export type CollectionItem = {
         collection_id: number;
         id: number;
         payment_amount: string | number;
+        charge_name: string;
+        charge_description: string;
+        charge_id: number;
     }[];
+    discount: number;
 };
 
 export type PaymentSummaryHistories = CollectionItem;

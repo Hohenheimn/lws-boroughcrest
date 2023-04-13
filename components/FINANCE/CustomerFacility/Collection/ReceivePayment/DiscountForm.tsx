@@ -29,11 +29,16 @@ export type isDiscountTable = {
 type Props = {
     setDiscountToggle: Function;
     customer_id: number | string;
+    isDiscount: {
+        value: number;
+        toggle: boolean;
+    };
 };
 
 export default function DiscountForm({
     setDiscountToggle,
     customer_id,
+    isDiscount,
 }: Props) {
     const { setPrompt } = useContext(AppContext);
     const [isTotal, setTotal] = useState(0);
@@ -45,7 +50,10 @@ export default function DiscountForm({
             type: "success",
             toggle: true,
         });
-        setDiscountToggle(false);
+        setDiscountToggle({
+            value: isTotal,
+            toggle: false,
+        });
     };
     const onError = () => {
         setPrompt({
@@ -197,7 +205,9 @@ export default function DiscountForm({
                 <div className="DropDownSave">
                     <button
                         className="ddback"
-                        onClick={() => setDiscountToggle(false)}
+                        onClick={() =>
+                            setDiscountToggle({ ...isDiscount, toggle: false })
+                        }
                     >
                         CANCEL
                     </button>

@@ -27,7 +27,7 @@ export type Outright = {
     description: string;
     uom: string;
     unit_price: number;
-    qty: number;
+    qty: number | string;
     amount: number;
 };
 
@@ -103,7 +103,7 @@ const List = ({ setTable, isTable, itemDetail, index }: List) => {
                 description: "",
                 uom: "",
                 unit_price: 0,
-                qty: 0,
+                qty: "",
                 amount: 0,
             },
         ]);

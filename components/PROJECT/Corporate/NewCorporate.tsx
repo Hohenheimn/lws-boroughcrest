@@ -13,10 +13,12 @@ import type { firstCorporateForm } from "../../../types/corporateList";
 import type { secondCorporateForm } from "../../../types/corporateList";
 import { ScaleLoader } from "react-spinners";
 import { getCookie } from "cookies-next";
-import DynamicPopOver from "../../Reusable/DynamicPopOver";
-import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import SelectDropdown from "../../Reusable/SelectDropdown";
 import { ErrorSubmit } from "../../Reusable/ErrorMessage";
+import {
+    TextFieldValidation,
+    NumberBlockInvalidKey,
+} from "../../Reusable/InputField";
 
 export default function NewCorporate() {
     const [isNewActive, setNewActive] = useState([true, false]);
@@ -163,6 +165,7 @@ const Primary = ({
                             })}
                             value={createCorporate.name}
                             onChange={(e) => {
+                                if (!TextFieldValidation(e, 50)) return;
                                 setCreateCorporate({
                                     ...createCorporate,
                                     name: e.target.value,
@@ -192,12 +195,13 @@ const Primary = ({
                                 },
                             })}
                             value={createCorporate.tin}
+                            onKeyDown={NumberBlockInvalidKey}
                             onChange={(e) => {
-                                e.target.value.length <= 9 &&
-                                    setCreateCorporate({
-                                        ...createCorporate,
-                                        tin: e.target.value,
-                                    });
+                                if (!TextFieldValidation(e, 9)) return;
+                                setCreateCorporate({
+                                    ...createCorporate,
+                                    tin: e.target.value,
+                                });
                             }}
                         />
                         {errors.tin && (
@@ -225,12 +229,13 @@ const Primary = ({
                             })}
                             type="number"
                             value={createCorporate.branch_code}
+                            onKeyDown={NumberBlockInvalidKey}
                             onChange={(e) => {
-                                e.target.value.length <= 5 &&
-                                    setCreateCorporate({
-                                        ...createCorporate,
-                                        branch_code: e.target.value,
-                                    });
+                                if (!TextFieldValidation(e, 5)) return;
+                                setCreateCorporate({
+                                    ...createCorporate,
+                                    branch_code: e.target.value,
+                                });
                             }}
                         />
                         {errors.branch_code && (
@@ -256,6 +261,7 @@ const Primary = ({
                                 },
                             })}
                             value={createCorporate.rdo_no}
+                            onKeyDown={NumberBlockInvalidKey}
                             onChange={(e) => {
                                 e.target.value.length <= 3 &&
                                     setCreateCorporate({
@@ -316,6 +322,7 @@ const Primary = ({
                                     message: "Must be 3 Number",
                                 },
                             })}
+                            onKeyDown={NumberBlockInvalidKey}
                             value={createCorporate.sec_registration_no}
                             onChange={(e) => {
                                 e.target.value.length <= 3 &&
@@ -504,6 +511,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                                 type="number"
                                 placeholder="09"
                                 maxLength={11}
+                                onKeyDown={NumberBlockInvalidKey}
                                 value={createCorporate.contact_no}
                                 {...register("contact_no", {
                                     required: "Required",
@@ -536,17 +544,19 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                             />
 
                             <span>*Official</span>
+                            {errors.contact_no && (
+                                <p className="text-[10px]">
+                                    {errors.contact_no.message}
+                                </p>
+                            )}
                         </aside>
-                        {errors.contact_no && (
-                            <p className="text-[10px]">
-                                {errors.contact_no.message}
-                            </p>
-                        )}
+
                         <aside>
                             <input
                                 className="field inline"
                                 type="number"
                                 placeholder="09"
+                                onKeyDown={NumberBlockInvalidKey}
                                 value={createCorporate.alt_contact_no}
                                 {...register("alt_contact_no", {
                                     minLength: {
@@ -556,6 +566,10 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                                     maxLength: {
                                         value: 11,
                                         message: "Must be 11 Number",
+                                    },
+                                    pattern: {
+                                        value: /^(09)\d{9}$/,
+                                        message: "Invalid Contact Number",
                                     },
                                     onChange: (e) => {
                                         if (e.target.value.length <= 11) {
@@ -571,26 +585,30 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                                     },
                                 })}
                             />
+                            {errors.alt_contact_no && (
+                                <p className="text-[10px]">
+                                    {errors.alt_contact_no.message}
+                                </p>
+                            )}
+                            {ErrorContact && (
+                                <p className="text-[10px]">
+                                    Contact number cannot be the same
+                                </p>
+                            )}
                         </aside>
-                        {errors.alt_contact_no && (
-                            <p className="text-[10px]">
-                                {errors.alt_contact_no.message}
-                            </p>
-                        )}
-                        {ErrorContact && (
-                            <p className="text-[10px]">
-                                Contact number cannot be the same
-                            </p>
-                        )}
                     </li>
                     <li>
                         <label>EMAIL ADDRESS</label>
                         <aside className="mb-2">
                             <input
                                 className="field mr-2"
-                                type="email"
+                                type="text"
                                 {...register("email", {
                                     required: "Required",
+                                    pattern: {
+                                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                                        message: "Invalid Email",
+                                    },
                                     onChange: (e) => {
                                         setValue("email", e.target.value);
                                         setCreateCorporate({
@@ -599,7 +617,6 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                                         });
                                     },
                                 })}
-                                required
                                 value={createCorporate.email}
                                 onChange={(e) =>
                                     setCreateCorporate({
@@ -609,17 +626,22 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                                 }
                             />
                             <span>*Official</span>
+                            {errors.email && (
+                                <p className="text-[10px]">
+                                    {errors.email.message}
+                                </p>
+                            )}
                         </aside>
-                        {errors.email && (
-                            <p className="text-[10px]">
-                                {errors.email.message}
-                            </p>
-                        )}
+
                         <aside>
                             <input
                                 className="field"
-                                type="email"
+                                type="text"
                                 {...register("alt_email", {
+                                    pattern: {
+                                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                                        message: "Invalid Email",
+                                    },
                                     onChange: (e) => {
                                         setValue("alt_email", e.target.value);
                                         setCreateCorporate({
@@ -630,17 +652,17 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                                 })}
                                 value={createCorporate.alt_email}
                             />
+                            {errors.alt_email && (
+                                <p className="text-[10px]">
+                                    {errors.alt_email.message}
+                                </p>
+                            )}
+                            {ErrorAddress && (
+                                <p className="text-[10px]">
+                                    Email cannot be the same
+                                </p>
+                            )}
                         </aside>
-                        {errors.alt_email && (
-                            <p className="text-[10px]">
-                                {errors.alt_email.message}
-                            </p>
-                        )}
-                        {ErrorAddress && (
-                            <p className="text-[10px]">
-                                Email cannot be the same
-                            </p>
-                        )}
                     </li>
                 </ul>
                 <p className="text-[14px] font-bold mb-2">ADDRESS</p>
@@ -653,6 +675,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                             {...register("address_unit_floor", {
                                 required: "Required",
                                 onChange: (e) => {
+                                    if (!TextFieldValidation(e, 50)) return;
                                     setCreateCorporate({
                                         ...createCorporate,
                                         address_unit_floor: e.target.value,
@@ -679,6 +702,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                             {...register("address_building", {
                                 required: "Required",
                                 onChange: (e) => {
+                                    if (!TextFieldValidation(e, 50)) return;
                                     setCreateCorporate({
                                         ...createCorporate,
                                         address_building: e.target.value,
@@ -705,6 +729,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                             {...register("address_street", {
                                 required: "Required",
                                 onChange: (e) => {
+                                    if (!TextFieldValidation(e, 50)) return;
                                     setCreateCorporate({
                                         ...createCorporate,
                                         address_street: e.target.value,
@@ -728,6 +753,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                             {...register("address_district", {
                                 required: "Required",
                                 onChange: (e) => {
+                                    if (!TextFieldValidation(e, 50)) return;
                                     setCreateCorporate({
                                         ...createCorporate,
                                         address_district: e.target.value,
@@ -754,6 +780,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                             {...register("address_municipal_city", {
                                 required: "Required",
                                 onChange: (e) => {
+                                    if (!TextFieldValidation(e, 50)) return;
                                     setCreateCorporate({
                                         ...createCorporate,
                                         address_municipal_city: e.target.value,
@@ -780,6 +807,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                             {...register("address_province", {
                                 required: "Required",
                                 onChange: (e) => {
+                                    if (!TextFieldValidation(e, 50)) return;
                                     setCreateCorporate({
                                         ...createCorporate,
                                         address_province: e.target.value,
@@ -803,6 +831,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                         <input
                             className="field"
                             type="number"
+                            onKeyDown={NumberBlockInvalidKey}
                             {...register("address_zip_code", {
                                 required: "Required",
                                 minLength: {
@@ -814,6 +843,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                                     message: "Must be 4 Numbers",
                                 },
                                 onChange: (e) => {
+                                    if (e.target.value.length > 4) return;
                                     setCreateCorporate({
                                         ...createCorporate,
                                         address_zip_code: e.target.value,

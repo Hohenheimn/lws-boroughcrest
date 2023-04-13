@@ -79,17 +79,13 @@ export default function PaymentRegisterSearch() {
                                 <ul>
                                     <li>
                                         <h4>
-                                            {item.name} {item.com}
+                                            {item.receipt_type} {item.com}
                                         </h4>
-                                        <p>
-                                            {
-                                                item.registered_address_municipal_city
-                                            }
-                                        </p>
+                                        <p>{item.receipt_date}</p>
                                     </li>
                                     <li>
                                         <p>ID: {item.id}</p>
-                                        <p>TIN: {item.tin}</p>
+                                        <p>{item.receipt_no}</p>
                                     </li>
                                 </ul>
                             </a>

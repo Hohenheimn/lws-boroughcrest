@@ -3,7 +3,7 @@ import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 import Image from "next/image";
 import { TextNumberDisplay } from "../../../Reusable/NumberFormat";
-import { TableOneTotal, TableTwoTotal } from "../../../Reusable/TableTotal";
+import { TableOneTotal } from "../../../Reusable/TableTotal";
 import Authorization from "./Authorization";
 import {
     CollectionItem,
@@ -12,32 +12,37 @@ import {
 import { GetCustomer } from "../../../ReactQuery/CustomerMethod";
 import { customer } from "../../../../types/customerList";
 import { format, isValid, parse } from "date-fns";
-import { GetCustomerOutstanding } from "./ReceivePayment/Query";
-import TableErrorMessage from "../../../Reusable/TableErrorMessage";
-import { BarLoader } from "react-spinners";
+import PaymentSummaryTable from "./ReceivePayment/OfficialForm/PaymentSummary";
 
 type Props = {
     CollectionDetail: CollectionItem;
 };
 
 export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
-    const { data } = GetCustomer(CollectionDetail.customer_id);
-
+    const { data } = GetCustomer(CollectionDetail?.customer_id);
     const CustomerDetail: customer = data?.data;
-
     const [isToggleID, setToggle] = useState<number | string>("");
-
     const receipt_date = parse(
-        CollectionDetail.receipt_date,
+        CollectionDetail?.receipt_date,
         "yyyy-MM-dd",
         new Date()
     );
 
     const deposit_date = parse(
-        CollectionDetail.deposit_date,
+        CollectionDetail?.deposit_date,
         "yyyy-MM-dd",
         new Date()
     );
+
+    const [outstandingTotal, setOutstandingTotal] = useState(0);
+    useEffect(() => {
+        setOutstandingTotal(0);
+        CollectionDetail?.outstanding_balances?.map((item) => {
+            setOutstandingTotal(
+                (prev) => Number(prev) + Number(item.payment_amount)
+            );
+        });
+    }, [CollectionDetail?.outstanding_balances]);
 
     const [isDepositsTotal, setDepositsTotal] = useState(0);
     const [isCheckwareHouseTotal, setCheckwareHouseTotal] = useState(0);
@@ -57,36 +62,18 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
         });
     }, [CollectionDetail?.check_warehouses]);
 
-    const {
-        isLoading: OSloading,
-        data: OSdata,
-        isError: OSerror,
-    } = GetCustomerOutstanding(CollectionDetail.customer_id);
-
-    // TOTAL
-    // Payment Summary
-    const [PStotal, setPStotal] = useState<number>(0);
-    const [PSVatTotal, setPSVatTotal] = useState<number>(0);
-
     // Outright
     const [OATotal, setOATotal] = useState(0);
-
     const [TotalDue, setTotalDue] = useState(0);
 
     useEffect(() => {
-        setPSVatTotal(0);
-        setPStotal(0);
         setOATotal(0);
-        CollectionDetail.histories.map((item) => {
-            setPStotal((temp) => Number(temp) + Number(item.amount_paid));
-            setPSVatTotal((temp) => Number(temp) + Number(item.credit_tax));
-        });
-        CollectionDetail.outright_advances.map((item) => {
+        CollectionDetail?.outright_advances?.map((item) => {
             setOATotal((temp) => Number(temp) + Number(item.amount));
         });
     }, [CollectionDetail]);
     useEffect(() => {
-        setTotalDue(Number(CollectionDetail.amount_paid) + Number(OATotal));
+        setTotalDue(Number(CollectionDetail?.amount_paid) + Number(OATotal));
     });
 
     return (
@@ -99,7 +86,7 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
                     <h1 className="pageTitle mb-5">Payment Details</h1>
                     <ul className="flex">
                         <li className="mr-5">
-                            <Tippy theme="ThemeRed" content="Remove">
+                            <Tippy theme="ThemeRed" content="Void">
                                 <div
                                     onClick={() => setToggle(1)}
                                     className="relative w-8 h-8 transition-all duration-75 hover:scale-[1.1]"
@@ -167,7 +154,13 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
                             <li className="w-[32%]">
                                 <p className="label_text">RECEIPT NO.</p>
                                 <h4 className="main_text">
-                                    {CollectionDetail.receipt_no}
+                                    {CollectionDetail?.receipt_no}
+                                </h4>
+                            </li>
+                            <li className="w-[32%]">
+                                <p className="label_text">RECEIPT TYPE.</p>
+                                <h4 className="main_text">
+                                    {CollectionDetail?.receipt_type}
                                 </h4>
                             </li>
                         </ul>
@@ -175,7 +168,7 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
                             <li className="w-full">
                                 <p className="label_text">DESCRIPTION</p>
                                 <h4 className="main_text">
-                                    {CollectionDetail.description}
+                                    {CollectionDetail?.description}
                                 </h4>
                             </li>
                         </ul>
@@ -183,7 +176,7 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
                             <li className="w-[32%]">
                                 <p className="label_text">MODE OF PAYMENT</p>
                                 <h4 className="main_text">
-                                    {CollectionDetail.mode_of_payment}
+                                    {CollectionDetail?.mode_of_payment}
                                 </h4>
                             </li>
                             <li className="w-[32%]">
@@ -199,7 +192,7 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
 
                                 <TextNumberDisplay
                                     className="main_text font-NHU-bold"
-                                    value={CollectionDetail.amount_paid}
+                                    value={CollectionDetail?.amount_paid}
                                 />
                             </li>
                             <li className="w-[32%]">
@@ -209,7 +202,7 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
                             <li className="w-[32%]">
                                 <p className="label_text">REFERENCE NO</p>
                                 <h4 className="main_text">
-                                    {CollectionDetail.reference_no}
+                                    {CollectionDetail?.reference_no}
                                 </h4>
                             </li>
                             <li className="w-[32%]">
@@ -217,14 +210,14 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
 
                                 <TextNumberDisplay
                                     className="main_text font-NHU-bold"
-                                    value={CollectionDetail.credit_tax}
+                                    value={CollectionDetail?.credit_tax}
                                 />
                             </li>
                         </ul>
                     </li>
                 </ul>
                 <ul className=" flex justify-between relative w-full mb-10 flex-wrap">
-                    {CollectionDetail.receipt_type === "Official" && (
+                    {CollectionDetail?.receipt_type === "Official" && (
                         <li className="w-full rounded-2xl p-10 480px:p-8 bg-white  shadow-lg mb-10 640px:mb-5">
                             <h1 className="SectionTitle mb-5">
                                 Outstanding Balance
@@ -239,15 +232,21 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {data?.data[0]?.invoice_list?.map(
-                                            (item: any, index: number) => (
+                                        {CollectionDetail?.outstanding_balances?.map(
+                                            (item, index: number) => (
                                                 <tr key={index}>
-                                                    <td>{item.charge.name}</td>
-                                                    <td>{item.description}</td>
+                                                    <td>{item.charge_name}</td>
+                                                    <td>
+                                                        {
+                                                            item.charge_description
+                                                        }
+                                                    </td>
                                                     <td>
                                                         <TextNumberDisplay
                                                             className="withPeso w-full text-end"
-                                                            value={item.amount}
+                                                            value={
+                                                                item.payment_amount
+                                                            }
                                                         />
                                                     </td>
                                                 </tr>
@@ -255,23 +254,9 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
                                         )}
                                     </tbody>
                                 </table>
-                                {OSloading && (
-                                    <div className="w-full flex justify-center items-center">
-                                        <aside className="text-center flex justify-center py-5">
-                                            <BarLoader
-                                                color={"#8f384d"}
-                                                height="10px"
-                                                width="200px"
-                                                aria-label="Loading Spinner"
-                                                data-testid="loader"
-                                            />
-                                        </aside>
-                                    </div>
-                                )}
-                                {OSerror && <TableErrorMessage />}
                             </div>
                             <TableOneTotal
-                                total={0}
+                                total={outstandingTotal}
                                 label={"SUBTOTAL"}
                                 redBG={false}
                             />
@@ -286,7 +271,7 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {CollectionDetail.outright_advances.map(
+                                        {CollectionDetail?.outright_advances.map(
                                             (item, index) => (
                                                 <tr key={index}>
                                                     <td>{item.charge_name}</td>
@@ -310,7 +295,7 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
                             />
                         </li>
                     )}
-                    {CollectionDetail.receipt_type === "Acknowledgement" && (
+                    {CollectionDetail?.receipt_type === "Acknowledgement" && (
                         <li className="w-full rounded-2xl p-10 480px:p-8 bg-white  shadow-lg mb-10 640px:mb-5">
                             <h1 className="SectionTitle mb-5">Deposit</h1>
                             <div className="table_container min-zero border-b border-ThemeRed50 pb-10">
@@ -347,7 +332,7 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
                             />
                         </li>
                     )}
-                    {CollectionDetail.receipt_type === "Provisional" && (
+                    {CollectionDetail?.receipt_type === "Provisional" && (
                         <li className="w-full rounded-2xl p-10 480px:p-8 bg-white  shadow-lg mb-10 640px:mb-5">
                             <h1 className="SectionTitle mb-5">
                                 Check Warehouse
@@ -363,7 +348,7 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {CollectionDetail.check_warehouses.map(
+                                        {CollectionDetail?.check_warehouses.map(
                                             (item, index) => (
                                                 <tr key={index}>
                                                     <td>{item.check_no}</td>
@@ -389,116 +374,21 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
                         </li>
                     )}
                     <li className="w-full rounded-2xl p-10 480px:p-8 bg-white mb-10 640px:mb-5 shadow-lg">
-                        <h1 className="SectionTitle mb-5">Payment Summary</h1>
-                        <div className="flex flex-wrap justify-between">
-                            <div className="  w-[69%]  640px:w-full">
-                                <div className="table_container min-zero noMB">
-                                    <table className="table_list journal">
-                                        <thead className="textRed">
-                                            <tr>
-                                                <th>BASE</th>
-                                                <th>VAT%</th>
-                                                <th>VAT AMOUNT</th>
-                                                <th>TOTAL</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {CollectionDetail.histories.map(
-                                                (item, index) => (
-                                                    <PaymentSummaryList
-                                                        key={index}
-                                                        item={item}
-                                                    />
-                                                )
-                                            )}
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <TableTwoTotal
-                                    total1={PSVatTotal}
-                                    total2={PStotal}
-                                />
-                            </div>
-                            <div className="table_container min-zero  noMB w-[29%] 640px:w-full 640px:mt-5">
-                                <table className="table_list journal">
-                                    <thead className="textRed">
-                                        <tr>
-                                            <th>TOTAL DUE</th>
-                                            <th>
-                                                <TextNumberDisplay
-                                                    className="withPeso w-full text-RegularColor font-NHU-regular font-normal"
-                                                    value={TotalDue}
-                                                />
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <h1 className=" text-ThemeRed">
-                                                    LESS: CREDIT TAX
-                                                </h1>
-                                            </td>
-                                            <td>
-                                                <TextNumberDisplay
-                                                    className="withPeso w-full text-RegularColor"
-                                                    value={
-                                                        CollectionDetail.credit_tax
-                                                    }
-                                                />
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <h1 className=" text-ThemeRed">
-                                                    LESS: DISCOUNT
-                                                </h1>
-                                            </td>
-                                            <td>
-                                                <TextNumberDisplay
-                                                    className="withPeso w-full text-RegularColor"
-                                                    value={564564}
-                                                />
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <h1 className=" text-ThemeRed">
-                                                    TOTAL PAID
-                                                </h1>
-                                            </td>
-                                            <td>
-                                                <TextNumberDisplay
-                                                    className="withPesoWhite w-full text-white bg-ThemeRed px-2 pb-[2px]"
-                                                    value={564564}
-                                                />
-                                            </td>
-                                        </tr>
-                                        {/* <tr>
-                                            <td>
-                                                <h1 className=" text-ThemeRed">
-                                                    VARIANCE
-                                                </h1>
-                                            </td>
-                                            <td>
-                                                <TextNumberDisplay
-                                                    className="withPesoWhite w-full text-white bg-ThemeRed px-2 pb-[2px]"
-                                                    value={564564}
-                                                />
-                                            </td>
-                                        </tr> */}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                        <PaymentSummaryTable
+                            SummaryItems={CollectionDetail?.histories}
+                            CreditTax={CollectionDetail?.credit_tax}
+                            TotalDue={TotalDue}
+                            triggerID={CollectionDetail.id}
+                            LessDiscount={CollectionDetail?.discount}
+                        />
                     </li>
                     <li className="w-full rounded-2xl p-10 480px:p-8 bg-white  shadow-lg">
                         <p className="label_text">TRAIL</p>
                         <h1 className="main_text noMB">
-                            {CollectionDetail.created_at}
+                            {CollectionDetail?.created_at}
                         </h1>
                         <h1 className="main_text noMB">
-                            {CollectionDetail.updated_at}
+                            {CollectionDetail?.updated_at}
                         </h1>
                     </li>
                 </ul>

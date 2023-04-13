@@ -41,6 +41,7 @@ export type HeaderForm = {
     reference_no: string | number | any;
     amount_paid: number | string;
     credit_tax: number | string;
+    discount: number;
 };
 
 type Deposits = {
@@ -66,7 +67,7 @@ type Props = {
     DefaultValHeaderForm: HeaderForm;
     DefaultValAcknowledgement: Deposits[];
     DefaultProvisional: isProvisionalTable[];
-    DefaultOfficial: DefaultOfficial;
+    DefaultOfficialOutrightAdvances: DefaultOfficial;
     type: string;
 };
 
@@ -74,7 +75,7 @@ export default function ReceivePaymentForm({
     DefaultCustomer,
     DefaultValHeaderForm,
     DefaultValAcknowledgement,
-    DefaultOfficial,
+    DefaultOfficialOutrightAdvances,
     DefaultProvisional,
 }: Props) {
     const { setPrompt } = useContext(AppContext);
@@ -94,6 +95,7 @@ export default function ReceivePaymentForm({
         reference_no: DefaultValHeaderForm.reference_no,
         amount_paid: DefaultValHeaderForm.amount_paid,
         credit_tax: DefaultValHeaderForm.credit_tax,
+        discount: DefaultValHeaderForm.discount,
     });
 
     const [isCustomer, setCustomer] = useState<any>({
@@ -113,8 +115,6 @@ export default function ReceivePaymentForm({
     }, [DefaultCustomer]);
 
     const [isOutStanding, setOutstanding] = useState<Outstanding[]>([]);
-
-    const router = useRouter();
 
     const { isLoading, data, isError } = GetCustomerOutstanding(isCustomer.id);
 
@@ -155,6 +155,7 @@ export default function ReceivePaymentForm({
             reference_no: DefaultValHeaderForm.reference_no,
             amount_paid: DefaultValHeaderForm.amount_paid,
             credit_tax: DefaultValHeaderForm.credit_tax,
+            discount: DefaultValHeaderForm.discount,
         });
     }, [DefaultValHeaderForm]);
 
@@ -178,12 +179,23 @@ export default function ReceivePaymentForm({
             reference_no: "",
             amount_paid: "",
             credit_tax: "",
+            discount: 0,
         });
     };
 
     const [isErrorToggle, setErrorToggle] = useState(false);
 
-    const [isDiscountToggle, setDiscountToggle] = useState(false);
+    const [isDiscount, setDiscountToggle] = useState({
+        value: DefaultValHeaderForm.discount,
+        toggle: false,
+    });
+
+    useEffect(() => {
+        setHeaderForm({
+            ...HeaderForm,
+            discount: isDiscount.value,
+        });
+    }, [isDiscount.value]);
 
     const [isBank, setBank] = useState({
         id: "",
@@ -227,7 +239,10 @@ export default function ReceivePaymentForm({
                 toggle: true,
             });
         } else {
-            setDiscountToggle(true);
+            setDiscountToggle({
+                ...isDiscount,
+                toggle: true,
+            });
         }
     };
 
@@ -267,9 +282,10 @@ export default function ReceivePaymentForm({
 
     return (
         <>
-            {isDiscountToggle && (
+            {isDiscount.toggle && (
                 <DiscountForm
                     setDiscountToggle={setDiscountToggle}
+                    isDiscount={isDiscount}
                     customer_id={isCustomer.id}
                 />
             )}
@@ -564,7 +580,9 @@ export default function ReceivePaymentForm({
                     ResetField={ResetField}
                     Error={ErrorToggleHandler}
                     headerForm={HeaderForm}
-                    DefaultOfficial={DefaultOfficial}
+                    DefaultOfficialOutrightAdvances={
+                        DefaultOfficialOutrightAdvances
+                    }
                     Outstanding={isOutStanding}
                     setOutstanding={setOutstanding}
                     outStandingLoading={isLoading}

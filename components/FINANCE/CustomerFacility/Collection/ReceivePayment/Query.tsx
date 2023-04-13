@@ -93,6 +93,32 @@ export const DeleteDiscount = (onSuccess: any, onError: any) => {
     );
 };
 
+export const VoidCollection = (onSuccess: any, onError: any, id: number) => {
+    const queryClient = useQueryClient();
+    return useMutation(
+        (Payload: { password: string }) => {
+            return api.post(
+                `/finance/customer-facility/collection/void/${id}`,
+                Payload,
+                {
+                    headers: {
+                        Authorization: "Bearer " + getCookie("user"),
+                    },
+                }
+            );
+        },
+        {
+            onSuccess: () => {
+                onSuccess();
+                queryClient.invalidateQueries(["discount-list"]);
+            },
+            onError: () => {
+                onError();
+            },
+        }
+    );
+};
+
 export const GetCollectionList = (
     search: string,
     date_from: string,
@@ -111,6 +137,17 @@ export const GetCollectionList = (
             );
         }
     );
+};
+
+export const GetCollectionByCustomer = (customer_id: string | number) => {
+    return useQuery(["collection-customer", customer_id], () => {
+        return api.get(
+            `/finance/customer-facility/collection?customer_id=${customer_id}`,
+            {
+                headers: { Authorization: "Bearer " + getCookie("user") },
+            }
+        );
+    });
 };
 
 export const GetCollectionDetail = (id: number) => {

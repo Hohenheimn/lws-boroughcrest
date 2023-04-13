@@ -26,6 +26,7 @@ export default function ReceivePayment() {
         reference_no: "",
         amount_paid: "",
         credit_tax: "",
+        discount: 0,
     };
 
     return (
@@ -68,7 +69,7 @@ export default function ReceivePayment() {
                         amount: 0,
                     },
                 ]}
-                DefaultOfficial={{
+                DefaultOfficialOutrightAdvances={{
                     Outright: [
                         {
                             id: 1,
@@ -77,7 +78,7 @@ export default function ReceivePayment() {
                             description: "",
                             uom: "",
                             unit_price: 0,
-                            qty: 0,
+                            qty: "",
                             amount: 0,
                         },
                     ],
