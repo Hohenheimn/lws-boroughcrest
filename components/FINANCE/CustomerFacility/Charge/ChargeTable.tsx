@@ -34,13 +34,6 @@ export default function ChargeTable({ page, setCreate }: Props) {
             );
         }
     );
-    if (isError) {
-        setPrompt({
-            message: "Something is wrong!",
-            type: "error",
-            toggle: true,
-        });
-    }
     return (
         <>
             <section className={style.container}>
@@ -88,13 +81,6 @@ export default function ChargeTable({ page, setCreate }: Props) {
                         </tr>
                     </thead>
                     <tbody>
-                        {isError && (
-                            <tr>
-                                <td colSpan={5} className="text-center">
-                                    Error...
-                                </td>
-                            </tr>
-                        )}
                         {data?.data.data.map((item: any, index: number) => (
                             <List key={index} itemDetail={item} />
                         ))}

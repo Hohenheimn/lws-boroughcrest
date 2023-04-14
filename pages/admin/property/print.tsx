@@ -8,28 +8,28 @@ import Image from "next/image";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 import PrintTemplate from "../../../components/Reusable/PrintTemplate";
+import { GetPropertyList } from "../../../components/ReactQuery/PropertyMethod";
 
-export default function Print({ keyword }: any) {
-    // const Columns = columns.split(",");
-    const Columns = [
-        "Unit Code",
-        "Project",
-        "Developer",
-        "Tower",
-        "Floor",
-        "Class",
-        "Type",
-        "Turn Over",
-        "Owner",
-    ];
+type Props = {
+    Keyword: string;
+    PageNumber: string | number;
+    RowNumber: number;
+    Columns: string;
+};
 
-    const { data, isLoading, isError } = useQuery([keyword], () => {
-        return api.get(`/admin/property/unit?keywords=${keyword}`, {
-            headers: {
-                Authorization: "Bearer " + getCookie("user"),
-            },
-        });
-    });
+export default function Print({
+    Keyword,
+    PageNumber,
+    RowNumber,
+    Columns,
+}: Props) {
+    const ColumnsArray = Columns.split(",");
+
+    const { data, isLoading, isError } = GetPropertyList(
+        PageNumber,
+        Keyword,
+        RowNumber
+    );
 
     const printhandler = () => {
         print();
@@ -58,26 +58,24 @@ export default function Print({ keyword }: any) {
                         <thead className="text-[#545454] text-[14px] text-start">
                             <tr>
                                 <th className="text-start px-2 py-1">ID</th>
-                                {Columns?.map((item: any, index: number) => (
-                                    <th key={index} className="text-start">
-                                        {item}
-                                    </th>
-                                ))}
+                                {ColumnsArray?.map(
+                                    (item: any, index: number) => (
+                                        <th key={index} className="text-start">
+                                            {item}
+                                        </th>
+                                    )
+                                )}
                             </tr>
                         </thead>
                         <tbody className="text-[14px]">
-                            {!isLoading && !isError && (
-                                <>
-                                    {data?.data.map(
-                                        (item: any, index: number) => (
-                                            <List
-                                                key={index}
-                                                itemDetail={item}
-                                                Columns={Columns}
-                                            />
-                                        )
-                                    )}
-                                </>
+                            {data?.data?.data.map(
+                                (item: any, index: number) => (
+                                    <List
+                                        key={index}
+                                        itemDetail={item}
+                                        Columns={ColumnsArray}
+                                    />
+                                )
                             )}
                         </tbody>
                     </table>
@@ -183,11 +181,16 @@ const List = ({ itemDetail, Columns }: ListProps) => {
 };
 
 export async function getServerSideProps({ query }: any) {
-    const keyword = query.keyword;
-    // const columns = query.columns;
+    const Keyword = query.keyword;
+    const PageNumber = query.page;
+    const RowNumber = query.limit;
+    const Columns = query.columns;
     return {
         props: {
-            keyword: keyword,
+            PageNumber: PageNumber,
+            RowNumber: RowNumber,
+            Columns: Columns,
+            Keyword: Keyword,
         },
     };
 }

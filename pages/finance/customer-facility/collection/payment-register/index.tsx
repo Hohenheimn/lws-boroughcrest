@@ -1,6 +1,6 @@
 import { format, isValid, parse } from "date-fns";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BarLoader } from "react-spinners";
 import HeaderCollection from "../../../../../components/FINANCE/CustomerFacility/Collection/HeaderCollection";
 import { GetCollectionList } from "../../../../../components/FINANCE/CustomerFacility/Collection/ReceivePayment/Query";
@@ -44,6 +44,27 @@ export type CollectionItem = {
     updated_at: string;
     created_at: string;
     histories: PaymentSummaryHistories[];
+    outright_advances: {
+        id: number;
+        amount: number;
+        charge_id: number;
+        charge_name: string;
+        description: string;
+        quantity: number;
+        type: string;
+        unit_price: string | number;
+    }[];
+    outstanding_balances: {
+        balance: string | number;
+        billing_invoice_id: number;
+        collection_id: number;
+        id: number;
+        payment_amount: string | number;
+        charge_name: string;
+        charge_description: string;
+        charge_id: number;
+    }[];
+    discount: number;
 };
 
 export type PaymentSummaryHistories = CollectionItem;
@@ -65,7 +86,8 @@ export default function PaymentRegister() {
         isSearch,
         isValid(dateFrom) ? format(dateFrom, "yyyy-MM-dd") : "",
         isValid(dateTo) ? format(dateTo, "yyyy-MM-dd") : "",
-        TablePage
+        TablePage,
+        isFilterText
     );
 
     return (
@@ -74,7 +96,7 @@ export default function PaymentRegister() {
                 setFilterText={setFilterText}
                 isSearch={isSearch}
                 setSearch={setSearch}
-                FilterEndpoint="/finance/general-ledger/journal/filter-options"
+                FilterEndpoint="/finance/customer-facility/collection/filter-options"
                 page="payment-register"
                 isPeriod={isPeriod}
                 setPeriod={setPeriod}

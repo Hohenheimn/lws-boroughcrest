@@ -10,7 +10,7 @@ export const getServerSideProps: GetServerSideProps = requiredAuthentication(
         return {
             redirect: {
                 permanent: false,
-                destination: "/project/corporate",
+                destination: "/finance/general-ledger/chart-of-account",
             },
         };
     }

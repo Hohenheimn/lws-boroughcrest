@@ -64,7 +64,8 @@ export default function Layout({ children }: Layout) {
             router.pathname.includes("journal-list/[id]") ||
             router.pathname.includes("billing/invoice-list/[id]") ||
             router.pathname.includes("/roles") ||
-            router.pathname.includes("/payment-register/[id]")
+            router.pathname.includes("/payment-register/[id]") ||
+            router.pathname.includes("/adjustment-list/[id]")
         ) {
             setProfileSearch(true);
         } else {
@@ -80,8 +81,10 @@ export default function Layout({ children }: Layout) {
             setWide(false);
         }
         // Show finance Upper Menu
-        const finance = router.pathname.split("/")[1];
-        if (finance === "finance") {
+        if (
+            router.pathname.includes("finance") &&
+            !router.pathname.includes("/policy")
+        ) {
             setFinanceMenu(true);
         } else {
             setFinanceMenu(false);

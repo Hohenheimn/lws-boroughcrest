@@ -17,6 +17,7 @@ import { Outright } from "./OfficialForm/OutrightAndAdvances/OutRight";
 import { AdvancesType } from "./OfficialForm/OutrightAndAdvances/Advances";
 import { GetCustomerOutstanding, GetCustomerSummary } from "./Query";
 import { useRouter } from "next/router";
+import DynamicPopOver from "../../../../Reusable/DynamicPopOver";
 
 export type ReceivePaymentForm = {
     description: string;
@@ -40,6 +41,7 @@ export type HeaderForm = {
     reference_no: string | number | any;
     amount_paid: number | string;
     credit_tax: number | string;
+    discount: number;
 };
 
 type Deposits = {
@@ -65,7 +67,7 @@ type Props = {
     DefaultValHeaderForm: HeaderForm;
     DefaultValAcknowledgement: Deposits[];
     DefaultProvisional: isProvisionalTable[];
-    DefaultOfficial: DefaultOfficial;
+    DefaultOfficialOutrightAdvances: DefaultOfficial;
     type: string;
 };
 
@@ -73,7 +75,7 @@ export default function ReceivePaymentForm({
     DefaultCustomer,
     DefaultValHeaderForm,
     DefaultValAcknowledgement,
-    DefaultOfficial,
+    DefaultOfficialOutrightAdvances,
     DefaultProvisional,
 }: Props) {
     const { setPrompt } = useContext(AppContext);
@@ -93,6 +95,7 @@ export default function ReceivePaymentForm({
         reference_no: DefaultValHeaderForm.reference_no,
         amount_paid: DefaultValHeaderForm.amount_paid,
         credit_tax: DefaultValHeaderForm.credit_tax,
+        discount: DefaultValHeaderForm.discount,
     });
 
     const [isCustomer, setCustomer] = useState<any>({
@@ -112,8 +115,6 @@ export default function ReceivePaymentForm({
     }, [DefaultCustomer]);
 
     const [isOutStanding, setOutstanding] = useState<Outstanding[]>([]);
-
-    const router = useRouter();
 
     const { isLoading, data, isError } = GetCustomerOutstanding(isCustomer.id);
 
@@ -154,6 +155,7 @@ export default function ReceivePaymentForm({
             reference_no: DefaultValHeaderForm.reference_no,
             amount_paid: DefaultValHeaderForm.amount_paid,
             credit_tax: DefaultValHeaderForm.credit_tax,
+            discount: DefaultValHeaderForm.discount,
         });
     }, [DefaultValHeaderForm]);
 
@@ -177,19 +179,33 @@ export default function ReceivePaymentForm({
             reference_no: "",
             amount_paid: "",
             credit_tax: "",
+            discount: 0,
         });
     };
 
     const [isErrorToggle, setErrorToggle] = useState(false);
 
-    const [isDiscountToggle, setDiscountToggle] = useState(false);
+    const [isDiscount, setDiscountToggle] = useState({
+        value: DefaultValHeaderForm.discount,
+        toggle: false,
+    });
+
+    useEffect(() => {
+        setHeaderForm({
+            ...HeaderForm,
+            discount: isDiscount.value,
+        });
+    }, [isDiscount.value]);
 
     const [isBank, setBank] = useState({
         id: "",
         value: "",
     });
 
-    const [isDepositDate, setDepositDate] = useState({
+    const [DepositDateRP, setDepositDateRP] = useState<{
+        value: string;
+        toggle: boolean;
+    }>({
         value: "",
         toggle: false,
     });
@@ -197,9 +213,9 @@ export default function ReceivePaymentForm({
     useEffect(() => {
         setHeaderForm({
             ...HeaderForm,
-            deposit_date: isDepositDate.value,
+            deposit_date: DepositDateRP.value,
         });
-    }, [isDepositDate]);
+    }, [DepositDateRP]);
 
     useEffect(() => {
         setHeaderForm({
@@ -223,7 +239,10 @@ export default function ReceivePaymentForm({
                 toggle: true,
             });
         } else {
-            setDiscountToggle(true);
+            setDiscountToggle({
+                ...isDiscount,
+                toggle: true,
+            });
         }
     };
 
@@ -263,9 +282,10 @@ export default function ReceivePaymentForm({
 
     return (
         <>
-            {isDiscountToggle && (
+            {isDiscount.toggle && (
                 <DiscountForm
                     setDiscountToggle={setDiscountToggle}
+                    isDiscount={isDiscount}
                     customer_id={isCustomer.id}
                 />
             )}
@@ -392,38 +412,50 @@ export default function ReceivePaymentForm({
                                 </label>
                             </li>
                             <li className="w-[30%]">
-                                <label className="labelField flex flex-col">
-                                    *DEPOSIT DATE
-                                    <div className="calendar">
-                                        <span className="cal">
-                                            <Image
-                                                src="/Images/CalendarMini.png"
-                                                width={15}
-                                                height={15}
-                                            />
-                                        </span>
-                                        <input
-                                            autoComplete="off"
-                                            type="text"
-                                            value={HeaderForm.deposit_date}
-                                            readOnly
-                                            placeholder="MM dd yyyy"
-                                            onClick={() =>
-                                                setDepositDate({
-                                                    ...isDepositDate,
-                                                    toggle: true,
-                                                })
-                                            }
-                                            className="field w-full"
-                                        />
-                                        {isDepositDate.toggle && (
-                                            <Calendar
-                                                value={isDepositDate}
-                                                setValue={setDepositDate}
-                                            />
-                                        )}
-                                    </div>
-                                </label>
+                                <DynamicPopOver
+                                    toRef={
+                                        <label className="labelField flex flex-col">
+                                            *DEPOSIT DATE
+                                            <div className="calendar">
+                                                <span className="cal">
+                                                    <Image
+                                                        src="/Images/CalendarMini.png"
+                                                        width={15}
+                                                        height={15}
+                                                    />
+                                                </span>
+                                                <input
+                                                    autoComplete="off"
+                                                    type="text"
+                                                    value={
+                                                        HeaderForm.deposit_date
+                                                    }
+                                                    readOnly
+                                                    placeholder="MM dd yyyy"
+                                                    onClick={() =>
+                                                        setDepositDateRP({
+                                                            ...DepositDateRP,
+                                                            toggle: true,
+                                                        })
+                                                    }
+                                                    className="field w-full"
+                                                />
+                                            </div>
+                                        </label>
+                                    }
+                                    toPop={
+                                        <>
+                                            {DepositDateRP.toggle === true && (
+                                                <Calendar
+                                                    value={DepositDateRP}
+                                                    setValue={setDepositDateRP}
+                                                />
+                                            )}
+                                        </>
+                                    }
+                                    className={""}
+                                />
+
                                 {HeaderForm.deposit_date === "" &&
                                     isErrorToggle && (
                                         <p className="text-[10px] text-ThemeRed">
@@ -548,7 +580,9 @@ export default function ReceivePaymentForm({
                     ResetField={ResetField}
                     Error={ErrorToggleHandler}
                     headerForm={HeaderForm}
-                    DefaultOfficial={DefaultOfficial}
+                    DefaultOfficialOutrightAdvances={
+                        DefaultOfficialOutrightAdvances
+                    }
                     Outstanding={isOutStanding}
                     setOutstanding={setOutstanding}
                     outStandingLoading={isLoading}

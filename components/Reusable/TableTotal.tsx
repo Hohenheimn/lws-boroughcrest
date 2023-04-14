@@ -18,7 +18,7 @@ export const TableTwoTotal = ({ total1, total2 }: Props) => {
             </div>
             <div className="withPeso relative flex items-center text-[#757575] font-NHU-bold">
                 <TextNumberDisplay
-                    value={total1}
+                    value={total2}
                     className="text-end w-full text-[#757575] font-NHU-bold text-[18px] 1280px:text-[13px]"
                 />
             </div>

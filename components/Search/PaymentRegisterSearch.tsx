@@ -18,9 +18,9 @@ export default function PaymentRegisterSearch() {
         isLoading,
         data: RecentData,
         isError,
-    } = useQuery(["recent-customer", router.query.id, search], () => {
+    } = useQuery(["recent-collection", router.query.id, search], () => {
         return api.get(
-            `/admin/customer/recent-search/${router.query.id}?keywords=${search}&paginate=3`,
+            `/finance/customer-facility/collection/recent-search/${router.query.id}?keywords=${search}&paginate=3`,
             {
                 headers: {
                     Authorization: "Bearer " + getCookie("user"),
@@ -79,17 +79,13 @@ export default function PaymentRegisterSearch() {
                                 <ul>
                                     <li>
                                         <h4>
-                                            {item.name} {item.com}
+                                            {item.receipt_type} {item.com}
                                         </h4>
-                                        <p>
-                                            {
-                                                item.registered_address_municipal_city
-                                            }
-                                        </p>
+                                        <p>{item.receipt_date}</p>
                                     </li>
                                     <li>
                                         <p>ID: {item.id}</p>
-                                        <p>TIN: {item.tin}</p>
+                                        <p>{item.receipt_no}</p>
                                     </li>
                                 </ul>
                             </a>

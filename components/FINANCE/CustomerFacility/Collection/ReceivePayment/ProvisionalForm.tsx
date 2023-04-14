@@ -352,7 +352,11 @@ const List = ({ itemDetail, isTable, setTable, index }: ListProps) => {
                         onClick={() => setDate({ ...isDate, toggle: true })}
                     />
                     {isDate.toggle && (
-                        <Calendar value={isDate} setValue={setDate} />
+                        <Calendar
+                            value={isDate}
+                            setValue={setDate}
+                            forTable={true}
+                        />
                     )}
                 </article>
             </td>

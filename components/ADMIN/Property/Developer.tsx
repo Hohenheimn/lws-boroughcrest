@@ -49,26 +49,26 @@ export default function Developer({
                         {item.name}
                     </li>
                 ))}
-            </ul>
-            {isLoading && (
-                <li>
-                    <div className="w-full flex justify-center py-3">
-                        <BarLoader
-                            color={"#8f384d"}
-                            height="5px"
-                            width="100px"
-                            aria-label="Loading Spinner"
-                            data-testid="loader"
-                        />
-                    </div>
-                </li>
-            )}
-            {isError ||
-                (data?.data.length <= 0 && (
+                {isLoading && (
                     <li>
-                        <h1>Developer cannot be found!</h1>
+                        <div className="w-full flex justify-center py-3">
+                            <BarLoader
+                                color={"#8f384d"}
+                                height="5px"
+                                width="100px"
+                                aria-label="Loading Spinner"
+                                data-testid="loader"
+                            />
+                        </div>
                     </li>
-                ))}
+                )}
+                {isError ||
+                    (data?.data.length <= 0 && (
+                        <li>
+                            <h1>Developer cannot be found!</h1>
+                        </li>
+                    ))}
+            </ul>
         </>
     );
 }

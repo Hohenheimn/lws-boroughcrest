@@ -6,7 +6,7 @@ export default function TableErrorMessage() {
         <div className="w-full flex justify-center items-center">
             <aside className="text-center flex justify-center py-5">
                 <h1 className="flex items-center">
-                    Error, Server Problem!{" "}
+                    Something went wrong{" "}
                     <BiErrorCircle className="text-ThemeRed text-[24px] ml-2" />
                 </h1>
             </aside>

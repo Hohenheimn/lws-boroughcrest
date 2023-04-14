@@ -25,7 +25,6 @@ type SearchFilter = {
 };
 
 export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
-    const [isPrintColumn, setPrintColumn] = useState<any>();
     const {
         setCorpToggle,
         setCusToggle,
@@ -54,29 +53,6 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
     const ValidatePathName = router.pathname.split("/")[2];
 
     // Print Columns
-    useEffect(() => {
-        if (router.pathname.includes("admin/customer")) {
-            const customerAllColumn = [
-                "Class",
-                "Mobile",
-                "Email",
-                "Status",
-                "Spouse",
-                "Citizenship",
-                "Birth Date",
-                "Contact Person",
-                "Property",
-                "TIN",
-                "Branch Code",
-                "Type",
-            ];
-            setPrintColumn(customerAllColumn);
-        }
-        if (router.pathname.includes("admin/property")) {
-            setPrintColumn(propTableColumn);
-        }
-        console.log(isPrintColumn);
-    }, []);
 
     const openNew = () => {
         if (router.pathname.includes("project/corporate")) {
@@ -87,11 +63,9 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
         }
         if (router.pathname.includes("admin/customer")) {
             setCusToggle(true);
-            setPrintColumn(cusTableColumn);
         }
         if (router.pathname.includes("admin/property")) {
             setNewPropToggle(true);
-            setPrintColumn(propTableColumn);
         }
     };
 
@@ -206,7 +180,7 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
                             <Tippy theme="ThemeRed" content="Print">
                                 <div>
                                     <Link
-                                        href={`${isPrint.url}?keyword=${isPrint.keyword}&limit=${isPrint.limit}&page=${isPrint.page}`}
+                                        href={`${isPrint.url}?keyword=${isPrint.keyword}&limit=${isPrint.limit}&page=${isPrint.page}&columns=${isPrint.columns}`}
                                     >
                                         <a target="_blank">
                                             <div className={style.icon}>

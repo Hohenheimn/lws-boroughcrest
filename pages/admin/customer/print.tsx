@@ -8,32 +8,29 @@ import Image from "next/image";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 import PrintTemplate from "../../../components/Reusable/PrintTemplate";
+import { GetCustomerList } from "../../../components/ReactQuery/CustomerMethod";
 
-export default function Print({ keyword }: any) {
+type Props = {
+    Keyword: string;
+    PageNumber: string | number;
+    RowNumber: number;
+    Columns: string;
+};
+
+export default function Print({
+    Keyword,
+    PageNumber,
+    RowNumber,
+    Columns,
+}: Props) {
     // Getting column from parameter
-    // const Columns = columns.split(",");
-    const Columns = [
-        "Class",
-        "Mobile",
-        "Email",
-        "Status",
-        "Spouse",
-        "Citizenship",
-        "Birth Date",
-        "Contact Person",
-        "Property",
-        "TIN",
-        "Branch Code",
-        "Type",
-    ];
+    const ColumnsArray = Columns.split(",");
 
-    const { data, isLoading, isError } = useQuery([keyword], () => {
-        return api.get(`/admin/customer?keywords=${keyword}`, {
-            headers: {
-                Authorization: "Bearer " + getCookie("user"),
-            },
-        });
-    });
+    const { data, isLoading, isError } = GetCustomerList(
+        Number(PageNumber),
+        Keyword,
+        RowNumber
+    );
 
     const printhandler = () => {
         print();
@@ -63,37 +60,41 @@ export default function Print({ keyword }: any) {
                             <tr>
                                 <th className="text-start px-2 py-1">ID</th>
                                 <th className="text-start px-2 py-1">NAME</th>
-                                {Columns.map((item: any, index: number) => (
-                                    <th
-                                        key={index}
-                                        className="text-start px-2 py-1"
-                                        colSpan={item === "Property" ? 2 : 1}
-                                    >
-                                        {item === "Property" ? (
-                                            <div className="flex">
-                                                <div className="w-2/4">
-                                                    Property (Unit Code)
+                                {ColumnsArray.map(
+                                    (item: any, index: number) => (
+                                        <th
+                                            key={index}
+                                            className="text-start px-2 py-1"
+                                            colSpan={
+                                                item === "Property" ? 2 : 1
+                                            }
+                                        >
+                                            {item === "Property" ? (
+                                                <div className="flex">
+                                                    <div className="w-2/4">
+                                                        Property (Unit Code)
+                                                    </div>
+                                                    <div className="w-2/4">
+                                                        Property (Tower)
+                                                    </div>
                                                 </div>
-                                                <div className="w-2/4">
-                                                    Property (Tower)
-                                                </div>
-                                            </div>
-                                        ) : (
-                                            item
-                                        )}
-                                    </th>
-                                ))}
+                                            ) : (
+                                                item
+                                            )}
+                                        </th>
+                                    )
+                                )}
                             </tr>
                         </thead>
                         <tbody className="text-[14px]">
                             {!isLoading && !isError && (
                                 <>
-                                    {data?.data.map(
+                                    {data?.data?.data.map(
                                         (item: any, index: number) => (
                                             <List
                                                 key={index}
                                                 itemDetail={item}
-                                                Columns={Columns}
+                                                Columns={ColumnsArray}
                                             />
                                         )
                                     )}
@@ -148,7 +149,7 @@ const List = ({ itemDetail, Columns }: ListProps) => {
             {Columns.map((item: string, index: number) => (
                 <td
                     key={index}
-                    className=" px-2 py-1 border-b border-gray-300 text-[#2E4364] font-NHU-medium"
+                    className=" px-2 break-words py-1 border-b border-gray-300 text-[#2E4364] font-NHU-medium max-w-[100px]"
                     colSpan={item === "Property" ? 2 : 1}
                 >
                     {item === "Class" && (
@@ -252,15 +253,19 @@ const List = ({ itemDetail, Columns }: ListProps) => {
 };
 
 export async function getServerSideProps({ query }: any) {
-    const keyword = query.keyword;
-
+    const Keyword = query.keyword;
+    const PageNumber = query.page;
+    const RowNumber = query.limit;
+    const Columns = query.columns;
     return {
         props: {
-            keyword: keyword,
+            PageNumber: PageNumber,
+            RowNumber: RowNumber,
+            Columns: Columns,
+            Keyword: Keyword,
         },
     };
 }
-
 Print.getLayout = function getLayout(page: any) {
     return <>{page}</>;
 };

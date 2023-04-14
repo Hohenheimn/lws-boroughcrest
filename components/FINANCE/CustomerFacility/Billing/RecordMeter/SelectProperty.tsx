@@ -97,7 +97,11 @@ export default function SelectProperty({
         });
     };
 
-    const { isLoading, isError, data } = GetPropertyList(TablePage, isSearch);
+    const { isLoading, isError, data } = GetPropertyList(
+        TablePage,
+        isSearch,
+        TablePage
+    );
 
     useEffect(() => {
         if (data?.status === 200) {

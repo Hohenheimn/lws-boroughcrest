@@ -1,6 +1,10 @@
 import Link from "next/link";
-import React from "react";
+import React, { useContext, useState } from "react";
 import ModalTemp from "../../../Reusable/ModalTemp";
+import { VoidCollection } from "./ReceivePayment/Query";
+import AppContext from "../../../Context/AppContext";
+import { useRouter } from "next/router";
+import { BarLoader, ScaleLoader } from "react-spinners";
 
 type Props = {
     id: string | number;
@@ -8,8 +12,34 @@ type Props = {
 };
 
 export default function Authorization({ id, setState }: Props) {
+    const { setPrompt } = useContext(AppContext);
+    const router = useRouter();
+    const onSuccess = () => {
+        setPrompt({
+            message: "Collection successfully deleted",
+            type: "success",
+            toggle: true,
+        });
+        router.push("/finance/customer-facility/collection/payment-register");
+    };
+    const onError = () => {
+        setPrompt({
+            message: "Invalid Password",
+            type: "error",
+            toggle: true,
+        });
+    };
+    const [isPassword, setPassword] = useState("");
+    const { isLoading, mutate } = VoidCollection(
+        onSuccess,
+        onError,
+        Number(id)
+    );
     const Submit = () => {
-        console.log(id);
+        const Payload = {
+            password: isPassword,
+        };
+        mutate(Payload);
     };
     return (
         <ModalTemp narrow={true}>
@@ -20,7 +50,10 @@ export default function Authorization({ id, setState }: Props) {
                 </p>
                 <input
                     type="password"
-                    className="field w-full max-w-[250px] mb-5"
+                    autoComplete="off"
+                    value={isPassword}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="field text-center w-full max-w-[250px] mb-5"
                 />
                 <div>
                     <button
@@ -30,7 +63,15 @@ export default function Authorization({ id, setState }: Props) {
                         CANCEL
                     </button>
                     <button className="buttonRed" onClick={Submit}>
-                        CONFIRM
+                        {isLoading ? (
+                            <ScaleLoader
+                                color="#fff"
+                                height="10px"
+                                width="2px"
+                            />
+                        ) : (
+                            "CONFIRM"
+                        )}
                     </button>
                 </div>
             </div>

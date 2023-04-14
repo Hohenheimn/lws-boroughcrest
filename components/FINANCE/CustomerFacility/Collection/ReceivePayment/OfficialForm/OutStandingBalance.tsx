@@ -7,16 +7,6 @@ import { TableThreeTotal } from "../../../../../Reusable/TableTotal";
 import { BarLoader } from "react-spinners";
 import TableErrorMessage from "../../../../../Reusable/TableErrorMessage";
 
-type Props = {
-    Error: () => void;
-    DefaultOutstanding: Outstanding[];
-    setDefaultValue: Function;
-    amount_paid: number;
-    customer_id: string | number;
-    outStandingError: boolean;
-    outStandingLoading: boolean;
-};
-
 export type Outstanding = {
     id: string | number;
     document_no: string;
@@ -28,6 +18,22 @@ export type Outstanding = {
     balance: number;
 };
 
+type Props = {
+    Error: () => void;
+    DefaultOutstanding: Outstanding[];
+    setDefaultValue: Function;
+    amount_paid: number;
+    customer_id: string | number;
+    outStandingError: boolean;
+    outStandingLoading: boolean;
+    setDueAmountTotal: Function;
+    isDueAmountTotal: number;
+    setAppliedAmount: Function;
+    isAppliedAmount: number;
+    setBalanceAmount: Function;
+    isBalanceTotal: number;
+};
+
 export default function OutStandingBalance({
     DefaultOutstanding,
     setDefaultValue,
@@ -35,21 +41,28 @@ export default function OutStandingBalance({
     customer_id,
     outStandingError,
     outStandingLoading,
+    setDueAmountTotal,
+    isDueAmountTotal,
+    setAppliedAmount,
+    isAppliedAmount,
+    setBalanceAmount,
+    isBalanceTotal,
 }: Props) {
     const [isToggle, setToggle] = useState(false);
-    const [isDueAmountTotal, setDueAmountTotal] = useState(0);
-    const [isAppliedAmount, setAppliedAmount] = useState(0);
-    const [isBalanceTotal, setBalanceAmount] = useState(0);
     useEffect(() => {
         setDueAmountTotal(0);
         setAppliedAmount(0);
         setBalanceAmount(0);
         DefaultOutstanding?.map((item) => {
-            setDueAmountTotal((prev) => Number(prev) + Number(item.due_amount));
-            setAppliedAmount(
-                (prev) => Number(prev) + Number(item.applied_amount)
+            setDueAmountTotal(
+                (prev: number) => Number(prev) + Number(item.due_amount)
             );
-            setBalanceAmount((prev) => Number(prev) + Number(item.balance));
+            setAppliedAmount(
+                (prev: number) => Number(prev) + Number(item.applied_amount)
+            );
+            setBalanceAmount(
+                (prev: number) => Number(prev) + Number(item.balance)
+            );
         });
     }, [DefaultOutstanding]);
 
@@ -98,7 +111,7 @@ export default function OutStandingBalance({
                             : "pl-[30px] bg-[#b7b7b7]"
                     }`}
                 >
-                    <p className=" -mt-[1px]">Heirachy</p>
+                    <p className=" -mt-[1px]">Heirarchy</p>
                     <div
                         className={`h-[20px] duration-300 ease-in-out w-[20px] bg-ThemeRed rounded-full absolute top-[50%] translate-y-[-50%] ${
                             !isToggle ? "right-[5px]" : "right-[78px]"

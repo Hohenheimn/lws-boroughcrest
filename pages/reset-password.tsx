@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FaKey } from "react-icons/fa";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import Image from "next/image";
@@ -7,8 +7,11 @@ import { useRouter } from "next/router";
 import { ScaleLoader } from "react-spinners";
 import { ChangePassword } from "../components/ReactQuery/ForgotPassword";
 import Link from "next/link";
+import AppContext from "../components/Context/AppContext";
+import { ErrorSubmit } from "../components/Reusable/ErrorMessage";
 
 export default function ResetPassword({ token }: any) {
+    const { setPrompt } = useContext(AppContext);
     const router = useRouter();
     const [confirmPass, setConfirmPass] = useState("");
     const [isPassword, setPassword] = useState("");
@@ -17,21 +20,19 @@ export default function ResetPassword({ token }: any) {
     const [isEye, setEye] = useState(false);
 
     const OnSuccess = () => {
-        alert("Successfully changed your password!");
+        setPrompt({
+            message: "Successfully changed your password!",
+            type: "success",
+            toggle: true,
+        });
         router.push("/login");
     };
 
-    const OnError = () => {
-        alert("Invalid token, token might expire or already used!");
+    const OnError = (e: any) => {
+        ErrorSubmit(e, setPrompt);
     };
 
     const { mutate, isLoading } = ChangePassword(token, OnSuccess, OnError);
-
-    useEffect(() => {
-        if (token === "") {
-            router.push("/login");
-        }
-    }, []);
 
     const Submit = (e: any) => {
         e.preventDefault();
@@ -77,16 +78,6 @@ export default function ResetPassword({ token }: any) {
                                 width={400}
                                 height={150}
                             />
-
-                            {/* <p className="text-center text-white -mt-3 mb-10 text-[14px] 640px:mb-2">
-                                lorem ipsum
-                            </p>
-                            <p className="text-center text-white text-[14px] leading-tight">
-                                Lorem ipsum dolor sit amet, consectetur
-                                adipiscing elit. Et nec bibendum congue aliquet
-                                augue diam mauris lobortis. Morbi mattis
-                                tincidunt ut dignissim lacinia..
-                            </p> */}
                         </li>
                         <li className=" w-8/12 820px:w-7/12 bg-[#e5e4e455] flex flex-col 640px:w-full">
                             <section className=" p-16 820px:p-10 640px:p-5 flex flex-col items-start justify-center flex-1">
@@ -107,6 +98,7 @@ export default function ResetPassword({ token }: any) {
                                         name="password"
                                         required
                                         onChange={(e: any) =>
+                                            e.target.value.length <= 15 &&
                                             setPassword(e.target.value)
                                         }
                                         className="flex-1 outline-none text-16px"
@@ -134,6 +126,7 @@ export default function ResetPassword({ token }: any) {
                                         name="password"
                                         required
                                         onChange={(e: any) =>
+                                            e.target.value.length <= 15 &&
                                             setConfirmPass(e.target.value)
                                         }
                                         className="flex-1 outline-none text-16px"
@@ -151,7 +144,9 @@ export default function ResetPassword({ token }: any) {
                                     </div>
                                 </div>
                                 {inValid && (
-                                    <p className=" text-[12px] text-ThemeRed mb-5">
+                                    <p
+                                        className={`text-[16px] text-ThemeRed font-NHU-bold mb-5`}
+                                    >
                                         Password and Confirm password are not
                                         the same
                                     </p>
@@ -201,6 +196,14 @@ export default function ResetPassword({ token }: any) {
 export async function getServerSideProps(context: any) {
     // const router = useRouter();
     const token = context.query.token;
+    if (!token) {
+        return {
+            redirect: {
+                permanent: false,
+                destination: "/login",
+            },
+        };
+    }
     return {
         props: {
             token: token,

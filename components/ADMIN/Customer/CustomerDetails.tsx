@@ -39,10 +39,10 @@ export default function CustomerDetail({ Draft }: any) {
             toggle: true,
         });
     };
-    const { mutate, isLoading } = SendPortal(id, onSuccess, onError);
+    const { mutate, isLoading } = SendPortal(onSuccess, onError);
 
     const SendPortalHandler = () => {
-        mutate();
+        mutate(id);
     };
 
     const {
@@ -268,7 +268,10 @@ export default function CustomerDetail({ Draft }: any) {
             <ul className=" w-full shadow-lg p-10  bg-white rounded-2xl">
                 {!isToggleInfoRole && <CustomerInformation itemDetail={data} />}
                 {isToggleInfoRole && (
-                    <CustomerProperty data={data.properties} />
+                    <CustomerProperty
+                        data={data.properties}
+                        classType={data.class}
+                    />
                 )}
             </ul>
         </div>

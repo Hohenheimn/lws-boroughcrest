@@ -11,7 +11,7 @@ export function PencilButton({ FunctionOnClick, title }: Props) {
     return (
         <div>
             <Tippy content={title} theme="ThemeRed">
-                <div onClick={FunctionOnClick}>
+                <div onClick={FunctionOnClick} className="cursor-pointer">
                     <Image
                         src="/Images/big_pencil.png"
                         width={20}
@@ -30,7 +30,7 @@ export function PlusButtonTable() {
             theme="ThemeRed"
             content={<span className="text-[12px]">Add row</span>}
         >
-            <div className=" inline-block">
+            <div className=" inline-block cursor-pointer">
                 <Image
                     src="/Images/f_plus.png"
                     width={12}
@@ -48,7 +48,7 @@ export function MinusButtonTable() {
             theme="ThemeRed"
             content={<span className="text-[12px]">Remove row</span>}
         >
-            <div className=" inline-block translate-y-[-3px]">
+            <div className=" inline-block translate-y-[-3px] cursor-pointer">
                 <Image
                     src="/Images/f_minus.png"
                     width={12}
@@ -66,7 +66,7 @@ export function CopyButtonTable() {
             theme="ThemeRed"
             content={<span className="text-[12px]">Copy</span>}
         >
-            <div className=" inline-block">
+            <div className=" inline-block cursor-pointer">
                 <Image
                     src="/Images/f_modify.png"
                     width={15}
@@ -84,7 +84,7 @@ export function EyeButton() {
             theme="ThemeRed"
             content={<span className="text-[12px]">View</span>}
         >
-            <div className=" inline-block">
+            <div className=" inline-block cursor-pointer">
                 <Image
                     src="/Images/f_eye.png"
                     width={15}
@@ -120,7 +120,7 @@ export function PencilButtonTable() {
             theme="ThemeRed"
             content={<span className="text-[12px]">Modify</span>}
         >
-            <div className=" inline-block">
+            <div className=" inline-block cursor-pointer">
                 <Image
                     src="/Images/f_pencil.png"
                     width={12}

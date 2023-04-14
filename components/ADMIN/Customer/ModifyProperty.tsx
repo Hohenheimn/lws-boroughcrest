@@ -14,11 +14,13 @@ import DynamicPopOver from "../../Reusable/DynamicPopOver";
 type ModifyRolesPermission = {
     setToggle: Function;
     properties: any;
+    classType: string;
 };
 
 export default function ModifyProperty({
     setToggle,
     properties,
+    classType,
 }: ModifyRolesPermission) {
     const queryClient = useQueryClient();
     const { setPrompt } = useContext(AppContext);
@@ -128,6 +130,7 @@ export default function ModifyProperty({
                                     key={index}
                                     isProperty={isProperty}
                                     id={index}
+                                    classType={classType}
                                 />
                             ))}
                         </tbody>
@@ -185,8 +188,9 @@ type List = {
     setProperty: Function;
     isProperty: {}[];
     id: number;
+    classType: string;
 };
-const List = ({ detail, setProperty, isProperty, id }: List) => {
+const List = ({ detail, setProperty, isProperty, id, classType }: List) => {
     const newID = Math.random();
     const [isSelect, setSelect] = useState(false);
     const { setPrompt } = useContext(AppContext);
@@ -242,6 +246,7 @@ const List = ({ detail, setProperty, isProperty, id }: List) => {
                                     <Select
                                         setSelect={setSelect}
                                         updateValue={updateValue}
+                                        classType={classType}
                                     />
                                 )}
                             </>
@@ -296,11 +301,11 @@ const List = ({ detail, setProperty, isProperty, id }: List) => {
     );
 };
 
-const Select = ({ setSelect, updateValue }: any) => {
+const Select = ({ setSelect, updateValue, classType }: any) => {
     const Menu = useRef<any>();
 
     // Get unit codes to display
-    const { isLoading, data, isError } = GetUnitCode();
+    const { isLoading, data, isError } = GetUnitCode(classType);
 
     useEffect(() => {
         const clickOutSide = (e: any) => {
@@ -317,21 +322,30 @@ const Select = ({ setSelect, updateValue }: any) => {
     return (
         <ul ref={Menu} className="dropdown-list">
             {isLoading && (
-                <div className="flex justify-center py-2">
+                <li className="flex justify-center">
                     <ScaleLoader color="#8f384d" height="10px" width="2px" />
-                </div>
+                </li>
             )}
-            {!isLoading &&
-                data?.data.map((item: any, index: number) => (
-                    <li
-                        key={index}
-                        data-projname={item?.project?.name}
-                        onClick={updateValue}
-                        className="cursor-pointer hover:bg-ThemeRed hover:text-white px-2 py-1"
-                    >
-                        {item?.unit_code}
-                    </li>
-                ))}
+            {isError && (
+                <li className="flex justify-center ">
+                    <h1>Something went wrong!</h1>
+                </li>
+            )}
+            {data?.data.length <= 0 && (
+                <li className="flex justify-center ">
+                    <h1>No Available Unit Code for {classType}</h1>
+                </li>
+            )}
+            {data?.data.map((item: any, index: number) => (
+                <li
+                    key={index}
+                    data-projname={item?.project?.name}
+                    onClick={updateValue}
+                    className="cursor-pointer"
+                >
+                    {item?.unit_code}
+                </li>
+            ))}
         </ul>
     );
 };

@@ -3,12 +3,16 @@ import api from "../../util/api";
 import { getCookie } from "cookies-next";
 
 // List of Property
-export const GetPropertyList = (PageNumber: any, Keyword: any) => {
+export const GetPropertyList = (
+    PageNumber: any,
+    Keyword: any,
+    RowNumber: number
+) => {
     return useQuery(
-        ["Property-List", PageNumber, Keyword],
+        ["Property-List", PageNumber, Keyword, RowNumber],
         () => {
             return api.get(
-                `/admin/property/unit?page=${PageNumber}&paginate=10&keywords=${Keyword}`,
+                `/admin/property/unit?page=${PageNumber}&paginate=${RowNumber}&keywords=${Keyword}`,
                 {
                     headers: {
                         Authorization: "Bearer " + getCookie("user"),

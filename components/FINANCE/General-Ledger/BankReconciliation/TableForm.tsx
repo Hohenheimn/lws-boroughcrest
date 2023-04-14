@@ -268,29 +268,30 @@ export default function TableForm() {
                                 </div>
                             </td>
                         </tr>
-                        {isBankAccount.id === "" &&
-                        isPeriod.from === "" &&
-                        isPeriod.to === "" ? (
-                            <></>
-                        ) : (
-                            <>
-                                {isTableItem.map((item: any, index: number) => (
-                                    <List
-                                        itemDetail={item}
-                                        key={index}
-                                        isTableItem={isTableItem}
-                                        setTableItem={setTableItem}
-                                        rowNumber={index}
-                                        setPrevBalance={setPrevBalance}
-                                        prevBalance={prevBalance}
-                                        dateFrom={dateFrom}
-                                        dateTo={dateTo}
-                                    />
-                                ))}
-                            </>
-                        )}
+                        {isBankAccount.id !== "" &&
+                            isPeriod.from !== "" &&
+                            isPeriod.to !== "" && (
+                                <>
+                                    {isTableItem.map(
+                                        (item: any, index: number) => (
+                                            <List
+                                                itemDetail={item}
+                                                key={index}
+                                                isTableItem={isTableItem}
+                                                setTableItem={setTableItem}
+                                                rowNumber={index}
+                                                setPrevBalance={setPrevBalance}
+                                                prevBalance={prevBalance}
+                                                dateFrom={dateFrom}
+                                                dateTo={dateTo}
+                                            />
+                                        )
+                                    )}
+                                </>
+                            )}
                     </tbody>
                 </table>
+
                 {isLoading && (
                     <div className="w-full h-full flex justify-center items-center">
                         <aside className="text-center flex justify-center py-5">
@@ -503,6 +504,7 @@ const List = ({
                     />
                     {isDate.toggle && (
                         <Calendar
+                            forTable={true}
                             value={isDate}
                             setValue={setDate}
                             period={{

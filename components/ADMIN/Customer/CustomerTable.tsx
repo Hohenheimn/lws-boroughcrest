@@ -2,9 +2,6 @@ import React, { useState, useContext, useRef, useEffect } from "react";
 import AppContext from "../../Context/AppContext";
 import Image from "next/image";
 import Link from "next/link";
-import { useQuery } from "react-query";
-import { getCookie } from "cookies-next";
-import api from "../../../util/api";
 import BarLoader from "react-spinners/BarLoader";
 import type { customerItemDetail } from "../../../types/customerList";
 import Tippy from "@tippy.js/react";
@@ -29,8 +26,9 @@ export default function CustomerTable() {
             page: TablePage,
             limit: TableRows,
             url: "/admin/customer/print",
+            columns: cusTableColumn,
         });
-    }, [isSearchBar, TablePage, TableRows]);
+    }, [isSearchBar, TablePage, TableRows, cusTableColumn]);
 
     return (
         <>

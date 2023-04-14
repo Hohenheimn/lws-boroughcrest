@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { FaKey, FaEnvelope } from "react-icons/fa";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import Image from "next/image";
@@ -8,19 +8,39 @@ import api from "../util/api";
 import { setCookie } from "cookies-next";
 import { ScaleLoader, MoonLoader } from "react-spinners";
 import { SendLink } from "../components/ReactQuery/ForgotPassword";
+import { useForm } from "react-hook-form";
+import ModalTemp from "../components/Reusable/ModalTemp";
+import AppContext from "../components/Context/AppContext";
+import { AnimatePresence } from "framer-motion";
+import PrompMessage from "../components/Reusable/PrompMessage";
 
 export default function Login() {
     const router = useRouter();
+    const { setPrompt, togglePrompt } = useContext(AppContext);
     const [isLoading, setLoading] = useState(false);
     const [isUsername, setUsername] = useState("");
     const [isPassword, setPassword] = useState("");
     const [CheckRemember, setCheckRemember] = useState(false);
     const [inValid, setInvalid] = useState("");
+    const [isSuccess, setSuccess] = useState<boolean | null>(false);
+    const regexEmail = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+    const regexLetterAndNumber = /^[A-Za-z0-9]+$/;
 
     const [isEye, setEye] = useState(false);
 
     const ValidateLogin = async (e: any) => {
         e.preventDefault();
+
+        if (!regexEmail.test(isUsername)) {
+            setInvalid("Invalid Email");
+            setSuccess(false);
+            return;
+        }
+        if (!regexLetterAndNumber.test(isPassword)) {
+            setInvalid("Invalid password, special characters are not allowed");
+            setSuccess(false);
+            return;
+        }
         setLoading(true);
         try {
             const response = await api.post("/auth/login", {
@@ -34,8 +54,10 @@ export default function Login() {
             }
             setCookie("user", token);
             router.push("/dashboard");
-            // router.reload();
+            setInvalid("");
+            setSuccess(true);
         } catch (error: any) {
+            setSuccess(false);
             if (error?.response?.status === 401) {
                 setInvalid("Invalid Username or Password");
             } else {
@@ -68,21 +90,36 @@ export default function Login() {
     };
 
     const SuccessSendLink = () => {
+        setPrompt({
+            message: "Email sent successfully",
+            type: "success",
+            toggle: true,
+        });
+        setSuccess(true);
+        setToggleModal(false);
         setInvalid("Email sent successfully!");
     };
-    const ErrorSendLink = () => {
+    const ErrorSendLink = (e: any) => {
+        setPrompt({
+            message: "Email not found!",
+            type: "error",
+            toggle: true,
+        });
+        setSuccess(false);
+        setToggleModal(false);
         setInvalid("Email not found!");
     };
-    const {
-        mutate,
-        isLoading: SendLinkLoading,
-        isError,
-    } = SendLink(SuccessSendLink, ErrorSendLink);
+    const { mutate, isLoading: SendLinkLoading } = SendLink(
+        SuccessSendLink,
+        ErrorSendLink
+    );
+
+    const [toggleModal, setToggleModal] = useState(false);
 
     const forgotHandler = () => {
-        const regex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
-        if (!regex.test(isUsername)) {
+        if (!regexEmail.test(isUsername)) {
             setInvalid("Invalid email");
+            setSuccess(false);
             return;
         } else {
             setInvalid("");
@@ -99,6 +136,36 @@ export default function Login() {
                     content="initial-scale=1.0, width=device-width"
                 />
             </Head>
+            <AnimatePresence>
+                {togglePrompt.toggle && <PrompMessage />}
+            </AnimatePresence>
+
+            {toggleModal && (
+                <ModalTemp narrow={true}>
+                    <h1 className="text-center">
+                        Do you want to receive an email to reset your password?
+                    </h1>
+                    <div className="flex justify-end items-center pt-5">
+                        <button
+                            className="button_cancel"
+                            onClick={() => setToggleModal(false)}
+                        >
+                            CANCEL
+                        </button>
+                        <button className="buttonRed" onClick={forgotHandler}>
+                            {SendLinkLoading ? (
+                                <ScaleLoader
+                                    color="#fff"
+                                    height="10px"
+                                    width="2px"
+                                />
+                            ) : (
+                                "SEND"
+                            )}
+                        </button>
+                    </div>
+                </ModalTemp>
+            )}
             <form
                 onSubmit={ValidateLogin}
                 className=" min-h-screen flex justify-center items-center bg-ThemeRed"
@@ -121,16 +188,6 @@ export default function Login() {
                                 width={400}
                                 height={150}
                             />
-
-                            {/* <p className="text-center text-white -mt-3 mb-10 text-[14px] 640px:mb-2">
-                                lorem ipsum
-                            </p>
-                            <p className="text-center text-white text-[14px] leading-tight">
-                                Lorem ipsum dolor sit amet, consectetur
-                                adipiscing elit. Et nec bibendum congue aliquet
-                                augue diam mauris lobortis. Morbi mattis
-                                tincidunt ut dignissim lacinia..
-                            </p> */}
                         </li>
                         <li className=" w-8/12 820px:w-7/12 bg-[#e5e4e455] flex flex-col 640px:w-full">
                             <section className=" p-16 820px:p-10 640px:p-5 flex flex-col items-start justify-center flex-1">
@@ -151,6 +208,7 @@ export default function Login() {
                                         value={isUsername}
                                         required
                                         onChange={(e: any) =>
+                                            e.target.value.length <= 40 &&
                                             setUsername(e.target.value)
                                         }
                                         name="username"
@@ -169,6 +227,7 @@ export default function Login() {
                                         name="password"
                                         required
                                         onChange={(e: any) =>
+                                            e.target.value.length <= 20 &&
                                             setPassword(e.target.value)
                                         }
                                         className="flex-1 outline-none text-16px"
@@ -186,7 +245,13 @@ export default function Login() {
                                     </div>
                                 </div>
                                 {inValid && (
-                                    <p className=" text-[12px] text-ThemeRed mb-5">
+                                    <p
+                                        className={`text-[16px] ${
+                                            isSuccess
+                                                ? " text-Green"
+                                                : "text-ThemeRed"
+                                        } font-NHU-bold mb-5`}
+                                    >
                                         {inValid}
                                     </p>
                                 )}
@@ -231,14 +296,11 @@ export default function Login() {
                                 </div>
                                 <div className=" flex items-center justify-between w-full max-w-[400px] mb-5 640px:mb-4">
                                     <p
-                                        onClick={forgotHandler}
+                                        onClick={() => setToggleModal(true)}
                                         className="text-ThemeRed hover:underline text-[14px] cursor-pointer"
                                     >
                                         Forgot Password
                                     </p>
-                                    {SendLinkLoading && (
-                                        <MoonLoader size={20} color="#8f384d" />
-                                    )}
                                 </div>
                             </section>
                             <div className="px-5 640px:px-5 flex justify-end">

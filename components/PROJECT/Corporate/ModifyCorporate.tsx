@@ -17,10 +17,12 @@ import type {
 } from "../../../types/corporateList";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
-import { MdOutlineKeyboardArrowDown } from "react-icons/md";
-import DynamicPopOver from "../../Reusable/DynamicPopOver";
 import SelectDropdown from "../../Reusable/SelectDropdown";
 import { ErrorSubmit } from "../../Reusable/ErrorMessage";
+import {
+    NumberBlockInvalidKey,
+    TextFieldValidation,
+} from "../../Reusable/InputField";
 
 type ModifyCorporate = {
     setToggleModify: Function;
@@ -237,9 +239,19 @@ const PrimaryInformation = ({
                         {...register("name", {
                             required: "Required",
                         })}
+                        value={modifyCorporate.name}
+                        onChange={(e) => {
+                            if (!TextFieldValidation(e, 50)) return;
+                            setModifyCorporate({
+                                ...modifyCorporate,
+                                name: e.target.value,
+                            });
+                        }}
                         className="field"
                     />
-                    {errors.name && <p>{errors.name.message}</p>}
+                    {errors.name && (
+                        <p className="text-[10px]">{errors.name.message}</p>
+                    )}
                 </li>
             </ul>
             {validateTransaction && (
@@ -247,19 +259,29 @@ const PrimaryInformation = ({
                     <li>
                         <label>*TIN Number</label>
                         <input
+                            className="field"
                             type="number"
+                            placeholder="000000000"
                             {...register("tin", {
                                 required: "Required",
                                 minLength: {
                                     value: 9,
-                                    message: "Must be 9 numbers only",
+                                    message: "Must be 9 number only",
                                 },
                                 maxLength: {
-                                    value: 9,
-                                    message: "Must be 9 numbers only",
+                                    value: 11,
+                                    message: "Must be 9 number only",
                                 },
                             })}
-                            className="field"
+                            value={modifyCorporate.tin}
+                            onKeyDown={NumberBlockInvalidKey}
+                            onChange={(e) => {
+                                if (!TextFieldValidation(e, 9)) return;
+                                setModifyCorporate({
+                                    ...modifyCorporate,
+                                    tin: e.target.value,
+                                });
+                            }}
                         />
                         {errors.tin && (
                             <p className="text-[10px]">{errors.tin.message}</p>
@@ -268,6 +290,7 @@ const PrimaryInformation = ({
                     <li>
                         <label>*Branch Code</label>
                         <input
+                            className="field"
                             placeholder="00000"
                             {...register("branch_code", {
                                 required: "Required",
@@ -281,7 +304,15 @@ const PrimaryInformation = ({
                                 },
                             })}
                             type="number"
-                            className="field"
+                            value={modifyCorporate.branch_code}
+                            onKeyDown={NumberBlockInvalidKey}
+                            onChange={(e) => {
+                                if (!TextFieldValidation(e, 5)) return;
+                                setModifyCorporate({
+                                    ...modifyCorporate,
+                                    branch_code: e.target.value,
+                                });
+                            }}
                         />
                         {errors.branch_code && (
                             <p className="text-[10px]">
@@ -295,6 +326,7 @@ const PrimaryInformation = ({
                 <li>
                     <label>RDO NO.</label>
                     <input
+                        className="field"
                         type="number"
                         placeholder="000"
                         {...register("rdo_no", {
@@ -307,7 +339,15 @@ const PrimaryInformation = ({
                                 message: "Must be 3 Number",
                             },
                         })}
-                        className="field"
+                        value={modifyCorporate.rdo_no}
+                        onKeyDown={NumberBlockInvalidKey}
+                        onChange={(e) => {
+                            e.target.value.length <= 3 &&
+                                setModifyCorporate({
+                                    ...modifyCorporate,
+                                    rdo_no: e.target.value,
+                                });
+                        }}
                     />
                     {errors.rdo_no && (
                         <p className="text-[10px]">{errors.rdo_no.message}</p>
@@ -337,50 +377,7 @@ const PrimaryInformation = ({
                         }
                         listArray={["VAT", "NON-VAT"]}
                     />
-                    {/* <div className="select">
-                        <span>
-                            <MdOutlineKeyboardArrowDown />
-                        </span>
-                        <DynamicPopOver
-                            toRef={
-                                <input
-                                    type="text"
-                                    autoComplete="off"
-                                    className="field w-full"
-                                    {...register("gst_type", {
-                                        required: "Required",
-                                    })}
-                                    onChange={() => {}}
-                                    onClick={() => setSelect(true)}
-                                    value={modifyCorporate.gst_type}
-                                />
-                            }
-                            samewidth={true}
-                            toPop={
-                                <>
-                                    {isSelect && (
-                                        <ul>
-                                            <li
-                                                onClick={() =>
-                                                    SelectField("VAT")
-                                                }
-                                            >
-                                                VAT
-                                            </li>
-                                            <li
-                                                onClick={() =>
-                                                    SelectField("NON-VAT")
-                                                }
-                                            >
-                                                NON-VAT
-                                            </li>
-                                        </ul>
-                                    )}
-                                </>
-                            }
-                            className=""
-                        />
-                    </div> */}
+
                     {errors.gst_type && (
                         <p className="text-[10px]">{errors.gst_type.message}</p>
                     )}
@@ -391,6 +388,7 @@ const PrimaryInformation = ({
                     <li>
                         <label>SEC. Registration</label>
                         <input
+                            className="field"
                             type="number"
                             placeholder="000"
                             {...register("sec_registration_no", {
@@ -403,7 +401,15 @@ const PrimaryInformation = ({
                                     message: "Must be 3 Number",
                                 },
                             })}
-                            className="field"
+                            onKeyDown={NumberBlockInvalidKey}
+                            value={modifyCorporate.sec_registration_no}
+                            onChange={(e) => {
+                                e.target.value.length <= 3 &&
+                                    setModifyCorporate({
+                                        ...modifyCorporate,
+                                        sec_registration_no: e.target.value,
+                                    });
+                            }}
                         />
                         {errors.sec_registration_no && (
                             <p className="text-[10px]">
@@ -474,6 +480,7 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
     const {
         register,
         handleSubmit,
+        setValue,
         formState: { errors },
     } = useForm<secondCorporateForm>({
         defaultValues: {
@@ -603,8 +610,12 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                         <label>CONTACT NO</label>
                         <aside className="mb-2">
                             <input
-                                type="text"
+                                className="field mr-2"
+                                type="number"
                                 placeholder="09"
+                                maxLength={11}
+                                onKeyDown={NumberBlockInvalidKey}
+                                value={modifyCorporate.contact_no}
                                 {...register("contact_no", {
                                     required: "Required",
                                     minLength: {
@@ -619,26 +630,37 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                                         value: /^(09)\d{9}$/,
                                         message: "Invalid Contact Number",
                                     },
+
+                                    onChange: (e) => {
+                                        if (e.target.value.length <= 11) {
+                                            setValue(
+                                                "contact_no",
+                                                e.target.value
+                                            );
+                                            setModifyCorporate({
+                                                ...modifyCorporate,
+                                                contact_no: e.target.value,
+                                            });
+                                        }
+                                    },
                                 })}
-                                onChange={(e) =>
-                                    setModifyCorporate({
-                                        ...modifyCorporate,
-                                        contact_no: e.target.value,
-                                    })
-                                }
-                                className="field mr-2"
                             />
+
                             <span>*Official</span>
+                            {errors.contact_no && (
+                                <p className="text-[10px]">
+                                    {errors.contact_no.message}
+                                </p>
+                            )}
                         </aside>
-                        {errors.contact_no && (
-                            <p className="text-[10px]">
-                                {errors.contact_no.message}
-                            </p>
-                        )}
+
                         <aside>
                             <input
+                                className="field inline"
                                 type="number"
                                 placeholder="09"
+                                onKeyDown={NumberBlockInvalidKey}
+                                value={modifyCorporate.alt_contact_no}
                                 {...register("alt_contact_no", {
                                     minLength: {
                                         value: 11,
@@ -652,74 +674,99 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                                         value: /^(09)\d{9}$/,
                                         message: "Invalid Contact Number",
                                     },
+                                    onChange: (e) => {
+                                        if (e.target.value.length <= 11) {
+                                            setValue(
+                                                "alt_contact_no",
+                                                e.target.value
+                                            );
+                                            setModifyCorporate({
+                                                ...modifyCorporate,
+                                                alt_contact_no: e.target.value,
+                                            });
+                                        }
+                                    },
                                 })}
-                                onChange={(e) =>
-                                    setModifyCorporate({
-                                        ...modifyCorporate,
-                                        alt_contact_no: e.target.value,
-                                    })
-                                }
-                                className="field inline"
                             />
+                            {errors.alt_contact_no && (
+                                <p className="text-[10px]">
+                                    {errors.alt_contact_no.message}
+                                </p>
+                            )}
+                            {ErrorContact && (
+                                <p className="text-[10px]">
+                                    Contact number cannot be the same
+                                </p>
+                            )}
                         </aside>
-                        {errors.alt_contact_no && (
-                            <p className="text-[10px]">
-                                {errors.alt_contact_no.message}
-                            </p>
-                        )}
-                        {ErrorContact && (
-                            <p className="text-[10px]">
-                                Contact number cannot be the same
-                            </p>
-                        )}
                     </li>
                     <li>
                         <label>EMAIL ADDRESS</label>
                         <aside className="mb-2">
                             <input
+                                className="field mr-2"
                                 type="text"
                                 {...register("email", {
                                     required: "Required",
+                                    pattern: {
+                                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                                        message: "Invalid Email",
+                                    },
+                                    onChange: (e) => {
+                                        if (e.target.value.length > 20) return;
+                                        setValue("email", e.target.value);
+                                        setModifyCorporate({
+                                            ...modifyCorporate,
+                                            email: e.target.value,
+                                        });
+                                    },
                                 })}
-                                required
+                                value={modifyCorporate.email}
                                 onChange={(e) =>
                                     setModifyCorporate({
                                         ...modifyCorporate,
                                         email: e.target.value,
                                     })
                                 }
-                                className="field mr-2"
                             />
                             <span>*Official</span>
+                            {errors.email && (
+                                <p className="text-[10px]">
+                                    {errors.email.message}
+                                </p>
+                            )}
                         </aside>
-                        {errors.contact_no && (
-                            <p className="text-[10px]">
-                                {errors.contact_no.message}
-                            </p>
-                        )}
                         <aside>
                             <input
-                                type="text"
-                                {...register("alt_email", {})}
-                                onChange={(e) =>
-                                    setModifyCorporate({
-                                        ...modifyCorporate,
-                                        alt_email: e.target.value,
-                                    })
-                                }
                                 className="field"
+                                type="text"
+                                {...register("alt_email", {
+                                    pattern: {
+                                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                                        message: "Invalid Email",
+                                    },
+                                    onChange: (e) => {
+                                        if (e.target.value.length > 20) return;
+                                        setValue("alt_email", e.target.value);
+                                        setModifyCorporate({
+                                            ...modifyCorporate,
+                                            alt_email: e.target.value,
+                                        });
+                                    },
+                                })}
+                                value={modifyCorporate.alt_email}
                             />
+                            {errors.alt_email && (
+                                <p className="text-[10px]">
+                                    {errors.alt_email.message}
+                                </p>
+                            )}
+                            {ErrorAddress && (
+                                <p className="text-[10px]">
+                                    Email cannot be the same
+                                </p>
+                            )}
                         </aside>
-                        {errors.alt_contact_no && (
-                            <p className="text-[10px]">
-                                {errors.alt_contact_no.message}
-                            </p>
-                        )}
-                        {ErrorAddress && (
-                            <p className="text-[10px]">
-                                Email cannot be the same
-                            </p>
-                        )}
                     </li>
                 </ul>
                 <p className="text-[14px] font-bold mb-2">ADDRESS</p>
@@ -727,17 +774,23 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                     <li>
                         <label>*UNIT/FLOOR/HOUSE NO.</label>
                         <input
+                            className="field"
                             type="text"
                             {...register("address_unit_floor", {
                                 required: "Required",
+                                onChange: (e) => {
+                                    if (!TextFieldValidation(e, 50)) return;
+                                    setModifyCorporate({
+                                        ...modifyCorporate,
+                                        address_unit_floor: e.target.value,
+                                    });
+                                    setValue(
+                                        "address_unit_floor",
+                                        e.target.value
+                                    );
+                                },
                             })}
-                            onChange={(e) =>
-                                setModifyCorporate({
-                                    ...modifyCorporate,
-                                    address_unit_floor: e.target.value,
-                                })
-                            }
-                            className="field"
+                            value={modifyCorporate.address_unit_floor}
                         />
                         {errors.address_unit_floor && (
                             <p className="text-[10px]">
@@ -748,17 +801,23 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                     <li>
                         <label>*BUILDING</label>
                         <input
+                            className="field"
                             type="text"
                             {...register("address_building", {
                                 required: "Required",
+                                onChange: (e) => {
+                                    if (!TextFieldValidation(e, 50)) return;
+                                    setModifyCorporate({
+                                        ...modifyCorporate,
+                                        address_building: e.target.value,
+                                    });
+                                    setValue(
+                                        "address_building",
+                                        e.target.value
+                                    );
+                                },
                             })}
-                            onChange={(e) =>
-                                setModifyCorporate({
-                                    ...modifyCorporate,
-                                    address_building: e.target.value,
-                                })
-                            }
-                            className="field"
+                            value={modifyCorporate.address_building}
                         />
                         {errors.address_building && (
                             <p className="text-[10px]">
@@ -769,17 +828,20 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                     <li>
                         <label>*STREET</label>
                         <input
+                            className="field"
                             type="text"
                             {...register("address_street", {
                                 required: "Required",
+                                onChange: (e) => {
+                                    if (!TextFieldValidation(e, 50)) return;
+                                    setModifyCorporate({
+                                        ...modifyCorporate,
+                                        address_street: e.target.value,
+                                    });
+                                    setValue("address_street", e.target.value);
+                                },
                             })}
-                            onChange={(e) =>
-                                setModifyCorporate({
-                                    ...modifyCorporate,
-                                    address_street: e.target.value,
-                                })
-                            }
-                            className="field"
+                            value={modifyCorporate.address_street}
                         />
                         {errors.address_street && (
                             <p className="text-[10px]">
@@ -790,17 +852,23 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                     <li>
                         <label>*DISTRICT</label>
                         <input
+                            className="field"
                             type="text"
                             {...register("address_district", {
                                 required: "Required",
+                                onChange: (e) => {
+                                    if (!TextFieldValidation(e, 50)) return;
+                                    setModifyCorporate({
+                                        ...modifyCorporate,
+                                        address_district: e.target.value,
+                                    });
+                                    setValue(
+                                        "address_district",
+                                        e.target.value
+                                    );
+                                },
                             })}
-                            onChange={(e) =>
-                                setModifyCorporate({
-                                    ...modifyCorporate,
-                                    address_district: e.target.value,
-                                })
-                            }
-                            className="field"
+                            value={modifyCorporate.address_district}
                         />
                         {errors.address_district && (
                             <p className="text-[10px]">
@@ -811,17 +879,23 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                     <li>
                         <label>*MUNICIPALITY</label>
                         <input
+                            className="field"
                             type="text"
                             {...register("address_municipal_city", {
                                 required: "Required",
+                                onChange: (e) => {
+                                    if (!TextFieldValidation(e, 50)) return;
+                                    setModifyCorporate({
+                                        ...modifyCorporate,
+                                        address_municipal_city: e.target.value,
+                                    });
+                                    setValue(
+                                        "address_municipal_city",
+                                        e.target.value
+                                    );
+                                },
                             })}
-                            onChange={(e) =>
-                                setModifyCorporate({
-                                    ...modifyCorporate,
-                                    address_municipal_city: e.target.value,
-                                })
-                            }
-                            className="field"
+                            value={modifyCorporate.address_municipal_city}
                         />
                         {errors.address_municipal_city && (
                             <p className="text-[10px]">
@@ -832,17 +906,23 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                     <li>
                         <label>*PROVINCE</label>
                         <input
+                            className="field"
                             type="text"
                             {...register("address_province", {
                                 required: "Required",
+                                onChange: (e) => {
+                                    if (!TextFieldValidation(e, 50)) return;
+                                    setModifyCorporate({
+                                        ...modifyCorporate,
+                                        address_province: e.target.value,
+                                    });
+                                    setValue(
+                                        "address_province",
+                                        e.target.value
+                                    );
+                                },
                             })}
-                            onChange={(e) =>
-                                setModifyCorporate({
-                                    ...modifyCorporate,
-                                    address_province: e.target.value,
-                                })
-                            }
-                            className="field"
+                            value={setModifyCorporate.address_province}
                         />
                         {errors.address_province && (
                             <p className="text-[10px]">
@@ -853,7 +933,9 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                     <li>
                         <label>*ZIP CODE</label>
                         <input
-                            type="text"
+                            className="field"
+                            type="number"
+                            onKeyDown={NumberBlockInvalidKey}
                             {...register("address_zip_code", {
                                 required: "Required",
                                 minLength: {
@@ -864,14 +946,19 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                                     value: 4,
                                     message: "Must be 4 Numbers",
                                 },
+                                onChange: (e) => {
+                                    if (e.target.value.length > 4) return;
+                                    setModifyCorporate({
+                                        ...modifyCorporate,
+                                        address_zip_code: e.target.value,
+                                    });
+                                    setValue(
+                                        "address_zip_code",
+                                        e.target.value
+                                    );
+                                },
                             })}
-                            className="field"
-                            onChange={(e) =>
-                                setModifyCorporate({
-                                    ...modifyCorporate,
-                                    address_zip_code: e.target.value,
-                                })
-                            }
+                            value={modifyCorporate.address_zip_code}
                         />
                         {errors.address_zip_code && (
                             <p className="text-[10px]">

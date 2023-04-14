@@ -89,13 +89,18 @@ export const GetCustomerDraft = (id: any) => {
     });
 };
 
-export const GetUnitCode = () => {
-    return useQuery("get-unitcode", () => {
-        return api.get("/admin/property/unit", {
-            headers: {
-                Authorization: "Bearer " + getCookie("user"),
-            },
-        });
+export const GetUnitCode = (classType: string) => {
+    return useQuery(["get-unitcode", classType], () => {
+        return api.get(
+            `/admin/property/unit${classType === "Owner" ? "?NoOwner=1" : ""}${
+                classType === "Developer" ? "?NoDeveloper=1" : ""
+            }`,
+            {
+                headers: {
+                    Authorization: "Bearer " + getCookie("user"),
+                },
+            }
+        );
     });
 };
 
@@ -192,9 +197,9 @@ export const GetImage = (pathName: any, wait?: any) => {
     );
 };
 
-export const SendPortal = (id: any, onSuccess: any, onError: any) => {
+export const SendPortal = (onSuccess: any, onError: any) => {
     return useMutation(
-        () => {
+        (id: any) => {
             return api.post(`/admin/customer/${id}/send-portalid`, null, {
                 headers: {
                     Authorization: "Bearer " + getCookie("user"),

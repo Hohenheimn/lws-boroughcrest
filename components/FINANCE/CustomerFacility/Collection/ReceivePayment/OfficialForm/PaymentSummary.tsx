@@ -1,97 +1,87 @@
 import React, { useEffect, useState } from "react";
-import { BsPlusLg } from "react-icons/bs";
-import { HiMinus } from "react-icons/hi";
-import { RiArrowDownSFill } from "react-icons/ri";
-import DropDownCharge from "../../../../../Dropdowns/DropDownCharge";
+import { TextNumberDisplay } from "../../../../../Reusable/NumberFormat";
 import {
-    InputNumberForTable,
-    TextNumberDisplay,
-    TextNumberDisplayPercent,
-} from "../../../../../Reusable/NumberFormat";
-import { TableOneTotal } from "../../../../../Reusable/TableTotal";
-import { HeaderForm } from "../ReceivePaymentForm";
-import { GetCustomerSummary } from "../Query";
-import { tr } from "date-fns/locale";
-import { BarLoader } from "react-spinners";
+    CollectionItem,
+    PaymentSummaryHistories,
+} from "../../../../../../pages/finance/customer-facility/collection/payment-register";
+import { TableTwoTotal } from "../../../../../Reusable/TableTotal";
+
+export type SummaryItem = {
+    credit_tax: number;
+    amount_paid: number;
+};
 
 type Props = {
-    Error: () => void;
-    headerForm: HeaderForm;
-    customer_id: string | number;
+    SummaryItems: SummaryItem[];
+    CreditTax: number;
+    TotalDue: number;
+    triggerID: number;
+    LessDiscount: number;
 };
 
-type isTableItem = {
-    base: number;
-    vat: number;
-    vat_amount: number;
-    total: number;
-};
-
-export default function PaymentSummary({
-    Error,
-    headerForm,
-    customer_id,
+export default function PaymentSummaryTable({
+    SummaryItems,
+    CreditTax,
+    TotalDue,
+    triggerID,
+    LessDiscount,
 }: Props) {
-    const [isTable, setTable] = useState<isTableItem[]>([
-        {
-            base: 0,
-            vat: 0,
-            vat_amount: 0,
-            total: 0,
-        },
-    ]);
+    // TOTAL
+    // Payment Summary
+    const [PStotal, setPStotal] = useState<number>(0);
+    const [PSVatTotal, setPSVatTotal] = useState<number>(0);
+    const [Total, setTotal] = useState<number>(0);
 
-    const { isLoading, data, isError } = GetCustomerSummary(
-        Number(headerForm.customer_id)
-    );
+    useEffect(() => {
+        const total =
+            Number(TotalDue) - Number(LessDiscount) - Number(CreditTax);
+        setTotal(total);
+    }, [LessDiscount, CreditTax, TotalDue]);
+
+    useEffect(() => {
+        setPSVatTotal(0);
+        setPStotal(0);
+        SummaryItems.map((item) => {
+            setPStotal((temp) => Number(temp) + Number(item.amount_paid));
+            setPSVatTotal((temp) => Number(temp) + Number(item.credit_tax));
+        });
+    }, [SummaryItems]);
 
     return (
         <>
-            <h1 className="SectionTitle mb-5 pt-10">Payment Summary</h1>
-            <div className="flex">
-                <div className="table_container w-[70%]">
-                    <table className="table_list journal">
-                        <thead className="textRed">
-                            <tr>
-                                <th>BASE</th>
-                                <th>VAT%</th>
-                                <th>VAT AMOUNT</th>
-                                <th>TOTAL</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {customer_id !== "" && (
-                                <>
-                                    {data?.data?.data?.map(
-                                        (item: any, index: number) => (
-                                            <List
-                                                key={index}
-                                                itemDetail={item}
-                                            />
-                                        )
-                                    )}
-                                </>
-                            )}
-                            {isLoading && (
+            <h1 className="SectionTitle mb-5">Payment Summary</h1>
+            <div className="flex flex-wrap justify-between">
+                <div className="  w-[69%]  640px:w-full">
+                    <div className="table_container min-zero noMB">
+                        <table className="table_list journal">
+                            <thead className="textRed">
                                 <tr>
-                                    <td
-                                        colSpan={4}
-                                        className="w-full flex justify-center"
-                                    >
-                                        <BarLoader
-                                            color={"#8f384d"}
-                                            height="10px"
-                                            width="200px"
-                                            aria-label="Loading Spinner"
-                                            data-testid="loader"
-                                        />
-                                    </td>
+                                    <th>BASE</th>
+                                    <th>VAT%</th>
+                                    <th>VAT AMOUNT</th>
+                                    <th>TOTAL</th>
                                 </tr>
-                            )}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {triggerID !== 0 && (
+                                    <>
+                                        {SummaryItems?.map((item, index) => (
+                                            <PaymentSummaryListItem
+                                                key={index}
+                                                item={item}
+                                            />
+                                        ))}
+                                    </>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                    <TableTwoTotal
+                        total1={triggerID !== 0 ? PSVatTotal : 0}
+                        total2={triggerID !== 0 ? PStotal : 0}
+                    />
                 </div>
-                <div className="table_container w-[30%]">
+                <div className="table_container min-zero  noMB w-[29%] 640px:w-full 640px:mt-5">
                     <table className="table_list journal">
                         <thead className="textRed">
                             <tr>
@@ -99,7 +89,7 @@ export default function PaymentSummary({
                                 <th>
                                     <TextNumberDisplay
                                         className="withPeso w-full text-RegularColor font-NHU-regular font-normal"
-                                        value={564564}
+                                        value={TotalDue}
                                     />
                                 </th>
                             </tr>
@@ -114,7 +104,7 @@ export default function PaymentSummary({
                                 <td>
                                     <TextNumberDisplay
                                         className="withPeso w-full text-RegularColor"
-                                        value={564564}
+                                        value={CreditTax}
                                     />
                                 </td>
                             </tr>
@@ -127,7 +117,7 @@ export default function PaymentSummary({
                                 <td>
                                     <TextNumberDisplay
                                         className="withPeso w-full text-RegularColor"
-                                        value={564564}
+                                        value={LessDiscount}
                                     />
                                 </td>
                             </tr>
@@ -139,22 +129,24 @@ export default function PaymentSummary({
                                 </td>
                                 <td>
                                     <TextNumberDisplay
-                                        className="withPeso w-full text-RegularColor"
-                                        value={564564}
-                                    />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <h1 className=" text-ThemeRed">VARIANCE</h1>
-                                </td>
-                                <td>
-                                    <TextNumberDisplay
                                         className="withPesoWhite w-full text-white bg-ThemeRed px-2 pb-[2px]"
-                                        value={564564}
+                                        value={Total}
                                     />
                                 </td>
                             </tr>
+                            {/* <tr>
+                            <td>
+                                <h1 className=" text-ThemeRed">
+                                    VARIANCE
+                                </h1>
+                            </td>
+                            <td>
+                                <TextNumberDisplay
+                                    className="withPesoWhite w-full text-white bg-ThemeRed px-2 pb-[2px]"
+                                    value={564564}
+                                />
+                            </td>
+                        </tr> */}
                         </tbody>
                     </table>
                 </div>
@@ -163,33 +155,35 @@ export default function PaymentSummary({
     );
 }
 
-type List = {
-    itemDetail: isTableItem;
+type PaymentSummaryList = {
+    item: SummaryItem;
 };
+const PaymentSummaryListItem = ({ item }: PaymentSummaryList) => {
+    const vatAmount = item.credit_tax;
+    const base = item.amount_paid;
+    const vatPercentage = (Number(vatAmount) / Number(base)) * 100;
+    const total = Number(base) + Number(vatAmount);
 
-const List = ({ itemDetail }: List) => {
-    const base = 0;
-    const vatPercentage = 0;
-    const vatAmount = 0;
-    const total = 0;
-
-    useEffect(() => {
-        console.log(itemDetail);
-    }, []);
     return (
         <tr>
             <td>
-                <TextNumberDisplay className="w-full withPeso" value={1000} />
+                <TextNumberDisplay className="w-full withPeso" value={base} />
             </td>
             <td>
-                <TextNumberDisplay className="w-full" value={10} suffix="%" />
+                <TextNumberDisplay
+                    className="w-full"
+                    value={vatPercentage}
+                    suffix="%"
+                />
             </td>
             <td>
-                <TextNumberDisplay className="w-full withPeso" value={1000} />
+                <TextNumberDisplay
+                    className="w-full withPeso"
+                    value={vatAmount}
+                />
             </td>
             <td>
-                {" "}
-                <TextNumberDisplay className="w-full withPeso" value={1000} />
+                <TextNumberDisplay className="w-full withPeso" value={total} />
             </td>
         </tr>
     );

@@ -5,6 +5,7 @@ import { BarLoader } from "react-spinners";
 import api from "../../util/api";
 import DynamicPopOver from "../Reusable/DynamicPopOver";
 import { customerDD } from "../FINANCE/CustomerFacility/Billing/BillingForm";
+import { customer } from "../../types/customerList";
 
 type Props = {
     isCustomer: customerDD;
@@ -92,6 +93,10 @@ const List = ({
         }
     );
 
+    const removeDraft = data?.data.filter(
+        (item: customer) => item.status !== "Draft"
+    );
+
     const PopOver = useRef<any>();
 
     useEffect(() => {
@@ -110,7 +115,7 @@ const List = ({
         <ul className="dropdown-list" ref={PopOver}>
             {!isLoading && (
                 <>
-                    {data?.data.map((item: customerDD, index: number) => (
+                    {removeDraft.map((item: customerDD, index: number) => (
                         <li key={index} onClick={() => selectedItem(item)}>
                             {item.name}
                         </li>

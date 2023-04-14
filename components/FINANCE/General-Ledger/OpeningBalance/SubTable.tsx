@@ -349,7 +349,11 @@ const List = ({ itemDetail, setTableItem, isTableItem, rowNumber }: List) => {
                         onClick={() => setDate({ ...isDate, toggle: true })}
                     />
                     {isDate.toggle && (
-                        <Calendar value={isDate} setValue={setDate} />
+                        <Calendar
+                            forTable={true}
+                            value={isDate}
+                            setValue={setDate}
+                        />
                     )}
                 </article>
             </td>

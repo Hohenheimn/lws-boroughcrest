@@ -7,6 +7,7 @@ import { useQuery } from "react-query";
 import api from "../../util/api";
 import { getCookie } from "cookies-next";
 import { BarLoader } from "react-spinners";
+import DynamicPopOver from "./DynamicPopOver";
 
 type AdvanceFilter = {
     isAdvFilter: isAdvFilter[];
@@ -31,27 +32,37 @@ export function AdvanceFilter({
 
     return (
         <div className="relative ml-5">
-            <Tippy theme="ThemeRed" content="Advance Filter">
-                <button
-                    className="relative w-[25px] aspect-square hover:scale-[1.2] transition-all duration-200 ease-linear"
-                    onClick={() => setToggle(!isToggle)}
-                >
-                    <Image
-                        src="/Images/f_filter.png"
-                        layout="fill"
-                        alt="Advance Filter"
-                    />
-                </button>
-            </Tippy>
-
-            {isToggle && (
-                <AdvFilterList
-                    setAdvFilter={setAdvFilter}
-                    isAdvFilter={isAdvFilter}
-                    setToggle={setToggle}
-                    endpoint={endpoint}
-                />
-            )}
+            <DynamicPopOver
+                toRef={
+                    <>
+                        <Tippy theme="ThemeRed" content="Advance Filter">
+                            <button
+                                className="relative w-[25px] aspect-square hover:scale-[1.2] transition-all duration-200 ease-linear"
+                                onClick={() => setToggle(!isToggle)}
+                            >
+                                <Image
+                                    src="/Images/f_filter.png"
+                                    layout="fill"
+                                    alt="Advance Filter"
+                                />
+                            </button>
+                        </Tippy>
+                    </>
+                }
+                toPop={
+                    <>
+                        {isToggle && (
+                            <AdvFilterList
+                                setAdvFilter={setAdvFilter}
+                                isAdvFilter={isAdvFilter}
+                                setToggle={setToggle}
+                                endpoint={endpoint}
+                            />
+                        )}
+                    </>
+                }
+                className={""}
+            />
         </div>
     );
 }

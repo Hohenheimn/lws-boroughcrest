@@ -47,6 +47,7 @@ export default function Modify({ modify_id }: any) {
         reference_no: "",
         amount_paid: "",
         credit_tax: "",
+        discount: 0,
     });
 
     const [isCustomer, setCustomer] = useState<any>({
@@ -74,6 +75,7 @@ export default function Modify({ modify_id }: any) {
                 reference_no: collection.reference_no,
                 amount_paid: collection.amount_paid,
                 credit_tax: collection.credit_tax,
+                discount: collection.discount,
             });
         }
     }, [data?.status]);
@@ -123,7 +125,7 @@ export default function Modify({ modify_id }: any) {
             type={HeaderForm.receipt_type}
             DefaultValAcknowledgement={[]}
             DefaultProvisional={[]}
-            DefaultOfficial={{
+            DefaultOfficialOutrightAdvances={{
                 Outright: [],
                 Advances: [],
             }}

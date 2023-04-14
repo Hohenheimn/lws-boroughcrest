@@ -4,12 +4,16 @@ import ModifyProperty from "./ModifyProperty";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 
-export default function CustomerProperty({ data }: any) {
+export default function CustomerProperty({ data, classType }: any) {
     const [isToggle, setToggle] = useState(false);
     return (
         <div>
             {isToggle && (
-                <ModifyProperty setToggle={setToggle} properties={data} />
+                <ModifyProperty
+                    setToggle={setToggle}
+                    properties={data}
+                    classType={classType}
+                />
             )}
             <header className=" flex w-full justify-between items-center mb-5">
                 <h1 className=" w-full text-[24px] mb-3 480px:text-[16px]">
