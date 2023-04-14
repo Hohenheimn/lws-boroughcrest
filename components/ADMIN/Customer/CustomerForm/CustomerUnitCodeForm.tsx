@@ -1,223 +1,128 @@
-import React, { useState, useContext, useRef, useEffect } from "react";
-import AppContext from "../../Context/AppContext";
+import React, { useRef, useEffect, useState, useContext } from "react";
+import style from "../../../../styles/Popup_Modal.module.scss";
 import { RiArrowDownSFill } from "react-icons/ri";
 import { ScaleLoader } from "react-spinners";
-import style from "../../../styles/Popup_Modal.module.scss";
+import { useRouter } from "next/router";
+import { useQueryClient } from "react-query";
+import AppContext from "../../../Context/AppContext";
 import {
-    PostCustomerSave,
     GetUnitCode,
     PostCustomerDraft,
-} from "../../ReactQuery/CustomerMethod";
-import DynamicPopOver from "../../Reusable/DynamicPopOver";
-import { ErrorSubmit } from "../../Reusable/ErrorMessage";
+    PostCustomerSave,
+    UpdateProperties,
+} from "../../../ReactQuery/CustomerMethod";
+import DynamicPopOver from "../../../Reusable/DynamicPopOver";
+import { CustomerFormDefaultValue } from "./CustomerForm";
+import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
 
-type NewPropertyInfo = {
-    setActiveForm: Function;
-    isActiveForm: any;
+type ModifyRolesPermission = {
+    setToggle: Function;
+    isProperty: CustomerUnitCodes[];
+    setProperty: Function;
+    classType: string;
+    CreateHandler: (button: string) => void;
 };
 
-export default function NewPropertyInfo({
-    setActiveForm,
-    isActiveForm,
-}: NewPropertyInfo) {
-    const [whichSaveBtn, setWhichSaveBtn] = useState("");
-    const [isError, setError] = useState("");
+export type CustomerUnitCodes = {
+    id: number;
+    unit_code: string;
+    name: string;
+};
 
-    const {
-        isNewCustomer,
-        setNewCustomer,
-        NewCustomerDefault,
-        setCusReset,
-        setCusToggle,
-        cusReset,
-        setPrompt,
-        CusError,
-        setCusError,
-        ErrorDefault,
-    } = useContext(AppContext);
+export default function CustomerUnitCodeForm({
+    setToggle,
+    isProperty,
+    setProperty,
+    classType,
+    CreateHandler,
+}: ModifyRolesPermission) {
+    const queryClient = useQueryClient();
 
-    const [isProperty, setProperty] = useState<any>([
-        {
-            id: 1,
-            unitCode: "",
-            project: "",
-        },
-    ]);
+    const { setPrompt, setCusError, CustomerErrorDefault, setCusToggle } =
+        useContext(AppContext);
+    let buttonClick = "";
+    const router = useRouter();
+    const id = router.query.id;
 
-    useEffect(() => {
-        if (isNewCustomer.unit_codes.length > 0) {
-            setProperty([...isNewCustomer.unit_codes]);
-        }
-    }, []);
+    // useEffect(() => {
+    //     if (isProperty.length !== 0) {
+    //         const existedProperties = isProperty.map(
+    //             (item: CustomerUnitCodes) => {
+    //                 return {
+    //                     id: item?.id,
+    //                     unit_code: item?.unit_code,
+    //                     name: item?.name,
+    //                 };
+    //             }
+    //         );
+    //         setProperty(existedProperties);
+    //     }
+    // }, []);
 
-    const Success = async () => {
-        // Prompt Message
-        setPrompt((prev: any) => ({
-            ...prev,
-            message: `Customer successfully ${
-                whichSaveBtn === "draft" ? "saved as draft" : "registered"
-            }!`,
-            type: whichSaveBtn === "draft" ? "draft" : "success",
+    const OnSuccess = () => {
+        setPrompt({
+            message: "Property Successfully updated!",
+            type: "success",
             toggle: true,
-        }));
-        setCusReset(!cusReset);
-        // Reset Customer Fields
-        setNewCustomer({ ...NewCustomerDefault });
-        // Reset Unicode Error
-        setError("");
-        setCusError({ ...ErrorDefault });
-        // Close Save button
-        setSave(false);
-        // Reset UnitCode Array
-        setProperty([
-            {
-                id: 1,
-                unitCode: "",
-                project: "",
-            },
-        ]);
-        if (whichSaveBtn === "savenew") {
-            backTofirstPage();
+        });
+        if (buttonClick === "save") {
+            queryClient.invalidateQueries(["get-customer-detail", `${id}`]);
+            setToggle(false);
         }
-        if (whichSaveBtn === "save" || whichSaveBtn === "draft") {
-            setCusToggle(false);
+        if (buttonClick === "saveNew") {
+            router.push("/admin/customer?new");
         }
-    };
-
-    const onError = (e: any) => {
-        const ErrorField = e.response.data;
-        if (ErrorField > 0 || ErrorField !== null || ErrorField !== undefined) {
-            setCusError({ ...ErrorField });
-        }
-        ErrorSubmit(e, setPrompt);
-    };
-
-    const Back = () => {
-        setActiveForm((item: boolean[]) => [
-            (item[0] = false),
-            (item[1] = true),
-            (item[2] = false),
-        ]);
-    };
-    const [isSave, setSave] = useState(false);
-
-    const backTofirstPage = () => {
-        setActiveForm((item: boolean[]) => [
-            (item[0] = true),
-            (item[1] = false),
-            (item[2] = false),
-        ]);
     };
 
     // MUTATION START HERE
-    // Save Mutation
-    const { isLoading: MutateLoading, mutate } = PostCustomerSave(
-        Success,
-        onError
-    );
-    const { isLoading: MutateDraftLoading, mutate: DraftSave } =
-        PostCustomerDraft(Success);
+    const { mutate: UpdateProperty, isLoading: LoadingProperty } =
+        UpdateProperties(id, OnSuccess);
+    const [isSave, setSave] = useState(false);
 
-    const SaveMutation = async (button: any) => {
+    // Modify Property
+    const mutateHandler = () => {
         const ArrayPropertyID = isProperty.map((item: any) => {
-            if (item.unitCode !== "") {
-                return item.unitCode;
-            } else {
-                return "";
-            }
+            return item.unit_code;
         });
-
-        let newData = { ...isNewCustomer, unit_codes: ArrayPropertyID };
-
-        // if Type is company, empty the field of not for company
-        if (newData.type === "Company" || newData.type === "company") {
-            newData = {
-                ...newData,
-                individual_birth_date: "",
-                individual_citizenship: "",
-                individual_co_owner: "",
-            };
+        if (ArrayPropertyID.includes("")) {
+            alert("Cannot proceed, one of unit code is empty");
+            setPrompt({
+                message: "Cannot proceed, one of unit code is empty",
+                type: "draft",
+                toggle: true,
+            });
+            return;
         }
-        // if Type is individual, empty the field of not for individual
-        if (newData.type === "individual" || newData.type === "Individual") {
-            newData = { ...newData, company_contact_person: "" };
-        }
-        // Draft button clicked, change status to draft
-        if (button === "draft") {
-            newData = {
-                ...newData,
-                status: "draft",
-            };
+        const stringify = JSON.stringify(ArrayPropertyID);
+        const Payload = {
+            unit_codes: stringify,
+            _method: "PUT",
+        };
+        UpdateProperty(Payload);
+    };
+    const save = () => {
+        buttonClick = "save";
+        if (router.query.id !== undefined) {
+            mutateHandler();
         } else {
-            newData = {
-                ...newData,
-                status: isNewCustomer.status,
-            };
-        }
-
-        const formData = new FormData();
-        const arrayData: any = [];
-        const keys = Object.keys(newData);
-
-        await keys.forEach((key) => {
-            if (
-                key === "image_photo" ||
-                key === "image_valid_id" ||
-                key === "image_signature"
-            ) {
-                if (newData[key] === undefined) {
-                    arrayData.push({
-                        key: key,
-                        keyData: "",
-                    });
-                } else {
-                    arrayData.push({
-                        key: key,
-                        keyData: newData[key],
-                    });
-                }
-            } else {
-                arrayData.push({
-                    key: key,
-                    keyData: newData[key],
-                });
-            }
-        });
-        arrayData.map(({ key, keyData }: any) => {
-            if (key === "unit_codes") {
-                const stringify = JSON.stringify(keyData);
-                formData.append("unit_codes", stringify);
-            } else {
-                formData.append(key, keyData);
-            }
-        });
-
-        if (button === "draft") {
-            DraftSave(formData);
-        } else {
-            mutate(formData);
+            CreateHandler("save");
         }
     };
-
-    // SAVE BUTTONS
-    const Save = () => {
-        setWhichSaveBtn("save");
-        SaveMutation("save");
-    };
-    const SaveNew = () => {
-        setWhichSaveBtn("savenew");
-        SaveMutation("savenew");
+    const saveNew = () => {
+        buttonClick = "saveNew";
+        if (router.query.id !== undefined) {
+            mutateHandler();
+        } else {
+            CreateHandler("new");
+        }
     };
     const Draft = () => {
-        setWhichSaveBtn("draft");
-        SaveMutation("draft");
+        CreateHandler("draft");
     };
 
     return (
-        <div className={`${isActiveForm[2] ? "" : "hidden"}`}>
-            <h1 className=" w-full text-[24px] mb-3">Property Information</h1>
-
-            <table className="w-full">
+        <>
+            <table className="w-full mb-20">
                 <thead>
                     <tr>
                         <th className=" text-[12px] font-semibold mb-1 uppercase text-start">
@@ -230,24 +135,28 @@ export default function NewPropertyInfo({
                     </tr>
                 </thead>
                 <tbody>
-                    {isProperty.map((item: any, index: number) => (
+                    {isProperty.map((item, index) => (
                         <List
                             detail={item}
                             setProperty={setProperty}
-                            id={index}
                             key={index}
                             isProperty={isProperty}
-                            setUnitCodeError={setError}
-                            classType={isNewCustomer.class}
+                            id={index}
+                            classType={classType}
                         />
                     ))}
                 </tbody>
             </table>
-            {isError !== "" && <p className={style.ErrorMsg}>{isError}</p>}
-
             <div className={style.SaveButton}>
-                <button className={style.back} onClick={Back}>
-                    BACK
+                <button
+                    className={style.back}
+                    onClick={() => {
+                        router.query.id !== undefined
+                            ? setToggle(false)
+                            : setToggle("contact-information");
+                    }}
+                >
+                    CANCEL
                 </button>
 
                 <div className={style.Save}>
@@ -255,10 +164,10 @@ export default function NewPropertyInfo({
                         <button
                             type="submit"
                             name="save"
-                            onClick={Save}
+                            onClick={save}
                             className={style.save_button}
                         >
-                            {MutateLoading || MutateDraftLoading ? (
+                            {LoadingProperty ? (
                                 <ScaleLoader
                                     color="#fff"
                                     height="10px"
@@ -276,21 +185,23 @@ export default function NewPropertyInfo({
                     </div>
                     {isSave && (
                         <ul>
+                            {router.query.id === undefined && (
+                                <li>
+                                    <button type="submit" onClick={Draft}>
+                                        SAVE AS DRAFT
+                                    </button>
+                                </li>
+                            )}
                             <li>
-                                <button type="submit" onClick={SaveNew}>
+                                <button type="submit" onClick={saveNew}>
                                     SAVE & NEW
-                                </button>
-                            </li>
-                            <li>
-                                <button type="submit" onClick={Draft}>
-                                    SAVE AS DRAFT
                                 </button>
                             </li>
                         </ul>
                     )}
                 </div>
             </div>
-        </div>
+        </>
     );
 }
 type List = {
@@ -298,19 +209,18 @@ type List = {
     setProperty: Function;
     isProperty: {}[];
     id: number;
-    setUnitCodeError: any;
     classType: string;
 };
-const List = ({ detail, isProperty, setProperty, id, classType }: List) => {
+const List = ({ detail, setProperty, isProperty, id, classType }: List) => {
     const newID = Math.random();
     const [isSelect, setSelect] = useState(false);
     const { setPrompt } = useContext(AppContext);
 
     const updateValue = (event: any) => {
-        const UnitCode = event.target.innerHTML;
+        const unit_code = event.target.innerHTML;
         let validate = true;
         isProperty.map((item: any) => {
-            if (item.unitCode === UnitCode) {
+            if (item.unit_code === unit_code) {
                 setPrompt({
                     message: "Selected Unit Code already in the list!",
                     type: "error",
@@ -325,8 +235,8 @@ const List = ({ detail, isProperty, setProperty, id, classType }: List) => {
                 if (detail.id == item.id) {
                     return {
                         ...item,
-                        project: event.target.getAttribute("data-projname"),
-                        unitCode: UnitCode,
+                        name: event.target.getAttribute("data-projname"),
+                        unit_code: unit_code,
                     };
                 }
                 return item;
@@ -338,15 +248,14 @@ const List = ({ detail, isProperty, setProperty, id, classType }: List) => {
 
     return (
         <tr>
-            <td className="pr-2 ">
-                <div className=" relative">
+            <td className=" pr-2 ">
+                <div className=" relative w-full">
                     <DynamicPopOver
-                        className=""
                         samewidth={true}
                         toRef={
                             <input
                                 type="text"
-                                value={detail.unitCode}
+                                value={detail.unit_code}
                                 onChange={(e) => updateValue(e)}
                                 className="field w-full"
                                 onFocus={() => setSelect(true)}
@@ -363,14 +272,16 @@ const List = ({ detail, isProperty, setProperty, id, classType }: List) => {
                                 )}
                             </>
                         }
+                        className={""}
                     />
                 </div>
             </td>
             <td className="pr-2">
                 <input
                     type="text"
-                    className="field disabled"
-                    value={detail.project}
+                    className="field disabled w-full"
+                    value={detail.name}
+                    readOnly
                 />
             </td>
             <td className=" flex justify-center">
@@ -397,8 +308,8 @@ const List = ({ detail, isProperty, setProperty, id, classType }: List) => {
                                     ...item,
                                     {
                                         id: newID,
-                                        unitCode: "",
-                                        project: "",
+                                        unit_code: "",
+                                        name: "",
                                     },
                                 ])
                             }
@@ -414,10 +325,8 @@ const List = ({ detail, isProperty, setProperty, id, classType }: List) => {
 
 const Select = ({ setSelect, updateValue, classType }: any) => {
     const Menu = useRef<any>();
-
     // Get unit codes to display
     const { isLoading, data, isError } = GetUnitCode(classType);
-
     useEffect(() => {
         const clickOutSide = (e: any) => {
             if (!Menu.current.contains(e.target)) {
@@ -444,10 +353,14 @@ const Select = ({ setSelect, updateValue, classType }: any) => {
             )}
             {data?.data.length <= 0 && (
                 <li className="flex justify-center ">
-                    <h1>No Available Unit Code for {classType}</h1>
+                    <h1>
+                        No Available Unit Code{" "}
+                        {classType === "" || classType === "Tenant"
+                            ? ""
+                            : "for " + classType}
+                    </h1>
                 </li>
             )}
-
             {data?.data.map((item: any, index: number) => (
                 <li
                     key={index}

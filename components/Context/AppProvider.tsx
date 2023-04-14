@@ -1,3 +1,4 @@
+import { CustomerFormDefaultValue } from "../ADMIN/Customer/CustomerForm/CustomerForm";
 import AppContext from "./AppContext";
 import { useState, useReducer } from "react";
 
@@ -45,7 +46,7 @@ export default function AppProvider({ children }: AppProvider) {
     });
 
     // Customer Context
-    const ErrorDefault = {
+    const CustomerErrorDefault = {
         class: "",
         contact_no: "",
         name: "",
@@ -60,20 +61,11 @@ export default function AppProvider({ children }: AppProvider) {
         preferred_email: "",
     };
     const [CusError, setCusError] = useState({
-        ...ErrorDefault,
+        ...CustomerErrorDefault,
     });
-    const [isType, setType] = useState<string>("");
-    const [cusProfileUrl, setCusProfileUrl] = useState(
-        "/Images/sampleProfile.png"
-    );
-    const [cusValidIDUrl, setCusValidIDUrl] = useState("/Images/id-sample.png");
-    const [cusSignature, setCusSignature] = useState(false);
-
     const [cusToggle, setCusToggle] = useState(false);
     const [cusReset, setCusReset] = useState(false);
-    const NewCustomerDefault = {
-        assigned_customer_id: "",
-        portal_id: "",
+    const DefaultCustomerFormValue: CustomerFormDefaultValue = {
         class: "",
         type: "",
         name: "",
@@ -97,27 +89,17 @@ export default function AppProvider({ children }: AppProvider) {
         mailing_address_municipal_city: "",
         mailing_address_province: "",
         mailing_address_zip_code: "",
-        image_photo: "",
-        image_valid_id: "",
-        image_signature: "",
+        image_photo: null,
+        image_photo_url: "",
+        image_valid_id: null,
+        image_valid_id_url: "",
+        image_signature: null,
+        image_signature_url: "",
         contact_no: "",
         registered_email: "",
         preferred_email: "",
-        status: "",
-        unit_codes: [],
+        status: true,
     };
-    const [isNewCustomer, setNewCustomer] = useState({
-        ...NewCustomerDefault,
-    });
-    const [isModifyCustomer, setModifyCustomer] = useState({
-        ...NewCustomerDefault,
-        _method: "PUT",
-    });
-
-    const [isDraft, setDraft] = useState({
-        ...NewCustomerDefault,
-        _method: "PUT",
-    });
 
     const [CorpTableRows, setCorpTableRows] = useState<number>(10);
     const [corpColumn, setCorpColumn] = useState([
@@ -226,16 +208,9 @@ export default function AppProvider({ children }: AppProvider) {
                 setCusTableColumn,
                 isSearchBar,
                 setSearchBar,
-                setNewCustomer,
-                isNewCustomer,
-                NewCustomerDefault,
                 cusFilterColumn,
                 setCusFilterColumn,
                 ImgUrl,
-                isModifyCustomer,
-                setModifyCustomer,
-                setDraft,
-                isDraft,
                 userTableRows,
                 usersetTableRows,
                 userTableColumn,
@@ -246,14 +221,6 @@ export default function AppProvider({ children }: AppProvider) {
                 setCusToggle,
                 cusReset,
                 setCusReset,
-                cusProfileUrl,
-                setCusProfileUrl,
-                cusValidIDUrl,
-                setCusValidIDUrl,
-                cusSignature,
-                setCusSignature,
-                isType,
-                setType,
                 collapseSide,
                 setCollapseSide,
                 propTableRows,
@@ -268,11 +235,12 @@ export default function AppProvider({ children }: AppProvider) {
                 setNewPropToggle,
                 CusError,
                 setCusError,
-                ErrorDefault,
                 setPrint,
                 isPrint,
                 setUserInfo,
                 userInfo,
+                DefaultCustomerFormValue,
+                CustomerErrorDefault,
             }}
         >
             {children}
