@@ -29,7 +29,6 @@ export default function ModifyCustomer({
     isDraft,
 }: ModifyCustomer) {
     const [isActiveForm, setActiveForm] = useState([true, false, false]);
-    const { isModifyCustomer } = useContext(AppContext);
 
     return (
         <div className={style.container}>
@@ -63,14 +62,6 @@ const Primary = ({ setToggleModify, setActiveForm, isActiveForm }: Props) => {
         useContext(AppContext);
 
     const [isSelect, setSelect] = useState(false);
-    const SelectField = (value: string) => {
-        setModifyCustomer({
-            ...isModifyCustomer,
-            class: value,
-        });
-        setValue("class", value);
-        setSelect(false);
-    };
 
     // Birth Date Field with custom Calendar
     const date = parse(

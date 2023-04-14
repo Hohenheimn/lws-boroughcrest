@@ -3,7 +3,6 @@ import AppContext from "../../Context/AppContext";
 import style from "../../../styles/Popup_Modal.module.scss";
 import { ModalSideFade } from "../../Animation/SimpleAnimation";
 import { motion } from "framer-motion";
-import Link from "next/link";
 import Image from "next/image";
 import { AiFillCamera } from "react-icons/ai";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";

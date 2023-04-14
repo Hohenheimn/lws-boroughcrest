@@ -50,6 +50,10 @@ export default function NewPropertyInfo({
         }
     }, []);
 
+    useEffect(() => {
+        console.log(isNewCustomer.class);
+    }, [isNewCustomer.class]);
+
     const Success = async () => {
         // Prompt Message
         setPrompt((prev: any) => ({
@@ -238,6 +242,7 @@ export default function NewPropertyInfo({
                             key={index}
                             isProperty={isProperty}
                             setUnitCodeError={setError}
+                            classType={isNewCustomer.class}
                         />
                     ))}
                 </tbody>
@@ -298,8 +303,9 @@ type List = {
     isProperty: {}[];
     id: number;
     setUnitCodeError: any;
+    classType: string;
 };
-const List = ({ detail, isProperty, setProperty, id }: List) => {
+const List = ({ detail, isProperty, setProperty, id, classType }: List) => {
     const newID = Math.random();
     const [isSelect, setSelect] = useState(false);
     const { setPrompt } = useContext(AppContext);
@@ -356,6 +362,7 @@ const List = ({ detail, isProperty, setProperty, id }: List) => {
                                     <Select
                                         setSelect={setSelect}
                                         updateValue={updateValue}
+                                        classType={classType}
                                     />
                                 )}
                             </>
@@ -409,11 +416,11 @@ const List = ({ detail, isProperty, setProperty, id }: List) => {
     );
 };
 
-const Select = ({ setSelect, updateValue }: any) => {
+const Select = ({ setSelect, updateValue, classType }: any) => {
     const Menu = useRef<any>();
 
     // Get unit codes to display
-    const { isLoading, data, isError } = GetUnitCode();
+    const { isLoading, data, isError } = GetUnitCode(classType);
 
     useEffect(() => {
         const clickOutSide = (e: any) => {
@@ -430,21 +437,31 @@ const Select = ({ setSelect, updateValue }: any) => {
     return (
         <ul ref={Menu} className="dropdown-list">
             {isLoading && (
-                <div className="flex justify-center">
+                <li className="flex justify-center">
                     <ScaleLoader color="#8f384d" height="10px" width="2px" />
-                </div>
+                </li>
             )}
-            {!isLoading &&
-                data?.data.map((item: any, index: number) => (
-                    <li
-                        key={index}
-                        data-projname={item?.project?.name}
-                        onClick={updateValue}
-                        className="cursor-pointer"
-                    >
-                        {item?.unit_code}
-                    </li>
-                ))}
+            {isError && (
+                <li className="flex justify-center ">
+                    <h1>Something went wrong!</h1>
+                </li>
+            )}
+            {data?.data.length <= 0 && (
+                <li className="flex justify-center ">
+                    <h1>No Available Unit Code for {classType}</h1>
+                </li>
+            )}
+
+            {data?.data.map((item: any, index: number) => (
+                <li
+                    key={index}
+                    data-projname={item?.project?.name}
+                    onClick={updateValue}
+                    className="cursor-pointer"
+                >
+                    {item?.unit_code}
+                </li>
+            ))}
         </ul>
     );
 };

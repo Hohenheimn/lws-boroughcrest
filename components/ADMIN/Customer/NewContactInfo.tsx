@@ -3,6 +3,10 @@ import AppContext from "../../Context/AppContext";
 import style from "../../../styles/Popup_Modal.module.scss";
 import { useForm } from "react-hook-form";
 import { customer } from "../../../types/customerList";
+import {
+    NumberBlockInvalidKey,
+    TextFieldValidation,
+} from "../../Reusable/InputField";
 
 type NewContactInfo = {
     setActiveForm: Function;
@@ -61,9 +65,17 @@ export default function NewContactInfo({
             setValue("preferred_email", watch("registered_email"), {
                 shouldValidate: true,
             });
+            setNewCustomer({
+                ...isNewCustomer,
+                preferred_email: isNewCustomer.registered_email,
+            });
         } else {
             setValue("preferred_email", "", {
                 shouldValidate: true,
+            });
+            setNewCustomer({
+                ...isNewCustomer,
+                preferred_email: "",
             });
         }
     };
@@ -96,6 +108,22 @@ export default function NewContactInfo({
                 },
                 { shouldValidate: true }
             );
+            setNewCustomer({
+                ...isNewCustomer,
+                mailing_address_unit_floor:
+                    isNewCustomer.mailing_address_unit_floor,
+                mailing_address_building:
+                    isNewCustomer.mailing_address_building,
+                mailing_address_street: isNewCustomer.mailing_address_street,
+                mailing_address_district:
+                    isNewCustomer.mailing_address_district,
+                mailing_address_municipal_city:
+                    isNewCustomer.mailing_address_municipal_city,
+                mailing_address_province:
+                    isNewCustomer.mailing_address_province,
+                mailing_address_zip_code:
+                    isNewCustomer.mailing_address_zip_code,
+            });
         } else {
             setValue(
                 "MA",
@@ -110,6 +138,16 @@ export default function NewContactInfo({
                 },
                 { shouldValidate: true }
             );
+            setNewCustomer({
+                ...isNewCustomer,
+                mailing_address_unit_floor: "",
+                mailing_address_building: "",
+                mailing_address_street: "",
+                mailing_address_district: "",
+                mailing_address_municipal_city: "",
+                mailing_address_province: "",
+                mailing_address_zip_code: "",
+            });
         }
     };
 
@@ -180,6 +218,7 @@ export default function NewContactInfo({
                                 },
                             })}
                             value={isNewCustomer.contact_no}
+                            onKeyDown={NumberBlockInvalidKey}
                             onChange={(e) =>
                                 e.target.value.length <= 11 &&
                                 setNewCustomer({
@@ -202,15 +241,23 @@ export default function NewContactInfo({
                     <li>
                         <label>*REGISTERED-EMAIL</label>
                         <input
-                            type="email"
+                            type="text"
                             className="field"
                             {...register("registered_email", {
-                                onChange: (e) =>
-                                    setValue(
-                                        "registered_email",
-                                        `${e.target.value}`
-                                    ),
+                                pattern: {
+                                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                                    message: "Invalid Email",
+                                },
                             })}
+                            value={isNewCustomer.registered_email}
+                            onChange={(e) => {
+                                if (e.target.value.length > 20) return;
+                                setValue("registered_email", e.target.value);
+                                setNewCustomer({
+                                    ...isNewCustomer,
+                                    registered_email: e.target.value,
+                                });
+                            }}
                         />
                         {errors.registered_email && (
                             <p className="text-[10px]">
@@ -226,15 +273,23 @@ export default function NewContactInfo({
                     <li>
                         <label>*PREFERED EMAIL</label>
                         <input
-                            type="email"
+                            type="text"
                             className="field"
                             {...register("preferred_email", {
-                                onChange: (e) =>
-                                    setValue(
-                                        "preferred_email",
-                                        `${e.target.value}`
-                                    ),
+                                pattern: {
+                                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                                    message: "Invalid Email",
+                                },
                             })}
+                            value={isNewCustomer.preferred_email}
+                            onChange={(e) => {
+                                if (e.target.value.length > 20) return;
+                                setValue("preferred_email", e.target.value);
+                                setNewCustomer({
+                                    ...isNewCustomer,
+                                    preferred_email: e.target.value,
+                                });
+                            }}
                         />
                         {errors.preferred_email && (
                             <p className="text-[10px]">
@@ -272,14 +327,14 @@ export default function NewContactInfo({
                                             `${e.target.value}`
                                         ),
                                 })}
-                                // isNewCustomer.registered_email
                                 value={isNewCustomer.company_contact_person}
-                                onChange={(e) =>
+                                onChange={(e) => {
+                                    if (!TextFieldValidation(e, 50)) return;
                                     setNewCustomer({
                                         ...isNewCustomer,
                                         company_contact_person: e.target.value,
-                                    })
-                                }
+                                    });
+                                }}
                             />
                             {errors.company_contact_person && (
                                 <p className="text-[10px]">
@@ -297,12 +352,20 @@ export default function NewContactInfo({
                         <input
                             className="field"
                             type="text"
+                            value={isNewCustomer.registered_address_unit_floor}
                             {...register("registered_address_unit_floor", {
-                                onChange: (e) =>
+                                onChange: (e) => {
+                                    if (!TextFieldValidation(e, 50)) return;
                                     setValue(
                                         "registered_address_unit_floor",
                                         `${e.target.value}`
-                                    ),
+                                    );
+                                    setNewCustomer({
+                                        ...isNewCustomer,
+                                        registered_address_unit_floor:
+                                            e.target.value,
+                                    });
+                                },
                             })}
                         />
                         {errors.registered_address_unit_floor && (
@@ -321,12 +384,20 @@ export default function NewContactInfo({
                         <input
                             className="field"
                             type="text"
+                            value={isNewCustomer.registered_address_building}
                             {...register("registered_address_building", {
-                                onChange: (e) =>
+                                onChange: (e) => {
+                                    if (!TextFieldValidation(e, 50)) return;
                                     setValue(
                                         "registered_address_building",
                                         `${e.target.value}`
-                                    ),
+                                    );
+                                    setNewCustomer({
+                                        ...isNewCustomer,
+                                        registered_address_building:
+                                            e.target.value,
+                                    });
+                                },
                             })}
                         />
                         {errors.registered_address_building && (
@@ -345,7 +416,21 @@ export default function NewContactInfo({
                         <input
                             className="field"
                             type="text"
-                            {...register("registered_address_street", {})}
+                            value={isNewCustomer.registered_address_street}
+                            {...register("registered_address_street", {
+                                onChange: (e) => {
+                                    if (!TextFieldValidation(e, 50)) return;
+                                    setValue(
+                                        "registered_address_street",
+                                        `${e.target.value}`
+                                    );
+                                    setNewCustomer({
+                                        ...isNewCustomer,
+                                        registered_address_street:
+                                            e.target.value,
+                                    });
+                                },
+                            })}
                         />
                         {errors.registered_address_street && (
                             <p className="text-[10px]">
@@ -364,7 +449,21 @@ export default function NewContactInfo({
                         <input
                             className="field"
                             type="text"
-                            {...register("registered_address_district")}
+                            value={isNewCustomer.registered_address_district}
+                            {...register("registered_address_district", {
+                                onChange: (e) => {
+                                    if (!TextFieldValidation(e, 50)) return;
+                                    setValue(
+                                        "registered_address_district",
+                                        `${e.target.value}`
+                                    );
+                                    setNewCustomer({
+                                        ...isNewCustomer,
+                                        registered_address_district:
+                                            e.target.value,
+                                    });
+                                },
+                            })}
                         />
                         {errors.registered_address_district && (
                             <p className="text-[10px]">
@@ -382,7 +481,23 @@ export default function NewContactInfo({
                         <input
                             className="field"
                             type="text"
-                            {...register("registered_address_municipal_city")}
+                            value={
+                                isNewCustomer.registered_address_municipal_city
+                            }
+                            {...register("registered_address_municipal_city", {
+                                onChange: (e) => {
+                                    if (!TextFieldValidation(e, 50)) return;
+                                    setValue(
+                                        "registered_address_municipal_city",
+                                        `${e.target.value}`
+                                    );
+                                    setNewCustomer({
+                                        ...isNewCustomer,
+                                        registered_address_municipal_city:
+                                            e.target.value,
+                                    });
+                                },
+                            })}
                         />
                         {errors.registered_address_municipal_city && (
                             <p className="text-[10px]">
@@ -403,7 +518,21 @@ export default function NewContactInfo({
                         <input
                             className="field"
                             type="text"
-                            {...register("registered_address_province")}
+                            value={isNewCustomer.registered_address_province}
+                            {...register("registered_address_province", {
+                                onChange: (e) => {
+                                    if (!TextFieldValidation(e, 50)) return;
+                                    setValue(
+                                        "registered_address_province",
+                                        `${e.target.value}`
+                                    );
+                                    setNewCustomer({
+                                        ...isNewCustomer,
+                                        registered_address_province:
+                                            e.target.value,
+                                    });
+                                },
+                            })}
                         />
                         {errors.registered_address_province && (
                             <p className="text-[10px]">
@@ -421,7 +550,21 @@ export default function NewContactInfo({
                         <input
                             className="field"
                             type="number"
+                            onKeyDown={NumberBlockInvalidKey}
+                            value={isNewCustomer.registered_address_zip_code}
                             {...register("registered_address_zip_code", {
+                                onChange: (e) => {
+                                    if (!TextFieldValidation(e, 4)) return;
+                                    setValue(
+                                        "registered_address_zip_code",
+                                        `${e.target.value}`
+                                    );
+                                    setNewCustomer({
+                                        ...isNewCustomer,
+                                        registered_address_zip_code:
+                                            e.target.value,
+                                    });
+                                },
                                 maxLength: {
                                     value: 4,
                                     message: "Must be 4 number",
@@ -465,12 +608,20 @@ export default function NewContactInfo({
                         <input
                             className="field"
                             type="text"
+                            value={isNewCustomer.mailing_address_unit_floor}
                             {...register("MA.mailing_address_unit_floor", {
-                                onChange: (e) =>
+                                onChange: (e) => {
+                                    if (!TextFieldValidation(e, 50)) return;
                                     setValue(
                                         "MA.mailing_address_unit_floor",
                                         `${e.target.value}`
-                                    ),
+                                    );
+                                    setNewCustomer({
+                                        ...isNewCustomer,
+                                        mailing_address_unit_floor:
+                                            e.target.value,
+                                    });
+                                },
                             })}
                         />
                         {errors.MA?.mailing_address_unit_floor && (
@@ -484,12 +635,20 @@ export default function NewContactInfo({
                         <input
                             className="field"
                             type="text"
+                            value={isNewCustomer.mailing_address_building}
                             {...register("MA.mailing_address_building", {
-                                onChange: (e) =>
+                                onChange: (e) => {
+                                    if (!TextFieldValidation(e, 50)) return;
                                     setValue(
                                         "MA.mailing_address_building",
                                         `${e.target.value}`
-                                    ),
+                                    );
+                                    setNewCustomer({
+                                        ...isNewCustomer,
+                                        mailing_address_building:
+                                            e.target.value,
+                                    });
+                                },
                             })}
                         />
                         {errors.MA?.mailing_address_building && (
@@ -503,12 +662,19 @@ export default function NewContactInfo({
                         <input
                             className="field"
                             type="text"
+                            value={isNewCustomer.mailing_address_street}
                             {...register("MA.mailing_address_street", {
-                                onChange: (e) =>
+                                onChange: (e) => {
+                                    if (!TextFieldValidation(e, 50)) return;
                                     setValue(
                                         "MA.mailing_address_street",
                                         `${e.target.value}`
-                                    ),
+                                    );
+                                    setNewCustomer({
+                                        ...isNewCustomer,
+                                        mailing_address_street: e.target.value,
+                                    });
+                                },
                             })}
                         />
                         {errors.MA?.mailing_address_street && (
@@ -522,12 +688,20 @@ export default function NewContactInfo({
                         <input
                             className="field"
                             type="text"
+                            value={isNewCustomer.mailing_address_district}
                             {...register("MA.mailing_address_district", {
-                                onChange: (e) =>
+                                onChange: (e) => {
+                                    if (!TextFieldValidation(e, 50)) return;
                                     setValue(
                                         "MA.mailing_address_district",
                                         `${e.target.value}`
-                                    ),
+                                    );
+                                    setNewCustomer({
+                                        ...isNewCustomer,
+                                        mailing_address_district:
+                                            e.target.value,
+                                    });
+                                },
                             })}
                         />
                         {errors.MA?.mailing_address_district && (
@@ -541,12 +715,20 @@ export default function NewContactInfo({
                         <input
                             className="field"
                             type="text"
+                            value={isNewCustomer.mailing_address_municipal_city}
                             {...register("MA.mailing_address_municipal_city", {
-                                onChange: (e) =>
+                                onChange: (e) => {
+                                    if (!TextFieldValidation(e, 50)) return;
                                     setValue(
                                         "MA.mailing_address_municipal_city",
                                         `${e.target.value}`
-                                    ),
+                                    );
+                                    setNewCustomer({
+                                        ...isNewCustomer,
+                                        mailing_address_municipal_city:
+                                            e.target.value,
+                                    });
+                                },
                             })}
                         />
                         {errors.MA?.mailing_address_municipal_city && (
@@ -563,12 +745,20 @@ export default function NewContactInfo({
                         <input
                             className="field"
                             type="text"
+                            value={isNewCustomer.mailing_address_province}
                             {...register("MA.mailing_address_province", {
-                                onChange: (e) =>
+                                onChange: (e) => {
+                                    if (!TextFieldValidation(e, 50)) return;
                                     setValue(
                                         "MA.mailing_address_province",
                                         `${e.target.value}`
-                                    ),
+                                    );
+                                    setNewCustomer({
+                                        ...isNewCustomer,
+                                        mailing_address_province:
+                                            e.target.value,
+                                    });
+                                },
                             })}
                         />
                         {errors.MA?.mailing_address_province && (
@@ -582,7 +772,21 @@ export default function NewContactInfo({
                         <input
                             className="field"
                             type="text"
-                            {...register("MA.mailing_address_zip_code", {
+                            onKeyDown={NumberBlockInvalidKey}
+                            value={isNewCustomer.mailing_address_zip_code}
+                            {...register("mailing_address_zip_code", {
+                                onChange: (e) => {
+                                    if (!TextFieldValidation(e, 4)) return;
+                                    setValue(
+                                        "mailing_address_zip_code",
+                                        `${e.target.value}`
+                                    );
+                                    setNewCustomer({
+                                        ...isNewCustomer,
+                                        mailing_address_zip_code:
+                                            e.target.value,
+                                    });
+                                },
                                 maxLength: {
                                     value: 4,
                                     message: "Must be 4 number",
@@ -591,11 +795,6 @@ export default function NewContactInfo({
                                     value: 4,
                                     message: "Must be 4 number",
                                 },
-                                onChange: (e) =>
-                                    setValue(
-                                        "MA.mailing_address_zip_code",
-                                        `${e.target.value}`
-                                    ),
                             })}
                         />
                         {errors.MA?.mailing_address_zip_code && (

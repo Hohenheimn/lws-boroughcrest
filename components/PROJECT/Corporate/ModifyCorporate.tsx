@@ -713,6 +713,7 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                                         message: "Invalid Email",
                                     },
                                     onChange: (e) => {
+                                        if (e.target.value.length > 20) return;
                                         setValue("email", e.target.value);
                                         setModifyCorporate({
                                             ...modifyCorporate,
@@ -745,6 +746,7 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                                         message: "Invalid Email",
                                     },
                                     onChange: (e) => {
+                                        if (e.target.value.length > 20) return;
                                         setValue("alt_email", e.target.value);
                                         setModifyCorporate({
                                             ...modifyCorporate,

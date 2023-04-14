@@ -618,12 +618,13 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                                     },
                                 })}
                                 value={createCorporate.email}
-                                onChange={(e) =>
+                                onChange={(e) => {
+                                    if (e.target.value.length > 20) return;
                                     setCreateCorporate({
                                         ...createCorporate,
                                         email: e.target.value,
-                                    })
-                                }
+                                    });
+                                }}
                             />
                             <span>*Official</span>
                             {errors.email && (
@@ -643,6 +644,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                                         message: "Invalid Email",
                                     },
                                     onChange: (e) => {
+                                        if (e.target.value.length > 20) return;
                                         setValue("alt_email", e.target.value);
                                         setCreateCorporate({
                                             ...createCorporate,

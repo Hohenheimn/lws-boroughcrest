@@ -44,7 +44,8 @@ export default function BillingList() {
         from: "",
         to: "",
     });
-    const [ButtonClicked, setButtonClicked] = useState("");
+    let ButtonClicked = "";
+    const [buttonLoading, setButtonLoading] = useState("");
     const { setPrompt } = useContext(AppContext);
     const [isSearch, setSearch] = useState("");
     const [TablePage, setTablePage] = useState(1);
@@ -178,11 +179,16 @@ export default function BillingList() {
         });
         setSelectedIDs([]);
         setPrompt({
-            message: `Items successfully ${ButtonClicked}!`,
+            message: `Items successfully ${
+                ButtonClicked === "Pending"
+                    ? "return to pending"
+                    : ButtonClicked
+            }!`,
             type: "success",
             toggle: true,
         });
-        setButtonClicked("");
+        ButtonClicked = "";
+        setButtonLoading("");
         setUpdateDueDate({
             value: "",
             toggle: false,
@@ -190,7 +196,8 @@ export default function BillingList() {
     };
     const onError = (e: any) => {
         ErrorSubmit(e, setPrompt);
-        setButtonClicked("");
+        ButtonClicked = "";
+        setButtonLoading("");
     };
     const { isLoading: updateLoading, mutate: updateMutate } =
         MultipleUpdateBillingList(onSuccess, onError);
@@ -198,7 +205,8 @@ export default function BillingList() {
     const [isInProcesNoticeToggle, setInProcesNoticeToggle] = useState(false);
 
     const UpdateStatus = (button: string) => {
-        setButtonClicked(button);
+        ButtonClicked = button;
+        setButtonLoading(button);
 
         if (isSelectedIDs.length > 0) {
             if (button === "In Process") {
@@ -215,20 +223,28 @@ export default function BillingList() {
         }
     };
     const Confirm = (button: string) => {
+        ButtonClicked = button;
+        setButtonLoading(button);
         const dueDate = parse(updateDueDate.value, "MMM dd yyyy", new Date());
-        const Payload = {
-            invoice_ids: isSelectedIDs,
-            status: button,
-            due_date: isValid(dueDate) ? format(dueDate, "yyyy-MM-dd") : null,
-        };
-        updateMutate(Payload);
+        if (button !== "Post to Portal") {
+            const Payload = {
+                invoice_ids: isSelectedIDs,
+                status: button,
+                due_date: isValid(dueDate)
+                    ? format(dueDate, "yyyy-MM-dd")
+                    : null,
+            };
+            updateMutate(Payload);
+        } else {
+            //   post to portal
+        }
     };
     return (
         <>
             {isInProcesNoticeToggle && (
                 <ModalTemp narrow={true}>
                     <h1 className="text-start mb-5">Enter Due Date</h1>
-                    <div className="calendar w-full mb-5">
+                    <div className="calendar w-full mb-5 border">
                         <span className="cal">
                             <Image
                                 src="/Images/CalendarMini.png"
@@ -248,7 +264,7 @@ export default function BillingList() {
                                     toggle: true,
                                 })
                             }
-                            className="px-2 h-10 1550px:h-8 outline-none rounded-md shadow-md"
+                            className="px-2 h-10 1550px:h-8 outline-none w-full rounded-md shadow-md"
                         />
                         {updateDueDate.toggle && (
                             <Calendar
@@ -331,7 +347,7 @@ export default function BillingList() {
                                         onClick={() => UpdateStatus("Posted")}
                                     >
                                         {updateLoading &&
-                                        ButtonClicked === "Posted" ? (
+                                        buttonLoading === "Posted" ? (
                                             <MoonLoader
                                                 className="text-ThemeRed mr-2"
                                                 color="#8f384d"
@@ -357,7 +373,7 @@ export default function BillingList() {
                                         }
                                     >
                                         {updateLoading &&
-                                        ButtonClicked === "In Process" ? (
+                                        buttonLoading === "In Process" ? (
                                             <MoonLoader
                                                 className="text-ThemeRed mr-2"
                                                 color="#8f384d"
@@ -381,7 +397,7 @@ export default function BillingList() {
                                         onClick={() => UpdateStatus("Pending")}
                                     >
                                         {updateLoading &&
-                                        ButtonClicked === "Pending" ? (
+                                        buttonLoading === "Pending" ? (
                                             <MoonLoader
                                                 className="text-ThemeRed mr-2"
                                                 color="#8f384d"
@@ -425,7 +441,14 @@ export default function BillingList() {
                                 </Tippy>
                             </li>
                             <li className={style.new}>
-                                <div>POST TO PORTAL</div>
+                                <button
+                                    className="buttonRed"
+                                    onClick={() =>
+                                        UpdateStatus("Post to Portal")
+                                    }
+                                >
+                                    POST TO PORTAL
+                                </button>
                             </li>
                         </>
                     )}
@@ -462,17 +485,17 @@ export default function BillingList() {
                 <table className="table_list">
                     <thead>
                         <tr>
+                            <th className="checkbox">
+                                <div className="item">
+                                    <input
+                                        type="checkbox"
+                                        checked={isTableItem.selectAll}
+                                        onChange={selectAll}
+                                    />
+                                </div>
+                            </th>
                             {type === "unposted" ? (
                                 <>
-                                    <th className="checkbox">
-                                        <div className="item">
-                                            <input
-                                                type="checkbox"
-                                                checked={isTableItem.selectAll}
-                                                onChange={selectAll}
-                                            />
-                                        </div>
-                                    </th>
                                     <th>Status</th>
                                     <th>Date</th>
                                     <th>Customer</th>
@@ -579,17 +602,16 @@ const List = ({
 
     return (
         <tr>
-            {type === "unposted" && (
-                <td className="checkbox">
-                    <div className="item">
-                        <input
-                            type="checkbox"
-                            onChange={(e: any) => updateValue(e)}
-                            checked={itemDetail.select}
-                        />
-                    </div>
-                </td>
-            )}
+            <td className="checkbox">
+                <div className="item">
+                    <input
+                        type="checkbox"
+                        onChange={(e: any) => updateValue(e)}
+                        checked={itemDetail.select}
+                    />
+                </div>
+            </td>
+
             <td>
                 <Link
                     href={`/finance/customer-facility/billing/invoice-list/${itemDetail.id}`}
@@ -632,7 +654,6 @@ const List = ({
                     </a>
                 </Link>
             </td>
-
             <td>
                 <Link
                     href={`/finance/customer-facility/billing/invoice-list/${itemDetail.id}`}
@@ -648,7 +669,6 @@ const List = ({
                     </a>
                 </Link>
             </td>
-
             <td>
                 <Link
                     href={`/finance/customer-facility/billing/invoice-list/${itemDetail.id}`}
@@ -660,7 +680,6 @@ const List = ({
                     </a>
                 </Link>
             </td>
-
             <td>
                 <Link
                     href={`/finance/customer-facility/billing/invoice-list/${itemDetail.id}`}
@@ -681,7 +700,6 @@ const List = ({
                     </a>
                 </Link>
             </td>
-
             <td>
                 <Link
                     href={`/finance/customer-facility/billing/invoice-list/${itemDetail.id}`}
@@ -698,7 +716,6 @@ const List = ({
                     </a>
                 </Link>
             </td>
-
             <td>
                 <Link
                     href={`/finance/customer-facility/billing/invoice-list/${itemDetail.id}`}
@@ -724,7 +741,7 @@ const List = ({
                 </Link>
             </td>
 
-            {type !== "unposted" && (
+            {/* {type !== "unposted" && (
                 <td className="icon w-[100px]">
                     <div className="item w-[150px]">
                         <div className="finance_status">
@@ -741,7 +758,7 @@ const List = ({
                         </div>
                     </div>
                 </td>
-            )}
+            )} */}
         </tr>
     );
 };

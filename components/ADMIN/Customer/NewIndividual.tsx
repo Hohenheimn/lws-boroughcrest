@@ -8,6 +8,10 @@ import { AiFillCamera } from "react-icons/ai";
 import Calendar from "../../Reusable/Calendar";
 import SelectDropdown from "../../Reusable/SelectDropdown";
 import { format, isValid, parse } from "date-fns";
+import {
+    NumberBlockInvalidKey,
+    TextFieldValidation,
+} from "../../Reusable/InputField";
 
 type Props = {
     setActiveForm: Function;
@@ -314,12 +318,13 @@ export default function NewIndividual({
                             className="field"
                             {...register("name")}
                             value={isNewCustomer.name}
-                            onChange={(e) =>
+                            onChange={(e) => {
+                                if (!TextFieldValidation(e, 50)) return;
                                 setNewCustomer({
                                     ...isNewCustomer,
                                     name: e.target.value,
-                                })
-                            }
+                                });
+                            }}
                         />
                         {CusError?.name !== "" && (
                             <p className="text-[10px]">{CusError?.name}</p>
@@ -334,12 +339,13 @@ export default function NewIndividual({
                                     className="field"
                                     {...register("individual_co_owner")}
                                     value={isNewCustomer.individual_co_owner}
-                                    onChange={(e) =>
+                                    onChange={(e) => {
+                                        if (!TextFieldValidation(e, 50)) return;
                                         setNewCustomer({
                                             ...isNewCustomer,
                                             individual_co_owner: e.target.value,
-                                        })
-                                    }
+                                        });
+                                    }}
                                 />
                             </li>
 
@@ -350,13 +356,14 @@ export default function NewIndividual({
                                     className="field"
                                     {...register("individual_citizenship")}
                                     value={isNewCustomer.individual_citizenship}
-                                    onChange={(e) =>
+                                    onChange={(e) => {
+                                        if (!TextFieldValidation(e, 50)) return;
                                         setNewCustomer({
                                             ...isNewCustomer,
                                             individual_citizenship:
                                                 e.target.value,
-                                        })
-                                    }
+                                        });
+                                    }}
                                 />
                                 {CusError?.individual_citizenship !== "" && (
                                     <p className="text-[10px]">
@@ -415,13 +422,13 @@ export default function NewIndividual({
                             })}
                             className="field"
                             value={isNewCustomer.tin}
+                            onKeyDown={NumberBlockInvalidKey}
                             onChange={(e) => {
-                                if (e.target.value.length <= 9) {
-                                    setNewCustomer({
-                                        ...isNewCustomer,
-                                        tin: e.target.value,
-                                    });
-                                }
+                                if (!TextFieldValidation(e, 9)) return;
+                                setNewCustomer({
+                                    ...isNewCustomer,
+                                    tin: e.target.value,
+                                });
                             }}
                         />
                         {errors.tin && (
@@ -450,13 +457,13 @@ export default function NewIndividual({
                                 },
                             })}
                             value={isNewCustomer.branch_code}
+                            onKeyDown={NumberBlockInvalidKey}
                             onChange={(e) => {
-                                if (e.target.value.length <= 5) {
-                                    setNewCustomer({
-                                        ...isNewCustomer,
-                                        branch_code: e.target.value,
-                                    });
-                                }
+                                if (!TextFieldValidation(e, 5)) return;
+                                setNewCustomer({
+                                    ...isNewCustomer,
+                                    branch_code: e.target.value,
+                                });
                             }}
                         />
                         {errors.branch_code && (

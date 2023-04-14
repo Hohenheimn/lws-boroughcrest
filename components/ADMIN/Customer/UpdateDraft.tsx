@@ -1414,7 +1414,7 @@ const Select = ({ setSelect, updateValue }: any) => {
     const Menu = useRef<any>();
 
     // Get unit codes to display
-    const { isLoading, data, isError } = GetUnitCode();
+    const { isLoading, data, isError } = GetUnitCode("Developer");
 
     useEffect(() => {
         const clickOutSide = (e: any) => {
