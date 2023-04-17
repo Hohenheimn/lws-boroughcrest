@@ -115,7 +115,7 @@ export default function FinanceSearchFilter({
                             onChange={importHandler}
                             className="hidden"
                         />
-                        <Tippy theme="ThemeRed" content="Filter">
+                        <Tippy theme="ThemeRed" content="Change View">
                             <div className={style.filter2} onClick={FilterFunc}>
                                 <Image
                                     src="/Images/Filter2.png"

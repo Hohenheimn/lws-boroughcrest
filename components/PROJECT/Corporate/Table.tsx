@@ -22,7 +22,9 @@ export default function Table({ isSearchTable }: Props) {
         ["get-corporate-list", TablePage, isSearchTable, TableRows],
         () => {
             return api.get(
-                `/project/corporate?keywords=${isSearchTable}&paginate=${TableRows}&page=${TablePage}`,
+                `/project/corporate?keywords=${isSearchTable}&paginate=${TableRows}&page=${
+                    isSearchTable === "" ? TablePage : 1
+                }`,
                 {
                     headers: {
                         Authorization: "Bearer " + getCookie("user"),

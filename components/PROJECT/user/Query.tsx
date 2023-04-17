@@ -5,7 +5,9 @@ import api from "../../../util/api";
 export const GetUser = (keyword: string, pageNumber: number) => {
     return useQuery(["user-list", keyword, pageNumber], () => {
         return api.get(
-            `/project/user?keywords=${keyword}&page=${pageNumber}&paginate=10`,
+            `/project/user?keywords=${keyword}&page=${
+                keyword === "" ? pageNumber : 1
+            }&paginate=10`,
             {
                 headers: {
                     Authorization: "Bearer " + getCookie("user"),
