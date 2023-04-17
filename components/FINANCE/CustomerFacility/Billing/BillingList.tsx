@@ -341,7 +341,7 @@ export default function BillingList() {
                     {type === "unposted" ? (
                         <>
                             <li className={style.importExportPrint}>
-                                <Tippy theme="ThemeRed" content="Posted">
+                                <Tippy theme="ThemeRed" content="Post">
                                     <div
                                         className={`${style.noFill} mr-5`}
                                         onClick={() => UpdateStatus("Posted")}

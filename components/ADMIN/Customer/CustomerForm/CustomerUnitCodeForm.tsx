@@ -1,39 +1,67 @@
 import React, { useRef, useEffect, useState, useContext } from "react";
-import style from "../../../styles/Popup_Modal.module.scss";
+import style from "../../../../styles/Popup_Modal.module.scss";
 import { RiArrowDownSFill } from "react-icons/ri";
-import { UpdateProperties } from "../../ReactQuery/CustomerMethod";
-import { motion } from "framer-motion";
-import { ModalSideFade } from "../../Animation/SimpleAnimation";
 import { ScaleLoader } from "react-spinners";
-import { GetUnitCode } from "../../ReactQuery/CustomerMethod";
 import { useRouter } from "next/router";
-import AppContext from "../../Context/AppContext";
 import { useQueryClient } from "react-query";
-import DynamicPopOver from "../../Reusable/DynamicPopOver";
+import AppContext from "../../../Context/AppContext";
+import {
+    GetUnitCode,
+    PostCustomerDraft,
+    PostCustomerSave,
+    UpdateProperties,
+} from "../../../ReactQuery/CustomerMethod";
+import DynamicPopOver from "../../../Reusable/DynamicPopOver";
+import { CustomerFormDefaultValue } from "./CustomerForm";
+import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
 
 type ModifyRolesPermission = {
     setToggle: Function;
-    properties: any;
+    isProperty: CustomerUnitCodes[];
+    setProperty: Function;
     classType: string;
+    CreateHandler: (button: string) => void;
+    MutateLoadingDraft?: boolean;
+    MutateLoadingCreate?: boolean;
 };
 
-export default function ModifyProperty({
+export type CustomerUnitCodes = {
+    id: number | string;
+    unit_code: string;
+    name: string;
+};
+
+export default function CustomerUnitCodeForm({
     setToggle,
-    properties,
+    isProperty,
+    setProperty,
     classType,
+    MutateLoadingDraft,
+    MutateLoadingCreate,
+    CreateHandler,
 }: ModifyRolesPermission) {
     const queryClient = useQueryClient();
-    const { setPrompt, setCusToggle } = useContext(AppContext);
+
+    const { setPrompt, setCusError, CustomerErrorDefault, setCusToggle } =
+        useContext(AppContext);
     let buttonClick = "";
-    const [isProperty, setProperty] = useState([
-        {
-            id: 1,
-            unit_code: "",
-            project: "",
-        },
-    ]);
     const router = useRouter();
     const id = router.query.id;
+
+    // useEffect(() => {
+    //     if (isProperty.length !== 0) {
+    //         const existedProperties = isProperty.map(
+    //             (item: CustomerUnitCodes) => {
+    //                 return {
+    //                     id: item?.id,
+    //                     unit_code: item?.unit_code,
+    //                     name: item?.name,
+    //                 };
+    //             }
+    //         );
+    //         setProperty(existedProperties);
+    //     }
+    // }, []);
 
     const OnSuccess = () => {
         setPrompt({
@@ -41,118 +69,110 @@ export default function ModifyProperty({
             type: "success",
             toggle: true,
         });
-        queryClient.invalidateQueries(["get-customer-detail", `${id}`]);
         if (buttonClick === "save") {
+            queryClient.invalidateQueries(["get-customer-detail", `${id}`]);
             setToggle(false);
         }
-        if (buttonClick === "new") {
-            router.push("/admin/customer");
-            setCusToggle(true);
+        if (buttonClick === "saveNew") {
+            router.push("/admin/customer?new");
         }
     };
 
-    const { mutate, isLoading } = UpdateProperties(id, OnSuccess);
-
-    useEffect(() => {
-        if (properties.length !== 0) {
-            const existedProperties = properties.map((item: any) => {
-                return {
-                    id: item?.id,
-                    unit_code: item?.unit_code,
-                    project: item?.project?.name,
-                };
-            });
-            setProperty(existedProperties);
-        }
-    }, []);
-
+    // MUTATION START HERE
+    const { mutate: UpdateProperty, isLoading: LoadingProperty } =
+        UpdateProperties(id, OnSuccess);
     const [isSave, setSave] = useState(false);
 
+    // Modify Property
     const mutateHandler = () => {
         const ArrayPropertyID = isProperty.map((item: any) => {
             return item.unit_code;
         });
-
         if (ArrayPropertyID.includes("")) {
             alert("Cannot proceed, one of unit code is empty");
+            setPrompt({
+                message: "Cannot proceed, one of unit code is empty",
+                type: "draft",
+                toggle: true,
+            });
             return;
         }
-
         const stringify = JSON.stringify(ArrayPropertyID);
-
         const Payload = {
             unit_codes: stringify,
             _method: "PUT",
         };
-        mutate(Payload);
+        UpdateProperty(Payload);
     };
-
     const save = () => {
         buttonClick = "save";
-        mutateHandler();
+        if (router.query.id !== undefined) {
+            mutateHandler();
+        } else {
+            CreateHandler("save");
+        }
     };
     const saveNew = () => {
-        buttonClick = "new";
-        mutateHandler();
+        buttonClick = "saveNew";
+        if (router.query.id !== undefined) {
+            mutateHandler();
+        } else {
+            CreateHandler("new");
+        }
+    };
+    const Draft = () => {
+        CreateHandler("draft");
     };
 
     return (
-        <div className={style.container}>
-            <section className=" p-10 bg-[#e2e3e4ef] rounded-lg w-[90%] max-w-[700px] text-ThemeRed shadow-lg">
-                <p className=" text-[16px] mb-3 font-bold">Modify Customer</p>
-
-                <motion.div
-                    variants={ModalSideFade}
-                    initial="initial"
-                    animate="animate"
-                    exit="exit"
+        <>
+            <table className="w-full mb-20">
+                <thead>
+                    <tr>
+                        <th className=" text-[12px] font-semibold mb-1 uppercase text-start">
+                            UNIT CODE
+                        </th>
+                        <th className=" text-[12px] font-semibold mb-1 uppercase text-start">
+                            PROJECT
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {isProperty.map((item, index) => (
+                        <List
+                            detail={item}
+                            setProperty={setProperty}
+                            key={index}
+                            isProperty={isProperty}
+                            id={index}
+                            classType={classType}
+                        />
+                    ))}
+                </tbody>
+            </table>
+            <div className={style.SaveButton}>
+                <button
+                    className={style.back}
+                    onClick={() => {
+                        setToggle("contact-information");
+                    }}
                 >
-                    <h1 className=" w-full text-[24px] mb-3">
-                        Property Information
-                    </h1>
+                    BACK
+                </button>
 
-                    <table className="w-full mb-20">
-                        <thead>
-                            <tr>
-                                <th className=" text-[12px] font-semibold mb-1 uppercase text-start">
-                                    UNIT CODE
-                                </th>
-                                <th className=" text-[12px] font-semibold mb-1 uppercase text-start">
-                                    PROJECT
-                                </th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {isProperty.map((item, index) => (
-                                <List
-                                    detail={item}
-                                    setProperty={setProperty}
-                                    key={index}
-                                    isProperty={isProperty}
-                                    id={index}
-                                    classType={classType}
-                                />
-                            ))}
-                        </tbody>
-                    </table>
-                    <div className={style.SaveButton}>
+                <div className={style.Save}>
+                    <div>
                         <button
-                            className={style.back}
-                            onClick={() => setToggle(false)}
+                            type="submit"
+                            name="save"
+                            onClick={save}
+                            className={style.save_button}
                         >
-                            CANCEL
-                        </button>
-
-                        <div className={style.Save}>
-                            <div>
-                                <button
-                                    type="submit"
-                                    name="save"
-                                    onClick={save}
-                                    className={style.save_button}
-                                >
-                                    {isLoading ? (
+                            {router.query.id === undefined ? (
+                                <>
+                                    {MutateLoadingDraft ||
+                                    MutateLoadingCreate ? (
                                         <ScaleLoader
                                             color="#fff"
                                             height="10px"
@@ -161,27 +181,47 @@ export default function ModifyProperty({
                                     ) : (
                                         "SAVE"
                                     )}
-                                </button>
-                                <aside className={style.Arrow}>
-                                    <RiArrowDownSFill
-                                        onClick={() => setSave(!isSave)}
-                                    />
-                                </aside>
-                            </div>
-                            {isSave && (
-                                <ul>
+                                </>
+                            ) : (
+                                <>
+                                    {LoadingProperty ? (
+                                        <ScaleLoader
+                                            color="#fff"
+                                            height="10px"
+                                            width="2px"
+                                        />
+                                    ) : (
+                                        "SAVE"
+                                    )}
+                                </>
+                            )}
+                        </button>
+                        <aside className={style.Arrow}>
+                            <RiArrowDownSFill
+                                onClick={() => setSave(!isSave)}
+                            />
+                        </aside>
+                    </div>
+                    {isSave && (
+                        <ul>
+                            {router.query.id === undefined ||
+                                (router.query.draft === undefined && (
                                     <li>
-                                        <button type="submit" onClick={saveNew}>
-                                            SAVE & NEW
+                                        <button type="submit" onClick={Draft}>
+                                            SAVE AS DRAFT
                                         </button>
                                     </li>
-                                </ul>
-                            )}
-                        </div>
-                    </div>
-                </motion.div>
-            </section>
-        </div>
+                                ))}
+                            <li>
+                                <button type="submit" onClick={saveNew}>
+                                    SAVE & NEW
+                                </button>
+                            </li>
+                        </ul>
+                    )}
+                </div>
+            </div>
+        </>
     );
 }
 type List = {
@@ -215,7 +255,7 @@ const List = ({ detail, setProperty, isProperty, id, classType }: List) => {
                 if (detail.id == item.id) {
                     return {
                         ...item,
-                        project: event.target.getAttribute("data-projname"),
+                        name: event.target.getAttribute("data-projname"),
                         unit_code: unit_code,
                     };
                 }
@@ -259,8 +299,8 @@ const List = ({ detail, setProperty, isProperty, id, classType }: List) => {
             <td className="pr-2">
                 <input
                     type="text"
-                    className="field w-full disabled"
-                    value={detail.project}
+                    className="field disabled w-full"
+                    value={detail.name}
                     readOnly
                 />
             </td>
@@ -289,7 +329,7 @@ const List = ({ detail, setProperty, isProperty, id, classType }: List) => {
                                     {
                                         id: newID,
                                         unit_code: "",
-                                        project: "",
+                                        name: "",
                                     },
                                 ])
                             }
@@ -305,10 +345,8 @@ const List = ({ detail, setProperty, isProperty, id, classType }: List) => {
 
 const Select = ({ setSelect, updateValue, classType }: any) => {
     const Menu = useRef<any>();
-
     // Get unit codes to display
     const { isLoading, data, isError } = GetUnitCode(classType);
-
     useEffect(() => {
         const clickOutSide = (e: any) => {
             if (!Menu.current.contains(e.target)) {
@@ -335,7 +373,12 @@ const Select = ({ setSelect, updateValue, classType }: any) => {
             )}
             {data?.data.length <= 0 && (
                 <li className="flex justify-center ">
-                    <h1>No Available Unit Code for {classType}</h1>
+                    <h1>
+                        No Available Unit Code{" "}
+                        {classType === "" || classType === "Tenant"
+                            ? ""
+                            : "for " + classType}
+                    </h1>
                 </li>
             )}
             {data?.data.map((item: any, index: number) => (

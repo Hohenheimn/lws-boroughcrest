@@ -18,7 +18,7 @@ export default function CustomerDropdown({ isCustomer, setCustomer }: Props) {
     useEffect(() => {
         setSearchTemp(isCustomer.name);
     }, [isCustomer]);
-    const selectedItem = (CustomerObject: any) => {
+    const selectedItem = (CustomerObject: any, properties: any) => {
         const cloneToGetProperties = CustomerObject?.properties.map(
             (item: any) => {
                 return item[0].unit_code;
@@ -29,6 +29,7 @@ export default function CustomerDropdown({ isCustomer, setCustomer }: Props) {
             name: CustomerObject.name,
             class: CustomerObject.class,
             property: cloneToGetProperties,
+            properties: properties,
         });
         setSearchTemp(CustomerObject.name);
         setToggle(false);
@@ -72,7 +73,7 @@ type List = {
     setSearchTemp: Function;
     isCustomer: customerDD;
     isSearchTemp: string;
-    selectedItem: (CustomerObject: any) => void;
+    selectedItem: (CustomerObject: any, e: any) => void;
 };
 
 const List = ({
@@ -113,15 +114,15 @@ const List = ({
     });
     return (
         <ul className="dropdown-list" ref={PopOver}>
-            {!isLoading && (
-                <>
-                    {removeDraft.map((item: customerDD, index: number) => (
-                        <li key={index} onClick={() => selectedItem(item)}>
-                            {item.name}
-                        </li>
-                    ))}
-                </>
-            )}
+            {removeDraft?.map((item: customer, index: number) => (
+                <li
+                    key={index}
+                    onClick={() => selectedItem(item, item.properties)}
+                >
+                    {item.name}
+                </li>
+            ))}
+
             {isLoading && (
                 <li>
                     <div>

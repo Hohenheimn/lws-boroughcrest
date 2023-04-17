@@ -11,12 +11,11 @@ export const ErrorSubmit = (e: any, setPrompt: Function) => {
             type: "error",
             toggle: true,
         });
-        console.log("bts");
-    } else {
-        setPrompt({
-            message: "Something went wrong",
-            type: "error",
-            toggle: true,
-        });
+        return;
     }
+    setPrompt({
+        message: "Something went wrong",
+        type: "error",
+        toggle: true,
+    });
 };

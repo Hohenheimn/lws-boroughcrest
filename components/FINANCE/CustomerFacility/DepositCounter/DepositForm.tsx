@@ -13,6 +13,7 @@ import { BarLoader, ScaleLoader } from "react-spinners";
 import TableErrorMessage from "../../../Reusable/TableErrorMessage";
 import AppContext from "../../../Context/AppContext";
 import { useRouter } from "next/router";
+import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
 
 type Props = {
     id?: number;
@@ -73,12 +74,14 @@ export default function DepositForm({
         router.push("/finance/customer-facility/deposit-counter");
     };
 
-    const onErrorMutate = () => {
-        setPrompt({
-            message: "Something is wrong!",
-            toggle: true,
-            type: "error",
-        });
+    const onErrorMutate = (e: any) => {
+        ErrorSubmit(e, setPrompt);
+        console.log(e);
+        // setPrompt({
+        //     message: "Something is wrong!",
+        //     toggle: true,
+        //     type: "error",
+        // });
     };
     const { mutate: SaveMutate, isLoading: SaveLoading } = CreateDepositCounter(
         onSuccessMutate,
@@ -170,7 +173,7 @@ export default function DepositForm({
                 type: "draft",
             });
         } else {
-            if (id !== undefined || id !== "") {
+            if (id !== undefined) {
                 UpdateMutate(Payload);
             } else {
                 SaveMutate(Payload);

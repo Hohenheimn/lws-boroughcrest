@@ -21,9 +21,13 @@ export default function Id({ id }: any) {
             charge_vat: item.charge.vat_percent,
             unit_price: item.unit_price,
             quantity: item.quantity,
-            uom: "wla pa",
+            uom: item.charge.uom.name,
             vat: item.vat,
             amount: item.amount,
+            property_unit_code: "",
+            property_id: "",
+            billing_batch_list_id: item?.billing_batch_list_id,
+            billing_readings_list_id: item?.billing_batch_list_id,
         };
     });
     const CustomerDefault = {

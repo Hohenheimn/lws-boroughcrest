@@ -6,6 +6,8 @@ import { GetInvoiceListDetail } from "../../../../../components/FINANCE/Customer
 export default function Id({ id }: any) {
     const { isLoading, data, isError } = GetInvoiceListDetail(id);
 
+    console.log(data?.data);
+
     if (isLoading) {
         return (
             <div className="pageDetail">

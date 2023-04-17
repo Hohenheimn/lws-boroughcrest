@@ -110,6 +110,23 @@ export const GetInvoiceListDetail = (id: number | string) => {
     });
 };
 
+export const GetInvoiceListByCustomer = (id: number | string) => {
+    return useQuery(
+        ["invoice-list-customer", id],
+        () => {
+            return api.get(
+                `/finance/customer-facility/billing/load-list?customer_id=${id}`,
+                {
+                    headers: { Authorization: "Bearer " + getCookie("user") },
+                }
+            );
+        },
+        {
+            enabled: !!id,
+        }
+    );
+};
+
 export const GetInvoiceRecentSearch = (
     id: string | number,
     keyword: string

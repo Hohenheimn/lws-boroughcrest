@@ -14,6 +14,10 @@ export default function CreateInvoice() {
             uom: "",
             vat: "",
             amount: "",
+            property_unit_code: "",
+            property_id: "",
+            billing_readings_list_id: null,
+            billing_batch_list_id: null,
         },
     ];
 

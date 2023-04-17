@@ -434,7 +434,7 @@ export default function PropertyForm({
                                         autoComplete="off"
                                     />
                                 }
-                                listArray={["Saleable", "Leasable", "Common"]}
+                                listArray={["Saleable", "Leaseable", "Common"]}
                             />
 
                             {errors.class && (
