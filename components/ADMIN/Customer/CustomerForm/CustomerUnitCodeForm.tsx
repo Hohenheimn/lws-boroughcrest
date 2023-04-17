@@ -21,10 +21,12 @@ type ModifyRolesPermission = {
     setProperty: Function;
     classType: string;
     CreateHandler: (button: string) => void;
+    MutateLoadingDraft?: boolean;
+    MutateLoadingCreate?: boolean;
 };
 
 export type CustomerUnitCodes = {
-    id: number;
+    id: number | string;
     unit_code: string;
     name: string;
 };
@@ -34,6 +36,8 @@ export default function CustomerUnitCodeForm({
     isProperty,
     setProperty,
     classType,
+    MutateLoadingDraft,
+    MutateLoadingCreate,
     CreateHandler,
 }: ModifyRolesPermission) {
     const queryClient = useQueryClient();
@@ -151,12 +155,10 @@ export default function CustomerUnitCodeForm({
                 <button
                     className={style.back}
                     onClick={() => {
-                        router.query.id !== undefined
-                            ? setToggle(false)
-                            : setToggle("contact-information");
+                        setToggle("contact-information");
                     }}
                 >
-                    CANCEL
+                    BACK
                 </button>
 
                 <div className={style.Save}>
@@ -167,14 +169,31 @@ export default function CustomerUnitCodeForm({
                             onClick={save}
                             className={style.save_button}
                         >
-                            {LoadingProperty ? (
-                                <ScaleLoader
-                                    color="#fff"
-                                    height="10px"
-                                    width="2px"
-                                />
+                            {router.query.id === undefined ? (
+                                <>
+                                    {MutateLoadingDraft ||
+                                    MutateLoadingCreate ? (
+                                        <ScaleLoader
+                                            color="#fff"
+                                            height="10px"
+                                            width="2px"
+                                        />
+                                    ) : (
+                                        "SAVE"
+                                    )}
+                                </>
                             ) : (
-                                "SAVE"
+                                <>
+                                    {LoadingProperty ? (
+                                        <ScaleLoader
+                                            color="#fff"
+                                            height="10px"
+                                            width="2px"
+                                        />
+                                    ) : (
+                                        "SAVE"
+                                    )}
+                                </>
                             )}
                         </button>
                         <aside className={style.Arrow}>
@@ -185,13 +204,14 @@ export default function CustomerUnitCodeForm({
                     </div>
                     {isSave && (
                         <ul>
-                            {router.query.id === undefined && (
-                                <li>
-                                    <button type="submit" onClick={Draft}>
-                                        SAVE AS DRAFT
-                                    </button>
-                                </li>
-                            )}
+                            {router.query.id === undefined ||
+                                (router.query.draft === undefined && (
+                                    <li>
+                                        <button type="submit" onClick={Draft}>
+                                            SAVE AS DRAFT
+                                        </button>
+                                    </li>
+                                ))}
                             <li>
                                 <button type="submit" onClick={saveNew}>
                                     SAVE & NEW

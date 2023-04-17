@@ -9,6 +9,7 @@ import "tippy.js/dist/tippy.css";
 import TableErrorMessage from "../../Reusable/TableErrorMessage";
 import Pagination from "../../Reusable/Pagination";
 import { GetCustomerList } from "../../ReactQuery/CustomerMethod";
+import { useRouter } from "next/router";
 export default function CustomerTable() {
     const { TableRows, cusTableColumn, isSearchBar, setPrint } =
         useContext(AppContext);
@@ -101,6 +102,7 @@ export default function CustomerTable() {
 }
 
 const List = ({ itemDetail }: customerItemDetail) => {
+    const router = useRouter();
     const { cusTableColumn } = useContext(AppContext);
     const [isEdit, setEdit] = useState(false);
     const MouseEnter = () => {
@@ -117,8 +119,21 @@ const List = ({ itemDetail }: customerItemDetail) => {
             itemDetail?.image_photo;
     }
 
+    const redirect = () => {
+        const url =
+            itemDetail?.status === "Draft"
+                ? `/admin/customer?draft=${itemDetail?.id}`
+                : `/admin/customer/${itemDetail?.id}`;
+        router.push(url);
+    };
+
     return (
-        <tr onMouseEnter={MouseEnter} onMouseLeave={MouseLeave}>
+        <tr
+            onMouseEnter={MouseEnter}
+            onMouseLeave={MouseLeave}
+            onClick={redirect}
+            className=" cursor-pointer"
+        >
             <td className={`normal ${itemDetail?.status}`}>
                 <Link
                     href={`${

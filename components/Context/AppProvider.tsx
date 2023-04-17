@@ -99,6 +99,13 @@ export default function AppProvider({ children }: AppProvider) {
         registered_email: "",
         preferred_email: "",
         status: true,
+        unit_codes: [
+            {
+                name: "",
+                unit_code: "",
+                id: 1,
+            },
+        ],
     };
 
     const [CorpTableRows, setCorpTableRows] = useState<number>(10);

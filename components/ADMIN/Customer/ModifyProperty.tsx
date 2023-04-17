@@ -23,7 +23,7 @@ export default function ModifyProperty({
     classType,
 }: ModifyRolesPermission) {
     const queryClient = useQueryClient();
-    const { setPrompt } = useContext(AppContext);
+    const { setPrompt, setCusToggle } = useContext(AppContext);
     let buttonClick = "";
     const [isProperty, setProperty] = useState([
         {
@@ -41,12 +41,13 @@ export default function ModifyProperty({
             type: "success",
             toggle: true,
         });
+        queryClient.invalidateQueries(["get-customer-detail", `${id}`]);
         if (buttonClick === "save") {
-            queryClient.invalidateQueries(["get-customer-detail", `${id}`]);
             setToggle(false);
         }
-        if (buttonClick === "saveNew") {
-            router.push("/admin/customer?new");
+        if (buttonClick === "new") {
+            router.push("/admin/customer");
+            setCusToggle(true);
         }
     };
 
@@ -91,7 +92,7 @@ export default function ModifyProperty({
         mutateHandler();
     };
     const saveNew = () => {
-        buttonClick = "saveNew";
+        buttonClick = "new";
         mutateHandler();
     };
 
@@ -258,8 +259,9 @@ const List = ({ detail, setProperty, isProperty, id, classType }: List) => {
             <td className="pr-2">
                 <input
                     type="text"
-                    className="field w-full"
+                    className="field w-full disabled"
                     value={detail.project}
+                    readOnly
                 />
             </td>
             <td className=" flex justify-center">

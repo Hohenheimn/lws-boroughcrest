@@ -2,7 +2,6 @@ import React, { useState, useContext, useEffect } from "react";
 import AppContext from "../../Context/AppContext";
 import { HiPencil } from "react-icons/hi";
 import Image from "next/image";
-import ModifyCustomer from "./ModifyCustomer";
 import CustomerInformation from "./CustomerInformation";
 import CustomerProperty from "./CustomerProperty";
 import Tippy from "@tippy.js/react";
@@ -13,13 +12,13 @@ import BeatLoader from "react-spinners/BeatLoader";
 import { customer } from "../../../types/customerList";
 import Modal_Image from "../../Reusable/Modal_Image";
 import { PencilButton } from "../../Reusable/Icons";
+import ModifyCustomer from "./CustomerForm/ModifyCustomer";
 
-export default function CustomerDetail({ Draft }: any) {
-    const { ImgUrl, setModifyCustomer, setPrompt } = useContext(AppContext);
-    const [toggleModify, setToggleModify] = useState(false);
+export default function CustomerDetail() {
+    const { ImgUrl, setPrompt, cusToggle, setCusToggle } =
+        useContext(AppContext);
     const [isToggleInfoRole, setToggleInfoRole] = useState<boolean>(false);
     const [isView, setView] = useState("");
-    const [isDraft, setDraft] = useState(false);
 
     const router = useRouter();
     const id = router.query.id;
@@ -51,16 +50,6 @@ export default function CustomerDetail({ Draft }: any) {
         isError: DetailError,
     } = GetCustomer(id);
 
-    useEffect(() => {
-        if (Draft) {
-            setDraft(true);
-            setModifyCustomer({
-                ...Draft.values,
-                id: router.query.id,
-            });
-        }
-    }, []);
-
     if (DetailLoading || DetailError) {
         return (
             <div className="pageDetail">
@@ -77,24 +66,21 @@ export default function CustomerDetail({ Draft }: any) {
 
     let Logo;
     if (
-        data.image_photo === undefined ||
-        data.image_photo === null ||
-        data.image_photo === ""
+        data?.image_photo === undefined ||
+        data?.image_photo === null ||
+        data?.image_photo === ""
     ) {
         Logo = "/Images/sampleProfile.png";
     } else {
-        Logo = ImgUrl + data.image_photo;
+        Logo =
+            "https://boroughcrest-api.lws.codes/get-img?image=" +
+            data?.image_photo;
     }
 
     return (
         <div>
             {isView !== "" && <Modal_Image setView={setView} isView={isView} />}
-            {toggleModify && (
-                <ModifyCustomer
-                    setToggleModify={setToggleModify}
-                    isDraft={isDraft}
-                />
-            )}
+            {cusToggle && <ModifyCustomer />}
             <h1 className=" font-bold mb-10 text-[24px] 480px:mb-5">
                 Customer Details
             </h1>
@@ -107,19 +93,7 @@ export default function CustomerDetail({ Draft }: any) {
 
                     <PencilButton
                         FunctionOnClick={() => {
-                            Draft
-                                ? setModifyCustomer({
-                                      ...Draft.values,
-                                      tin: data.tin.replaceAll("-", ""),
-                                      id: router.query.id,
-                                      _method: "PUT",
-                                  })
-                                : setModifyCustomer({
-                                      ...data,
-                                      tin: data.tin.replaceAll("-", ""),
-                                      _method: "PUT",
-                                  });
-                            setToggleModify(true);
+                            setCusToggle(true);
                         }}
                         title={"Modify"}
                     />
@@ -130,7 +104,7 @@ export default function CustomerDetail({ Draft }: any) {
                     </aside>
                     <Tippy content={`${data?.status}`} theme="ThemeRed">
                         <div
-                            className={"my-2 statusCircle " + data.status}
+                            className={"my-2 statusCircle " + data?.status}
                         ></div>
                     </Tippy>
 
@@ -159,15 +133,15 @@ export default function CustomerDetail({ Draft }: any) {
                                 ID
                             </p>
                             <h4 className=" text-gray-500 mb-5 1024px:text-[14px]">
-                                {data.id}
+                                {data?.id}
                             </h4>
                         </li>
                         <li className=" w-4/12 mb-5 1280px:w-2/4 480px:w-full 480px:mb-3">
                             <p className=" text-gray-400 1024px:text-[14px]">
-                                {data.type == "Company" ? "COMPANY" : ""} NAME
+                                {data?.type == "Company" ? "COMPANY" : ""} NAME
                             </p>
                             <h4 className=" text-gray-500 mb-5 1024px:text-[14px]">
-                                {data.name}
+                                {data?.name}
                             </h4>
                         </li>
                         <li className=" w-4/12 mb-5 1280px:w-2/4 480px:w-full 480px:mb-3">
@@ -175,7 +149,7 @@ export default function CustomerDetail({ Draft }: any) {
                                 CLASS
                             </p>
                             <h4 className=" text-gray-500 mb-5 1024px:text-[14px]">
-                                {data.class}
+                                {data?.class}
                             </h4>
                         </li>
                         <li className=" w-4/12 mb-5 1280px:w-2/4 480px:w-full 480px:mb-3">
@@ -183,7 +157,7 @@ export default function CustomerDetail({ Draft }: any) {
                                 TYPE
                             </p>
                             <h4 className=" text-gray-500 mb-5 1024px:text-[14px]">
-                                {data.type}
+                                {data?.type}
                             </h4>
                         </li>
                         <li className=" w-4/12 mb-5 1280px:w-2/4 480px:w-full 480px:mb-3">
@@ -191,7 +165,7 @@ export default function CustomerDetail({ Draft }: any) {
                                 TIN
                             </p>
                             <h4 className=" text-gray-500 mb-5 1024px:text-[14px]">
-                                {data.tin}
+                                {data?.tin}
                             </h4>
                         </li>
                         <li className=" w-4/12 mb-5 1280px:w-2/4 480px:w-full 480px:mb-3">
@@ -199,16 +173,16 @@ export default function CustomerDetail({ Draft }: any) {
                                 PORTAL ID
                             </p>
                             <h4 className=" text-gray-500 mb-5 1024px:text-[14px]">
-                                {data.portal_id}
+                                {data?.portal_id}
                             </h4>
                         </li>
-                        {data.type !== "Company" && (
+                        {data?.type !== "Company" && (
                             <li className=" w-4/12 mb-5 1280px:w-2/4 480px:w-full 480px:mb-3">
                                 <p className=" text-gray-400 1024px:text-[14px]">
                                     CITIZENSHIP
                                 </p>
                                 <h4 className=" text-gray-500 mb-5 1024px:text-[14px]">
-                                    {data.individual_citizenship}
+                                    {data?.individual_citizenship}
                                 </h4>
                             </li>
                         )}
@@ -221,7 +195,7 @@ export default function CustomerDetail({ Draft }: any) {
                                 onClick={() =>
                                     setView(
                                         (imgPass) =>
-                                            (imgPass = data.image_valid_id)
+                                            (imgPass = data?.image_valid_id)
                                     )
                                 }
                             >
@@ -237,7 +211,7 @@ export default function CustomerDetail({ Draft }: any) {
                                 onClick={() =>
                                     setView(
                                         (imgPass) =>
-                                            (imgPass = data.image_signature)
+                                            (imgPass = data?.image_signature)
                                     )
                                 }
                             >
@@ -269,8 +243,8 @@ export default function CustomerDetail({ Draft }: any) {
                 {!isToggleInfoRole && <CustomerInformation itemDetail={data} />}
                 {isToggleInfoRole && (
                     <CustomerProperty
-                        data={data.properties}
-                        classType={data.class}
+                        data={data?.properties}
+                        classType={data?.class}
                     />
                 )}
             </ul>

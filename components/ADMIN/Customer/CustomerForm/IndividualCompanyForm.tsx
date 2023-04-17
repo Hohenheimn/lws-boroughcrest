@@ -12,13 +12,17 @@ import {
     TextFieldValidation,
 } from "../../../Reusable/InputField";
 import Calendar from "../../../Reusable/Calendar";
-import { format, isValid, parse } from "date-fns";
+import { useRouter } from "next/router";
+import { RiArrowDownSFill } from "react-icons/ri";
+import { ScaleLoader } from "react-spinners";
 
 type Props = {
     isCustomerForm: CustomerFormDefaultValue;
     setCustomerForm: Function;
     setFormPage: Function;
     FormPage: string;
+    MutateHandler: (button: string) => void;
+    loadingUpdate: boolean;
 };
 
 export default function IndividualCompanyForm({
@@ -26,20 +30,27 @@ export default function IndividualCompanyForm({
     setCustomerForm,
     FormPage,
     setFormPage,
+    MutateHandler,
+    loadingUpdate,
 }: Props) {
+    const router = useRouter();
     const { CusError, setCusError, ErrorDefault, setCusToggle } =
         useContext(AppContext);
 
     const [imgProfile, setImgProfile] = useState({
         url:
-            isCustomerForm.image_photo_url === ""
+            isCustomerForm.image_photo_url === "" ||
+            isCustomerForm.image_photo_url === undefined ||
+            isCustomerForm.image_photo_url === null
                 ? "/Images/sampleProfile.png"
                 : isCustomerForm.image_photo_url,
         error: "",
     });
     const [imgID, setImgID] = useState({
         url:
-            isCustomerForm.image_valid_id_url === ""
+            isCustomerForm.image_valid_id_url === "" ||
+            isCustomerForm.image_photo_url === undefined ||
+            isCustomerForm.image_photo_url === null
                 ? "/Images/id-sample.png"
                 : isCustomerForm.image_valid_id_url,
         error: "",
@@ -75,25 +86,28 @@ export default function IndividualCompanyForm({
                         url: event.target.result,
                         error: "",
                     });
+                    if (type === "signature") {
+                        setCustomerForm({
+                            ...isCustomerForm,
+                            image_signature: e.target.files[0],
+                            image_signature_url: event.target.result,
+                        });
+                    }
+                    if (type === "validID") {
+                        setCustomerForm({
+                            ...isCustomerForm,
+                            image_valid_id: e.target.files[0],
+                            image_valid_id_url: event.target.result,
+                        });
+                    }
+                    if (type === "profile") {
+                        setCustomerForm({
+                            ...isCustomerForm,
+                            image_photo: e.target.files[0],
+                            image_photo_url: event.target.result,
+                        });
+                    }
                 });
-                if (type === "signature") {
-                    setCustomerForm({
-                        ...isCustomerForm,
-                        image_signature: e.target.files[0],
-                    });
-                }
-                if (type === "validID") {
-                    setCustomerForm({
-                        ...isCustomerForm,
-                        image_valid_id: e.target.files[0],
-                    });
-                }
-                if (type === "profile") {
-                    setCustomerForm({
-                        ...isCustomerForm,
-                        image_photo: e.target.files[0],
-                    });
-                }
             } else {
                 setImg({
                     url: defaultUrl,
@@ -114,12 +128,9 @@ export default function IndividualCompanyForm({
         toggle: false,
     });
     useEffect(() => {
-        const date = parse(isDate.value, "MMM dd yyyy", new Date());
         setCustomerForm({
             ...isCustomerForm,
-            individual_birth_date: isValid(date)
-                ? format(date, "yyyy-MM-dd")
-                : "",
+            individual_birth_date: isDate.value,
         });
     }, [isDate.value]);
 
@@ -417,6 +428,9 @@ export default function IndividualCompanyForm({
                             onClick={() => {
                                 setCusToggle(false);
                                 setCusError({ ...ErrorDefault });
+                                if (router.query.draft !== undefined) {
+                                    router.push("");
+                                }
                             }}
                             className=" text-ThemeRed font-semibold text-[14px] mr-5 cursor-pointer"
                         >
@@ -438,6 +452,8 @@ export default function IndividualCompanyForm({
                     setCustomerForm={setCustomerForm}
                     FormPage={FormPage}
                     setFormPage={setFormPage}
+                    MutateHandler={MutateHandler}
+                    loadingUpdate={loadingUpdate}
                 />
             )}
         </>
@@ -449,6 +465,8 @@ type ContactInformationProps = {
     setCustomerForm: Function;
     FormPage: string;
     setFormPage: Function;
+    MutateHandler: (button: string) => void;
+    loadingUpdate: boolean;
 };
 
 type validateEmailContact = {
@@ -464,10 +482,13 @@ const ContactInformation = ({
     setFormPage,
     isCustomerForm,
     setCustomerForm,
+    MutateHandler,
+    loadingUpdate,
 }: ContactInformationProps) => {
     const { CusError, setCusError, ErrorDefault, setCusToggle } =
         useContext(AppContext);
-
+    const router = useRouter();
+    const [isSave, setSave] = useState(false);
     const [isSameEmail, setSameEmail] = useState(false);
     const [isSameAddress, setSameAddress] = useState(false);
 
@@ -525,8 +546,11 @@ const ContactInformation = ({
         handleSubmit,
         setValue,
     } = useForm<validateEmailContact>();
+
+    let buttonClicked = "";
     const NextFormValidation = () => {
-        setFormPage("property");
+        if (router.query.id === undefined) setFormPage("property");
+        if (router.query.id !== undefined) MutateHandler(buttonClicked);
     };
     const BackHandler = () => {
         setFormPage("primary");
@@ -988,7 +1012,7 @@ const ContactInformation = ({
                         )}
                     </li>
                 </ul>
-                <div className=" w-full flex justify-end items-center">
+                <div className={style.SaveButton}>
                     <aside
                         onClick={BackHandler}
                         className=" text-ThemeRed font-semibold text-[14px] mr-5 cursor-pointer"
@@ -996,12 +1020,54 @@ const ContactInformation = ({
                         BACK
                     </aside>
 
-                    <button
-                        type="submit"
-                        className=" text-white h-8 w-20 flex justify-center items-center duration-75 hover:bg-ThemeRed50 leading-none bg-ThemeRed rounded-md text-[14px] mr-5"
-                    >
-                        NEXT
-                    </button>
+                    {router.query.id === undefined ? (
+                        <button
+                            type="submit"
+                            className=" text-white h-8 w-20 flex justify-center items-center duration-75 hover:bg-ThemeRed50 leading-none bg-ThemeRed rounded-md text-[14px] mr-5"
+                        >
+                            NEXT
+                        </button>
+                    ) : (
+                        <div className={style.Save}>
+                            <div>
+                                <button
+                                    type="submit"
+                                    name="save"
+                                    className={style.save_button}
+                                    onClick={() => (buttonClicked = "save")}
+                                >
+                                    {loadingUpdate ? (
+                                        <ScaleLoader
+                                            color="#fff"
+                                            height="10px"
+                                            width="2px"
+                                        />
+                                    ) : (
+                                        "SAVE"
+                                    )}
+                                </button>
+                                <aside className={style.Arrow}>
+                                    <RiArrowDownSFill
+                                        onClick={() => setSave(!isSave)}
+                                    />
+                                </aside>
+                            </div>
+                            {isSave && (
+                                <ul>
+                                    <li>
+                                        <button
+                                            type="submit"
+                                            onClick={() =>
+                                                (buttonClicked = "new")
+                                            }
+                                        >
+                                            SAVE & NEW
+                                        </button>
+                                    </li>
+                                </ul>
+                            )}
+                        </div>
+                    )}
                 </div>
             </form>
         </div>

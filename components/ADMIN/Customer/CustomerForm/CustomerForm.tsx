@@ -14,7 +14,12 @@ import CustomerUnitCodeForm, {
 import {
     PostCustomerDraft,
     PostCustomerSave,
+    PutCustomer,
+    UpdateDraft,
 } from "../../../ReactQuery/CustomerMethod";
+import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
+import { format, isValid, parse } from "date-fns";
+import { useQueryClient } from "react-query";
 
 type Props = {
     DefaultValue: CustomerFormDefaultValue;
@@ -44,35 +49,224 @@ export type CustomerFormDefaultValue = {
     mailing_address_province: string;
     mailing_address_zip_code: string;
     image_photo: File | null;
-    image_photo_url: string;
+    image_photo_url?: string;
     image_valid_id: File | null;
-    image_valid_id_url: string;
+    image_valid_id_url?: string;
     image_signature: File | null;
-    image_signature_url: string;
+    image_signature_url?: string;
     contact_no: string | number;
     registered_email: string;
     preferred_email: string;
     status: boolean | string;
+    unit_codes?: CustomerUnitCodes[];
 };
 
 export default function CustomerForm({ DefaultValue }: Props) {
+    const { setPrompt, setCusError, DefaultCustomerFormValue, setCusToggle } =
+        useContext(AppContext);
+
+    const [isButtonClicked, setButtonClicked] = useState("");
     const [isCustomerForm, setCustomerForm] =
         useState<CustomerFormDefaultValue>(DefaultValue);
     const router = useRouter();
     const [FormPage, setFormPage] = useState("primary");
 
-    const [isUnitCode, setUnitCode] = useState<CustomerUnitCodes[]>([
-        {
-            id: 1,
-            unit_code: "123213",
-            name: "asdasd",
-        },
-    ]);
+    const [isUnitCode, setUnitCode] = useState<CustomerUnitCodes[]>(
+        DefaultValue?.unit_codes === undefined
+            ? []
+            : DefaultValue?.unit_codes.length <= 0
+            ? [
+                  {
+                      name: "",
+                      unit_code: "",
+                      id: 1,
+                  },
+              ]
+            : DefaultValue?.unit_codes
+    );
+    const queryClient = useQueryClient();
+    const onSuccess = () => {
+        queryClient.invalidateQueries(["get-customer-list"]);
+        if (router.query.id !== undefined) {
+            queryClient.invalidateQueries([
+                "get-customer-detail",
+                `${router.query.id}`,
+            ]);
+        }
+        setPrompt((prev: any) => ({
+            ...prev,
+            message: `Customer successfully ${
+                isButtonClicked === "draft" ? "saved as draft" : "registered"
+            }!`,
+            type: isButtonClicked === "draft" ? "draft" : "success",
+            toggle: true,
+        }));
+        setCustomerForm(DefaultCustomerFormValue);
+        setFormPage("primary");
+        if (isButtonClicked === "save") {
+            setCusToggle(false);
+            if (router.query.draft !== undefined) {
+                router.push("");
+            }
+        }
+        if (router.query.id !== undefined && isButtonClicked === "new") {
+            router.push("/admin/customer/");
+            setCusToggle(true);
+        }
+    };
+    const onError = (res: any) => {
+        const ErrorField = res.response.data;
+        if (ErrorField > 0 || ErrorField !== null || ErrorField !== undefined) {
+            setCusError({ ...ErrorField });
+        }
+        ErrorSubmit(res, setPrompt);
+    };
 
-    const CreateHandler = (button: string) => {
-        console.log(button);
-        console.log(isCustomerForm);
-        console.log(isUnitCode);
+    const { isLoading: MutateLoading, mutate: CreateSave } = PostCustomerSave(
+        onSuccess,
+        onError
+    );
+
+    const { isLoading: MutateDraftLoading, mutate: DraftSave } =
+        PostCustomerDraft(onSuccess);
+
+    const { isLoading: loadingDraft, mutate: mutateDraft } = UpdateDraft(
+        onSuccess,
+        onError,
+        router.query.draft
+    );
+
+    const { isLoading: loadingUpdate, mutate: mutateUpdate } = PutCustomer(
+        onSuccess,
+        onError,
+        router.query.id
+    );
+
+    const CreateHandler = async (button: string) => {
+        setButtonClicked(button);
+        let validate = true;
+        const UnitCodes = isUnitCode.filter(
+            (item: CustomerUnitCodes) => item.unit_code !== ""
+        );
+
+        const date = parse(
+            isCustomerForm.individual_birth_date,
+            "MMM dd yyyy",
+            new Date()
+        );
+
+        let Payload: any = {
+            ...isCustomerForm,
+            status:
+                button === "draft"
+                    ? "Draft"
+                    : isCustomerForm.status
+                    ? "Active"
+                    : "Inactive",
+            unit_codes: UnitCodes,
+            individual_birth_date: isValid(date)
+                ? format(date, "yyyy-MM-dd")
+                : "",
+            image_photo:
+                isCustomerForm.image_photo === null
+                    ? ""
+                    : isCustomerForm.image_photo,
+            image_valid_id:
+                isCustomerForm.image_valid_id === null
+                    ? ""
+                    : isCustomerForm.image_valid_id,
+            image_signature:
+                isCustomerForm.image_signature === null
+                    ? ""
+                    : isCustomerForm.image_signature,
+        };
+        // Remove Keys
+        delete Payload.image_photo_url;
+        delete Payload.image_signature_url;
+        delete Payload.image_valid_id_url;
+        if (router.query.id !== undefined) {
+            delete Payload.unit_codes;
+        }
+
+        // Mutation after validation
+        if (!validate) return;
+        // if Type is company, empty the field of not for company
+        if (Payload.type === "Company" || Payload.type === "company") {
+            Payload = {
+                ...Payload,
+                individual_birth_date: "",
+                individual_citizenship: "",
+                individual_co_owner: "",
+            };
+        }
+        // if Type is individual, empty the field of not for individual
+        if (Payload.type === "individual" || Payload.type === "Individual") {
+            Payload = { ...Payload, company_contact_person: "" };
+        }
+        if (router.query.draft !== undefined || router.query.id !== undefined) {
+            Payload = {
+                ...Payload,
+                _method: "PUT",
+            };
+        }
+        const formData = new FormData();
+        const arrayData: any = [];
+        const keys = Object.keys(Payload);
+        await keys.forEach((key) => {
+            if (
+                key === "image_photo" ||
+                key === "image_valid_id" ||
+                key === "image_signature"
+            ) {
+                if (Payload[key] === undefined) {
+                    arrayData.push({
+                        key: key,
+                        keyData: "",
+                    });
+                } else {
+                    arrayData.push({
+                        key: key,
+                        keyData: Payload[key],
+                    });
+                }
+            } else {
+                arrayData.push({
+                    key: key,
+                    keyData: Payload[key],
+                });
+            }
+        });
+        arrayData.map(({ key, keyData }: any) => {
+            if (key === "unit_codes") {
+                const stringify = JSON.stringify(keyData);
+                if (router.query.id === undefined) {
+                    formData.append("unit_codes", stringify);
+                }
+            } else {
+                formData.append(key, keyData);
+            }
+        });
+
+        if (
+            button === "draft" &&
+            router.query.id === undefined &&
+            router.query.draft === undefined
+        ) {
+            DraftSave(formData);
+        }
+        if (
+            router.query.draft === undefined &&
+            router.query.id === undefined &&
+            button !== "draft"
+        )
+            CreateSave(formData);
+        if (
+            router.query.draft !== undefined &&
+            (button === "save" || button === "new")
+        )
+            mutateDraft(formData);
+
+        if (router.query.id !== undefined) mutateUpdate(formData);
     };
 
     return (
@@ -155,7 +349,9 @@ export default function CustomerForm({ DefaultValue }: Props) {
                         isCustomerForm={isCustomerForm}
                         setCustomerForm={setCustomerForm}
                         FormPage={FormPage}
+                        MutateHandler={CreateHandler}
                         setFormPage={setFormPage}
+                        loadingUpdate={loadingUpdate}
                     />
                 )}
 
@@ -166,6 +362,12 @@ export default function CustomerForm({ DefaultValue }: Props) {
                     setProperty={setUnitCode}
                     classType={isCustomerForm.class}
                     CreateHandler={CreateHandler}
+                    MutateLoadingDraft={
+                        router.query.draft === undefined
+                            ? MutateDraftLoading
+                            : loadingDraft
+                    }
+                    MutateLoadingCreate={MutateLoading}
                 />
             </div>
         </ModalTemp>
@@ -173,6 +375,7 @@ export default function CustomerForm({ DefaultValue }: Props) {
 }
 
 const DefaultDisplayForm = () => {
+    const router = useRouter();
     const { setCusToggle } = useContext(AppContext);
     const isProfileUrl = "/Images/sampleProfile.png";
     const isValidIDUrl = "/Images/id-sample.png";
@@ -295,7 +498,12 @@ const DefaultDisplayForm = () => {
 
             <div className=" w-full flex justify-end items-center">
                 <aside
-                    onClick={() => setCusToggle(false)}
+                    onClick={() => {
+                        setCusToggle(false);
+                        if (router.query.draft !== undefined) {
+                            router.push("");
+                        }
+                    }}
                     className=" text-ThemeRed font-semibold text-[14px] mr-5 cursor-pointer"
                 >
                     CANCEL
