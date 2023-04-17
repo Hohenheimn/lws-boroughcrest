@@ -34,12 +34,17 @@ export type InvoiceList = {
         name: string;
         charge_uom_id: number | string;
         vat_percent: number | string;
+        uom: {
+            name: string;
+        };
     };
     description: string;
     unit_price: number | string;
     quantity: number | string;
     vat: number | string;
     amount: number | string;
+    billing_batch_list_id: string;
+    billing_readings_list_id: string;
 };
 
 type Props = {
@@ -185,7 +190,7 @@ const List = ({ itemDetail }: ListProps) => {
                 <h4 className="main_text">{itemDetail.quantity}</h4>
             </td>
             <td>
-                <h4 className="main_text">sample uom</h4>
+                <h4 className="main_text">{itemDetail.charge.uom.name}</h4>
             </td>
             <td>
                 <TextNumberDisplay

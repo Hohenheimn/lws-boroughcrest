@@ -23,6 +23,7 @@ import {
 import TableErrorMessage from "../../../Reusable/TableErrorMessage";
 import AppContext from "../../../Context/AppContext";
 import { useQueryClient } from "react-query";
+import { format, isValid, parse } from "date-fns";
 
 export type isReceiptBookData = {
     itemArray: isTableItemObjRB[];
@@ -575,6 +576,24 @@ const List = ({
         SelectedIndex = [];
     }
 
+    let deposit_date: any = parse(
+        itemDetail.deposit_date,
+        "yyyy-MM-dd",
+        new Date()
+    );
+    deposit_date = isValid(deposit_date)
+        ? format(deposit_date, "MMM dd yyyy")
+        : "";
+
+    let document_date: any = parse(
+        itemDetail.document_date,
+        "yyyy-MM-dd",
+        new Date()
+    );
+    document_date = isValid(document_date)
+        ? format(document_date, "MMM dd yyyy")
+        : "";
+
     return (
         <>
             <tr
@@ -598,7 +617,7 @@ const List = ({
                     </td>
                 )}
 
-                <td>{itemDetail?.document_date}</td>
+                <td>{document_date}</td>
                 <td>{itemDetail?.depositor}</td>
                 <td>{itemDetail?.receipt_no}</td>
                 <td>{itemDetail?.bank_and_account_no}</td>
@@ -615,7 +634,7 @@ const List = ({
                         </>
                     )}
                 </td>
-                <td>{itemDetail?.deposit_date}</td>
+                <td>{deposit_date}</td>
                 <td>
                     <TextNumberDisplay
                         value={itemDetail?.deposit_amount}

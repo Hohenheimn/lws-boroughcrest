@@ -1,9 +1,6 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { BsPlusLg } from "react-icons/bs";
-import { HiMinus } from "react-icons/hi";
 import { RiArrowDownSFill } from "react-icons/ri";
-import style from "../../../../styles/finance/Crud-table.module.scss";
 import CustomerDropdown from "../../../Dropdowns/CustomerDropdown";
 import DropDownCharge from "../../../Dropdowns/DropDownCharge";
 import {
@@ -17,17 +14,21 @@ import { useRouter } from "next/router";
 import {
     CreateInvoiceBilling,
     DeleteInvoice,
+    GetInvoiceListByCustomer,
     ModifyInvoiceBilling,
 } from "./Query";
-import { ScaleLoader } from "react-spinners";
+import { BarLoader, ScaleLoader } from "react-spinners";
 import ModalTemp from "../../../Reusable/ModalTemp";
 import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
+import DynamicPopOver from "../../../Reusable/DynamicPopOver";
+import TableErrorMessage from "../../../Reusable/TableErrorMessage";
 
 export type customerDD = {
     id: string | number;
     name: string;
     class: string;
     property: string[];
+    properties?: any;
 };
 
 type billingArray = billingObject[];
@@ -42,6 +43,10 @@ type billingObject = {
     uom: any;
     vat: number | string;
     amount: number | string;
+    property_unit_code: string;
+    property_id: string;
+    billing_batch_list_id: string | null;
+    billing_readings_list_id: string | null;
 };
 type Props = {
     DefaultValue: billingArray;
@@ -67,11 +72,60 @@ export default function JournalForm({
         property: DefaultCustomer.property,
     });
 
+    const [isUnitCodes, setUnitCodes] = useState<any>([]);
+
     useEffect(() => {
         setTotalAmount("");
         isBilling.map((item) => {
             setTotalAmount((prev) => Number(prev) + Number(item.amount));
         });
+    }, [isBilling]);
+
+    useEffect(() => {
+        if (isCustomer.id !== "") {
+            setUnitCodes(isCustomer.properties[0]);
+        }
+    }, [isCustomer]);
+
+    const { data, isLoading, isError } = GetInvoiceListByCustomer(
+        isCustomer.id
+    );
+
+    useEffect(() => {
+        if (isCustomer.id !== "") {
+            const InvoiceList = data?.data.map((item: any) => {
+                return {
+                    id: -1,
+                    charge: item.charge_name,
+                    charge_id: item.charge_id,
+                    charge_vat: item.vat,
+                    description: item.description,
+                    unit_price: item.unit_price,
+                    quantity: item.quantity,
+                    uom: item.uom,
+                    vat: item.vat,
+                    amount: item.amount,
+                    property_unit_code: item.unit_code,
+                    property_id: item.property_unit_id,
+                    billing_batch_list_id:
+                        item.billing_batch_list_id === undefined
+                            ? null
+                            : item.billing_batch_list_id,
+                    billing_readings_list_id:
+                        item.billing_readings_list_id === undefined
+                            ? null
+                            : item.billing_readings_list_id,
+                };
+            });
+
+            if (InvoiceList !== undefined) {
+                setBilling([...isBilling, ...InvoiceList]);
+            }
+        }
+    }, [data?.status]);
+
+    useEffect(() => {
+        console.log(isBilling);
     }, [isBilling]);
 
     const onSuccess = () => {
@@ -104,6 +158,10 @@ export default function JournalForm({
                         uom: "",
                         vat: "",
                         amount: "",
+                        property_unit_code: "",
+                        property_id: "",
+                        billing_batch_list_id: null,
+                        billing_readings_list_id: null,
                     },
                 ]);
             } else if (formType === "modify") {
@@ -136,6 +194,15 @@ export default function JournalForm({
                     quantity: Number(item.quantity),
                     vat: Number(item.vat),
                     amount: Number(item.amount),
+                    property_unit_id: item.property_id,
+                    billing_batch_list_id:
+                        item.billing_batch_list_id === undefined
+                            ? null
+                            : item.billing_batch_list_id,
+                    billing_readings_list_id:
+                        item.billing_readings_list_id === undefined
+                            ? null
+                            : item.billing_readings_list_id,
                 };
             }),
         };
@@ -232,6 +299,7 @@ export default function JournalForm({
                     <table className="table_list forCrud">
                         <thead className="textRed">
                             <tr>
+                                <th>PROPERTY</th>
                                 <th>CHARGE</th>
                                 <th>DESCRIPTION</th>
                                 <th>UNIT PRICE</th>
@@ -243,17 +311,34 @@ export default function JournalForm({
                             </tr>
                         </thead>
                         <tbody>
-                            {isBilling?.map((item: any, index: number) => (
-                                <List
-                                    key={index}
-                                    index={index}
-                                    setState={setBilling}
-                                    itemList={item}
-                                    isState={isBilling}
-                                />
-                            ))}
+                            {isBilling?.map(
+                                (item: billingObject, index: number) => (
+                                    <List
+                                        key={index}
+                                        index={index}
+                                        setState={setBilling}
+                                        itemList={item}
+                                        isState={isBilling}
+                                        isUnitCodes={isUnitCodes}
+                                    />
+                                )
+                            )}
                         </tbody>
                     </table>
+                    {isLoading && (
+                        <div className="top-0 left-0 absolute w-full h-full flex justify-center items-center">
+                            <aside className="text-center flex justify-center py-5">
+                                <BarLoader
+                                    color={"#8f384d"}
+                                    height="10px"
+                                    width="200px"
+                                    aria-label="Loading Spinner"
+                                    data-testid="loader"
+                                />
+                            </aside>
+                        </div>
+                    )}
+                    {isError && <TableErrorMessage />}
                 </div>
                 <div className="mt-10 border-b border-ThemeRed"></div>
                 <div className="flex flex-wrap justify-end py-5 480px:justify-start">
@@ -344,9 +429,11 @@ type List = {
     itemList: billingObject;
     setState: Function;
     isState: billingArray;
+    isUnitCodes: any;
 };
 
-const List = ({ itemList, setState, isState, index }: List) => {
+const List = ({ itemList, setState, isState, index, isUnitCodes }: List) => {
+    const { setPrompt } = useContext(AppContext);
     // Computation of Amount and Vat
     useEffect(() => {
         const Vat =
@@ -385,6 +472,10 @@ const List = ({ itemList, setState, isState, index }: List) => {
                 uom: "",
                 vat: "",
                 amount: "",
+                property_unit_code: "",
+                property_id: "",
+                billing_batch_list_id: null,
+                billing_readings_list_id: null,
             },
         ]);
     };
@@ -420,23 +511,90 @@ const List = ({ itemList, setState, isState, index }: List) => {
                         ...item,
                         quantity: e.target.value,
                     };
+                } else if (key === "unit_code") {
+                    return {
+                        ...item,
+                        quantity: e.target.value,
+                    };
                 }
             }
             return item;
         });
         setState(newItems);
     };
+    const UpdateUnitCode = (unit_code: string, id: string) => {
+        // if (isState.some((some) => some.property_unit_code === unit_code)) {
+        //     setPrompt({
+        //         message: "Unit Code already selected",
+        //         toggle: true,
+        //         type: "draft",
+        //     });
+        //     return;
+        // }
+        const newItems = isState.map((item: any) => {
+            if (itemList.id == item.id) {
+                return {
+                    ...item,
+                    property_unit_code: unit_code,
+                    property_id: id,
+                };
+            }
+            return item;
+        });
+        setState(newItems);
+    };
+    const [toggleUC, setToggleUC] = useState(false);
     return (
         <tr>
             <td>
-                <DropDownCharge
-                    UpdateStateHandler={updateValue}
-                    itemDetail={itemList}
+                <DynamicPopOver
+                    className="w-full"
+                    samewidth={true}
+                    toRef={
+                        <input
+                            type="text"
+                            value={itemList.property_unit_code}
+                            className={`field ${
+                                itemList.billing_readings_list_id !== null &&
+                                "disabled"
+                            }`}
+                            readOnly
+                            onClick={() => setToggleUC(true)}
+                        />
+                    }
+                    toPop={
+                        <>
+                            {toggleUC && (
+                                <UnitCodeDropdownList
+                                    isUnitCodes={isUnitCodes}
+                                    setToggle={setToggleUC}
+                                    UpdateUnitCode={UpdateUnitCode}
+                                />
+                            )}
+                        </>
+                    }
                 />
             </td>
             <td>
+                {itemList.billing_readings_list_id !== null ? (
+                    <input
+                        type="text"
+                        readOnly
+                        value={itemList.charge}
+                        className="field w-full disabled"
+                    />
+                ) : (
+                    <DropDownCharge
+                        UpdateStateHandler={updateValue}
+                        itemDetail={itemList}
+                    />
+                )}
+            </td>
+            <td>
                 <input
-                    className="field"
+                    className={`field ${
+                        itemList.billing_readings_list_id !== null && "disabled"
+                    }`}
                     type="text"
                     value={itemList.description}
                     onChange={(e) => updateValue("description", e)}
@@ -444,7 +602,9 @@ const List = ({ itemList, setState, isState, index }: List) => {
             </td>
             <td>
                 <InputNumberForTable
-                    className="field number"
+                    className={`field number ${
+                        itemList.billing_readings_list_id !== null && "disabled"
+                    }`}
                     value={Number(itemList.unit_price)}
                     onChange={updateValue}
                     type={"unit_price"}
@@ -452,7 +612,9 @@ const List = ({ itemList, setState, isState, index }: List) => {
             </td>
             <td>
                 <input
-                    className="field"
+                    className={`field ${
+                        itemList.billing_readings_list_id !== null && "disabled"
+                    }`}
                     type="number"
                     value={itemList.quantity}
                     onChange={(e) => updateValue("quantity", e)}
@@ -493,5 +655,46 @@ const List = ({ itemList, setState, isState, index }: List) => {
                 )}
             </td>
         </tr>
+    );
+};
+
+type UnitCodeDropdown = {
+    isUnitCodes: any;
+    setToggle: Function;
+    UpdateUnitCode: (unit_code: string, id: string) => void;
+};
+
+const UnitCodeDropdownList = ({
+    isUnitCodes,
+    setToggle,
+    UpdateUnitCode,
+}: UnitCodeDropdown) => {
+    const modal = useRef<any>();
+    useEffect(() => {
+        const clickOutSide = (e: any) => {
+            if (!modal.current.contains(e.target)) {
+                setToggle(false);
+            }
+        };
+        document.addEventListener("mousedown", clickOutSide);
+        return () => {
+            document.removeEventListener("mousedown", clickOutSide);
+        };
+    });
+    return (
+        <ul className="dropdown-list w-full" ref={modal}>
+            {isUnitCodes.map((item: any, index: number) => (
+                <li
+                    key={index}
+                    onClick={() => {
+                        UpdateUnitCode(item.unit_code, item.id);
+                        setToggle(false);
+                    }}
+                >
+                    {item.unit_code}
+                </li>
+            ))}
+            {isUnitCodes.length <= 0 && <li>Customer have no Property</li>}
+        </ul>
     );
 };

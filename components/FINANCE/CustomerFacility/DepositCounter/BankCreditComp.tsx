@@ -601,6 +601,14 @@ const List = ({
     if (itemDetail.rec_ref_id === "" && itemDetail.childrenBC.length <= 0) {
         SelectedRefRec = [];
     }
+    let credit_date: any = parse(
+        itemDetail.credit_date,
+        "yyyy-MM-dd",
+        new Date()
+    );
+    credit_date = isValid(credit_date)
+        ? format(credit_date, "MMM dd yyyy")
+        : "";
     return (
         <>
             <tr className={`${itemDetail.childrenBC.length > 0 && "noBorder"}`}>
@@ -623,7 +631,7 @@ const List = ({
                     <h4 className="field disabled ">{itemDetail.index}</h4>
                 </td>
                 <td>{itemDetail.bank_account_no}</td>
-                <td>{itemDetail.credit_date}</td>
+                <td>{credit_date}</td>
                 <td>
                     <TextNumberDisplay
                         value={itemDetail.credit_amount}
