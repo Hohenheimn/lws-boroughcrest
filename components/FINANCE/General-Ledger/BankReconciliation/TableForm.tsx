@@ -54,6 +54,7 @@ export default function TableForm() {
     });
     const [isTableItem, setTableItem] = useState<isTableitemArray>([]);
     const onSucces = () => {
+        setEdit(false);
         setPrompt({
             toggle: true,
             message: "Bank reconciliation successfully saved!",
@@ -190,10 +191,12 @@ export default function TableForm() {
                 <ul className={styleSearch.navigation}>
                     <li className={styleSearch.importExportPrint}>
                         <div className="mr-5">
-                            <PencilButton
-                                FunctionOnClick={() => setEdit(true)}
-                                title={"Edit"}
-                            />
+                            {!isEdit && (
+                                <PencilButton
+                                    FunctionOnClick={() => setEdit(true)}
+                                    title={"Edit"}
+                                />
+                            )}
                         </div>
                         <Tippy theme="ThemeRed" content="Export">
                             <div className={styleSearch.icon}>

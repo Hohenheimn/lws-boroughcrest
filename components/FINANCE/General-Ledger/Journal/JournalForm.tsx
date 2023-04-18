@@ -279,7 +279,7 @@ export default function JournalForm({
                         </aside>
                     </div>
                     {isSave && (
-                        <ul>
+                        <ul className="bottomSide">
                             <li>
                                 <button
                                     type="submit"

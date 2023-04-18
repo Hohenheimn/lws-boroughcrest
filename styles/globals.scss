@@ -661,6 +661,9 @@ input[type="number"] {
             }
         }
     }
+    ul.bottomSide {
+        @apply top-[unset] bottom-[110%];
+    }
 }
 .SimpleTab {
     @apply flex mb-5;

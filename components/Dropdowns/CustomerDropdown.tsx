@@ -19,9 +19,9 @@ export default function CustomerDropdown({ isCustomer, setCustomer }: Props) {
         setSearchTemp(isCustomer.name);
     }, [isCustomer]);
     const selectedItem = (CustomerObject: any, properties: any) => {
-        const cloneToGetProperties = CustomerObject?.properties.map(
+        const cloneToGetProperties = CustomerObject?.properties[0].map(
             (item: any) => {
-                return item[0].unit_code;
+                return item.unit_code;
             }
         );
         setCustomer({
@@ -29,7 +29,7 @@ export default function CustomerDropdown({ isCustomer, setCustomer }: Props) {
             name: CustomerObject.name,
             class: CustomerObject.class,
             property: cloneToGetProperties,
-            properties: properties,
+            properties: properties[0],
         });
         setSearchTemp(CustomerObject.name);
         setToggle(false);

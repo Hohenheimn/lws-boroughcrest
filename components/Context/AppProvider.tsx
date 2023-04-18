@@ -1,4 +1,5 @@
 import { CustomerFormDefaultValue } from "../ADMIN/Customer/CustomerForm/CustomerForm";
+import { LoginUserInfo } from "../HOC/LoginUser/UserInfo";
 import AppContext from "./AppContext";
 import { useState, useReducer } from "react";
 
@@ -184,13 +185,7 @@ export default function AppProvider({ children }: AppProvider) {
         url: "",
     });
 
-    const [userInfo, setUserInfo] = useState({
-        name: "",
-        email: "",
-        email_verified: "",
-        created_at: "",
-        updated_at: "",
-    });
+    const [userInfo, setUserInfo] = useState();
 
     const [isSearchBar, setSearchBar] = useState("");
     return (

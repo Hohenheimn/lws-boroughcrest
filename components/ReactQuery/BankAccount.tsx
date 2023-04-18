@@ -23,7 +23,7 @@ export const GetBA = (Keyword: string) => {
     return useQuery(["get-bank-account", Keyword], () => {
         return api.get(
             `/finance/general-ledger/bank-accounts?keywords=${
-                Keyword === undefined || Keyword === undefined ? "" : Keyword
+                Keyword === undefined || Keyword === null ? "" : Keyword
             }`,
             {
                 headers: {
