@@ -67,6 +67,7 @@ export default function Modify() {
                         previous_reading: item.previous_reading,
                         current_reading: item.current_reading,
                         consumption: item.consumption,
+                        modifiable: item.modifiable,
                     };
                 }),
             }}
