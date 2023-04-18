@@ -437,6 +437,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                                     value: e.target.value,
                                                 })
                                             }
+                                            autoComplete="off"
                                             onClick={() =>
                                                 setUOM({
                                                     ...isUOM,

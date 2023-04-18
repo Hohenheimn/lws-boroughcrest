@@ -124,10 +124,6 @@ export default function JournalForm({
         }
     }, [data?.status]);
 
-    useEffect(() => {
-        console.log(isBilling);
-    }, [isBilling]);
-
     const onSuccess = () => {
         setPrompt({
             message: `Invoice successfully ${
@@ -434,6 +430,9 @@ type List = {
 
 const List = ({ itemList, setState, isState, index, isUnitCodes }: List) => {
     const { setPrompt } = useContext(AppContext);
+    useEffect(() => {
+        console.log(isUnitCodes);
+    }, [isUnitCodes]);
     // Computation of Amount and Vat
     useEffect(() => {
         const Vat =
@@ -523,14 +522,14 @@ const List = ({ itemList, setState, isState, index, isUnitCodes }: List) => {
         setState(newItems);
     };
     const UpdateUnitCode = (unit_code: string, id: string) => {
-        // if (isState.some((some) => some.property_unit_code === unit_code)) {
-        //     setPrompt({
-        //         message: "Unit Code already selected",
-        //         toggle: true,
-        //         type: "draft",
-        //     });
-        //     return;
-        // }
+        if (isState.some((some) => some.property_unit_code === unit_code)) {
+            setPrompt({
+                message: "Unit Code already selected",
+                toggle: true,
+                type: "draft",
+            });
+            return;
+        }
         const newItems = isState.map((item: any) => {
             if (itemList.id == item.id) {
                 return {
