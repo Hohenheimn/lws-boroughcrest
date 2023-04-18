@@ -104,19 +104,22 @@ export default function JournalTable({ type, isPeriod, setPeriod }: Props) {
                     };
                 });
                 if (
-                    CloneArray.length === isSelectedIDs.length &&
-                    CloneArray.length !== 0
+                    CloneArray.length !== 0 &&
+                    CloneArray.every((val: any) =>
+                        isSelectedIDs.includes(val.id)
+                    )
                 ) {
                     selectAll = true;
+                } else {
+                    selectAll = false;
                 }
-
                 setTableItem({
                     itemArray: CloneArray,
                     selectAll: selectAll,
                 });
             }
         }
-    }, [data]);
+    }, [data, isSelectedIDs]);
 
     const selectAll = () => {
         if (isTableItem.selectAll) {

@@ -130,9 +130,11 @@ export default function SelectProperty({
                     select: select,
                 };
             });
+            const clonedIDS = CloneArray.map((item: isTableItemObj) => item.id);
+            const cloneSelected = isSelectedIDs.map((item) => item.id);
             if (
                 CloneArray.length !== 0 &&
-                CloneArray.every((val: any) => isSelectedIDs.includes(val.id))
+                clonedIDS.every((item: any) => cloneSelected.includes(item))
             ) {
                 selectAll = true;
             } else {
@@ -144,7 +146,7 @@ export default function SelectProperty({
                 selectAll: selectAll,
             });
         }
-    }, [data, isSearch, formType]);
+    }, [data, isSearch, formType, isSelectedIDs]);
 
     const NextHandler = () => {
         if (isSelectedIDs.length <= 0) {
