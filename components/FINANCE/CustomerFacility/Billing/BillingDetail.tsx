@@ -24,7 +24,7 @@ export type InvoiceDetail = {
         datetime: string;
     }[];
     status: string;
-    invoice_list: InvoiceList[];
+    invoice_list: ShowInvoice[];
 };
 
 export type InvoiceList = {
@@ -45,6 +45,32 @@ export type InvoiceList = {
     amount: number | string;
     billing_batch_list_id: string;
     billing_readings_list_id: string;
+    property_unit_code?: string;
+    property_id?: string;
+};
+
+export type ShowInvoice = {
+    id: string | number;
+    charge: {
+        id: number | string;
+        name: string;
+        charge_uom_id: number | string;
+        vat_percent: number | string;
+        uom: {
+            name: string;
+        };
+    };
+    description: string;
+    unit_price: number | string;
+    quantity: number | string;
+    vat: number | string;
+    amount: number | string;
+    billing_batch_list_id: string;
+    billing_readings_list_id: string;
+    property: {
+        id: string | number;
+        unit_code: string;
+    };
 };
 
 type Props = {

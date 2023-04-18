@@ -293,7 +293,7 @@ export default function TableForm() {
                     </tbody>
                 </table>
 
-                {isLoading && (
+                {isLoading && isBankAccount.id !== "" && (
                     <div className="w-full h-full flex justify-center items-center">
                         <aside className="text-center flex justify-center py-5">
                             <BarLoader
@@ -308,7 +308,7 @@ export default function TableForm() {
                 )}
                 {isError && <TableErrorMessage />}
             </div>
-            {isEdit && (
+            {isEdit && isBankAccount.id !== "" && (
                 <div className="flex justify-end py-5 mt-20">
                     <button
                         className="button_cancel"

@@ -184,7 +184,9 @@ const List = ({ itemDetail, UpdateHandler }: List) => {
                     <Tippy
                         theme="ThemeRed"
                         content={
-                            <p className=" text-[12px]">lorem lorem lorem</p>
+                            <p className=" text-[12px]">
+                                No cash Inbound or Outbound
+                            </p>
                         }
                     >
                         <div className="absolute left-[5px] top-[50%] translate-y-[-50%] text-[14px] text-ThemeRed">

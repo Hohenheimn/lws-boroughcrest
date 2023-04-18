@@ -22,7 +22,9 @@ export const CreateBA = (success: any, error: any) => {
 export const GetBA = (Keyword: string) => {
     return useQuery(["get-bank-account", Keyword], () => {
         return api.get(
-            `/finance/general-ledger/bank-accounts?keywords=${Keyword}`,
+            `/finance/general-ledger/bank-accounts?keywords=${
+                Keyword === undefined || Keyword === undefined ? "" : Keyword
+            }`,
             {
                 headers: {
                     Authorization: "Bearer " + getCookie("user"),
