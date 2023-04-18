@@ -77,7 +77,7 @@ export default function ReadingPropertyForm({
             toggle: true,
         });
         toggle(false);
-        router.push("/finance/customer-facility/billing/record-meter-reading");
+        router.push("/finance/customer-facility/billing/invoice-list");
     };
 
     const onError = (e: any) => {
@@ -107,9 +107,9 @@ export default function ReadingPropertyForm({
         }
 
         DefaultValue.properties.map((item) => {
-            if (item.previous_reading <= 0 || item.current_reading <= 0) {
+            if (item.current_reading <= 0) {
                 setPrompt({
-                    message: "Fill out all field",
+                    message: "Fill out Current Reading",
                     type: "draft",
                     toggle: true,
                 });
