@@ -100,7 +100,7 @@ export default function SelectProperty({
     const { isLoading, isError, data } = GetPropertyList(
         TablePage,
         isSearch,
-        TablePage
+        10
     );
 
     useEffect(() => {
