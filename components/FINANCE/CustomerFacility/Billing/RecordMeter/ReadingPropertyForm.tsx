@@ -94,7 +94,7 @@ export default function ReadingPropertyForm({
         let validate = true;
         if (
             DefaultValue.charge.id === "" ||
-            DefaultValue.charge.rate <= 0 ||
+            isNaN(DefaultValue.charge.rate) ||
             periodProperty.from === "" ||
             periodProperty.to === ""
         ) {
@@ -175,7 +175,6 @@ export default function ReadingPropertyForm({
                     <InputNumberForForm
                         noPeso={true}
                         className={"field number"}
-                        suffix={"%"}
                         isValue={DefaultValue.charge.rate}
                         setValue={(key, value) => {
                             setDefaultValue({

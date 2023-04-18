@@ -94,6 +94,11 @@ export default function JournalForm({
 
     useEffect(() => {
         if (isCustomer.id !== "") {
+            // removing invoice of first selected customer
+            const FilterBilling = isBilling.filter(
+                (filterItem) => filterItem.id !== -1
+            );
+            // Add invoice of selected Customer
             const InvoiceList = data?.data.map((item: any) => {
                 return {
                     id: -1,
@@ -118,12 +123,13 @@ export default function JournalForm({
                             : item.billing_readings_list_id,
                 };
             });
-
             if (InvoiceList !== undefined) {
-                setBilling([...isBilling, ...InvoiceList]);
+                setBilling([...FilterBilling, ...InvoiceList]);
+            } else {
+                setBilling(FilterBilling);
             }
         }
-    }, [data?.status]);
+    }, [data]);
 
     const onSuccess = () => {
         setPrompt({

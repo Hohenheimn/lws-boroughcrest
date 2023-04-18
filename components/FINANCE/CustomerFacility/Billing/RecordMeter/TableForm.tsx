@@ -298,7 +298,7 @@ export default function TableForm() {
                 <aside className="1280px:w-2/4 640px:w-full">
                     <p className=" labelField">
                         READING SERIAL:
-                        <span className=" text-[#2e4364] font-NHU-medium">
+                        <span className="ml-2 text-[#2e4364] font-NHU-medium">
                             {isReading.reading_serial}
                         </span>
                     </p>
@@ -346,7 +346,6 @@ export default function TableForm() {
                         <p className=" labelField">RATE</p>
                         <TextNumberDisplay
                             className="min-w-[150px] text-end field disabled"
-                            suffix="%"
                             value={Number(isReading.base_rate)}
                         />
                     </li>
@@ -492,21 +491,21 @@ const List = ({
 
             <td>
                 <TextNumberDisplay
-                    className="withPeso w-full text-end"
+                    className="w-full text-end"
                     value={itemDetail.previous_reading}
                 />
             </td>
 
             <td>
                 <TextNumberDisplay
-                    className="withPeso w-full text-end"
+                    className="w-full text-end"
                     value={itemDetail.current_reading}
                 />
             </td>
 
             <td>
                 <TextNumberDisplay
-                    className="withPeso w-full text-end"
+                    className="w-full text-end"
                     value={itemDetail.consumption}
                 />
             </td>
