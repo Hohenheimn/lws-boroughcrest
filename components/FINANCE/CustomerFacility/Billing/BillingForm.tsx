@@ -190,10 +190,28 @@ export default function JournalForm({
         setSave(false);
         let validate = true;
         setButtonClicked(button);
-        const Payload = {
-            customer_id: isCustomer.id,
-            due_amount: Number(totalAmount),
-            invoice_list: isBilling.map((item: billingObject) => {
+
+        const InvoiceListInputed = isBilling.map((item: billingObject) => {
+            return {
+                charge_id: Number(item.charge_id),
+                description: item.description,
+                unit_price: Number(item.unit_price),
+                quantity: Number(item.quantity),
+                vat: Number(item.vat),
+                amount: Number(item.amount),
+                property_unit_id: item.property_id,
+                billing_batch_list_id:
+                    item.billing_batch_list_id === undefined
+                        ? null
+                        : item.billing_batch_list_id,
+                billing_readings_list_id:
+                    item.billing_readings_list_id === undefined
+                        ? null
+                        : item.billing_readings_list_id,
+            };
+        });
+        const InvoiceListFromCustomer = isBillingFromCustomer.map(
+            (item: billingObject) => {
                 return {
                     charge_id: Number(item.charge_id),
                     description: item.description,
@@ -211,8 +229,15 @@ export default function JournalForm({
                             ? null
                             : item.billing_readings_list_id,
                 };
-            }),
+            }
+        );
+
+        const Payload = {
+            customer_id: isCustomer.id,
+            due_amount: Number(totalAmount),
+            invoice_list: [...InvoiceListFromCustomer, ...InvoiceListInputed],
         };
+
         if (isCustomer.id === "") {
             setPrompt({
                 message: "Fill out all fields",
