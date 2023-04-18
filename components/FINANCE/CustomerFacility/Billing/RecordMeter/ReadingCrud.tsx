@@ -134,7 +134,7 @@ const ReadingCrudList = ({
             });
             setArray(cloneArray);
         }
-    }, [data]);
+    }, [data?.status]);
 
     return (
         <div className="crud-container" ref={modal}>
@@ -179,10 +179,7 @@ const ReadingCrudList = ({
             {isWarning !== "" && (
                 <p className="text-[12px] text-ThemeRed">{isWarning}</p>
             )}
-            <h1
-                className="cursor-pointer text-ThemeRed text-[12px] inline-block py-2 hover:underline"
-                onClick={AddArray}
-            >
+            <h1 className="add" onClick={AddArray}>
                 ADD READING
             </h1>
         </div>
