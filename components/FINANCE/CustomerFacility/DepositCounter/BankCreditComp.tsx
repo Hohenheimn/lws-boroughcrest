@@ -234,8 +234,15 @@ export default function BankCreditComp({
                 };
             });
 
-            if (CloneArray.length === isSelectedBankCreditIDs.length) {
+            if (
+                CloneArray.length !== 0 &&
+                CloneArray.every((val: any) =>
+                    isSelectedBankCreditIDs.includes(val.id)
+                )
+            ) {
                 selectAll = true;
+            } else {
+                selectAll = false;
             }
 
             setBankCredit({
@@ -243,7 +250,7 @@ export default function BankCreditComp({
                 selectAll: selectAll,
             });
         }
-    }, [data]);
+    }, [data, isSelectedBankCreditIDs]);
 
     let buttonClicked = "";
 
