@@ -35,6 +35,7 @@ type isTableItemObj = {
     applied_advances: number | null;
     billing_date: string;
     due_date: string;
+    date: string;
     select: boolean;
 };
 
@@ -91,8 +92,8 @@ export default function BillingList() {
 
     useEffect(() => {
         let selectAll = false;
-        if (data?.data.data.length > 0) {
-            let CloneArray = data?.data.data.map((item: isTableItemObj) => {
+        if (data?.data?.data?.length > 0) {
+            let CloneArray = data?.data?.data.map((item: isTableItemObj) => {
                 let select = false;
                 if (isSelectedIDs.includes(item.id)) {
                     select = true;
@@ -103,6 +104,7 @@ export default function BillingList() {
                     "yyyy-MM-dd",
                     new Date()
                 );
+                const date = parse(item?.date, "yyyy-MM-dd", new Date());
                 return {
                     id: item.id,
                     status: item.status,
@@ -117,6 +119,7 @@ export default function BillingList() {
                     },
                     due_amount: item.due_amount,
                     applied_advances: item.applied_advances,
+                    date: isValid(date) ? format(date, "MMM dd yyyy") : "",
                     billing_date: isValid(billing_date)
                         ? format(billing_date, "MMM dd yyyy")
                         : "",
@@ -668,7 +671,7 @@ const List = ({
                         <div>
                             <h2>
                                 {type === "unposted"
-                                    ? itemDetail.billing_date
+                                    ? itemDetail.date
                                     : itemDetail.invoice_no}
                             </h2>
                         </div>

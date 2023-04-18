@@ -72,7 +72,13 @@ export default function SelectProperty({
     const selectAll = () => {
         if (isTableItem.selectAll) {
             // remove
-            setSelectedIDs([]);
+            const cantberemove = DefaultValue.properties.map(
+                (item) => item.property_unit_id
+            );
+            const selectedAll = isSelectedIDs.filter((item) =>
+                cantberemove.includes(item.id)
+            );
+            setSelectedIDs(selectedAll);
         } else {
             // add
             const Properties = isTableItem.itemArray.map((item) => {
@@ -175,6 +181,7 @@ export default function SelectProperty({
                     previous_reading: 0,
                     current_reading: 0,
                     consumption: 0,
+                    modifiable: true,
                 };
             }
         });
@@ -294,6 +301,9 @@ export default function SelectProperty({
                                             setTableItem={setTableItem}
                                             setSelectedIDs={setSelectedIDs}
                                             isSelectedIDs={isSelectedIDs}
+                                            propertiesvalue={
+                                                DefaultValue.properties
+                                            }
                                         />
                                     )
                                 )}
@@ -360,6 +370,7 @@ type ListProps = {
     setTableItem: Function;
     isSelectedIDs: { id: number; unit_code: string }[];
     setSelectedIDs: Function;
+    propertiesvalue: isTableForm[];
 };
 const TableList = ({
     itemDetail,
@@ -367,7 +378,10 @@ const TableList = ({
     setTableItem,
     isSelectedIDs,
     setSelectedIDs,
+    propertiesvalue,
 }: ListProps) => {
+    const { setPrompt } = useContext(AppContext);
+
     const updateValue = (e: any) => {
         const newItems = isTableItem?.itemArray.map((item: any) => {
             if (itemDetail.id == item.id) {
@@ -400,13 +414,31 @@ const TableList = ({
             selectAll: false,
         });
     };
+
+    const CheckIfCanRemove = (e: any) => {
+        let Validate = true;
+        propertiesvalue.map((item) => {
+            if (item.property_unit_id == itemDetail.id) {
+                if (item.modifiable === false) {
+                    Validate = false;
+                    setPrompt({
+                        message: "Property already tagged, Cannot be removed",
+                        type: "draft",
+                        toggle: true,
+                    });
+                }
+            }
+        });
+        if (Validate) updateValue(e);
+    };
+
     return (
         <tr>
             <td className="checkbox">
                 <div className="item">
                     <input
                         type="checkbox"
-                        onChange={(e: any) => updateValue(e)}
+                        onChange={(e: any) => CheckIfCanRemove(e)}
                         checked={itemDetail.select}
                     />
                 </div>

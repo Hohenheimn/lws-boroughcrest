@@ -174,16 +174,14 @@ const DateSelection = ({
                     </h3>
                     <ul className="max-h-[200px] flex flex-wrap overflow-auto">
                         {isLoading && (
-                            <li className=" w-full border-b text-[15px] hover:text-ThemeRed text-center cursor-pointer py-1">
-                                <li className=" w-full flex justify-center text-[15px] hover:text-ThemeRed text-center cursor-pointer py-1">
-                                    <BarLoader
-                                        color={"#8f384d"}
-                                        height="5px"
-                                        width="100px"
-                                        aria-label="Loading Spinner"
-                                        data-testid="loader"
-                                    />
-                                </li>
+                            <li className=" w-full flex justify-center text-[15px] hover:text-ThemeRed text-center cursor-pointer py-1">
+                                <BarLoader
+                                    color={"#8f384d"}
+                                    height="5px"
+                                    width="100px"
+                                    aria-label="Loading Spinner"
+                                    data-testid="loader"
+                                />
                             </li>
                         )}
                         {data?.data.map((item: period, index: number) => (

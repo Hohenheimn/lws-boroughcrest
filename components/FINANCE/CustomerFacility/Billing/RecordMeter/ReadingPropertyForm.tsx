@@ -21,6 +21,7 @@ export type isTableForm = {
     previous_reading: number;
     current_reading: number;
     consumption: number;
+    modifiable: boolean;
 };
 
 type Props = {
@@ -296,7 +297,9 @@ const List = ({ itemDetail, DefaultValue, setDefaultValue }: ListProps) => {
             </td>
             <td>
                 <InputNumberForTable
-                    className={"field number"}
+                    className={`field number ${
+                        !itemDetail.modifiable && "disabled"
+                    }`}
                     value={itemDetail.previous_reading}
                     onChange={updateValue}
                     type={"previous_reading"}
@@ -304,7 +307,9 @@ const List = ({ itemDetail, DefaultValue, setDefaultValue }: ListProps) => {
             </td>
             <td>
                 <InputNumberForTable
-                    className={"field number"}
+                    className={`field number ${
+                        !itemDetail.modifiable && "disabled"
+                    }`}
                     value={itemDetail.current_reading}
                     onChange={updateValue}
                     type={"current_reading"}

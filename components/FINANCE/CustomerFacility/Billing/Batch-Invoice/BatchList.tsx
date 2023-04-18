@@ -33,6 +33,7 @@ export type BatchInvoiceDetail = {
         name: string;
     }[];
     select: boolean;
+    modifiable: boolean;
 };
 
 export default function BatchList() {
@@ -122,6 +123,7 @@ export default function BatchList() {
                         description: item.description,
                         billing_groups: item.billing_groups,
                         select: select,
+                        modifiable: item.modifiable,
                     };
                 }
             );
@@ -338,26 +340,28 @@ const TableList = ({
             <td className=" text-DarkBlue">{itemDetail.description}</td>
             <td className=" text-DarkBlue">{groupsName}</td>
             <td className="action">
-                <div className="item w-full flex justify-center">
-                    <div onClick={DeleteHandler}>
-                        {isLoading ? (
-                            <MoonLoader size={12} />
-                        ) : (
-                            <MinusButtonTable />
-                        )}
-                    </div>
+                {itemDetail?.modifiable && (
+                    <div className="item w-full flex justify-center">
+                        <div onClick={DeleteHandler}>
+                            {isLoading ? (
+                                <MoonLoader size={12} />
+                            ) : (
+                                <MinusButtonTable />
+                            )}
+                        </div>
 
-                    <div
-                        className="ml-5 1024px:ml-2"
-                        onClick={() => {
-                            router.push(
-                                `/finance/customer-facility/billing/batch-invoice?modify=${itemDetail.id}`
-                            );
-                        }}
-                    >
-                        <PencilButtonTable />
+                        <div
+                            className="ml-5 1024px:ml-2"
+                            onClick={() => {
+                                router.push(
+                                    `/finance/customer-facility/billing/batch-invoice?modify=${itemDetail.id}`
+                                );
+                            }}
+                        >
+                            <PencilButtonTable />
+                        </div>
                     </div>
-                </div>
+                )}
             </td>
         </tr>
     );
