@@ -524,7 +524,10 @@ input[type="number"] {
 
 // For dropdown Table
 .crud-container {
-    @apply overflow-y-auto max-h-[300px] p-2 pt-0 relative;
+    @apply overflow-y-auto min-h-[200px] max-h-[400px] p-2 pt-0 relative pb-9;
+    h1 {
+        @apply cursor-pointer text-ThemeRed text-[12px] inline-block py-2 hover:underline absolute bottom-[0px] left-[10px];
+    }
 }
 .crud-table {
     @apply w-[300px] static;
@@ -918,7 +921,7 @@ input[type="number"] {
     @apply p-1 820px:h-8 rounded-md outline-none shadow-md text-[#757575];
 }
 .dropdown-list {
-    @apply max-h-[150px] overflow-auto w-full;
+    @apply max-h-[150px] overflow-auto w-full shadow-lg border;
 
     li {
         @apply w-full cursor-pointer px-3 text-[#545454] text-[14px] py-1 1550px:px-2 1550px:py-1 border-b border-ThemeRed hover:bg-ThemeRed hover:text-white transition-all duration-75;

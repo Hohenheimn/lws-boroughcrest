@@ -14,6 +14,7 @@ import {
 } from "../../ReactQuery/PropertyMethod";
 import { useQueryClient } from "react-query";
 import AppContext from "../../Context/AppContext";
+import DynamicPopOver from "../../Reusable/DynamicPopOver";
 
 const Tower = ({ set, update, is, isValID, isObject, setObject }: any) => {
     const modal = useRef<any>();
@@ -70,7 +71,7 @@ const Tower = ({ set, update, is, isValID, isObject, setObject }: any) => {
             });
             setArray(cloneArray);
         }
-    }, [data]);
+    }, [data?.status]);
 
     return (
         <div className="crud-container" ref={modal}>
@@ -308,28 +309,36 @@ const List = ({
                 />
             </td>
             <td onClick={(e) => !isModify && Selected(e)} className="bg-hover">
-                <div className="dropdown">
-                    <input
-                        type="text"
-                        className={`${!isModify && "disabled"}`}
-                        value={isProject.value}
-                        onChange={(e: any) => {
-                            setProject({
-                                ...isProject,
-                                value: e.target.value,
-                            });
-                        }}
-                        onFocus={() => setProjectList(true)}
-                    />
-                    {isProjectList && (
-                        <ListDropdown
-                            set={setProjectList}
-                            updateVal={updateVal}
-                            isProject={isProject}
-                            setProject={setProject}
+                <DynamicPopOver
+                    className=""
+                    samewidth={true}
+                    toRef={
+                        <input
+                            type="text"
+                            className={`${!isModify && "disabled"}`}
+                            value={isProject.value}
+                            onChange={(e: any) => {
+                                setProject({
+                                    ...isProject,
+                                    value: e.target.value,
+                                });
+                            }}
+                            onFocus={() => setProjectList(true)}
                         />
-                    )}
-                </div>
+                    }
+                    toPop={
+                        <>
+                            {isProjectList && (
+                                <ListDropdown
+                                    set={setProjectList}
+                                    updateVal={updateVal}
+                                    isProject={isProject}
+                                    setProject={setProject}
+                                />
+                            )}
+                        </>
+                    }
+                />
             </td>
             <td className="action">
                 <div>
@@ -460,7 +469,7 @@ const ListDropdown = ({
     }
 
     return (
-        <ul ref={modal}>
+        <ul ref={modal} className="dropdown-list">
             {data?.data.map((item: any, index: number) => (
                 <li data-id={item.id} key={index} onClick={select}>
                     {item.name}
