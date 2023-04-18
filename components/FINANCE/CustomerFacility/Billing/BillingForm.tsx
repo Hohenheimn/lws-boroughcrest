@@ -61,7 +61,7 @@ export default function JournalForm({
     const { setPrompt } = useContext(AppContext);
     const [deleteToggle, setDeleteToggle] = useState(false);
     const router = useRouter();
-    const [buttonClicked, setButtonClicked] = useState("");
+    let buttonClicked = "";
     const [totalAmount, setTotalAmount] = useState<number | string>("");
     const [isSave, setSave] = useState(false);
     const [isBilling, setBilling] = useState<billingArray>(DefaultValue);
@@ -190,7 +190,7 @@ export default function JournalForm({
     const Submit = (button: string) => {
         setSave(false);
         let validate = true;
-        setButtonClicked(button);
+        buttonClicked = button;
 
         const InvoiceListInputed = isBilling.map((item: billingObject) => {
             return {
@@ -236,7 +236,7 @@ export default function JournalForm({
         const Payload = {
             customer_id: isCustomer.id,
             due_amount: Number(totalAmount),
-            invoice_list: [...InvoiceListFromCustomer, ...InvoiceListInputed],
+            invoice_list: [...InvoiceListInputed, ...InvoiceListFromCustomer],
         };
 
         if (isCustomer.id === "") {

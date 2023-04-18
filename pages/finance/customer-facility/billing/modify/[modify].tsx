@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BeatLoader } from "react-spinners";
 import { ShowInvoice } from "../../../../../components/FINANCE/CustomerFacility/Billing/BillingDetail";
 import BillingForm from "../../../../../components/FINANCE/CustomerFacility/Billing/BillingForm";
@@ -8,8 +8,12 @@ export default function Id({ id }: any) {
     const { isLoading, data, isError } = GetInvoiceListDetail(id);
 
     const InvoiceDetail = data?.data;
+    // Pass only the key of billing_readings_list_id is equal to null
+    const InvoiceList = InvoiceDetail?.invoice_list.filter(
+        (item: any) => item?.billing_readings_list_id === null
+    );
 
-    const Value = InvoiceDetail?.invoice_list.map((item: ShowInvoice) => {
+    const Value = InvoiceList?.map((item: ShowInvoice) => {
         return {
             id: item.id,
             charge: item.charge.name,
