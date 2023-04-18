@@ -422,7 +422,8 @@ const TableList = ({
                 if (item.modifiable === false) {
                     Validate = false;
                     setPrompt({
-                        message: "Property already tagged, Cannot be removed",
+                        message:
+                            "Property already been tagged, Cannot be removed",
                         type: "draft",
                         toggle: true,
                     });
