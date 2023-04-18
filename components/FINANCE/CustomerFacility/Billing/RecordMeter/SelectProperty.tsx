@@ -53,7 +53,7 @@ export default function SelectProperty({
         useState<DefaultValuePropertyReadingForm>(externalDefaultValue);
 
     const [isSelectedIDs, setSelectedIDs] = useState<
-        { id: number; project: string; tower: string }[]
+        { id: number; unit_code: string }[]
     >([]);
 
     useEffect(() => {
@@ -63,8 +63,7 @@ export default function SelectProperty({
         const addExistingID = DefaultValue.properties.map((item) => {
             return {
                 id: item.property_unit_id,
-                project: item.property,
-                tower: item.property,
+                unit_code: item.property,
             };
         });
         setSelectedIDs(addExistingID);
@@ -76,14 +75,13 @@ export default function SelectProperty({
             setSelectedIDs([]);
         } else {
             // add
-            const ReceiptBookIDs = isTableItem.itemArray.map((item) => {
+            const Properties = isTableItem.itemArray.map((item) => {
                 return {
                     id: Number(item.id),
-                    project: item.project.name,
-                    tower: item.tower.name,
+                    unit_code: item.unit_code,
                 };
             });
-            setSelectedIDs(ReceiptBookIDs);
+            setSelectedIDs(Properties);
         }
         const newItems = isTableItem?.itemArray.map((item: any) => {
             return {
@@ -170,7 +168,7 @@ export default function SelectProperty({
                 return cloneToFilter[0];
             } else {
                 return {
-                    property: item.project === "" ? item.tower : item.project,
+                    property: item.unit_code,
                     property_unit_id: Number(item.id),
                     previous_reading: 0,
                     current_reading: 0,
@@ -358,7 +356,7 @@ type ListProps = {
     itemDetail: isTableItemObj;
     isTableItem: isTable;
     setTableItem: Function;
-    isSelectedIDs: { id: number; project: string; tower: string }[];
+    isSelectedIDs: { id: number; unit_code: string }[];
     setSelectedIDs: Function;
 };
 const TableList = ({
@@ -383,8 +381,7 @@ const TableList = ({
                         ...isSelectedIDs,
                         {
                             id: item.id,
-                            project: item.project.name,
-                            tower: item.tower.name,
+                            unit_code: item.unit_code,
                         },
                     ]);
                 }
@@ -395,6 +392,7 @@ const TableList = ({
             }
             return item;
         });
+
         setTableItem({
             itemArray: newItems,
             selectAll: false,

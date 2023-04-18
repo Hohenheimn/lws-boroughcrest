@@ -94,11 +94,14 @@ const List = ({
     const { data, isLoading, isError } = useQuery(
         ["customer-dd-list", isSearchTemp],
         () => {
-            return api.get(`/admin/customer?keywords=${isSearchTemp}`, {
-                headers: {
-                    Authorization: "Bearer " + getCookie("user"),
-                },
-            });
+            return api.get(
+                `/admin/customer?keywords=${isSearchTemp}&owner_tenant_class=1`,
+                {
+                    headers: {
+                        Authorization: "Bearer " + getCookie("user"),
+                    },
+                }
+            );
         }
     );
 
