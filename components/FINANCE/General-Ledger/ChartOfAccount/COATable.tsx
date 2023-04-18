@@ -25,7 +25,9 @@ export default function COATable({ isSearchTable, isFilterTable }: Props) {
         ["COA-list", TablePage, isSearchTable],
         () => {
             return api.get(
-                `/finance/general-ledger/chart-of-accounts?keywords=${isSearchTable}&paginate=10&page=${TablePage}`,
+                `/finance/general-ledger/chart-of-accounts?keywords=${isSearchTable}&paginate=10&page=${
+                    isSearchTable === "" ? TablePage : 1
+                }`,
                 {
                     headers: {
                         Authorization: "Bearer " + getCookie("user"),

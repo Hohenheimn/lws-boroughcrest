@@ -404,7 +404,7 @@ export default function PropertyForm({
                                 {...register("unit_code")}
                                 onKeyDown={NumberBlockInvalidKey}
                                 onChange={(e: any) =>
-                                    e.target.value.length <= 3 &&
+                                    e.target.value.length <= 4 &&
                                     setUnitCode(e.target.value)
                                 }
                             />

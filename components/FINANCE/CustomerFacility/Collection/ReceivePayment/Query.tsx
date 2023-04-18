@@ -130,7 +130,9 @@ export const GetCollectionList = (
         ["collection-list", search, date_from, date_to, page, filterArray],
         () => {
             return api.get(
-                `/finance/customer-facility/collection?search=${search}&date_from=${date_from}&date_to=${date_to}&paginate=10&page=${page}&filters=${filterArray}`,
+                `/finance/customer-facility/collection?search=${search}&date_from=${date_from}&date_to=${date_to}&paginate=10&page=${
+                    search === "" ? page : 1
+                }&filters=${filterArray}`,
                 {
                     headers: { Authorization: "Bearer " + getCookie("user") },
                 }

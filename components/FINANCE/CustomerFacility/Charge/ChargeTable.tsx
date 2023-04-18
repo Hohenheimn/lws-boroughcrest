@@ -25,7 +25,9 @@ export default function ChargeTable({ page, setCreate }: Props) {
         ["charge-list", isSearch, TablePage],
         () => {
             return api.get(
-                `/finance/customer-facility/charges?keywords=${isSearch}&paginate=10&page=${TablePage}`,
+                `/finance/customer-facility/charges?keywords=${isSearch}&paginate=10&page=${
+                    isSearch === "" ? TablePage : 1
+                }`,
                 {
                     headers: {
                         Authorization: "Bearer " + getCookie("user"),

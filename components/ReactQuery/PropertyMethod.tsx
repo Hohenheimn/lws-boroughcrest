@@ -12,7 +12,9 @@ export const GetPropertyList = (
         ["Property-List", PageNumber, Keyword, RowNumber],
         () => {
             return api.get(
-                `/admin/property/unit?page=${PageNumber}&paginate=${RowNumber}&keywords=${Keyword}`,
+                `/admin/property/unit?page=${
+                    Keyword === "" ? PageNumber : 1
+                }&paginate=${RowNumber}&keywords=${Keyword}`,
                 {
                     headers: {
                         Authorization: "Bearer " + getCookie("user"),

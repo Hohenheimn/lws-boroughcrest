@@ -68,7 +68,9 @@ export const GetCustomerList = (
         ["get-customer-list", TablePage, isSearchBar, TableRows],
         () => {
             return api.get(
-                `/admin/customer?keywords=${isSearchBar}&paginate=${TableRows}&page=${TablePage}`,
+                `/admin/customer?keywords=${isSearchBar}&paginate=${TableRows}&page=${
+                    isSearchBar === "" ? TablePage : 1
+                }`,
                 {
                     headers: {
                         Authorization: "Bearer " + getCookie("user"),

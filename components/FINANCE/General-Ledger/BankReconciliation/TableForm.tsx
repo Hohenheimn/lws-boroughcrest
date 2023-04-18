@@ -284,6 +284,7 @@ export default function TableForm() {
                                                 prevBalance={prevBalance}
                                                 dateFrom={dateFrom}
                                                 dateTo={dateTo}
+                                                isEdit={isEdit}
                                             />
                                         )
                                     )}
@@ -344,6 +345,7 @@ type ListProps = {
     prevBalance: number | string;
     dateFrom: Date;
     dateTo: Date;
+    isEdit: boolean;
 };
 
 const List = ({
@@ -355,6 +357,7 @@ const List = ({
     prevBalance,
     dateFrom,
     dateTo,
+    isEdit,
 }: ListProps) => {
     const { setPrompt } = useContext(AppContext);
     const itemData: isTableitemObj = itemDetail;
@@ -496,7 +499,7 @@ const List = ({
                         value={itemData.date}
                         onChange={() => {}}
                         placeholder="dd/mm/yyyy"
-                        className={`field ${
+                        className={`field ${!isEdit && "disabled "} ${
                             itemData.status === "Posted" ||
                             (itemData.status === "Pending" && "disabled")
                         }`}
@@ -517,7 +520,9 @@ const List = ({
             </td>
             <td>
                 <InputNumberForTable
-                    className={`number field inline-block w-full bg-white ${debitValidate} ${
+                    className={`number field inline-block w-full bg-white ${
+                        !isEdit && "disabled "
+                    } ${debitValidate} ${
                         itemData.status === "Posted" ||
                         (itemData.status === "Pending" && "disabled")
                     }`}
@@ -528,7 +533,9 @@ const List = ({
             </td>
             <td>
                 <InputNumberForTable
-                    className={`number field inline-block w-full bg-white ${creditValidate} ${
+                    className={`number field inline-block w-full bg-white ${
+                        !isEdit && "disabled "
+                    } ${creditValidate} ${
                         itemData.status === "Posted" ||
                         (itemData.status === "Pending" && "disabled")
                     }`}
@@ -546,7 +553,7 @@ const List = ({
             <td>
                 <input
                     type="text"
-                    className={`field w-full ${
+                    className={`field ${!isEdit && "disabled "} w-full ${
                         itemData.status === "Posted" ||
                         (itemData.status === "Pending" && "disabled")
                     }`}
@@ -566,38 +573,40 @@ const List = ({
                     value={itemData.document_no}
                 />
             </td>
-            <td className="actionIcon">
-                {itemData.status === "Posted" ||
-                itemData.status === "Pending" ? (
-                    <Link
-                        href={`/finance/general-ledger/bank-reconciliation?view=${itemData.id}`}
-                    >
-                        <a>
-                            <AiOutlineInfoCircle className=" text-[16px]" />
-                        </a>
-                    </Link>
-                ) : (
-                    <>
-                        {isTableItem.length > 1 && (
-                            <div
-                                className=" cursor-pointer"
-                                onClick={RemoveRowHandler}
-                            >
-                                <HiMinus />
-                            </div>
-                        )}
-                    </>
-                )}
+            {isEdit && (
+                <td className="actionIcon">
+                    {itemData.status === "Posted" ||
+                    itemData.status === "Pending" ? (
+                        <Link
+                            href={`/finance/general-ledger/bank-reconciliation?view=${itemData.id}`}
+                        >
+                            <a>
+                                <AiOutlineInfoCircle className=" text-[16px]" />
+                            </a>
+                        </Link>
+                    ) : (
+                        <>
+                            {isTableItem.length > 1 && (
+                                <div
+                                    className=" cursor-pointer"
+                                    onClick={RemoveRowHandler}
+                                >
+                                    <HiMinus />
+                                </div>
+                            )}
+                        </>
+                    )}
 
-                {isTableItem.length - 1 === rowNumber && (
-                    <div
-                        className="ml-5 1024px:ml-2 cursor-pointer"
-                        onClick={(e) => AddRowHandler(e)}
-                    >
-                        <BsPlusLg />
-                    </div>
-                )}
-            </td>
+                    {isTableItem.length - 1 === rowNumber && (
+                        <div
+                            className="ml-5 1024px:ml-2 cursor-pointer"
+                            onClick={(e) => AddRowHandler(e)}
+                        >
+                            <BsPlusLg />
+                        </div>
+                    )}
+                </td>
+            )}
         </tr>
     );
 };
