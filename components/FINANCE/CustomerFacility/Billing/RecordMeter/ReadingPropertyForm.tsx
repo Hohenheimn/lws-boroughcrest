@@ -60,6 +60,18 @@ export default function ReadingPropertyForm({
         to: "",
     });
 
+    const [ValidateModify, setValidateModify] = useState(true);
+
+    useEffect(() => {
+        if (router.query.modify !== undefined) {
+            DefaultValue.properties.map((item) => {
+                if (item.modifiable === false) {
+                    setValidateModify(false);
+                }
+            });
+        }
+    }, [DefaultValue]);
+
     useEffect(() => {
         setPeriodProperty({
             from: DefaultValue.period.from,
@@ -175,7 +187,9 @@ export default function ReadingPropertyForm({
                     <p className=" labelField">RATE:</p>
                     <InputNumberForForm
                         noPeso={true}
-                        className={"field number"}
+                        className={`field number ${
+                            !ValidateModify && "disabled"
+                        }`}
                         isValue={DefaultValue.charge.rate}
                         setValue={(key, value) => {
                             setDefaultValue({
