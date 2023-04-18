@@ -65,7 +65,7 @@ export default function JournalForm({
     const [totalAmount, setTotalAmount] = useState<number | string>("");
     const [isSave, setSave] = useState(false);
     const [isBilling, setBilling] = useState<billingArray>(DefaultValue);
-    const [isBillingFromCustomer, setBillingFromCustomer] =
+    const [isBillingFromReading, setBillingFromReading] =
         useState<billingArray>([]);
     const [isCustomer, setCustomer] = useState<customerDD>({
         id: DefaultCustomer?.id,
@@ -83,7 +83,7 @@ export default function JournalForm({
         isBilling.map((item) => {
             total = Number(total) + Number(item.amount);
         });
-        isBillingFromCustomer.map((item) => {
+        isBillingFromReading.map((item) => {
             total = Number(total) + Number(item.amount);
         });
         setTotalAmount(total);
@@ -101,38 +101,99 @@ export default function JournalForm({
 
     useEffect(() => {
         if (isCustomer.id !== "") {
-            // Add invoice of selected Customer
-            const InvoiceList = data?.data.map((item: any) => {
-                return {
-                    id: -1,
-                    charge: item.charge_name,
-                    charge_id: item.charge_id,
-                    charge_vat: item.vat,
-                    description: item.description,
-                    unit_price: item.unit_price,
-                    quantity: item.quantity,
-                    uom: item.uom,
-                    vat: item.vat,
-                    amount: item.amount,
-                    property_unit_code: item.unit_code,
-                    property_id: item.property_unit_id,
-                    billing_batch_list_id:
-                        item.billing_batch_list_id === undefined
-                            ? null
-                            : item.billing_batch_list_id,
-                    billing_readings_list_id:
-                        item.billing_readings_list_id === undefined
-                            ? null
-                            : item.billing_readings_list_id,
-                };
-            });
-            if (InvoiceList !== undefined) {
-                setBillingFromCustomer(InvoiceList);
-            } else {
-                setBillingFromCustomer([]);
+            // billing_batch_list_id
+            // Pass only the key of billing_readings_list_id is not equal to null
+            const GetInvoiceFromReading = data?.data.filter(
+                (item: any) => item?.billing_readings_list_id !== null
+            );
+            if (GetInvoiceFromReading !== undefined) {
+                const InvoiceListFromReading = GetInvoiceFromReading.map(
+                    (item: any) => {
+                        return {
+                            id: -1,
+                            charge: item.charge_name,
+                            charge_id: item.charge_id,
+                            charge_vat: item.vat,
+                            description: item.description,
+                            unit_price: item.unit_price,
+                            quantity: item.quantity,
+                            uom: item.uom,
+                            vat: item.vat,
+                            amount: item.amount,
+                            property_unit_code: item.unit_code,
+                            property_id: item.property_unit_id,
+                            billing_batch_list_id:
+                                item.billing_batch_list_id === undefined
+                                    ? null
+                                    : item.billing_batch_list_id,
+                            billing_readings_list_id:
+                                item.billing_readings_list_id === undefined
+                                    ? null
+                                    : item.billing_readings_list_id,
+                        };
+                    }
+                );
+                if (InvoiceListFromReading !== undefined) {
+                    setBillingFromReading(InvoiceListFromReading);
+                } else {
+                    setBillingFromReading([]);
+                }
+            }
+            const GetInvoiceFromBatch = data?.data.filter(
+                (item: any) => item?.billing_batch_list_id !== null
+            );
+            if (GetInvoiceFromBatch !== undefined) {
+                const InvoiceListFromBatch = GetInvoiceFromBatch.map(
+                    (item: any) => {
+                        return {
+                            id: item.billing_batch_list_id,
+                            charge: item.charge_name,
+                            charge_id: item.charge_id,
+                            charge_vat: item.vat,
+                            description: item.description,
+                            unit_price: item.unit_price,
+                            quantity: item.quantity,
+                            uom: item.uom,
+                            vat: item.vat,
+                            amount: item.amount,
+                            property_unit_code: item.unit_code,
+                            property_id: item.property_unit_id,
+                            billing_batch_list_id:
+                                item.billing_batch_list_id === undefined
+                                    ? null
+                                    : item.billing_batch_list_id,
+                            billing_readings_list_id:
+                                item.billing_readings_list_id === undefined
+                                    ? null
+                                    : item.billing_readings_list_id,
+                        };
+                    }
+                );
+                if (InvoiceListFromBatch !== undefined) {
+                    setBilling(InvoiceListFromBatch);
+                } else {
+                    setBilling([
+                        {
+                            id: 0,
+                            charge: "",
+                            charge_id: "",
+                            charge_vat: "",
+                            description: "",
+                            unit_price: "",
+                            quantity: "",
+                            uom: "",
+                            vat: "",
+                            amount: "",
+                            property_unit_code: "",
+                            property_id: "",
+                            billing_readings_list_id: null,
+                            billing_batch_list_id: null,
+                        },
+                    ]);
+                }
             }
         }
-    }, [data]);
+    }, [isCustomer, data?.status]);
 
     const onSuccess = () => {
         setPrompt({
@@ -152,7 +213,7 @@ export default function JournalForm({
                     class: "",
                     property: [],
                 });
-                setBillingFromCustomer([]);
+                setBillingFromReading([]);
                 setBilling([
                     {
                         id: 0,
@@ -211,7 +272,7 @@ export default function JournalForm({
                         : item.billing_readings_list_id,
             };
         });
-        const InvoiceListFromCustomer = isBillingFromCustomer.map(
+        const InvoiceListFromCustomer = isBillingFromReading.map(
             (item: billingObject) => {
                 return {
                     charge_id: Number(item.charge_id),
@@ -344,7 +405,7 @@ export default function JournalForm({
                             </tr>
                         </thead>
                         <tbody>
-                            {isBilling?.map(
+                            {isBillingFromReading?.map(
                                 (item: billingObject, index: number) => (
                                     <List
                                         key={index}
@@ -356,7 +417,7 @@ export default function JournalForm({
                                     />
                                 )
                             )}
-                            {isBillingFromCustomer?.map(
+                            {isBilling?.map(
                                 (item: billingObject, index: number) => (
                                     <List
                                         key={index}
