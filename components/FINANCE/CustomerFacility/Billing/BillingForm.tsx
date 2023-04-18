@@ -65,6 +65,8 @@ export default function JournalForm({
     const [totalAmount, setTotalAmount] = useState<number | string>("");
     const [isSave, setSave] = useState(false);
     const [isBilling, setBilling] = useState<billingArray>(DefaultValue);
+    const [isBillingFromCustomer, setBillingFromCustomer] =
+        useState<billingArray>([]);
     const [isCustomer, setCustomer] = useState<customerDD>({
         id: DefaultCustomer?.id,
         name: DefaultCustomer?.name,
@@ -77,9 +79,14 @@ export default function JournalForm({
 
     useEffect(() => {
         setTotalAmount("");
+        let total = 0;
         isBilling.map((item) => {
-            setTotalAmount((prev) => Number(prev) + Number(item.amount));
+            total = Number(total) + Number(item.amount);
         });
+        isBillingFromCustomer.map((item) => {
+            total = Number(total) + Number(item.amount);
+        });
+        setTotalAmount(total);
     }, [isBilling]);
 
     useEffect(() => {
@@ -94,10 +101,6 @@ export default function JournalForm({
 
     useEffect(() => {
         if (isCustomer.id !== "") {
-            // removing invoice of first selected customer
-            const FilterBilling = isBilling.filter(
-                (filterItem) => filterItem.id !== -1
-            );
             // Add invoice of selected Customer
             const InvoiceList = data?.data.map((item: any) => {
                 return {
@@ -124,9 +127,9 @@ export default function JournalForm({
                 };
             });
             if (InvoiceList !== undefined) {
-                setBilling([...FilterBilling, ...InvoiceList]);
+                setBillingFromCustomer(InvoiceList);
             } else {
-                setBilling(FilterBilling);
+                setBillingFromCustomer([]);
             }
         }
     }, [data]);
@@ -187,10 +190,28 @@ export default function JournalForm({
         setSave(false);
         let validate = true;
         setButtonClicked(button);
-        const Payload = {
-            customer_id: isCustomer.id,
-            due_amount: Number(totalAmount),
-            invoice_list: isBilling.map((item: billingObject) => {
+
+        const InvoiceListInputed = isBilling.map((item: billingObject) => {
+            return {
+                charge_id: Number(item.charge_id),
+                description: item.description,
+                unit_price: Number(item.unit_price),
+                quantity: Number(item.quantity),
+                vat: Number(item.vat),
+                amount: Number(item.amount),
+                property_unit_id: item.property_id,
+                billing_batch_list_id:
+                    item.billing_batch_list_id === undefined
+                        ? null
+                        : item.billing_batch_list_id,
+                billing_readings_list_id:
+                    item.billing_readings_list_id === undefined
+                        ? null
+                        : item.billing_readings_list_id,
+            };
+        });
+        const InvoiceListFromCustomer = isBillingFromCustomer.map(
+            (item: billingObject) => {
                 return {
                     charge_id: Number(item.charge_id),
                     description: item.description,
@@ -208,8 +229,15 @@ export default function JournalForm({
                             ? null
                             : item.billing_readings_list_id,
                 };
-            }),
+            }
+        );
+
+        const Payload = {
+            customer_id: isCustomer.id,
+            due_amount: Number(totalAmount),
+            invoice_list: [...InvoiceListFromCustomer, ...InvoiceListInputed],
         };
+
         if (isCustomer.id === "") {
             setPrompt({
                 message: "Fill out all fields",
@@ -316,6 +344,18 @@ export default function JournalForm({
                         </thead>
                         <tbody>
                             {isBilling?.map(
+                                (item: billingObject, index: number) => (
+                                    <List
+                                        key={index}
+                                        index={index}
+                                        setState={setBilling}
+                                        itemList={item}
+                                        isState={isBilling}
+                                        isUnitCodes={isUnitCodes}
+                                    />
+                                )
+                            )}
+                            {isBillingFromCustomer?.map(
                                 (item: billingObject, index: number) => (
                                     <List
                                         key={index}
@@ -648,15 +688,22 @@ const List = ({ itemList, setState, isState, index, isUnitCodes }: List) => {
                 />
             </td>
             <td className="actionIcon">
-                {isState.length > 1 && (
-                    <div onClick={RemoveJournal}>
-                        <MinusButtonTable />
-                    </div>
-                )}
-                {isState.length - 1 === index && (
-                    <div className="ml-5 1024px:ml-2" onClick={AddJournal}>
-                        <PlusButtonTable />
-                    </div>
+                {itemList.billing_readings_list_id === null && (
+                    <>
+                        {isState.length > 1 && (
+                            <div onClick={RemoveJournal}>
+                                <MinusButtonTable />
+                            </div>
+                        )}
+                        {isState.length - 1 === index && (
+                            <div
+                                className="ml-5 1024px:ml-2"
+                                onClick={AddJournal}
+                            >
+                                <PlusButtonTable />
+                            </div>
+                        )}
+                    </>
                 )}
             </td>
         </tr>

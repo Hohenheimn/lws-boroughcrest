@@ -126,8 +126,14 @@ export default function BillingList() {
                     select: select,
                 };
             });
-            if (CloneArray.length === isSelectedIDs.length) {
+
+            if (
+                CloneArray.length !== 0 &&
+                CloneArray.every((val: any) => isSelectedIDs.includes(val.id))
+            ) {
                 selectAll = true;
+            } else {
+                selectAll = false;
             }
 
             setTableItem({
@@ -140,7 +146,7 @@ export default function BillingList() {
                 selectAll: false,
             });
         }
-    }, [data, type]);
+    }, [data, type, isSelectedIDs]);
 
     const selectAll = () => {
         if (isTableItem.selectAll) {

@@ -180,6 +180,7 @@ export default function GroupForm({
         isCategoryList.value,
         externalDefaultValue,
         id,
+        isSelectedIDs,
     ]);
 
     const queryClient = useQueryClient();
