@@ -152,6 +152,7 @@ export default function JournalForm({
                     class: "",
                     property: [],
                 });
+                setBillingFromCustomer([]);
                 setBilling([
                     {
                         id: 0,

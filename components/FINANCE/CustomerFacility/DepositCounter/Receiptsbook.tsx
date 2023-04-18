@@ -145,11 +145,14 @@ export default function Receiptsbook({
                     }),
                 };
             });
-
-            if (CloneArray.length === isSelectedIDs?.length) {
+            if (
+                CloneArray.length !== 0 &&
+                CloneArray.every((val: any) => isSelectedIDs.includes(val.id))
+            ) {
                 selectAll = true;
+            } else {
+                selectAll = false;
             }
-
             setReceiptBookData({
                 itemArray: CloneArray,
                 selectAll: selectAll,
