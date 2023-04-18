@@ -51,8 +51,8 @@ export default function UserInfo() {
 
     useEffect(() => {
         setUserInfo({
-            name: UserData.name,
-            email: UserData.email,
+            name: UserData?.name,
+            email: UserData?.email,
             email_verified: UserData?.email_verified_at,
             image_url: UserData?.image_photo,
             image_signature_url: UserData?.image_signature,
