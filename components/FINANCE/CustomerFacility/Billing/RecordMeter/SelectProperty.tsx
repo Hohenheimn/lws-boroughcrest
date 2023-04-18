@@ -184,7 +184,6 @@ export default function SelectProperty({
             properties: cloneToPass,
         });
         setFormActive([false, true]);
-        console.log(cloneToPass);
     };
 
     const [isFilterbyCategory, setFilterbyCategory] = useState("");
