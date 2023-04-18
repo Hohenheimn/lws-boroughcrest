@@ -1,12 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BeatLoader } from "react-spinners";
 import BillingDetail from "../../../../../components/FINANCE/CustomerFacility/Billing/BillingDetail";
 import { GetInvoiceListDetail } from "../../../../../components/FINANCE/CustomerFacility/Billing/Query";
 
 export default function Id({ id }: any) {
     const { isLoading, data, isError } = GetInvoiceListDetail(id);
-
-    console.log(data?.data);
 
     if (isLoading) {
         return (
@@ -24,7 +22,7 @@ export default function Id({ id }: any) {
     if (isError) {
         return (
             <div className="pageDetail">
-                <h1>Something is wrong!</h1>
+                <h1>Something went wrong!</h1>
             </div>
         );
     }

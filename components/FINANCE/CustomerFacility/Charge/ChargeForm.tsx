@@ -15,6 +15,7 @@ import { ChargePayload, IDstate } from "./Type";
 import UOMDropdown from "../../../Dropdowns/UOMDropdown";
 import { useForm } from "react-hook-form";
 import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
+import { LoginUserInfo } from "../../../HOC/LoginUser/UserInfo";
 
 type Props = {
     setCreate: Function;
@@ -37,7 +38,8 @@ type Error = {
     soa_sort_order: string;
 };
 export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
-    const { setPrompt } = useContext(AppContext);
+    const { setPrompt, userInfo } = useContext(AppContext);
+    const LoginUserInfo: LoginUserInfo = userInfo;
     const [isSelect, setSelect] = useState({
         type: false,
         interest: false,
@@ -129,8 +131,8 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
         setValue("receivable", isReceivable.firstVal);
     }, [isReceivable]);
     const [isUOM, setUOM] = useState({
-        value: isDefaultValue.charge_uom_id,
-        id: isDefaultValue.charge_uom_value,
+        value: isDefaultValue.charge_uom_value,
+        id: isDefaultValue.charge_uom_id,
         toggle: false,
     });
     useEffect(() => {
@@ -256,7 +258,6 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
             Update(Payload);
         }
     };
-
     return (
         <div>
             <div className={style.container}>
@@ -467,7 +468,10 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
 
                                     <div className="percentage w-full">
                                         <input
-                                            className="field w-full"
+                                            className={`field w-full ${
+                                                LoginUserInfo.corporate_gst_type ===
+                                                    "NON-VAT" && "disabled"
+                                            }`}
                                             type="number"
                                             {...register("vat_percent", {
                                                 required: "Required!",

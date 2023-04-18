@@ -20,7 +20,7 @@ export default function PrompMessage() {
         );
         return () => clearInterval(intervalPrompt);
     });
-    console.log(togglePrompt.message);
+
     return (
         <motion.div
             variants={FadeDown}

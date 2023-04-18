@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ChargeDetail } from "../../../ReactQuery/Charge";
 import ChargeForm from "./ChargeForm";
 import style from "../../../../styles/Popup_Modal.module.scss";

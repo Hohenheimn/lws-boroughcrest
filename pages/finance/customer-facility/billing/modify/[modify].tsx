@@ -1,10 +1,6 @@
 import React from "react";
 import { BeatLoader } from "react-spinners";
-import {
-    InvoiceDetail,
-    InvoiceList,
-    ShowInvoice,
-} from "../../../../../components/FINANCE/CustomerFacility/Billing/BillingDetail";
+import { ShowInvoice } from "../../../../../components/FINANCE/CustomerFacility/Billing/BillingDetail";
 import BillingForm from "../../../../../components/FINANCE/CustomerFacility/Billing/BillingForm";
 import { GetInvoiceListDetail } from "../../../../../components/FINANCE/CustomerFacility/Billing/Query";
 
@@ -37,6 +33,12 @@ export default function Id({ id }: any) {
         class: InvoiceDetail?.customer.class,
         property: InvoiceDetail?.customer.properties.map((item: any) => {
             return item.unit_code;
+        }),
+        properties: InvoiceDetail?.invoice_list.map((item: ShowInvoice) => {
+            return {
+                id: item.property.id,
+                unit_code: item.property.unit_code,
+            };
         }),
     };
 

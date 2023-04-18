@@ -69,7 +69,8 @@ export default function JournalForm({
         id: DefaultCustomer?.id,
         name: DefaultCustomer?.name,
         class: DefaultCustomer?.class,
-        property: DefaultCustomer.property,
+        property: DefaultCustomer?.property,
+        properties: DefaultCustomer?.properties,
     });
 
     const [isUnitCodes, setUnitCodes] = useState<any>([]);
@@ -83,7 +84,7 @@ export default function JournalForm({
 
     useEffect(() => {
         if (isCustomer.id !== "") {
-            setUnitCodes(isCustomer.properties[0]);
+            setUnitCodes(isCustomer?.properties);
         }
     }, [isCustomer]);
 
@@ -177,6 +178,7 @@ export default function JournalForm({
         ModifyInvoiceBilling(onSuccess, onError, router.query.modify);
 
     const Submit = (button: string) => {
+        setSave(false);
         let validate = true;
         setButtonClicked(button);
         const Payload = {
@@ -295,8 +297,8 @@ export default function JournalForm({
                     <table className="table_list forCrud">
                         <thead className="textRed">
                             <tr>
-                                <th>PROPERTY</th>
                                 <th>CHARGE</th>
+                                <th>PROPERTY</th>
                                 <th>DESCRIPTION</th>
                                 <th>UNIT PRICE</th>
                                 <th>QUANTITY</th>
@@ -401,7 +403,7 @@ export default function JournalForm({
                         </aside>
                     </div>
                     {isSave && (
-                        <ul>
+                        <ul className="bottomSide">
                             <li>
                                 <button
                                     type="submit"
@@ -430,9 +432,7 @@ type List = {
 
 const List = ({ itemList, setState, isState, index, isUnitCodes }: List) => {
     const { setPrompt } = useContext(AppContext);
-    useEffect(() => {
-        console.log(isUnitCodes);
-    }, [isUnitCodes]);
+
     // Computation of Amount and Vat
     useEffect(() => {
         const Vat =
@@ -546,6 +546,21 @@ const List = ({ itemList, setState, isState, index, isUnitCodes }: List) => {
     return (
         <tr>
             <td>
+                {itemList.billing_readings_list_id !== null ? (
+                    <input
+                        type="text"
+                        readOnly
+                        value={itemList.charge}
+                        className="field w-full disabled"
+                    />
+                ) : (
+                    <DropDownCharge
+                        UpdateStateHandler={updateValue}
+                        itemDetail={itemList}
+                    />
+                )}
+            </td>
+            <td>
                 <DynamicPopOver
                     className="w-full"
                     samewidth={true}
@@ -573,21 +588,6 @@ const List = ({ itemList, setState, isState, index, isUnitCodes }: List) => {
                         </>
                     }
                 />
-            </td>
-            <td>
-                {itemList.billing_readings_list_id !== null ? (
-                    <input
-                        type="text"
-                        readOnly
-                        value={itemList.charge}
-                        className="field w-full disabled"
-                    />
-                ) : (
-                    <DropDownCharge
-                        UpdateStateHandler={updateValue}
-                        itemDetail={itemList}
-                    />
-                )}
             </td>
             <td>
                 <input
