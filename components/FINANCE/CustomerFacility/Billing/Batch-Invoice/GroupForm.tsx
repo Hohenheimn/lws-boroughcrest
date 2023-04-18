@@ -14,9 +14,11 @@ import ModalTemp from "../../../../Reusable/ModalTemp";
 import { customer } from "../../../../../types/customerList";
 import { GetCustomerList } from "../../../../ReactQuery/CustomerMethod";
 import { CreateGroup, UpdateGroup } from "./Query";
-import { useQueryClient } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import { useRouter } from "next/router";
 import { ErrorSubmit } from "../../../../Reusable/ErrorMessage";
+import api from "../../../../../util/api";
+import { getCookie } from "cookies-next";
 
 type Props = {
     toggle: Function;
@@ -96,10 +98,20 @@ export default function GroupForm({
         });
     };
 
-    const { isLoading, isError, data } = GetCustomerList(
-        TablePage,
-        isSearch,
-        10
+    const { data, isLoading, isError } = useQuery(
+        ["customer-create-group-list", isSearch],
+        () => {
+            return api.get(
+                `/admin/customer?keywords=${isSearch}&owner_tenant_class=1&paginate=10&page=${
+                    isSearch === "" ? TablePage : 1
+                }`,
+                {
+                    headers: {
+                        Authorization: "Bearer " + getCookie("user"),
+                    },
+                }
+            );
+        }
     );
 
     const [isFilterbyCategory, setFilterbyCategory] = useState("");
