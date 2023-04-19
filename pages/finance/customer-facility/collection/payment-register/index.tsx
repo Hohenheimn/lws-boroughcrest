@@ -9,6 +9,7 @@ import { TextNumberDisplay } from "../../../../../components/Reusable/NumberForm
 import Pagination from "../../../../../components/Reusable/Pagination";
 import TableErrorMessage from "../../../../../components/Reusable/TableErrorMessage";
 import { customer } from "../../../../../types/customerList";
+import { GetBADetail } from "../../../../../components/ReactQuery/BankAccount";
 
 export type CollectionItem = {
     id: number;
@@ -154,7 +155,9 @@ type ListProps = {
 
 const List = ({ itemDetail }: ListProps) => {
     const date = parse(itemDetail?.receipt_date, "yyyy-MM-dd", new Date());
-
+    const { data: bankAccount } = GetBADetail(
+        Number(itemDetail?.bank_account_id)
+    );
     const { data } = GetCustomer(itemDetail?.customer_id);
 
     const CustomerDetail: customer = data?.data;
@@ -187,7 +190,10 @@ const List = ({ itemDetail }: ListProps) => {
                 />
             </td>
             <td>{itemDetail?.mode_of_payment}</td>
-            <td>Sample cash account</td>
+            <td>
+                {/* {bankAccount?.data?.bank_acc_no} */}
+                Sample Inbound
+            </td>
         </tr>
     );
 };
