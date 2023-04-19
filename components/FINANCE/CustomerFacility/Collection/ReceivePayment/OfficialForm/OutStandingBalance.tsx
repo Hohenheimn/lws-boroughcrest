@@ -140,7 +140,7 @@ export default function OutStandingBalance({
                     <p className=" -mt-[1px]">Heirarchy</p>
                     <div
                         className={`h-[20px] duration-300 ease-in-out w-[20px] bg-ThemeRed rounded-full absolute top-[50%] translate-y-[-50%] ${
-                            !isToggle ? "right-[5px]" : "right-[78px]"
+                            !isToggle ? "right-[5px]" : "right-[83px]"
                         }`}
                     ></div>
                 </div>
@@ -242,6 +242,7 @@ const List = ({ setTable, isTable, itemDetail, index, isToggle }: List) => {
                     className={`field number text-end ${
                         !isToggle && "disabled"
                     }`}
+                    valueLimit={itemDetail.due_amount}
                     value={Number(itemDetail?.applied_amount)}
                     onChange={updateValue}
                     type={"applied_payment"}
