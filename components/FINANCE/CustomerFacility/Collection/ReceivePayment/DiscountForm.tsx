@@ -16,6 +16,7 @@ import DropDownCharge from "../../../../Dropdowns/DropDownCharge";
 import ModalTemp from "../../../../Reusable/ModalTemp";
 import { CreateDiscount, DeleteDiscount, GetDiscountList } from "./Query";
 import { MinusButtonTable, PlusButtonTable } from "../../../../Reusable/Icons";
+import { ErrorSubmit } from "../../../../Reusable/ErrorMessage";
 
 export type isDiscountTable = {
     id: string | number;
@@ -55,12 +56,8 @@ export default function DiscountForm({
             toggle: false,
         });
     };
-    const onError = () => {
-        setPrompt({
-            message: "Something is wrong!",
-            type: "error",
-            toggle: true,
-        });
+    const onError = (e: any) => {
+        ErrorSubmit(e, setPrompt);
     };
 
     const { isLoading: MutateLoading, mutate } = CreateDiscount(
