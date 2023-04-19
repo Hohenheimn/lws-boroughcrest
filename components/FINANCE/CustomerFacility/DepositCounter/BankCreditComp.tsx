@@ -857,14 +857,13 @@ const ChildList = ({
             <td></td>
             <td></td>
             <td></td>
-            <td></td>
             <td>
                 <TextNumberDisplay
                     value={itemChildren.amount}
                     className="withPeso"
                 />
             </td>
-            <td></td>
+
             <td>
                 {itemChildren.receipt_no === null
                     ? itemChildren.reference_no
