@@ -778,6 +778,7 @@ const List = ({
                         </div>
 
                         {itemDetail.variance !== 0 &&
+                            itemDetail.rec_ref_id !== "" &&
                             itemDetail.childrenBC.length <= 0 && (
                                 <div
                                     className={`ml-5 1024px:ml-2 ${
@@ -865,9 +866,9 @@ const ChildList = ({
             </td>
 
             <td>
-                {itemChildren.receipt_no === null
+                {/* {itemChildren.receipt_no === null
                     ? itemChildren.reference_no
-                    : itemChildren.receipt_no}
+                    : itemChildren.receipt_no} */}
             </td>
             {type !== "bank-credit" && (
                 <>

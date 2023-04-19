@@ -165,7 +165,7 @@ export const GetCustomerOutstanding = (id: number) => {
         ["billing-outstanding", id],
         () => {
             return api.get(
-                `/finance/customer-facility/billing?customer_id=${id}&list_type=posted`,
+                `/finance/customer-facility/billing?customer_id=${id}&list_type=posted&heirarchy=1`,
                 {
                     headers: { Authorization: "Bearer " + getCookie("user") },
                 }

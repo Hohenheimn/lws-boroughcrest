@@ -622,7 +622,11 @@ const List = ({
 
                 <td>{deposit_date}</td>
                 <td>{itemDetail?.depositor}</td>
-                <td>{itemDetail?.receipt_no}</td>
+                <td>
+                    {itemDetail?.receipt_no === null
+                        ? "Consolidated"
+                        : itemDetail?.receipt_no}
+                </td>
                 <td>{itemDetail?.bank_and_account_no}</td>
                 <td>
                     {type === "receipts-book" ? (
