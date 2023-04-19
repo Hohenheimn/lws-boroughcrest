@@ -378,7 +378,7 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
                             SummaryItems={CollectionDetail?.histories}
                             CreditTax={CollectionDetail?.credit_tax}
                             TotalDue={TotalDue}
-                            triggerID={CollectionDetail.id}
+                            triggerID={CollectionDetail?.id}
                             LessDiscount={CollectionDetail?.discount}
                         />
                     </li>

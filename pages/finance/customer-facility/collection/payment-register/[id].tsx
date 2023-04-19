@@ -29,7 +29,7 @@ export default function PaymentRegisterShow() {
     }
     return (
         <div>
-            <PaymentRegisterDetail CollectionDetail={data?.data.data} />
+            <PaymentRegisterDetail CollectionDetail={data?.data} />
         </div>
     );
 }
