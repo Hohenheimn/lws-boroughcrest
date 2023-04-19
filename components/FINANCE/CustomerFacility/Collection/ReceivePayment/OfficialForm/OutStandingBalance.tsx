@@ -49,6 +49,7 @@ export default function OutStandingBalance({
     isBalanceTotal,
 }: Props) {
     const [isToggle, setToggle] = useState(false);
+    let isAmountPaid = amount_paid;
     useEffect(() => {
         setDueAmountTotal(0);
         setAppliedAmount(0);
@@ -74,25 +75,50 @@ export default function OutStandingBalance({
     };
 
     const Compute = () => {
-        const AppliedAmount =
-            Number(amount_paid) / Number(DefaultOutstanding?.length);
-        const CloneToUpdate = DefaultOutstanding?.map((item: Outstanding) => {
-            const balance = Number(item.due_amount) - Number(AppliedAmount);
-            if (!isToggle) {
-                return {
-                    ...item,
-                    applied_amount: AppliedAmount,
-                    balance: balance <= 0 ? 0 : balance,
-                };
-            } else {
-                return {
-                    ...item,
-                    applied_amount: 0,
-                    balance: item.due_amount,
-                };
+        const CloneToUpdateAppliedAmount = DefaultOutstanding?.map(
+            (item: Outstanding, index: number) => {
+                if (!isToggle) {
+                    if (index > 0) {
+                        const RemainingAmountPaid =
+                            Number(isAmountPaid) - Number(item.due_amount);
+                        isAmountPaid = RemainingAmountPaid;
+                    }
+                    return {
+                        ...item,
+                        applied_amount:
+                            isAmountPaid > item.due_amount
+                                ? item.due_amount
+                                : isAmountPaid <= 0
+                                ? 0
+                                : isAmountPaid,
+                    };
+                } else {
+                    return {
+                        ...item,
+                        applied_amount: 0,
+                        balance: item.due_amount,
+                    };
+                }
             }
-        });
-        setDefaultValue(CloneToUpdate);
+        );
+        const CloneToUpdateBalance = CloneToUpdateAppliedAmount?.map(
+            (item: Outstanding, index: number) => {
+                if (!isToggle) {
+                    const balance =
+                        Number(item.due_amount) - Number(item.applied_amount);
+                    return {
+                        ...item,
+                        balance: balance <= 0 ? 0 : balance,
+                    };
+                } else {
+                    return {
+                        ...item,
+                        balance: item.due_amount,
+                    };
+                }
+            }
+        );
+        setDefaultValue(CloneToUpdateBalance);
     };
 
     useEffect(() => {
@@ -114,7 +140,7 @@ export default function OutStandingBalance({
                     <p className=" -mt-[1px]">Heirarchy</p>
                     <div
                         className={`h-[20px] duration-300 ease-in-out w-[20px] bg-ThemeRed rounded-full absolute top-[50%] translate-y-[-50%] ${
-                            !isToggle ? "right-[5px]" : "right-[78px]"
+                            !isToggle ? "right-[5px]" : "right-[83px]"
                         }`}
                     ></div>
                 </div>
@@ -216,6 +242,7 @@ const List = ({ setTable, isTable, itemDetail, index, isToggle }: List) => {
                     className={`field number text-end ${
                         !isToggle && "disabled"
                     }`}
+                    valueLimit={itemDetail.due_amount}
                     value={Number(itemDetail?.applied_amount)}
                     onChange={updateValue}
                     type={"applied_payment"}

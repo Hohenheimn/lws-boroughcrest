@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { NumericFormat } from "react-number-format";
 
 type InputNumber = {
@@ -6,6 +7,7 @@ type InputNumber = {
     onChange: (type: string, value: string | number) => void;
     type: string;
     prefix?: string;
+    valueLimit: number;
 };
 
 export const InputNumberForTable = ({
@@ -14,6 +16,7 @@ export const InputNumberForTable = ({
     type,
     onChange,
     prefix,
+    valueLimit,
 }: InputNumber) => {
     return (
         <div className="withPesoField">
@@ -21,7 +24,7 @@ export const InputNumberForTable = ({
                 className={className + " max-w-[400px]"}
                 prefix={prefix}
                 placeholder="-"
-                value={value === 0 ? "" : value}
+                value={Number(value) === 0 ? "" : value}
                 fixedDecimalScale
                 decimalScale={2}
                 decimalSeparator="."
@@ -31,7 +34,13 @@ export const InputNumberForTable = ({
                     // formattedValue = $2,223
                     // value ie, 2223
                     const { formattedValue, value } = values;
-                    onChange(type, value);
+                    if (valueLimit !== undefined) {
+                        if (Number(value) <= Number(valueLimit)) {
+                            onChange(type, value);
+                        }
+                    } else {
+                        onChange(type, value);
+                    }
                 }}
             />
         </div>

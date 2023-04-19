@@ -383,13 +383,19 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
                         />
                     </li>
                     <li className="w-full rounded-2xl p-10 480px:p-8 bg-white  shadow-lg">
-                        <p className="label_text">TRAIL</p>
-                        <h1 className="main_text noMB">
-                            {CollectionDetail?.created_at}
-                        </h1>
-                        <h1 className="main_text noMB">
-                            {CollectionDetail?.updated_at}
-                        </h1>
+                        <p className="label_text mb-2">TRAIL</p>
+                        <div className="flex items-center">
+                            <p className="label_text mr-2">Created at: </p>
+                            <h1 className="main_text noMB">
+                                {CollectionDetail?.created_at}
+                            </h1>
+                        </div>
+                        <div className="flex items-center">
+                            <p className="label_text  mr-2">Updated at: </p>
+                            <h1 className="main_text noMB">
+                                {CollectionDetail?.updated_at}
+                            </h1>
+                        </div>
                     </li>
                 </ul>
             </div>
