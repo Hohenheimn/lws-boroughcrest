@@ -246,7 +246,6 @@ export default function OfficialForm({
         isLoading: CDloading,
         isError: CDerror,
     } = GetCollectionByCustomer(headerForm.customer_id);
-
     return (
         <>
             <OutStandingBalance

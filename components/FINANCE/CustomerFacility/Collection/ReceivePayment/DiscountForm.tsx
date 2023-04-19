@@ -98,7 +98,7 @@ export default function DiscountForm({
 
     useEffect(() => {
         if (data?.status === 200) {
-            const CloneArray = data?.data.data.map((item: any) => {
+            const CloneArray = data?.data.map((item: any) => {
                 return {
                     id: item.id,
                     back_id: item.id,
