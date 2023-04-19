@@ -26,6 +26,7 @@ import Details from "./Details";
 import { useRouter } from "next/router";
 import { PencilButton } from "../../../Reusable/Icons";
 import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
+import { TextFieldValidation } from "../../../Reusable/InputField";
 
 type isTableitemArray = isTableitemObj[];
 
@@ -561,6 +562,7 @@ const List = ({
                         (itemData.status === "Pending" && "disabled")
                     }`}
                     onChange={(e) => {
+                        if (!TextFieldValidation(e, 50)) return;
                         UpdateStateHandler("remarks", e.target.value);
                     }}
                     value={itemData.remarks}

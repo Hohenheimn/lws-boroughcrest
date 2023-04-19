@@ -16,6 +16,10 @@ import UOMDropdown from "../../../Dropdowns/UOMDropdown";
 import { useForm } from "react-hook-form";
 import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
 import { LoginUserInfo } from "../../../HOC/LoginUser/UserInfo";
+import {
+    NumberBlockInvalidKey,
+    TextFieldValidation,
+} from "../../../Reusable/InputField";
 
 type Props = {
     setCreate: Function;
@@ -282,13 +286,15 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                             required: "Required!",
                                         })}
                                         type="text"
+                                        autoComplete="off"
                                         value={fieldValue.code}
                                         onChange={(e: any) => {
-                                            e.target.value.length <= 4 &&
-                                                setFieldValue({
-                                                    ...fieldValue,
-                                                    code: e.target.value,
-                                                });
+                                            if (!TextFieldValidation(e, 4))
+                                                return;
+                                            setFieldValue({
+                                                ...fieldValue,
+                                                code: e.target.value,
+                                            });
                                         }}
                                     />
                                     {errors?.code && (
@@ -368,8 +374,11 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                         {...register("name", {
                                             required: "Required!",
                                         })}
+                                        autoComplete="off"
                                         value={fieldValue.name}
                                         onChange={(e: any) => {
+                                            if (!TextFieldValidation(e, 50))
+                                                return;
                                             setFieldValue({
                                                 ...fieldValue,
                                                 name: e.target.value,
@@ -387,8 +396,11 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                     <input
                                         className="field"
                                         type="text"
+                                        autoComplete="off"
                                         value={fieldValue.description}
                                         onChange={(e: any) => {
+                                            if (!TextFieldValidation(e, 50))
+                                                return;
                                             setFieldValue({
                                                 ...fieldValue,
                                                 description: e.target.value,
@@ -404,8 +416,11 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                         {...register("base_rate", {
                                             required: "Required!",
                                         })}
+                                        onKeyDown={NumberBlockInvalidKey}
                                         value={fieldValue.base_rate}
                                         onChange={(e: any) => {
+                                            if (!TextFieldValidation(e, 12))
+                                                return;
                                             setFieldValue({
                                                 ...fieldValue,
                                                 base_rate: parseFloat(
@@ -439,6 +454,12 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                                 })
                                             }
                                             autoComplete="off"
+                                            onFocus={() =>
+                                                setUOM({
+                                                    ...isUOM,
+                                                    toggle: true,
+                                                })
+                                            }
                                             onClick={() =>
                                                 setUOM({
                                                     ...isUOM,
@@ -476,7 +497,12 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                             {...register("vat_percent", {
                                                 required: "Required!",
                                             })}
-                                            value={fieldValue.vat_percent}
+                                            value={
+                                                LoginUserInfo.corporate_gst_type ===
+                                                "NON-VAT"
+                                                    ? 0
+                                                    : fieldValue.vat_percent
+                                            }
                                             onChange={(e: any) => {
                                                 setFieldValue({
                                                     ...fieldValue,
@@ -710,7 +736,17 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                                 className="field"
                                                 type="number"
                                                 value={fieldValue.minimum}
+                                                onKeyDown={
+                                                    NumberBlockInvalidKey
+                                                }
                                                 onChange={(e: any) => {
+                                                    if (
+                                                        !TextFieldValidation(
+                                                            e,
+                                                            10
+                                                        )
+                                                    )
+                                                        return;
                                                     setFieldValue({
                                                         ...fieldValue,
                                                         minimum: parseFloat(
@@ -804,7 +840,17 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                                 value={
                                                     fieldValue.payment_heirarchy
                                                 }
+                                                onKeyDown={
+                                                    NumberBlockInvalidKey
+                                                }
                                                 onChange={(e: any) => {
+                                                    if (
+                                                        !TextFieldValidation(
+                                                            e,
+                                                            10
+                                                        )
+                                                    )
+                                                        return;
                                                     setFieldValue({
                                                         ...fieldValue,
                                                         payment_heirarchy:
@@ -835,7 +881,17 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                                 value={
                                                     fieldValue.soa_sort_order
                                                 }
+                                                onKeyDown={
+                                                    NumberBlockInvalidKey
+                                                }
                                                 onChange={(e: any) => {
+                                                    if (
+                                                        !TextFieldValidation(
+                                                            e,
+                                                            10
+                                                        )
+                                                    )
+                                                        return;
                                                     setFieldValue({
                                                         ...fieldValue,
                                                         soa_sort_order:

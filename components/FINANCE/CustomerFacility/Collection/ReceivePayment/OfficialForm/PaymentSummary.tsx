@@ -41,10 +41,12 @@ export default function PaymentSummaryTable({
     useEffect(() => {
         setPSVatTotal(0);
         setPStotal(0);
-        SummaryItems.map((item) => {
-            setPStotal((temp) => Number(temp) + Number(item.amount_paid));
-            setPSVatTotal((temp) => Number(temp) + Number(item.credit_tax));
-        });
+        if (SummaryItems !== undefined) {
+            SummaryItems?.map((item) => {
+                setPStotal((temp) => Number(temp) + Number(item.amount_paid));
+                setPSVatTotal((temp) => Number(temp) + Number(item.credit_tax));
+            });
+        }
     }, [SummaryItems]);
 
     return (

@@ -22,6 +22,10 @@ import ModalTemp from "../../../Reusable/ModalTemp";
 import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
 import DynamicPopOver from "../../../Reusable/DynamicPopOver";
 import TableErrorMessage from "../../../Reusable/TableErrorMessage";
+import {
+    NumberBlockInvalidKey,
+    TextFieldValidation,
+} from "../../../Reusable/InputField";
 
 export type customerDD = {
     id: string | number;
@@ -704,7 +708,10 @@ const List = ({ itemList, setState, isState, index, isUnitCodes }: List) => {
                     }`}
                     type="text"
                     value={itemList.description}
-                    onChange={(e) => updateValue("description", e)}
+                    onChange={(e) => {
+                        if (!TextFieldValidation(e, 50)) return;
+                        updateValue("description", e);
+                    }}
                 />
             </td>
             <td>
@@ -723,8 +730,11 @@ const List = ({ itemList, setState, isState, index, isUnitCodes }: List) => {
                         itemList.billing_readings_list_id !== null && "disabled"
                     }`}
                     type="number"
+                    onKeyDown={NumberBlockInvalidKey}
                     value={itemList.quantity}
-                    onChange={(e) => updateValue("quantity", e)}
+                    onChange={(e) => {
+                        updateValue("quantity", e);
+                    }}
                 />
             </td>
             <td>

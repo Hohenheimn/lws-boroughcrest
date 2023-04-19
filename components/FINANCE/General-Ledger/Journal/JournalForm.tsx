@@ -18,6 +18,7 @@ import { format, isValid, parse } from "date-fns";
 import { TableTwoTotal } from "../../../Reusable/TableTotal";
 import { MinusButtonTable, PlusButtonTable } from "../../../Reusable/Icons";
 import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
+import { TextFieldValidation } from "../../../Reusable/InputField";
 
 export type defaultArray = defaultObject[];
 export type defaultObject = {
@@ -216,6 +217,7 @@ export default function JournalForm({
                             className="px-2 h-10 1550px:h-8 outline-none rounded-md shadow-md w-full"
                             value={isParticulars}
                             onChange={(e) => {
+                                if (!TextFieldValidation(e, 50)) return;
                                 setParticulars(e.target.value);
                             }}
                         />

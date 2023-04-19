@@ -8,6 +8,7 @@ import { useQuery, useQueryClient } from "react-query";
 import { ErrorSubmit } from "../../../../Reusable/ErrorMessage";
 import { ScaleLoader } from "react-spinners";
 import { useRouter } from "next/router";
+import { TextFieldValidation } from "../../../../Reusable/InputField";
 
 export type batchForm = {
     id: number;
@@ -211,7 +212,10 @@ const List = ({
                     type="text"
                     className="field w-full"
                     value={itemList.description}
-                    onChange={(e) => updateValue("description", e)}
+                    onChange={(e) => {
+                        if (!TextFieldValidation(e, 50)) return;
+                        updateValue("description", e);
+                    }}
                 />
             </td>
             <td>
