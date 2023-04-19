@@ -207,8 +207,7 @@ export default function OfficialForm({
                 if (provItem.amount <= 0 || provItem.charge_id === "") {
                     setPrompt({
                         toggle: true,
-                        message:
-                            "Fill out the all fields on Outright or Advances!",
+                        message: "Fill out the fields on Outright or Advances!",
                         type: "draft",
                     });
                     validate = false;
@@ -233,7 +232,7 @@ export default function OfficialForm({
             });
             setPrompt({
                 toggle: true,
-                message: "Fill out the all fields on Outright or Advances!",
+                message: "Fill out the fields on Outright or Advances!",
                 type: "draft",
             });
             return;

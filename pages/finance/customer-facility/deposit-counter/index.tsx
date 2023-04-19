@@ -44,7 +44,7 @@ export default function DepositCounter() {
                 (item: isTableItemObjRB) => {
                     if (Number(changeData.parentID) === Number(item?.id)) {
                         let variance = item?.deposit_amount;
-                        item?.childrenRB.map((item) => {
+                        item?.childrenRB?.map((item) => {
                             variance = Number(variance) - Number(item?.amount);
                         });
                         variance = Number(variance) - Number(item?.indexAmount);
