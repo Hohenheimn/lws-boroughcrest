@@ -3,11 +3,9 @@ import { useRouter } from "next/router";
 import React, { useContext, useEffect, useState } from "react";
 import { ScaleLoader } from "react-spinners";
 import AppContext from "../../../../Context/AppContext";
-import DropDownCharge from "../../../../Dropdowns/DropDownCharge";
 import {
     InputNumberForForm,
     InputNumberForTable,
-    TextNumberDisplay,
 } from "../../../../Reusable/NumberFormat";
 import PeriodCalendar from "../../../../Reusable/PeriodCalendar";
 import { CreateRecordMeter, UpdateRecordMeter } from "./Query";

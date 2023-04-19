@@ -19,6 +19,7 @@ import { useRouter } from "next/router";
 import { ErrorSubmit } from "../../../../Reusable/ErrorMessage";
 import api from "../../../../../util/api";
 import { getCookie } from "cookies-next";
+import { TextFieldValidation } from "../../../../Reusable/InputField";
 
 type Props = {
     toggle: Function;
@@ -255,6 +256,7 @@ export default function GroupForm({
                             type="text"
                             value={isTableItem.group_name}
                             onChange={(e) => {
+                                if (!TextFieldValidation(e, 20)) return;
                                 setTableItem({
                                     ...isTableItem,
                                     group_name: e.target.value,

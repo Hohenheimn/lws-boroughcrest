@@ -22,6 +22,17 @@ export const TextFieldValidation = (e: any, limitation: number) => {
     }
 };
 
+export const TextFieldValidationNoSpace = (e: any, limitation: number) => {
+    if (
+        !/^[A-Za-z0-9]*$/.test(e.target.value) ||
+        e.target.value.length > limitation
+    ) {
+        return false;
+    } else {
+        return true;
+    }
+};
+
 export const InputTextForm = ({
     className,
     register,

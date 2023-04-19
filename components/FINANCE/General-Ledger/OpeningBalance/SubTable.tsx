@@ -19,6 +19,10 @@ import {
 import TableErrorMessage from "../../../Reusable/TableErrorMessage";
 import { format, isValid, parse } from "date-fns";
 import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
+import {
+    TextFieldValidation,
+    TextFieldValidationNoSpace,
+} from "../../../Reusable/InputField";
 
 export type isTableItemArray = isTableItemObj[];
 
@@ -363,6 +367,7 @@ const List = ({ itemDetail, setTableItem, isTableItem, rowNumber }: List) => {
                     value={itemData.reference_no}
                     className="field w-full"
                     onChange={(e) => {
+                        if (!TextFieldValidationNoSpace(e, 20)) return;
                         UpdateStateHandler("reference_no", e);
                     }}
                 />
