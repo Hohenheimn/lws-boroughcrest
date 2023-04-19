@@ -5,6 +5,7 @@ import { VoidCollection } from "./ReceivePayment/Query";
 import AppContext from "../../../Context/AppContext";
 import { useRouter } from "next/router";
 import { BarLoader, ScaleLoader } from "react-spinners";
+import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
 
 type Props = {
     id: string | number;
@@ -22,12 +23,8 @@ export default function Authorization({ id, setState }: Props) {
         });
         router.push("/finance/customer-facility/collection/payment-register");
     };
-    const onError = () => {
-        setPrompt({
-            message: "Invalid Password",
-            type: "error",
-            toggle: true,
-        });
+    const onError = (e: any) => {
+        ErrorSubmit(e, setPrompt);
     };
     const [isPassword, setPassword] = useState("");
     const { isLoading, mutate } = VoidCollection(

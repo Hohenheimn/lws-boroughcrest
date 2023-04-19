@@ -49,6 +49,7 @@ export default function OutStandingBalance({
     isBalanceTotal,
 }: Props) {
     const [isToggle, setToggle] = useState(false);
+    let isAmountPaid = amount_paid;
     useEffect(() => {
         setDueAmountTotal(0);
         setAppliedAmount(0);
@@ -74,25 +75,50 @@ export default function OutStandingBalance({
     };
 
     const Compute = () => {
-        const AppliedAmount =
-            Number(amount_paid) / Number(DefaultOutstanding?.length);
-        const CloneToUpdate = DefaultOutstanding?.map((item: Outstanding) => {
-            const balance = Number(item.due_amount) - Number(AppliedAmount);
-            if (!isToggle) {
-                return {
-                    ...item,
-                    applied_amount: AppliedAmount,
-                    balance: balance <= 0 ? 0 : balance,
-                };
-            } else {
-                return {
-                    ...item,
-                    applied_amount: 0,
-                    balance: item.due_amount,
-                };
+        const CloneToUpdateAppliedAmount = DefaultOutstanding?.map(
+            (item: Outstanding, index: number) => {
+                if (!isToggle) {
+                    if (index > 0) {
+                        const RemainingAmountPaid =
+                            Number(isAmountPaid) - Number(item.due_amount);
+                        isAmountPaid = RemainingAmountPaid;
+                    }
+                    return {
+                        ...item,
+                        applied_amount:
+                            isAmountPaid > item.due_amount
+                                ? item.due_amount
+                                : isAmountPaid <= 0
+                                ? 0
+                                : isAmountPaid,
+                    };
+                } else {
+                    return {
+                        ...item,
+                        applied_amount: 0,
+                        balance: item.due_amount,
+                    };
+                }
             }
-        });
-        setDefaultValue(CloneToUpdate);
+        );
+        const CloneToUpdateBalance = CloneToUpdateAppliedAmount?.map(
+            (item: Outstanding, index: number) => {
+                if (!isToggle) {
+                    const balance =
+                        Number(item.due_amount) - Number(item.applied_amount);
+                    return {
+                        ...item,
+                        balance: balance <= 0 ? 0 : balance,
+                    };
+                } else {
+                    return {
+                        ...item,
+                        balance: item.due_amount,
+                    };
+                }
+            }
+        );
+        setDefaultValue(CloneToUpdateBalance);
     };
 
     useEffect(() => {
