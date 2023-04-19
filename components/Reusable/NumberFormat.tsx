@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NumericFormat } from "react-number-format";
 
 type InputNumber = {
@@ -7,7 +7,7 @@ type InputNumber = {
     onChange: (type: string, value: string | number) => void;
     type: string;
     prefix?: string;
-    valueLimit: number;
+    valueLimit?: number;
 };
 
 export const InputNumberForTable = ({
@@ -18,6 +18,7 @@ export const InputNumberForTable = ({
     prefix,
     valueLimit,
 }: InputNumber) => {
+    let validate = false;
     return (
         <div className="withPesoField">
             <NumericFormat
@@ -25,18 +26,23 @@ export const InputNumberForTable = ({
                 prefix={prefix}
                 placeholder="-"
                 value={Number(value) === 0 ? "" : value}
+                onKeyDown={(e: any) => {
+                    validate && e.key !== "Backspace" && e.preventDefault();
+                }}
                 fixedDecimalScale
                 decimalScale={2}
                 decimalSeparator="."
                 allowNegative={false}
                 thousandSeparator={true}
                 onValueChange={(values) => {
-                    // formattedValue = $2,223
-                    // value ie, 2223
+                    // formattedValue = $2,223z
                     const { formattedValue, value } = values;
                     if (valueLimit !== undefined) {
                         if (Number(value) <= Number(valueLimit)) {
                             onChange(type, value);
+                            validate = false;
+                        } else {
+                            validate = true;
                         }
                     } else {
                         onChange(type, value);

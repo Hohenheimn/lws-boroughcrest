@@ -33,6 +33,21 @@ export const GetBA = (Keyword: string) => {
         );
     });
 };
+export const GetBADetail = (id: number) => {
+    return useQuery(
+        ["get-bank-account-detail", id],
+        () => {
+            return api.get(`/finance/general-ledger/bank-accounts/${id}`, {
+                headers: {
+                    Authorization: "Bearer " + getCookie("user"),
+                },
+            });
+        },
+        {
+            enabled: !!id,
+        }
+    );
+};
 // Delete
 export const DeleteBA = (success: any, error: any) => {
     return useMutation(

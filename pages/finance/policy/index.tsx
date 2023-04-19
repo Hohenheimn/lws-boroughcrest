@@ -99,12 +99,14 @@ export default function Policy() {
                 }`}
             >
                 <li className="absolute top-4 right-4">
-                    <PencilButton
-                        FunctionOnClick={() => {
-                            setToggle(!isToggle);
-                        }}
-                        title={"Modify"}
-                    />
+                    {!isToggle && (
+                        <PencilButton
+                            FunctionOnClick={() => {
+                                setToggle(true);
+                            }}
+                            title={"Modify"}
+                        />
+                    )}
                 </li>
                 <li className="w-2/12 640px:hidden">
                     <div className=" mb-10 640px:mb-5">
@@ -226,6 +228,17 @@ export default function Policy() {
                     </section>
                 </li>
             </ul>
+            {isToggle && (
+                <div className="flex justify-end items-center mt-5 1550px:mt-2">
+                    <button
+                        className="button_cancel"
+                        onClick={() => setToggle(false)}
+                    >
+                        CANCEL
+                    </button>
+                    <button className="buttonRed">SAVE</button>
+                </div>
+            )}
         </div>
     );
 }
