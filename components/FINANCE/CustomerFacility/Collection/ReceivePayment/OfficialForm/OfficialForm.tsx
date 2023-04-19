@@ -274,7 +274,7 @@ export default function OfficialForm({
             <div className="mb-10 1550px:mb-5 640px:mb-3"></div>
             {!CDloading && !CDerror && (
                 <PaymentSummaryTable
-                    SummaryItems={CDdata?.data?.data}
+                    SummaryItems={CDdata?.data}
                     CreditTax={Number(headerForm.credit_tax)}
                     TotalDue={Number(headerForm.amount_paid) + Number(OATotal)}
                     triggerID={Number(headerForm.customer_id)}
