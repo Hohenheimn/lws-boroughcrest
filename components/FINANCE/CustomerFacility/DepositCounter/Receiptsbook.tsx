@@ -25,6 +25,7 @@ import AppContext from "../../../Context/AppContext";
 import { useQueryClient } from "react-query";
 import { format, isValid, parse } from "date-fns";
 import { MinusButtonTable, PlusButtonTable } from "../../../Reusable/Icons";
+import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
 
 export type isReceiptBookData = {
     itemArray: isTableItemObjRB[];
@@ -262,12 +263,8 @@ export default function Receiptsbook({
         });
         buttonClicked = "";
     };
-    const onError = () => {
-        setPrompt({
-            message: `Something is wrong!`,
-            type: "error",
-            toggle: true,
-        });
+    const onError = (e: any) => {
+        ErrorSubmit(e, setPrompt);
         buttonClicked = "";
     };
 
