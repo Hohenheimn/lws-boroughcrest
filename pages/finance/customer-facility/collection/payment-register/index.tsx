@@ -190,10 +190,7 @@ const List = ({ itemDetail }: ListProps) => {
                 />
             </td>
             <td>{itemDetail?.mode_of_payment}</td>
-            <td>
-                {/* {bankAccount?.data?.bank_acc_no} */}
-                Sample Inbound
-            </td>
+            <td>{bankAccount?.data?.bank_acc_no}</td>
         </tr>
     );
 };

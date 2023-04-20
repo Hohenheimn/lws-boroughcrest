@@ -3,7 +3,9 @@ import { useRouter } from "next/router";
 import { getCookie, deleteCookie } from "cookies-next";
 import api from "../../util/api";
 import AppContext from "../Context/AppContext";
+import { useQueryClient } from "react-query";
 export default function SignOut() {
+    const queryClient = useQueryClient();
     const { setPrompt } = useContext(AppContext);
     const router = useRouter();
     const SignOutHandler = async () => {
@@ -16,7 +18,11 @@ export default function SignOut() {
             });
 
             if (response.status === 200) {
+                // Remove all cache query or data
+                queryClient.removeQueries();
+                // delete token
                 deleteCookie("user");
+                // redirect to login page
                 router.push("/login");
             } else if (response.status === 401) {
                 setPrompt({

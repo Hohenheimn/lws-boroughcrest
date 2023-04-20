@@ -105,7 +105,9 @@ export default function GroupForm({
             return api.get(
                 `/admin/customer?keywords=${isSearch}&owner_tenant_class=1&paginate=10&page=${
                     isSearch === "" ? TablePage : 1
-                }`,
+                }&${
+                    isFilterbyCategory === "Tower" ? "tower_id" : "project_id"
+                }=${isCategoryList.id}`,
                 {
                     headers: {
                         Authorization: "Bearer " + getCookie("user"),

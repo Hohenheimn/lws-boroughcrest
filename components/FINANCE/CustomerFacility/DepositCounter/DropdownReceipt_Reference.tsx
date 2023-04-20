@@ -24,7 +24,7 @@ export default function DropdownReceipt_Reference({
     selecteRefRec,
     setSelectField,
 }: Props) {
-    const [toggle, setToggle] = useState(false);
+    const [toggle, setToggle] = useState(true);
     const [tempSearch, setTempSearch] = useState<string | number>("");
     useEffect(() => {
         setTempSearch(value);

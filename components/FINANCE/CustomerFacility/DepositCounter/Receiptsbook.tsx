@@ -184,7 +184,7 @@ export default function Receiptsbook({
                 selectAll: selectAll,
             });
         }
-    }, [data?.status]);
+    }, [data]);
 
     const AddHandler = (id: string | number) => {
         const cloneToAdd = isReceiptBookData?.itemArray?.map(
