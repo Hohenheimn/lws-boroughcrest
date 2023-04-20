@@ -8,6 +8,7 @@ import Image from "next/image";
 import PeriodCalendar from "../../../Reusable/PeriodCalendar";
 import Link from "next/link";
 import { MdArrowForwardIos } from "react-icons/md";
+import { format, isValid, parse } from "date-fns";
 
 type Props = {
     isSearch: string;
@@ -43,6 +44,9 @@ export default function HeaderCollection({
         setAdvFilter(cloneFilter);
     };
 
+    const dateFrom = parse(isPeriod.from, "MMM dd yyyy", new Date());
+    const dateTo = parse(isPeriod.to, "MMM dd yyyy", new Date());
+
     return (
         <>
             <section className={style.container}>
@@ -66,7 +70,15 @@ export default function HeaderCollection({
                                 <BsSearch className={style.searchIcon} />
                             </div>
                             <AdvanceFilter
-                                endpoint={`${FilterEndpoint}?date_from=${isPeriod.from}&date_to=${isPeriod.to}&keywords=`}
+                                endpoint={`${FilterEndpoint}?date_from=${
+                                    isValid(dateFrom)
+                                        ? format(dateFrom, "yyyy-MM-dd")
+                                        : ""
+                                }&date_to=${
+                                    isValid(dateTo)
+                                        ? format(dateTo, "yyyy-MM-dd")
+                                        : ""
+                                }&keywords=`}
                                 setAdvFilter={setAdvFilter}
                                 isAdvFilter={isAdvFilter}
                             />

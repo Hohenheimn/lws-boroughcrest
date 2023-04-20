@@ -20,12 +20,10 @@ export default function DropdownIndex({
     rowID,
     selectedIndex,
 }: Props) {
-    const [toggle, setToggle] = useState(false);
+    const [toggle, setToggle] = useState(true);
     const [tempSearch, setTempSearch] = useState<string | number>("");
     useEffect(() => {
         setTempSearch(value);
-        console.log("dropdown");
-        console.log(selectedIndex);
     }, [value]);
 
     return (
