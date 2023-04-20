@@ -185,7 +185,7 @@ export default function BatchList() {
                 <table className="table_list">
                     <thead className="textRed">
                         <tr>
-                            <th className="checkbox">
+                            {/* <th className="checkbox">
                                 <div className="item">
                                     <input
                                         type="checkbox"
@@ -193,7 +193,7 @@ export default function BatchList() {
                                         onChange={selectAll}
                                     />
                                 </div>
-                            </th>
+                            </th> */}
                             <th className="text-start">BATCH NO</th>
                             <th>CHARGE</th>
                             <th>DESCRIPTION</th>
@@ -240,7 +240,7 @@ export default function BatchList() {
                 PageNumber={data?.data.last_page}
                 CurrentPage={data?.data.current_page}
             />
-            <div className="flex justify-end py-5 mt-10">
+            {/* <div className="flex justify-end py-5 mt-10">
                 <button className="button_cancel">Cancel</button>
                 <button className="buttonRed" onClick={UpdateHandler}>
                     {updateLoading ? (
@@ -249,7 +249,7 @@ export default function BatchList() {
                         "UPDATE"
                     )}
                 </button>
-            </div>
+            </div> */}
         </>
     );
 }
@@ -326,7 +326,7 @@ const TableList = ({
 
     return (
         <tr>
-            <td className="checkbox">
+            {/* <td className="checkbox">
                 <div className="item">
                     <input
                         type="checkbox"
@@ -334,7 +334,7 @@ const TableList = ({
                         checked={itemDetail.select}
                     />
                 </div>
-            </td>
+            </td> */}
             <td className=" text-DarkBlue">{itemDetail.batch_no}</td>
             <td className=" text-DarkBlue">{itemDetail.charge.name}</td>
             <td className=" text-DarkBlue">{itemDetail.description}</td>
