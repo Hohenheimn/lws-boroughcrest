@@ -597,19 +597,6 @@ const List = ({
         });
     };
 
-    const SelectedRefRecFilter: any = itemDetail.childrenBC.map(
-        (selectedRefRec) => {
-            return Number(selectedRefRec.receipt_id);
-        }
-    );
-    let SelectedRefRec = [
-        Number(itemDetail.rec_ref_id),
-        ...SelectedRefRecFilter,
-    ];
-
-    if (itemDetail.rec_ref_id === "" && itemDetail.childrenBC.length <= 0) {
-        SelectedRefRec = [];
-    }
     let credit_date: any = parse(
         itemDetail.credit_date,
         "yyyy-MM-dd",
@@ -618,11 +605,6 @@ const List = ({
     credit_date = isValid(credit_date)
         ? format(credit_date, "MMM dd yyyy")
         : "";
-
-    useEffect(() => {
-        console.log(itemDetail.childrenBC.length);
-        console.log(itemDetail.variance);
-    }, []);
     return (
         <>
             <tr className={`${itemDetail.childrenBC.length > 0 && "noBorder"}`}>
@@ -732,7 +714,6 @@ const List = ({
                                 selectHandler={SelectHandler}
                                 keyType={isSelect.rec_ref}
                                 rowID={1}
-                                selecteRefRec={SelectedRefRec}
                             />
                         )}
                     </td>
@@ -814,7 +795,6 @@ const List = ({
                     DeleteHandler={DeleteHandler}
                     AddHandler={AddHandler}
                     DeleteHandlerChildren={DeleteHandlerChildren}
-                    SelectedRefRec={SelectedRefRec}
                 />
             ))}
         </>
@@ -833,7 +813,6 @@ type ChildList = {
         parentID: string | number,
         selectedID: string | number
     ) => void;
-    SelectedRefRec: number[];
 };
 
 const ChildList = ({
@@ -844,12 +823,30 @@ const ChildList = ({
     AddHandler,
     type,
     index,
-    SelectedRefRec,
 }: ChildList) => {
     const [isSelect, setSelect] = useState({
         rec_ref: "",
         toggle: false,
     });
+
+    const recrefAlreadySelectedParent: string[] = [
+        itemDetail.receipt_no,
+        itemDetail.reference_no,
+    ];
+    const ReceiptAlreadySelectedChildren: string[] = itemDetail.childrenBC
+        .map((item) => `${item.receipt_no}`)
+        .filter((itemFilter) => itemFilter !== "");
+    const ReferenceAlreadySelectedChildren: string[] = itemDetail.childrenBC
+        .map((item) => `${item.reference_no}`)
+        .filter((itemFilter) => itemFilter !== "");
+    const OverAllSelectedRecRef: string[] = [
+        ...recrefAlreadySelectedParent,
+        ...ReceiptAlreadySelectedChildren,
+        ...ReferenceAlreadySelectedChildren,
+    ];
+    useEffect(() => {
+        console.log(OverAllSelectedRecRef);
+    }, []);
     return (
         <tr
             className={`${
@@ -939,7 +936,6 @@ const ChildList = ({
                                 selectHandler={SelectHandlerChildDD}
                                 keyType={isSelect.rec_ref}
                                 rowID={itemChildren.id}
-                                selecteRefRec={SelectedRefRec}
                             />
                         )}
                     </td>

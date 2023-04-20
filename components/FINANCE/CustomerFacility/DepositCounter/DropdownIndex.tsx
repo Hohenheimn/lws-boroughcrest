@@ -9,7 +9,7 @@ type Props = {
     name: string;
     selectHandler: (e: any) => void;
     value: string | number;
-    selectedIndex: number[];
+    selectedIndex?: string[];
     rowID: string | number;
 };
 
@@ -24,6 +24,7 @@ export default function DropdownIndex({
     const [tempSearch, setTempSearch] = useState<string | number>("");
     useEffect(() => {
         setTempSearch(value);
+        console.log(selectedIndex);
     }, [value]);
 
     return (
@@ -71,12 +72,12 @@ type ListItem = {
     selectHandler: (e: any) => void;
     setToggle: Function;
     rowID: string | number;
-    selectedIndex: number[];
+    selectedIndex?: string[];
 };
 
 type Index = {
     index: number | string;
-    id: number;
+    id: number | string;
     amount: number | string;
 };
 
@@ -115,8 +116,8 @@ const ListItem = ({
                     amount: item.credit,
                 };
             });
-            const filterIndex = CloneArray.filter((item: Index) => {
-                return !selectedIndex.includes(item.id);
+            const filterIndex = CloneArray.filter((item: any) => {
+                return !selectedIndex?.includes(item.index);
             });
             setIndex(filterIndex);
         }
