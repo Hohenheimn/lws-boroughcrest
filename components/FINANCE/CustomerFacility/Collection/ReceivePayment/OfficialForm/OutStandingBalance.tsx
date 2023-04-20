@@ -242,7 +242,7 @@ const List = ({ setTable, isTable, itemDetail, index, isToggle }: List) => {
                     className={`field number text-end ${
                         !isToggle && "disabled"
                     }`}
-                    // valueLimit={itemDetail.due_amount}
+                    valueLimit={itemDetail.due_amount}
                     value={Number(itemDetail?.applied_amount)}
                     onChange={updateValue}
                     type={"applied_payment"}
