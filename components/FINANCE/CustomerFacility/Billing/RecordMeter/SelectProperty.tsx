@@ -17,6 +17,9 @@ import ReadingPropertyForm, {
 import NameIDDropdown from "../../../../Dropdowns/NameIDDropdown";
 import SelectDropdown from "../../../../Reusable/SelectDropdown";
 import { useRouter } from "next/router";
+import { getCookie } from "cookies-next";
+import api from "../../../../../util/api";
+import { useQuery } from "react-query";
 
 type Props = {
     toggle: Function;
@@ -101,10 +104,42 @@ export default function SelectProperty({
         });
     };
 
-    const { isLoading, isError, data } = GetPropertyList(
-        TablePage,
-        isSearch,
-        10
+    const [isFilterbyCategory, setFilterbyCategory] = useState("");
+    const [isCategoryList, setCategoryList] = useState({
+        value: "",
+        id: "",
+    });
+
+    useEffect(() => {
+        console.log(isFilterbyCategory);
+    }, [isFilterbyCategory]);
+
+    const { isLoading, isError, data } = useQuery(
+        [
+            "Property-List",
+            TablePage,
+            isSearch,
+            10,
+            isCategoryList.id,
+            isFilterbyCategory,
+        ],
+        () => {
+            return api.get(
+                `/admin/property/unit?page=${
+                    isSearch === "" ? TablePage : 1
+                }&paginate=10&keywords=${isSearch}&${
+                    isFilterbyCategory === "Tower" ? "tower_id" : "project_id"
+                }=${isCategoryList.id}`,
+                {
+                    headers: {
+                        Authorization: "Bearer " + getCookie("user"),
+                    },
+                }
+            );
+        },
+        {
+            refetchOnWindowFocus: false,
+        }
     );
 
     useEffect(() => {
@@ -192,13 +227,6 @@ export default function SelectProperty({
         });
         setFormActive([false, true]);
     };
-
-    const [isFilterbyCategory, setFilterbyCategory] = useState("");
-
-    const [isCategoryList, setCategoryList] = useState({
-        value: "",
-        id: "",
-    });
 
     return (
         <div className={styleModal.container}>
