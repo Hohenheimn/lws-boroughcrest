@@ -222,15 +222,17 @@ export default function BankCreditComp({
                     rec_ref_id: "",
                     reference_no: item?.reference_no,
                     select: select,
-                    childrenBC: item?.receipt_book.map(
-                        (receiptBookItem: any) => {
-                            return {
-                                receipt_no: receiptBookItem?.receipt_no,
-                                reference_no: receiptBookItem?.reference_no,
-                                amount: receiptBookItem?.amount_paid,
-                            };
-                        }
-                    ),
+                    childrenBC:
+                        type === "bank-credit"
+                            ? item?.receipt_book.map((receiptBookItem: any) => {
+                                  return {
+                                      receipt_no: receiptBookItem?.receipt_no,
+                                      reference_no:
+                                          receiptBookItem?.reference_no,
+                                      amount: receiptBookItem?.amount_paid,
+                                  };
+                              })
+                            : [],
                 };
             });
 
@@ -616,6 +618,11 @@ const List = ({
     credit_date = isValid(credit_date)
         ? format(credit_date, "MMM dd yyyy")
         : "";
+
+    useEffect(() => {
+        console.log(itemDetail.childrenBC.length);
+        console.log(itemDetail.variance);
+    }, []);
     return (
         <>
             <tr className={`${itemDetail.childrenBC.length > 0 && "noBorder"}`}>
@@ -773,23 +780,17 @@ const List = ({
                 </td>
                 {type !== "bank-credit" && (
                     <td className="actionIcon">
-                        <div onClick={() => DeleteHandler(itemDetail.id)}>
-                            <MinusButtonTable />
-                        </div>
-
-                        {itemDetail.variance !== 0 &&
-                            itemDetail.rec_ref_id !== "" &&
-                            itemDetail.childrenBC.length <= 0 && (
-                                <div
-                                    className={`ml-5 1024px:ml-2 ${
-                                        itemDetail.variance !== "0" &&
-                                        itemDetail.variance !== 0 &&
-                                        itemDetail.reference_no === "" &&
-                                        itemDetail.childrenBC.length <= 0 &&
-                                        "pointer-events-none opacity-[.5]"
-                                    }`}
-                                >
+                        {itemDetail?.variance !== 0 &&
+                            itemDetail?.childrenBC.length <= 0 && (
+                                <div>
                                     <div
+                                        className={`ml-5 1024px:ml-2 ${
+                                            itemDetail?.variance !== "0" &&
+                                            itemDetail?.variance !== 0 &&
+                                            itemDetail?.childrenBC?.length <=
+                                                0 &&
+                                            "pointer-events-none opacity-[.5]"
+                                        }`}
                                         onClick={() =>
                                             AddHandler(itemDetail.id)
                                         }
