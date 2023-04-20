@@ -23,6 +23,8 @@ import { format, isValid, parse } from "date-fns";
 import AppContext from "../../../Context/AppContext";
 import { MinusButtonTable, PlusButtonTable } from "../../../Reusable/Icons";
 import { BsSearch } from "react-icons/bs";
+import { m } from "framer-motion";
+import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
 
 export type isTableBankCredit = {
     itemArray: isTableItemObjBC[];
@@ -294,12 +296,8 @@ export default function BankCreditComp({
         });
         buttonClicked = "";
     };
-    const onError = () => {
-        setPrompt({
-            message: `Something is wrong!`,
-            type: "error",
-            toggle: true,
-        });
+    const onError = (e: any) => {
+        ErrorSubmit(e, setPrompt);
         buttonClicked = "";
     };
     const { isLoading: updateLoading, mutate: updateMutate } =
@@ -537,6 +535,25 @@ const List = ({
         rec_ref: "",
     });
 
+    useEffect(() => {
+        if (isSelect.rec_ref !== "") {
+            const newItems = isTableItem?.itemArray.map((item: any) => {
+                if (itemDetail.id == item.id) {
+                    return {
+                        ...item,
+                        reference_no: "",
+                        receipt_no: "",
+                    };
+                }
+                return item;
+            });
+            setTableItem({
+                ...isTableItem,
+                itemArray: newItems,
+            });
+        }
+    }, [isSelect]);
+
     const SelectField = (value: string) => {
         setSelect({
             rec_ref: value,
@@ -627,8 +644,8 @@ const List = ({
             return item;
         });
         setTableItem({
+            ...isTableItem,
             itemArray: newItems,
-            selectAll: false,
         });
     };
 

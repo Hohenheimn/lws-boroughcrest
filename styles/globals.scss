@@ -182,7 +182,7 @@ select {
     }
 }
 .table_container.max-half {
-    @apply max-h-[30vh] min-h-[300px] 1550px:min-h-[200px];
+    @apply max-h-[30vh] min-h-[300px] 640px:min-h-[300px];
 }
 .table_container.hAuto {
     @apply h-auto min-h-0 max-h-[300px];

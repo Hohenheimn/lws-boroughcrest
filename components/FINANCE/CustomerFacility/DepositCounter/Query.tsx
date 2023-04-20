@@ -196,7 +196,7 @@ export const MultipleUpdateReceiptBook = (onSucces: any, onError: any) => {
         {
             onSuccess: () => {
                 onSucces();
-                queryClient.invalidateQueries("bank-credit-list");
+                queryClient.invalidateQueries("receipt-book-list");
             },
             onError: onError,
         }

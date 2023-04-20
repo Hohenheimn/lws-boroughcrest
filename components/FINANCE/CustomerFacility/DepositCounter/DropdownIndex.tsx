@@ -20,7 +20,7 @@ export default function DropdownIndex({
     rowID,
     selectedIndex,
 }: Props) {
-    const [toggle, setToggle] = useState(true);
+    const [toggle, setToggle] = useState(false);
     const [tempSearch, setTempSearch] = useState<string | number>("");
     useEffect(() => {
         setTempSearch(value);
