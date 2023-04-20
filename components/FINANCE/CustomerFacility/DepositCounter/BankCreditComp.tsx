@@ -99,6 +99,37 @@ export default function BankCreditComp({
 
     const [TablePage, setTablePage] = useState(1);
 
+    // GET SELECTED Reference no and receipt no FOR FILTERING DROPDOWN
+    const [
+        OverallSelectedReceiptReference,
+        setOverallSelectedReceiptReference,
+    ] = useState<string[]>([]);
+    useEffect(() => {
+        let ReceiptReferenceParent: string[] = [];
+        let ReceiptReferenceChildren: string[] = [];
+        isBankCredit.itemArray.map((item: isTableItemObjBC) => {
+            ReceiptReferenceParent = [
+                ...ReceiptReferenceParent,
+                item.receipt_no,
+                item.reference_no,
+            ];
+        });
+        isBankCredit.itemArray.map((item: isTableItemObjBC) => {
+            item.childrenBC.map((item2) => {
+                ReceiptReferenceChildren = [
+                    ...ReceiptReferenceChildren,
+                    `${item2.receipt_no}`,
+                    `${item2.reference_no}`,
+                ];
+            });
+        });
+        const OverallSelectedReceiptReference = [
+            ...ReceiptReferenceParent,
+            ...ReceiptReferenceChildren,
+        ].filter((filterItem) => filterItem !== "");
+        setOverallSelectedReceiptReference(OverallSelectedReceiptReference);
+    }, [isBankCredit.itemArray]);
+
     const selectAll = () => {
         if (isBankCredit.selectAll) {
             // remove
@@ -435,6 +466,9 @@ export default function BankCreditComp({
                                     setSelectedBankCreditIDs={
                                         setSelectedBankCreditIDs
                                     }
+                                    SelectedReceiptReference={
+                                        OverallSelectedReceiptReference
+                                    }
                                 />
                             )
                         )}
@@ -482,6 +516,7 @@ type ListProps = {
     ) => void;
     isSelectedBankCreditIDs: number[];
     setSelectedBankCreditIDs: Function;
+    SelectedReceiptReference: string[];
 };
 
 const List = ({
@@ -496,6 +531,7 @@ const List = ({
     DeleteHandlerChildren,
     isSelectedBankCreditIDs,
     setSelectedBankCreditIDs,
+    SelectedReceiptReference,
 }: ListProps) => {
     const [isSelect, setSelect] = useState({
         toggle: false,
@@ -714,6 +750,7 @@ const List = ({
                                 selectHandler={SelectHandler}
                                 keyType={isSelect.rec_ref}
                                 rowID={1}
+                                selecteRefRec={SelectedReceiptReference}
                             />
                         )}
                     </td>
@@ -795,6 +832,7 @@ const List = ({
                     DeleteHandler={DeleteHandler}
                     AddHandler={AddHandler}
                     DeleteHandlerChildren={DeleteHandlerChildren}
+                    SelectedReceiptReference={SelectedReceiptReference}
                 />
             ))}
         </>
@@ -813,6 +851,7 @@ type ChildList = {
         parentID: string | number,
         selectedID: string | number
     ) => void;
+    SelectedReceiptReference: string[];
 };
 
 const ChildList = ({
@@ -823,30 +862,12 @@ const ChildList = ({
     AddHandler,
     type,
     index,
+    SelectedReceiptReference,
 }: ChildList) => {
     const [isSelect, setSelect] = useState({
         rec_ref: "",
         toggle: false,
     });
-
-    const recrefAlreadySelectedParent: string[] = [
-        itemDetail.receipt_no,
-        itemDetail.reference_no,
-    ];
-    const ReceiptAlreadySelectedChildren: string[] = itemDetail.childrenBC
-        .map((item) => `${item.receipt_no}`)
-        .filter((itemFilter) => itemFilter !== "");
-    const ReferenceAlreadySelectedChildren: string[] = itemDetail.childrenBC
-        .map((item) => `${item.reference_no}`)
-        .filter((itemFilter) => itemFilter !== "");
-    const OverAllSelectedRecRef: string[] = [
-        ...recrefAlreadySelectedParent,
-        ...ReceiptAlreadySelectedChildren,
-        ...ReferenceAlreadySelectedChildren,
-    ];
-    useEffect(() => {
-        console.log(OverAllSelectedRecRef);
-    }, []);
     return (
         <tr
             className={`${
@@ -936,6 +957,7 @@ const ChildList = ({
                                 selectHandler={SelectHandlerChildDD}
                                 keyType={isSelect.rec_ref}
                                 rowID={itemChildren.id}
+                                selecteRefRec={SelectedReceiptReference}
                             />
                         )}
                     </td>
