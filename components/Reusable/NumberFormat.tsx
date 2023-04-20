@@ -18,35 +18,31 @@ export const InputNumberForTable = ({
     prefix,
     valueLimit,
 }: InputNumber) => {
-    let validate = false;
+    const InputValue = value;
     return (
         <div className="withPesoField">
             <NumericFormat
                 className={className + " max-w-[400px]"}
                 prefix={prefix}
                 placeholder="-"
-                value={Number(value) === 0 ? "" : value}
-                onKeyDown={(e: any) => {
-                    validate && e.key !== "Backspace" && e.preventDefault();
+                value={Number(InputValue) === 0 ? "" : InputValue}
+                isAllowed={(values) => {
+                    const { floatValue } = values;
+                    if (Number(floatValue) > Number(valueLimit)) {
+                        return false;
+                    } else {
+                        return true;
+                    }
                 }}
                 fixedDecimalScale
-                decimalScale={2}
                 decimalSeparator="."
+                decimalScale={2}
                 allowNegative={false}
                 thousandSeparator={true}
                 onValueChange={(values) => {
                     // formattedValue = $2,223z
                     const { formattedValue, value } = values;
-                    if (valueLimit !== undefined) {
-                        if (Number(value) <= Number(valueLimit)) {
-                            onChange(type, value);
-                            validate = false;
-                        } else {
-                            validate = true;
-                        }
-                    } else {
-                        onChange(type, value);
-                    }
+                    onChange(type, value);
                 }}
             />
         </div>

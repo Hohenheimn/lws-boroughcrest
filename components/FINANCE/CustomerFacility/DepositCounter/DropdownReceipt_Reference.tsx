@@ -98,7 +98,9 @@ const ListItem = ({
         ["DD-RB", "Receipt-Book-dropdown", tempSearch],
         () => {
             return api.get(
-                `/finance/customer-facility/deposit-counter?list_type=receipt_book&status=unmatched&keywords=${tempSearch}`,
+                `/finance/customer-facility/deposit-counter?list_type=receipt_book&status=unmatched&keywords=${
+                    tempSearch === undefined ? "" : tempSearch
+                }`,
                 {
                     headers: {
                         Authorization: "Bearer " + getCookie("user"),
