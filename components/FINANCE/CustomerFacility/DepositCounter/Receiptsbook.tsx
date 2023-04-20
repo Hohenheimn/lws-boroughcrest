@@ -82,6 +82,28 @@ export default function Receiptsbook({
 
     const [isSelectedIDs, setSelectedIDs] = useState<number[]>([]);
 
+    // GET SELECTED INDEX FOR FILTERING DROPDOWN
+    const [OverallSelectedIndex, setOverallSelectedIndex] = useState<string[]>(
+        []
+    );
+    useEffect(() => {
+        let IndexParent: string[] = [];
+        let IndexChildren: string[] = [];
+        isReceiptBookData.itemArray.map((item: isTableItemObjRB) => {
+            IndexParent = [...IndexParent, item.index];
+        });
+        isReceiptBookData.itemArray.map((item: isTableItemObjRB) => {
+            item.childrenRB.map((item2) => {
+                IndexChildren = [...IndexChildren, `${item2.index}`];
+            });
+        });
+        const OverallSelectedIndex = [...IndexParent, ...IndexChildren].filter(
+            (filterItem) => filterItem !== ""
+        );
+        setOverallSelectedIndex(OverallSelectedIndex);
+    }, [isReceiptBookData.itemArray]);
+    // End
+
     const selectAll = () => {
         if (isReceiptBookData.selectAll) {
             // remove
@@ -162,7 +184,7 @@ export default function Receiptsbook({
                 selectAll: selectAll,
             });
         }
-    }, [data]);
+    }, [data?.status]);
 
     const AddHandler = (id: string | number) => {
         const cloneToAdd = isReceiptBookData?.itemArray?.map(
@@ -268,7 +290,6 @@ export default function Receiptsbook({
             });
         }
     };
-
     return (
         <>
             {router.query.detail !== undefined && (
@@ -417,6 +438,7 @@ export default function Receiptsbook({
                                     }
                                     setSelectedIDs={setSelectedIDs}
                                     isSelectedIDs={isSelectedIDs}
+                                    SelectedIndex={OverallSelectedIndex}
                                 />
                             )
                         )}
@@ -464,6 +486,7 @@ type ListProps = {
     ) => void;
     isSelectedIDs: number[];
     setSelectedIDs: Function;
+    SelectedIndex: string[];
 };
 
 const List = ({
@@ -476,6 +499,7 @@ const List = ({
     DeleteHandlerChildren,
     isSelectedIDs,
     setSelectedIDs,
+    SelectedIndex,
 }: ListProps) => {
     const updateValue = (key: string, e: any) => {
         const indexID = e.target.getAttribute("data-indexID");
@@ -578,6 +602,7 @@ const List = ({
     document_date = isValid(document_date)
         ? format(document_date, "MMM dd yyyy")
         : "";
+
     return (
         <>
             <tr
@@ -640,6 +665,7 @@ const List = ({
                             value={itemDetail?.index}
                             selectHandler={SelectHandler}
                             rowID={itemDetail.id}
+                            selectedIndex={SelectedIndex}
                         />
                     )}
                 </td>
@@ -685,6 +711,7 @@ const List = ({
                     type={type}
                     DeleteHandlerChildren={DeleteHandlerChildren}
                     AddHandler={AddHandler}
+                    SelectedIndex={SelectedIndex}
                 />
             ))}
         </>
@@ -702,6 +729,7 @@ type ChildListProps = {
         parentID: string | number,
         selectedID: string | number
     ) => void;
+    SelectedIndex: string[];
 };
 
 const ChildList = ({
@@ -712,15 +740,8 @@ const ChildList = ({
     SelectHandlerChildDD,
     DeleteHandlerChildren,
     AddHandler,
+    SelectedIndex,
 }: ChildListProps) => {
-    const indexAlreadySelectedParent: string[] = [itemDetail.index];
-    let indexAlreadySelectedChildren: string[] = itemDetail.childrenRB
-        .map((item) => item.index)
-        .filter((itemFilter) => itemFilter !== "");
-    const OverAllSelectedIndex: string[] = [
-        ...indexAlreadySelectedParent,
-        ...indexAlreadySelectedChildren,
-    ];
     return (
         <>
             <tr
@@ -751,7 +772,7 @@ const ChildList = ({
                             name="index"
                             value={itemChildren.index}
                             selectHandler={SelectHandlerChildDD}
-                            selectedIndex={OverAllSelectedIndex}
+                            selectedIndex={SelectedIndex}
                             rowID={itemChildren.id}
                         />
                     )}

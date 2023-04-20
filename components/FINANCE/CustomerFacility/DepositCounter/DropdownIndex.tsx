@@ -24,6 +24,7 @@ export default function DropdownIndex({
     const [tempSearch, setTempSearch] = useState<string | number>("");
     useEffect(() => {
         setTempSearch(value);
+        console.log("dropdown");
         console.log(selectedIndex);
     }, [value]);
 

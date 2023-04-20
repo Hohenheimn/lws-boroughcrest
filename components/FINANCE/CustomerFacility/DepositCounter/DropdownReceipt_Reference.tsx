@@ -11,7 +11,7 @@ type Props = {
     value: string | number;
     keyType: string;
     rowID: string | number;
-    selecteRefRec?: string[];
+    selecteRefRec: string[];
 };
 
 export default function DropdownReceipt_Reference({
@@ -114,7 +114,6 @@ const ListItem = ({
 
     useEffect(() => {
         if (data?.status === 200) {
-            console.log(selecteRefRec);
             const CloneArray = data?.data.map((item: any) => {
                 return {
                     receipt_no: item.receipt_no,
