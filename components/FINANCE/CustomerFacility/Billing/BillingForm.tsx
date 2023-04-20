@@ -107,7 +107,7 @@ export default function JournalForm({
         if (isCustomer.id !== "") {
             // billing_batch_list_id
             // Pass only the key of billing_readings_list_id is not equal to null
-            const GetInvoiceFromReading = data?.data.filter(
+            const GetInvoiceFromReading = data?.data?.invoice_list.filter(
                 (item: any) => item?.billing_readings_list_id !== null
             );
             if (GetInvoiceFromReading !== undefined) {
@@ -143,7 +143,7 @@ export default function JournalForm({
                     setBillingFromReading([]);
                 }
             }
-            const GetInvoiceFromBatch = data?.data.filter(
+            const GetInvoiceFromBatch = data?.data?.invoice_list.filter(
                 (item: any) => item?.billing_batch_list_id !== null
             );
             if (GetInvoiceFromBatch !== undefined) {
@@ -249,9 +249,6 @@ export default function JournalForm({
     const { isLoading: isLoadingSave, mutate: mutateSave } =
         CreateInvoiceBilling(onSuccess, onError);
 
-    const { isLoading: isLoadingModify, mutate: mutateModify } =
-        ModifyInvoiceBilling(onSuccess, onError, router.query.modify);
-
     const Submit = (button: string) => {
         setSave(false);
         let validate = true;
@@ -299,8 +296,7 @@ export default function JournalForm({
         );
 
         const Payload = {
-            invoice_id:
-                router.query.modify === undefined ? null : router.query.modify,
+            invoice_id: data?.data?.id === undefined ? null : data?.data?.id,
             customer_id: isCustomer.id,
             due_amount: Number(totalAmount),
             invoice_list: [...InvoiceListInputed, ...InvoiceListFromCustomer],
@@ -499,7 +495,7 @@ export default function JournalForm({
                                 Submit("save");
                             }}
                         >
-                            {isLoadingSave || isLoadingModify ? (
+                            {isLoadingSave ? (
                                 <ScaleLoader
                                     color="#fff"
                                     height="10px"

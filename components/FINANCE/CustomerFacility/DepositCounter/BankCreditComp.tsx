@@ -306,7 +306,7 @@ export default function BankCreditComp({
     const UpdateStatus = (status: string) => {
         buttonClicked = status;
         const Payload = {
-            deposit_ids: isSelectedBankCreditIDs,
+            bank_credit_ids: isSelectedBankCreditIDs,
             status: status,
         };
         if (isSelectedBankCreditIDs.length > 0) {
@@ -657,6 +657,10 @@ const List = ({
     credit_date = isValid(credit_date)
         ? format(credit_date, "MMM dd yyyy")
         : "";
+
+    const DisplayVariance =
+        Number(itemDetail.credit_amount) - Number(itemDetail.rec_ref_amount);
+
     return (
         <>
             <tr className={`${itemDetail.childrenBC.length > 0 && "noBorder"}`}>
@@ -807,7 +811,7 @@ const List = ({
                     ) : (
                         <InputNumberForTable
                             onChange={() => {}}
-                            value={itemDetail.variance}
+                            value={DisplayVariance}
                             className={"field disabled w-full text-end"}
                             type={""}
                         />
@@ -889,6 +893,17 @@ const ChildList = ({
             toggle: false,
         });
     };
+
+    let ChildrensAmount = 0;
+    useEffect(() => {
+        ChildrensAmount = 0;
+        itemDetail.childrenBC.map((item) => {
+            ChildrensAmount = ChildrensAmount + item.amount;
+        });
+        console.log(itemDetail.variance);
+    }, [itemChildren.receipt_no]);
+    const DisplayVariance = Number(itemDetail.variance) - ChildrensAmount;
+
     return (
         <tr
             className={`${
@@ -988,7 +1003,7 @@ const ChildList = ({
                     <td>
                         <InputNumberForTable
                             onChange={() => {}}
-                            value={itemDetail.variance}
+                            value={DisplayVariance}
                             className={"field disabled w-full text-end"}
                             type={""}
                         />

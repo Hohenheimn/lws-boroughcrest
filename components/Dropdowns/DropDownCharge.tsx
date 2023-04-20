@@ -87,9 +87,9 @@ const List = ({
         ["charge-list-dd", tempSearch],
         () => {
             return api.get(
-                `/finance/customer-facility/charges?keywords=${tempSearch}${
-                    filter ? "&meter_reading=1" : ""
-                }`,
+                `/finance/customer-facility/charges?keywords=${
+                    tempSearch === undefined ? "" : tempSearch
+                }${filter ? "&meter_reading=1" : ""}`,
                 {
                     headers: {
                         Authorization: "Bearer " + getCookie("user"),
