@@ -41,7 +41,7 @@ export type isTableItemObjRB = {
     deposit_date: string;
     deposit_amount: number | string;
     status: string;
-    index: string | number;
+    index: string;
     indexID: string | number;
     indexAmount: string | number;
     select: boolean;
@@ -561,26 +561,6 @@ const List = ({
         });
     };
 
-    const SelectedIndexFilter: any = itemDetail?.childrenRB?.map(
-        (selectedIndex) => {
-            return Number(selectedIndex.indexID);
-        }
-    );
-
-    let SelectedIndex: number[] = [];
-    useEffect(() => {
-        if (SelectedIndexFilter) {
-            SelectedIndex = [
-                Number(itemDetail.indexID),
-                ...SelectedIndexFilter,
-            ];
-        }
-    });
-
-    if (itemDetail?.indexID === "" && itemDetail?.childrenRB?.length <= 0) {
-        SelectedIndex = [];
-    }
-
     let deposit_date: any = parse(
         itemDetail.deposit_date,
         "yyyy-MM-dd",
@@ -658,7 +638,6 @@ const List = ({
                         <DropdownIndex
                             name="index"
                             value={itemDetail?.index}
-                            selectedIndex={SelectedIndex}
                             selectHandler={SelectHandler}
                             rowID={itemDetail.id}
                         />
@@ -704,7 +683,6 @@ const List = ({
                     SelectHandlerChildDD={SelectHandlerChildDD}
                     index={index}
                     type={type}
-                    SelectedIndex={SelectedIndex}
                     DeleteHandlerChildren={DeleteHandlerChildren}
                     AddHandler={AddHandler}
                 />
@@ -719,7 +697,6 @@ type ChildListProps = {
     type: string;
     itemChildren: childType;
     SelectHandlerChildDD: (e: any) => void;
-    SelectedIndex: number[];
     AddHandler: (id: string | number) => void;
     DeleteHandlerChildren: (
         parentID: string | number,
@@ -733,10 +710,17 @@ const ChildList = ({
     type,
     itemChildren,
     SelectHandlerChildDD,
-    SelectedIndex,
     DeleteHandlerChildren,
     AddHandler,
 }: ChildListProps) => {
+    const indexAlreadySelectedParent: string[] = [itemDetail.index];
+    let indexAlreadySelectedChildren: string[] = itemDetail.childrenRB
+        .map((item) => item.index)
+        .filter((itemFilter) => itemFilter !== "");
+    const OverAllSelectedIndex: string[] = [
+        ...indexAlreadySelectedParent,
+        ...indexAlreadySelectedChildren,
+    ];
     return (
         <>
             <tr
@@ -767,7 +751,7 @@ const ChildList = ({
                             name="index"
                             value={itemChildren.index}
                             selectHandler={SelectHandlerChildDD}
-                            selectedIndex={SelectedIndex}
+                            selectedIndex={OverAllSelectedIndex}
                             rowID={itemChildren.id}
                         />
                     )}

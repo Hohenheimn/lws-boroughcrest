@@ -11,7 +11,7 @@ type Props = {
     value: string | number;
     keyType: string;
     rowID: string | number;
-    selecteRefRec: number[];
+    selecteRefRec?: string[];
 };
 
 export default function DropdownReceipt_Reference({
@@ -75,7 +75,7 @@ type ListItem = {
     setToggle: Function;
     keyType: string;
     rowID: string | number;
-    selecteRefRec: number[];
+    selecteRefRec?: string[];
 };
 type Receipt = {
     receipt_no: string;
@@ -114,6 +114,7 @@ const ListItem = ({
 
     useEffect(() => {
         if (data?.status === 200) {
+            console.log(selecteRefRec);
             const CloneArray = data?.data.map((item: any) => {
                 return {
                     receipt_no: item.receipt_no,
@@ -122,9 +123,14 @@ const ListItem = ({
                     amount: item.amount_paid,
                 };
             });
-            const filterIndex = CloneArray.filter((item: Receipt) => {
-                return !selecteRefRec.includes(item.id);
+            const filterIndex = CloneArray.filter((item: any) => {
+                return !selecteRefRec?.includes(
+                    keyType === "reference"
+                        ? item.reference_no
+                        : item.receipt_no
+                );
             });
+
             setReceipt(filterIndex);
         }
     }, [data, tempSearch]);
