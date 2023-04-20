@@ -24,6 +24,7 @@ import TableErrorMessage from "../../../Reusable/TableErrorMessage";
 import AppContext from "../../../Context/AppContext";
 import { useQueryClient } from "react-query";
 import { format, isValid, parse } from "date-fns";
+import { MinusButtonTable, PlusButtonTable } from "../../../Reusable/Icons";
 
 export type isReceiptBookData = {
     itemArray: isTableItemObjRB[];
@@ -135,14 +136,17 @@ export default function Receiptsbook({
                     index: "",
                     indexID: "",
                     select: select,
-                    childrenRB: item?.bank_credit?.map((itemChild: any) => {
-                        return {
-                            id: itemChild.id,
-                            indexID: itemChild.id,
-                            index: itemChild.index,
-                            amount: itemChild.credit,
-                        };
-                    }),
+                    childrenRB:
+                        type === "receipts-book"
+                            ? item?.children?.map((itemChild: any) => {
+                                  return {
+                                      id: itemChild.id,
+                                      indexID: itemChild.id,
+                                      index: itemChild.index,
+                                      amount: itemChild.credit,
+                                  };
+                              })
+                            : [],
                 };
             });
             if (
@@ -467,9 +471,7 @@ const List = ({
     isReceiptBookData,
     setTableItem,
     type,
-    index,
     setChangeData,
-    DeleteHandler,
     AddHandler,
     DeleteHandlerChildren,
     isSelectedIDs,
@@ -596,7 +598,6 @@ const List = ({
     document_date = isValid(document_date)
         ? format(document_date, "MMM dd yyyy")
         : "";
-
     return (
         <>
             <tr
@@ -677,12 +678,6 @@ const List = ({
                 )}
                 {type !== "receipts-book" && (
                     <td className="actionIcon">
-                        <div>
-                            <HiMinus
-                                onClick={() => DeleteHandler(itemDetail.id)}
-                            />
-                        </div>
-
                         {itemDetail?.variance !== 0 &&
                             itemDetail?.childrenRB?.length <= 0 && (
                                 <div
@@ -693,12 +688,9 @@ const List = ({
                                         itemDetail?.childrenRB?.length <= 0 &&
                                         "pointer-events-none opacity-[.5]"
                                     }`}
+                                    onClick={() => AddHandler(itemDetail?.id)}
                                 >
-                                    <BsPlusLg
-                                        onClick={() =>
-                                            AddHandler(itemDetail?.id)
-                                        }
-                                    />
+                                    <PlusButtonTable />
                                 </div>
                             )}
                     </td>
@@ -794,15 +786,15 @@ const ChildList = ({
                 )}
                 {type !== "receipts-book" && (
                     <td className="actionIcon">
-                        <div>
-                            <HiMinus
-                                onClick={() =>
-                                    DeleteHandlerChildren(
-                                        itemDetail.id,
-                                        itemChildren.id
-                                    )
-                                }
-                            />
+                        <div
+                            onClick={() =>
+                                DeleteHandlerChildren(
+                                    itemDetail.id,
+                                    itemChildren.id
+                                )
+                            }
+                        >
+                            <MinusButtonTable />
                         </div>
 
                         {itemDetail?.variance !== 0 && (
@@ -815,10 +807,9 @@ const ChildList = ({
                                         index &&
                                     "pointer-events-none opacity-[.5]"
                                 }`}
+                                onClick={() => AddHandler(itemDetail.id)}
                             >
-                                <BsPlusLg
-                                    onClick={() => AddHandler(itemDetail.id)}
-                                />
+                                <PlusButtonTable />
                             </div>
                         )}
                     </td>
