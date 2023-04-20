@@ -299,6 +299,8 @@ export default function JournalForm({
         );
 
         const Payload = {
+            invoice_id:
+                router.query.modify === undefined ? null : router.query.modify,
             customer_id: isCustomer.id,
             due_amount: Number(totalAmount),
             invoice_list: [...InvoiceListInputed, ...InvoiceListFromCustomer],
@@ -323,8 +325,7 @@ export default function JournalForm({
             }
         });
         if (validate) {
-            formType === "create" && mutateSave(Payload);
-            formType === "modify" && mutateModify(Payload);
+            mutateSave(Payload);
         }
     };
 

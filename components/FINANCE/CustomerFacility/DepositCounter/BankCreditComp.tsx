@@ -16,14 +16,13 @@ import { GetBankCredit, MultipleUpdateBankCredit } from "./Query";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import Pagination from "../../../Reusable/Pagination";
 import DynamicPopOver from "../../../Reusable/DynamicPopOver";
-import { HiMinus } from "react-icons/hi";
-import { BsPlusLg, BsSearch } from "react-icons/bs";
 import SelectBankAccount from "../../../Reusable/SelectBankAccount";
 import { isReceiptBookData } from "./Receiptsbook";
 import DropdownReceipt_Reference from "./DropdownReceipt_Reference";
 import { format, isValid, parse } from "date-fns";
 import AppContext from "../../../Context/AppContext";
 import { MinusButtonTable, PlusButtonTable } from "../../../Reusable/Icons";
+import { BsSearch } from "react-icons/bs";
 
 export type isTableBankCredit = {
     itemArray: isTableItemObjBC[];
@@ -741,6 +740,7 @@ const List = ({
                             </div>
                         ) : (
                             <DropdownReceipt_Reference
+                                setSelectField={SelectField}
                                 name="index"
                                 value={
                                     isSelect.rec_ref === "receipt"
@@ -803,10 +803,8 @@ const List = ({
                                 <div>
                                     <div
                                         className={`ml-5 1024px:ml-2 ${
-                                            itemDetail?.variance !== "0" &&
-                                            itemDetail?.variance !== 0 &&
-                                            itemDetail?.childrenBC?.length <=
-                                                0 &&
+                                            itemDetail.credit_amount ===
+                                                itemDetail.variance &&
                                             "pointer-events-none opacity-[.5]"
                                         }`}
                                         onClick={() =>
@@ -868,6 +866,12 @@ const ChildList = ({
         rec_ref: "",
         toggle: false,
     });
+    const SelectField = (value: string) => {
+        setSelect({
+            rec_ref: value,
+            toggle: false,
+        });
+    };
     return (
         <tr
             className={`${
@@ -878,10 +882,12 @@ const ChildList = ({
             <td></td>
             <td></td>
             <td>
-                <TextNumberDisplay
-                    value={itemChildren.amount}
-                    className="withPeso"
-                />
+                {type === "bank-credit" && (
+                    <TextNumberDisplay
+                        value={itemChildren.amount}
+                        className="withPeso"
+                    />
+                )}
             </td>
 
             <td>
@@ -948,6 +954,7 @@ const ChildList = ({
                             </div>
                         ) : (
                             <DropdownReceipt_Reference
+                                setSelectField={SelectField}
                                 name="index"
                                 value={
                                     isSelect.rec_ref === "receipt"

@@ -12,6 +12,7 @@ type Props = {
     keyType: string;
     rowID: string | number;
     selecteRefRec: string[];
+    setSelectField: (field: string) => void;
 };
 
 export default function DropdownReceipt_Reference({
@@ -21,6 +22,7 @@ export default function DropdownReceipt_Reference({
     keyType,
     rowID,
     selecteRefRec,
+    setSelectField,
 }: Props) {
     const [toggle, setToggle] = useState(false);
     const [tempSearch, setTempSearch] = useState<string | number>("");
@@ -57,6 +59,7 @@ export default function DropdownReceipt_Reference({
                                 keyType={keyType}
                                 rowID={rowID}
                                 selecteRefRec={selecteRefRec}
+                                setSelectField={setSelectField}
                             />
                         )}
                     </>
@@ -76,6 +79,7 @@ type ListItem = {
     keyType: string;
     rowID: string | number;
     selecteRefRec?: string[];
+    setSelectField: (field: string) => void;
 };
 type Receipt = {
     receipt_no: string;
@@ -93,6 +97,7 @@ const ListItem = ({
     keyType,
     rowID,
     selecteRefRec,
+    setSelectField,
 }: ListItem) => {
     const { isLoading, data, isError } = useQuery(
         ["DD-RB", "Receipt-Book-dropdown", tempSearch],
@@ -150,6 +155,7 @@ const ListItem = ({
     });
     return (
         <ul ref={modal} className="dropdown-list w-full">
+            <li onClick={() => setSelectField("")}>Select Field ({keyType})</li>
             {isReceipt.map((item, index) => (
                 <li
                     key={index}
