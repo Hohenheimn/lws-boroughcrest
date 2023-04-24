@@ -365,6 +365,7 @@ export default function IndividualCompanyForm({
                                         />
                                         {isDate.toggle && (
                                             <Calendar
+                                                birthday={true}
                                                 value={isDate}
                                                 setValue={setDate}
                                             />

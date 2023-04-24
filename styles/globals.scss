@@ -468,6 +468,7 @@ input[type="number"] {
     span,
     div {
         color: white;
+        font-size: 12px !important;
     }
 }
 .tippy-tooltip.ThemeWhite-theme {
@@ -924,7 +925,7 @@ input[type="number"] {
     @apply max-h-[150px] overflow-auto w-full shadow-lg border;
 
     li {
-        @apply w-full cursor-pointer px-3 text-[#545454] text-[14px] py-1 1550px:px-2 1550px:py-1 border-b border-ThemeRed hover:bg-ThemeRed hover:text-white transition-all duration-75;
+        @apply w-full cursor-pointer px-3 text-[#545454] text-[13px] py-1 1550px:px-2 1550px:py-1 border-b border-ThemeRed hover:bg-ThemeRed hover:text-white transition-all duration-75;
         width: 100% !important;
         margin: 0 !important;
         span {
