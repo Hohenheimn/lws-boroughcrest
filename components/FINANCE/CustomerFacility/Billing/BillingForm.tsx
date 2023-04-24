@@ -115,16 +115,16 @@ export default function JournalForm({
                     (item: any) => {
                         return {
                             id: -1,
-                            charge: item.charge_name,
+                            charge: item?.charge?.name,
                             charge_id: item.charge_id,
                             charge_vat: item.vat,
                             description: item.description,
                             unit_price: item.unit_price,
                             quantity: item.quantity,
-                            uom: item.uom,
+                            uom: item.charge?.uom?.name,
                             vat: item.vat,
                             amount: item.amount,
-                            property_unit_code: item.unit_code,
+                            property_unit_code: item.property.unit_code,
                             property_id: item.property_unit_id,
                             billing_batch_list_id:
                                 item.billing_batch_list_id === undefined
@@ -151,16 +151,16 @@ export default function JournalForm({
                     (item: any) => {
                         return {
                             id: item.billing_batch_list_id,
-                            charge: item.charge_name,
+                            charge: item?.charge?.name,
                             charge_id: item.charge_id,
                             charge_vat: item.vat,
                             description: item.description,
                             unit_price: item.unit_price,
                             quantity: item.quantity,
-                            uom: item.uom,
+                            uom: item.charge?.uom?.name,
                             vat: item.vat,
                             amount: item.amount,
-                            property_unit_code: item.unit_code,
+                            property_unit_code: item.property.unit_code,
                             property_id: item.property_unit_id,
                             billing_batch_list_id:
                                 item.billing_batch_list_id === undefined
@@ -174,7 +174,28 @@ export default function JournalForm({
                     }
                 );
                 if (InvoiceListFromBatch !== undefined) {
-                    setBilling(InvoiceListFromBatch);
+                    if (InvoiceListFromBatch.length <= 0) {
+                        setBilling([
+                            {
+                                id: 0,
+                                charge: "",
+                                charge_id: "",
+                                charge_vat: "",
+                                description: "",
+                                unit_price: "",
+                                quantity: "",
+                                uom: "",
+                                vat: "",
+                                amount: "",
+                                property_unit_code: "",
+                                property_id: "",
+                                billing_readings_list_id: null,
+                                billing_batch_list_id: null,
+                            },
+                        ]);
+                    } else {
+                        setBilling(InvoiceListFromBatch);
+                    }
                 } else {
                     setBilling([
                         {
@@ -257,6 +278,7 @@ export default function JournalForm({
         const InvoiceListInputed = isBilling.map((item: billingObject) => {
             return {
                 charge_id: Number(item.charge_id),
+
                 description: item.description,
                 unit_price: Number(item.unit_price),
                 quantity: Number(item.quantity),
@@ -544,6 +566,7 @@ const List = ({ itemList, setState, isState, index, isUnitCodes }: List) => {
 
     // Computation of Amount and Vat
     useEffect(() => {
+        console.log(itemList);
         const Vat =
             Number(itemList.unit_price) *
             Number(itemList.quantity) *
@@ -631,14 +654,6 @@ const List = ({ itemList, setState, isState, index, isUnitCodes }: List) => {
         setState(newItems);
     };
     const UpdateUnitCode = (unit_code: string, id: string) => {
-        if (isState.some((some) => some.property_unit_code === unit_code)) {
-            setPrompt({
-                message: "Unit Code already selected",
-                toggle: true,
-                type: "draft",
-            });
-            return;
-        }
         const newItems = isState.map((item: any) => {
             if (itemList.id == item.id) {
                 return {

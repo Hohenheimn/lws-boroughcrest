@@ -55,6 +55,7 @@ type childType = {
     indexID: string | number;
     index: string;
     amount: string | number;
+    variance: number;
 };
 
 type Props = {
@@ -528,6 +529,9 @@ const List = ({
                             index: index,
                             indexAmount: indexAmount,
                             indexID: indexID,
+                            variance:
+                                Number(itemDetail.variance) -
+                                Number(indexAmount),
                         };
                     }
                     if (key === "indexChild") {
@@ -741,14 +745,6 @@ const ChildList = ({
     AddHandler,
     SelectedIndex,
 }: ChildListProps) => {
-    let ChildrensAmount = 0;
-    useEffect(() => {
-        ChildrensAmount = 0;
-        itemDetail.childrenRB.map((item) => {
-            ChildrensAmount = Number(ChildrensAmount) + Number(item.amount);
-        });
-    }, [itemChildren.index]);
-    const DisplayVariance = Number(itemDetail.variance) - ChildrensAmount;
     return (
         <>
             <tr
@@ -788,7 +784,7 @@ const ChildList = ({
                     <td>
                         <InputNumberForTable
                             onChange={() => {}}
-                            value={DisplayVariance}
+                            value={itemChildren?.variance}
                             className={
                                 "field disabled w-full max-w-[150px] text-end"
                             }

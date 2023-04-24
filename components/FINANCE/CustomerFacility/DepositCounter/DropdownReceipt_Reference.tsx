@@ -11,7 +11,8 @@ type Props = {
     value: string | number;
     keyType: string;
     rowID: string | number;
-    selecteRefRec: string[];
+    selecteRec: string[];
+    selecteRef: string[];
     setSelectField: (field: string) => void;
 };
 
@@ -21,11 +22,17 @@ export default function DropdownReceipt_Reference({
     value,
     keyType,
     rowID,
-    selecteRefRec,
+    selecteRec,
+    selecteRef,
     setSelectField,
 }: Props) {
-    const [toggle, setToggle] = useState(true);
+    const [toggle, setToggle] = useState(false);
     const [tempSearch, setTempSearch] = useState<string | number>("");
+    useEffect(() => {
+        if (keyType !== "") {
+            setToggle(true);
+        }
+    }, [keyType]);
     useEffect(() => {
         setTempSearch(value);
     }, [value]);
@@ -58,7 +65,8 @@ export default function DropdownReceipt_Reference({
                                 setToggle={setToggle}
                                 keyType={keyType}
                                 rowID={rowID}
-                                selecteRefRec={selecteRefRec}
+                                selecteRec={selecteRec}
+                                selecteRef={selecteRef}
                                 setSelectField={setSelectField}
                             />
                         )}
@@ -78,7 +86,8 @@ type ListItem = {
     setToggle: Function;
     keyType: string;
     rowID: string | number;
-    selecteRefRec?: string[];
+    selecteRec: string[];
+    selecteRef: string[];
     setSelectField: (field: string) => void;
 };
 type Receipt = {
@@ -96,7 +105,8 @@ const ListItem = ({
     setToggle,
     keyType,
     rowID,
-    selecteRefRec,
+    selecteRec,
+    selecteRef,
     setSelectField,
 }: ListItem) => {
     const { isLoading, data, isError } = useQuery(
@@ -120,21 +130,37 @@ const ListItem = ({
     useEffect(() => {
         if (data?.status === 200) {
             const CloneArray = data?.data.map((item: any) => {
-                return {
-                    receipt_no: item.receipt_no,
-                    reference_no: item.reference_no,
-                    id: item.id,
-                    amount: item.amount_paid,
-                };
+                if (keyType === "reference") {
+                    if (item.receipt_no === null) {
+                        return {
+                            receipt_no: item.receipt_no,
+                            reference_no: item.reference_no,
+                            id: item.id,
+                            amount: item.amount_paid,
+                        };
+                    }
+                } else {
+                    if (item.receipt_no !== null) {
+                        return {
+                            receipt_no: item.receipt_no,
+                            reference_no: item.reference_no,
+                            id: item.id,
+                            amount: item.amount_paid,
+                        };
+                    }
+                }
             });
-            const filterIndex = CloneArray.filter((item: any) => {
+            const filterUndefined = CloneArray.filter(
+                (filter: any) => filter !== undefined
+            );
+            const selecteRefRec = [...selecteRec, ...selecteRef];
+            const filterIndex = filterUndefined.filter((item: any) => {
                 return !selecteRefRec?.includes(
                     keyType === "reference"
                         ? item.reference_no
                         : item.receipt_no
                 );
             });
-
             setReceipt(filterIndex);
         }
     }, [data, tempSearch]);
