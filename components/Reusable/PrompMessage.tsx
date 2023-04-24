@@ -16,7 +16,7 @@ export default function PrompMessage() {
                         })
                 );
             },
-            togglePrompt.type === "error" ? 7000 : 4000
+            togglePrompt.type === "error" ? 6000 : 3000
         );
         return () => clearInterval(intervalPrompt);
     });

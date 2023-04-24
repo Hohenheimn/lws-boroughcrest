@@ -21,4 +21,5 @@ export const ErrorSubmit = (e: any, setPrompt: Function) => {
         type: "error",
         toggle: true,
     });
+    return;
 };
