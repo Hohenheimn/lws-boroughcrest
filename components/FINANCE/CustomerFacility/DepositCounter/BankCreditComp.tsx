@@ -60,6 +60,7 @@ type childType = {
     reference_no: string | number;
     id: string | number;
     amount: number;
+    variance: number;
 };
 
 type Props = {
@@ -101,34 +102,61 @@ export default function BankCreditComp({
     const [TablePage, setTablePage] = useState(1);
 
     // GET SELECTED Reference no and receipt no FOR FILTERING DROPDOWN
-    const [
-        OverallSelectedReceiptReference,
-        setOverallSelectedReceiptReference,
-    ] = useState<string[]>([]);
+    const [OverallSelectedReceipt, setOverallSelectedReceipt] = useState<
+        string[]
+    >([]);
+    const [OverallSelectedReference, setOverallSelectedReference] = useState<
+        string[]
+    >([]);
     useEffect(() => {
-        let ReceiptReferenceParent: string[] = [];
-        let ReceiptReferenceChildren: string[] = [];
+        let ReceiptParent: string[] = [];
+        let ReceiptChildren: string[] = [];
         isBankCredit.itemArray.map((item: isTableItemObjBC) => {
-            ReceiptReferenceParent = [
-                ...ReceiptReferenceParent,
-                item.receipt_no,
-                item.reference_no,
-            ];
+            if (item.receipt_no !== null) {
+            }
+            ReceiptParent = [...ReceiptParent, item.receipt_no];
         });
         isBankCredit.itemArray.map((item: isTableItemObjBC) => {
             item.childrenBC.map((item2) => {
-                ReceiptReferenceChildren = [
-                    ...ReceiptReferenceChildren,
-                    `${item2.receipt_no}`,
-                    `${item2.reference_no}`,
-                ];
+                if (item2.receipt_no !== null) {
+                    ReceiptChildren = [
+                        ...ReceiptChildren,
+                        `${item2.receipt_no}`,
+                        `${item2.reference_no}`,
+                    ];
+                }
             });
         });
-        const OverallSelectedReceiptReference = [
-            ...ReceiptReferenceParent,
-            ...ReceiptReferenceChildren,
+
+        let ReferenceParent: string[] = [];
+        let ReferenceChildren: string[] = [];
+        isBankCredit.itemArray.map((item: isTableItemObjBC) => {
+            if (item.receipt_no === null) {
+                ReferenceParent = [...ReferenceParent, item.reference_no];
+            }
+        });
+        isBankCredit.itemArray.map((item: isTableItemObjBC) => {
+            item.childrenBC.map((item2) => {
+                if (item.receipt_no === null) {
+                    ReferenceChildren = [
+                        ...ReferenceChildren,
+                        `${item2.reference_no}`,
+                    ];
+                }
+            });
+        });
+
+        const OverallSelectedReceipt = [
+            ...ReceiptParent,
+            ...ReceiptChildren,
         ].filter((filterItem) => filterItem !== "");
-        setOverallSelectedReceiptReference(OverallSelectedReceiptReference);
+        const OverallSelectedReference = [
+            ...ReferenceParent,
+            ...ReferenceChildren,
+        ].filter((filterItem) => filterItem !== "");
+
+        setOverallSelectedReceipt(OverallSelectedReceipt);
+        setOverallSelectedReference(OverallSelectedReference);
     }, [isBankCredit.itemArray]);
 
     const selectAll = () => {
@@ -463,9 +491,8 @@ export default function BankCreditComp({
                                     setSelectedBankCreditIDs={
                                         setSelectedBankCreditIDs
                                     }
-                                    SelectedReceiptReference={
-                                        OverallSelectedReceiptReference
-                                    }
+                                    SelectedReceipt={OverallSelectedReceipt}
+                                    SelectedReference={OverallSelectedReference}
                                 />
                             )
                         )}
@@ -513,7 +540,8 @@ type ListProps = {
     ) => void;
     isSelectedBankCreditIDs: number[];
     setSelectedBankCreditIDs: Function;
-    SelectedReceiptReference: string[];
+    SelectedReceipt: string[];
+    SelectedReference: string[];
 };
 
 const List = ({
@@ -528,7 +556,8 @@ const List = ({
     DeleteHandlerChildren,
     isSelectedBankCreditIDs,
     setSelectedBankCreditIDs,
-    SelectedReceiptReference,
+    SelectedReceipt,
+    SelectedReference,
 }: ListProps) => {
     const [isSelect, setSelect] = useState({
         toggle: false,
@@ -630,6 +659,9 @@ const List = ({
                                     reference_no: reference_no,
                                     id: rec_ref_id,
                                     amount: amount,
+                                    variance:
+                                        Number(itemDetail.variance) -
+                                        Number(amount),
                                 };
                             }
                             return childItem;
@@ -771,7 +803,8 @@ const List = ({
                                 selectHandler={SelectHandler}
                                 keyType={isSelect.rec_ref}
                                 rowID={1}
-                                selecteRefRec={SelectedReceiptReference}
+                                selecteRef={SelectedReference}
+                                selecteRec={SelectedReceipt}
                             />
                         )}
                     </td>
@@ -851,7 +884,8 @@ const List = ({
                     DeleteHandler={DeleteHandler}
                     AddHandler={AddHandler}
                     DeleteHandlerChildren={DeleteHandlerChildren}
-                    SelectedReceiptReference={SelectedReceiptReference}
+                    SelectedReceipt={SelectedReference}
+                    SelectedReference={SelectedReceipt}
                 />
             ))}
         </>
@@ -870,7 +904,8 @@ type ChildList = {
         parentID: string | number,
         selectedID: string | number
     ) => void;
-    SelectedReceiptReference: string[];
+    SelectedReceipt: string[];
+    SelectedReference: string[];
 };
 
 const ChildList = ({
@@ -881,7 +916,8 @@ const ChildList = ({
     AddHandler,
     type,
     index,
-    SelectedReceiptReference,
+    SelectedReceipt,
+    SelectedReference,
 }: ChildList) => {
     const [isSelect, setSelect] = useState({
         rec_ref: "",
@@ -894,16 +930,6 @@ const ChildList = ({
         });
     };
 
-    let ChildrensAmount = 0;
-    useEffect(() => {
-        ChildrensAmount = 0;
-        itemDetail.childrenBC.map((item) => {
-            ChildrensAmount = ChildrensAmount + item.amount;
-        });
-        console.log(itemDetail.variance);
-    }, [itemChildren.receipt_no]);
-    const DisplayVariance = Number(itemDetail.variance) - ChildrensAmount;
-
     return (
         <tr
             className={`${
@@ -913,6 +939,12 @@ const ChildList = ({
             <td></td>
             <td></td>
             <td></td>
+
+            <td>
+                {/* {itemChildren.receipt_no === null
+                    ? itemChildren.reference_no
+                    : itemChildren.receipt_no} */}
+            </td>
             <td>
                 {type === "bank-credit" && (
                     <TextNumberDisplay
@@ -920,12 +952,6 @@ const ChildList = ({
                         className="withPeso"
                     />
                 )}
-            </td>
-
-            <td>
-                {/* {itemChildren.receipt_no === null
-                    ? itemChildren.reference_no
-                    : itemChildren.receipt_no} */}
             </td>
             {type !== "bank-credit" && (
                 <>
@@ -996,14 +1022,15 @@ const ChildList = ({
                                 selectHandler={SelectHandlerChildDD}
                                 keyType={isSelect.rec_ref}
                                 rowID={itemChildren.id}
-                                selecteRefRec={SelectedReceiptReference}
+                                selecteRef={SelectedReference}
+                                selecteRec={SelectedReceipt}
                             />
                         )}
                     </td>
                     <td>
                         <InputNumberForTable
                             onChange={() => {}}
-                            value={DisplayVariance}
+                            value={itemChildren.variance}
                             className={"field disabled w-full text-end"}
                             type={""}
                         />

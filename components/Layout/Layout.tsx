@@ -11,7 +11,7 @@ import { IoIosArrowDown } from "react-icons/io";
 import Image from "next/image";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
-import SignOut from "./SignOut";
+import ProfileMenu from "./ProfileMenu";
 import { FadeSide } from "../Animation/SimpleAnimation";
 import UpperMenu from "../FINANCE/UpperMenu";
 import PrompMessage from "../Reusable/PrompMessage";
@@ -24,7 +24,7 @@ export default function Layout({ children }: Layout) {
     const router = useRouter();
 
     const [title, setTitle] = useState<string>("");
-    const { togglePrompt, collapseSide, setCollapseSide } =
+    const { togglePrompt, collapseSide, setCollapseSide, userInfo } =
         useContext(AppContext);
     const [isProfileSearch, setProfileSearch] = useState(false);
     const [isPathName, setPathName] = useState<any>();
@@ -198,7 +198,15 @@ export default function Layout({ children }: Layout) {
                                 <li className=" flex items-center">
                                     <aside className=" w-10 h-10 rounded-full overflow-hidden relative shadow-lg mr-3">
                                         <Image
-                                            src="/Images/sampleProfile.png"
+                                            src={
+                                                userInfo?.image_photo ===
+                                                    null ||
+                                                userInfo?.image_photo ===
+                                                    undefined ||
+                                                userInfo?.image_photo === ""
+                                                    ? "/Images/sampleProfile.png"
+                                                    : userInfo.image_photo
+                                            }
                                             layout="fill"
                                             alt=""
                                         />
@@ -212,10 +220,16 @@ export default function Layout({ children }: Layout) {
                                                 )
                                             }
                                         >
-                                            John Doe{" "}
+                                            {userInfo?.name}{" "}
                                             <IoIosArrowDown className="ml-1 mt-1" />
                                         </p>
-                                        {toggleProfileMenu && <SignOut />}
+                                        {toggleProfileMenu && (
+                                            <ProfileMenu
+                                                setToggleProfileMenu={
+                                                    setToggleProfileMenu
+                                                }
+                                            />
+                                        )}
                                     </div>
                                 </li>
                             </ul>
