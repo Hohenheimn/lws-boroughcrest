@@ -14,6 +14,7 @@ import AppContext from "../../../Context/AppContext";
 import { format, isValid, parse } from "date-fns";
 import { GetJournal, MultipleUpdate } from "../../General-Ledger/Journal/Query";
 import { useRouter } from "next/router";
+import { GetAdjustmentList, MultipleUpdateAdjustment } from "./Query";
 
 type Props = {
     type: string;
@@ -53,13 +54,13 @@ export default function AdjustmentTable({ type, isPeriod, setPeriod }: Props) {
     // ADVANCE FILTER
     const [isAdvFilter, setAdvFilter] = useState<Advancefilter>([]);
 
-    const [isFilterText, setFilterText] = useState<string[]>([]);
+    const [isFilterText, setFilterText] = useState<string>("");
 
     useEffect(() => {
         const cloneArray = isAdvFilter.map((item) => {
             return `${item.key}:${item.value}`;
         });
-        setFilterText(cloneArray);
+        setFilterText(cloneArray.toString());
     }, [isAdvFilter]);
 
     const removeItemFromFilter = (value: string) => {
@@ -69,7 +70,7 @@ export default function AdjustmentTable({ type, isPeriod, setPeriod }: Props) {
 
     const dateFrom = parse(isPeriod.from, "MMM dd yyyy", new Date());
     const dateTo = parse(isPeriod.to, "MMM dd yyyy", new Date());
-    const { data, isLoading, isError } = GetJournal(
+    const { data, isLoading, isError } = GetAdjustmentList(
         isSearch,
         type,
         TablePage,
@@ -81,8 +82,8 @@ export default function AdjustmentTable({ type, isPeriod, setPeriod }: Props) {
     useEffect(() => {
         if (data?.status === 200) {
             let selectAll = false;
-            if (data.data.data.length > 0) {
-                let CloneArray = data?.data.data.map((item: isTableItemObj) => {
+            if (data.data.length > 0) {
+                let CloneArray = data?.data.map((item: isTableItemObj) => {
                     let select = false;
                     if (isSelectedIDs.includes(item.id)) {
                         select = true;
@@ -159,10 +160,8 @@ export default function AdjustmentTable({ type, isPeriod, setPeriod }: Props) {
         });
         buttonClicked = "";
     };
-    const { isLoading: updateLoading, mutate: updateMutate } = MultipleUpdate(
-        onSuccess,
-        onError
-    );
+    const { isLoading: updateLoading, mutate: updateMutate } =
+        MultipleUpdateAdjustment(onSuccess, onError);
 
     const UpdateStatus = (button: string) => {
         buttonClicked = button;
@@ -336,7 +335,7 @@ export default function AdjustmentTable({ type, isPeriod, setPeriod }: Props) {
                         </tr>
                     </thead>
                     <tbody>
-                        {data?.data.data.length > 0 ? (
+                        {data?.data.length > 0 ? (
                             <>
                                 {isTableItem?.itemArray.map(
                                     (item: any, index: number) => (

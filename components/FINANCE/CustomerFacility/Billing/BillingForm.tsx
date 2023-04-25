@@ -566,7 +566,6 @@ const List = ({ itemList, setState, isState, index, isUnitCodes }: List) => {
 
     // Computation of Amount and Vat
     useEffect(() => {
-        console.log(itemList);
         const Vat =
             Number(itemList.unit_price) *
             Number(itemList.quantity) *

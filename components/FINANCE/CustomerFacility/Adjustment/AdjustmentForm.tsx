@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import CustomerDropdown from "../../../Dropdowns/CustomerDropdown";
 import SelectDropdown from "../../../Reusable/SelectDropdown";
 import DynamicPopOver from "../../../Reusable/DynamicPopOver";
@@ -7,16 +7,17 @@ import Calendar from "../../../Reusable/Calendar";
 import { FadeSide } from "../../../Animation/SimpleAnimation";
 import { AnimatePresence, motion } from "framer-motion";
 import DropDownCharge from "../../../Dropdowns/DropDownCharge";
-import {
-    InputNumberForTable,
-    TextNumberDisplay,
-} from "../../../Reusable/NumberFormat";
-import ChargeTransaction from "./ChargeTransaction";
+import { TextNumberDisplay } from "../../../Reusable/NumberFormat";
+import InvoiceTransaction from "./InvoiceTransaction";
 import AccountTable from "./AccountTable";
 import { RiArrowDownSFill } from "react-icons/ri";
+import AppContext from "../../../Context/AppContext";
+import { GetInvoiceListByCustomer } from "../Billing/Query";
+import { GetInvoiceListByCustomerAndCharge } from "./Query";
+import { format, isValid, parse } from "date-fns";
 
 export type AdjustmentHeaderForm = {
-    customer_id: number;
+    customer_id: number | string;
     memo_type: string;
     memo_date: string;
     description: string;
@@ -34,24 +35,66 @@ export type AdjustmentAccounts = {
     credit: number;
 };
 
+type CustomerDDData = {
+    id: number | string;
+    name: string;
+    class: string;
+    property: string[];
+};
+
+export type AdjustmentInvoice = {
+    billing_invoice_id: number;
+    adjustment_amount: number;
+    balance: number;
+    document_date: string;
+    document_no: string;
+    description: string;
+    amount_due: number;
+    remaining_advances: number;
+};
+
 export default function AdjustmentForm() {
+    const { setPrompt } = useContext(AppContext);
     const [isSave, setSave] = useState(false);
     const [toggleForm, setToggleForm] = useState(false);
     const [AdvancesToggle, setAdvancesToggle] = useState(false);
-    const [isCustomer, setCustomer] = useState<any>({
+    const [isButton, setButton] = useState("");
+
+    const [isCustomer, setCustomer] = useState<CustomerDDData>({
         id: 0,
         name: "",
         class: "",
         property: [],
     });
-    const [isChargeHeader, setChargeHeader] = useState({
+    useEffect(() => {
+        setHeaderForm({
+            ...HeaderForm,
+            customer_id: isCustomer.id,
+        });
+    }, [isCustomer]);
+
+    const [isCharge, setCharge] = useState({
         charge: "",
         charge_id: 0,
     });
+
+    const [isChargeHeader, setChargeHeader] = useState({
+        charge: "",
+        charge_id: "",
+    });
+
     const [isMemoDate, setMemoDate] = useState({
         value: "",
         toggle: false,
     });
+    useEffect(() => {
+        setHeaderForm({
+            ...HeaderForm,
+            memo_date: isMemoDate.value,
+        });
+    }, [isMemoDate]);
+
+    const [isErrorMessage, setErrorMessage] = useState();
     const [isErrorToggle, setErrorToggle] = useState(false);
 
     const [HeaderForm, setHeaderForm] = useState<AdjustmentHeaderForm>({
@@ -75,25 +118,37 @@ export default function AdjustmentForm() {
         },
     ]);
 
-    const [isCharge, setCharge] = useState({
-        charge: "",
-        charge_id: 0,
-    });
+    const [isInvoices, setInvoices] = useState<AdjustmentInvoice[]>([]);
+
+    const {
+        data: invoiceData,
+        isLoading,
+        isError,
+    } = GetInvoiceListByCustomerAndCharge(isCustomer.id, isCharge.charge_id);
+
+    useEffect(() => {
+        if (invoiceData !== undefined) {
+            const clone = invoiceData?.data.map((item: any) => {
+                const date = parse(item.dat, "yyyy-MM-dd", new Date());
+                return {
+                    billing_invoice_id: item.id,
+                    adjustment_amount: 0,
+                    balance: item.applied_advances,
+                    document_date: isValid(date)
+                        ? format(date, "MMM dd yyyy")
+                        : "",
+                    document_no: item.invoice_no,
+                    description: item.description,
+                    amount_due: item.due_amount,
+                    remaining_advances: item.applied_advances,
+                };
+            });
+            setInvoices(clone);
+        }
+    }, [invoiceData?.status, isCustomer.id, isCharge.charge_id]);
 
     const [isTransaction, setTransaction] = useState("");
 
-    useEffect(() => {
-        setHeaderForm({
-            ...HeaderForm,
-            customer_id: isCustomer.id,
-        });
-    }, [isCustomer]);
-    useEffect(() => {
-        setHeaderForm({
-            ...HeaderForm,
-            memo_date: isMemoDate.value,
-        });
-    }, [isMemoDate]);
     useEffect(() => {
         setHeaderForm({
             ...HeaderForm,
@@ -102,8 +157,29 @@ export default function AdjustmentForm() {
     }, [isChargeHeader]);
 
     const SaveHandler = (button: string) => {
-        console.log(button);
-        console.log(isAccounts);
+        setButton(button);
+        const Payload = {
+            customer_id: isCustomer.id,
+            charge_id: isCharge.charge_id,
+            memo_type: HeaderForm.memo_type,
+            date: HeaderForm.memo_date,
+            description: HeaderForm.description,
+            transaction: isTransaction,
+            accounts: isAccounts.map((item) => {
+                return {
+                    account_id: item.coa_id,
+                    debit: item.debit,
+                    credit: item.credit,
+                };
+            }),
+            invoices: isInvoices.map((item) => {
+                return {
+                    billing_invoice_id: item.billing_invoice_id,
+                    adjustment_amount: item.adjustment_amount,
+                    balance: item.balance,
+                };
+            }),
+        };
     };
 
     return (
@@ -369,13 +445,17 @@ export default function AdjustmentForm() {
                         animate="animate"
                         exit="exit"
                     >
-                        <ChargeTransaction
+                        <InvoiceTransaction
+                            isInvoicesAdjustment={isInvoices}
+                            setInvoiceAdjustment={setInvoices}
                             HeaderForm={HeaderForm}
                             setHeaderForm={setHeaderForm}
                             isCharge={isCharge}
                             setCharge={setCharge}
                             setTransaction={setTransaction}
                             isTransaction={isTransaction}
+                            isLoading={isLoading}
+                            isError={isError}
                         />
                     </motion.div>
                 )}
@@ -413,6 +493,17 @@ export default function AdjustmentForm() {
                                     type="submit"
                                     onClick={() => {
                                         SaveHandler("new");
+                                        setSave(false);
+                                    }}
+                                >
+                                    SAVE & NEW
+                                </button>
+                            </li>
+                            <li>
+                                <button
+                                    type="submit"
+                                    onClick={() => {
+                                        SaveHandler("draft");
                                         setSave(false);
                                     }}
                                 >

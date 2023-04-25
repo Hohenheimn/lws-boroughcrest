@@ -107,13 +107,13 @@ const List = ({
         setAccounts(newItems);
     };
 
-    const RemoveJournal = () => {
+    const RemoveAccount = () => {
         setAccounts((item: AdjustmentAccounts[]) =>
             item.filter((x: any) => x.id !== itemDetail.id)
         );
     };
 
-    const AddJournal = (e: any) => {
+    const AddAccount = (e: any) => {
         const random = Math.random();
         setAccounts([
             ...isAccounts,
@@ -205,14 +205,14 @@ const List = ({
             {toggle && (
                 <td className="actionIcon flex items-center">
                     {isAccounts.length > 1 && (
-                        <div onClick={RemoveJournal}>
+                        <div onClick={RemoveAccount}>
                             <MinusButtonTable />
                         </div>
                     )}
                     {isAccounts.length - 1 === index && (
                         <div
                             className="ml-5 1024px:ml-2"
-                            onClick={(e) => AddJournal(e)}
+                            onClick={(e) => AddAccount(e)}
                         >
                             <PlusButtonTable />
                         </div>
