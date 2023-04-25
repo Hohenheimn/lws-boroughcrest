@@ -15,6 +15,7 @@ import {
     CreateBA,
     UpdateBA,
 } from "../../../ReactQuery/BankAccount";
+import { DeleteButton } from "../../../Reusable/Icons";
 
 type Props = {
     update: (value: string, e: any) => void;
@@ -390,7 +391,7 @@ const List = ({
                             <MoonLoader size={10} color="#8f384d" />
                         </div>
                     ) : (
-                        <Tippy theme="ThemeRed" content="Export">
+                        <Tippy theme="ThemeRed" content="Remove">
                             <div>
                                 <MdDeleteOutline
                                     className="icon"

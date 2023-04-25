@@ -145,9 +145,12 @@ export default function CustomerForm({ DefaultValue }: Props) {
     const CreateHandler = async (button: string) => {
         setButtonClicked(button);
         let validate = true;
-        const UnitCodes = isUnitCode.filter(
+        const UnitCodesFilter = isUnitCode.filter(
             (item: CustomerUnitCodes) => item.unit_code !== ""
         );
+        const UnitCodes = UnitCodesFilter.map((item) => {
+            return item.unit_code;
+        });
 
         const date = parse(
             isCustomerForm.individual_birth_date,

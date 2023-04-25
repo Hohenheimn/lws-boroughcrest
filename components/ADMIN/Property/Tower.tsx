@@ -71,7 +71,7 @@ const Tower = ({ set, update, is, isValID, isObject, setObject }: any) => {
             });
             setArray(cloneArray);
         }
-    }, [data?.status]);
+    }, [data]);
 
     return (
         <div className="crud-container" ref={modal}>

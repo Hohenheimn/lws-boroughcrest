@@ -26,9 +26,16 @@ type Props = {
         to: Date;
     };
     forTable?: boolean;
+    birthday?: boolean;
 };
 
-export default function Calendar({ value, setValue, period, forTable }: Props) {
+export default function Calendar({
+    value,
+    setValue,
+    period,
+    forTable,
+    birthday,
+}: Props) {
     const modal = useRef<any>();
 
     const currentValue = parse(value.value, "MMM dd yyyy", new Date());
@@ -343,7 +350,11 @@ export default function Calendar({ value, setValue, period, forTable }: Props) {
                                                     -1)
                                                 ? ""
                                                 : " pointer-events-none"
-                                        }`
+                                        } `
+                                    } ${
+                                        birthday === true &&
+                                        compareDesc(today, day) === 1 &&
+                                        "pointer-events-none bg-gray-200"
                                     }`}
                                 >
                                     <time dateTime={format(day, "yyyy-MM-dd")}>
