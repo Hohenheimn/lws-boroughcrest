@@ -16,6 +16,7 @@ export type Outstanding = {
     due_amount: number;
     applied_amount: number;
     balance: number;
+    billing_invoice_id: number;
 };
 
 type Props = {
@@ -74,24 +75,26 @@ export default function OutStandingBalance({
         }
     };
 
+    useEffect(() => {
+        Compute();
+    }, [amount_paid, isToggle]);
+
     const Compute = () => {
         const CloneToUpdateAppliedAmount = DefaultOutstanding?.map(
-            (item: Outstanding, index: number) => {
+            (item: Outstanding) => {
                 if (!isToggle) {
-                    if (index > 0) {
-                        const RemainingAmountPaid =
-                            Number(isAmountPaid) - Number(item.due_amount);
-                        isAmountPaid = RemainingAmountPaid;
-                    }
-                    return {
+                    const updatevalue = {
                         ...item,
                         applied_amount:
-                            isAmountPaid > item.due_amount
-                                ? item.due_amount
-                                : isAmountPaid <= 0
-                                ? 0
-                                : isAmountPaid,
+                            Number(isAmountPaid) <= Number(item.due_amount)
+                                ? isAmountPaid <= 0
+                                    ? 0
+                                    : isAmountPaid
+                                : item.due_amount,
                     };
+                    isAmountPaid =
+                        Number(isAmountPaid) - Number(item.due_amount);
+                    return updatevalue;
                 } else {
                     return {
                         ...item,
@@ -101,6 +104,7 @@ export default function OutStandingBalance({
                 }
             }
         );
+
         const CloneToUpdateBalance = CloneToUpdateAppliedAmount?.map(
             (item: Outstanding, index: number) => {
                 if (!isToggle) {
@@ -120,10 +124,6 @@ export default function OutStandingBalance({
         );
         setDefaultValue(CloneToUpdateBalance);
     };
-
-    useEffect(() => {
-        Compute();
-    }, [amount_paid, isToggle]);
 
     return (
         <div className="border-b border-gray-300">
@@ -193,7 +193,7 @@ export default function OutStandingBalance({
                 total1={isDueAmountTotal}
                 total2={isAppliedAmount}
                 total3={isBalanceTotal}
-                label={"SUB DUE"}
+                label={"SUB TOTAL"}
                 redBG={false}
             />
         </div>

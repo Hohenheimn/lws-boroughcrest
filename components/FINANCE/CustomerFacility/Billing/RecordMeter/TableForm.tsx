@@ -42,24 +42,9 @@ type isTableItemObj = {
 
 export default function TableForm() {
     const queryClient = useQueryClient();
-    const [isPreviousPeriod, setPreviousPeriod] = useState({
-        year: "",
-        from: "",
-        to: "",
-    });
     const { setPrompt } = useContext(AppContext);
-    const [TablePage, setTablePage] = useState(1);
     const router = useRouter();
 
-    // Reading
-    const [isReading, setReading] = useState({
-        reading_id: "",
-        reading_name: "",
-        reading_serial: "",
-        charge_name: "",
-        charge_id: "",
-        base_rate: 0,
-    });
     const [periodReadingID, setPeriodReadingID] = useState(0);
 
     const [toggleReading, setToggleReading] = useState(false);
@@ -69,6 +54,21 @@ export default function TableForm() {
         selectAll: false,
     });
     const [isSelectedIDs, setSelectedIDs] = useState<number[]>([]);
+
+    const [isPreviousPeriod, setPreviousPeriod] = useState({
+        year: "",
+        from: "",
+        to: "",
+    });
+    const [RecordMeterTablePage, RecordMetersetTablePage] = useState(1);
+    const [isReading, setReading] = useState({
+        reading_id: "",
+        reading_name: "",
+        reading_serial: "",
+        charge_name: "",
+        charge_id: "",
+        base_rate: 0,
+    });
 
     useEffect(() => {
         if (
@@ -98,7 +98,7 @@ export default function TableForm() {
         isReading.reading_id,
         isValid(dateFrom) ? format(dateFrom, "yyyy-MM-dd") : "",
         isValid(dateTo) ? format(dateTo, "yyyy-MM-dd") : "",
-        TablePage
+        RecordMeterTablePage
     );
 
     useEffect(() => {
@@ -149,7 +149,7 @@ export default function TableForm() {
                 setPeriodReadingID(data?.data?.reading?.id);
             }
         }
-    }, [data, isPreviousPeriod]);
+    }, [data?.data]);
 
     const selectAll = () => {
         if (isTableItem.selectAll) {
@@ -412,8 +412,8 @@ export default function TableForm() {
                     {isError && <TableErrorMessage />}
                 </div>
                 <Pagination
-                    setTablePage={setTablePage}
-                    TablePage={TablePage}
+                    setTablePage={RecordMetersetTablePage}
+                    TablePage={RecordMeterTablePage}
                     PageNumber={data?.data?.records?.last_page}
                     CurrentPage={data?.data?.records?.current_page}
                 />

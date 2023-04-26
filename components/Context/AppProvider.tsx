@@ -188,6 +188,9 @@ export default function AppProvider({ children }: AppProvider) {
     const [userInfo, setUserInfo] = useState();
 
     const [isSearchBar, setSearchBar] = useState("");
+
+    // recordmeter
+
     return (
         <AppContext.Provider
             value={{

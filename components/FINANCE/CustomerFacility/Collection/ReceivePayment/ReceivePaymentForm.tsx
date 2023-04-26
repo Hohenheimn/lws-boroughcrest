@@ -120,27 +120,32 @@ export default function ReceivePaymentForm({
 
     useEffect(() => {
         if (data?.status === 200) {
-            const getCustomerOutstanding = data?.data[0]?.invoice_list?.map(
-                (item: any) => {
-                    return {
-                        id: item.id,
-                        document_no: data?.data[0].invoice_no,
-                        charge: item.charge.name,
-                        charge_id: item.charge_id,
-                        description: item.description,
-                        due_amount: item.amount,
-                        applied_amount: 0,
-                        balance: item.amount,
-                    };
-                }
-            );
+            let getCustomerOutstanding: any[] = [];
+            data?.data.map((item: any) => {
+                item.invoice_list.map((invoiceItem: any) => {
+                    getCustomerOutstanding = [
+                        ...getCustomerOutstanding,
+                        {
+                            id: invoiceItem.id,
+                            billing_invoice_id: invoiceItem.billing_invoice_id,
+                            document_no: item.invoice_no,
+                            charge: invoiceItem.charge.name,
+                            charge_id: invoiceItem.charge_id,
+                            description: invoiceItem.description,
+                            due_amount: invoiceItem.amount,
+                            applied_amount: 0,
+                            balance: invoiceItem.amount,
+                        },
+                    ];
+                });
+            });
             setOutstanding(
                 getCustomerOutstanding === undefined
                     ? []
                     : getCustomerOutstanding
             );
         }
-    }, [data]);
+    }, [data?.data]);
 
     useEffect(() => {
         setHeaderForm({

@@ -13,6 +13,7 @@ import {
 } from "../../ReactQuery/PropertyMethod";
 import { useQueryClient } from "react-query";
 import AppContext from "../../Context/AppContext";
+import { ErrorSubmit } from "../../Reusable/ErrorMessage";
 
 const Project = ({ set, update, isValID, isObject, setObject }: any) => {
     const modal = useRef<any>();
@@ -51,7 +52,7 @@ const Project = ({ set, update, isValID, isObject, setObject }: any) => {
             },
         ]);
     };
-    const { isLoading, data } = GetProject(isObject.value);
+    const { isLoading, data, isError } = GetProject(isObject.value);
 
     useEffect(() => {
         if (data?.status === 200) {
@@ -98,6 +99,12 @@ const Project = ({ set, update, isValID, isObject, setObject }: any) => {
                 </tbody>
             </table>
 
+            {isError ||
+                (data?.data.length <= 0 && (
+                    <div className="w-full flex justify-center py-2 text-[14px]">
+                        <p> Floor cannot be found!</p>
+                    </div>
+                ))}
             {isLoading && (
                 <div className="w-full flex justify-center py-3">
                     <BarLoader
@@ -196,13 +203,8 @@ const List = ({
             toggle: true,
         });
     };
-    const onError = () => {
-        setWarning("The name has already been registered");
-        setPrompt({
-            message: "Something is wrong!",
-            type: "error",
-            toggle: true,
-        });
+    const onError = (e: any) => {
+        ErrorSubmit(e, setPrompt);
     };
     // Save
     const { isLoading: loadingSave, mutate: mutateSave } = PostProject(

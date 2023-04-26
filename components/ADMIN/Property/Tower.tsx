@@ -15,6 +15,7 @@ import {
 import { useQueryClient } from "react-query";
 import AppContext from "../../Context/AppContext";
 import DynamicPopOver from "../../Reusable/DynamicPopOver";
+import { ErrorSubmit } from "../../Reusable/ErrorMessage";
 
 const Tower = ({ set, update, is, isValID, isObject, setObject }: any) => {
     const modal = useRef<any>();
@@ -106,6 +107,12 @@ const Tower = ({ set, update, is, isValID, isObject, setObject }: any) => {
                     )}
                 </tbody>
             </table>
+            {isError ||
+                (data?.data.length <= 0 && (
+                    <div className="w-full flex justify-center py-2 text-[14px]">
+                        <p> Tower cannot be found!</p>
+                    </div>
+                ))}
 
             {isLoading && (
                 <div className="w-full flex justify-center py-3">
@@ -118,12 +125,6 @@ const Tower = ({ set, update, is, isValID, isObject, setObject }: any) => {
                     />
                 </div>
             )}
-            {isError ||
-                (data?.data.length <= 0 && (
-                    <div className="w-full flex justify-center py-3">
-                        <h1>Tower cannot be found!</h1>
-                    </div>
-                ))}
             {isWarning !== "" && (
                 <p className="text-[12px] text-ThemeRed">{isWarning}</p>
             )}
@@ -229,13 +230,8 @@ const List = ({
             toggle: true,
         });
     };
-    const onError = () => {
-        setWarning("The name has already been registered");
-        setPrompt({
-            message: "Something is wrong!",
-            type: "error",
-            toggle: true,
-        });
+    const onError = (e: any) => {
+        ErrorSubmit(e, setPrompt);
     };
     // Save
     const { isLoading: loadingSave, mutate: mutateSave } = PostTower(
@@ -460,21 +456,15 @@ const ListDropdown = ({
         );
     }
 
-    if (isError || data?.data.length <= 0) {
-        return (
-            <ul ref={modal} className="w-full flex justify-center py-3">
-                <li onClick={reset}>Project Can&apos;t found!</li>
-            </ul>
-        );
-    }
-
     return (
-        <ul ref={modal} className="dropdown-list">
+        <ul ref={modal} className="dropdown-list smaller">
             {data?.data.map((item: any, index: number) => (
                 <li data-id={item.id} key={index} onClick={select}>
                     {item.name}
                 </li>
             ))}
+            {isError ||
+                (data?.data.length <= 0 && <li>Project Can&apos;t found!</li>)}
         </ul>
     );
 };

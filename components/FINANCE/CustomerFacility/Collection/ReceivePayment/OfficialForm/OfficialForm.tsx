@@ -195,7 +195,7 @@ export default function OfficialForm({
             balances: Outstanding.map((item: Outstanding) => {
                 return {
                     charge_id: item.charge_id,
-                    billing_invoice_id: item.id,
+                    billing_invoice_id: item.billing_invoice_id,
                     payment_amount: item.applied_amount,
                     balance: item.balance,
                 };

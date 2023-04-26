@@ -80,6 +80,11 @@ export default function ReadingPropertyForm({
     const queryClient = useQueryClient();
     const onSuccess = () => {
         queryClient.invalidateQueries(["record-meter-list"]);
+        queryClient.invalidateQueries([
+            "reading-show",
+            `${router.query.modify}`,
+        ]);
+
         setPrompt({
             message: `Reading successfully ${
                 router.query.modify === undefined ? "registered" : "updated"
@@ -88,7 +93,11 @@ export default function ReadingPropertyForm({
             toggle: true,
         });
         toggle(false);
-        router.push("/finance/customer-facility/billing/invoice-list");
+        if (router.query.modify === undefined) {
+            router.push("/finance/customer-facility/billing/invoice-list");
+        } else {
+            router.push("");
+        }
     };
 
     const onError = (e: any) => {
@@ -203,6 +212,7 @@ export default function ReadingPropertyForm({
                 </li>
                 <li className=" flex items-center mb-5 1024px:mb-2">
                     <PeriodCalendar
+                        disabled={true}
                         value={periodProperty}
                         setValue={setPeriodProperty}
                     />
