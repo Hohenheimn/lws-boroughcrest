@@ -923,7 +923,6 @@ input[type="number"] {
 }
 .dropdown-list {
     @apply max-h-[150px] overflow-auto w-full shadow-lg border;
-
     li {
         @apply w-full cursor-pointer px-3 text-[#545454] text-[13px] py-1 1550px:px-2 1550px:py-1 border-b border-ThemeRed hover:bg-ThemeRed hover:text-white transition-all duration-75;
         width: 100% !important;
@@ -944,6 +943,11 @@ input[type="number"] {
         p {
             @apply w-2/4;
         }
+    }
+}
+.dropdown-list.smaller {
+    li {
+        @apply text-[12px];
     }
 }
 .iconNav {

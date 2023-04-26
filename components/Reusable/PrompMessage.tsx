@@ -19,7 +19,7 @@ export default function PrompMessage() {
             togglePrompt.type === "error" ? 6000 : 3000
         );
         return () => clearInterval(intervalPrompt);
-    });
+    }, [togglePrompt.toggle]);
 
     return (
         <motion.div

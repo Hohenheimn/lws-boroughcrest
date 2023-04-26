@@ -54,6 +54,14 @@ export default function Calendar({
             document.removeEventListener("mousedown", clickOutSide);
         };
     });
+
+    // Subtract year
+    function subtractYears(date: Date, years: number) {
+        const dateCopy = new Date(date);
+        dateCopy.setFullYear(date.getFullYear() - years);
+        return dateCopy;
+    }
+
     const Months = [
         "January",
         "February",
@@ -72,12 +80,19 @@ export default function Calendar({
         month: false,
         year: false,
     });
+
     const date = new Date();
+    // IF enable birthday, calendar can only select a year 10year ago
+    const YearCanbeSelected = subtractYears(date, 10);
+
     // get date today
     let today = startOfDay(date);
-    const [isSelected, setSelect] = useState(today);
     const [currentMonth, setCurrentMonth] = useState(format(today, "MMMM"));
-    const [currenYear, setCurrentYear] = useState(format(today, "yyyy"));
+    const [currenYear, setCurrentYear] = useState(
+        birthday !== undefined
+            ? format(YearCanbeSelected, "yyyy")
+            : format(today, "yyyy")
+    );
     let wholeYear = currentMonth + "-" + currenYear;
 
     let firstDayofMonthYear = parse(wholeYear, "MMMM-yyyy", new Date());
@@ -93,7 +108,6 @@ export default function Calendar({
     });
 
     const SelectedDateHandler = (day: any) => {
-        setSelect(day);
         setValue({
             value: format(day, "MMM dd yyyy"),
             toggle: false,
@@ -159,7 +173,7 @@ export default function Calendar({
                                         ? true
                                         : false
                                 }
-                                className=" text-[#757575] border flex justify-center items-center bg-white rounded-full font-NHU-black w-5 h-5 "
+                                className="mr-3 640px:mr-1 text-[#757575] border flex justify-center items-center bg-white rounded-full font-NHU-black w-5 h-5 "
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -199,7 +213,11 @@ export default function Calendar({
                                             {Months.map((month, index) => (
                                                 <li
                                                     key={index}
-                                                    className={`py-1 px-2 text-[12px] cursor-pointer hover:bg-ThemeRed50 hover:text-white ${
+                                                    style={{
+                                                        width: "100%",
+                                                        marginBottom: "0",
+                                                    }}
+                                                    className={`py-1 px-2 text-[12px] border bordeer-black w-full cursor-pointer hover:bg-ThemeRed50 hover:text-white ${
                                                         currentMonth === month
                                                             ? " bg-ThemeRed text-white"
                                                             : "text-[#757575]"
@@ -235,6 +253,10 @@ export default function Calendar({
                                             {Years.map((year, index) => (
                                                 <li
                                                     key={index}
+                                                    style={{
+                                                        width: "100%",
+                                                        marginBottom: "0",
+                                                    }}
                                                     className={`py-1 px-2 text-[12px] cursor-pointer hover:bg-ThemeRed50 hover:text-white ${
                                                         currenYear ===
                                                         format(year, "yyyy")
@@ -267,7 +289,7 @@ export default function Calendar({
                                         ? true
                                         : false
                                 }
-                                className=" ml-3 border flex justify-center items-center bg-white rounded-full font-NHU-black w-5 h-5"
+                                className=" ml-3 640px:ml-1 border flex justify-center items-center bg-white rounded-full font-NHU-black w-5 h-5"
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -353,7 +375,8 @@ export default function Calendar({
                                         } `
                                     } ${
                                         birthday === true &&
-                                        compareDesc(today, day) === 1 &&
+                                        compareDesc(YearCanbeSelected, day) ===
+                                            1 &&
                                         "pointer-events-none bg-gray-200"
                                     }`}
                                 >

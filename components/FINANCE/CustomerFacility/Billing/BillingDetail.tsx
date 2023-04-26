@@ -186,7 +186,7 @@ export default function BillingDetail({ InvoiceDetail }: Props) {
                 <li className={style.noMb}>
                     <p className="label_text">TRAIL</p>
                     {InvoiceDetail.trail.map((item, index) => (
-                        <h4 className="main_text" key={index}>
+                        <h4 className="main_text noMB" key={index}>
                             {item.event} {item.user} {item.date} {item.time}
                         </h4>
                     ))}

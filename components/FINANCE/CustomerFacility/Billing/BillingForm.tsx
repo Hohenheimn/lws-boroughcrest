@@ -144,7 +144,9 @@ export default function JournalForm({
                 }
             }
             const GetInvoiceFromBatch = data?.data?.invoice_list.filter(
-                (item: any) => item?.billing_batch_list_id !== null
+                (item: any) =>
+                    item?.billing_batch_list_id !== null ||
+                    item?.billing_readings_list_id === null
             );
             if (GetInvoiceFromBatch !== undefined) {
                 const InvoiceListFromBatch = GetInvoiceFromBatch.map(
@@ -428,6 +430,7 @@ export default function JournalForm({
                             </tr>
                         </thead>
                         <tbody>
+                            {/* Not editable */}
                             {isBillingFromReading?.map(
                                 (item: billingObject, index: number) => (
                                     <List
@@ -440,6 +443,7 @@ export default function JournalForm({
                                     />
                                 )
                             )}
+                            {/* Editable */}
                             {isBilling?.map(
                                 (item: billingObject, index: number) => (
                                     <List

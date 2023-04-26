@@ -378,7 +378,6 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
         handleSubmit,
         reset: ResetContactForm,
         formState: { errors },
-        watch,
         setValue,
     } = useForm<secondCorporateForm>({
         defaultValues: {
@@ -404,12 +403,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
         ErrorSubmit(e, setPrompt);
     };
 
-    const {
-        isLoading: MutateLoading,
-        mutate,
-        isError,
-        error,
-    } = useMutation(
+    const { isLoading: MutateLoading, mutate } = useMutation(
         (data: FormData) => {
             return api.post("/project/corporate", data, {
                 headers: {
@@ -452,14 +446,6 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
             onError: onErrorHandler,
         }
     );
-    if (isError) {
-        setPrompt((prev: any) => ({
-            ...prev,
-            type: "error",
-            message: `Something is wrong!`,
-            toggle: true,
-        }));
-    }
 
     const Submit = async (data: any) => {
         if (data.email === data.alt_email) {

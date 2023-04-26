@@ -57,7 +57,7 @@ export default function Modify() {
                     from: isValid(dateFrom)
                         ? format(dateFrom, "MMM dd yyyy")
                         : "",
-                    to: isValid(dateTo) ? format(dateFrom, "MMM dd yyyy") : "",
+                    to: isValid(dateTo) ? format(dateTo, "MMM dd yyyy") : "",
                 },
                 properties: data?.data?.readings.map((item: any) => {
                     return {

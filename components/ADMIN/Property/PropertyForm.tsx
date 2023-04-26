@@ -474,7 +474,6 @@ export default function PropertyForm({
                                         type="text"
                                         {...register("developer")}
                                         autoComplete="off"
-                                        onFocus={() => setDev(true)}
                                         onClick={() => setDev(true)}
                                         value={isDevVal.value}
                                         onChange={(e: any) =>
@@ -520,17 +519,16 @@ export default function PropertyForm({
                                     <input
                                         type="text"
                                         className="field w-full"
-                                        onFocus={() => setProject(true)}
                                         onClick={() => setProject(true)}
                                         autoComplete="off"
                                         {...register("project")}
                                         value={isProjectVal.value}
-                                        onChange={(e: any) =>
-                                            setProjectVal({
-                                                ...isProjectVal,
-                                                value: e.target.value,
-                                            })
-                                        }
+                                        // onChange={(e: any) =>
+                                        //     setProjectVal({
+                                        //         ...isProjectVal,
+                                        //         value: e.target.value,
+                                        //     })
+                                        // }
                                     />
                                 }
                                 toPop={
@@ -568,7 +566,6 @@ export default function PropertyForm({
                                     <input
                                         className="field w-full"
                                         type="text"
-                                        onFocus={() => setTower(true)}
                                         onClick={() => setTower(true)}
                                         autoComplete="off"
                                         {...register("tower")}
@@ -617,7 +614,6 @@ export default function PropertyForm({
                                     <input
                                         className="field w-full"
                                         type="text"
-                                        onFocus={() => setFloor(true)}
                                         {...register("floor")}
                                         autoComplete="off"
                                         onClick={() => setFloor(true)}

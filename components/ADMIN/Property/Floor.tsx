@@ -15,6 +15,7 @@ import {
 import { useQueryClient } from "react-query";
 import AppContext from "../../Context/AppContext";
 import DynamicPopOver from "../../Reusable/DynamicPopOver";
+import { ErrorSubmit } from "../../Reusable/ErrorMessage";
 
 const Floor = ({ set, update, is, isValID, isObject, setObject }: any) => {
     const modal = useRef<any>();
@@ -70,7 +71,7 @@ const Floor = ({ set, update, is, isValID, isObject, setObject }: any) => {
             });
             setArray(cloneArray);
         }
-    }, [data?.status]);
+    }, [data?.data]);
 
     return (
         <div className="crud-container" ref={modal}>
@@ -105,6 +106,12 @@ const Floor = ({ set, update, is, isValID, isObject, setObject }: any) => {
                     )}
                 </tbody>
             </table>
+            {isError ||
+                (data?.data.length <= 0 && (
+                    <div className="w-full flex justify-center py-2 text-[14px]">
+                        <p> Floor cannot be found!</p>
+                    </div>
+                ))}
             {isLoading && (
                 <div className="w-full flex justify-center py-3">
                     <BarLoader
@@ -116,12 +123,7 @@ const Floor = ({ set, update, is, isValID, isObject, setObject }: any) => {
                     />
                 </div>
             )}
-            {isError ||
-                (data?.data.length <= 0 && (
-                    <div className="w-full flex justify-center py-3">
-                        <h1>Floor cannot be found!</h1>
-                    </div>
-                ))}
+
             {isWarning !== "" && (
                 <p className="text-[12px] text-ThemeRed">{isWarning}</p>
             )}
@@ -227,13 +229,8 @@ const List = ({
             toggle: true,
         });
     };
-    const onError = () => {
-        setWarning("The name has already been registered");
-        setPrompt({
-            message: "Something is wrong!",
-            type: "error",
-            toggle: true,
-        });
+    const onError = (e: any) => {
+        ErrorSubmit(e, setPrompt);
     };
     // Save
     const { isLoading: loadingSave, mutate: mutateSave } = PostFloor(
@@ -454,14 +451,6 @@ const ListDropdown = ({ set, updateVal, isTower, setTower }: ListDropdown) => {
         );
     }
 
-    if (isError || data?.data.length <= 0) {
-        return (
-            <ul ref={modal} className="w-full flex justify-center py-3">
-                <li onClick={reset}>Project Can&apos;t found!</li>
-            </ul>
-        );
-    }
-
     return (
         <ul ref={modal} className="dropdown-list">
             {data?.data.map((item: any, index: number) => (
@@ -469,6 +458,8 @@ const ListDropdown = ({ set, updateVal, isTower, setTower }: ListDropdown) => {
                     {item.name}
                 </li>
             ))}
+            {isError ||
+                (data?.data.length <= 0 && <li>Tower Can&apos;t found!</li>)}
         </ul>
     );
 };

@@ -14,11 +14,13 @@ export type PeriodCalendarProps = {
         to: string;
     };
     setValue: Function;
+    disabled?: boolean;
 };
 
 export default function PeriodCalendar({
     value,
     setValue,
+    disabled,
 }: PeriodCalendarProps) {
     const [open, setOpen] = useState(false);
 
@@ -27,16 +29,20 @@ export default function PeriodCalendar({
             <DynamicPopOver
                 className=""
                 toRef={
-                    <div className="flex items-center">
+                    <div className="flex items-center ">
                         <p className="labelField">PERIOD</p>
                         <div
-                            className="p-1 px-2 text-[#545454] font-NHU-medium 1550px:min-w-[100px] rounded-md outline-none shadow-md bg-white flex justify-between items-center"
+                            className={`${
+                                disabled && "disabled"
+                            } p-1 px-2 text-[#545454] font-NHU-medium 1550px:min-w-[100px] rounded-md outline-none shadow-md bg-white flex justify-between items-center`}
                             onClick={() => setOpen((open) => !open)}
                         >
                             <input
                                 value={value.from}
                                 readOnly
-                                className=" outline-none w-[120px] text-center font-NHU-medium text-[#545454] 1550px:text-[14px]"
+                                className={`${
+                                    disabled && "disabled"
+                                } outline-none w-[120px] text-center font-NHU-medium text-[#545454] 1550px:text-[14px]`}
                             />
                             <p className=" text-ThemeRed font-NHU-regular mx-2">
                                 -
@@ -44,7 +50,9 @@ export default function PeriodCalendar({
                             <input
                                 value={value.to}
                                 readOnly
-                                className=" outline-none w-[120px] text-center font-NHU-medium text-[#545454] 1550px:text-[14px]"
+                                className={`${
+                                    disabled && "disabled"
+                                } outline-none w-[120px] text-center font-NHU-medium text-[#545454] 1550px:text-[14px]`}
                             />
                             <Image
                                 src="/Images/CalendarMini.png"

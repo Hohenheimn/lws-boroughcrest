@@ -37,7 +37,7 @@ export const InputNumberForTable = ({
                 fixedDecimalScale
                 decimalSeparator="."
                 decimalScale={2}
-                allowNegative={false}
+                allowNegative={true}
                 thousandSeparator={true}
                 onValueChange={(values) => {
                     // formattedValue = $2,223z
