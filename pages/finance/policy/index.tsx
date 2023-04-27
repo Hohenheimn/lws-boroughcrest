@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { PencilButton } from "../../../components/Reusable/Icons";
+import SelectDropdown from "../../../components/Reusable/SelectDropdown";
 
 type FinanceReference = {
     document: string;
@@ -11,6 +12,7 @@ type FinanceReference = {
 
 export default function Policy() {
     const [isToggle, setToggle] = useState(false);
+    const [isYear, setYear] = useState("Calendar");
     const [FinanceReference, setFinanceReference] = useState([
         {
             id: 1,
@@ -121,17 +123,41 @@ export default function Policy() {
                         FINANCE PERIOD
                     </h4>
                     <section className="flex items-center mb-10 ">
-                        <input
-                            type="text"
-                            className={`field mr-5 ${
-                                !isToggle && "noStyle"
-                            } duration-200 ease-in-out`}
-                            value="Calendar"
-                            readOnly
+                        <SelectDropdown
+                            selectHandler={(value: string) => {
+                                setYear(value);
+                            }}
+                            noStyle={!isToggle}
+                            className="w-[150px]"
+                            inputElement={
+                                <input
+                                    className={`w-full field ${
+                                        !isToggle && "noStyle"
+                                    } `}
+                                    value={isYear}
+                                    readOnly
+                                    autoComplete="off"
+                                />
+                            }
+                            listArray={[
+                                "Calendar",
+                                "Febuary",
+                                "March",
+                                "Aprill",
+                                "May",
+                                "June",
+                                "July",
+                                "August",
+                                "September",
+                                "October",
+                                "November",
+                                "December",
+                            ]}
                         />
+
                         <input
                             type="text"
-                            className={`field ${
+                            className={`ml-3 w-[150px] field ${
                                 !isToggle && "noStyle"
                             } duration-200 ease-in-out`}
                             value="2022"

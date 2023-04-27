@@ -14,7 +14,6 @@ import { AdvancesType } from "./OutrightAndAdvances/Advances";
 import { Outright } from "./OutrightAndAdvances/OutRight";
 import OutrightAndAdvances from "./OutrightAndAdvances/OutrightAndAdvances";
 import OutStandingBalance, { Outstanding } from "./OutStandingBalance";
-import PaymentSummary from "./PaymentSummary";
 import { ErrorSubmit } from "../../../../../Reusable/ErrorMessage";
 import PaymentSummaryTable from "./PaymentSummary";
 
@@ -43,6 +42,8 @@ export default function OfficialForm({
     const { setPrompt } = useContext(AppContext);
     const [isSave, setSave] = useState(false);
     let buttonClicked = "";
+
+    const [isVarianceValidation, setVarianceValidation] = useState(false);
 
     // Outstanding Totals
     const [isDueAmountTotal, setDueAmountTotal] = useState(0);
@@ -112,7 +113,7 @@ export default function OfficialForm({
     const onError = (e: any) => {
         ErrorSubmit(e, setPrompt);
     };
-    const { isLoading, mutate, isError } = CreateCollection(onSuccess, onError);
+    const { isLoading, mutate } = CreateCollection(onSuccess, onError);
 
     const SaveHandler = (button: string) => {
         buttonClicked = button;
@@ -135,6 +136,7 @@ export default function OfficialForm({
         const PayloadAdvancesFilter = isAdvance.filter(
             (item: AdvancesType) => item.charge_id !== ""
         );
+
         const PayloadAdvances = PayloadAdvancesFilter.map((item) => {
             return {
                 charge_id: item.charge_id,
@@ -237,6 +239,15 @@ export default function OfficialForm({
             });
             return;
         }
+        if (!isVarianceValidation) {
+            setPrompt({
+                toggle: true,
+                message: "Invalid amount, Variance should be zero to save",
+                type: "draft",
+            });
+            validate = false;
+            return;
+        }
         if (validate) mutate(Payload);
     };
 
@@ -245,6 +256,7 @@ export default function OfficialForm({
         isLoading: CDloading,
         isError: CDerror,
     } = GetCollectionByCustomer(headerForm.customer_id);
+
     return (
         <>
             <OutStandingBalance
@@ -278,6 +290,8 @@ export default function OfficialForm({
                     TotalDue={Number(headerForm.amount_paid) + Number(OATotal)}
                     triggerID={Number(headerForm.customer_id)}
                     LessDiscount={headerForm.discount}
+                    AmoundPaid={Number(headerForm.amount_paid)}
+                    setVarianceValidation={setVarianceValidation}
                 />
             )}
             {CDloading && (

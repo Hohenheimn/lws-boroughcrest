@@ -94,11 +94,13 @@ type TextNumberDisplay = {
     value: number | string;
     className: string;
     suffix?: string;
+    allowNegative?: boolean;
 };
 export const TextNumberDisplay = ({
     value,
     className,
     suffix,
+    allowNegative,
 }: TextNumberDisplay) => {
     return (
         <NumericFormat
@@ -110,7 +112,7 @@ export const TextNumberDisplay = ({
             displayType="text"
             decimalScale={2}
             decimalSeparator="."
-            allowNegative={false}
+            allowNegative={allowNegative === undefined ? false : allowNegative}
             thousandSeparator={true}
         />
     );

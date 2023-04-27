@@ -429,7 +429,9 @@ export default function JournalForm({
                                 <th></th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody
+                            className={isLoading ? "pointer-events-none" : ""}
+                        >
                             {/* Not editable */}
                             {isBillingFromReading?.map(
                                 (item: billingObject, index: number) => (

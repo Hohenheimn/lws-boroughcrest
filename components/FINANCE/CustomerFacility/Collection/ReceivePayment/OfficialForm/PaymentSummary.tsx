@@ -17,6 +17,8 @@ type Props = {
     TotalDue: number;
     triggerID: number;
     LessDiscount: number;
+    AmoundPaid: number;
+    setVarianceValidation?: Function;
 };
 
 export default function PaymentSummaryTable({
@@ -25,17 +27,31 @@ export default function PaymentSummaryTable({
     TotalDue,
     triggerID,
     LessDiscount,
+    AmoundPaid,
+    setVarianceValidation,
 }: Props) {
     // TOTAL
     // Payment Summary
     const [PStotal, setPStotal] = useState<number>(0);
     const [PSVatTotal, setPSVatTotal] = useState<number>(0);
-    const [Total, setTotal] = useState<number>(0);
+    const [TotalPaid, setTotalPaid] = useState<number>(0);
+    const [Variance, setvariance] = useState<Number>(0);
+
+    useEffect(() => {
+        const computeVariance = Number(AmoundPaid) - Number(TotalPaid);
+        setvariance(computeVariance);
+        if (setVarianceValidation !== undefined) {
+            if (computeVariance === 0) {
+                setVarianceValidation(true);
+            }
+        }
+        console.log(TotalPaid);
+    }, [AmoundPaid, TotalPaid]);
 
     useEffect(() => {
         const total =
             Number(TotalDue) - Number(LessDiscount) - Number(CreditTax);
-        setTotal(total);
+        setTotalPaid(total);
     }, [LessDiscount, CreditTax, TotalDue]);
 
     useEffect(() => {
@@ -131,24 +147,23 @@ export default function PaymentSummaryTable({
                                 </td>
                                 <td>
                                     <TextNumberDisplay
-                                        className="withPesoWhite w-full text-white bg-ThemeRed px-2 pb-[2px]"
-                                        value={Total}
+                                        className="withPeso w-full"
+                                        value={TotalPaid}
                                     />
                                 </td>
                             </tr>
-                            {/* <tr>
-                            <td>
-                                <h1 className=" text-ThemeRed">
-                                    VARIANCE
-                                </h1>
-                            </td>
-                            <td>
-                                <TextNumberDisplay
-                                    className="withPesoWhite w-full text-white bg-ThemeRed px-2 pb-[2px]"
-                                    value={564564}
-                                />
-                            </td>
-                        </tr> */}
+                            <tr>
+                                <td>
+                                    <h1 className=" text-ThemeRed">VARIANCE</h1>
+                                </td>
+                                <td>
+                                    <TextNumberDisplay
+                                        className="withPesoWhite min-w-[50px] w-full text-white bg-ThemeRed px-2 pb-[2px]"
+                                        value={Number(Variance)}
+                                        allowNegative={true}
+                                    />
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>

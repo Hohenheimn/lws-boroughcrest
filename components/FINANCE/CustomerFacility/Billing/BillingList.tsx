@@ -17,6 +17,7 @@ import { GetInvoiceList, MultipleUpdateBillingList } from "./Query";
 import { TextNumberDisplay } from "../../../Reusable/NumberFormat";
 import Calendar from "../../../Reusable/Calendar";
 import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
+import { PencilButtonTable } from "../../../Reusable/Icons";
 
 type isTable = {
     itemArray: isTableItemObj[];
@@ -505,6 +506,7 @@ export default function BillingList() {
                             </th>
                             {type === "unposted" ? (
                                 <>
+                                    <th></th>
                                     <th>Status</th>
                                     <th>Date</th>
                                     <th>Customer</th>
@@ -610,7 +612,7 @@ const List = ({
     };
 
     return (
-        <tr>
+        <tr className="hoverEffect">
             <td className="checkbox">
                 <div className="item">
                     <input
@@ -620,6 +622,17 @@ const List = ({
                     />
                 </div>
             </td>
+            {type !== "posted" && (
+                <td className="iconHidden flex justify-center">
+                    <Link
+                        href={`/finance/customer-facility/billing/modify/${itemDetail.id}`}
+                    >
+                        <a>
+                            <PencilButtonTable />
+                        </a>
+                    </Link>
+                </td>
+            )}
 
             <td>
                 <Link

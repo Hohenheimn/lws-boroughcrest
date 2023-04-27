@@ -208,7 +208,7 @@ select {
                 @apply w-3 min-w-0;
                 input[type="checkbox"] {
                     border: 1px solid rgb(216, 216, 216) !important;
-                    @apply relative h-4 w-4 rounded-md shadow-md overflow-hidden after:text-white after:flex after:justify-center after:items-center mr-1 checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
+                    @apply relative cursor-pointer h-4 w-4 rounded-md shadow-md overflow-hidden after:text-white after:flex after:justify-center after:items-center mr-1 checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
                     &:checked {
                         border: none !important;
                     }
@@ -305,7 +305,7 @@ select {
                 @apply w-3 min-w-0;
                 input[type="checkbox"] {
                     border: 1px solid rgb(216, 216, 216) !important;
-                    @apply relative h-4 w-4 rounded-md shadow-md overflow-hidden after:text-white after:flex after:justify-center after:items-center mr-1 checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
+                    @apply relative  cursor-pointer h-4 w-4 rounded-md shadow-md overflow-hidden after:text-white after:flex after:justify-center after:items-center mr-1 checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
                     &:checked {
                         border: none !important;
                     }
@@ -321,6 +321,10 @@ select {
             }
             td.icon {
                 @apply w-[50px];
+            }
+            td.iconHidden {
+                @apply w-[50px] min-w-[50px] duration-150;
+                opacity: 0;
             }
             td.normal {
                 @apply min-w-[150px] 480px:min-w-[100px];
@@ -341,6 +345,11 @@ select {
         }
         tr.noBorder {
             @apply border-none;
+        }
+        tr.hoverEffect:hover {
+            td.iconHidden {
+                opacity: 1;
+            }
         }
     }
     tbody.textBlack {
@@ -377,7 +386,7 @@ select {
                 }
             }
             td.checkbox {
-                @apply min-w-[0];
+                @apply min-w-[0]  cursor-pointer;
             }
         }
     }
@@ -541,7 +550,7 @@ input[type="number"] {
                 @apply w-3 min-w-0;
                 input[type="checkbox"] {
                     border: 1px solid rgb(216, 216, 216) !important;
-                    @apply bg-white relative h-3 w-3 rounded-sm shadow-md overflow-hidden after:text-white after:flex after:justify-center mr-0 after:items-center checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
+                    @apply bg-white  cursor-pointer relative h-3 w-3 rounded-sm shadow-md overflow-hidden after:text-white after:flex after:justify-center mr-0 after:items-center checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
                     &:checked {
                         border: none !important;
                     }
@@ -614,7 +623,7 @@ input[type="number"] {
         @apply w-3 min-w-0 text-center;
         input[type="checkbox"] {
             border: 1px solid rgb(216, 216, 216) !important;
-            @apply bg-white relative h-3 w-3 rounded-sm shadow-md overflow-hidden after:text-white after:flex after:justify-center mr-0 after:items-center checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
+            @apply bg-white  cursor-pointer relative h-3 w-3 rounded-sm shadow-md overflow-hidden after:text-white after:flex after:justify-center mr-0 after:items-center checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
             &:checked {
                 border: none !important;
             }
