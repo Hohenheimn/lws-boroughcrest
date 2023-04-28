@@ -212,7 +212,9 @@ export default function ReadingPropertyForm({
                 </li>
                 <li className=" flex items-center mb-5 1024px:mb-2">
                     <PeriodCalendar
-                        disabled={true}
+                        disabled={
+                            router.query.modify === undefined ? false : true
+                        }
                         value={periodProperty}
                         setValue={setPeriodProperty}
                     />

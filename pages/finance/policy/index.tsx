@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import { PencilButton } from "../../../components/Reusable/Icons";
 import SelectDropdown from "../../../components/Reusable/SelectDropdown";
+import {
+    NumberBlockInvalidKey,
+    TextFieldValidationNoSpace,
+} from "../../../components/Reusable/InputField";
 
 type FinanceReference = {
     document: string;
@@ -12,7 +16,12 @@ type FinanceReference = {
 
 export default function Policy() {
     const [isToggle, setToggle] = useState(false);
-    const [isYear, setYear] = useState("Calendar");
+    const [isYear, setYear] = useState("2022");
+    const [isMonth, setMonth] = useState("Calendar");
+    const [prevValue, setPrevVal] = useState({
+        year: "2022",
+        month: "Calendar",
+    });
     const [FinanceReference, setFinanceReference] = useState([
         {
             id: 1,
@@ -92,6 +101,20 @@ export default function Policy() {
         setFinanceReference(cloneToUpdate);
     };
 
+    const CancelHandler = () => {
+        setToggle(false);
+        setYear(prevValue.year);
+        setMonth(prevValue.month);
+    };
+
+    const SaveHandler = () => {
+        setPrevVal({
+            year: isYear,
+            month: isMonth,
+        });
+        setToggle(false);
+    };
+
     return (
         <div className="py-20 640px:py-10">
             <h1 className="pageTitle mb-5">Finance Policy</h1>
@@ -125,7 +148,7 @@ export default function Policy() {
                     <section className="flex items-center mb-10 ">
                         <SelectDropdown
                             selectHandler={(value: string) => {
-                                setYear(value);
+                                setMonth(value);
                             }}
                             noStyle={!isToggle}
                             className="w-[150px]"
@@ -134,7 +157,7 @@ export default function Policy() {
                                     className={`w-full field ${
                                         !isToggle && "noStyle"
                                     } `}
-                                    value={isYear}
+                                    value={isMonth}
                                     readOnly
                                     autoComplete="off"
                                 />
@@ -156,12 +179,16 @@ export default function Policy() {
                         />
 
                         <input
-                            type="text"
+                            type="number"
                             className={`ml-3 w-[150px] field ${
                                 !isToggle && "noStyle"
                             } duration-200 ease-in-out`}
-                            value="2022"
-                            readOnly
+                            value={isYear}
+                            onKeyDown={NumberBlockInvalidKey}
+                            onChange={(e) => {
+                                if (!TextFieldValidationNoSpace(e, 4)) return;
+                                setYear(e.target.value);
+                            }}
                         />
                     </section>
                     <h4 className="main_text noMB hidden 640px:block">
@@ -256,13 +283,12 @@ export default function Policy() {
             </ul>
             {isToggle && (
                 <div className="flex justify-end items-center mt-5 1550px:mt-2">
-                    <button
-                        className="button_cancel"
-                        onClick={() => setToggle(false)}
-                    >
+                    <button className="button_cancel" onClick={CancelHandler}>
                         CANCEL
                     </button>
-                    <button className="buttonRed">SAVE</button>
+                    <button className="buttonRed" onClick={SaveHandler}>
+                        SAVE
+                    </button>
                 </div>
             )}
         </div>
