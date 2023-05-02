@@ -206,13 +206,6 @@ select {
             }
             th.checkbox {
                 @apply w-3 min-w-0;
-                input[type="checkbox"] {
-                    border: 1px solid rgb(216, 216, 216) !important;
-                    @apply relative cursor-pointer h-4 w-4 rounded-md shadow-md overflow-hidden after:text-white after:flex after:justify-center after:items-center mr-1 checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
-                    &:checked {
-                        border: none !important;
-                    }
-                }
             }
             .status {
                 @apply text-center;
@@ -482,7 +475,7 @@ input[type="number"] {
 }
 .tippy-tooltip.ThemeWhite-theme {
     background-color: #fff !important;
-    max-width: 450px !important;
+    max-width: 500px !important;
     .tippy-content {
         padding: 0 !important;
     }
@@ -1024,5 +1017,31 @@ input[type="number"] {
     }
     li.active {
         @apply w-20 rounded-lg bg-ThemeRed;
+    }
+}
+table.rolePermisionTable {
+    @apply w-full;
+    thead {
+        tr {
+            @apply border-b border-ThemeRed;
+            th {
+                @apply py-2;
+            }
+        }
+    }
+    tr {
+        th {
+            @apply text-start text-[14px];
+        }
+        td {
+            @apply text-RegularColor py-1 border-b border-[#cecece]  text-[14px];
+            input[type="checkbox"] {
+                border: 1px solid rgb(216, 216, 216) !important;
+                @apply relative bg-white cursor-pointer h-4 w-4 rounded-md shadow-md overflow-hidden after:text-white after:flex after:justify-center after:items-center mr-1 checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
+                &:checked {
+                    border: none !important;
+                }
+            }
+        }
     }
 }

@@ -1,8 +1,6 @@
 import React, { useState } from "react";
-import { HiPencil } from "react-icons/hi";
 import Image from "next/image";
 import UserInformation from "./UserInformation";
-import UserRolePermissionsForm from "./UserRolePermissionsForm";
 import Modal_Image from "../../Reusable/Modal_Image";
 import { UserDetail } from "./UserTable";
 import Tippy from "@tippy.js/react";
@@ -24,14 +22,16 @@ export default function UserDetails({ UserDetail }: Props) {
                 <UserForm
                     setToggle={setToggleModify}
                     DefaultValue={{
-                        profile: undefined,
+                        image_photo: null,
+                        image_photo_url: UserDetail.image_photo,
+                        image_signature: null,
                         name: UserDetail.name,
-                        signature: undefined,
                         position: UserDetail.position,
                         employee_id: UserDetail.employee_id,
-                        department: UserDetail.department_id,
+                        department_id: UserDetail.department_id,
+                        department: UserDetail.department,
                         email: UserDetail.email,
-                        mobile: UserDetail.contact_no,
+                        contact_no: UserDetail.contact_no,
                         corporate: "Sample",
                         corporate_id: UserDetail.corporate_id,
                         status: UserDetail.status,

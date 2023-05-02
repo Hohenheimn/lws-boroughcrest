@@ -1,5 +1,5 @@
 import { getCookie } from "cookies-next";
-import { useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import api from "../../../util/api";
 
 export const GetUser = (keyword: string, pageNumber: number) => {
@@ -38,4 +38,48 @@ export const GetUserRecent = (id: number | string, keyword: string) => {
             }
         );
     });
+};
+
+export const UpdateUserInfo = (id: number, onSuccess: any, onError: any) => {
+    const queryValidate = useQueryClient();
+    return useMutation(
+        (Payload: any) => {
+            return api.post(`/project/user/${id}`, Payload, {
+                headers: {
+                    Authorization: "Bearer " + getCookie("user"),
+                },
+            });
+        },
+        {
+            onSuccess: () => {
+                queryValidate.invalidateQueries(["user-detail", id]);
+                onSuccess();
+            },
+            onError: () => {
+                onError();
+            },
+        }
+    );
+};
+
+export const CreateUser = (onSuccess: any, onError: any) => {
+    const queryValidate = useQueryClient();
+    return useMutation(
+        (Payload: any) => {
+            return api.post(`/project/user`, Payload, {
+                headers: {
+                    Authorization: "Bearer " + getCookie("user"),
+                },
+            });
+        },
+        {
+            onSuccess: () => {
+                queryValidate.invalidateQueries("user-list");
+                onSuccess();
+            },
+            onError: () => {
+                onError();
+            },
+        }
+    );
 };

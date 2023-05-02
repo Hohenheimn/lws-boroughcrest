@@ -2,13 +2,15 @@ import React, { useContext, useEffect, useState } from "react";
 import { RiArrowDownSFill } from "react-icons/ri";
 import SelectDropdown from "../../Reusable/SelectDropdown";
 import style from "../../../styles/Popup_Modal.module.scss";
-import { UserInfoPayload } from "./UserForm";
+import { UserInfo } from "./UserForm";
 import AppContext from "../../Context/AppContext";
+import { CreateUser } from "./Query";
+import { ErrorSubmit } from "../../Reusable/ErrorMessage";
 
 type Props = {
     setUserForm: Function;
     userForm: boolean[];
-    userInfo?: UserInfoPayload;
+    userInfo?: UserInfo;
     type: string;
     DefaultTable: isTableItem[];
     id?: string | number;
@@ -49,6 +51,17 @@ export default function UserRolePermissionsForm({
         });
         setTable(DefaultTable);
     }, []);
+
+    const onSuccess = () => {};
+
+    const onError = (e: any) => {
+        ErrorSubmit(e, setPrompt);
+    };
+
+    const { mutate: CreateMutate, isLoading: CreateLoading } = CreateUser(
+        onSuccess,
+        onError
+    );
 
     const Savehandler = (button: string) => {
         buttonClicked = button;
@@ -110,12 +123,7 @@ export default function UserRolePermissionsForm({
                                 readOnly
                             />
                         }
-                        listArray={[
-                            "Admin",
-                            "Admin Staff",
-                            "Finance",
-                            " Accounting",
-                        ]}
+                        listArray={["Admin Staff", "Finance", " Accounting"]}
                     />
                 </li>
             </ul>
