@@ -7,7 +7,15 @@ import AppContext from "../../Context/AppContext";
 import SelectDropdown from "../../Reusable/SelectDropdown";
 import CorporateDropDown from "../../Dropdowns/CorporateDropDown";
 import { RiArrowDownSFill } from "react-icons/ri";
-import UserRolePermissionsForm from "./UserRolePermissionsForm";
+import { UpdateUserInfo } from "./Query";
+import { useRouter } from "next/router";
+import { ErrorSubmit } from "../../Reusable/ErrorMessage";
+import {
+    NumberBlockInvalidKey,
+    TextFieldValidation,
+} from "../../Reusable/InputField";
+import { useQueryClient } from "react-query";
+import UserRoleAndPermissionsCheckBox from "./UserRoleAndPermissionsCheckBox";
 
 export type UserFormType = {
     profile: any;
@@ -23,50 +31,71 @@ export type UserFormType = {
     status: string;
 };
 
-export type UserInfoPayload = {
+export type UserInfo = {
     employee_id: string | number;
     name: string;
     email: string;
     corporate_id: string | number;
-    department_id: string | number;
+    corporate: string;
+    department_id: number | null;
+    department: string;
     contact_no: string | number;
     position: string;
     image_photo: undefined | null | File;
+    image_photo_url: string;
     image_signature: undefined | null | File;
     status: string;
 };
 
 type Props = {
-    DefaultValue: UserFormType;
+    DefaultValue: UserInfo;
     type: string;
     setToggle: Function;
 };
 
 export default function UserForm({ DefaultValue, type, setToggle }: Props) {
-    const [isSave, setSave] = useState(false);
-    const [isDepartment, setDepartment] = useState<any>("");
+    const [isButtonClicked, setButtonClicked] = useState("");
 
-    const [isPayload, setPayload] = useState<UserInfoPayload>({
+    const { setPrompt } = useContext(AppContext);
+
+    const router = useRouter();
+
+    const [isSave, setSave] = useState(false);
+
+    const [isDepartment, setDepartment] = useState<{
+        id: number | null;
+        value: string;
+    }>({
+        id: null,
+        value: "",
+    });
+
+    const [isPayload, setPayload] = useState<UserInfo>({
         employee_id: "",
         name: "",
         email: "",
         corporate_id: "",
-        department_id: "",
+        corporate: "",
+        department_id: null,
+        department: "",
         contact_no: "",
         position: "",
         image_photo: undefined,
         image_signature: undefined,
-        status: "",
+        image_photo_url: "",
+        status: "Active",
     });
+
+    const {
+        register,
+        handleSubmit,
+        trigger,
+        formState: { errors },
+    } = useForm<UserFormType>();
 
     const { setNewUserToggle } = useContext(AppContext);
 
     const [userForm, setUserForm] = useState([true, false]);
-
-    const [isProfileStatus, setProfileStatus] = useState("Upload Profile");
-
-    const [isSignatureStatus, setSignatureStatus] =
-        useState("Upload Signature");
 
     const [isStatus, setStatus] = useState<string>("Active");
 
@@ -77,114 +106,198 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
         id: "",
         value: "",
     });
+
+    const [isProfileUrl, setProfileUrl] = useState({
+        url: "/Images/sampleProfile.png",
+        error: "",
+    });
+
+    const [isSignatureUrl, setSignatureUrl] = useState({
+        url: "/Images/sampleProfile.png",
+        error: "",
+    });
+
     useEffect(() => {
-        setValue("corporate", isCorporate.value);
-    }, [isCorporate]);
-
-    const [isProfileUrl, setProfileUrl] = useState("/Images/sampleProfile.png");
-
-    const DisplayImage = (e: any, key: string) => {
-        if (e.target.files[0]?.size > 2000000) {
-            key === "profile" && setProfileStatus("Image must be 2mb only");
-            key === "signature" && setSignatureStatus("Image must be 2mb only");
-
-            return;
-        } else {
-            key === "profile" && setProfileStatus("Upload Profile");
-            key === "signature" && setSignatureStatus("Upload Signature");
-        }
-        if (e.target.files.length > 0) {
-            let selectedImage = e.target.files[0];
-            if (["image/jpeg", "image/png"].includes(selectedImage.type)) {
-                let ImageReader = new FileReader();
-                ImageReader.readAsDataURL(selectedImage);
-                ImageReader.addEventListener("load", (event: any) => {
-                    key === "profile" && setProfileUrl(event.target.result);
-                });
-                const file = e.target.files;
-                if (key === "signature") {
-                    setSignatureStatus(file[0].name);
-                }
-                if (key === "profile") {
-                    setProfileStatus(file[0].name);
-                }
-            } else {
-                key === "profile" && setProfileStatus("Invalid Image File");
-                key === "signature" && setSignatureStatus("Invalid Image File");
-            }
-        } else {
-            key === "profile" && setProfileStatus("Nothing Happens");
-            key === "signature" && setSignatureStatus("Nothing Happens");
-        }
-    };
+        setPayload({
+            ...isPayload,
+            image_photo_url: isProfileUrl.url,
+        });
+    }, [isProfileUrl.url]);
 
     useEffect(() => {
         if (
-            DefaultValue.profile !== "" &&
-            DefaultValue.profile !== null &&
-            DefaultValue.profile !== undefined
+            DefaultValue.image_photo_url !== "" &&
+            DefaultValue.image_photo_url !== null &&
+            DefaultValue.image_photo_url !== undefined
         ) {
-            setProfileUrl(DefaultValue.profile);
+            setProfileUrl({
+                url: DefaultValue.image_photo_url,
+                error: "",
+            });
         } else {
-            setProfileUrl("/Images/sampleProfile.png");
+            setProfileUrl({
+                url: "/Images/sampleProfile.png",
+                error: "",
+            });
         }
-        setValue("department", DefaultValue.department);
-        setDepartment(DefaultValue.department);
+        setDepartment({
+            id: DefaultValue.department_id,
+            value: DefaultValue.department,
+        });
         setCorporate({
             id: DefaultValue.corporate_id,
             value: DefaultValue.corporate,
         });
-        setValue("corporate", DefaultValue.corporate);
-        setStatus(status);
+        setStatus(DefaultValue.status);
+        setPayload({
+            employee_id: DefaultValue.employee_id,
+            name: DefaultValue.name,
+            email: DefaultValue.email,
+            corporate_id: DefaultValue.corporate_id,
+            corporate: DefaultValue.corporate,
+            department_id: DefaultValue.department_id,
+            department: DefaultValue.department,
+            contact_no: DefaultValue.contact_no,
+            position: DefaultValue.position,
+            image_photo: DefaultValue.image_photo,
+            image_signature: DefaultValue.image_signature,
+            image_photo_url:
+                DefaultValue.image_photo_url === null ||
+                DefaultValue.image_photo_url === "" ||
+                DefaultValue.image_photo_url === undefined
+                    ? "/Images/sampleProfile.png"
+                    : DefaultValue.image_photo_url,
+            status: DefaultValue.status,
+        });
     }, []);
+
+    const DisplayImage = (e: any, setImg: Function, type: string) => {
+        let defaultUrl = "/Images/sampleProfile.png";
+        if (type === "validID") {
+            defaultUrl = "/Images/id-sample.png";
+        }
+        if (e.target.files[0]?.size > 2000000) {
+            setImg({
+                url: defaultUrl,
+                error: "Image must be 2mb only",
+            });
+            return;
+        }
+        if (e.target.files.length > 0) {
+            let selectedImage = e.target.files[0];
+            if (
+                ["image/jpeg", "image/png", "image/svg+xml"].includes(
+                    selectedImage.type
+                )
+            ) {
+                let ImageReader = new FileReader();
+                ImageReader.readAsDataURL(selectedImage);
+                ImageReader.addEventListener("load", (event: any) => {
+                    setImg({
+                        url: event.target.result,
+                        error: "",
+                    });
+                    if (type === "signature") {
+                        setPayload({
+                            ...isPayload,
+                            image_signature: e.target.files[0],
+                        });
+                    }
+
+                    if (type === "profile") {
+                        setPayload({
+                            ...isPayload,
+                            image_photo: e.target.files[0],
+                            image_photo_url: event.target.result,
+                        });
+                    }
+                });
+            } else {
+                setImg({
+                    url: defaultUrl,
+                    error: "Invalid Image File",
+                });
+            }
+        } else {
+            setImg({
+                url: defaultUrl,
+                error: "Image file removed",
+            });
+        }
+    };
 
     const cancel = () => {
         setNewUserToggle(false);
+        router.push("");
     };
 
-    const {
-        register,
-        handleSubmit,
-        setValue,
-        formState: { errors },
-    } = useForm<UserFormType>({
-        defaultValues: DefaultValue,
-    });
+    const ID: any = router.query.modify;
+    const queryClient = useQueryClient();
+
+    const onSuccess = () => {
+        if (isButtonClicked === "new") {
+            router.push("/project/user?new");
+        }
+        if (router.query.modify === undefined) {
+            queryClient.invalidateQueries(["user-list"]);
+        } else {
+            queryClient.invalidateQueries(["user-detail"]);
+        }
+        cancel();
+    };
+    const onError = (e: any) => {
+        ErrorSubmit(e, setPrompt);
+    };
+
+    const { mutate: UpdateMutate, isLoading: UpdateLoading } = UpdateUserInfo(
+        ID,
+        onSuccess,
+        onError
+    );
 
     const Next = (data: UserFormType) => {
-        const Payload: UserInfoPayload = {
-            employee_id: data.employee_id,
-            name: data.name,
-            email: data.email,
+        if (isProfileUrl.error !== "" || isSignatureUrl.error !== "") return;
+        const Payload = {
+            employee_id: isPayload.employee_id,
+            name: isPayload.name,
+            email: isPayload.email,
             corporate_id: isCorporate.id,
-            department_id: isDepartment,
-            contact_no: data.mobile,
-            position: data.position,
+            department_id: isDepartment.id,
+            contact_no: isPayload.contact_no,
+            position: isPayload.position,
             image_photo: data.profile[0] === undefined ? null : data.profile[0],
             image_signature:
                 data.signature[0] === undefined ? null : data.signature[0],
             status: isStatus,
         };
         setPayload({
-            employee_id: data.employee_id,
-            name: data.name,
-            email: data.email,
-            corporate_id: isCorporate.id,
-            department_id: isDepartment,
-            contact_no: data.mobile,
-            position: data.position,
+            ...isPayload,
             image_photo: data.profile[0] === undefined ? null : data.profile[0],
             image_signature:
                 data.signature[0] === undefined ? null : data.signature[0],
-            status: isStatus,
         });
         if (type === "create") {
             setUserForm([false, true]);
         }
         if (type === "modify") {
-            console.log(Payload);
+            const updatePayload = {
+                ...Payload,
+                _method: "PUT",
+            };
+
+            console.log(isButtonClicked);
         }
     };
+
+    if (type === "create" && userForm[1] === true) {
+        return (
+            <UserRoleAndPermissionsCheckBox
+                setUserForm={setUserForm}
+                userInfo={isPayload}
+                type={"create"}
+            />
+        );
+    }
 
     return (
         <div className={style.container}>
@@ -213,20 +326,27 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
                         <li className=" border flex items-center w-4/12 820px:w-2/4 480px:w-full mb-5">
                             <aside className="w-20 h-20 relative flex mr-4">
                                 <label
-                                    className=" bg-white h-full w-full rounded-full object-cover shadow-lg relative"
+                                    className=" bg-white h-full w-full overflow-hidden rounded-full object-cover shadow-lg relative"
                                     htmlFor="profile"
                                 >
                                     <Image
-                                        src={isProfileUrl}
+                                        src={isPayload.image_photo_url}
                                         alt=""
                                         layout="fill"
+                                        objectFit="cover"
                                     />
                                 </label>
                                 <input
                                     type="file"
                                     id="profile"
                                     {...register("profile")}
-                                    onChange={(e) => DisplayImage(e, "profile")}
+                                    onChange={(e) =>
+                                        DisplayImage(
+                                            e,
+                                            setProfileUrl,
+                                            "profile"
+                                        )
+                                    }
                                     className="absolute z-[-1] opacity-0"
                                 />
                                 <label
@@ -237,7 +357,7 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
                                 </label>
                             </aside>
                             <p className="text-[12px] mt-1 w-full text-center">
-                                {isProfileStatus}
+                                {isProfileUrl.error}
                             </p>
                         </li>
                         <li className="  flex flex-col w-4/12 820px:w-2/4 480px:w-full mb-5">
@@ -246,9 +366,15 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
                             </label>
                             <input
                                 type="text"
-                                {...register("name", {
-                                    required: "Required",
-                                })}
+                                {...register("name")}
+                                value={isPayload.name}
+                                onChange={(e) => {
+                                    if (!TextFieldValidation(e, 50)) return;
+                                    setPayload({
+                                        ...isPayload,
+                                        name: e.target.value,
+                                    });
+                                }}
                                 className="field"
                             />
                             {errors?.name && (
@@ -269,10 +395,16 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
                                 type="file"
                                 {...register("signature")}
                                 className="absolute z-[-1] opacity-0"
-                                onChange={(e) => DisplayImage(e, "signature")}
+                                onChange={(e) =>
+                                    DisplayImage(
+                                        e,
+                                        setSignatureUrl,
+                                        "signature"
+                                    )
+                                }
                             />
                             <p className="text-[10px] text-center w-full">
-                                {isSignatureStatus}
+                                {isSignatureUrl.error}
                             </p>
                             {errors?.signature && (
                                 <p className="text-[10px] text-center w-full">
@@ -288,6 +420,14 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
                                 type="text"
                                 className="field"
                                 {...register("position")}
+                                value={isPayload.position}
+                                onChange={(e) => {
+                                    if (!TextFieldValidation(e, 50)) return;
+                                    setPayload({
+                                        ...isPayload,
+                                        position: e.target.value,
+                                    });
+                                }}
                             />
                             {errors?.position && (
                                 <p className="text-[10px]">
@@ -301,6 +441,14 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
                                 type="text"
                                 className="field"
                                 {...register("employee_id")}
+                                value={isPayload.employee_id}
+                                onChange={(e) => {
+                                    if (!TextFieldValidation(e, 50)) return;
+                                    setPayload({
+                                        ...isPayload,
+                                        employee_id: e.target.value,
+                                    });
+                                }}
                             />
                             {errors?.employee_id && (
                                 <p className="text-[10px]">
@@ -311,19 +459,14 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
                         <li>
                             <label>*DEPARTMENT</label>
                             <SelectDropdown
-                                selectHandler={(value: string) => {
-                                    setDepartment(value);
-                                    setValue("department", value);
-                                }}
+                                selectHandler={(value: string) => {}}
                                 className=""
                                 inputElement={
                                     <input
                                         className="w-full field"
-                                        value={isDepartment}
+                                        value={isDepartment.value}
                                         readOnly
-                                        {...register("department", {
-                                            required: "Required",
-                                        })}
+                                        {...register("department")}
                                     />
                                 }
                                 listArray={["Sample Department"]}
@@ -340,8 +483,19 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
                                 type="email"
                                 className="field w-full"
                                 {...register("email", {
-                                    required: "Required",
+                                    pattern: {
+                                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                                        message: "Invalid Email",
+                                    },
                                 })}
+                                value={isPayload.email}
+                                onChange={(e) => {
+                                    if (e.target.value.length > 40) return;
+                                    setPayload({
+                                        ...isPayload,
+                                        email: e.target.value,
+                                    });
+                                }}
                             />
                             {errors?.email && (
                                 <p className="text-[10px]">
@@ -357,7 +511,6 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
                                 className="field"
                                 placeholder="+63"
                                 {...register("mobile", {
-                                    required: "Required",
                                     minLength: {
                                         value: 11,
                                         message: "Must be 11 Number",
@@ -366,7 +519,20 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
                                         value: 11,
                                         message: "Must be 11 Number",
                                     },
+                                    pattern: {
+                                        value: /^(09)\d{9}$/,
+                                        message: "Invalid Contact Number",
+                                    },
                                 })}
+                                value={isPayload.contact_no}
+                                onKeyDown={NumberBlockInvalidKey}
+                                onChange={(e) => {
+                                    if (!TextFieldValidation(e, 11)) return;
+                                    setPayload({
+                                        ...isPayload,
+                                        contact_no: e.target.value,
+                                    });
+                                }}
                             />
                             {errors?.mobile && (
                                 <p className="text-[10px]">
@@ -380,9 +546,7 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
                                 isCorporate={isCorporate}
                                 setCorporate={setCorporate}
                                 register={{
-                                    ...register("corporate", {
-                                        required: "Required",
-                                    }),
+                                    ...register("corporate"),
                                 }}
                             />
                             {errors?.corporate && (
@@ -414,7 +578,7 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
                                     setToggle(false);
                                 }}
                             >
-                                BACK
+                                CANCEL
                             </aside>
 
                             <div className={style.Save}>
@@ -422,6 +586,7 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
                                     <button
                                         type="submit"
                                         name="save"
+                                        onClick={() => setButtonClicked("save")}
                                         className={style.save_button}
                                     >
                                         SAVE
@@ -439,6 +604,9 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
                                             <button
                                                 type="submit"
                                                 name="save-new"
+                                                onClick={() =>
+                                                    setButtonClicked("new")
+                                                }
                                             >
                                                 SAVE & NEW
                                             </button>
@@ -449,7 +617,7 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
                         </div>
                     )}
                 </form>
-                {type === "create" && (
+                {/* {type === "create" && (
                     <UserRolePermissionsForm
                         setUserForm={setUserForm}
                         userForm={userForm}
@@ -464,7 +632,7 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
                             },
                         ]}
                     />
-                )}
+                )} */}
             </section>
         </div>
     );

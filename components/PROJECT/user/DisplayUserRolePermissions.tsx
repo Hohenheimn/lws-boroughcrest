@@ -9,16 +9,11 @@ import { PencilButton } from "../../Reusable/Icons";
 type Props = {
     UserDetail: UserDetail;
 };
-export default function UserRolePermissions({ UserDetail }: Props) {
+export default function DisplayUserRolePermissions({ UserDetail }: Props) {
     const [isToggle, setToggle] = useState(false);
     return (
         <div>
-            {isToggle && (
-                <ModifyRolesPermission
-                    setToggle={setToggle}
-                    UserDetail={UserDetail}
-                />
-            )}
+            {isToggle && <ModifyRolesPermission setToggle={setToggle} />}
             <header className=" flex w-full justify-between items-center mb-5">
                 <aside className=" flex">
                     <p className=" text-gray-400 1024px:text-[14px] mr-2">

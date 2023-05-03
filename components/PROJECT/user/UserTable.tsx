@@ -25,10 +25,11 @@ export type UserDetail = {
     remember_token: string | null;
     role_id: number;
     corporate_id: number;
-    department_id: string | number | null;
+    department_id: number | null;
+    department: string;
     contact_no: number;
     position: string;
-    image_photo: null | string;
+    image_photo: string;
     image_signature: null | string;
     status: string;
     created_at: string;
@@ -39,7 +40,6 @@ export type UserDetail = {
 export default function UserTable({ isSearch }: Props) {
     const { userTableColumn } = useContext(AppContext);
     const [TablePage, setTablePage] = useState(1);
-
     const { data, isLoading, isError } = GetUser(isSearch, TablePage);
 
     return (

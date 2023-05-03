@@ -7,6 +7,7 @@ type Props = {
     selectHandler: (value: string) => void;
     inputElement: React.ReactNode;
     className: string;
+    noStyle?: boolean;
 };
 
 export default function SelectDropdown({
@@ -14,6 +15,7 @@ export default function SelectDropdown({
     selectHandler,
     inputElement,
     className,
+    noStyle,
 }: Props) {
     const [isToggle, setToggle] = useState(false);
 
@@ -33,7 +35,9 @@ export default function SelectDropdown({
     return (
         <div className="select">
             <span>
-                <MdOutlineKeyboardArrowDown />
+                <MdOutlineKeyboardArrowDown
+                    className={`${noStyle && "hidden"}`}
+                />
             </span>
             <DynamicPopOver
                 toRef={

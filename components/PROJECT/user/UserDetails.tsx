@@ -1,13 +1,11 @@
 import React, { useState } from "react";
-import { HiPencil } from "react-icons/hi";
 import Image from "next/image";
 import UserInformation from "./UserInformation";
-import UserRolePermissionsForm from "./UserRolePermissionsForm";
 import Modal_Image from "../../Reusable/Modal_Image";
 import { UserDetail } from "./UserTable";
 import Tippy from "@tippy.js/react";
 import UserForm from "./UserForm";
-import UserRolePermissions from "./UserRolePermissions";
+import DisplayUserRolePermissions from "./DisplayUserRolePermissions";
 import { PencilButton } from "../../Reusable/Icons";
 
 type Props = {
@@ -24,14 +22,16 @@ export default function UserDetails({ UserDetail }: Props) {
                 <UserForm
                     setToggle={setToggleModify}
                     DefaultValue={{
-                        profile: undefined,
+                        image_photo: null,
+                        image_photo_url: UserDetail.image_photo,
+                        image_signature: null,
                         name: UserDetail.name,
-                        signature: undefined,
                         position: UserDetail.position,
                         employee_id: UserDetail.employee_id,
-                        department: UserDetail.department_id,
+                        department_id: UserDetail.department_id,
+                        department: UserDetail.department,
                         email: UserDetail.email,
-                        mobile: UserDetail.contact_no,
+                        contact_no: UserDetail.contact_no,
                         corporate: "Sample",
                         corporate_id: UserDetail.corporate_id,
                         status: UserDetail.status,
@@ -136,7 +136,7 @@ export default function UserDetails({ UserDetail }: Props) {
             <ul className=" w-full shadow-lg p-10  bg-white rounded-2xl">
                 {!isToggleInfoRole && <UserInformation UserInfo={UserDetail} />}
                 {isToggleInfoRole && (
-                    <UserRolePermissions UserDetail={UserDetail} />
+                    <DisplayUserRolePermissions UserDetail={UserDetail} />
                 )}
             </ul>
         </div>

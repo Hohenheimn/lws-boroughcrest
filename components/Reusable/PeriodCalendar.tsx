@@ -7,6 +7,7 @@ import DynamicPopOver from "./DynamicPopOver";
 import React from "react";
 import Image from "next/image";
 import PeriodFNS from "./PeriodFNS";
+import ModalTemp from "./ModalTemp";
 
 export type PeriodCalendarProps = {
     value: {
@@ -15,12 +16,16 @@ export type PeriodCalendarProps = {
     };
     setValue: Function;
     disabled?: boolean;
+    noLabel?: boolean;
+    modalType?: boolean;
 };
 
 export default function PeriodCalendar({
     value,
     setValue,
     disabled,
+    noLabel,
+    modalType,
 }: PeriodCalendarProps) {
     const [open, setOpen] = useState(false);
 
@@ -30,7 +35,10 @@ export default function PeriodCalendar({
                 className=""
                 toRef={
                     <div className="flex items-center ">
-                        <p className="labelField">PERIOD</p>
+                        {(noLabel === undefined || noLabel === false) && (
+                            <p className="labelField">PERIOD</p>
+                        )}
+
                         <div
                             className={`${
                                 disabled && "disabled"
@@ -42,7 +50,7 @@ export default function PeriodCalendar({
                                 readOnly
                                 className={`${
                                     disabled && "disabled"
-                                } outline-none w-[120px] text-center font-NHU-medium text-[#545454] 1550px:text-[14px]`}
+                                } outline-none w-[120px] 820px:w-[100px] text-center font-NHU-medium text-[#545454] 1550px:text-[14px]`}
                             />
                             <p className=" text-ThemeRed font-NHU-regular mx-2">
                                 -
@@ -52,7 +60,7 @@ export default function PeriodCalendar({
                                 readOnly
                                 className={`${
                                     disabled && "disabled"
-                                } outline-none w-[120px] text-center font-NHU-medium text-[#545454] 1550px:text-[14px]`}
+                                } outline-none w-[120px] 820px:w-[100px] text-center font-NHU-medium text-[#545454] 1550px:text-[14px]`}
                             />
                             <Image
                                 src="/Images/CalendarMini.png"
@@ -65,7 +73,7 @@ export default function PeriodCalendar({
                 }
                 toPop={
                     <>
-                        {open && (
+                        {open && modalType !== true && (
                             <PeriodFNS
                                 setToggle={setOpen}
                                 isValue={value}
@@ -75,6 +83,16 @@ export default function PeriodCalendar({
                     </>
                 }
             />
+            {open && modalType === true && (
+                <div className="fixed left-0 top-0 z-[99] w-full h-full flex justify-center items-center bg-[#00000040] ">
+                    <PeriodFNS
+                        setToggle={setOpen}
+                        isValue={value}
+                        setValue={setValue}
+                        modalType={modalType}
+                    />
+                </div>
+            )}
         </div>
     );
 }

@@ -380,6 +380,7 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
                             TotalDue={TotalDue}
                             triggerID={CollectionDetail?.id}
                             LessDiscount={CollectionDetail?.discount}
+                            AmoundPaid={CollectionDetail?.amount_paid}
                         />
                     </li>
                     <li className="w-full rounded-2xl p-10 480px:p-8 bg-white  shadow-lg">

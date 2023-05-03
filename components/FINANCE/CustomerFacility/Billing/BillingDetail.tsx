@@ -4,6 +4,7 @@ import "tippy.js/dist/tippy.css";
 import { TextNumberDisplay } from "../../../Reusable/NumberFormat";
 import { PencilButton } from "../../../Reusable/Icons";
 import Link from "next/link";
+import { format, isValid, parse } from "date-fns";
 
 export type InvoiceDetail = {
     id: string | number;
@@ -47,6 +48,9 @@ export type InvoiceList = {
     billing_readings_list_id: string;
     property_unit_code?: string;
     property_id?: string;
+    property?: {
+        unit_code: string;
+    };
 };
 
 export type ShowInvoice = {
@@ -88,6 +92,8 @@ export default function BillingDetail({ InvoiceDetail }: Props) {
             setTotalAmount((prev) => Number(prev) + Number(item.amount));
         });
     }, []);
+    const Due_Date = parse(InvoiceDetail.due_date, "yyyy-MM-dd", new Date());
+
     return (
         <div>
             <div className="flex justify-between items-center mb-5">
@@ -139,7 +145,11 @@ export default function BillingDetail({ InvoiceDetail }: Props) {
                 </li>
                 <li>
                     <p className="label_text">Due Date</p>
-                    <h4 className="main_text">{InvoiceDetail.due_date}</h4>
+                    <h4 className="main_text">
+                        {isValid(Due_Date)
+                            ? format(Due_Date, "MMM dd yyyy")
+                            : ""}
+                    </h4>
                 </li>
             </ul>
             <ul className={`${style.OneRow} ${style.wide}`}>
@@ -148,6 +158,7 @@ export default function BillingDetail({ InvoiceDetail }: Props) {
                         <thead>
                             <tr>
                                 <th className="label_text">CHARGE</th>
+                                <th className="label_text">PROPERTY</th>
                                 <th className="label_text">DESCRIPTION</th>
                                 <th className="label_text">UNIT PRICE</th>
                                 <th className="label_text">QUANTITY</th>
@@ -205,6 +216,9 @@ const List = ({ itemDetail }: ListProps) => {
         <tr>
             <td>
                 <h4 className="main_text">{itemDetail.charge.name}</h4>
+            </td>
+            <td>
+                <h4 className="main_text">{itemDetail?.property?.unit_code}</h4>
             </td>
             <td>
                 <h4 className="main_text">{itemDetail.description}</h4>
