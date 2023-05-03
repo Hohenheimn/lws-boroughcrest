@@ -5,7 +5,7 @@ import Modal_Image from "../../Reusable/Modal_Image";
 import { UserDetail } from "./UserTable";
 import Tippy from "@tippy.js/react";
 import UserForm from "./UserForm";
-import UserRolePermissions from "./UserRolePermissions";
+import DisplayUserRolePermissions from "./DisplayUserRolePermissions";
 import { PencilButton } from "../../Reusable/Icons";
 
 type Props = {
@@ -136,7 +136,7 @@ export default function UserDetails({ UserDetail }: Props) {
             <ul className=" w-full shadow-lg p-10  bg-white rounded-2xl">
                 {!isToggleInfoRole && <UserInformation UserInfo={UserDetail} />}
                 {isToggleInfoRole && (
-                    <UserRolePermissions UserDetail={UserDetail} />
+                    <DisplayUserRolePermissions UserDetail={UserDetail} />
                 )}
             </ul>
         </div>

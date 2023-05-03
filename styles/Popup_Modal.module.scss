@@ -5,7 +5,7 @@
     }
 
     section {
-        @apply p-10 bg-[#e2e3e4] rounded-lg w-[90%] max-w-[700px] text-ThemeRed shadow-lg;
+        @apply p-10 bg-[#e2e3e4] rounded-lg w-[90%] max-w-[700px] max-h-[100%] overflow-y-auto text-ThemeRed shadow-lg;
 
         .modal_title {
             @apply text-[16px] mb-3;
@@ -234,7 +234,6 @@
         @apply max-w-[500px];
     }
 }
-
 .button_container {
     @apply w-full flex justify-end items-center;
 }

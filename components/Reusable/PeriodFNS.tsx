@@ -22,9 +22,15 @@ type PeriodFNS = {
         to: string;
     };
     setValue: Function;
+    modalType?: boolean;
 };
 
-export default function PeriodFNS({ setToggle, isValue, setValue }: PeriodFNS) {
+export default function PeriodFNS({
+    setToggle,
+    isValue,
+    setValue,
+    modalType,
+}: PeriodFNS) {
     // Close Calendar By Clicking outside
     const CalendarContainer = useRef<any>();
     useEffect(() => {
@@ -73,7 +79,11 @@ export default function PeriodFNS({ setToggle, isValue, setValue }: PeriodFNS) {
     };
     return (
         <div
-            className="absolute top-full left-0 z-[60]"
+            className={`${
+                modalType !== true
+                    ? "absolute top-full left-0 z-[60]"
+                    : " inline-block"
+            }`}
             ref={CalendarContainer}
         >
             {/* Ask kung pano naka infinite ung year tas naka focus agad ung year sa current yr */}

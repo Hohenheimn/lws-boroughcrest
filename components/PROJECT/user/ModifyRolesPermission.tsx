@@ -1,20 +1,15 @@
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import style from "../../../styles/Popup_Modal.module.scss";
-import UserRolePermissionsForm from "./UserRolePermissionsForm";
 import { UserDetail } from "./UserTable";
+import ModalTemp from "../../Reusable/ModalTemp";
+import UserRoleAndPermissionsCheckBox from "./UserRoleAndPermissionsCheckBox";
 
 type Props = {
     setToggle: Function;
-    UserDetail: UserDetail;
 };
 
-export default function ModifyRolesPermission({
-    setToggle,
-    UserDetail,
-}: Props) {
-    const router = useRouter();
-    const id: any = router.query.id;
+export default function ModifyRolesPermission({ setToggle }: Props) {
     const [isUserForm, setUserForm] = useState([false, true]);
 
     const isTable = [
@@ -31,21 +26,32 @@ export default function ModifyRolesPermission({
             duration: "31",
         },
     ];
+
     useEffect(() => {
         setToggle(isUserForm[1]);
     }, [isUserForm]);
+
     return (
-        <div className={style.container}>
-            <section>
-                <UserRolePermissionsForm
-                    setUserForm={setUserForm}
-                    userForm={isUserForm}
-                    type="modify"
-                    DefaultTable={isTable}
-                    id={id}
-                    role_name={"Sample"}
-                />
-            </section>
-        </div>
+        <ModalTemp>
+            <UserRoleAndPermissionsCheckBox
+                setUserForm={setUserForm}
+                type={"modify"}
+                userInfo={{
+                    employee_id: "",
+                    name: "",
+                    email: "",
+                    corporate_id: "",
+                    corporate: "",
+                    department_id: null,
+                    department: "",
+                    contact_no: "",
+                    position: "",
+                    image_photo: undefined,
+                    image_photo_url: "",
+                    image_signature: undefined,
+                    status: "",
+                }}
+            />
+        </ModalTemp>
     );
 }

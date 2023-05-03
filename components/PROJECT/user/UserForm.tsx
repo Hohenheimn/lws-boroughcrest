@@ -7,15 +7,14 @@ import AppContext from "../../Context/AppContext";
 import SelectDropdown from "../../Reusable/SelectDropdown";
 import CorporateDropDown from "../../Dropdowns/CorporateDropDown";
 import { RiArrowDownSFill } from "react-icons/ri";
-import UserRolePermissionsForm from "./UserRolePermissionsForm";
-import { CreateUser, UpdateUserInfo } from "./Query";
+import { UpdateUserInfo } from "./Query";
 import { useRouter } from "next/router";
 import { ErrorSubmit } from "../../Reusable/ErrorMessage";
 import {
     NumberBlockInvalidKey,
     TextFieldValidation,
 } from "../../Reusable/InputField";
-import { useQueries, useQueryClient } from "react-query";
+import { useQueryClient } from "react-query";
 import UserRoleAndPermissionsCheckBox from "./UserRoleAndPermissionsCheckBox";
 
 export type UserFormType = {

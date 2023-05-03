@@ -1023,9 +1023,8 @@ table.rolePermisionTable {
     @apply w-full;
     thead {
         tr {
-            @apply border-b border-ThemeRed;
             th {
-                @apply py-2;
+                @apply py-2 min-w-[60px] 1024px:text-[12px];
             }
         }
     }
@@ -1034,7 +1033,7 @@ table.rolePermisionTable {
             @apply text-start text-[14px];
         }
         td {
-            @apply text-RegularColor py-1 border-b border-[#cecece]  text-[14px];
+            @apply text-RegularColor py-1 border-b border-[#cecece] text-[14px];
             input[type="checkbox"] {
                 border: 1px solid rgb(216, 216, 216) !important;
                 @apply relative bg-white cursor-pointer h-4 w-4 rounded-md shadow-md overflow-hidden after:text-white after:flex after:justify-center after:items-center mr-1 checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
@@ -1042,6 +1041,32 @@ table.rolePermisionTable {
                     border: none !important;
                 }
             }
+            .calendar input {
+                font-size: 14px !important;
+            }
+            aside {
+                @apply flex justify-center;
+            }
+        }
+        td.menu {
+            @apply min-w-[300px];
+        }
+        td.duration {
+            @apply min-w-[150px];
+        }
+    }
+    tr.primary {
+        @apply relative;
+        &::after {
+            @apply content-[''] absolute top-0 w-full left-0 h-[1px] bg-ThemeRed;
+        }
+        td {
+            @apply pt-[12px];
+        }
+    }
+    tr.sectionEnd {
+        td {
+            @apply pb-[12px];
         }
     }
 }

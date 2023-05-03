@@ -43,6 +43,7 @@ export default function CorporateDropDown({
                     <input
                         type="text"
                         className="field w-full"
+                        autoComplete="off"
                         onClick={() => setToggle(true)}
                         value={isSearchTemp}
                         {...register}
