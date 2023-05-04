@@ -452,7 +452,7 @@ export default function PropertyForm({
                                 register={{ ...register("address") }}
                                 defaultValue={watch("address")}
                                 className="field"
-                                limitation={50}
+                                limitation={255}
                             />
                             {errors.address && (
                                 <p className="text-[10px]">

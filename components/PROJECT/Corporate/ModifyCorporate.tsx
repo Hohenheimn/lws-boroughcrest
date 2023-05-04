@@ -241,7 +241,7 @@ const PrimaryInformation = ({
                         })}
                         value={modifyCorporate.name}
                         onChange={(e) => {
-                            if (!TextFieldValidation(e, 50)) return;
+                            if (!TextFieldValidation(e, 255)) return;
                             setModifyCorporate({
                                 ...modifyCorporate,
                                 name: e.target.value,
@@ -713,7 +713,7 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                                         message: "Invalid Email",
                                     },
                                     onChange: (e) => {
-                                        if (e.target.value.length > 20) return;
+                                        if (e.target.value.length > 320) return;
                                         setValue("email", e.target.value);
                                         setModifyCorporate({
                                             ...modifyCorporate,
@@ -746,7 +746,7 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                                         message: "Invalid Email",
                                     },
                                     onChange: (e) => {
-                                        if (e.target.value.length > 20) return;
+                                        if (e.target.value.length > 320) return;
                                         setValue("alt_email", e.target.value);
                                         setModifyCorporate({
                                             ...modifyCorporate,
@@ -779,7 +779,7 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                             {...register("address_unit_floor", {
                                 required: "Required",
                                 onChange: (e) => {
-                                    if (!TextFieldValidation(e, 50)) return;
+                                    if (!TextFieldValidation(e, 255)) return;
                                     setModifyCorporate({
                                         ...modifyCorporate,
                                         address_unit_floor: e.target.value,
@@ -806,7 +806,7 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                             {...register("address_building", {
                                 required: "Required",
                                 onChange: (e) => {
-                                    if (!TextFieldValidation(e, 50)) return;
+                                    if (!TextFieldValidation(e, 255)) return;
                                     setModifyCorporate({
                                         ...modifyCorporate,
                                         address_building: e.target.value,
@@ -833,7 +833,7 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                             {...register("address_street", {
                                 required: "Required",
                                 onChange: (e) => {
-                                    if (!TextFieldValidation(e, 50)) return;
+                                    if (!TextFieldValidation(e, 255)) return;
                                     setModifyCorporate({
                                         ...modifyCorporate,
                                         address_street: e.target.value,
@@ -857,7 +857,7 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                             {...register("address_district", {
                                 required: "Required",
                                 onChange: (e) => {
-                                    if (!TextFieldValidation(e, 50)) return;
+                                    if (!TextFieldValidation(e, 255)) return;
                                     setModifyCorporate({
                                         ...modifyCorporate,
                                         address_district: e.target.value,
@@ -884,7 +884,7 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                             {...register("address_municipal_city", {
                                 required: "Required",
                                 onChange: (e) => {
-                                    if (!TextFieldValidation(e, 50)) return;
+                                    if (!TextFieldValidation(e, 255)) return;
                                     setModifyCorporate({
                                         ...modifyCorporate,
                                         address_municipal_city: e.target.value,
@@ -911,7 +911,7 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                             {...register("address_province", {
                                 required: "Required",
                                 onChange: (e) => {
-                                    if (!TextFieldValidation(e, 50)) return;
+                                    if (!TextFieldValidation(e, 255)) return;
                                     setModifyCorporate({
                                         ...modifyCorporate,
                                         address_province: e.target.value,

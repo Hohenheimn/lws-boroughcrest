@@ -208,7 +208,7 @@ export default function Login() {
                                         value={isUsername}
                                         required
                                         onChange={(e: any) =>
-                                            e.target.value.length <= 50 &&
+                                            e.target.value.length <= 320 &&
                                             setUsername(e.target.value)
                                         }
                                         name="username"
@@ -227,7 +227,7 @@ export default function Login() {
                                         name="password"
                                         required
                                         onChange={(e: any) =>
-                                            e.target.value.length <= 50 &&
+                                            e.target.value.length <= 320 &&
                                             setPassword(e.target.value)
                                         }
                                         className="flex-1 outline-none text-16px"

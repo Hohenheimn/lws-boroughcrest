@@ -108,7 +108,7 @@ export const TextNumberDisplay = ({
             suffix={suffix}
             className={" min-h-[12px] " + className}
             fixedDecimalScale
-            value={value}
+            value={value === "" || value === null ? 0 : value}
             displayType="text"
             decimalScale={2}
             decimalSeparator="."
@@ -128,7 +128,7 @@ export const TextNumberDisplayPercent = ({
             placeholder="-"
             suffix={suffix}
             className={className}
-            value={value === 0 ? "" : value}
+            value={value === "" || value === null ? 0 : value}
             thousandSeparator={true}
         />
     );

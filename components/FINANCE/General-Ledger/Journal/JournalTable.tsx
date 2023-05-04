@@ -20,6 +20,7 @@ import { format, isValid, parse } from "date-fns";
 import ModalTemp from "../../../Reusable/ModalTemp";
 import { CopyButtonTable } from "../../../Reusable/Icons";
 import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
+import TableLoadingNError from "../../../Reusable/TableLoadingNError";
 
 type Props = {
     type: string;
@@ -438,20 +439,7 @@ export default function JournalTable({ type, isPeriod, setPeriod }: Props) {
                         )}
                     </tbody>
                 </table>
-                {isLoading && (
-                    <div className="w-full flex justify-center items-center">
-                        <aside className="text-center flex justify-center py-5">
-                            <BarLoader
-                                color={"#8f384d"}
-                                height="10px"
-                                width="200px"
-                                aria-label="Loading Spinner"
-                                data-testid="loader"
-                            />
-                        </aside>
-                    </div>
-                )}
-                {isError && <TableErrorMessage />}
+                <TableLoadingNError isLoading={isLoading} isError={isError} />
             </div>
             <Pagination
                 setTablePage={setTablePage}

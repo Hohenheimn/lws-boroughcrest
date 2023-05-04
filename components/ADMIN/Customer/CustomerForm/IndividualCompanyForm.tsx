@@ -303,7 +303,7 @@ export default function IndividualCompanyForm({
                                             isCustomerForm.individual_co_owner
                                         }
                                         onChange={(e) => {
-                                            if (!TextFieldValidation(e, 50))
+                                            if (!TextFieldValidation(e, 255))
                                                 return;
                                             setCustomerForm({
                                                 ...isCustomerForm,
@@ -323,7 +323,7 @@ export default function IndividualCompanyForm({
                                             isCustomerForm.individual_citizenship
                                         }
                                         onChange={(e) => {
-                                            if (!TextFieldValidation(e, 50))
+                                            if (!TextFieldValidation(e, 255))
                                                 return;
                                             setCustomerForm({
                                                 ...isCustomerForm,
@@ -614,7 +614,7 @@ const ContactInformation = ({
                             })}
                             value={isCustomerForm.registered_email}
                             onChange={(e) => {
-                                if (e.target.value.length > 20) return;
+                                if (e.target.value.length > 70) return;
                                 setCustomerForm({
                                     ...isCustomerForm,
                                     registered_email: e.target.value,
@@ -645,7 +645,7 @@ const ContactInformation = ({
                             })}
                             value={isCustomerForm.preferred_email}
                             onChange={(e) => {
-                                if (e.target.value.length > 20) return;
+                                if (e.target.value.length > 70) return;
                                 setCustomerForm({
                                     ...isCustomerForm,
                                     preferred_email: e.target.value,
@@ -683,7 +683,7 @@ const ContactInformation = ({
                                 type="text"
                                 value={isCustomerForm.company_contact_person}
                                 onChange={(e) => {
-                                    if (!TextFieldValidation(e, 50)) return;
+                                    if (!TextFieldValidation(e, 255)) return;
                                     setCustomerForm({
                                         ...isCustomerForm,
                                         company_contact_person: e.target.value,
@@ -703,7 +703,7 @@ const ContactInformation = ({
                             type="text"
                             value={isCustomerForm.registered_address_unit_floor}
                             onChange={(e) => {
-                                if (!TextFieldValidation(e, 50)) return;
+                                if (!TextFieldValidation(e, 255)) return;
 
                                 setCustomerForm({
                                     ...isCustomerForm,
@@ -725,7 +725,7 @@ const ContactInformation = ({
                             type="text"
                             value={isCustomerForm.registered_address_building}
                             onChange={(e) => {
-                                if (!TextFieldValidation(e, 50)) return;
+                                if (!TextFieldValidation(e, 255)) return;
 
                                 setCustomerForm({
                                     ...isCustomerForm,
@@ -746,7 +746,7 @@ const ContactInformation = ({
                             type="text"
                             value={isCustomerForm.registered_address_street}
                             onChange={(e) => {
-                                if (!TextFieldValidation(e, 50)) return;
+                                if (!TextFieldValidation(e, 255)) return;
 
                                 setCustomerForm({
                                     ...isCustomerForm,
@@ -768,7 +768,7 @@ const ContactInformation = ({
                             type="text"
                             value={isCustomerForm.registered_address_district}
                             onChange={(e) => {
-                                if (!TextFieldValidation(e, 50)) return;
+                                if (!TextFieldValidation(e, 255)) return;
 
                                 setCustomerForm({
                                     ...isCustomerForm,
@@ -792,7 +792,7 @@ const ContactInformation = ({
                                 isCustomerForm.registered_address_municipal_city
                             }
                             onChange={(e) => {
-                                if (!TextFieldValidation(e, 50)) return;
+                                if (!TextFieldValidation(e, 255)) return;
 
                                 setCustomerForm({
                                     ...isCustomerForm,
@@ -814,7 +814,7 @@ const ContactInformation = ({
                             type="text"
                             value={isCustomerForm.registered_address_province}
                             onChange={(e) => {
-                                if (!TextFieldValidation(e, 50)) return;
+                                if (!TextFieldValidation(e, 255)) return;
 
                                 setCustomerForm({
                                     ...isCustomerForm,
@@ -889,7 +889,7 @@ const ContactInformation = ({
                             type="text"
                             value={isCustomerForm.mailing_address_unit_floor}
                             onChange={(e) => {
-                                if (!TextFieldValidation(e, 50)) return;
+                                if (!TextFieldValidation(e, 255)) return;
                                 setCustomerForm({
                                     ...isCustomerForm,
                                     mailing_address_unit_floor: e.target.value,
@@ -904,7 +904,7 @@ const ContactInformation = ({
                             type="text"
                             value={isCustomerForm.mailing_address_building}
                             onChange={(e) => {
-                                if (!TextFieldValidation(e, 50)) return;
+                                if (!TextFieldValidation(e, 255)) return;
 
                                 setCustomerForm({
                                     ...isCustomerForm,
@@ -920,7 +920,7 @@ const ContactInformation = ({
                             type="text"
                             value={isCustomerForm.mailing_address_street}
                             onChange={(e) => {
-                                if (!TextFieldValidation(e, 50)) return;
+                                if (!TextFieldValidation(e, 255)) return;
 
                                 setCustomerForm({
                                     ...isCustomerForm,
@@ -936,7 +936,7 @@ const ContactInformation = ({
                             type="text"
                             value={isCustomerForm.mailing_address_district}
                             onChange={(e) => {
-                                if (!TextFieldValidation(e, 50)) return;
+                                if (!TextFieldValidation(e, 255)) return;
 
                                 setCustomerForm({
                                     ...isCustomerForm,
@@ -954,7 +954,7 @@ const ContactInformation = ({
                                 isCustomerForm.mailing_address_municipal_city
                             }
                             onChange={(e) => {
-                                if (!TextFieldValidation(e, 50)) return;
+                                if (!TextFieldValidation(e, 255)) return;
 
                                 setCustomerForm({
                                     ...isCustomerForm,
@@ -971,7 +971,7 @@ const ContactInformation = ({
                             type="text"
                             value={isCustomerForm.mailing_address_province}
                             onChange={(e) => {
-                                if (!TextFieldValidation(e, 50)) return;
+                                if (!TextFieldValidation(e, 255)) return;
 
                                 setCustomerForm({
                                     ...isCustomerForm,

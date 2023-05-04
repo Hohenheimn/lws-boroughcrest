@@ -165,7 +165,7 @@ const Primary = ({
                             })}
                             value={createCorporate.name}
                             onChange={(e) => {
-                                if (!TextFieldValidation(e, 50)) return;
+                                if (!TextFieldValidation(e, 255)) return;
                                 setCreateCorporate({
                                     ...createCorporate,
                                     name: e.target.value,
@@ -605,7 +605,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                                 })}
                                 value={createCorporate.email}
                                 onChange={(e) => {
-                                    if (e.target.value.length > 20) return;
+                                    if (e.target.value.length > 320) return;
                                     setCreateCorporate({
                                         ...createCorporate,
                                         email: e.target.value,
@@ -630,7 +630,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                                         message: "Invalid Email",
                                     },
                                     onChange: (e) => {
-                                        if (e.target.value.length > 20) return;
+                                        if (e.target.value.length > 320) return;
                                         setValue("alt_email", e.target.value);
                                         setCreateCorporate({
                                             ...createCorporate,
@@ -663,7 +663,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                             {...register("address_unit_floor", {
                                 required: "Required",
                                 onChange: (e) => {
-                                    if (!TextFieldValidation(e, 50)) return;
+                                    if (!TextFieldValidation(e, 255)) return;
                                     setCreateCorporate({
                                         ...createCorporate,
                                         address_unit_floor: e.target.value,
@@ -690,7 +690,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                             {...register("address_building", {
                                 required: "Required",
                                 onChange: (e) => {
-                                    if (!TextFieldValidation(e, 50)) return;
+                                    if (!TextFieldValidation(e, 255)) return;
                                     setCreateCorporate({
                                         ...createCorporate,
                                         address_building: e.target.value,
@@ -717,7 +717,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                             {...register("address_street", {
                                 required: "Required",
                                 onChange: (e) => {
-                                    if (!TextFieldValidation(e, 50)) return;
+                                    if (!TextFieldValidation(e, 255)) return;
                                     setCreateCorporate({
                                         ...createCorporate,
                                         address_street: e.target.value,
@@ -741,7 +741,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                             {...register("address_district", {
                                 required: "Required",
                                 onChange: (e) => {
-                                    if (!TextFieldValidation(e, 50)) return;
+                                    if (!TextFieldValidation(e, 255)) return;
                                     setCreateCorporate({
                                         ...createCorporate,
                                         address_district: e.target.value,
@@ -768,7 +768,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                             {...register("address_municipal_city", {
                                 required: "Required",
                                 onChange: (e) => {
-                                    if (!TextFieldValidation(e, 50)) return;
+                                    if (!TextFieldValidation(e, 255)) return;
                                     setCreateCorporate({
                                         ...createCorporate,
                                         address_municipal_city: e.target.value,
@@ -795,7 +795,7 @@ const Contact = ({ setNewActive, isNewActive, setProfileUrl }: Props) => {
                             {...register("address_province", {
                                 required: "Required",
                                 onChange: (e) => {
-                                    if (!TextFieldValidation(e, 50)) return;
+                                    if (!TextFieldValidation(e, 255)) return;
                                     setCreateCorporate({
                                         ...createCorporate,
                                         address_province: e.target.value,

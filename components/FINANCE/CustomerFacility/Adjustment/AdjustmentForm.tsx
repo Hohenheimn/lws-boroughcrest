@@ -13,8 +13,14 @@ import AccountTable from "./AccountTable";
 import { RiArrowDownSFill } from "react-icons/ri";
 import AppContext from "../../../Context/AppContext";
 import { GetInvoiceListByCustomer } from "../Billing/Query";
-import { GetInvoiceListByCustomerAndCharge } from "./Query";
+import {
+    GetAccountEntriesList,
+    GetInvoiceListByCustomerAndCharge,
+} from "./Query";
 import { format, isValid, parse } from "date-fns";
+import { BarLoader } from "react-spinners";
+import TableErrorMessage from "../../../Reusable/TableErrorMessage";
+import TableLoadingNError from "../../../Reusable/TableLoadingNError";
 
 export type AdjustmentHeaderForm = {
     customer_id: number | string;
@@ -33,6 +39,16 @@ export type AdjustmentAccounts = {
     account_name: string;
     debit: number;
     credit: number;
+};
+
+export type AccountEntries = {
+    id: number;
+    debit: number;
+    credit: number;
+    chart_of_account: {
+        chart_code: string;
+        account_name: string;
+    };
 };
 
 type CustomerDDData = {
@@ -107,16 +123,33 @@ export default function AdjustmentForm() {
         document_no: "",
     });
 
-    const [isAccounts, setAccounts] = useState<AdjustmentAccounts[]>([
-        {
-            id: 1,
-            coa_id: 1,
-            chart_code: "123",
-            account_name: "123",
-            debit: 1000,
-            credit: 0,
-        },
-    ]);
+    const [DefaultAccount, setDefaultAccount] = useState<AdjustmentAccounts[]>(
+        []
+    );
+    const [isAccounts, setAccounts] = useState<AdjustmentAccounts[]>([]);
+
+    useEffect(() => {
+        setAccounts([
+            {
+                id: 1,
+                coa_id: 1,
+                chart_code: "123",
+                account_name: "123",
+                debit: 1000,
+                credit: 0,
+            },
+        ]);
+        setDefaultAccount([
+            {
+                id: 1,
+                coa_id: 1,
+                chart_code: "123",
+                account_name: "123",
+                debit: 1000,
+                credit: 0,
+            },
+        ]);
+    }, []);
 
     const [isInvoices, setInvoices] = useState<AdjustmentInvoice[]>([]);
 
@@ -125,6 +158,12 @@ export default function AdjustmentForm() {
         isLoading,
         isError,
     } = GetInvoiceListByCustomerAndCharge(isCustomer.id, isCharge.charge_id);
+
+    const {
+        data: refAccEntries,
+        isLoading: refAccEntriesLoading,
+        isError: refAccEntriesError,
+    } = GetAccountEntriesList(isChargeHeader.charge_id, HeaderForm.document_no);
 
     useEffect(() => {
         if (invoiceData !== undefined) {
@@ -145,7 +184,7 @@ export default function AdjustmentForm() {
             });
             setInvoices(clone);
         }
-    }, [invoiceData?.status, isCustomer.id, isCharge.charge_id]);
+    }, [invoiceData?.data, isCustomer.id, isCharge.charge_id]);
 
     const [isTransaction, setTransaction] = useState("");
 
@@ -180,6 +219,7 @@ export default function AdjustmentForm() {
                 };
             }),
         };
+        console.log(Payload);
     };
 
     return (
@@ -397,27 +437,38 @@ export default function AdjustmentForm() {
                                     </tr>
                                 </thead>
                                 <tbody className="textBlack">
-                                    <tr>
-                                        <td>Sep 10 2022</td>
-                                        <td>INV0001</td>
-                                        <td>Lorem Ipsum</td>
-                                        <td>0000001</td>
-                                        <td>A/R Assoc Deus</td>
-                                        <td>
-                                            <TextNumberDisplay
-                                                className="withPeso w-full text-end"
-                                                value={1000}
-                                            />
-                                        </td>
-                                        <td>
-                                            <TextNumberDisplay
-                                                className="withPeso w-full text-end"
-                                                value={1000}
-                                            />
-                                        </td>
-                                    </tr>
+                                    {refAccEntries?.data.map(
+                                        (
+                                            item: AccountEntries,
+                                            index: number
+                                        ) => (
+                                            <tr key={index}>
+                                                <td>Sep 10 2022</td>
+                                                <td>INV0001</td>
+                                                <td>Lorem Ipsum</td>
+                                                <td>0000001</td>
+                                                <td>A/R Assoc Deus</td>
+                                                <td>
+                                                    <TextNumberDisplay
+                                                        className="withPeso w-full text-end"
+                                                        value={1000}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <TextNumberDisplay
+                                                        className="withPeso w-full text-end"
+                                                        value={1000}
+                                                    />
+                                                </td>
+                                            </tr>
+                                        )
+                                    )}
                                 </tbody>
                             </table>
+                            <TableLoadingNError
+                                isLoading={refAccEntriesLoading}
+                                isError={refAccEntriesError}
+                            />
                         </div>
                     </motion.div>
                 )}
@@ -464,6 +515,7 @@ export default function AdjustmentForm() {
                 toggle={AdvancesToggle}
                 isAccounts={isAccounts}
                 setAccounts={setAccounts}
+                DefaultAccount={DefaultAccount}
             />
             <div className="flex w-full justify-end mb-10 1550px:mb-5">
                 <div className="ddSave">

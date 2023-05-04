@@ -205,9 +205,10 @@ const List = ({
         });
         setInvoiceAdjustment(CloneToUpdate);
     };
+
     return (
         <tr>
-            <td>
+            <td style={{ padding: "5px 0" }}>
                 <InputNumberForTable
                     className={"field number w-full"}
                     value={itemDetail.adjustment_amount}
@@ -215,7 +216,7 @@ const List = ({
                     onChange={Updatevalue}
                 />
             </td>
-            <td>
+            <td style={{ padding: "5px 0 !important" }}>
                 <TextNumberDisplay
                     className="withPeso w-full text-end"
                     value={itemDetail.balance}

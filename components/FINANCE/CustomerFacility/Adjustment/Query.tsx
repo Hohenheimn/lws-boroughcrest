@@ -132,3 +132,17 @@ export const GetInvoiceListByCustomerAndCharge = (
         }
     );
 };
+
+export const GetAccountEntriesList = (
+    charge_id: number | string,
+    document_no: string
+) => {
+    return useQuery(["account-entries-list", charge_id, document_no], () => {
+        return api.get(
+            `/finance-report/accounting-entries?charge_id=${charge_id}`,
+            {
+                headers: { Authorization: "Bearer " + getCookie("user") },
+            }
+        );
+    });
+};

@@ -12,6 +12,7 @@ import { MinusButtonTable, PlusButtonTable } from "../../../Reusable/Icons";
 type Props = {
     toggle: boolean;
     isAccounts: AdjustmentAccounts[];
+    DefaultAccount: AdjustmentAccounts[];
     setAccounts: Function;
 };
 
@@ -19,7 +20,25 @@ export default function AccountTable({
     toggle,
     isAccounts,
     setAccounts,
+    DefaultAccount,
 }: Props) {
+    useEffect(() => {
+        // Back to the first value if advances if off
+        if (!toggle) {
+            setAccounts(DefaultAccount);
+        }
+    }, [toggle]);
+
+    const [TotalDebit, setTotalDebit] = useState(0);
+    const [TotalCredit, setTotalCredit] = useState(0);
+    useEffect(() => {
+        setTotalDebit(0);
+        setTotalCredit(0);
+        isAccounts.map((item) => {
+            setTotalDebit((prev) => Number(prev) + item.debit);
+            setTotalCredit((prev) => Number(prev) + item.credit);
+        });
+    }, [isAccounts]);
     return (
         <div className="py-10 1550px:py-5">
             <h1 className=" text-RegularColor text-[22px] 1550px:text-[20px] mb-5 1550px:mb-3">
@@ -50,7 +69,7 @@ export default function AccountTable({
                     </tbody>
                 </table>
             </div>
-            <TableTwoTotal total1={100} total2={100} />
+            <TableTwoTotal total1={TotalDebit} total2={TotalCredit} />
         </div>
     );
 }

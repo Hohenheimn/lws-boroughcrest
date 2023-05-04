@@ -520,12 +520,12 @@ const List = ({
                         {itemDetail.percentage <= 0 ? (
                             <span className="flex items-center ml-3 text-ThemeRed">
                                 <IoMdArrowDropup />
-                                {itemDetail.percentage}%
+                                {itemDetail.percentage.toFixed(2)}%
                             </span>
                         ) : (
                             <span className="flex items-center ml-3 text-Green">
                                 <IoMdArrowDropdown />
-                                {itemDetail.percentage}%
+                                {itemDetail.percentage.toFixed(2)}%
                             </span>
                         )}
                     </h2>

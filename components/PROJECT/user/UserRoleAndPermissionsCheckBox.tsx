@@ -164,17 +164,13 @@ export default function UserRoleAndPermissionsCheckBox({
                                 };
                             } else {
                                 // Add Permision
+                                const allAllowedPermission: string[] =
+                                    GetAllowedPermissionPerRow(menu);
                                 return {
                                     ...item,
                                     role:
                                         permission === "all"
-                                            ? [
-                                                  "view",
-                                                  "create",
-                                                  "modify",
-                                                  "print",
-                                                  "approve",
-                                              ]
+                                            ? allAllowedPermission
                                             : [...item.role, permission],
                                 };
                             }
@@ -188,25 +184,37 @@ export default function UserRoleAndPermissionsCheckBox({
                 setSelectedRolePermission(cloneUpdateExistedMenu);
             } else {
                 // Add menu
+                const allAllowedPermission: string[] =
+                    GetAllowedPermissionPerRow(menu);
                 setSelectedRolePermission([
                     ...isSelectedRolePermission,
                     {
                         menu: menu,
                         role:
                             permission === "all"
-                                ? [
-                                      "view",
-                                      "create",
-                                      "modify",
-                                      "print",
-                                      "approve",
-                                  ]
+                                ? allAllowedPermission
                                 : [permission],
                         duration: 0,
                     },
                 ]);
             }
         }
+    };
+
+    const GetAllowedPermissionPerRow = (menu: string) => {
+        let allAllowedPermission: string[] = [];
+        Roles.map((item) => {
+            if (item.menu === menu) {
+                const roles: any = item.roles;
+                const keys = Object.keys(roles);
+                keys.forEach((key: any) => {
+                    if (roles[key] !== null && key !== "all") {
+                        allAllowedPermission = [...allAllowedPermission, key];
+                    }
+                });
+            }
+        });
+        return allAllowedPermission;
     };
 
     const SaveHandler = () => {
@@ -220,7 +228,7 @@ export default function UserRoleAndPermissionsCheckBox({
     };
 
     return (
-        <ModalTemp wide={true}>
+        <ModalTemp wide={true} alignStart={true}>
             <p className=" text-[16px] mb-3 font-bold capitalize">
                 {type} Roles & Permissions
             </p>
