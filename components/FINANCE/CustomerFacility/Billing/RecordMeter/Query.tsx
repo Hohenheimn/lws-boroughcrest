@@ -146,15 +146,16 @@ export const ApplyRecordMeter = (onSucces: any, onError: any) => {
     );
 };
 
-export const GetPreviousPeriod = (id: number, year: string) => {
-    return useQuery(["previous-period-list", id, year], () => {
-        return api.get(
-            `/finance/customer-facility/billing/record-meter-reading/period-options?billing_readings_name_id=${id}&year=${year}`,
-            {
-                headers: {
-                    Authorization: "Bearer " + getCookie("user"),
-                },
-            }
-        );
+export const GetPreviousPeriodRecordMeter = (
+    id: number,
+    year: string,
+    endPoint: string
+) => {
+    return useQuery(["previous-period-list", id, year, endPoint], () => {
+        return api.get(`${endPoint}${id}&year=${year}`, {
+            headers: {
+                Authorization: "Bearer " + getCookie("user"),
+            },
+        });
     });
 };

@@ -91,7 +91,7 @@ export default function BillingDetail({ InvoiceDetail }: Props) {
             setTotalVat((prev) => Number(prev) + Number(item.vat));
             setTotalAmount((prev) => Number(prev) + Number(item.amount));
         });
-    }, []);
+    }, [InvoiceDetail]);
     const Due_Date = parse(InvoiceDetail.due_date, "yyyy-MM-dd", new Date());
 
     return (
@@ -173,7 +173,7 @@ export default function BillingDetail({ InvoiceDetail }: Props) {
                             ))}
 
                             <tr>
-                                <td colSpan={5} className={style.total}>
+                                <td colSpan={6} className={style.total}>
                                     <p className="label_text">TOTAL:</p>
                                 </td>
                                 <td>

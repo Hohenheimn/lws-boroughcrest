@@ -93,14 +93,27 @@ const DropdownItems = ({
     keyword,
     UpdateHandler,
 }: DropdownItems) => {
-    const { data, isLoading, isError } = GetBA(keyword);
+    // Reset show item when open
+    const [showItemAll, setshowItemAll] = useState(true);
+    const keywordSearch = showItemAll ? "" : keyword;
+    useEffect(() => {
+        if (isObject.value !== keyword) {
+            setshowItemAll(false);
+        }
+    }, [keyword]);
+    // end
+
+    const { data, isLoading, isError } = GetBA(keywordSearch);
+
     const table = useRef<any>();
+
     // Click out side
     useEffect(() => {
         const clickOutSide = (e: any) => {
             if (!table.current.contains(e.target)) {
                 setToggle(false);
                 setTempVal(isObject.value);
+                setshowItemAll(true);
             }
         };
         document.addEventListener("mousedown", clickOutSide);
@@ -108,6 +121,7 @@ const DropdownItems = ({
             document.removeEventListener("mousedown", clickOutSide);
         };
     });
+
     return (
         <>
             <table className="crud-table narrow" ref={table}>

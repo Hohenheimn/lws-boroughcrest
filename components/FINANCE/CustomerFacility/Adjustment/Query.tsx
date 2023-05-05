@@ -21,9 +21,9 @@ export const GetAdjustmentList = (
             dateTo,
         ],
         () => {
-            // ?list_type=${type}&filters=${filterArray}
+            // &list_type=${type}
             return api.get(
-                `/finance/customer-facility/adjustment?paginate=10&search=${keyword}&page=${
+                `/finance/customer-facility/adjustment?paginate=10&filters=${filterArray}&search=${keyword}&page=${
                     keyword === "" ? TablePage : 1
                 }&date_from=${dateFrom}&date_to=${dateTo}`,
                 {
@@ -139,7 +139,7 @@ export const GetAccountEntriesList = (
 ) => {
     return useQuery(["account-entries-list", charge_id, document_no], () => {
         return api.get(
-            `/finance-report/accounting-entries?charge_id=${charge_id}`,
+            `/finance-report/accounting-entries?charge_id=${charge_id}&document_no=${document_no}`,
             {
                 headers: { Authorization: "Bearer " + getCookie("user") },
             }

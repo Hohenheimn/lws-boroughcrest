@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import DynamicPopOver from "../../../../Reusable/DynamicPopOver";
 import Image from "next/image";
-import { eachYearOfInterval, format, parse, startOfDay } from "date-fns";
-import { GetPreviousPeriod } from "./Query";
+import { eachYearOfInterval, format, parse } from "date-fns";
+import { GetPreviousPeriodRecordMeter } from "./Query";
 import AppContext from "../../../../Context/AppContext";
 import { BarLoader } from "react-spinners";
 
@@ -11,6 +11,7 @@ type Props = {
     setValue: Function;
     reading_id: number;
     year: string;
+    endPoint: string;
 };
 
 type value = {
@@ -24,6 +25,7 @@ export default function PreviousPeriod({
     setValue,
     reading_id,
     year,
+    endPoint,
 }: Props) {
     const { setPrompt } = useContext(AppContext);
     const [open, setOpen] = useState([false, false, false]);
@@ -88,6 +90,7 @@ export default function PreviousPeriod({
                             value={value}
                             reading_id={reading_id}
                             year={year}
+                            endPoint={endPoint}
                         />
                     )}
                 </>
@@ -108,6 +111,7 @@ type DateSelectionPros = {
     };
     year: string;
     reading_id: number;
+    endPoint: string;
 };
 
 type period = {
@@ -123,7 +127,7 @@ const DateSelection = ({
     setValue,
     value,
     reading_id,
-    year,
+    endPoint,
 }: DateSelectionPros) => {
     const modal = useRef<any>();
 
@@ -139,10 +143,12 @@ const DateSelection = ({
         };
     });
 
-    const { data, isLoading, isError } = GetPreviousPeriod(
+    const { data, isLoading, isError } = GetPreviousPeriodRecordMeter(
         reading_id,
-        value.year
+        value.year,
+        endPoint
     );
+
     return (
         <div className="p-5  " ref={modal}>
             {open[1] && (

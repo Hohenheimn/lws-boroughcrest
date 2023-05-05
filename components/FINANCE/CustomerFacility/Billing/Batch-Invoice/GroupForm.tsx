@@ -170,7 +170,7 @@ export default function GroupForm({
 
             setTableItem({
                 ...isTableItem,
-                group_name: groupName,
+
                 itemArray: CloneArray,
                 selectAll: selectAll,
             });

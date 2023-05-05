@@ -49,6 +49,14 @@ export type AccountEntries = {
         chart_code: string;
         account_name: string;
     };
+    document: {
+        id: number;
+        document_no: string;
+        document_date: string;
+    };
+    charge: {
+        description: string;
+    };
 };
 
 type CustomerDDData = {

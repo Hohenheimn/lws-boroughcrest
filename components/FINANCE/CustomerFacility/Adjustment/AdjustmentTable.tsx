@@ -194,7 +194,7 @@ export default function AdjustmentTable({ type, isPeriod, setPeriod }: Props) {
                         <BsSearch className={style.searchIcon} />
                     </div>
                     <AdvanceFilter
-                        endpoint={`/finance/general-ledger/journal/filter-options?list_type=${type}&date_from=${isPeriod.from}&date_to=${isPeriod.to}&keywords=`}
+                        endpoint={`/finance/customer-facility/adjustment/filter-options?list_type=${type}&date_from=${isPeriod.from}&date_to=${isPeriod.to}&keywords=`}
                         setAdvFilter={setAdvFilter}
                         isAdvFilter={isAdvFilter}
                     />

@@ -85,7 +85,10 @@ textarea.field {
 .calendar {
     @apply relative;
     .cal {
-        @apply absolute translate-y-[-50%] top-[50%] right-[15px] bg-white pointer-events-none;
+        @apply absolute translate-y-[-45%] top-[50%] right-[15px] bg-white pointer-events-none bg-transparent;
+        span {
+            background-color: transparent !important;
+        }
     }
     input {
         @extend .field;

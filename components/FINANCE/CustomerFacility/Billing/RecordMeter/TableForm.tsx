@@ -355,6 +355,7 @@ export default function TableForm() {
                             setValue={setPreviousPeriod}
                             year={isPreviousPeriod.year}
                             reading_id={Number(isReading.reading_id)}
+                            endPoint="/finance/customer-facility/billing/record-meter-reading/period-options?billing_readings_name_id="
                         />
                     </li>
                 </ul>

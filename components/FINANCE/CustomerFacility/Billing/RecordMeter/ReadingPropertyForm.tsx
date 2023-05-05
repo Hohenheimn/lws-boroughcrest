@@ -93,9 +93,7 @@ export default function ReadingPropertyForm({
             toggle: true,
         });
         toggle(false);
-        if (router.query.modify === undefined) {
-            router.push("/finance/customer-facility/billing/invoice-list");
-        } else {
+        if (router.query.modify !== undefined) {
             router.push("");
         }
     };

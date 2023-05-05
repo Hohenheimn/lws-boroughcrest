@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { HiPencil } from "react-icons/hi";
 import style from "../../../../styles/Project/PropertyDetails.module.scss";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
@@ -71,38 +70,44 @@ export default function AdjustmentDetail({ Detail }: JournalDetail) {
                     </li>
                 </ul>
             </div>
-            <ul className={`${style.FourRows} ${style.narrow}`}>
-                {Detail.status !== "Approved" &&
-                    Detail.status !== "In Progress" && (
-                        <aside className=" mt-[-15px]">
-                            <Link
-                                href={`/finance/general-ledger/journal/modify-journal/${Detail.id}`}
-                            >
-                                <a>
-                                    <PencilButton
-                                        FunctionOnClick={() => {}}
-                                        title={"Modify"}
-                                    />
-                                </a>
-                            </Link>
-                        </aside>
-                    )}
-
-                <li className={style.noMb}>
-                    <div className={style.row}>
-                        <p className="label_text">DATE</p>
-                        <h4 className="main_text">
-                            {isValid(date) ? format(date, "MMM dd yyyy") : ""}
-                        </h4>
+            <ul className="rounded-lg mb-10 flex flex-wrap w-full justify-between">
+                <li className="bg-white shadow-lg w-[28%] 640px:w-[48%] 480px:w-full 480px:mb-5 p-10 rounded-2xl">
+                    <div>
+                        <p className="label_text">CUSTOMER</p>
+                        <h1 className="main_text">Juan Dela Cruz</h1>
                     </div>
-                    <div className={style.row}>
-                        <p className="label_text">MEMO NO.</p>
-                        <h4 className="main_text">{Detail?.journal_no}</h4>
+                    <div>
+                        <p className="label_text">CLASS</p>
+                        <h1 className="main_text">Owner</h1>
+                    </div>
+                    <div>
+                        <p className="label_text">CLASS</p>
+                        <h1 className="main_text noMB">Owner</h1>
                     </div>
                 </li>
-                <li className={style.noMb}>
-                    <p className="label_text">DESCRIPTION</p>
-                    <h4 className="main_text">{Detail?.particulars}</h4>
+                <li className="bg-white flex flex-wrap shadow-lg w-[70%] 640px:w-[48%] 480px:w-full  p-10 rounded-2xl relative">
+                    <Link
+                        href={`/finance/general-ledger/journal/modify-journal/${Detail.id}`}
+                    >
+                        <a className="absolute right-4 top-4">
+                            <PencilButton
+                                FunctionOnClick={() => {}}
+                                title={"Modify"}
+                            />
+                        </a>
+                    </Link>
+                    <div className="w-2/4 640px:w-full">
+                        <p className="label_text">CUSTOMER</p>
+                        <h1 className="main_text">Juan Dela Cruz</h1>
+                    </div>
+                    <div className="w-2/4 640px:w-full">
+                        <p className="label_text">CLASS</p>
+                        <h1 className="main_text">Owner</h1>
+                    </div>
+                    <div className="w-2/4 640px:w-full">
+                        <p className="label_text">CLASS</p>
+                        <h1 className="main_text noMB">Owner</h1>
+                    </div>
                 </li>
             </ul>
             <ul className={`${style.OneRow} ${style.narrow}`}>
@@ -110,7 +115,7 @@ export default function AdjustmentDetail({ Detail }: JournalDetail) {
                     <table>
                         <thead>
                             <tr>
-                                <th className="label_text">CODE</th>
+                                <th className="label_text">CHART CODE</th>
                                 <th className="label_text">ACCOUNT NAME</th>
                                 <th className="label_text">DEBIT</th>
                                 <th className="label_text">CREDIT</th>
