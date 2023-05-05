@@ -158,7 +158,7 @@ export default function JournalForm({
         const PayloadUpdate = {
             date: isValid(date) ? format(date, "yyyy-MM-dd") : "",
             particulars: isParticulars,
-            status: DefaultStatus,
+            // status: DefaultStatus,
             journal: journal,
         };
         const PayloadSave = {
