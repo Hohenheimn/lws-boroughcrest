@@ -10,6 +10,10 @@ import Pagination from "../../../../../components/Reusable/Pagination";
 import TableErrorMessage from "../../../../../components/Reusable/TableErrorMessage";
 import { customer } from "../../../../../types/customerList";
 import { GetBADetail } from "../../../../../components/ReactQuery/BankAccount";
+import {
+    COACreate,
+    COADetail,
+} from "../../../../../components/ReactQuery/ChartofAccount";
 
 export type CollectionItem = {
     id: number;
@@ -40,7 +44,7 @@ export type CollectionItem = {
         check_no: number;
         amount: number;
     }[];
-    bank_account_id: number | null;
+    chart_of_account_id: number | null;
     parent_id: number | null;
     updated_at: string;
     created_at: string;
@@ -155,9 +159,9 @@ type ListProps = {
 
 const List = ({ itemDetail }: ListProps) => {
     const date = parse(itemDetail?.receipt_date, "yyyy-MM-dd", new Date());
-    const { data: bankAccount } = GetBADetail(
-        Number(itemDetail?.bank_account_id)
-    );
+
+    const { data: chartOfAccount } = COADetail(itemDetail.chart_of_account_id);
+
     const { data } = GetCustomer(itemDetail?.customer_id);
 
     const CustomerDetail: customer = data?.data;
@@ -174,8 +178,11 @@ const List = ({ itemDetail }: ListProps) => {
             }}
         >
             <td>{isValid(date) ? format(date, "MMM dd yyyy") : ""}</td>
+
             <td>{itemDetail?.receipt_no}</td>
+
             <td>{CustomerDetail?.name}</td>
+
             <td>
                 {CustomerDetail?.properties.map((item: any, index: number) =>
                     CustomerDetail.properties.length - 1 === index
@@ -183,14 +190,17 @@ const List = ({ itemDetail }: ListProps) => {
                         : item.unit_code + ", "
                 )}
             </td>
+
             <td>
                 <TextNumberDisplay
                     className="withPeso w-full"
                     value={itemDetail?.amount_paid}
                 />
             </td>
+
             <td>{itemDetail?.mode_of_payment}</td>
-            <td>{bankAccount?.data?.bank_acc_no}</td>
+
+            <td>{chartOfAccount?.data?.account_name}</td>
         </tr>
     );
 };

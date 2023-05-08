@@ -1,81 +1,106 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { PencilButton } from "../../../components/Reusable/Icons";
 import SelectDropdown from "../../../components/Reusable/SelectDropdown";
 import {
     NumberBlockInvalidKey,
     TextFieldValidationNoSpace,
 } from "../../../components/Reusable/InputField";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import api from "../../../util/api";
+import { getCookie } from "cookies-next";
+import TableLoadingNError from "../../../components/Reusable/TableLoadingNError";
+import AppContext from "../../../components/Context/AppContext";
+import { ErrorSubmit } from "../../../components/Reusable/ErrorMessage";
+import { ScaleLoader } from "react-spinners";
 
 type FinanceReference = {
     document: string;
     prefix: string;
-    serial: string;
-    serial2: string;
+    serial_from: string;
+    serial_to: string;
     id: number;
 };
 
 export default function Policy() {
+    const { setPrompt } = useContext(AppContext);
+
+    const onError = (e: any) => {
+        ErrorSubmit(e, setPrompt);
+    };
+
+    const queryClient = useQueryClient();
+
+    const { mutate, isLoading: LoadingMutate } = useMutation(
+        (Payload: any) => {
+            return api.post("/finance/policy", Payload, {
+                headers: {
+                    Authorization: "Bearer " + getCookie("user"),
+                },
+            });
+        },
+        {
+            onSuccess: () => {
+                queryClient.invalidateQueries("policy");
+                setToggle(false);
+                setPrompt({
+                    message: "Policy successfully updated",
+                    toggle: true,
+                    type: "success",
+                });
+            },
+            onError: onError,
+        }
+    );
+
+    const { data, isLoading, isError } = useQuery(
+        ["policy"],
+        () => {
+            return api.get(`/finance/policy`, {
+                headers: {
+                    Authorization: "Bearer " + getCookie("user"),
+                },
+            });
+        },
+        {
+            refetchOnWindowFocus: false,
+        }
+    );
+
+    const [FinanceReference, setFinanceReference] = useState<
+        FinanceReference[]
+    >([]);
+
+    const [isYear, setYear] = useState<string>();
+
+    const [isMonth, setMonth] = useState<string>();
+
     const [isToggle, setToggle] = useState(false);
-    const [isYear, setYear] = useState("2022");
-    const [isMonth, setMonth] = useState("Calendar");
-    const [prevValue, setPrevVal] = useState({
-        year: "2022",
-        month: "Calendar",
-    });
-    const [FinanceReference, setFinanceReference] = useState([
-        {
-            id: 1,
-            document: "Invoice",
-            prefix: "INV",
-            serial: "10001",
-            serial2: "99999",
-        },
-        {
-            id: 12,
-            document: "Journal",
-            prefix: "JOUR",
-            serial: "10001",
-            serial2: "99999",
-        },
-        {
-            id: 13,
-            document: "Official Receipt",
-            prefix: "OR",
-            serial: "10001",
-            serial2: "99999",
-        },
-        {
-            id: 14,
-            document: "Acknowledge Receipt",
-            prefix: "AR",
-            serial: "10001",
-            serial2: "99999",
-        },
-        {
-            id: 15,
-            document: "Provisional Receipt",
-            prefix: "PR",
-            serial: "10001",
-            serial2: "99999",
-        },
-        {
-            id: 16,
-            document: "Customer Debit Notes",
-            prefix: "CDN",
-            serial: "10001",
-            serial2: "99999",
-        },
-        {
-            id: 17,
-            document: "Customer Credit Notes",
-            prefix: "CCN",
-            serial: "10001",
-            serial2: "99999",
-        },
-    ]);
+
+    useEffect(() => {
+        SetValue();
+    }, [data?.data]);
+
+    const SetValue = () => {
+        const getDataFromApi = data?.data.finance_reference.map(
+            (item: FinanceReference, index: number) => {
+                return {
+                    document: item.document,
+                    prefix: item.prefix,
+                    serial_from: item.serial_from,
+                    serial_to: item.serial_to,
+                    id: index,
+                };
+            }
+        );
+        setFinanceReference(getDataFromApi);
+        setYear(data?.data.year === null ? "" : data?.data.year);
+        setMonth(
+            data?.data.finance_period === null ? "" : data?.data.finance_period
+        );
+    };
 
     const UpdateValue = (key: string, value: string, id: number) => {
-        const cloneToUpdate = FinanceReference.map((item) => {
+        const cloneToUpdate = FinanceReference.map((item: FinanceReference) => {
             if (item.id === id) {
                 if (key === "prefix") {
                     return {
@@ -83,16 +108,16 @@ export default function Policy() {
                         prefix: value,
                     };
                 }
-                if (key === "serial") {
+                if (key === "serial_from") {
                     return {
                         ...item,
-                        serial: value,
+                        serial_from: value,
                     };
                 }
-                if (key === "serial2") {
+                if (key === "serial_to") {
                     return {
                         ...item,
-                        serial2: value,
+                        serial_to: value,
                     };
                 }
             }
@@ -102,17 +127,23 @@ export default function Policy() {
     };
 
     const CancelHandler = () => {
+        SetValue();
         setToggle(false);
-        setYear(prevValue.year);
-        setMonth(prevValue.month);
     };
 
     const SaveHandler = () => {
-        setPrevVal({
+        const Payload = {
+            finance_period: isMonth,
             year: isYear,
-            month: isMonth,
-        });
-        setToggle(false);
+            finance_reference: FinanceReference.map((item) => {
+                return {
+                    prefix: item.prefix,
+                    serial_from: item.serial_from,
+                    serial_to: item.serial_to,
+                };
+            }),
+        };
+        mutate(Payload);
     };
 
     return (
@@ -204,7 +235,7 @@ export default function Policy() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {FinanceReference.map(
+                                {FinanceReference?.map(
                                     (item: FinanceReference, index) => (
                                         <tr key={index}>
                                             <td className="py-2 pr-5 min-w-[200px]">
@@ -237,10 +268,10 @@ export default function Policy() {
                                                     <input
                                                         type="text"
                                                         className={`field duration-200 ease-in-out`}
-                                                        value={item.serial}
+                                                        value={item.serial_from}
                                                         onChange={(e) =>
                                                             UpdateValue(
-                                                                "serial",
+                                                                "serial_from",
                                                                 e.target.value,
                                                                 item.id
                                                             )
@@ -248,7 +279,7 @@ export default function Policy() {
                                                     />
                                                 ) : (
                                                     <h4 className="main_text noMB">
-                                                        {item.serial}
+                                                        {item.serial_from}
                                                     </h4>
                                                 )}
                                                 <span className=" text-DarkBlue font-NHU-bold mx-5">
@@ -258,10 +289,10 @@ export default function Policy() {
                                                     <input
                                                         type="text"
                                                         className={`field duration-200 ease-in-out`}
-                                                        value={item.serial2}
+                                                        value={item.serial_to}
                                                         onChange={(e) =>
                                                             UpdateValue(
-                                                                "serial2",
+                                                                "serial_to",
                                                                 e.target.value,
                                                                 item.id
                                                             )
@@ -269,7 +300,7 @@ export default function Policy() {
                                                     />
                                                 ) : (
                                                     <h4 className="main_text noMB">
-                                                        {item.serial2}
+                                                        {item.serial_to}
                                                     </h4>
                                                 )}
                                             </td>
@@ -278,6 +309,10 @@ export default function Policy() {
                                 )}
                             </tbody>
                         </table>
+                        <TableLoadingNError
+                            isLoading={isLoading}
+                            isError={isError}
+                        />
                     </section>
                 </li>
             </ul>
@@ -287,7 +322,15 @@ export default function Policy() {
                         CANCEL
                     </button>
                     <button className="buttonRed" onClick={SaveHandler}>
-                        SAVE
+                        {LoadingMutate ? (
+                            <ScaleLoader
+                                color="#fff"
+                                height="10px"
+                                width="2px"
+                            />
+                        ) : (
+                            "SAVE"
+                        )}
                     </button>
                 </div>
             )}

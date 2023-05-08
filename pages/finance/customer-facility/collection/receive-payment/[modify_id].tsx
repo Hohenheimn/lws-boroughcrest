@@ -43,7 +43,7 @@ export default function Modify({ modify_id }: any) {
         description: "",
         mode_of_payment: "",
         deposit_date: "",
-        bank_account_id: "",
+        chart_of_account_id: "",
         reference_no: "",
         amount_paid: "",
         credit_tax: "",
@@ -71,7 +71,7 @@ export default function Modify({ modify_id }: any) {
                 deposit_date: isValid(deposit_date)
                     ? format(deposit_date, "MMM dd yyyy")
                     : "",
-                bank_account_id: collection.bank_account_id,
+                chart_of_account_id: collection.chart_of_account_id,
                 reference_no: collection.reference_no,
                 amount_paid: collection.amount_paid,
                 credit_tax: collection.credit_tax,

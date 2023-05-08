@@ -21,9 +21,8 @@ export const GetAdjustmentList = (
             dateTo,
         ],
         () => {
-            // &list_type=${type}
             return api.get(
-                `/finance/customer-facility/adjustment?paginate=10&filters=${filterArray}&search=${keyword}&page=${
+                `/finance/customer-facility/adjustment?paginate=10&status=${type}&filters=${filterArray}&search=${keyword}&page=${
                     keyword === "" ? TablePage : 1
                 }&date_from=${dateFrom}&date_to=${dateTo}`,
                 {
@@ -37,7 +36,7 @@ export const GetAdjustmentList = (
     );
 };
 
-export const CreateAdjustment = (onSuccess: any, onError: any) => {
+export const CreateNewAdjustment = (onSuccess: any, onError: any) => {
     const queryClient = useQueryClient();
     return useMutation(
         (Payload: any) => {
@@ -145,4 +144,24 @@ export const GetAccountEntriesList = (
             }
         );
     });
+};
+
+export const GetFilteredAccountEntriesList = (
+    charge_id: number | string,
+    type: string
+) => {
+    return useQuery(
+        ["account-filtered-entries-list", charge_id, type],
+        () => {
+            return api.get(
+                `/finance/customer-facility/adjustment/accounting-entries?charge_id=${charge_id}&type=${type}`,
+                {
+                    headers: { Authorization: "Bearer " + getCookie("user") },
+                }
+            );
+        },
+        {
+            enabled: !!charge_id && !!type,
+        }
+    );
 };

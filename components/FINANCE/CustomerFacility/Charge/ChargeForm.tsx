@@ -473,7 +473,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                                     "/finance/customer-facility/charges/uom-options"
                                                 }
                                                 name={"Unit of measure"}
-                                                value={isUOM.value}
+                                                value={isUOM}
                                                 setFunction={setUOM}
                                             />
                                         )}

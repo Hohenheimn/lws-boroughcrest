@@ -22,7 +22,7 @@ export default function ReceivePayment() {
         description: "",
         mode_of_payment: "",
         deposit_date: "",
-        bank_account_id: "",
+        chart_of_account_id: "",
         reference_no: "",
         amount_paid: "",
         credit_tax: "",

@@ -20,6 +20,7 @@ type Props = {
     setInvoiceAdjustment: Function;
     isLoading: boolean;
     isError: boolean;
+    isAdjustmentTotal: number;
 };
 
 export default function InvoiceTransaction({
@@ -33,6 +34,7 @@ export default function InvoiceTransaction({
     setInvoiceAdjustment,
     isLoading,
     isError,
+    isAdjustmentTotal,
 }: Props) {
     useEffect(() => {
         setHeaderForm({
@@ -40,13 +42,6 @@ export default function InvoiceTransaction({
             charge_id: Number(isCharge.charge_id),
         });
     }, [isCharge]);
-    const [isBalance, setBalance] = useState(0);
-    useEffect(() => {
-        setBalance(0);
-        isInvoicesAdjustment.map((item) => {
-            setBalance((prev) => Number(prev) + item.balance);
-        });
-    }, [isInvoicesAdjustment]);
 
     return (
         <ul className="w-full flex flex-wrap border-b border-gray-300">
@@ -79,7 +74,7 @@ export default function InvoiceTransaction({
                         <tbody className="textBlack">
                             {isInvoicesAdjustment.map((item, index) => (
                                 <tr key={index}>
-                                    <td>{item.document_date}</td>
+                                    <td>{item.billing_date}</td>
                                     <td>{item.document_no}</td>
                                     <td>{item.description}</td>
                                     <td>
@@ -132,8 +127,8 @@ export default function InvoiceTransaction({
                             />
                         }
                         listArray={[
-                            "Apply Advances",
-                            "Discount",
+                            "Applied Advances",
+                            "Discounts",
                             "Credit Tax",
                             "Charge Reversal",
                             "Charge Debit",
@@ -167,7 +162,7 @@ export default function InvoiceTransaction({
                                 <td>
                                     <TextNumberDisplay
                                         className="withPeso w-full text-end"
-                                        value={isBalance}
+                                        value={isAdjustmentTotal}
                                     />
                                 </td>
                             </tr>
