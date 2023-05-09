@@ -1,14 +1,16 @@
 import { useRouter } from "next/router";
 import React from "react";
 import { BeatLoader } from "react-spinners";
-import JournalDetail from "../../../../../components/FINANCE/General-Ledger/Journal/JournalDetail";
-import { GetJournalDetail } from "../../../../../components/FINANCE/General-Ledger/Journal/Query";
 import AdjustmentDetail from "../../../../../components/FINANCE/CustomerFacility/Adjustment/AdjusmentDetail";
+import { GetAdjustmentDetail } from "../../../../../components/FINANCE/CustomerFacility/Adjustment/Query";
 
 export default function Id() {
     const router = useRouter();
+
     const id: any = router.query.id;
-    const { isLoading, data, isError } = GetJournalDetail(id);
+
+    const { isLoading, data, isError } = GetAdjustmentDetail(id);
+
     if (isLoading) {
         return (
             <div className="pageDetail">

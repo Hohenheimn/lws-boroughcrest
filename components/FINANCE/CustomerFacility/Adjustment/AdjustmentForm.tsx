@@ -16,7 +16,7 @@ import {
     CreateNewAdjustment,
     GetAccountEntriesList,
     GetFilteredAccountEntriesList,
-    GetInvoiceListByCustomerAndCharge,
+    GetInvoiceByCustomerAndCharge,
     ModifyAdjustment,
 } from "./Query";
 import { format, isValid, parse } from "date-fns";
@@ -24,6 +24,7 @@ import TableLoadingNError from "../../../Reusable/TableLoadingNError";
 import { ValidationDebitCredit } from "./AdjustmentDistribution";
 import { useRouter } from "next/router";
 import { ScaleLoader } from "react-spinners";
+import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
 
 export type AdjustmentHeaderForm = {
     customer_id: number | string;
@@ -70,6 +71,7 @@ type CustomerDDData = {
 };
 
 export type AdjustmentInvoice = {
+    id: number;
     billing_invoice_id: number;
     adjustment_amount: number;
     balance: number;
@@ -93,6 +95,8 @@ export default function AdjustmentForm() {
     const { setPrompt, userInfo } = useContext(AppContext);
 
     const User_GST_type = userInfo?.corporate_gst_type;
+
+    const [isErrorMessage, setErrorMessage] = useState(false);
 
     const [isSave, setSave] = useState(false);
 
@@ -139,8 +143,6 @@ export default function AdjustmentForm() {
             memo_date: isMemoDate.value,
         });
     }, [isMemoDate]);
-
-    const [isErrorMessage, setErrorMessage] = useState();
 
     const [HeaderForm, setHeaderForm] = useState<AdjustmentHeaderForm>({
         customer_id: 0,
@@ -206,14 +208,14 @@ export default function AdjustmentForm() {
     };
 
     const onError = (e: any) => {
-        SubmitError(e, setPrompt);
+        ErrorSubmit(e, setPrompt);
     };
 
     const {
         data: invoiceData,
         isLoading,
         isError,
-    } = GetInvoiceListByCustomerAndCharge(isCustomer.id, isCharge.charge_id);
+    } = GetInvoiceByCustomerAndCharge(isCustomer.id, isCharge.charge_id);
 
     const {
         data: refAccEntries,
@@ -232,25 +234,36 @@ export default function AdjustmentForm() {
 
     useEffect(() => {
         if (invoiceData !== undefined) {
-            const clone = invoiceData?.data.map((item: any) => {
+            let getCustomerOutstanding: any[] = [];
+            invoiceData?.data.map((item: any) => {
                 const date = parse(item.billing_date, "yyyy-MM-dd", new Date());
-                return {
-                    billing_invoice_id: item?.id,
-                    adjustment_amount: 0,
-                    balance: item?.applied_advances,
-                    billing_date: isValid(date)
-                        ? format(date, "MMM dd yyyy")
-                        : "",
-                    document_no: item?.invoice_no,
-                    description: item?.description,
-                    amount_due: item?.due_amount,
-                    remaining_advances: item?.applied_advances,
-                };
+                item.invoice_list.map((invoiceItem: any) => {
+                    getCustomerOutstanding = [
+                        ...getCustomerOutstanding,
+                        {
+                            id: invoiceItem?.id,
+                            billing_invoice_id: item?.id,
+                            adjustment_amount: 0,
+                            balance: item?.applied_advances,
+                            billing_date: isValid(date)
+                                ? format(date, "MMM dd yyyy")
+                                : "",
+                            document_no: item?.invoice_no,
+                            description: invoiceItem?.description,
+                            amount_due: invoiceItem?.amount,
+                            remaining_advances: item?.applied_advances,
+                        },
+                    ];
+                });
             });
 
-            setInvoices(clone);
+            setInvoices(
+                getCustomerOutstanding === undefined
+                    ? []
+                    : getCustomerOutstanding
+            );
         }
-    }, [invoiceData?.data, isCustomer.id, isCharge.charge_id]);
+    }, [invoiceData?.data]);
 
     useEffect(() => {
         setAdjustmentTotal(0);
@@ -306,12 +319,42 @@ export default function AdjustmentForm() {
     }, [isChargeHeader]);
 
     const SaveHandler = (button: string) => {
+        if (
+            isCustomer.id === 0 ||
+            HeaderForm.memo_type === "" ||
+            HeaderForm.memo_date === "" ||
+            isCharge.charge_id === 0 ||
+            isTransaction === ""
+        ) {
+            setPrompt({
+                message: "Fill out required fields",
+                toggle: true,
+                type: "draft",
+            });
+            setErrorMessage(true);
+            return;
+        }
+
+        if (
+            isInvoices.some((item) => item.adjustment_amount === 0) &&
+            AdvancesToggle === false
+        ) {
+            setPrompt({
+                message: "Fill out all adjustment amount",
+                toggle: true,
+                type: "draft",
+            });
+            return;
+        }
         setButton(button);
+
+        const memoDate = parse(HeaderForm.memo_date, "MMM dd yyyy", new Date());
+
         const Payload = {
             customer_id: isCustomer.id,
             charge_id: isCharge.charge_id,
             memo_type: HeaderForm.memo_type,
-            date: HeaderForm.memo_date,
+            date: isValid(memoDate) ? format(memoDate, "yyyy-MM-dd") : "",
             description: HeaderForm.description,
             transaction: isTransaction,
             accounts: isAccounts.map((item) => {
@@ -329,10 +372,29 @@ export default function AdjustmentForm() {
                 };
             }),
         };
+
         if (router.query.modify === undefined) {
-            createMutate(Payload);
+            // Create
+            if (button === "save" || button === "new") {
+                createMutate(Payload);
+                console.log(button);
+                console.log(Payload);
+            } else {
+                // Draft here
+                console.log(button);
+                console.log(Payload);
+            }
         } else {
-            modifyMutate(Payload);
+            // Update
+            if (button === "save" || button === "new") {
+                // modifyMutate(Payload);
+                console.log(button);
+                console.log(Payload);
+            } else {
+                // Draft here
+                console.log(button);
+                console.log(Payload);
+            }
         }
     };
 
@@ -357,6 +419,11 @@ export default function AdjustmentForm() {
                                     isCustomer={isCustomer}
                                     setCustomer={setCustomer}
                                 />
+                                {isErrorMessage && isCustomer.id === 0 && (
+                                    <p className=" text-[12px] text-ThemeRed">
+                                        Required!
+                                    </p>
+                                )}
                             </li>
                             <li className="w-full mb-5 640px:mb-2">
                                 <label htmlFor="" className="labelField">
@@ -399,13 +466,19 @@ export default function AdjustmentForm() {
                                             "Debit Note",
                                         ]}
                                     />
+                                    {isErrorMessage &&
+                                        HeaderForm.memo_type === "" && (
+                                            <p className=" text-[12px] text-ThemeRed">
+                                                Required!
+                                            </p>
+                                        )}
                                 </label>
                             </li>
                             <li className="w-[30%] 640px:w-2/4">
                                 <DynamicPopOver
                                     toRef={
                                         <label className="labelField flex flex-col mt-1">
-                                            DEPOSIT DATE
+                                            MEMO DATE
                                             <div className="calendar">
                                                 <span className="cal">
                                                     <Image
@@ -429,6 +502,12 @@ export default function AdjustmentForm() {
                                                     className="field w-full"
                                                 />
                                             </div>
+                                            {isErrorMessage &&
+                                                HeaderForm.memo_date === "" && (
+                                                    <p className=" text-[12px] text-ThemeRed">
+                                                        Required!
+                                                    </p>
+                                                )}
                                         </label>
                                     }
                                     toPop={
@@ -632,6 +711,7 @@ export default function AdjustmentForm() {
                             isLoading={isLoading}
                             isError={isError}
                             isAdjustmentTotal={isAdjustmentTotal}
+                            isErrorMessage={isErrorMessage}
                         />
                     </motion.div>
                 )}
@@ -703,7 +783,4 @@ export default function AdjustmentForm() {
             </div>
         </>
     );
-}
-function SubmitError(e: any, setPrompt: any) {
-    throw new Error("Function not implemented.");
 }

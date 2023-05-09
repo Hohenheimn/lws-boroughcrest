@@ -84,6 +84,7 @@ export default function AdjustmentTable({ type, isPeriod, setPeriod }: Props) {
 
     useEffect(() => {
         if (data?.status === 200) {
+            console.log(data);
             let selectAll = false;
             if (data.data.length > 0) {
                 let CloneArray = data?.data.map((item: isTableItemObj) => {
@@ -215,12 +216,6 @@ export default function AdjustmentTable({ type, isPeriod, setPeriod }: Props) {
                                         className={`${style.noFill} mr-5`}
                                         onClick={() => UpdateStatus("Posted")}
                                     >
-                                        <Image
-                                            src="/Images/f_check.png"
-                                            height={25}
-                                            width={30}
-                                            alt="Approved"
-                                        />
                                         {updateLoading &&
                                         buttonLoading === "Posted" ? (
                                             <MoonLoader

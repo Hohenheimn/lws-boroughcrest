@@ -112,15 +112,15 @@ export const GetAdjustmentDetail = (id: number | string) => {
     });
 };
 
-export const GetInvoiceListByCustomerAndCharge = (
+export const GetInvoiceByCustomerAndCharge = (
     customer_id: number | string,
     charge_id: number | string
 ) => {
     return useQuery(
-        ["invoice-list-customer", customer_id, charge_id],
+        ["Invoice-list-customer-charge", customer_id, charge_id],
         () => {
             return api.get(
-                `/finance/customer-facility/billing?customer_id=${customer_id}&charge_id=${charge_id}`,
+                `/finance/customer-facility/billing?customer_id=${customer_id}&charge_id=${charge_id}&list_type=posted&heirarchy=1`,
                 {
                     headers: { Authorization: "Bearer " + getCookie("user") },
                 }
