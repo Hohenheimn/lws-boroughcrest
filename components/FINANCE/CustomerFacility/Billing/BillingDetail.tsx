@@ -93,6 +93,11 @@ export default function BillingDetail({ InvoiceDetail }: Props) {
         });
     }, [InvoiceDetail]);
     const Due_Date = parse(InvoiceDetail.due_date, "yyyy-MM-dd", new Date());
+    const Billing_Date = parse(
+        InvoiceDetail.billing_date,
+        "yyyy-MM-dd",
+        new Date()
+    );
 
     return (
         <div>
@@ -141,7 +146,11 @@ export default function BillingDetail({ InvoiceDetail }: Props) {
                 </li>
                 <li>
                     <p className="label_text">Billing Date</p>
-                    <h4 className="main_text">{InvoiceDetail.billing_date}</h4>
+                    <h4 className="main_text">
+                        {isValid(Billing_Date)
+                            ? format(Due_Date, "MMM dd yyyy")
+                            : ""}
+                    </h4>
                 </li>
                 <li>
                     <p className="label_text">Due Date</p>

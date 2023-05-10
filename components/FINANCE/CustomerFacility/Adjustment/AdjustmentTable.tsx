@@ -15,6 +15,7 @@ import { format, isValid, parse } from "date-fns";
 import { GetJournal, MultipleUpdate } from "../../General-Ledger/Journal/Query";
 import { useRouter } from "next/router";
 import { GetAdjustmentList, MultipleUpdateAdjustment } from "./Query";
+import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
 
 type Props = {
     type: string;
@@ -32,10 +33,12 @@ type isTable = {
 
 type isTableItemObj = {
     id: number;
-    date: string;
-    particulars: string;
+    memo_no: string;
     status: string;
-    journal_no: string | number;
+    date: string;
+    customer_name: string;
+    properties: string[];
+    description: string;
     select: boolean;
 };
 
@@ -84,9 +87,9 @@ export default function AdjustmentTable({ type, isPeriod, setPeriod }: Props) {
 
     useEffect(() => {
         if (data?.status === 200) {
-            console.log(data);
             let selectAll = false;
             if (data.data.length > 0) {
+                console.log(data?.data);
                 let CloneArray = data?.data.map((item: isTableItemObj) => {
                     let select = false;
                     if (isSelectedIDs.includes(item.id)) {
@@ -95,10 +98,12 @@ export default function AdjustmentTable({ type, isPeriod, setPeriod }: Props) {
                     const date = parse(item.date, "yyyy-MM-dd", new Date());
                     return {
                         id: item.id,
+                        status: "Draft",
+                        memo_no: "MNA123",
                         date: isValid(date) ? format(date, "MMM dd yyyy") : "",
-                        particulars: item.particulars,
-                        status: item.status,
-                        journal_no: item.journal_no,
+                        customer_name: "Jomari",
+                        properties: ["PQWEQ"],
+                        description: "SAMPLE",
                         select: select,
                     };
                 });
@@ -112,7 +117,7 @@ export default function AdjustmentTable({ type, isPeriod, setPeriod }: Props) {
                 });
             }
         }
-    }, [data]);
+    }, [data?.data]);
 
     const selectAll = () => {
         if (isTableItem.selectAll) {
@@ -157,15 +162,13 @@ export default function AdjustmentTable({ type, isPeriod, setPeriod }: Props) {
         buttonClicked = "";
         setButtonLoading("");
     };
-    const onError = () => {
-        setPrompt({
-            message: `Something is wrong!`,
-            type: "error",
-            toggle: true,
-        });
+
+    const onError = (e: any) => {
+        ErrorSubmit(e, setPrompt);
         buttonClicked = "";
         setButtonLoading("");
     };
+
     const { isLoading: updateLoading, mutate: updateMutate } =
         MultipleUpdateAdjustment(onSuccess, onError);
 
@@ -173,7 +176,7 @@ export default function AdjustmentTable({ type, isPeriod, setPeriod }: Props) {
         buttonClicked = button;
         setButtonLoading(button);
         const Payload = {
-            adjustment_ids: "[" + isSelectedIDs + "]",
+            adjustment_ids: isSelectedIDs,
             status: button,
         };
         if (isSelectedIDs.length > 0) {
@@ -467,15 +470,13 @@ const List = ({
         });
     };
     const router = useRouter();
+    const redirectHandler = () => {
+        router.push(
+            `/finance/customer-facility/adjustment/adjustment-list/${itemDetail.id}`
+        );
+    };
     return (
-        <tr
-            className=" cursor-pointer"
-            onClick={() => {
-                router.push(
-                    `/finance/customer-facility/adjustment/adjustment-list/${itemDetail.id}`
-                );
-            }}
-        >
+        <tr className=" cursor-pointer">
             {type === "unposted" && (
                 <td className="checkbox">
                     <div className="item">
@@ -487,7 +488,7 @@ const List = ({
                     </div>
                 </td>
             )}
-            <td>
+            <td onClick={redirectHandler}>
                 {type !== "posted" ? (
                     <div className="finance_status">
                         <div
@@ -514,33 +515,47 @@ const List = ({
                                         alt={itemDetail.status}
                                     />
                                 )}
+                                {itemDetail.status === "Draft" && (
+                                    <Image
+                                        src={`/Images/f_draft.png`}
+                                        width={15}
+                                        height={15}
+                                        alt={itemDetail.status}
+                                    />
+                                )}
                             </div>
                         </div>
                     </div>
                 ) : (
                     <div>
-                        <h2>{itemDetail.journal_no}</h2>
+                        <h2>{itemDetail.memo_no}</h2>
                     </div>
                 )}
             </td>
-            <td>
+            <td onClick={redirectHandler}>
                 <div>
                     <h2>{itemDetail.date}</h2>
                 </div>
             </td>
-            <td>
+            <td onClick={redirectHandler}>
                 <div>
-                    <h2>Customer</h2>
+                    <h2>{itemDetail.customer_name}</h2>
                 </div>
             </td>
-            <td>
+            <td onClick={redirectHandler}>
                 <div>
-                    <h2>Property</h2>
+                    <h2>
+                        {itemDetail.properties.map((item: any, index: number) =>
+                            itemDetail.properties.length - 1 === index
+                                ? item
+                                : item + ", "
+                        )}
+                    </h2>
                 </div>
             </td>
-            <td>
+            <td onClick={redirectHandler}>
                 <div>
-                    <h2>Description</h2>
+                    <h2>{itemDetail.description}</h2>
                 </div>
             </td>
         </tr>
