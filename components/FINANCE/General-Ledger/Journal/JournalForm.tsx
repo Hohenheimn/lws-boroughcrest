@@ -6,7 +6,12 @@ import { RiArrowDownSFill } from "react-icons/ri";
 import DropDownCOA from "../../../Dropdowns/DropdownCOA";
 import { validateCreditDebitField } from "../OpeningBalance/ValidateCreditDebitField";
 import AppContext from "../../../Context/AppContext";
-import { CreateDraftJournal, CreateJournal, UpdateJournal } from "./Query";
+import {
+    CreateDraftJournal,
+    CreateJournal,
+    UpdateDraftJournal,
+    UpdateJournal,
+} from "./Query";
 import { ScaleLoader } from "react-spinners";
 import { useRouter } from "next/router";
 import Calendar from "../../../Reusable/Calendar";
@@ -106,15 +111,17 @@ export default function JournalForm({
         onSuccess,
         onError
     );
+    const { isLoading: draftLoading, mutate: draftMutate } = CreateDraftJournal(
+        onSuccess,
+        onError
+    );
     const { isLoading: updateLoading, mutate: updateMutate } = UpdateJournal(
         onSuccess,
         onError,
         id
     );
-    const { isLoading: draftLoading, mutate: draftMutate } = CreateDraftJournal(
-        onSuccess,
-        onError
-    );
+    const { isLoading: updateDraftLoading, mutate: updatDrafteMutate } =
+        UpdateDraftJournal(onSuccess, onError, id);
 
     const SaveHandler = (button: string) => {
         buttonClicked = button;
@@ -177,7 +184,11 @@ export default function JournalForm({
             }
         }
         if (button === "draft") {
-            draftMutate(PayloadSave);
+            if (type === "create") {
+                draftMutate(PayloadSave);
+            } else {
+                updatDrafteMutate(PayloadUpdate);
+            }
         }
     };
     return (
@@ -264,7 +275,10 @@ export default function JournalForm({
                                 setSave(false);
                             }}
                         >
-                            {saveLoading || draftLoading || updateLoading ? (
+                            {saveLoading ||
+                            draftLoading ||
+                            updateLoading ||
+                            updateDraftLoading ? (
                                 <ScaleLoader
                                     color="#fff"
                                     height="10px"
@@ -287,7 +301,6 @@ export default function JournalForm({
                                     type="submit"
                                     onClick={() => {
                                         SaveHandler("new");
-
                                         setSave(false);
                                     }}
                                 >
@@ -295,18 +308,15 @@ export default function JournalForm({
                                 </button>
                             </li>
                             <li>
-                                {type === "create" && (
-                                    <button
-                                        type="submit"
-                                        onClick={() => {
-                                            SaveHandler("draft");
-
-                                            setSave(false);
-                                        }}
-                                    >
-                                        SAVE AS DRAFT
-                                    </button>
-                                )}
+                                <button
+                                    type="submit"
+                                    onClick={() => {
+                                        SaveHandler("draft");
+                                        setSave(false);
+                                    }}
+                                >
+                                    SAVE AS DRAFT
+                                </button>
                             </li>
                         </ul>
                     )}

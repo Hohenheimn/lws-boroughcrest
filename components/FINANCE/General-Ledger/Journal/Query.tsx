@@ -67,6 +67,35 @@ export const UpdateJournal = (
         }
     );
 };
+
+export const UpdateDraftJournal = (
+    onSucces: any,
+    onError: any,
+    id: string | number
+) => {
+    const queryClient = useQueryClient();
+    return useMutation(
+        (Payload: any) => {
+            return api.put(
+                `/finance/general-ledger/journal/${id}?draft=1`,
+                Payload,
+                {
+                    headers: {
+                        Authorization: "Bearer " + getCookie("user"),
+                    },
+                }
+            );
+        },
+        {
+            onSuccess: () => {
+                onSucces();
+                queryClient.invalidateQueries("journal-list");
+            },
+            onError: onError,
+        }
+    );
+};
+
 export const DeleteJournal = (
     onSucces: any,
     onError: any,

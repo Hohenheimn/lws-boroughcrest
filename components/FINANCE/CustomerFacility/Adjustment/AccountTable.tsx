@@ -8,18 +8,45 @@ import { AdjustmentAccounts } from "./AdjustmentForm";
 import DropDownCOA from "../../../Dropdowns/DropdownCOA";
 import { validateCreditDebitField } from "../../General-Ledger/OpeningBalance/ValidateCreditDebitField";
 import { MinusButtonTable, PlusButtonTable } from "../../../Reusable/Icons";
+import TableLoadingNError from "../../../Reusable/TableLoadingNError";
 
 type Props = {
     toggle: boolean;
     isAccounts: AdjustmentAccounts[];
+    DefaultAccount: AdjustmentAccounts[];
     setAccounts: Function;
+    isLoading: boolean;
+    isError: boolean;
+    AdjustmentTotal: number;
 };
 
 export default function AccountTable({
     toggle,
     isAccounts,
     setAccounts,
+    DefaultAccount,
+    isLoading,
+    isError,
+    AdjustmentTotal,
 }: Props) {
+    useEffect(() => {
+        // Back to the first value if advances if off
+        if (!toggle) {
+            setAccounts(DefaultAccount);
+        }
+    }, [toggle]);
+
+    const [TotalDebit, setTotalDebit] = useState(0);
+    const [TotalCredit, setTotalCredit] = useState(0);
+    useEffect(() => {
+        setTotalDebit(0);
+        setTotalCredit(0);
+        isAccounts?.map((item) => {
+            setTotalDebit((prev) => Number(prev) + item.debit);
+            setTotalCredit((prev) => Number(prev) + item.credit);
+        });
+    }, [isAccounts]);
+
     return (
         <div className="py-10 1550px:py-5">
             <h1 className=" text-RegularColor text-[22px] 1550px:text-[20px] mb-5 1550px:mb-3">
@@ -37,7 +64,7 @@ export default function AccountTable({
                         </tr>
                     </thead>
                     <tbody className="textBlack">
-                        {isAccounts.map((item: AdjustmentAccounts, index) => (
+                        {isAccounts?.map((item: AdjustmentAccounts, index) => (
                             <List
                                 itemDetail={item}
                                 key={index}
@@ -49,8 +76,9 @@ export default function AccountTable({
                         ))}
                     </tbody>
                 </table>
+                <TableLoadingNError isLoading={isLoading} isError={isError} />
             </div>
-            <TableTwoTotal total1={100} total2={100} />
+            <TableTwoTotal total1={TotalDebit} total2={TotalCredit} />
         </div>
     );
 }

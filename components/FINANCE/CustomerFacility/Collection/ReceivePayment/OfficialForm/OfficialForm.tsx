@@ -116,6 +116,7 @@ export default function OfficialForm({
     const { isLoading, mutate } = CreateCollection(onSuccess, onError);
 
     const SaveHandler = (button: string) => {
+        console.log(headerForm);
         buttonClicked = button;
         let validate = true;
         Error();
@@ -150,7 +151,7 @@ export default function OfficialForm({
 
         if (
             headerForm.amount_paid === "" ||
-            headerForm.bank_account_id === "" ||
+            headerForm.chart_of_account_id === "" ||
             headerForm.credit_tax === "" ||
             headerForm.customer_id === "" ||
             headerForm.deposit_date === "" ||
@@ -190,7 +191,7 @@ export default function OfficialForm({
                 ? format(deposit_date, "yyyy-MM-dd")
                 : "",
             amount_paid: headerForm.amount_paid,
-            bank_account_id: headerForm.bank_account_id,
+            chart_of_account_id: headerForm.chart_of_account_id,
             reference_no: headerForm.reference_no,
             credit_tax: headerForm.credit_tax,
             outrights: [...PayloadOutRight, ...PayloadAdvances],

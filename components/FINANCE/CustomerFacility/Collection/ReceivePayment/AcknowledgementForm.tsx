@@ -110,7 +110,7 @@ export default function AcknowledgementForm({
         });
         if (
             headerForm.amount_paid === "" ||
-            headerForm.bank_account_id === "" ||
+            headerForm.chart_of_account_id === "" ||
             headerForm.customer_id === "" ||
             headerForm.deposit_date === "" ||
             headerForm.mode_of_payment === "" ||
@@ -148,7 +148,7 @@ export default function AcknowledgementForm({
                 ? format(deposit_date, "yyyy-MM-dd")
                 : "",
             amount_paid: headerForm.amount_paid,
-            bank_account_id: headerForm.bank_account_id,
+            bank_account_id: headerForm.chart_of_account_id,
             reference_no: headerForm.reference_no,
             deposits: isTable.map((item: isTableItem) => {
                 return {

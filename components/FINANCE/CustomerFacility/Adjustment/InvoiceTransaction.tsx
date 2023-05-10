@@ -8,6 +8,7 @@ import DropDownCharge from "../../../Dropdowns/DropDownCharge";
 import { AdjustmentHeaderForm, AdjustmentInvoice } from "./AdjustmentForm";
 import { BarLoader } from "react-spinners";
 import TableErrorMessage from "../../../Reusable/TableErrorMessage";
+import TableLoadingNError from "../../../Reusable/TableLoadingNError";
 
 type Props = {
     setHeaderForm: Function;
@@ -20,6 +21,8 @@ type Props = {
     setInvoiceAdjustment: Function;
     isLoading: boolean;
     isError: boolean;
+    isAdjustmentTotal: number;
+    isErrorMessage: boolean;
 };
 
 export default function InvoiceTransaction({
@@ -33,6 +36,8 @@ export default function InvoiceTransaction({
     setInvoiceAdjustment,
     isLoading,
     isError,
+    isAdjustmentTotal,
+    isErrorMessage,
 }: Props) {
     useEffect(() => {
         setHeaderForm({
@@ -40,18 +45,11 @@ export default function InvoiceTransaction({
             charge_id: Number(isCharge.charge_id),
         });
     }, [isCharge]);
-    const [isBalance, setBalance] = useState(0);
-    useEffect(() => {
-        setBalance(0);
-        isInvoicesAdjustment.map((item) => {
-            setBalance((prev) => Number(prev) + item.balance);
-        });
-    }, [isInvoicesAdjustment]);
 
     return (
         <ul className="w-full flex flex-wrap border-b border-gray-300">
             <li className="w-8/12 640px:w-full 640px:pr-0 640px:pb-0 640px:border-none pr-10 py-10 1550px:pr-5 1550px:py-5 flex flex-col justify-start items-start border-r border-gray-300">
-                <div className="flex items-center mb-5 640px:w-full">
+                <div className="flex items-center 640px:w-full">
                     <label htmlFor="" className="labelField">
                         CHARGE
                     </label>
@@ -65,7 +63,10 @@ export default function InvoiceTransaction({
                         itemDetail={isCharge}
                     />
                 </div>
-                <div className="table_container w-full hAuto">
+                {isErrorMessage && isCharge.charge_id === 0 && (
+                    <p className=" text-[12px] text-ThemeRed">Required!</p>
+                )}
+                <div className="table_container w-full hAuto mt-5">
                     <table className="table_list">
                         <thead className="textRed">
                             <tr>
@@ -79,7 +80,7 @@ export default function InvoiceTransaction({
                         <tbody className="textBlack">
                             {isInvoicesAdjustment.map((item, index) => (
                                 <tr key={index}>
-                                    <td>{item.document_date}</td>
+                                    <td>{item.billing_date}</td>
                                     <td>{item.document_no}</td>
                                     <td>{item.description}</td>
                                     <td>
@@ -98,24 +99,15 @@ export default function InvoiceTransaction({
                             ))}
                         </tbody>
                     </table>
-                    {isLoading && (
-                        <div className="top-0 left-0 absolute w-full h-full flex justify-center items-center">
-                            <aside className="text-center flex justify-center py-5">
-                                <BarLoader
-                                    color={"#8f384d"}
-                                    height="10px"
-                                    width="200px"
-                                    aria-label="Loading Spinner"
-                                    data-testid="loader"
-                                />
-                            </aside>
-                        </div>
-                    )}
-                    {isError && <TableErrorMessage />}
+
+                    <TableLoadingNError
+                        isError={isError}
+                        isLoading={isLoading}
+                    />
                 </div>
             </li>
             <li className="w-4/12 640px:w-full 640px:pl-0 640px:pt-0 pl-10 py-10 1550px:pl-5 1550px:py-5">
-                <div className="flex items-center mb-5">
+                <div className="flex items-center">
                     <label htmlFor="" className="labelField">
                         TRANSACTION
                     </label>
@@ -132,15 +124,18 @@ export default function InvoiceTransaction({
                             />
                         }
                         listArray={[
-                            "Apply Advances",
-                            "Discount",
+                            "Applied Advances",
+                            "Discounts",
                             "Credit Tax",
                             "Charge Reversal",
                             "Charge Debit",
                         ]}
                     />
                 </div>
-                <div className="table_container hAuto">
+                {isErrorMessage && isTransaction === "" && (
+                    <p className=" text-[12px] text-ThemeRed">Required!</p>
+                )}
+                <div className="table_container hAuto mt-5">
                     <table className="table_list">
                         <thead className="textRed">
                             <tr>
@@ -167,7 +162,7 @@ export default function InvoiceTransaction({
                                 <td>
                                     <TextNumberDisplay
                                         className="withPeso w-full text-end"
-                                        value={isBalance}
+                                        value={isAdjustmentTotal}
                                     />
                                 </td>
                             </tr>
@@ -193,7 +188,7 @@ const List = ({
 }: ListProps) => {
     const Updatevalue = (type: string, value: string | number) => {
         const CloneToUpdate = isInvoicesAdjustment.map((item) => {
-            if (item.billing_invoice_id === itemDetail.billing_invoice_id) {
+            if (item.id === itemDetail.id) {
                 const balance = Number(item.remaining_advances) - Number(value);
                 return {
                     ...item,
@@ -205,9 +200,10 @@ const List = ({
         });
         setInvoiceAdjustment(CloneToUpdate);
     };
+
     return (
         <tr>
-            <td>
+            <td style={{ padding: "5px 0" }}>
                 <InputNumberForTable
                     className={"field number w-full"}
                     value={itemDetail.adjustment_amount}
@@ -215,7 +211,7 @@ const List = ({
                     onChange={Updatevalue}
                 />
             </td>
-            <td>
+            <td style={{ padding: "5px 0 !important" }}>
                 <TextNumberDisplay
                     className="withPeso w-full text-end"
                     value={itemDetail.balance}

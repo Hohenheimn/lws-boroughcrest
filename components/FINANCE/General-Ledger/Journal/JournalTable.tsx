@@ -20,6 +20,7 @@ import { format, isValid, parse } from "date-fns";
 import ModalTemp from "../../../Reusable/ModalTemp";
 import { CopyButtonTable } from "../../../Reusable/Icons";
 import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
+import TableLoadingNError from "../../../Reusable/TableLoadingNError";
 
 type Props = {
     type: string;
@@ -73,15 +74,17 @@ export default function JournalTable({ type, isPeriod, setPeriod }: Props) {
         setAdvFilter(cloneFilter);
     };
 
-    const dateFrom = parse(isPeriod.from, "MMM dd yyyy", new Date());
-    const dateTo = parse(isPeriod.to, "MMM dd yyyy", new Date());
+    let dateFrom: any = parse(isPeriod.from, "MMM dd yyyy", new Date());
+    let dateTo: any = parse(isPeriod.to, "MMM dd yyyy", new Date());
+    dateFrom = isValid(dateFrom) ? format(dateFrom, "yyyy-MM-dd") : "";
+    dateTo = isValid(dateTo) ? format(dateTo, "yyyy-MM-dd") : "";
     const { data, isLoading, isError } = GetJournal(
         isSearch,
         type,
         TablePage,
         isFilterText,
-        isValid(dateFrom) ? format(dateFrom, "yyyy-MM-dd") : "",
-        isValid(dateTo) ? format(dateTo, "yyyy-MM-dd") : ""
+        dateFrom,
+        dateTo
     );
 
     useEffect(() => {
@@ -235,7 +238,7 @@ export default function JournalTable({ type, isPeriod, setPeriod }: Props) {
                         <BsSearch className={style.searchIcon} />
                     </div>
                     <AdvanceFilter
-                        endpoint={`/finance/general-ledger/journal/filter-options?list_type=${type}&date_from=${isPeriod.from}&date_to=${isPeriod.to}&keywords=`}
+                        endpoint={`/finance/general-ledger/journal/filter-options?list_type=${type}&date_from=${dateFrom}&date_to=${dateTo}&keywords=`}
                         setAdvFilter={setAdvFilter}
                         isAdvFilter={isAdvFilter}
                     />
@@ -438,20 +441,7 @@ export default function JournalTable({ type, isPeriod, setPeriod }: Props) {
                         )}
                     </tbody>
                 </table>
-                {isLoading && (
-                    <div className="w-full flex justify-center items-center">
-                        <aside className="text-center flex justify-center py-5">
-                            <BarLoader
-                                color={"#8f384d"}
-                                height="10px"
-                                width="200px"
-                                aria-label="Loading Spinner"
-                                data-testid="loader"
-                            />
-                        </aside>
-                    </div>
-                )}
-                {isError && <TableErrorMessage />}
+                <TableLoadingNError isLoading={isLoading} isError={isError} />
             </div>
             <Pagination
                 setTablePage={setTablePage}
@@ -566,6 +556,14 @@ const List = ({
                                         {itemDetail.status === "In Process" && (
                                             <Image
                                                 src={`/Images/f_InProcess.png`}
+                                                width={15}
+                                                height={15}
+                                                alt={itemDetail.status}
+                                            />
+                                        )}
+                                        {itemDetail.status === "Draft" && (
+                                            <Image
+                                                src={`/Images/f_draft.png`}
                                                 width={15}
                                                 height={15}
                                                 alt={itemDetail.status}

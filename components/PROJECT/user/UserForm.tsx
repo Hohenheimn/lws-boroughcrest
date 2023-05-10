@@ -306,7 +306,9 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
                     onSubmit={handleSubmit(Next)}
                     className={`${userForm[0] === true ? "" : "hidden"}`}
                 >
-                    <p className={style.modal_title}>Create User</p>
+                    <p className={style.modal_title}>
+                        <span className=" capitalize">{type}</span> User
+                    </p>
                     <h1 className={style.statusTitle}>
                         <span>STATUS</span>
 
@@ -369,7 +371,7 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
                                 {...register("name")}
                                 value={isPayload.name}
                                 onChange={(e) => {
-                                    if (!TextFieldValidation(e, 50)) return;
+                                    if (!TextFieldValidation(e, 255)) return;
                                     setPayload({
                                         ...isPayload,
                                         name: e.target.value,
@@ -422,7 +424,7 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
                                 {...register("position")}
                                 value={isPayload.position}
                                 onChange={(e) => {
-                                    if (!TextFieldValidation(e, 50)) return;
+                                    if (!TextFieldValidation(e, 255)) return;
                                     setPayload({
                                         ...isPayload,
                                         position: e.target.value,
@@ -443,7 +445,7 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
                                 {...register("employee_id")}
                                 value={isPayload.employee_id}
                                 onChange={(e) => {
-                                    if (!TextFieldValidation(e, 50)) return;
+                                    if (!TextFieldValidation(e, 20)) return;
                                     setPayload({
                                         ...isPayload,
                                         employee_id: e.target.value,
@@ -490,7 +492,7 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
                                 })}
                                 value={isPayload.email}
                                 onChange={(e) => {
-                                    if (e.target.value.length > 40) return;
+                                    if (e.target.value.length > 320) return;
                                     setPayload({
                                         ...isPayload,
                                         email: e.target.value,

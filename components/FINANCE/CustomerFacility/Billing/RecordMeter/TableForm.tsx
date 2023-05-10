@@ -355,6 +355,7 @@ export default function TableForm() {
                             setValue={setPreviousPeriod}
                             year={isPreviousPeriod.year}
                             reading_id={Number(isReading.reading_id)}
+                            endPoint="/finance/customer-facility/billing/record-meter-reading/period-options?billing_readings_name_id="
                         />
                     </li>
                 </ul>
@@ -520,12 +521,12 @@ const List = ({
                         {itemDetail.percentage <= 0 ? (
                             <span className="flex items-center ml-3 text-ThemeRed">
                                 <IoMdArrowDropup />
-                                {itemDetail.percentage}%
+                                {itemDetail.percentage.toFixed(2)}%
                             </span>
                         ) : (
                             <span className="flex items-center ml-3 text-Green">
                                 <IoMdArrowDropdown />
-                                {itemDetail.percentage}%
+                                {itemDetail.percentage.toFixed(2)}%
                             </span>
                         )}
                     </h2>

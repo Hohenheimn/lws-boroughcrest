@@ -5,7 +5,7 @@ import Image from "next/image";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 import Link from "next/link";
-import { BarLoader } from "react-spinners";
+import { BarLoader, MoonLoader } from "react-spinners";
 import PeriodCalendar from "../../../Reusable/PeriodCalendar";
 import { Advancefilter, AdvanceFilter } from "../../../Reusable/AdvanceFilter";
 import TableErrorMessage from "../../../Reusable/TableErrorMessage";
@@ -41,6 +41,7 @@ type isTableItemObj = {
 
 export default function AdjustmentTable({ type, isPeriod, setPeriod }: Props) {
     let buttonClicked = "";
+    const [buttonLoading, setButtonLoading] = useState("");
     const { setPrompt } = useContext(AppContext);
     const [isSearch, setSearch] = useState("");
     const [TablePage, setTablePage] = useState(1);
@@ -68,19 +69,22 @@ export default function AdjustmentTable({ type, isPeriod, setPeriod }: Props) {
         setAdvFilter(cloneFilter);
     };
 
-    const dateFrom = parse(isPeriod.from, "MMM dd yyyy", new Date());
-    const dateTo = parse(isPeriod.to, "MMM dd yyyy", new Date());
+    let dateFrom: any = parse(isPeriod.from, "MMM dd yyyy", new Date());
+    let dateTo: any = parse(isPeriod.to, "MMM dd yyyy", new Date());
+    dateFrom = isValid(dateFrom) ? format(dateFrom, "yyyy-MM-dd") : "";
+    dateTo = isValid(dateTo) ? format(dateTo, "yyyy-MM-dd") : "";
     const { data, isLoading, isError } = GetAdjustmentList(
         isSearch,
         type,
         TablePage,
         isFilterText,
-        isValid(dateFrom) ? format(dateFrom, "yyyy-MM-dd") : "",
-        isValid(dateTo) ? format(dateTo, "yyyy-MM-dd") : ""
+        dateFrom,
+        dateTo
     );
 
     useEffect(() => {
         if (data?.status === 200) {
+            console.log(data);
             let selectAll = false;
             if (data.data.length > 0) {
                 let CloneArray = data?.data.map((item: isTableItemObj) => {
@@ -146,11 +150,12 @@ export default function AdjustmentTable({ type, isPeriod, setPeriod }: Props) {
         });
         setSelectedIDs([]);
         setPrompt({
-            message: `Items successfully ${buttonClicked}!`,
+            message: `Items successfully ${buttonLoading}!`,
             type: "success",
             toggle: true,
         });
         buttonClicked = "";
+        setButtonLoading("");
     };
     const onError = () => {
         setPrompt({
@@ -159,25 +164,27 @@ export default function AdjustmentTable({ type, isPeriod, setPeriod }: Props) {
             toggle: true,
         });
         buttonClicked = "";
+        setButtonLoading("");
     };
     const { isLoading: updateLoading, mutate: updateMutate } =
         MultipleUpdateAdjustment(onSuccess, onError);
 
     const UpdateStatus = (button: string) => {
         buttonClicked = button;
-        // const Payload = {
-        //     journal_ids: "[" + isSelectedIDs + "]",
-        //     status: button,
-        // };
-        // if (isSelectedIDs.length > 0) {
-        //     updateMutate(Payload);
-        // } else {
-        //     setPrompt({
-        //         message: "Select a Journal!",
-        //         type: "draft",
-        //         toggle: true,
-        //     });
-        // }
+        setButtonLoading(button);
+        const Payload = {
+            adjustment_ids: "[" + isSelectedIDs + "]",
+            status: button,
+        };
+        if (isSelectedIDs.length > 0) {
+            updateMutate(Payload);
+        } else {
+            setPrompt({
+                message: "Select a Adjustment!",
+                type: "draft",
+                toggle: true,
+            });
+        }
     };
 
     return (
@@ -194,7 +201,7 @@ export default function AdjustmentTable({ type, isPeriod, setPeriod }: Props) {
                         <BsSearch className={style.searchIcon} />
                     </div>
                     <AdvanceFilter
-                        endpoint={`/finance/general-ledger/journal/filter-options?list_type=${type}&date_from=${isPeriod.from}&date_to=${isPeriod.to}&keywords=`}
+                        endpoint={`/finance/customer-facility/adjustment/filter-options?status=${type}&date_from=${dateFrom}&date_to=${dateTo}&keywords=`}
                         setAdvFilter={setAdvFilter}
                         isAdvFilter={isAdvFilter}
                     />
@@ -207,14 +214,23 @@ export default function AdjustmentTable({ type, isPeriod, setPeriod }: Props) {
                                 <Tippy theme="ThemeRed" content="Approve">
                                     <div
                                         className={`${style.noFill} mr-5`}
-                                        onClick={() => UpdateStatus("Approved")}
+                                        onClick={() => UpdateStatus("Posted")}
                                     >
-                                        <Image
-                                            src="/Images/f_check.png"
-                                            height={25}
-                                            width={30}
-                                            alt="Approved"
-                                        />
+                                        {updateLoading &&
+                                        buttonLoading === "Posted" ? (
+                                            <MoonLoader
+                                                className="text-ThemeRed mr-2"
+                                                color="#8f384d"
+                                                size={16}
+                                            />
+                                        ) : (
+                                            <Image
+                                                src="/Images/f_check.png"
+                                                height={25}
+                                                width={30}
+                                                alt="Posted"
+                                            />
+                                        )}
                                     </div>
                                 </Tippy>
                             </li>
@@ -226,12 +242,21 @@ export default function AdjustmentTable({ type, isPeriod, setPeriod }: Props) {
                                             UpdateStatus("In Progress")
                                         }
                                     >
-                                        <Image
-                                            src="/Images/f_refresh.png"
-                                            height={30}
-                                            width={30}
-                                            alt="In Process"
-                                        />
+                                        {updateLoading &&
+                                        buttonLoading === "In Progress" ? (
+                                            <MoonLoader
+                                                className="text-ThemeRed mr-2"
+                                                color="#8f384d"
+                                                size={16}
+                                            />
+                                        ) : (
+                                            <Image
+                                                src="/Images/f_refresh.png"
+                                                height={30}
+                                                width={30}
+                                                alt="In Process"
+                                            />
+                                        )}
                                     </div>
                                 </Tippy>
                             </li>
@@ -241,12 +266,21 @@ export default function AdjustmentTable({ type, isPeriod, setPeriod }: Props) {
                                         className={`${style.noFill} mr-5`}
                                         onClick={() => UpdateStatus("Pending")}
                                     >
-                                        <Image
-                                            src="/Images/f_back.png"
-                                            height={25}
-                                            width={35}
-                                            alt="Return"
-                                        />
+                                        {updateLoading &&
+                                        buttonLoading === "Pending" ? (
+                                            <MoonLoader
+                                                className="text-ThemeRed mr-2"
+                                                color="#8f384d"
+                                                size={16}
+                                            />
+                                        ) : (
+                                            <Image
+                                                src="/Images/f_back.png"
+                                                height={25}
+                                                width={35}
+                                                alt="Return"
+                                            />
+                                        )}
                                     </div>
                                 </Tippy>
                             </li>
@@ -256,12 +290,21 @@ export default function AdjustmentTable({ type, isPeriod, setPeriod }: Props) {
                                         className={style.noFill}
                                         onClick={() => UpdateStatus("Rejected")}
                                     >
-                                        <Image
-                                            src="/Images/f_remove.png"
-                                            height={25}
-                                            width={25}
-                                            alt="Reject"
-                                        />
+                                        {updateLoading &&
+                                        buttonLoading === "Rejected" ? (
+                                            <MoonLoader
+                                                className="text-ThemeRed mr-2"
+                                                color="#8f384d"
+                                                size={16}
+                                            />
+                                        ) : (
+                                            <Image
+                                                src="/Images/f_remove.png"
+                                                height={25}
+                                                width={25}
+                                                alt="Reject"
+                                            />
+                                        )}
                                     </div>
                                 </Tippy>
                             </li>

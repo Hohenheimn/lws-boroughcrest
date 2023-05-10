@@ -21,9 +21,8 @@ export const GetAdjustmentList = (
             dateTo,
         ],
         () => {
-            // ?list_type=${type}&filters=${filterArray}
             return api.get(
-                `/finance/customer-facility/adjustment?paginate=10&search=${keyword}&page=${
+                `/finance/customer-facility/adjustment?paginate=10&status=${type}&filters=${filterArray}&search=${keyword}&page=${
                     keyword === "" ? TablePage : 1
                 }&date_from=${dateFrom}&date_to=${dateTo}`,
                 {
@@ -37,7 +36,7 @@ export const GetAdjustmentList = (
     );
 };
 
-export const CreateAdjustment = (onSuccess: any, onError: any) => {
+export const CreateNewAdjustment = (onSuccess: any, onError: any) => {
     const queryClient = useQueryClient();
     return useMutation(
         (Payload: any) => {
@@ -113,15 +112,15 @@ export const GetAdjustmentDetail = (id: number | string) => {
     });
 };
 
-export const GetInvoiceListByCustomerAndCharge = (
+export const GetInvoiceByCustomerAndCharge = (
     customer_id: number | string,
     charge_id: number | string
 ) => {
     return useQuery(
-        ["invoice-list-customer", customer_id, charge_id],
+        ["Invoice-list-customer-charge", customer_id, charge_id],
         () => {
             return api.get(
-                `/finance/customer-facility/billing?customer_id=${customer_id}&charge_id=${charge_id}`,
+                `/finance/customer-facility/billing?customer_id=${customer_id}&charge_id=${charge_id}&list_type=posted&heirarchy=1`,
                 {
                     headers: { Authorization: "Bearer " + getCookie("user") },
                 }
@@ -129,6 +128,40 @@ export const GetInvoiceListByCustomerAndCharge = (
         },
         {
             enabled: !!charge_id && !!customer_id,
+        }
+    );
+};
+
+export const GetAccountEntriesList = (
+    charge_id: number | string,
+    document_no: string
+) => {
+    return useQuery(["account-entries-list", charge_id, document_no], () => {
+        return api.get(
+            `/finance-report/accounting-entries?charge_id=${charge_id}&document_no=${document_no}`,
+            {
+                headers: { Authorization: "Bearer " + getCookie("user") },
+            }
+        );
+    });
+};
+
+export const GetFilteredAccountEntriesList = (
+    charge_id: number | string,
+    type: string
+) => {
+    return useQuery(
+        ["account-filtered-entries-list", charge_id, type],
+        () => {
+            return api.get(
+                `/finance/customer-facility/adjustment/accounting-entries?charge_id=${charge_id}&type=${type}`,
+                {
+                    headers: { Authorization: "Bearer " + getCookie("user") },
+                }
+            );
+        },
+        {
+            enabled: !!charge_id && !!type,
         }
     );
 };

@@ -7,7 +7,11 @@ import api from "../../util/api";
 type Props = {
     endpoint: string;
     name: string;
-    value: string;
+    value: {
+        value: string;
+        id: string;
+        toggle: boolean;
+    };
     setFunction: Function;
 };
 
@@ -22,11 +26,11 @@ export default function UOMDropdown({
     const [isSearchTemp, setSearchTemp] = useState("");
 
     useEffect(() => {
-        setSearchTemp(value);
+        setSearchTemp(value.value);
     }, [value]);
 
     const { isLoading, data, isError } = useQuery([name, isSearchTemp], () => {
-        return api.get(`${endpoint}?keywords=${value}`, {
+        return api.get(`${endpoint}?keywords=${isSearchTemp}`, {
             headers: {
                 Authorization: "Bearer " + getCookie("user"),
             },
@@ -36,7 +40,11 @@ export default function UOMDropdown({
     useEffect(() => {
         const clickOutSide = (e: any) => {
             if (!modal?.current?.contains(e.target)) {
-                setSearchTemp(value);
+                setSearchTemp(value.value);
+                setFunction({
+                    ...value,
+                    toggle: false,
+                });
             }
         };
         document.addEventListener("mousedown", clickOutSide);

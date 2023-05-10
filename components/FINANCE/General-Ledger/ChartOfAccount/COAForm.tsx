@@ -22,6 +22,7 @@ import CrudBankAccNum from "./CrudBankAccNum";
 import DefaultAccount from "./DefaultAccount";
 import Parent from "./Parent";
 import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
+import { InputTextForm } from "../../../Reusable/InputField";
 
 type Props = {
     setCreate: Function;
@@ -99,6 +100,7 @@ export default function COAForm({
         formState: { errors },
         reset,
         setValue,
+        watch,
     } = useForm<ChartofAccountList>({
         defaultValues: DefaultFormData,
     });
@@ -351,10 +353,11 @@ export default function COAForm({
                         </li>
                         <li>
                             <label htmlFor="">*ACCOUNT NAME</label>
-                            <input
-                                type="text"
-                                {...register("account_name")}
+                            <InputTextForm
+                                register={{ ...register("account_name") }}
+                                defaultValue={watch("account_name")}
                                 className="field"
+                                limitation={255}
                             />
                             {isError.account_name && (
                                 <p className="text-[10px]">
@@ -364,10 +367,11 @@ export default function COAForm({
                         </li>
                         <li>
                             <label htmlFor="">DESCRIPTION</label>
-                            <input
+                            <InputTextForm
+                                register={{ ...register("description") }}
+                                defaultValue={watch("description")}
                                 className="field"
-                                type="text"
-                                {...register("description")}
+                                limitation={255}
                             />
                         </li>
                         <li>

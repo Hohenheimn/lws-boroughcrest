@@ -377,7 +377,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                         autoComplete="off"
                                         value={fieldValue.name}
                                         onChange={(e: any) => {
-                                            if (!TextFieldValidation(e, 50))
+                                            if (!TextFieldValidation(e, 255))
                                                 return;
                                             setFieldValue({
                                                 ...fieldValue,
@@ -399,7 +399,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                         autoComplete="off"
                                         value={fieldValue.description}
                                         onChange={(e: any) => {
-                                            if (!TextFieldValidation(e, 50))
+                                            if (!TextFieldValidation(e, 255))
                                                 return;
                                             setFieldValue({
                                                 ...fieldValue,
@@ -473,7 +473,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                                     "/finance/customer-facility/charges/uom-options"
                                                 }
                                                 name={"Unit of measure"}
-                                                value={isUOM.value}
+                                                value={isUOM}
                                                 setFunction={setUOM}
                                             />
                                         )}

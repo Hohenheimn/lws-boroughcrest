@@ -12,9 +12,19 @@ import InvoiceTransaction from "./InvoiceTransaction";
 import AccountTable from "./AccountTable";
 import { RiArrowDownSFill } from "react-icons/ri";
 import AppContext from "../../../Context/AppContext";
-import { GetInvoiceListByCustomer } from "../Billing/Query";
-import { GetInvoiceListByCustomerAndCharge } from "./Query";
+import {
+    CreateNewAdjustment,
+    GetAccountEntriesList,
+    GetFilteredAccountEntriesList,
+    GetInvoiceByCustomerAndCharge,
+    ModifyAdjustment,
+} from "./Query";
 import { format, isValid, parse } from "date-fns";
+import TableLoadingNError from "../../../Reusable/TableLoadingNError";
+import { ValidationDebitCredit } from "./AdjustmentDistribution";
+import { useRouter } from "next/router";
+import { ScaleLoader } from "react-spinners";
+import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
 
 export type AdjustmentHeaderForm = {
     customer_id: number | string;
@@ -35,6 +45,24 @@ export type AdjustmentAccounts = {
     credit: number;
 };
 
+export type AccountEntries = {
+    id: number;
+    debit: number;
+    credit: number;
+    chart_of_account: {
+        chart_code: string;
+        account_name: string;
+    };
+    document: {
+        id: number;
+        document_no: string;
+        document_date: string;
+    };
+    charge: {
+        description: string;
+    };
+};
+
 type CustomerDDData = {
     id: number | string;
     name: string;
@@ -43,22 +71,42 @@ type CustomerDDData = {
 };
 
 export type AdjustmentInvoice = {
+    id: number;
     billing_invoice_id: number;
     adjustment_amount: number;
     balance: number;
-    document_date: string;
+    billing_date: string;
     document_no: string;
     description: string;
     amount_due: number;
     remaining_advances: number;
 };
 
+type FilteredAccuntEntries = {
+    id: number;
+    chart_code: string;
+    account_name: string;
+    default_account: string;
+};
+
 export default function AdjustmentForm() {
-    const { setPrompt } = useContext(AppContext);
+    const router = useRouter();
+
+    const { setPrompt, userInfo } = useContext(AppContext);
+
+    const User_GST_type = userInfo?.corporate_gst_type;
+
+    const [isErrorMessage, setErrorMessage] = useState(false);
+
     const [isSave, setSave] = useState(false);
+
     const [toggleForm, setToggleForm] = useState(false);
+
     const [AdvancesToggle, setAdvancesToggle] = useState(false);
+
     const [isButton, setButton] = useState("");
+
+    const [isTransaction, setTransaction] = useState("");
 
     const [isCustomer, setCustomer] = useState<CustomerDDData>({
         id: 0,
@@ -66,6 +114,7 @@ export default function AdjustmentForm() {
         class: "",
         property: [],
     });
+
     useEffect(() => {
         setHeaderForm({
             ...HeaderForm,
@@ -87,15 +136,13 @@ export default function AdjustmentForm() {
         value: "",
         toggle: false,
     });
+
     useEffect(() => {
         setHeaderForm({
             ...HeaderForm,
             memo_date: isMemoDate.value,
         });
     }, [isMemoDate]);
-
-    const [isErrorMessage, setErrorMessage] = useState();
-    const [isErrorToggle, setErrorToggle] = useState(false);
 
     const [HeaderForm, setHeaderForm] = useState<AdjustmentHeaderForm>({
         customer_id: 0,
@@ -107,47 +154,162 @@ export default function AdjustmentForm() {
         document_no: "",
     });
 
-    const [isAccounts, setAccounts] = useState<AdjustmentAccounts[]>([
-        {
-            id: 1,
-            coa_id: 1,
-            chart_code: "123",
-            account_name: "123",
-            debit: 1000,
-            credit: 0,
-        },
-    ]);
-
     const [isInvoices, setInvoices] = useState<AdjustmentInvoice[]>([]);
+
+    const [isAdjustmentTotal, setAdjustmentTotal] = useState(0);
+
+    const [DefaultAccount, setDefaultAccount] = useState<AdjustmentAccounts[]>(
+        []
+    );
+
+    const onSuccess = () => {
+        setPrompt({
+            message: `Adjustment successfully ${
+                isButton === "draft" ? "registered as draft" : "registered"
+            }`,
+            toggle: true,
+            type: isButton === "draft" ? "draft" : "success",
+        });
+
+        if (isButton !== "new") {
+            router.push(
+                "/finance/customer-facility/adjustment/adjustment-list"
+            );
+        }
+
+        if (isButton === "new" && router.query.modify !== undefined) {
+            router.push(
+                "/finance/customer-facility/adjustment/create-adjustment"
+            );
+        }
+
+        if (isButton === "new") {
+            setCustomer({
+                id: 0,
+                name: "",
+                class: "",
+                property: [],
+            });
+            setHeaderForm({
+                customer_id: 0,
+                memo_date: "",
+                memo_type: "",
+                description: "",
+                charge_id_header: "",
+                charge_id: "",
+                document_no: "",
+            });
+            setCharge({
+                charge: "",
+                charge_id: 0,
+            });
+            setTransaction("");
+        }
+    };
+
+    const onError = (e: any) => {
+        ErrorSubmit(e, setPrompt);
+    };
 
     const {
         data: invoiceData,
         isLoading,
         isError,
-    } = GetInvoiceListByCustomerAndCharge(isCustomer.id, isCharge.charge_id);
+    } = GetInvoiceByCustomerAndCharge(isCustomer.id, isCharge.charge_id);
+
+    const {
+        data: refAccEntries,
+        isLoading: refAccEntriesLoading,
+        isError: refAccEntriesError,
+    } = GetAccountEntriesList(isChargeHeader.charge_id, HeaderForm.document_no);
+
+    const { mutate: createMutate, isLoading: createLoading } =
+        CreateNewAdjustment(onSuccess, onError);
+
+    const { mutate: modifyMutate, isLoading: modifyLoading } = ModifyAdjustment(
+        onSuccess,
+        onError,
+        router.query.modify
+    );
 
     useEffect(() => {
         if (invoiceData !== undefined) {
-            const clone = invoiceData?.data.map((item: any) => {
-                const date = parse(item.dat, "yyyy-MM-dd", new Date());
-                return {
-                    billing_invoice_id: item.id,
-                    adjustment_amount: 0,
-                    balance: item.applied_advances,
-                    document_date: isValid(date)
-                        ? format(date, "MMM dd yyyy")
-                        : "",
-                    document_no: item.invoice_no,
-                    description: item.description,
-                    amount_due: item.due_amount,
-                    remaining_advances: item.applied_advances,
-                };
+            let getCustomerOutstanding: any[] = [];
+            invoiceData?.data.map((item: any) => {
+                const date = parse(item.billing_date, "yyyy-MM-dd", new Date());
+                item.invoice_list.map((invoiceItem: any) => {
+                    getCustomerOutstanding = [
+                        ...getCustomerOutstanding,
+                        {
+                            id: invoiceItem?.id,
+                            billing_invoice_id: item?.id,
+                            adjustment_amount: 0,
+                            balance: item?.applied_advances,
+                            billing_date: isValid(date)
+                                ? format(date, "MMM dd yyyy")
+                                : "",
+                            document_no: item?.invoice_no,
+                            description: invoiceItem?.description,
+                            amount_due: invoiceItem?.amount,
+                            remaining_advances: item?.applied_advances,
+                        },
+                    ];
+                });
             });
-            setInvoices(clone);
-        }
-    }, [invoiceData?.status, isCustomer.id, isCharge.charge_id]);
 
-    const [isTransaction, setTransaction] = useState("");
+            setInvoices(
+                getCustomerOutstanding === undefined
+                    ? []
+                    : getCustomerOutstanding
+            );
+        }
+    }, [invoiceData?.data]);
+
+    useEffect(() => {
+        setAdjustmentTotal(0);
+        isInvoices.map((item) => {
+            setAdjustmentTotal(
+                (prev: number) => Number(prev) + item.adjustment_amount
+            );
+        });
+    }, [isInvoices]);
+
+    const {
+        data: AccountEntries,
+        isLoading: AccountEntriesLoading,
+        isError: AccountEntriesError,
+    } = GetFilteredAccountEntriesList(isCharge.charge_id, isTransaction);
+
+    const [isAccounts, setAccounts] = useState<AdjustmentAccounts[]>([]);
+
+    useEffect(() => {
+        if (!AdvancesToggle) {
+            const cloneTogetData = AccountEntries?.data.map(
+                (item: FilteredAccuntEntries, index: number) => {
+                    const validationDebitOrCreditField = ValidationDebitCredit(
+                        isTransaction,
+                        item.default_account
+                    );
+                    return {
+                        id: index,
+                        coa_id: item.id,
+                        chart_code: item.chart_code,
+                        account_name: item.account_name,
+                        debit:
+                            validationDebitOrCreditField === "debit"
+                                ? Number(isAdjustmentTotal)
+                                : 0,
+                        credit:
+                            validationDebitOrCreditField === "credit"
+                                ? Number(isAdjustmentTotal)
+                                : 0,
+                    };
+                }
+            );
+            setAccounts(cloneTogetData);
+            setDefaultAccount(cloneTogetData);
+        }
+    }, [AccountEntries?.data, isAdjustmentTotal]);
 
     useEffect(() => {
         setHeaderForm({
@@ -157,12 +319,42 @@ export default function AdjustmentForm() {
     }, [isChargeHeader]);
 
     const SaveHandler = (button: string) => {
+        if (
+            isCustomer.id === 0 ||
+            HeaderForm.memo_type === "" ||
+            HeaderForm.memo_date === "" ||
+            isCharge.charge_id === 0 ||
+            isTransaction === ""
+        ) {
+            setPrompt({
+                message: "Fill out required fields",
+                toggle: true,
+                type: "draft",
+            });
+            setErrorMessage(true);
+            return;
+        }
+
+        if (
+            isInvoices.some((item) => item.adjustment_amount === 0) &&
+            AdvancesToggle === false
+        ) {
+            setPrompt({
+                message: "Fill out all adjustment amount",
+                toggle: true,
+                type: "draft",
+            });
+            return;
+        }
         setButton(button);
+
+        const memoDate = parse(HeaderForm.memo_date, "MMM dd yyyy", new Date());
+
         const Payload = {
             customer_id: isCustomer.id,
             charge_id: isCharge.charge_id,
             memo_type: HeaderForm.memo_type,
-            date: HeaderForm.memo_date,
+            date: isValid(memoDate) ? format(memoDate, "yyyy-MM-dd") : "",
             description: HeaderForm.description,
             transaction: isTransaction,
             accounts: isAccounts.map((item) => {
@@ -180,6 +372,30 @@ export default function AdjustmentForm() {
                 };
             }),
         };
+
+        if (router.query.modify === undefined) {
+            // Create
+            if (button === "save" || button === "new") {
+                createMutate(Payload);
+                console.log(button);
+                console.log(Payload);
+            } else {
+                // Draft here
+                console.log(button);
+                console.log(Payload);
+            }
+        } else {
+            // Update
+            if (button === "save" || button === "new") {
+                // modifyMutate(Payload);
+                console.log(button);
+                console.log(Payload);
+            } else {
+                // Draft here
+                console.log(button);
+                console.log(Payload);
+            }
+        }
     };
 
     return (
@@ -203,8 +419,10 @@ export default function AdjustmentForm() {
                                     isCustomer={isCustomer}
                                     setCustomer={setCustomer}
                                 />
-                                {isCustomer.id === "" && isErrorToggle && (
-                                    <p className="text-[10px]">Required!</p>
+                                {isErrorMessage && isCustomer.id === 0 && (
+                                    <p className=" text-[12px] text-ThemeRed">
+                                        Required!
+                                    </p>
                                 )}
                             </li>
                             <li className="w-full mb-5 640px:mb-2">
@@ -248,13 +466,19 @@ export default function AdjustmentForm() {
                                             "Debit Note",
                                         ]}
                                     />
+                                    {isErrorMessage &&
+                                        HeaderForm.memo_type === "" && (
+                                            <p className=" text-[12px] text-ThemeRed">
+                                                Required!
+                                            </p>
+                                        )}
                                 </label>
                             </li>
                             <li className="w-[30%] 640px:w-2/4">
                                 <DynamicPopOver
                                     toRef={
                                         <label className="labelField flex flex-col mt-1">
-                                            DEPOSIT DATE
+                                            MEMO DATE
                                             <div className="calendar">
                                                 <span className="cal">
                                                     <Image
@@ -278,6 +502,12 @@ export default function AdjustmentForm() {
                                                     className="field w-full"
                                                 />
                                             </div>
+                                            {isErrorMessage &&
+                                                HeaderForm.memo_date === "" && (
+                                                    <p className=" text-[12px] text-ThemeRed">
+                                                        Required!
+                                                    </p>
+                                                )}
                                         </label>
                                     }
                                     toPop={
@@ -292,12 +522,6 @@ export default function AdjustmentForm() {
                                     }
                                     className={""}
                                 />
-
-                                {isMemoDate.value === "" && isErrorToggle && (
-                                    <p className="text-[10px] text-ThemeRed">
-                                        Required!
-                                    </p>
-                                )}
                             </li>
                             <li className="w-[30%]"></li>
 
@@ -397,27 +621,57 @@ export default function AdjustmentForm() {
                                     </tr>
                                 </thead>
                                 <tbody className="textBlack">
-                                    <tr>
-                                        <td>Sep 10 2022</td>
-                                        <td>INV0001</td>
-                                        <td>Lorem Ipsum</td>
-                                        <td>0000001</td>
-                                        <td>A/R Assoc Deus</td>
-                                        <td>
-                                            <TextNumberDisplay
-                                                className="withPeso w-full text-end"
-                                                value={1000}
-                                            />
-                                        </td>
-                                        <td>
-                                            <TextNumberDisplay
-                                                className="withPeso w-full text-end"
-                                                value={1000}
-                                            />
-                                        </td>
-                                    </tr>
+                                    {refAccEntries?.data.map(
+                                        (
+                                            item: AccountEntries,
+                                            index: number
+                                        ) => (
+                                            <tr key={index}>
+                                                <td>
+                                                    {
+                                                        item.document
+                                                            .document_date
+                                                    }
+                                                </td>
+                                                <td>
+                                                    {item.document.document_no}
+                                                </td>
+                                                <td>
+                                                    {item.charge.description}
+                                                </td>
+                                                <td>
+                                                    {
+                                                        item.chart_of_account
+                                                            .chart_code
+                                                    }
+                                                </td>
+                                                <td>
+                                                    {
+                                                        item.chart_of_account
+                                                            .account_name
+                                                    }
+                                                </td>
+                                                <td>
+                                                    <TextNumberDisplay
+                                                        className="withPeso w-full text-end"
+                                                        value={item.debit}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <TextNumberDisplay
+                                                        className="withPeso w-full text-end"
+                                                        value={item.credit}
+                                                    />
+                                                </td>
+                                            </tr>
+                                        )
+                                    )}
                                 </tbody>
                             </table>
+                            <TableLoadingNError
+                                isLoading={refAccEntriesLoading}
+                                isError={refAccEntriesError}
+                            />
                         </div>
                     </motion.div>
                 )}
@@ -456,6 +710,8 @@ export default function AdjustmentForm() {
                             isTransaction={isTransaction}
                             isLoading={isLoading}
                             isError={isError}
+                            isAdjustmentTotal={isAdjustmentTotal}
+                            isErrorMessage={isErrorMessage}
                         />
                     </motion.div>
                 )}
@@ -464,6 +720,10 @@ export default function AdjustmentForm() {
                 toggle={AdvancesToggle}
                 isAccounts={isAccounts}
                 setAccounts={setAccounts}
+                DefaultAccount={DefaultAccount}
+                isLoading={AccountEntriesLoading}
+                isError={AccountEntriesError}
+                AdjustmentTotal={isAdjustmentTotal}
             />
             <div className="flex w-full justify-end mb-10 1550px:mb-5">
                 <div className="ddSave">
@@ -474,11 +734,18 @@ export default function AdjustmentForm() {
                             className="ddsave_button"
                             onClick={() => {
                                 SaveHandler("save");
-
                                 setSave(false);
                             }}
                         >
-                            SAVE
+                            {createLoading || modifyLoading ? (
+                                <ScaleLoader
+                                    color="#fff"
+                                    height="10px"
+                                    width="2px"
+                                />
+                            ) : (
+                                "SAVE"
+                            )}
                         </button>
                         <aside className="ddArrow">
                             <RiArrowDownSFill

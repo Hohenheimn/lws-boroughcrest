@@ -37,7 +37,7 @@ export type HeaderForm = {
     description: string;
     mode_of_payment: string;
     deposit_date: string;
-    bank_account_id: string | number | any;
+    chart_of_account_id: string | number | any;
     reference_no: string | number | any;
     amount_paid: number | string;
     credit_tax: number | string;
@@ -91,7 +91,7 @@ export default function ReceivePaymentForm({
         description: DefaultValHeaderForm.description,
         mode_of_payment: DefaultValHeaderForm.mode_of_payment,
         deposit_date: DefaultValHeaderForm.deposit_date,
-        bank_account_id: DefaultValHeaderForm.bank_account_id,
+        chart_of_account_id: DefaultValHeaderForm.chart_of_account_id,
         reference_no: DefaultValHeaderForm.reference_no,
         amount_paid: DefaultValHeaderForm.amount_paid,
         credit_tax: DefaultValHeaderForm.credit_tax,
@@ -156,7 +156,7 @@ export default function ReceivePaymentForm({
             description: DefaultValHeaderForm.description,
             mode_of_payment: DefaultValHeaderForm.mode_of_payment,
             deposit_date: DefaultValHeaderForm.deposit_date,
-            bank_account_id: DefaultValHeaderForm.bank_account_id,
+            chart_of_account_id: DefaultValHeaderForm.chart_of_account_id,
             reference_no: DefaultValHeaderForm.reference_no,
             amount_paid: DefaultValHeaderForm.amount_paid,
             credit_tax: DefaultValHeaderForm.credit_tax,
@@ -180,7 +180,7 @@ export default function ReceivePaymentForm({
             description: "",
             mode_of_payment: "",
             deposit_date: "",
-            bank_account_id: "",
+            chart_of_account_id: "",
             reference_no: "",
             amount_paid: "",
             credit_tax: "",
@@ -202,7 +202,7 @@ export default function ReceivePaymentForm({
         });
     }, [isDiscount.value]);
 
-    const [isBank, setBank] = useState({
+    const [isChartOAccount, setChartOfAccount] = useState({
         id: "",
         value: "",
     });
@@ -225,9 +225,9 @@ export default function ReceivePaymentForm({
     useEffect(() => {
         setHeaderForm({
             ...HeaderForm,
-            bank_account_id: isBank.id,
+            chart_of_account_id: isChartOAccount.id,
         });
-    }, [isBank]);
+    }, [isChartOAccount]);
 
     useEffect(() => {
         setHeaderForm({
@@ -269,7 +269,7 @@ export default function ReceivePaymentForm({
     const ErrorToggleHandler = () => {
         if (
             HeaderForm.amount_paid === "" ||
-            HeaderForm.bank_account_id === "" ||
+            HeaderForm.chart_of_account_id === "" ||
             HeaderForm.credit_tax === "" ||
             HeaderForm.customer_id === "" ||
             HeaderForm.deposit_date === "" ||
@@ -503,11 +503,12 @@ export default function ReceivePaymentForm({
                             <li className="w-[30%]  -mt-1">
                                 <label htmlFor="" className="labelField">
                                     *CASH ACCOUNT
-                                    <BankAccountDropDown
-                                        isObject={isBank}
-                                        setObject={setBank}
+                                    <DropdownFieldCOA
+                                        className={"field"}
+                                        value={isChartOAccount.value}
+                                        setValue={setChartOfAccount}
                                     />
-                                    {HeaderForm.bank_account_id === "" &&
+                                    {HeaderForm.chart_of_account_id === "" &&
                                         isErrorToggle && (
                                             <p className="text-[10px] text-ThemeRed">
                                                 Required!

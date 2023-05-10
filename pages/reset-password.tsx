@@ -98,7 +98,7 @@ export default function ResetPassword({ token }: any) {
                                         name="password"
                                         required
                                         onChange={(e: any) =>
-                                            e.target.value.length <= 15 &&
+                                            e.target.value.length <= 320 &&
                                             setPassword(e.target.value)
                                         }
                                         className="flex-1 outline-none text-16px"
@@ -126,7 +126,7 @@ export default function ResetPassword({ token }: any) {
                                         name="password"
                                         required
                                         onChange={(e: any) =>
-                                            e.target.value.length <= 15 &&
+                                            e.target.value.length <= 320 &&
                                             setConfirmPass(e.target.value)
                                         }
                                         className="flex-1 outline-none text-16px"
