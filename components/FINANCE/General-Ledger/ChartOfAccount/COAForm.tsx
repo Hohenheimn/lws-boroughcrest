@@ -351,6 +351,7 @@ export default function COAForm({
                                 )}
                             </article>
                         </li>
+
                         <li>
                             <label htmlFor="">*ACCOUNT NAME</label>
                             <InputTextForm
@@ -365,6 +366,7 @@ export default function COAForm({
                                 </p>
                             )}
                         </li>
+
                         <li>
                             <label htmlFor="">DESCRIPTION</label>
                             <InputTextForm
@@ -374,6 +376,7 @@ export default function COAForm({
                                 limitation={255}
                             />
                         </li>
+
                         <li>
                             <label htmlFor="">*DEFAULT ACCOUNT</label>
                             <div className={style.Dropdown}>
@@ -416,6 +419,7 @@ export default function COAForm({
                                 )}
                             </div>
                         </li>
+
                         <li className={style.status}>
                             <label htmlFor="status">
                                 *APPLY TO SUB-ACCOUNT
@@ -427,6 +431,7 @@ export default function COAForm({
                                 onClick={() => setStatus(!isStatus)}
                             ></div>
                         </li>
+
                         {(isDefaultAccount.value === "Cash Account Outbound" ||
                             isDefaultAccount.value ===
                                 "Cash Account Inbound") && (

@@ -13,7 +13,6 @@ import { SidebarLinks } from "./PagesUrl";
 import PropertySearch from "../Search/PropertySearch";
 import AppContext from "../Context/AppContext";
 import JournalSearch from "../Search/JournalSearch";
-import RoleSearch from "../Search/RolesSearch";
 import BillingSearch from "../Search/BillingSearch";
 import PaymentRegisterSearch from "../Search/PaymentRegisterSearch";
 import AdjustmentSearch from "../Search/SearchAdjusment";
@@ -177,9 +176,6 @@ export default function Sidebar({
                                     {router.pathname.includes(
                                         "invoice-list/[id]"
                                     ) && <BillingSearch />}
-                                    {router.pathname.includes("/roles") && (
-                                        <RoleSearch />
-                                    )}
                                     {router.pathname.includes(
                                         "payment-register/[id]"
                                     ) && <PaymentRegisterSearch />}

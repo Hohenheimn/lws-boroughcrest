@@ -23,9 +23,9 @@ export const SidebarLinks = [
                 ActiveName: "user",
             },
             {
-                name: "roles",
-                url: "/project/roles",
-                ActiveName: "roles",
+                name: "access",
+                url: "/project/access",
+                ActiveName: "access",
             },
         ],
     },

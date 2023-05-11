@@ -11,6 +11,7 @@ import AppContext from "../../../Context/AppContext";
 import TableErrorMessage from "../../../Reusable/TableErrorMessage";
 import Pagination from "../../../Reusable/Pagination";
 import Image from "next/image";
+import SelectDropdown from "../../../Reusable/SelectDropdown";
 
 type Props = {
     isSearchTable: string;
@@ -66,6 +67,7 @@ export default function COATable({ isSearchTable, isFilterTable }: Props) {
                                     <th>Account Name</th>
                                     <th>Category</th>
                                     <th>Description</th>
+                                    <th></th>
                                     <th>Default Account</th>
                                     <th></th>
                                 </>
@@ -227,6 +229,22 @@ const List = ({ itemDetail, isFilterTable }: ListProps) => {
                         </Link>
                     </td>
                 )}
+                {isFilterTable && <td>dropdown</td>}
+                <td>
+                    <SelectDropdown
+                        selectHandler={(value: string) => {}}
+                        className=""
+                        inputElement={
+                            <input
+                                className="w-full field"
+                                value="sample"
+                                readOnly
+                                autoComplete="off"
+                            />
+                        }
+                        listArray={["Sample", "Sample", "Sample"]}
+                    />
+                </td>
                 {/* DesCription */}
                 {isFilterTable && (
                     <td className="xLarge">
@@ -241,6 +259,7 @@ const List = ({ itemDetail, isFilterTable }: ListProps) => {
                         </Link>
                     </td>
                 )}
+
                 <td className={`${isFilterTable ? "xLarge" : "large"}`}>
                     <Link
                         href={`/finance/general-ledger/chart-of-account?modify=${itemDetail.id}`}

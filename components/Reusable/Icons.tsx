@@ -105,8 +105,8 @@ export function DeleteButton() {
             <div className=" inline-block cursor-pointer">
                 <Image
                     src="/Images/f_delete.png"
-                    width={13}
-                    height={15}
+                    width={14}
+                    height={16}
                     alt="Delete"
                 />
             </div>
@@ -123,8 +123,8 @@ export function PencilButtonTable() {
             <div className=" inline-block cursor-pointer">
                 <Image
                     src="/Images/f_pencil.png"
-                    width={12}
-                    height={12}
+                    width={15}
+                    height={15}
                     alt="Modify"
                 />
             </div>

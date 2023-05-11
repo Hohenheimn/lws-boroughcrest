@@ -115,7 +115,7 @@ select {
         li {
             width: 100% !important;
             margin: 0 !important;
-            @apply px-2 py-[2px] text-[14px] hover:bg-ThemeRed hover:text-white cursor-pointer;
+            @apply px-2 py-[2px] text-[14px] hover:bg-ThemeRed hover:text-white cursor-pointer text-RegularColor;
         }
     }
     span {
@@ -137,9 +137,12 @@ select {
 .button_cancel {
     @apply text-ThemeRed font-semibold cursor-pointer text-[14px] 1550px:text-[12px] mr-5 uppercase;
 }
+.newButton {
+    @apply capitalize px-5 1550px:px-3 text-center  480px:text-[12px] 480px:p-2 text-[14px] py-3 1550px:py-3 rounded-lg bg-ThemeRed text-white leading-none duration-75 hover:bg-ThemeRed50;
+}
 // Text
 .pageTitle {
-    @apply text-[24px] 480px:text-[18px];
+    @apply font-bold mb-10 text-[24px]  480px:text-[20px]  1550px:mb-3 capitalize;
 }
 .SectionTitle {
     @apply text-[20px] 1366px:text-[20px] flex items-center;

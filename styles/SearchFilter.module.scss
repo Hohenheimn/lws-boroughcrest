@@ -82,7 +82,7 @@
     .new {
         @apply relative mr-5 cursor-pointer;
         div {
-            @apply capitalize px-5 text-center  480px:text-[12px] 480px:p-2 text-[14px] py-3 rounded-lg bg-ThemeRed text-white leading-none duration-75 hover:bg-ThemeRed50;
+            @apply capitalize px-5 1550px:px-3 text-center  480px:text-[12px] 480px:p-2 text-[14px] py-3 1550px:py-3 rounded-lg bg-ThemeRed text-white leading-none duration-75 hover:bg-ThemeRed50;
         }
     }
 }
