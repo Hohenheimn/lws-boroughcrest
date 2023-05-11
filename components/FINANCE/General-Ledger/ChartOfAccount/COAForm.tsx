@@ -208,9 +208,9 @@ export default function COAForm({
             parent_id:
                 isParent.id === 0 ||
                 isParent.id === undefined ||
-                isParent.id === null
-                    ? ""
-                    : isParent.id,
+                isParent.id === ""
+                    ? null
+                    : Number(isParent.id),
             code_suffix: data.code_suffix,
             account_name: data.account_name,
             description: data.description,

@@ -86,24 +86,11 @@ export default function Sidebar({
 
                 <div className="w-full h-full flex mt-28">
                     <ul
-                        className={` self-start pt-5 ${
+                        className={` self-start ${
                             !isProfileSearch && "w-full"
                         }`}
                     >
-                        <div className=" flex justify-between items-center px-5 mb-5 duration-75">
-                            <AnimatePresence>
-                                {!isProfileSearch && !collapseSide && (
-                                    <motion.h1
-                                        variants={FadeSide}
-                                        initial="initial"
-                                        animate="animate"
-                                        exit="exit"
-                                        className="h1-text "
-                                    >
-                                        OVERVIEW
-                                    </motion.h1>
-                                )}
-                            </AnimatePresence>
+                        <div className=" flex justify-end my-3 items-center px-5 duration-75">
                             {/* Collapse Arrow */}
                             {isWindow > 820
                                 ? router.query.id === undefined && (

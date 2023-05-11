@@ -228,7 +228,6 @@ export default function JournalForm({
                             className="px-2 h-10 1550px:h-8 outline-none rounded-md shadow-md w-full"
                             value={isParticulars}
                             onChange={(e) => {
-                                if (!TextFieldValidation(e, 50)) return;
                                 setParticulars(e.target.value);
                             }}
                         />

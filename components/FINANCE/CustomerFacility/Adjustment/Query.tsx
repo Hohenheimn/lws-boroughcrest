@@ -22,7 +22,7 @@ export const GetAdjustmentList = (
         ],
         () => {
             return api.get(
-                `/finance/customer-facility/adjustment?paginate=10&status=${type}&filters=${filterArray}&search=${keyword}&page=${
+                `/finance/customer-facility/adjustment?paginate=10&list_type=${type}&filters=${filterArray}&search=${keyword}&page=${
                     keyword === "" ? TablePage : 1
                 }&date_from=${dateFrom}&date_to=${dateTo}`,
                 {
@@ -87,12 +87,16 @@ export const ModifyAdjustment = (onSuccess: any, onError: any, id: any) => {
 export const MultipleUpdateAdjustment = (onSucces: any, onError: any) => {
     const queryClient = useQueryClient();
     return useMutation(
-        (Payload: any) => {
-            return api.put(`/finance/customer-facility/adjustment`, Payload, {
-                headers: {
-                    Authorization: "Bearer " + getCookie("user"),
-                },
-            });
+        (Payload: { status: string; adjustment_ids: number[] }) => {
+            return api.post(
+                `/finance/customer-facility/adjustment/change-status`,
+                Payload,
+                {
+                    headers: {
+                        Authorization: "Bearer " + getCookie("user"),
+                    },
+                }
+            );
         },
         {
             onSuccess: () => {

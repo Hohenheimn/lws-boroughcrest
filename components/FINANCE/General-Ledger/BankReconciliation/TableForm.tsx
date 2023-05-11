@@ -24,7 +24,11 @@ import { AiOutlineInfoCircle } from "react-icons/ai";
 import Link from "next/link";
 import Details from "./Details";
 import { useRouter } from "next/router";
-import { PencilButton } from "../../../Reusable/Icons";
+import {
+    MinusButtonTable,
+    PencilButton,
+    PlusButtonTable,
+} from "../../../Reusable/Icons";
 import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
 import { TextFieldValidation } from "../../../Reusable/InputField";
 
@@ -596,7 +600,7 @@ const List = ({
                                     className=" cursor-pointer"
                                     onClick={RemoveRowHandler}
                                 >
-                                    <HiMinus />
+                                    <MinusButtonTable />
                                 </div>
                             )}
                         </>
@@ -607,7 +611,7 @@ const List = ({
                             className="ml-5 1024px:ml-2 cursor-pointer"
                             onClick={(e) => AddRowHandler(e)}
                         >
-                            <BsPlusLg />
+                            <PlusButtonTable />
                         </div>
                     )}
                 </td>

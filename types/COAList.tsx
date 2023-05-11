@@ -14,7 +14,7 @@ export type ChartofAccountList = {
 
 export type ChartofAccountPayload = {
     chart_code: string;
-    parent_id: string;
+    parent_id: number | null;
     code_suffix: string;
     account_name: string;
     description: string;

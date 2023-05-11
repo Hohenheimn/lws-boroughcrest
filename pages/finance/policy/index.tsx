@@ -249,13 +249,19 @@ export default function Policy() {
                                                         type="text"
                                                         className={`field duration-200 ease-in-out`}
                                                         value={item.prefix}
-                                                        onChange={(e) =>
-                                                            UpdateValue(
-                                                                "prefix",
-                                                                e.target.value,
-                                                                item.id
-                                                            )
-                                                        }
+                                                        onChange={(e) => {
+                                                            if (
+                                                                e.target.value
+                                                                    .length <= 9
+                                                            ) {
+                                                                UpdateValue(
+                                                                    "prefix",
+                                                                    e.target
+                                                                        .value,
+                                                                    item.id
+                                                                );
+                                                            }
+                                                        }}
                                                     />
                                                 ) : (
                                                     <h4 className="main_text noMB">
@@ -269,13 +275,19 @@ export default function Policy() {
                                                         type="text"
                                                         className={`field duration-200 ease-in-out`}
                                                         value={item.serial_from}
-                                                        onChange={(e) =>
-                                                            UpdateValue(
-                                                                "serial_from",
-                                                                e.target.value,
-                                                                item.id
-                                                            )
-                                                        }
+                                                        onChange={(e) => {
+                                                            if (
+                                                                e.target.value
+                                                                    .length <= 9
+                                                            ) {
+                                                                UpdateValue(
+                                                                    "serial_from",
+                                                                    e.target
+                                                                        .value,
+                                                                    item.id
+                                                                );
+                                                            }
+                                                        }}
                                                     />
                                                 ) : (
                                                     <h4 className="main_text noMB">
@@ -290,13 +302,19 @@ export default function Policy() {
                                                         type="text"
                                                         className={`field duration-200 ease-in-out`}
                                                         value={item.serial_to}
-                                                        onChange={(e) =>
-                                                            UpdateValue(
-                                                                "serial_to",
-                                                                e.target.value,
-                                                                item.id
-                                                            )
-                                                        }
+                                                        onChange={(e) => {
+                                                            if (
+                                                                e.target.value
+                                                                    .length <= 9
+                                                            ) {
+                                                                UpdateValue(
+                                                                    "serial_to",
+                                                                    e.target
+                                                                        .value,
+                                                                    item.id
+                                                                );
+                                                            }
+                                                        }}
                                                     />
                                                 ) : (
                                                     <h4 className="main_text noMB">
