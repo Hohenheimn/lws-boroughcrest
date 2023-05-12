@@ -302,13 +302,13 @@ select {
             }
             td.checkbox {
                 @apply w-3 min-w-0;
-                input[type="checkbox"] {
-                    border: 1px solid rgb(216, 216, 216) !important;
-                    @apply relative  cursor-pointer h-4 w-4 rounded-md shadow-md overflow-hidden after:text-white after:flex after:justify-center after:items-center mr-1 checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
-                    &:checked {
-                        border: none !important;
-                    }
-                }
+                // input[type="checkbox"] {
+                //     border: 1px solid rgb(216, 216, 216) !important;
+                //     @apply relative  cursor-pointer h-4 w-4 rounded-md shadow-md overflow-hidden after:text-white after:flex after:justify-center after:items-center mr-1 checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
+                //     &:checked {
+                //         border: none !important;
+                //     }
+                // }
             }
             td.action {
                 .item {
@@ -370,9 +370,9 @@ select {
         tr {
             th {
                 @apply text-start text-[14px] 1550px:text-[13px] 1280px:text-[13px] px-1 py-1;
-                input[type="checkbox"] {
-                    @apply bg-white;
-                }
+                // input[type="checkbox"] {
+                //     @apply bg-white;
+                // }
             }
         }
     }
@@ -380,9 +380,9 @@ select {
         tr {
             td {
                 @apply text-[14px] min-w-[100px] py-1 px-1 text-[#545454];
-                input[type="checkbox"] {
-                    @apply bg-white;
-                }
+                // input[type="checkbox"] {
+                //     @apply bg-white;
+                // }
             }
             td.checkbox {
                 @apply min-w-[0]  cursor-pointer;
@@ -450,7 +450,7 @@ input[type="checkbox"] {
     &:checked {
         border: none !important;
     }
-    @apply relative after:text-white after:flex after:justify-center after:items-center mr-1 checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
+    @apply relative w-4 h-4 shadow-lg overflow-hidden rounded-md after:bg-white after:text-white after:flex after:justify-center after:items-center mr-1 checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
 }
 
 .pageDetail {
@@ -547,13 +547,13 @@ input[type="number"] {
             }
             th.checkbox {
                 @apply w-3 min-w-0;
-                input[type="checkbox"] {
-                    border: 1px solid rgb(216, 216, 216) !important;
-                    @apply bg-white  cursor-pointer relative h-3 w-3 rounded-sm shadow-md overflow-hidden after:text-white after:flex after:justify-center mr-0 after:items-center checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
-                    &:checked {
-                        border: none !important;
-                    }
-                }
+                // input[type="checkbox"] {
+                //     border: 1px solid rgb(216, 216, 216) !important;
+                //     @apply bg-white  cursor-pointer relative h-3 w-3 rounded-sm shadow-md overflow-hidden after:text-white after:flex after:justify-center mr-0 after:items-center checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
+                //     &:checked {
+                //         border: none !important;
+                //     }
+                // }
             }
         }
     }
@@ -618,16 +618,16 @@ input[type="number"] {
             }
         }
     }
-    td.checkbox {
-        @apply w-3 min-w-0 text-center;
-        input[type="checkbox"] {
-            border: 1px solid rgb(216, 216, 216) !important;
-            @apply bg-white  cursor-pointer relative h-3 w-3 rounded-sm shadow-md overflow-hidden after:text-white after:flex after:justify-center mr-0 after:items-center checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
-            &:checked {
-                border: none !important;
-            }
-        }
-    }
+    // td.checkbox {
+    //     @apply w-3 min-w-0 text-center;
+    //     input[type="checkbox"] {
+    //         border: 1px solid rgb(216, 216, 216) !important;
+    //         @apply bg-white  cursor-pointer relative h-3 w-3 rounded-sm shadow-md overflow-hidden after:text-white after:flex after:justify-center mr-0 after:items-center checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
+    //         &:checked {
+    //             border: none !important;
+    //         }
+    //     }
+    // }
     td.action {
         div {
             @apply h-full flex justify-center items-center;
@@ -1040,13 +1040,13 @@ table.rolePermisionTable {
         }
         td {
             @apply text-RegularColor py-1 border-b border-[#cecece] text-[14px];
-            input[type="checkbox"] {
-                border: 1px solid rgb(216, 216, 216) !important;
-                @apply relative bg-white cursor-pointer h-4 w-4 rounded-md shadow-md overflow-hidden after:text-white after:flex after:justify-center after:items-center mr-1 checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
-                &:checked {
-                    border: none !important;
-                }
-            }
+            // input[type="checkbox"] {
+            //     border: 1px solid rgb(216, 216, 216) !important;
+            //     @apply relative bg-white cursor-pointer h-4 w-4 rounded-md shadow-md overflow-hidden after:text-white after:flex after:justify-center after:items-center mr-1 checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
+            //     &:checked {
+            //         border: none !important;
+            //     }
+            // }
             .calendar input {
                 font-size: 14px !important;
             }

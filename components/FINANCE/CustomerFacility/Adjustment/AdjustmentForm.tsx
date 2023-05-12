@@ -25,6 +25,8 @@ import { ValidationDebitCredit } from "./AdjustmentDistribution";
 import { useRouter } from "next/router";
 import { ScaleLoader } from "react-spinners";
 import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
+import { UserInfo } from "../../../PROJECT/user/UserForm";
+import { LoginUserInfo } from "../../../HOC/LoginUser/UserInfo";
 
 export type AdjustmentHeaderForm = {
     customer_id: number | string;
@@ -94,7 +96,7 @@ export default function AdjustmentForm() {
 
     const { setPrompt, userInfo } = useContext(AppContext);
 
-    const User_GST_type = userInfo?.corporate_gst_type;
+    const User_GST_type: LoginUserInfo = userInfo?.corporate_gst_type;
 
     const [isErrorMessage, setErrorMessage] = useState(false);
 
@@ -290,6 +292,21 @@ export default function AdjustmentForm() {
                         isTransaction,
                         item.default_account
                     );
+                    let adjustment_total = 0;
+                    let deferred_customer_gst_account = 0;
+                    let other_account = 0;
+                    const vat_rate = 12;
+                    if (User_GST_type.corporate_gst_type == "Non Vat") {
+                        adjustment_total = isAdjustmentTotal;
+                    } else {
+                        // computation here
+                        deferred_customer_gst_account =
+                            adjustment_total * (vat_rate / (vat_rate + 100));
+                        other_account =
+                            Number(adjustment_total) -
+                            Number(deferred_customer_gst_account);
+                    }
+
                     return {
                         id: index,
                         coa_id: item.id,
@@ -297,11 +314,14 @@ export default function AdjustmentForm() {
                         account_name: item.account_name,
                         debit:
                             validationDebitOrCreditField === "debit"
-                                ? Number(isAdjustmentTotal)
+                                ? item.default_account ===
+                                  "Deferred Customer GST Account"
+                                    ? deferred_customer_gst_account
+                                    : other_account
                                 : 0,
                         credit:
                             validationDebitOrCreditField === "credit"
-                                ? Number(isAdjustmentTotal)
+                                ? Number(adjustment_total)
                                 : 0,
                     };
                 }

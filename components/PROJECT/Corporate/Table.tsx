@@ -46,13 +46,6 @@ export default function Table({ isSearchTable }: Props) {
                         </tr>
                     </thead>
                     <tbody>
-                        {isError && (
-                            <tr>
-                                <td colSpan={5} className="text-center">
-                                    Error...
-                                </td>
-                            </tr>
-                        )}
                         {data?.data.data.map((item: any, index: number) => (
                             <List key={index} itemDetail={item} />
                         ))}

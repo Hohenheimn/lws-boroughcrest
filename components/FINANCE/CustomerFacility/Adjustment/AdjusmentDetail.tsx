@@ -9,10 +9,7 @@ import { format, isValid, parse } from "date-fns";
 import { PencilButton } from "../../../Reusable/Icons";
 import { GetCustomer } from "../../../ReactQuery/CustomerMethod";
 import { customer } from "../../../../types/customerList";
-import {
-    GetFilteredAccountEntriesList,
-    GetInvoiceByCustomerAndCharge,
-} from "./Query";
+import { GetFilteredAccountEntriesList } from "./Query";
 import TableLoadingNError from "../../../Reusable/TableLoadingNError";
 
 type AdjustmentDetail = {

@@ -66,9 +66,12 @@ export default function CustomerForm({ DefaultValue }: Props) {
         useContext(AppContext);
 
     const [isButtonClicked, setButtonClicked] = useState("");
+
     const [isCustomerForm, setCustomerForm] =
         useState<CustomerFormDefaultValue>(DefaultValue);
+
     const router = useRouter();
+
     const [FormPage, setFormPage] = useState("primary");
 
     const [isUnitCode, setUnitCode] = useState<CustomerUnitCodes[]>(
@@ -84,7 +87,9 @@ export default function CustomerForm({ DefaultValue }: Props) {
               ]
             : DefaultValue?.unit_codes
     );
+
     const queryClient = useQueryClient();
+
     const onSuccess = () => {
         queryClient.invalidateQueries(["get-customer-list"]);
         if (router.query.id !== undefined) {
@@ -93,6 +98,7 @@ export default function CustomerForm({ DefaultValue }: Props) {
                 `${router.query.id}`,
             ]);
         }
+
         setPrompt((prev: any) => ({
             ...prev,
             message: `Customer successfully ${
@@ -101,7 +107,9 @@ export default function CustomerForm({ DefaultValue }: Props) {
             type: isButtonClicked === "draft" ? "draft" : "success",
             toggle: true,
         }));
+
         setCustomerForm(DefaultCustomerFormValue);
+
         setFormPage("primary");
         if (isButtonClicked === "save") {
             setCusToggle(false);
@@ -109,6 +117,7 @@ export default function CustomerForm({ DefaultValue }: Props) {
                 router.push("");
             }
         }
+
         if (router.query.id !== undefined && isButtonClicked === "new") {
             router.push("/admin/customer/");
             setCusToggle(true);
@@ -116,9 +125,11 @@ export default function CustomerForm({ DefaultValue }: Props) {
     };
     const onError = (res: any) => {
         const ErrorField = res.response.data;
+
         if (ErrorField > 0 || ErrorField !== null || ErrorField !== undefined) {
             setCusError({ ...ErrorField });
         }
+
         ErrorSubmit(res, setPrompt);
     };
 
@@ -144,10 +155,13 @@ export default function CustomerForm({ DefaultValue }: Props) {
 
     const CreateHandler = async (button: string) => {
         setButtonClicked(button);
+
         let validate = true;
+
         const UnitCodesFilter = isUnitCode.filter(
             (item: CustomerUnitCodes) => item.unit_code !== ""
         );
+
         const UnitCodes = UnitCodesFilter.map((item) => {
             return item.unit_code;
         });
@@ -185,8 +199,11 @@ export default function CustomerForm({ DefaultValue }: Props) {
         };
         // Remove Keys
         delete Payload.image_photo_url;
+
         delete Payload.image_signature_url;
+
         delete Payload.image_valid_id_url;
+
         if (router.query.id !== undefined) {
             delete Payload.unit_codes;
         }

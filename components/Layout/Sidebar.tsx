@@ -16,6 +16,7 @@ import JournalSearch from "../Search/JournalSearch";
 import BillingSearch from "../Search/BillingSearch";
 import PaymentRegisterSearch from "../Search/PaymentRegisterSearch";
 import AdjustmentSearch from "../Search/SearchAdjusment";
+import AccessSearch from "../Search/AccessSearch";
 
 type SidebarType = {
     isProfileSearch: boolean;
@@ -182,6 +183,9 @@ export default function Sidebar({
                                     {router.pathname.includes(
                                         "adjustment-list/[id]"
                                     ) && <AdjustmentSearch />}
+                                    {router.pathname.includes(
+                                        "access/[id]"
+                                    ) && <AccessSearch />}
                                 </motion.ul>
                             )}
                         </AnimatePresence>
