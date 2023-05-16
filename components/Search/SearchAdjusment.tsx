@@ -7,11 +7,15 @@ import { GetJournalRecentSearch } from "../FINANCE/General-Ledger/Journal/Query"
 import { useRouter } from "next/router";
 import { BeatLoader } from "react-spinners";
 import { format, isValid, parse } from "date-fns";
+import { AdjustmentDetailType } from "../FINANCE/CustomerFacility/Adjustment/AdjusmentDetail";
 
 export default function AdjustmentSearch() {
     const [search, setSearch] = useState<string>("");
+
     const router = useRouter();
+
     const id: any = router.query.id;
+
     const { isLoading, isError, data } = GetJournalRecentSearch(id, search);
 
     return (
@@ -60,7 +64,10 @@ export default function AdjustmentSearch() {
     );
 }
 
-const List = ({ item }: any) => {
+type PropsList = {
+    item: AdjustmentDetailType;
+};
+const List = ({ item }: PropsList) => {
     const date = parse(item.date, "yyyy-MM-dd", new Date());
     return (
         <Link
@@ -69,9 +76,7 @@ const List = ({ item }: any) => {
             <a className={style.searchedItem}>
                 <ul>
                     <li>
-                        <h4>
-                            {item.journal_no === null ? "N/A" : item.journal_no}
-                        </h4>
+                        <h4>{item.memo_no === null ? "N/A" : item.memo_no}</h4>
                         <p>
                             {isValid(date) ? format(date, "MMM dd yyyy") : ""}
                         </p>

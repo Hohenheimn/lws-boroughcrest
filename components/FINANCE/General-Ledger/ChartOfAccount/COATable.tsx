@@ -12,6 +12,10 @@ import TableErrorMessage from "../../../Reusable/TableErrorMessage";
 import Pagination from "../../../Reusable/Pagination";
 import Image from "next/image";
 import SelectDropdown from "../../../Reusable/SelectDropdown";
+import {
+    MdKeyboardArrowRight,
+    MdOutlineKeyboardArrowDown,
+} from "react-icons/md";
 
 type Props = {
     isSearchTable: string;
@@ -44,6 +48,9 @@ export default function COATable({ isSearchTable, isFilterTable }: Props) {
             toggle: true,
         });
     }
+
+    const [showHeader3, setShowHeader3] = useState(false);
+
     return (
         <>
             <div className="table_container">
@@ -58,6 +65,20 @@ export default function COATable({ isSearchTable, isFilterTable }: Props) {
                                     <th>Tertiary</th>
                                     <th>Account</th>
                                     <th>Sub Account</th>
+                                    <th>
+                                        <div
+                                            onClick={() =>
+                                                setShowHeader3(!showHeader3)
+                                            }
+                                            className="inline-block"
+                                        >
+                                            <MdKeyboardArrowRight
+                                                className={`text-[24px] ${
+                                                    showHeader3 && "rotate-180"
+                                                }`}
+                                            />
+                                        </div>
+                                    </th>
                                     <th>Description</th>
                                     <th>Default Account</th>
                                 </>
@@ -67,7 +88,6 @@ export default function COATable({ isSearchTable, isFilterTable }: Props) {
                                     <th>Account Name</th>
                                     <th>Category</th>
                                     <th>Description</th>
-                                    <th></th>
                                     <th>Default Account</th>
                                     <th></th>
                                 </>
@@ -87,6 +107,7 @@ export default function COATable({ isSearchTable, isFilterTable }: Props) {
                                 key={index}
                                 itemDetail={item}
                                 isFilterTable={isFilterTable}
+                                showHeader3={showHeader3}
                             />
                         ))}
                     </tbody>
@@ -119,18 +140,12 @@ export default function COATable({ isSearchTable, isFilterTable }: Props) {
 type ListProps = {
     itemDetail: any;
     isFilterTable: boolean;
+    showHeader3: boolean;
 };
-const List = ({ itemDetail, isFilterTable }: ListProps) => {
-    const [isHover, setHover] = useState(false);
-    const MouseEnter = () => {
-        setHover(true);
-    };
-    const MouseLeave = () => {
-        setHover(false);
-    };
+const List = ({ itemDetail, isFilterTable, showHeader3 }: ListProps) => {
     return (
         <>
-            <tr onMouseEnter={MouseEnter} onMouseLeave={MouseLeave}>
+            <tr>
                 <td className="normal">
                     <Link
                         href={`/finance/general-ledger/chart-of-account?modify=${itemDetail.id}`}
@@ -229,22 +244,15 @@ const List = ({ itemDetail, isFilterTable }: ListProps) => {
                         </Link>
                     </td>
                 )}
-                {isFilterTable && <td>dropdown</td>}
-                <td>
-                    <SelectDropdown
-                        selectHandler={(value: string) => {}}
-                        className=""
-                        inputElement={
-                            <input
-                                className="w-full field"
-                                value="sample"
-                                readOnly
-                                autoComplete="off"
-                            />
-                        }
-                        listArray={["Sample", "Sample", "Sample"]}
-                    />
-                </td>
+                {isFilterTable && (
+                    <td className={`${showHeader3 && "xLarge"}`}>
+                        {showHeader3 && itemDetail.header === "Header 3" && (
+                            <div className="relative">
+                                <p>{itemDetail.account_name}</p>
+                            </div>
+                        )}
+                    </td>
+                )}
                 {/* DesCription */}
                 {isFilterTable && (
                     <td className="xLarge">

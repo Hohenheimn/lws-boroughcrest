@@ -16,6 +16,8 @@ import { GetJournal, MultipleUpdate } from "../../General-Ledger/Journal/Query";
 import { useRouter } from "next/router";
 import { GetAdjustmentList, MultipleUpdateAdjustment } from "./Query";
 import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
+import { AdjustmentDetailType } from "./AdjusmentDetail";
+import ModalTemp from "../../../Reusable/ModalTemp";
 
 type Props = {
     type: string;
@@ -87,10 +89,16 @@ export default function AdjustmentTable({ type, isPeriod, setPeriod }: Props) {
 
     useEffect(() => {
         if (data?.status === 200) {
+            let empty = false;
+
             let selectAll = false;
-            if (data.data.length > 0) {
-                console.log(data?.data);
-                let CloneArray = data?.data.map((item: isTableItemObj) => {
+
+            let CloneArray = data?.data?.data.map(
+                (item: AdjustmentDetailType) => {
+                    if (item.id === null) {
+                        empty = true;
+                        return;
+                    }
                     let select = false;
                     if (isSelectedIDs.includes(item.id)) {
                         select = true;
@@ -98,24 +106,27 @@ export default function AdjustmentTable({ type, isPeriod, setPeriod }: Props) {
                     const date = parse(item.date, "yyyy-MM-dd", new Date());
                     return {
                         id: item.id,
-                        status: "Draft",
-                        memo_no: "MNA123",
+                        status: item?.status,
+                        memo_no: item?.memo_no,
                         date: isValid(date) ? format(date, "MMM dd yyyy") : "",
-                        customer_name: "Jomari",
-                        properties: ["PQWEQ"],
-                        description: "SAMPLE",
+                        customer_name: item?.customer?.name,
+                        properties: item?.customer?.properties.map(
+                            (prop) => prop.unit_code
+                        ),
+                        description: item?.description,
                         select: select,
                     };
-                });
-                if (CloneArray.length === isSelectedIDs.length) {
-                    selectAll = true;
                 }
+            );
 
-                setTableItem({
-                    itemArray: CloneArray,
-                    selectAll: selectAll,
-                });
+            if (CloneArray.length === isSelectedIDs.length) {
+                selectAll = true;
             }
+
+            setTableItem({
+                itemArray: empty ? [] : CloneArray,
+                selectAll: selectAll,
+            });
         }
     }, [data?.data]);
 
@@ -149,17 +160,22 @@ export default function AdjustmentTable({ type, isPeriod, setPeriod }: Props) {
                 select: false,
             };
         });
+
         setTableItem({
             itemArray: tableArray,
             selectAll: false,
         });
+
         setSelectedIDs([]);
+
         setPrompt({
             message: `Items successfully ${buttonLoading}!`,
             type: "success",
             toggle: true,
         });
+
         buttonClicked = "";
+
         setButtonLoading("");
     };
 
@@ -169,18 +185,22 @@ export default function AdjustmentTable({ type, isPeriod, setPeriod }: Props) {
         setButtonLoading("");
     };
 
+    const [isRejectNoticeToggle, setRejectNoticeToggle] = useState(false);
+
     const { isLoading: updateLoading, mutate: updateMutate } =
         MultipleUpdateAdjustment(onSuccess, onError);
 
     const UpdateStatus = (button: string) => {
         buttonClicked = button;
+
         setButtonLoading(button);
-        const Payload = {
-            adjustment_ids: isSelectedIDs,
-            status: button,
-        };
+
         if (isSelectedIDs.length > 0) {
-            updateMutate(Payload);
+            if (button === "Rejected") {
+                setRejectNoticeToggle(true);
+            } else {
+                Confirm(button);
+            }
         } else {
             setPrompt({
                 message: "Select a Adjustment!",
@@ -190,8 +210,38 @@ export default function AdjustmentTable({ type, isPeriod, setPeriod }: Props) {
         }
     };
 
+    const Confirm = (button: string) => {
+        const Payload = {
+            adjustment_ids: isSelectedIDs,
+            status: button,
+        };
+        updateMutate(Payload);
+    };
+
     return (
         <>
+            {isRejectNoticeToggle && (
+                <ModalTemp narrow={true}>
+                    <h1 className="text-center mb-5">
+                        Adjustment will be deleted and changes is not
+                        reversible. Are you sure of this action?
+                    </h1>
+                    <div className="flex justify-end items-center w-full">
+                        <button
+                            className="button_cancel"
+                            onClick={() => setRejectNoticeToggle(false)}
+                        >
+                            CANCEL
+                        </button>
+                        <button
+                            className="buttonRed"
+                            onClick={() => Confirm("Rejected")}
+                        >
+                            CONFIRM
+                        </button>
+                    </div>
+                </ModalTemp>
+            )}
             <section className={style.container}>
                 <div className={style.searchBarAdvF}>
                     <div className={style.searchBar}>
@@ -242,7 +292,7 @@ export default function AdjustmentTable({ type, isPeriod, setPeriod }: Props) {
                                     <div
                                         className={`${style.noFill} mr-5`}
                                         onClick={() =>
-                                            UpdateStatus("In Progress")
+                                            UpdateStatus("In Process")
                                         }
                                     >
                                         {updateLoading &&
@@ -381,10 +431,10 @@ export default function AdjustmentTable({ type, isPeriod, setPeriod }: Props) {
                         </tr>
                     </thead>
                     <tbody>
-                        {data?.data.length > 0 ? (
+                        {data?.data?.data?.length > 0 ? (
                             <>
                                 {isTableItem?.itemArray.map(
-                                    (item: any, index: number) => (
+                                    (item: isTableItemObj, index: number) => (
                                         <List
                                             key={index}
                                             itemDetail={item}
@@ -493,7 +543,7 @@ const List = ({
                     <div className="finance_status">
                         <div
                             className={`status ${
-                                itemDetail.status === "In Progress"
+                                itemDetail.status === "In Process"
                                     ? "InProcess"
                                     : itemDetail.status
                             }`}
@@ -507,7 +557,7 @@ const List = ({
                                         alt={itemDetail.status}
                                     />
                                 )}
-                                {itemDetail.status === "In Progress" && (
+                                {itemDetail.status === "In Process" && (
                                     <Image
                                         src={`/Images/f_InProcess.png`}
                                         width={15}
@@ -545,10 +595,11 @@ const List = ({
             <td onClick={redirectHandler}>
                 <div>
                     <h2>
-                        {itemDetail.properties.map((item: any, index: number) =>
-                            itemDetail.properties.length - 1 === index
-                                ? item
-                                : item + ", "
+                        {itemDetail?.properties?.map(
+                            (item: any, index: number) =>
+                                itemDetail?.properties?.length - 1 === index
+                                    ? item
+                                    : item + ", "
                         )}
                     </h2>
                 </div>

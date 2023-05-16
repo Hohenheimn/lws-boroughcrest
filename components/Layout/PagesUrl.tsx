@@ -74,6 +74,11 @@ export const SidebarLinks = [
                 ActiveName: "customer-facility",
             },
             {
+                name: "Check Warehouse",
+                url: "/finance/check-warehouse/check-receivables/check-schedule",
+                ActiveName: "check-warehouse",
+            },
+            {
                 name: "Policy",
                 url: "/finance/policy",
                 ActiveName: "policy",

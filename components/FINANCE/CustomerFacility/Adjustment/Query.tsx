@@ -51,9 +51,59 @@ export const CreateNewAdjustment = (onSuccess: any, onError: any) => {
                 onSuccess();
                 queryClient.invalidateQueries(["adjustment-list"]);
             },
-            onError: () => {
-                onError();
+            onError: onError,
+        }
+    );
+};
+
+export const CreateDraftAdjustment = (onSuccess: any, onError: any) => {
+    const queryClient = useQueryClient();
+    return useMutation(
+        (Payload: any) => {
+            return api.post(
+                `/finance/customer-facility/adjustment?draft=1`,
+                Payload,
+                {
+                    headers: {
+                        Authorization: "Bearer " + getCookie("user"),
+                    },
+                }
+            );
+        },
+        {
+            onSuccess: () => {
+                onSuccess();
+                queryClient.invalidateQueries(["adjustment-list"]);
             },
+            onError: onError,
+        }
+    );
+};
+
+export const ModifyDraftAdjustment = (
+    onSuccess: any,
+    onError: any,
+    id: any
+) => {
+    const queryClient = useQueryClient();
+    return useMutation(
+        (Payload: any) => {
+            return api.put(
+                `/finance/customer-facility/adjustment/${id}?draft=1`,
+                Payload,
+                {
+                    headers: {
+                        Authorization: "Bearer " + getCookie("user"),
+                    },
+                }
+            );
+        },
+        {
+            onSuccess: () => {
+                onSuccess();
+                queryClient.invalidateQueries(["adjustment-list"]);
+            },
+            onError: onError,
         }
     );
 };
@@ -77,9 +127,7 @@ export const ModifyAdjustment = (onSuccess: any, onError: any, id: any) => {
                 onSuccess();
                 queryClient.invalidateQueries(["adjustment-list"]);
             },
-            onError: () => {
-                onError();
-            },
+            onError: onError,
         }
     );
 };
@@ -88,7 +136,7 @@ export const MultipleUpdateAdjustment = (onSucces: any, onError: any) => {
     const queryClient = useQueryClient();
     return useMutation(
         (Payload: { status: string; adjustment_ids: number[] }) => {
-            return api.post(
+            return api.put(
                 `/finance/customer-facility/adjustment/change-status`,
                 Payload,
                 {
@@ -109,7 +157,7 @@ export const MultipleUpdateAdjustment = (onSucces: any, onError: any) => {
 };
 
 export const GetAdjustmentDetail = (id: number | string) => {
-    return useQuery(["invoice-detail", id], () => {
+    return useQuery(["adjustment-detail", id], () => {
         return api.get(`/finance/customer-facility/adjustment/${id}`, {
             headers: { Authorization: "Bearer " + getCookie("user") },
         });

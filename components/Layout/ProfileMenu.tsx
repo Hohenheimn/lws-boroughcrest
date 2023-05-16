@@ -30,6 +30,7 @@ export default function ProfileMenu({ setToggleProfileMenu }: Props) {
     const SignOutHandler = async () => {
         try {
             const token = getCookie("user");
+
             const response = await api.get("/auth/logout", {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -39,8 +40,13 @@ export default function ProfileMenu({ setToggleProfileMenu }: Props) {
             if (response.status === 200) {
                 // Remove all cache query or data
                 queryClient.removeQueries();
+
                 // delete token
                 deleteCookie("user");
+
+                // remove user-info
+                localStorage.removeItem("userInfo");
+
                 // redirect to login page
                 router.push("/login");
             } else if (response.status === 401) {
@@ -56,7 +62,9 @@ export default function ProfileMenu({ setToggleProfileMenu }: Props) {
                 type: "error",
                 toggle: true,
             });
+
             deleteCookie("user");
+
             router.push("/login");
         }
     };

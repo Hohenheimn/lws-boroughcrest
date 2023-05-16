@@ -45,7 +45,6 @@ export default function PaymentSummaryTable({
                 setVarianceValidation(true);
             }
         }
-        console.log(TotalPaid);
     }, [AmoundPaid, TotalPaid]);
 
     useEffect(() => {

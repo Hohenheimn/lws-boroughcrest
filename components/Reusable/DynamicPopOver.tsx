@@ -29,6 +29,7 @@ export default function DynamicPopOver({
         {
             placement: rightPosition ? "bottom-end" : "bottom-start",
             modifiers: [
+                { name: "preventOverflow", enabled: true },
                 {
                     name: "offset",
                     options: {
@@ -54,25 +55,25 @@ export default function DynamicPopOver({
 
     if (!fixed) {
         return (
-            <>
+            <div className="relative">
                 <div ref={inputField} className={className}>
                     {toRef}
                 </div>
 
                 <div
-                    className="bg-white z-50 shadow-md"
+                    className="bg-white absolute left-0 z-50 shadow-md"
                     ref={toPopOver}
                     style={samewidth ? extendStyle : styles.popper}
                     {...attributes.popper}
                 >
                     {toPop}
                 </div>
-            </>
+            </div>
         );
     } else {
         return (
             <>
-                <div ref={inputField} className={className + " relative "}>
+                <div ref={inputField} className={className + " relative"}>
                     {toRef}
                     <div
                         className=" fixed mt-2 z-50 bg-white"

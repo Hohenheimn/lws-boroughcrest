@@ -61,9 +61,7 @@ export const CreateCollection = (onSuccess: any, onError: any) => {
                 onSuccess();
                 queryClient.invalidateQueries(["collection-list"]);
             },
-            onError: () => {
-                onError();
-            },
+            onError: onError,
         }
     );
 };
@@ -112,9 +110,7 @@ export const VoidCollection = (onSuccess: any, onError: any, id: number) => {
                 onSuccess();
                 queryClient.invalidateQueries(["discount-list"]);
             },
-            onError: () => {
-                onError();
-            },
+            onError: onError,
         }
     );
 };

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import style from "../../styles/finance/UpperMenu.module.scss";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { GeneralLedger, CustomerFacility } from "./FinanceUrl";
+import { GeneralLedger, CustomerFacility, CheckWarehouse } from "./FinanceUrl";
 
 export default function UpperMenu() {
     const router = useRouter();
@@ -13,6 +13,9 @@ export default function UpperMenu() {
         }
         if (router.pathname.includes("customer-facility")) {
             setUrlData(CustomerFacility);
+        }
+        if (router.pathname.includes("check-warehouse")) {
+            setUrlData(CheckWarehouse);
         }
     });
     return (

@@ -62,6 +62,7 @@ export const UpdateJournal = (
             onSuccess: () => {
                 onSucces();
                 queryClient.invalidateQueries("journal-list");
+                queryClient.invalidateQueries(["journal-detail", `${id}`]);
             },
             onError: onError,
         }
@@ -90,6 +91,7 @@ export const UpdateDraftJournal = (
             onSuccess: () => {
                 onSucces();
                 queryClient.invalidateQueries("journal-list");
+                queryClient.invalidateQueries(["journal-detail", `${id}`]);
             },
             onError: onError,
         }
@@ -198,9 +200,9 @@ export const GetJournalRecentSearch = (
     id: string | number,
     keyword: string
 ) => {
-    return useQuery(["journal-recent-search", id, keyword], () => {
+    return useQuery(["adjustment-recent-search", id, keyword], () => {
         return api.get(
-            `/finance/general-ledger/journal/recent-search/${id}?keywords=${keyword}`,
+            `/finance/customer-facility/adjustment/recent-search/${id}?search=${keyword}`,
             {
                 headers: {
                     Authorization: "Bearer " + getCookie("user"),

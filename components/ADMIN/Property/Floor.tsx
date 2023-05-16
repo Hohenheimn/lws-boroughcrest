@@ -232,22 +232,26 @@ const List = ({
     const onError = (e: any) => {
         ErrorSubmit(e, setPrompt);
     };
+
     // Save
     const { isLoading: loadingSave, mutate: mutateSave } = PostFloor(
         onSuccessSave,
         onError
     );
+
     // Delete
     const { isLoading: loadingDelete, mutate: mutateDelete } = DeleteFloor(
         onSuccessDelete,
         onError
     );
+
     // Update
     const { isLoading: loadingUpdate, mutate: mutateUpdate } = UpdateFloor(
         onSuccessUpdate,
         onError,
         itemDetail.id
     );
+
     const [isTower, setTower] = useState({
         value: itemDetail.tower,
         firstVal: itemDetail.tower,

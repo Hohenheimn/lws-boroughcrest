@@ -131,7 +131,7 @@ select {
 }
 // button
 .buttonRed {
-    @apply uppercase px-5 text-[14px] 1550px:text-[12px] 480px:px-2  py-2 rounded-lg bg-ThemeRed text-white leading-none duration-75 hover:bg-ThemeRed50;
+    @apply border border-ThemeRed hover:border-ThemeRed50 uppercase px-5 text-[14px] 1550px:text-[12px] 480px:px-2  py-2 rounded-lg bg-ThemeRed text-white leading-none duration-75 hover:bg-ThemeRed50;
     color: white !important;
 }
 .button_cancel {
@@ -139,6 +139,9 @@ select {
 }
 .newButton {
     @apply capitalize px-5 1550px:px-3 text-center  480px:text-[12px] 480px:p-2 text-[14px] py-3 1550px:py-3 rounded-lg bg-ThemeRed text-white leading-none duration-75 hover:bg-ThemeRed50;
+}
+.buttonBorder {
+    @apply uppercase px-5 text-[14px] 1550px:text-[12px] 480px:px-2 border border-ThemeRed py-2 rounded-lg bg-transparent text-ThemeRed leading-none duration-75 hover:bg-ThemeRed hover:text-white hover:font-NHU-regular;
 }
 // Text
 .pageTitle {
@@ -752,6 +755,24 @@ input[type="number"] {
     .Pending:hover {
         &::after {
             @apply content-['Pending'] w-[95px] pl-[35px];
+        }
+    }
+
+    .cw.Pending {
+        div {
+            @apply bg-[#56c6f6];
+        }
+        &::after {
+            @apply bg-[#88d5f6];
+        }
+    }
+
+    .cw.Matured {
+        div {
+            @apply bg-[#ffb85f];
+        }
+        &::after {
+            @apply bg-[#fdd19ba4];
         }
     }
 

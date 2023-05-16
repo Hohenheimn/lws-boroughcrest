@@ -131,3 +131,21 @@ export function PencilButtonTable() {
         </Tippy>
     );
 }
+
+export function BookedCheck() {
+    return (
+        <Tippy
+            theme="ThemeRed"
+            content={<span className="text-[12px]">Booked Check</span>}
+        >
+            <div className=" inline-block cursor-pointer">
+                <Image
+                    src="/Images/f_book_check.png"
+                    width={18}
+                    height={18}
+                    alt="Modify"
+                />
+            </div>
+        </Tippy>
+    );
+}

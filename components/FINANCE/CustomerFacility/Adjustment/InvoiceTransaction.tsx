@@ -23,6 +23,7 @@ type Props = {
     isError: boolean;
     isAdjustmentTotal: number;
     isErrorMessage: boolean;
+    ApplyAccountEntriesHandler: () => void;
 };
 
 export default function InvoiceTransaction({
@@ -38,6 +39,7 @@ export default function InvoiceTransaction({
     isError,
     isAdjustmentTotal,
     isErrorMessage,
+    ApplyAccountEntriesHandler,
 }: Props) {
     useEffect(() => {
         setHeaderForm({
@@ -170,7 +172,12 @@ export default function InvoiceTransaction({
                     </table>
                 </div>
                 <div className="flex justify-end">
-                    <button className="buttonRed">APPLY</button>
+                    <button
+                        className="buttonRed"
+                        onClick={ApplyAccountEntriesHandler}
+                    >
+                        APPLY
+                    </button>
                 </div>
             </li>
         </ul>
