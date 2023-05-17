@@ -34,7 +34,7 @@ export default function SelectDropdown({
     }, [container.current]);
     return (
         <div className="select">
-            <span>
+            <span className="z-10">
                 <MdOutlineKeyboardArrowDown
                     className={`${noStyle && "hidden"}`}
                 />

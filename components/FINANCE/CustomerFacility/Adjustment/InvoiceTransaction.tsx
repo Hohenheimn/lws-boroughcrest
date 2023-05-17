@@ -23,6 +23,7 @@ type Props = {
     isError: boolean;
     isAdjustmentTotal: number;
     isErrorMessage: boolean;
+    ApplyAccountEntriesHandler: () => void;
 };
 
 export default function InvoiceTransaction({
@@ -38,6 +39,7 @@ export default function InvoiceTransaction({
     isError,
     isAdjustmentTotal,
     isErrorMessage,
+    ApplyAccountEntriesHandler,
 }: Props) {
     useEffect(() => {
         setHeaderForm({
@@ -86,13 +88,22 @@ export default function InvoiceTransaction({
                                     <td>
                                         <TextNumberDisplay
                                             className="withPeso w-full text-end"
-                                            value={item.amount_due}
+                                            value={
+                                                item.amount_due === undefined
+                                                    ? 0
+                                                    : item.amount_due
+                                            }
                                         />
                                     </td>
                                     <td>
                                         <TextNumberDisplay
                                             className="withPeso w-full text-end"
-                                            value={item.remaining_advances}
+                                            value={
+                                                item.remaining_advances ===
+                                                undefined
+                                                    ? 0
+                                                    : item.remaining_advances
+                                            }
                                         />
                                     </td>
                                 </tr>
@@ -170,7 +181,12 @@ export default function InvoiceTransaction({
                     </table>
                 </div>
                 <div className="flex justify-end">
-                    <button className="buttonRed">APPLY</button>
+                    <button
+                        className="buttonRed"
+                        onClick={ApplyAccountEntriesHandler}
+                    >
+                        APPLY
+                    </button>
                 </div>
             </li>
         </ul>

@@ -40,13 +40,13 @@ export default function UserInfo() {
     const UserData: LoginUserInfo = data?.data;
 
     if (isError) {
-        router.push("/login");
-        deleteCookie("user");
         setPrompt({
             message: "Unauthorized!",
             type: "error",
             toggle: true,
         });
+        deleteCookie("user");
+        router.push("/login");
     }
 
     useEffect(() => {

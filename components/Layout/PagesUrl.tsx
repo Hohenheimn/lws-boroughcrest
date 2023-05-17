@@ -23,9 +23,9 @@ export const SidebarLinks = [
                 ActiveName: "user",
             },
             {
-                name: "roles",
-                url: "/project/roles",
-                ActiveName: "roles",
+                name: "access",
+                url: "/project/access",
+                ActiveName: "access",
             },
         ],
     },
@@ -72,6 +72,11 @@ export const SidebarLinks = [
                 name: "Customer Facility",
                 url: "/finance/customer-facility/charge",
                 ActiveName: "customer-facility",
+            },
+            {
+                name: "Check Warehouse",
+                url: "/finance/check-warehouse/check-receivables/check-schedule",
+                ActiveName: "check-warehouse",
             },
             {
                 name: "Policy",

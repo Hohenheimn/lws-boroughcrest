@@ -1,9 +1,6 @@
-import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 import React, { useContext, useEffect, useState } from "react";
 import { BiSearch } from "react-icons/bi";
-import Image from "next/image";
-import { GetPropertyList } from "../../../../ReactQuery/PropertyMethod";
 import { BarLoader, ScaleLoader } from "react-spinners";
 import TableErrorMessage from "../../../../Reusable/TableErrorMessage";
 import Pagination from "../../../../Reusable/Pagination";
@@ -12,10 +9,8 @@ import NameIDDropdown from "../../../../Dropdowns/NameIDDropdown";
 import SelectDropdown from "../../../../Reusable/SelectDropdown";
 import ModalTemp from "../../../../Reusable/ModalTemp";
 import { customer } from "../../../../../types/customerList";
-import { GetCustomerList } from "../../../../ReactQuery/CustomerMethod";
 import { CreateGroup, UpdateGroup } from "./Query";
 import { useQuery, useQueryClient } from "react-query";
-import { useRouter } from "next/router";
 import { ErrorSubmit } from "../../../../Reusable/ErrorMessage";
 import api from "../../../../../util/api";
 import { getCookie } from "cookies-next";
@@ -223,6 +218,7 @@ export default function GroupForm({
             });
             return;
         }
+
         if (isTableItem.group_name === "") {
             setPrompt({
                 message: "Fill out the group name!",
@@ -236,6 +232,7 @@ export default function GroupForm({
             name: isTableItem.group_name,
             customer_ids: isSelectedIDs,
         };
+
         if (formType === "add") {
             createMutate(Payload);
         } else {

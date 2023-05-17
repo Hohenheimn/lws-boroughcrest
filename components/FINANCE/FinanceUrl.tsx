@@ -120,3 +120,29 @@ export const CustomerFacility = [
         ],
     },
 ];
+export const CheckWarehouse = [
+    {
+        name: "Check Receivables",
+        activeUrl: "check-warehouse/check-receivables",
+        url: "/finance/check-warehouse/check-receivables/check-schedule",
+        submenu: [
+            {
+                name: "Check Schedule",
+                url: "/finance/check-warehouse/check-receivables/check-schedule",
+            },
+            {
+                name: "Check Payment List",
+                url: "/finance/check-warehouse/check-receivables/check-payment-list",
+            },
+            {
+                name: "Booked Check",
+                url: "/finance/check-warehouse/check-receivables/booked-check",
+            },
+        ],
+    },
+    {
+        name: "Check Payment",
+        activeUrl: "check-warehouse/check-payment",
+        url: "#",
+    },
+];

@@ -115,7 +115,7 @@ select {
         li {
             width: 100% !important;
             margin: 0 !important;
-            @apply px-2 py-[2px] text-[14px] hover:bg-ThemeRed hover:text-white cursor-pointer;
+            @apply px-2 py-[2px] text-[14px] hover:bg-ThemeRed hover:text-white cursor-pointer text-RegularColor;
         }
     }
     span {
@@ -131,15 +131,21 @@ select {
 }
 // button
 .buttonRed {
-    @apply uppercase px-5 text-[14px] 1550px:text-[12px] 480px:px-2  py-2 rounded-lg bg-ThemeRed text-white leading-none duration-75 hover:bg-ThemeRed50;
+    @apply border border-ThemeRed hover:border-ThemeRed50 uppercase px-5 text-[14px] 1550px:text-[12px] 480px:px-2  py-2 rounded-lg bg-ThemeRed text-white leading-none duration-75 hover:bg-ThemeRed50;
     color: white !important;
 }
 .button_cancel {
     @apply text-ThemeRed font-semibold cursor-pointer text-[14px] 1550px:text-[12px] mr-5 uppercase;
 }
+.newButton {
+    @apply capitalize px-5 1550px:px-3 text-center  480px:text-[12px] 480px:p-2 text-[14px] py-3 1550px:py-3 rounded-lg bg-ThemeRed text-white leading-none duration-75 hover:bg-ThemeRed50;
+}
+.buttonBorder {
+    @apply uppercase px-5 text-[14px] 1550px:text-[12px] 480px:px-2 border border-ThemeRed py-2 rounded-lg bg-transparent text-ThemeRed leading-none duration-75 hover:bg-ThemeRed hover:text-white hover:font-NHU-regular;
+}
 // Text
 .pageTitle {
-    @apply text-[24px] 480px:text-[18px];
+    @apply font-bold mb-10 text-[24px]  480px:text-[20px]  1550px:mb-3 capitalize;
 }
 .SectionTitle {
     @apply text-[20px] 1366px:text-[20px] flex items-center;
@@ -299,13 +305,13 @@ select {
             }
             td.checkbox {
                 @apply w-3 min-w-0;
-                input[type="checkbox"] {
-                    border: 1px solid rgb(216, 216, 216) !important;
-                    @apply relative  cursor-pointer h-4 w-4 rounded-md shadow-md overflow-hidden after:text-white after:flex after:justify-center after:items-center mr-1 checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
-                    &:checked {
-                        border: none !important;
-                    }
-                }
+                // input[type="checkbox"] {
+                //     border: 1px solid rgb(216, 216, 216) !important;
+                //     @apply relative  cursor-pointer h-4 w-4 rounded-md shadow-md overflow-hidden after:text-white after:flex after:justify-center after:items-center mr-1 checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
+                //     &:checked {
+                //         border: none !important;
+                //     }
+                // }
             }
             td.action {
                 .item {
@@ -367,9 +373,9 @@ select {
         tr {
             th {
                 @apply text-start text-[14px] 1550px:text-[13px] 1280px:text-[13px] px-1 py-1;
-                input[type="checkbox"] {
-                    @apply bg-white;
-                }
+                // input[type="checkbox"] {
+                //     @apply bg-white;
+                // }
             }
         }
     }
@@ -377,9 +383,9 @@ select {
         tr {
             td {
                 @apply text-[14px] min-w-[100px] py-1 px-1 text-[#545454];
-                input[type="checkbox"] {
-                    @apply bg-white;
-                }
+                // input[type="checkbox"] {
+                //     @apply bg-white;
+                // }
             }
             td.checkbox {
                 @apply min-w-[0]  cursor-pointer;
@@ -447,7 +453,7 @@ input[type="checkbox"] {
     &:checked {
         border: none !important;
     }
-    @apply relative after:text-white after:flex after:justify-center after:items-center mr-1 checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
+    @apply relative w-4 h-4 shadow-lg overflow-hidden rounded-md after:bg-white after:text-white after:flex after:justify-center after:items-center mr-1 checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
 }
 
 .pageDetail {
@@ -544,13 +550,13 @@ input[type="number"] {
             }
             th.checkbox {
                 @apply w-3 min-w-0;
-                input[type="checkbox"] {
-                    border: 1px solid rgb(216, 216, 216) !important;
-                    @apply bg-white  cursor-pointer relative h-3 w-3 rounded-sm shadow-md overflow-hidden after:text-white after:flex after:justify-center mr-0 after:items-center checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
-                    &:checked {
-                        border: none !important;
-                    }
-                }
+                // input[type="checkbox"] {
+                //     border: 1px solid rgb(216, 216, 216) !important;
+                //     @apply bg-white  cursor-pointer relative h-3 w-3 rounded-sm shadow-md overflow-hidden after:text-white after:flex after:justify-center mr-0 after:items-center checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
+                //     &:checked {
+                //         border: none !important;
+                //     }
+                // }
             }
         }
     }
@@ -615,16 +621,16 @@ input[type="number"] {
             }
         }
     }
-    td.checkbox {
-        @apply w-3 min-w-0 text-center;
-        input[type="checkbox"] {
-            border: 1px solid rgb(216, 216, 216) !important;
-            @apply bg-white  cursor-pointer relative h-3 w-3 rounded-sm shadow-md overflow-hidden after:text-white after:flex after:justify-center mr-0 after:items-center checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
-            &:checked {
-                border: none !important;
-            }
-        }
-    }
+    // td.checkbox {
+    //     @apply w-3 min-w-0 text-center;
+    //     input[type="checkbox"] {
+    //         border: 1px solid rgb(216, 216, 216) !important;
+    //         @apply bg-white  cursor-pointer relative h-3 w-3 rounded-sm shadow-md overflow-hidden after:text-white after:flex after:justify-center mr-0 after:items-center checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
+    //         &:checked {
+    //             border: none !important;
+    //         }
+    //     }
+    // }
     td.action {
         div {
             @apply h-full flex justify-center items-center;
@@ -749,6 +755,24 @@ input[type="number"] {
     .Pending:hover {
         &::after {
             @apply content-['Pending'] w-[95px] pl-[35px];
+        }
+    }
+
+    .cw.Pending {
+        div {
+            @apply bg-[#56c6f6];
+        }
+        &::after {
+            @apply bg-[#88d5f6];
+        }
+    }
+
+    .cw.Matured {
+        div {
+            @apply bg-[#ffb85f];
+        }
+        &::after {
+            @apply bg-[#fdd19ba4];
         }
     }
 
@@ -1037,13 +1061,13 @@ table.rolePermisionTable {
         }
         td {
             @apply text-RegularColor py-1 border-b border-[#cecece] text-[14px];
-            input[type="checkbox"] {
-                border: 1px solid rgb(216, 216, 216) !important;
-                @apply relative bg-white cursor-pointer h-4 w-4 rounded-md shadow-md overflow-hidden after:text-white after:flex after:justify-center after:items-center mr-1 checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
-                &:checked {
-                    border: none !important;
-                }
-            }
+            // input[type="checkbox"] {
+            //     border: 1px solid rgb(216, 216, 216) !important;
+            //     @apply relative bg-white cursor-pointer h-4 w-4 rounded-md shadow-md overflow-hidden after:text-white after:flex after:justify-center after:items-center mr-1 checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
+            //     &:checked {
+            //         border: none !important;
+            //     }
+            // }
             .calendar input {
                 font-size: 14px !important;
             }

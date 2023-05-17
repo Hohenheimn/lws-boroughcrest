@@ -63,19 +63,16 @@ export default function Layout({ children }: Layout) {
             router.asPath.includes("property/") ||
             router.pathname.includes("journal-list/[id]") ||
             router.pathname.includes("billing/invoice-list/[id]") ||
-            router.pathname.includes("/roles") ||
             router.pathname.includes("/payment-register/[id]") ||
-            router.pathname.includes("/adjustment-list/[id]")
+            router.pathname.includes("/adjustment-list/[id]") ||
+            router.pathname.includes("/access/[id]")
         ) {
             setProfileSearch(true);
         } else {
             setProfileSearch(false);
         }
         // Wide the sidebar
-        if (
-            router.query.id !== undefined ||
-            router.pathname.includes("/roles")
-        ) {
+        if (router.query.id !== undefined) {
             setWide(true);
         } else {
             setWide(false);

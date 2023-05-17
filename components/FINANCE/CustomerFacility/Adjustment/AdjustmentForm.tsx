@@ -13,11 +13,13 @@ import AccountTable from "./AccountTable";
 import { RiArrowDownSFill } from "react-icons/ri";
 import AppContext from "../../../Context/AppContext";
 import {
+    CreateDraftAdjustment,
     CreateNewAdjustment,
     GetAccountEntriesList,
     GetFilteredAccountEntriesList,
     GetInvoiceByCustomerAndCharge,
     ModifyAdjustment,
+    ModifyDraftAdjustment,
 } from "./Query";
 import { format, isValid, parse } from "date-fns";
 import TableLoadingNError from "../../../Reusable/TableLoadingNError";
@@ -25,6 +27,8 @@ import { ValidationDebitCredit } from "./AdjustmentDistribution";
 import { useRouter } from "next/router";
 import { ScaleLoader } from "react-spinners";
 import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
+import { UserInfo } from "../../../PROJECT/user/UserForm";
+import { LoginUserInfo } from "../../../HOC/LoginUser/UserInfo";
 
 export type AdjustmentHeaderForm = {
     customer_id: number | string;
@@ -72,14 +76,14 @@ type CustomerDDData = {
 
 export type AdjustmentInvoice = {
     id: number;
-    billing_invoice_id: number;
     adjustment_amount: number;
     balance: number;
-    billing_date: string;
-    document_no: string;
-    description: string;
-    amount_due: number;
-    remaining_advances: number;
+    billing_invoice_id?: number;
+    billing_date?: string;
+    document_no?: string | number;
+    description?: string;
+    amount_due?: number;
+    remaining_advances?: number;
 };
 
 type FilteredAccuntEntries = {
@@ -89,12 +93,33 @@ type FilteredAccuntEntries = {
     default_account: string;
 };
 
-export default function AdjustmentForm() {
+export type DefaultValueAdjustment = {
+    Customer: CustomerDDData;
+    HeaderForm: AdjustmentHeaderForm;
+    Charge: {
+        charge: string;
+        charge_id: number;
+    };
+    transaction_type: string;
+    Invoice: AdjustmentInvoice[];
+    Accounts: AdjustmentAccounts[];
+    AdvancesToggle: boolean;
+};
+
+type Props = {
+    DefaultValue: DefaultValueAdjustment;
+};
+
+export default function AdjustmentForm({ DefaultValue }: Props) {
     const router = useRouter();
 
-    const { setPrompt, userInfo } = useContext(AppContext);
+    const [userInfo, setUserInfo] = useState<LoginUserInfo>();
 
-    const User_GST_type = userInfo?.corporate_gst_type;
+    useEffect(() => {
+        setUserInfo(JSON.parse(localStorage.userInfo));
+    }, []);
+
+    const { setPrompt } = useContext(AppContext);
 
     const [isErrorMessage, setErrorMessage] = useState(false);
 
@@ -102,18 +127,19 @@ export default function AdjustmentForm() {
 
     const [toggleForm, setToggleForm] = useState(false);
 
-    const [AdvancesToggle, setAdvancesToggle] = useState(false);
+    const [AdvancesToggle, setAdvancesToggle] = useState(
+        DefaultValue.AdvancesToggle
+    );
 
     const [isButton, setButton] = useState("");
 
-    const [isTransaction, setTransaction] = useState("");
+    const [isTransaction, setTransaction] = useState(
+        DefaultValue.transaction_type
+    );
 
-    const [isCustomer, setCustomer] = useState<CustomerDDData>({
-        id: 0,
-        name: "",
-        class: "",
-        property: [],
-    });
+    const [isCustomer, setCustomer] = useState<CustomerDDData>(
+        DefaultValue.Customer
+    );
 
     useEffect(() => {
         setHeaderForm({
@@ -122,10 +148,7 @@ export default function AdjustmentForm() {
         });
     }, [isCustomer]);
 
-    const [isCharge, setCharge] = useState({
-        charge: "",
-        charge_id: 0,
-    });
+    const [isCharge, setCharge] = useState(DefaultValue.Charge);
 
     const [isChargeHeader, setChargeHeader] = useState({
         charge: "",
@@ -133,7 +156,7 @@ export default function AdjustmentForm() {
     });
 
     const [isMemoDate, setMemoDate] = useState({
-        value: "",
+        value: DefaultValue.HeaderForm.memo_date,
         toggle: false,
     });
 
@@ -144,32 +167,38 @@ export default function AdjustmentForm() {
         });
     }, [isMemoDate]);
 
-    const [HeaderForm, setHeaderForm] = useState<AdjustmentHeaderForm>({
-        customer_id: 0,
-        memo_date: "",
-        memo_type: "",
-        description: "",
-        charge_id_header: "",
-        charge_id: "",
-        document_no: "",
-    });
+    const [HeaderForm, setHeaderForm] = useState<AdjustmentHeaderForm>(
+        DefaultValue.HeaderForm
+    );
 
-    const [isInvoices, setInvoices] = useState<AdjustmentInvoice[]>([]);
+    const [isInvoices, setInvoices] = useState<AdjustmentInvoice[]>(
+        DefaultValue.Invoice
+    );
 
     const [isAdjustmentTotal, setAdjustmentTotal] = useState(0);
 
     const [DefaultAccount, setDefaultAccount] = useState<AdjustmentAccounts[]>(
-        []
+        DefaultValue.Accounts
     );
 
     const onSuccess = () => {
-        setPrompt({
-            message: `Adjustment successfully ${
-                isButton === "draft" ? "registered as draft" : "registered"
-            }`,
-            toggle: true,
-            type: isButton === "draft" ? "draft" : "success",
-        });
+        if (router.query.modify === undefined) {
+            setPrompt({
+                message: `Adjustment successfully ${
+                    isButton === "draft" ? "registered as draft" : "registered"
+                }`,
+                toggle: true,
+                type: isButton === "draft" ? "draft" : "success",
+            });
+        } else {
+            setPrompt({
+                message: `Adjustment successfully ${
+                    isButton === "draft" ? "updated as draft" : "updated"
+                }`,
+                toggle: true,
+                type: isButton === "draft" ? "draft" : "success",
+            });
+        }
 
         if (isButton !== "new") {
             router.push(
@@ -190,6 +219,7 @@ export default function AdjustmentForm() {
                 class: "",
                 property: [],
             });
+
             setHeaderForm({
                 customer_id: 0,
                 memo_date: "",
@@ -199,11 +229,24 @@ export default function AdjustmentForm() {
                 charge_id: "",
                 document_no: "",
             });
+
+            setMemoDate({
+                value: "",
+                toggle: false,
+            });
+
             setCharge({
                 charge: "",
                 charge_id: 0,
             });
+
             setTransaction("");
+
+            setInvoices([]);
+
+            setDefaultAccount([]);
+
+            setErrorMessage(false);
         }
     };
 
@@ -223,28 +266,45 @@ export default function AdjustmentForm() {
         isError: refAccEntriesError,
     } = GetAccountEntriesList(isChargeHeader.charge_id, HeaderForm.document_no);
 
+    // Create
     const { mutate: createMutate, isLoading: createLoading } =
         CreateNewAdjustment(onSuccess, onError);
+    const { mutate: createDraftMutate, isLoading: createDraftLoading } =
+        CreateDraftAdjustment(onSuccess, onError);
 
+    // Modify
     const { mutate: modifyMutate, isLoading: modifyLoading } = ModifyAdjustment(
         onSuccess,
         onError,
         router.query.modify
     );
+    const { mutate: modifyDraftMutate, isLoading: modifyDraftLoading } =
+        ModifyDraftAdjustment(onSuccess, onError, router.query.modify);
 
     useEffect(() => {
         if (invoiceData !== undefined) {
             let getCustomerOutstanding: any[] = [];
+
             invoiceData?.data.map((item: any) => {
                 const date = parse(item.billing_date, "yyyy-MM-dd", new Date());
-                item.invoice_list.map((invoiceItem: any) => {
+                item?.invoice_list?.map((invoiceItem: any) => {
+                    let adjustment_amount = 0;
+                    let balance = item?.applied_advances;
+                    DefaultValue.Invoice.map((itemDV) => {
+                        if (itemDV.id === invoiceItem.id) {
+                            adjustment_amount = itemDV.adjustment_amount;
+                            balance =
+                                Number(item?.applied_advances) -
+                                Number(itemDV.adjustment_amount);
+                        }
+                    });
                     getCustomerOutstanding = [
                         ...getCustomerOutstanding,
                         {
                             id: invoiceItem?.id,
                             billing_invoice_id: item?.id,
-                            adjustment_amount: 0,
-                            balance: item?.applied_advances,
+                            adjustment_amount: adjustment_amount,
+                            balance: balance <= 0 ? 0 : balance,
                             billing_date: isValid(date)
                                 ? format(date, "MMM dd yyyy")
                                 : "",
@@ -256,7 +316,6 @@ export default function AdjustmentForm() {
                     ];
                 });
             });
-
             setInvoices(
                 getCustomerOutstanding === undefined
                     ? []
@@ -283,33 +342,83 @@ export default function AdjustmentForm() {
     const [isAccounts, setAccounts] = useState<AdjustmentAccounts[]>([]);
 
     useEffect(() => {
-        if (!AdvancesToggle) {
-            const cloneTogetData = AccountEntries?.data.map(
-                (item: FilteredAccuntEntries, index: number) => {
-                    const validationDebitOrCreditField = ValidationDebitCredit(
-                        isTransaction,
-                        item.default_account
-                    );
+        ApplyAccountEntriesHandler();
+    }, [AccountEntries?.data, DefaultValue.Accounts]);
+
+    const ApplyAccountEntriesHandler = () => {
+        console.log(AccountEntries?.data);
+        const cloneTogetData = AccountEntries?.data.map(
+            (item: FilteredAccuntEntries, index: number) => {
+                const validationDebitOrCreditField = ValidationDebitCredit(
+                    isTransaction,
+                    item.default_account
+                );
+
+                let adjustment_total = isAdjustmentTotal;
+
+                let deferred_customer_gst_account = isAdjustmentTotal;
+
+                let other_account = isAdjustmentTotal;
+
+                const vat_rate = 12;
+
+                if (userInfo?.corporate_gst_type == "NON-VAT") {
+                    other_account = isAdjustmentTotal;
+                } else {
+                    // computation here
+                    deferred_customer_gst_account =
+                        adjustment_total * (vat_rate / (vat_rate + 100));
+
+                    other_account =
+                        Number(adjustment_total) -
+                        Number(deferred_customer_gst_account);
+                }
+                if (AdvancesToggle && router.query.modify !== undefined) {
+                    let debit = 0;
+                    let credit = 0;
+                    DefaultValue.Accounts.map((itemAccount) => {
+                        if (item.id === itemAccount.coa_id) {
+                            debit = itemAccount.debit;
+                            credit = itemAccount.credit;
+                            return;
+                        }
+                    });
                     return {
                         id: index,
                         coa_id: item.id,
                         chart_code: item.chart_code,
                         account_name: item.account_name,
-                        debit:
-                            validationDebitOrCreditField === "debit"
-                                ? Number(isAdjustmentTotal)
-                                : 0,
-                        credit:
-                            validationDebitOrCreditField === "credit"
-                                ? Number(isAdjustmentTotal)
-                                : 0,
+                        debit: Number(debit),
+                        credit: Number(credit),
                     };
                 }
-            );
-            setAccounts(cloneTogetData);
-            setDefaultAccount(cloneTogetData);
-        }
-    }, [AccountEntries?.data, isAdjustmentTotal]);
+                return {
+                    id: index,
+                    coa_id: item.id,
+                    chart_code: item.chart_code,
+                    account_name: item.account_name,
+                    debit:
+                        validationDebitOrCreditField === "debit"
+                            ? item.default_account ===
+                              "Deferred Customer GST Account"
+                                ? deferred_customer_gst_account
+                                : other_account
+                            : 0,
+                    credit:
+                        validationDebitOrCreditField === "credit"
+                            ? item.default_account ===
+                              "Deferred Customer GST Account"
+                                ? deferred_customer_gst_account
+                                : other_account
+                            : 0,
+                };
+            }
+        );
+
+        setAccounts(cloneTogetData);
+
+        setDefaultAccount(cloneTogetData);
+    };
 
     useEffect(() => {
         setHeaderForm({
@@ -319,34 +428,45 @@ export default function AdjustmentForm() {
     }, [isChargeHeader]);
 
     const SaveHandler = (button: string) => {
-        if (
-            isCustomer.id === 0 ||
-            HeaderForm.memo_type === "" ||
-            HeaderForm.memo_date === "" ||
-            isCharge.charge_id === 0 ||
-            isTransaction === ""
-        ) {
-            setPrompt({
-                message: "Fill out required fields",
-                toggle: true,
-                type: "draft",
-            });
-            setErrorMessage(true);
-            return;
-        }
+        if (button !== "draft") {
+            if (
+                isCustomer.id === 0 ||
+                HeaderForm.memo_type === "" ||
+                HeaderForm.memo_date === "" ||
+                isCharge.charge_id === 0 ||
+                isTransaction === ""
+            ) {
+                setPrompt({
+                    message: "Fill out required fields",
+                    toggle: true,
+                    type: "draft",
+                });
+                setErrorMessage(true);
+                return;
+            }
 
-        if (
-            isInvoices.some((item) => item.adjustment_amount === 0) &&
-            AdvancesToggle === false
-        ) {
-            setPrompt({
-                message: "Fill out all adjustment amount",
-                toggle: true,
-                type: "draft",
-            });
-            return;
+            if (
+                isInvoices.some((item) => item.adjustment_amount === 0) &&
+                AdvancesToggle === false
+            ) {
+                setPrompt({
+                    message: "Fill out all adjustment amount",
+                    toggle: true,
+                    type: "draft",
+                });
+                return;
+            }
+            if (
+                isAccounts.some((item) => item.credit === 0 && item.debit === 0)
+            ) {
+                setPrompt({
+                    message: "Please input a value on debit or credit!",
+                    toggle: true,
+                    type: "draft",
+                });
+                return;
+            }
         }
-        setButton(button);
 
         const memoDate = parse(HeaderForm.memo_date, "MMM dd yyyy", new Date());
 
@@ -357,43 +477,44 @@ export default function AdjustmentForm() {
             date: isValid(memoDate) ? format(memoDate, "yyyy-MM-dd") : "",
             description: HeaderForm.description,
             transaction: isTransaction,
-            accounts: isAccounts.map((item) => {
-                return {
-                    account_id: item.coa_id,
-                    debit: item.debit,
-                    credit: item.credit,
-                };
-            }),
-            invoices: isInvoices.map((item) => {
-                return {
-                    billing_invoice_id: item.billing_invoice_id,
-                    adjustment_amount: item.adjustment_amount,
-                    balance: item.balance,
-                };
-            }),
+            accounts:
+                isAccounts === undefined
+                    ? []
+                    : isAccounts.map((item) => {
+                          return {
+                              account_id: item.coa_id,
+                              debit: item.debit,
+                              credit: item.credit,
+                          };
+                      }),
+            invoices: AdvancesToggle
+                ? []
+                : isInvoices.map((item) => {
+                      return {
+                          billing_invoice_list_id: item.id,
+                          adjustment_amount: item.adjustment_amount,
+                          balance: item.balance,
+                      };
+                  }),
         };
+
+        setButton(button);
 
         if (router.query.modify === undefined) {
             // Create
             if (button === "save" || button === "new") {
                 createMutate(Payload);
-                console.log(button);
-                console.log(Payload);
             } else {
                 // Draft here
-                console.log(button);
-                console.log(Payload);
+                createDraftMutate(Payload);
             }
         } else {
             // Update
             if (button === "save" || button === "new") {
-                // modifyMutate(Payload);
-                console.log(button);
-                console.log(Payload);
+                modifyMutate(Payload);
             } else {
                 // Draft here
-                console.log(button);
-                console.log(Payload);
+                modifyDraftMutate(Payload);
             }
         }
     };
@@ -462,8 +583,8 @@ export default function AdjustmentForm() {
                                             />
                                         }
                                         listArray={[
-                                            "Credit Note",
-                                            "Debit Note",
+                                            "Credit Memo",
+                                            "Debit Memo",
                                         ]}
                                     />
                                     {isErrorMessage &&
@@ -532,6 +653,7 @@ export default function AdjustmentForm() {
                                 <input
                                     type="text"
                                     className="field w-full"
+                                    value={HeaderForm.description}
                                     onChange={(e) =>
                                         setHeaderForm({
                                             ...HeaderForm,
@@ -712,6 +834,9 @@ export default function AdjustmentForm() {
                             isError={isError}
                             isAdjustmentTotal={isAdjustmentTotal}
                             isErrorMessage={isErrorMessage}
+                            ApplyAccountEntriesHandler={
+                                ApplyAccountEntriesHandler
+                            }
                         />
                     </motion.div>
                 )}
@@ -737,7 +862,10 @@ export default function AdjustmentForm() {
                                 setSave(false);
                             }}
                         >
-                            {createLoading || modifyLoading ? (
+                            {createLoading ||
+                            modifyLoading ||
+                            createDraftLoading ||
+                            modifyDraftLoading ? (
                                 <ScaleLoader
                                     color="#fff"
                                     height="10px"
@@ -754,7 +882,7 @@ export default function AdjustmentForm() {
                         </aside>
                     </div>
                     {isSave && (
-                        <ul>
+                        <ul className="bottomSide">
                             <li>
                                 <button
                                     type="submit"
@@ -774,7 +902,7 @@ export default function AdjustmentForm() {
                                         setSave(false);
                                     }}
                                 >
-                                    SAVE & NEW
+                                    SAVE AS DRAFT
                                 </button>
                             </li>
                         </ul>

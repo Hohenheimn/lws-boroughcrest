@@ -16,7 +16,7 @@ export default function Modify({ id }: any) {
         if (data?.status === 200) {
             const cloneArray = data?.data.journal_list.map((item: any) => {
                 return {
-                    id: 1,
+                    id: item?.id,
                     account_id: item?.chart_of_account_id,
                     accountCode: item?.chart_of_account?.chart_code,
                     accountName: item?.chart_of_account?.account_name,

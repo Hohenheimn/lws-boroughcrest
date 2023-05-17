@@ -105,8 +105,8 @@ export function DeleteButton() {
             <div className=" inline-block cursor-pointer">
                 <Image
                     src="/Images/f_delete.png"
-                    width={13}
-                    height={15}
+                    width={14}
+                    height={16}
                     alt="Delete"
                 />
             </div>
@@ -123,8 +123,26 @@ export function PencilButtonTable() {
             <div className=" inline-block cursor-pointer">
                 <Image
                     src="/Images/f_pencil.png"
-                    width={12}
-                    height={12}
+                    width={15}
+                    height={15}
+                    alt="Modify"
+                />
+            </div>
+        </Tippy>
+    );
+}
+
+export function BookedCheck() {
+    return (
+        <Tippy
+            theme="ThemeRed"
+            content={<span className="text-[12px]">Booked Check</span>}
+        >
+            <div className=" inline-block cursor-pointer">
+                <Image
+                    src="/Images/f_book_check.png"
+                    width={18}
+                    height={18}
                     alt="Modify"
                 />
             </div>

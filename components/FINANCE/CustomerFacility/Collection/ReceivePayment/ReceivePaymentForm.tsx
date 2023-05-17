@@ -379,6 +379,7 @@ export default function ReceivePaymentForm({
                                     description: e.target.value,
                                 });
                             }}
+                            value={HeaderForm.description}
                             className="field w-full"
                         />
                     </li>

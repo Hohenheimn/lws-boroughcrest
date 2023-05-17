@@ -116,7 +116,6 @@ export default function OfficialForm({
     const { isLoading, mutate } = CreateCollection(onSuccess, onError);
 
     const SaveHandler = (button: string) => {
-        console.log(headerForm);
         buttonClicked = button;
         let validate = true;
         Error();

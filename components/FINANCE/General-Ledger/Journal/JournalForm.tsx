@@ -1,7 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
 import Image from "next/image";
-import { BsPlusLg } from "react-icons/bs";
-import { HiMinus } from "react-icons/hi";
 import { RiArrowDownSFill } from "react-icons/ri";
 import DropDownCOA from "../../../Dropdowns/DropdownCOA";
 import { validateCreditDebitField } from "../OpeningBalance/ValidateCreditDebitField";
@@ -16,14 +14,13 @@ import { ScaleLoader } from "react-spinners";
 import { useRouter } from "next/router";
 import Calendar from "../../../Reusable/Calendar";
 import {
-    TextNumberDisplay,
+ 
     InputNumberForTable,
 } from "../../../Reusable/NumberFormat";
 import { format, isValid, parse } from "date-fns";
 import { TableTwoTotal } from "../../../Reusable/TableTotal";
 import { MinusButtonTable, PlusButtonTable } from "../../../Reusable/Icons";
 import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
-import { TextFieldValidation } from "../../../Reusable/InputField";
 
 export type defaultArray = defaultObject[];
 export type defaultObject = {
@@ -97,8 +94,10 @@ export default function JournalForm({
         if (buttonClicked === "save" || buttonClicked === "draft") {
             setPrompt({
                 toggle: true,
-                message: "Journal successfully saved!",
-                type: "success",
+                message: `Journal successfully saved${
+                    buttonClicked === "draft" ? " as draft" : ""
+                }!`,
+                type: buttonClicked === "draft" ? "draft" : "success",
             });
             router.push("/finance/general-ledger/journal/journal-list");
         }
@@ -126,48 +125,55 @@ export default function JournalForm({
     const SaveHandler = (button: string) => {
         buttonClicked = button;
         let validate = true;
-        if (isDate.value === "" || isParticulars === "") {
-            setPrompt({
-                message: "Please fill out field!",
-                toggle: true,
-                type: "draft",
-            });
-            return;
-        }
-
-        const journal = JournalList.map((item: defaultObject) => {
-            if (item.account_id === "") {
+        if (button !== "draft") {
+            if (isDate.value === "" || isParticulars === "") {
                 setPrompt({
                     message: "Please fill out field!",
                     toggle: true,
                     type: "draft",
                 });
-                validate = false;
                 return;
-            } else if (item.debit === "0" && item.credit === "0") {
-                setPrompt({
-                    message: "Please input a value on debit or credit!",
-                    toggle: true,
-                    type: "draft",
-                });
-                validate = false;
-                return;
-            } else {
-                validate = true;
-                return {
-                    chart_of_account_id: Number(item.account_id),
-                    debit: Number(item.debit),
-                    credit: Number(item.credit),
-                };
             }
+        }
+        const journal = JournalList.map((item: defaultObject) => {
+            if (button !== "draft") {
+                if (item.account_id === "") {
+                    setPrompt({
+                        message: "Please fill out field!",
+                        toggle: true,
+                        type: "draft",
+                    });
+                    validate = false;
+                    return;
+                } else if (
+                    (item.debit === 0 || item.debit === "0") &&
+                    (item.credit === 0 || item.credit === "0")
+                ) {
+                    setPrompt({
+                        message: "Please input a value on debit or credit!",
+                        toggle: true,
+                        type: "draft",
+                    });
+                    validate = false;
+                    return;
+                }
+            }
+            validate = true;
+            return {
+                chart_of_account_id: Number(item.account_id),
+                debit: Number(item.debit),
+                credit: Number(item.credit),
+            };
         });
         const date = parse(isDate.value, "MMM dd yyyy", new Date());
+
         const PayloadUpdate = {
             date: isValid(date) ? format(date, "yyyy-MM-dd") : "",
             particulars: isParticulars,
             status: DefaultStatus,
             journal: journal,
         };
+
         const PayloadSave = {
             date: isValid(date) ? format(date, "yyyy-MM-dd") : "",
             particulars: isParticulars,
@@ -260,7 +266,16 @@ export default function JournalForm({
                 <TableTwoTotal total1={totalDebit} total2={totalCredit} />
             </div>
             <div className="DropDownSave">
-                <button className="ddback">CANCEL</button>
+                <button
+                    className="ddback"
+                    onClick={() => {
+                        router.push(
+                            "/finance/general-ledger/journal/journal-list"
+                        );
+                    }}
+                >
+                    CANCEL
+                </button>
 
                 <div className="ddSave">
                     <div>

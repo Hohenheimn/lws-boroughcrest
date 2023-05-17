@@ -7,27 +7,23 @@ import { GetJournalRecentSearch } from "../FINANCE/General-Ledger/Journal/Query"
 import { useRouter } from "next/router";
 import { BeatLoader } from "react-spinners";
 import { format, isValid, parse } from "date-fns";
-import { AdjustmentDetailType } from "../FINANCE/CustomerFacility/Adjustment/AdjusmentDetail";
 
-export default function AdjustmentSearch() {
+export default function AccessSearch() {
     const [search, setSearch] = useState<string>("");
-
     const router = useRouter();
-
     const id: any = router.query.id;
-
     const { isLoading, isError, data } = GetJournalRecentSearch(id, search);
 
     return (
         <div className={style.container}>
             <div className={style.header}>
                 <aside className={style.title}>
-                    <Link href="/finance/customer-facility/adjustment/adjustment-list">
+                    <Link href="/project/corporate">
                         <a>
                             <MdArrowForwardIos className={style.arrow} />
                         </a>
                     </Link>
-                    <h1>Adjustment List</h1>
+                    <h1>Project List</h1>
                 </aside>
 
                 <aside className={style.searchBar}>
@@ -55,7 +51,7 @@ export default function AdjustmentSearch() {
                         />
                     </div>
                 ) : (
-                    data?.data?.data.map((item: any, index: number) => (
+                    data?.data.map((item: any, index: number) => (
                         <List key={index} item={item} />
                     ))
                 )}
@@ -64,19 +60,16 @@ export default function AdjustmentSearch() {
     );
 }
 
-type PropsList = {
-    item: AdjustmentDetailType;
-};
-const List = ({ item }: PropsList) => {
+const List = ({ item }: any) => {
     const date = parse(item.date, "yyyy-MM-dd", new Date());
     return (
-        <Link
-            href={`/finance/customer-facility/adjustment/adjustment-list/${item.id}`}
-        >
+        <Link href={`/project/access/${item.id}`}>
             <a className={style.searchedItem}>
                 <ul>
                     <li>
-                        <h4>{item.memo_no === null ? "N/A" : item.memo_no}</h4>
+                        <h4>
+                            {item.journal_no === null ? "N/A" : item.journal_no}
+                        </h4>
                         <p>
                             {isValid(date) ? format(date, "MMM dd yyyy") : ""}
                         </p>

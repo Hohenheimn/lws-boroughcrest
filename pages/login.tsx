@@ -33,12 +33,16 @@ export default function Login() {
 
         if (!regexEmail.test(isUsername)) {
             setInvalid("Invalid Email");
+
             setSuccess(false);
+
             return;
         }
         if (!regexLetterAndNumber.test(isPassword)) {
             setInvalid("Invalid password, special characters are not allowed");
+
             setSuccess(false);
+
             return;
         }
         setLoading(true);
@@ -47,22 +51,40 @@ export default function Login() {
                 email: isUsername,
                 password: isPassword,
             });
+
             const { token } = await response.data;
+
+            const responseUserInfo = await api.get("/auth/me", {
+                headers: {
+                    Authorization: "Bearer " + token,
+                },
+            });
+
+            const UserInfo = JSON.stringify(responseUserInfo?.data);
+
+            localStorage.setItem("userInfo", UserInfo);
+
             if (CheckRemember === true) {
                 localStorage.setItem("username", isUsername);
                 localStorage.setItem("password", isPassword);
             }
+
             setCookie("user", token);
+
             router.push("/dashboard");
+
             setInvalid("");
+
             setSuccess(true);
         } catch (error: any) {
             setSuccess(false);
+
             if (error?.response?.status === 401) {
                 setInvalid("Invalid Username or Password");
             } else {
                 setInvalid(error?.message);
             }
+
             setLoading(false);
         }
     };

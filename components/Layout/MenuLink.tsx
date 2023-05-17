@@ -26,7 +26,7 @@ export default function MenuLink({
     children,
     closeOnClick,
 }: MenuLink) {
-    const { collapseSide, setCollapseSide } = useContext(AppContext);
+    const { collapseSide } = useContext(AppContext);
     const router = useRouter();
     const ValidateUrl = router.pathname.split("/")[1];
     return (
