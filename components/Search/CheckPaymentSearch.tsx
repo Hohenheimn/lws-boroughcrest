@@ -7,23 +7,27 @@ import { GetJournalRecentSearch } from "../FINANCE/General-Ledger/Journal/Query"
 import { useRouter } from "next/router";
 import { BeatLoader } from "react-spinners";
 import { format, isValid, parse } from "date-fns";
+import { AdjustmentDetailType } from "../FINANCE/CustomerFacility/Adjustment/AdjusmentDetail";
 
-export default function AccessSearch() {
+export default function CheckPaymentSearch() {
     const [search, setSearch] = useState<string>("");
+
     const router = useRouter();
+
     const id: any = router.query.id;
+
     const { isLoading, isError, data } = GetJournalRecentSearch(id, search);
 
     return (
         <div className={style.container}>
             <div className={style.header}>
                 <aside className={style.title}>
-                    <Link href="/project/corporate">
+                    <Link href="/finance/check-warehouse/check-receivables/check-payment-list">
                         <a>
                             <MdArrowForwardIos className={style.arrow} />
                         </a>
                     </Link>
-                    <h1>Project List</h1>
+                    <h1>Check Payment List</h1>
                 </aside>
 
                 <aside className={style.searchBar}>
@@ -51,7 +55,7 @@ export default function AccessSearch() {
                         />
                     </div>
                 ) : (
-                    data?.data.data.map((item: any, index: number) => (
+                    data?.data?.data.map((item: any, index: number) => (
                         <List key={index} item={item} />
                     ))
                 )}
@@ -60,23 +64,26 @@ export default function AccessSearch() {
     );
 }
 
-const List = ({ item }: any) => {
+type PropsList = {
+    item: AdjustmentDetailType;
+};
+const List = ({ item }: PropsList) => {
     const date = parse(item.date, "yyyy-MM-dd", new Date());
     return (
-        <Link href={`/project/access/${item.id}`}>
+        <Link
+            href={`/finance/check-warehouse/check-receivables/check-payment-list/${item.id}`}
+        >
             <a className={style.searchedItem}>
                 <ul>
                     <li>
-                        <h4>
-                            {item.journal_no === null ? "N/A" : item.journal_no}
-                        </h4>
+                        <h4>Juan Dela Cruz</h4>
                         <p>
                             {isValid(date) ? format(date, "MMM dd yyyy") : ""}
                         </p>
                     </li>
                     <li>
                         <p>ID: {item.id}</p>
-                        <p>{item.status}</p>
+                        <p>00002</p>
                     </li>
                 </ul>
             </a>

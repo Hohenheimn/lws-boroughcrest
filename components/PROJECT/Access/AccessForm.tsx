@@ -3,7 +3,6 @@ import ModalTemp from "../../Reusable/ModalTemp";
 import SelectDropdown from "../../Reusable/SelectDropdown";
 import { AiOutlineInfoCircle } from "react-icons/ai";
 import Tippy from "@tippy.js/react";
-import style from "../../../styles/Popup_Modal.module.scss";
 import { RiArrowDownSFill } from "react-icons/ri";
 import { useRouter } from "next/router";
 import AppContext from "../../Context/AppContext";

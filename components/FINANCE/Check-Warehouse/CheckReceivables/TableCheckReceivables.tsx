@@ -15,9 +15,11 @@ import ModalTemp from "../../../Reusable/ModalTemp";
 import { TextNumberDisplay } from "../../../Reusable/NumberFormat";
 import Calendar from "../../../Reusable/Calendar";
 
-import { BookedCheck } from "../../../Reusable/Icons";
+import { BookedCheck, OppositeArrow } from "../../../Reusable/Icons";
 import { GetInvoiceList } from "../../CustomerFacility/Billing/Query";
 import { useRouter } from "next/router";
+import { IoCloseSharp } from "react-icons/io5";
+import { HiCheck } from "react-icons/hi";
 
 type isTableItemObj = {
     id: number;
@@ -35,27 +37,43 @@ type isTableItemObj = {
     select: boolean;
 };
 
-export default function TableCheckReceivables() {
+type Props = {
+    isSearch: string;
+    setSearch: Function;
+    TablePage: number;
+    setTablePage: Function;
+    isAdvFilter: Advancefilter;
+    setAdvFilter: Function;
+    isFilterText: string;
+    setFilterText: Function;
+    isPeriod: {
+        from: string;
+        to: string;
+    };
+    setPeriod: Function;
+    page: string;
+};
+
+export default function TableCheckReceivables({
+    isSearch,
+    setSearch,
+    TablePage,
+    setTablePage,
+    isAdvFilter,
+    setAdvFilter,
+    isFilterText,
+    setFilterText,
+    isPeriod,
+    setPeriod,
+    page,
+}: Props) {
     const router = useRouter();
-
-    const [isPeriod, setPeriod] = useState({
-        from: "",
-        to: "",
-    });
-
-    const [isSearch, setSearch] = useState("");
-
-    const [TablePage, setTablePage] = useState(1);
-
     const [updateDueDate, setUpdateDueDate] = useState({
         value: "",
         toggle: false,
     });
 
     // ADVANCE FILTER
-    const [isAdvFilter, setAdvFilter] = useState<Advancefilter>([]);
-
-    const [isFilterText, setFilterText] = useState<string>("");
 
     useEffect(() => {
         const cloneArray = isAdvFilter.map((item) => {
@@ -221,28 +239,91 @@ export default function TableCheckReceivables() {
                 ))}
             </ul>
 
-            <div className="flex items-center mb-5 480px:mb-2 480px:flex-wrap">
-                <PeriodCalendar value={isPeriod} setValue={setPeriod} />
-            </div>
+            {page === "check-payment-list" && (
+                <div className="flex items-center mb-5 480px:mb-2 480px:flex-wrap">
+                    <PeriodCalendar value={isPeriod} setValue={setPeriod} />
+                </div>
+            )}
 
             <div className="table_container">
                 <table className="table_list">
                     <thead>
-                        <tr>
-                            <th></th>
-                            <th>Status</th>
-                            <th>Receipt No.</th>
-                            <th>Payor</th>
-                            <th>Check Date</th>
-                            <th>Check No.</th>
-                            <th>Bank & Branch</th>
-                            <th>Check Amount</th>
-                        </tr>
+                        {page === "check-schedule" && (
+                            <tr>
+                                <th></th>
+                                <th>Status</th>
+                                <th>Receipt No.</th>
+                                <th>Payor</th>
+                                <th>Check Date</th>
+                                <th>Check No.</th>
+                                <th>Bank & Branch</th>
+                                <th>Check Amount</th>
+                            </tr>
+                        )}
+                        {page === "check-payment-list" && (
+                            <tr>
+                                <th>Receipt Date</th>
+                                <th>Receipt No.</th>
+                                <th>Customer</th>
+                                <th>Property</th>
+                                <th>Amount Received</th>
+                            </tr>
+                        )}
+                        {page === "booked-check" && (
+                            <tr>
+                                <th></th>
+                                <th>Status</th>
+                                <th>Receipt No.</th>
+                                <th>Payor</th>
+                                <th>Check Date</th>
+                                <th>Check No.</th>
+                                <th>Bank & Branch</th>
+                                <th>Check Amount</th>
+                                <th>Deposit Date</th>
+                                <th>Reference No.</th>
+                            </tr>
+                        )}
                     </thead>
                     <tbody>
-                        {data?.data.data.map((item: any, index: number) => (
-                            <List key={index} itemDetail={item} />
-                        ))}
+                        <>
+                            {page === "check-schedule" && (
+                                <>
+                                    {data?.data.data.map(
+                                        (item: any, index: number) => (
+                                            <ListSchedule
+                                                key={index}
+                                                itemDetail={item}
+                                            />
+                                        )
+                                    )}
+                                </>
+                            )}
+
+                            {page === "check-payment-list" && (
+                                <>
+                                    {data?.data.data.map(
+                                        (item: any, index: number) => (
+                                            <ListPaymentList
+                                                key={index}
+                                                itemDetail={item}
+                                            />
+                                        )
+                                    )}
+                                </>
+                            )}
+                            {page === "booked-check" && (
+                                <>
+                                    {data?.data.data.map(
+                                        (item: any, index: number) => (
+                                            <ListBookedCheck
+                                                key={index}
+                                                itemDetail={item}
+                                            />
+                                        )
+                                    )}
+                                </>
+                            )}
+                        </>
                     </tbody>
                 </table>
                 {isLoading && (
@@ -274,7 +355,7 @@ type ListProps = {
     itemDetail: isTableItemObj;
 };
 
-const List = ({ itemDetail }: ListProps) => {
+const ListSchedule = ({ itemDetail }: ListProps) => {
     const router = useRouter();
 
     return (
@@ -326,6 +407,82 @@ const List = ({ itemDetail }: ListProps) => {
                     </h2>
                 </div>
             </td>
+        </tr>
+    );
+};
+
+const ListPaymentList = ({ itemDetail }: ListProps) => {
+    const router = useRouter();
+
+    return (
+        <tr
+            className=" cursor-pointer"
+            onClick={() =>
+                router.push(
+                    `/finance/check-warehouse/check-receivables/check-payment-list/${itemDetail.id}`
+                )
+            }
+        >
+            <td>Sep 28 2023</td>
+            <td>00002222</td>
+            <td>Juan Dela Cruz</td>
+            <td>Lorem, ipsum</td>
+            <td>
+                <div>
+                    <h2>
+                        <TextNumberDisplay
+                            value={5000}
+                            className="withPeso w-full text-end"
+                        />
+                    </h2>
+                </div>
+            </td>
+        </tr>
+    );
+};
+
+const ListBookedCheck = ({ itemDetail }: ListProps) => {
+    const router = useRouter();
+
+    const status = itemDetail.id % 2 ? "Deposited" : "Rejected";
+
+    return (
+        <tr className="hoverEffect">
+            <td className="icon">
+                <div
+                    className=" cursor-pointer"
+                    onClick={() => router.push(`?book=${itemDetail.id}`)}
+                >
+                    <OppositeArrow />
+                </div>
+            </td>
+            <td>
+                <div className="finance_status">
+                    <div className={`status cw ${status}`}>
+                        <div>
+                            {status === "Deposited" && <HiCheck />}
+                            {status === "Rejected" && <IoCloseSharp />}
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td>00001</td>
+            <td>Juan Dela Cruz</td>
+            <td>Sep 28 2023</td>
+            <td>549879874</td>
+            <td>BDO Manila</td>
+            <td>
+                <div>
+                    <h2>
+                        <TextNumberDisplay
+                            value={5000}
+                            className="withPeso w-full text-end"
+                        />
+                    </h2>
+                </div>
+            </td>
+            <td>Sep 28 2023</td>
+            <td>RF89798564123</td>
         </tr>
     );
 };

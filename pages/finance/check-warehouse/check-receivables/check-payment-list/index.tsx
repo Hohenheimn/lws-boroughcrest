@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import TableCheckReceivables from "../../../../components/FINANCE/Check-Warehouse/CheckReceivables/TableCheckReceivables";
-import { Advancefilter } from "../../../../components/Reusable/AdvanceFilter";
+import { Advancefilter } from "../../../../../components/Reusable/AdvanceFilter";
+import TableCheckReceivables from "../../../../../components/FINANCE/Check-Warehouse/CheckReceivables/TableCheckReceivables";
 
-export default function CheckSchedule() {
+export default function CheckPaymentList() {
     const [isSearch, setSearch] = useState("");
 
     const [TablePage, setTablePage] = useState(1);
@@ -28,7 +28,7 @@ export default function CheckSchedule() {
             setFilterText={setFilterText}
             isPeriod={isPeriod}
             setPeriod={setPeriod}
-            page="check-schedule"
+            page="check-payment-list"
         />
     );
 }
