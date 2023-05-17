@@ -55,7 +55,7 @@ export default function AdjustmentSearch() {
                         />
                     </div>
                 ) : (
-                    data?.data.map((item: any, index: number) => (
+                    data?.data?.data.map((item: any, index: number) => (
                         <List key={index} item={item} />
                     ))
                 )}

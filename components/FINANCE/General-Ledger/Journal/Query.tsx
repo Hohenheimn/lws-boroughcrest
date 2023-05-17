@@ -202,7 +202,7 @@ export const GetJournalRecentSearch = (
 ) => {
     return useQuery(["adjustment-recent-search", id, keyword], () => {
         return api.get(
-            `/finance/customer-facility/adjustment/recent-search/${id}?search=${keyword}`,
+            `/finance/customer-facility/adjustment/recent-search/${id}?search=${keyword}&paginate=3`,
             {
                 headers: {
                     Authorization: "Bearer " + getCookie("user"),

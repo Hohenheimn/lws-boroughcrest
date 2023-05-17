@@ -34,11 +34,10 @@ export type AdjustmentDetailType = {
 };
 
 export type adjustment_invoice = {
-    adjustment_amount: number;
-    adjustment_id: number;
-    balance: string | number;
-    billing_invoice: Billing_Invoice;
-    billing_invoice_id: number;
+    adjustment_amount: string;
+    balance: string;
+    billing_invoice_list: Invoice_list;
+    billing_invoice_list_id: number;
     id: number;
 };
 
@@ -62,17 +61,22 @@ export type Billing_Invoice = {
 
 export type Invoice_list = {
     amount: number;
-    billing_batch_list_id: number;
     billing_invoice_id: number;
-    billing_readings_list_id: number;
-    charge_id: number;
-    created_at: string;
     description: string;
     id: number;
-    property_unit_id: number;
+    invoice: {
+        applied_advances: number;
+        billing_date: string;
+        due_amount: number;
+        due_date: string;
+        id: number;
+        invoice_no: string;
+        payment_amount: number;
+        queuing_amount: string;
+        status: string;
+    };
     quantity: number;
     unit_price: number;
-    updated_at: string;
     vat: number;
 };
 

@@ -168,13 +168,30 @@ export default function AdjustmentTable({ type, isPeriod, setPeriod }: Props) {
 
         setSelectedIDs([]);
 
+        let message = `Items successfully`;
+
+        if (buttonClicked === "" || buttonClicked === "Rejected") {
+            message = `Items successfully rejected`;
+        }
+        if (buttonClicked === "Pending") {
+            message = `Items successfully return to pending`;
+        }
+        if (buttonClicked === "In Process") {
+            message = `Items successfully moved to process`;
+        }
+        if (buttonClicked === "Posted") {
+            message = `Items successfully posted`;
+        }
+
         setPrompt({
-            message: `Items successfully ${buttonLoading}!`,
+            message: message,
             type: "success",
             toggle: true,
         });
 
         buttonClicked = "";
+
+        setRejectNoticeToggle(false);
 
         setButtonLoading("");
     };
@@ -296,7 +313,7 @@ export default function AdjustmentTable({ type, isPeriod, setPeriod }: Props) {
                                         }
                                     >
                                         {updateLoading &&
-                                        buttonLoading === "In Progress" ? (
+                                        buttonLoading === "In Process" ? (
                                             <MoonLoader
                                                 className="text-ThemeRed mr-2"
                                                 color="#8f384d"

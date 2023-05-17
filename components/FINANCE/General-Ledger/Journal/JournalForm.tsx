@@ -1,7 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
 import Image from "next/image";
-import { BsPlusLg } from "react-icons/bs";
-import { HiMinus } from "react-icons/hi";
 import { RiArrowDownSFill } from "react-icons/ri";
 import DropDownCOA from "../../../Dropdowns/DropdownCOA";
 import { validateCreditDebitField } from "../OpeningBalance/ValidateCreditDebitField";
@@ -16,14 +14,13 @@ import { ScaleLoader } from "react-spinners";
 import { useRouter } from "next/router";
 import Calendar from "../../../Reusable/Calendar";
 import {
-    TextNumberDisplay,
+ 
     InputNumberForTable,
 } from "../../../Reusable/NumberFormat";
 import { format, isValid, parse } from "date-fns";
 import { TableTwoTotal } from "../../../Reusable/TableTotal";
 import { MinusButtonTable, PlusButtonTable } from "../../../Reusable/Icons";
 import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
-import { TextFieldValidation } from "../../../Reusable/InputField";
 
 export type defaultArray = defaultObject[];
 export type defaultObject = {

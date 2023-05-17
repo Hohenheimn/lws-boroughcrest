@@ -76,14 +76,14 @@ type CustomerDDData = {
 
 export type AdjustmentInvoice = {
     id: number;
-    billing_invoice_id: number;
     adjustment_amount: number;
     balance: number;
-    billing_date: string;
-    document_no: string | number;
-    description: string;
-    amount_due: number;
-    remaining_advances: number;
+    billing_invoice_id?: number;
+    billing_date?: string;
+    document_no?: string | number;
+    description?: string;
+    amount_due?: number;
+    remaining_advances?: number;
 };
 
 type FilteredAccuntEntries = {
@@ -182,13 +182,23 @@ export default function AdjustmentForm({ DefaultValue }: Props) {
     );
 
     const onSuccess = () => {
-        setPrompt({
-            message: `Adjustment successfully ${
-                isButton === "draft" ? "registered as draft" : "registered"
-            }`,
-            toggle: true,
-            type: isButton === "draft" ? "draft" : "success",
-        });
+        if (router.query.modify === undefined) {
+            setPrompt({
+                message: `Adjustment successfully ${
+                    isButton === "draft" ? "registered as draft" : "registered"
+                }`,
+                toggle: true,
+                type: isButton === "draft" ? "draft" : "success",
+            });
+        } else {
+            setPrompt({
+                message: `Adjustment successfully ${
+                    isButton === "draft" ? "updated as draft" : "updated"
+                }`,
+                toggle: true,
+                type: isButton === "draft" ? "draft" : "success",
+            });
+        }
 
         if (isButton !== "new") {
             router.push(
@@ -278,13 +288,23 @@ export default function AdjustmentForm({ DefaultValue }: Props) {
             invoiceData?.data.map((item: any) => {
                 const date = parse(item.billing_date, "yyyy-MM-dd", new Date());
                 item?.invoice_list?.map((invoiceItem: any) => {
+                    let adjustment_amount = 0;
+                    let balance = item?.applied_advances;
+                    DefaultValue.Invoice.map((itemDV) => {
+                        if (itemDV.id === invoiceItem.id) {
+                            adjustment_amount = itemDV.adjustment_amount;
+                            balance =
+                                Number(item?.applied_advances) -
+                                Number(itemDV.adjustment_amount);
+                        }
+                    });
                     getCustomerOutstanding = [
                         ...getCustomerOutstanding,
                         {
                             id: invoiceItem?.id,
                             billing_invoice_id: item?.id,
-                            adjustment_amount: 0,
-                            balance: item?.applied_advances,
+                            adjustment_amount: adjustment_amount,
+                            balance: balance <= 0 ? 0 : balance,
                             billing_date: isValid(date)
                                 ? format(date, "MMM dd yyyy")
                                 : "",
@@ -326,6 +346,7 @@ export default function AdjustmentForm({ DefaultValue }: Props) {
     }, [AccountEntries?.data, DefaultValue.Accounts]);
 
     const ApplyAccountEntriesHandler = () => {
+        console.log(AccountEntries?.data);
         const cloneTogetData = AccountEntries?.data.map(
             (item: FilteredAccuntEntries, index: number) => {
                 const validationDebitOrCreditField = ValidationDebitCredit(
@@ -352,7 +373,6 @@ export default function AdjustmentForm({ DefaultValue }: Props) {
                         Number(adjustment_total) -
                         Number(deferred_customer_gst_account);
                 }
-                console.log(AdvancesToggle);
                 if (AdvancesToggle && router.query.modify !== undefined) {
                     let debit = 0;
                     let credit = 0;
@@ -368,8 +388,8 @@ export default function AdjustmentForm({ DefaultValue }: Props) {
                         coa_id: item.id,
                         chart_code: item.chart_code,
                         account_name: item.account_name,
-                        debit: debit,
-                        credit: credit,
+                        debit: Number(debit),
+                        credit: Number(credit),
                     };
                 }
                 return {
@@ -431,6 +451,16 @@ export default function AdjustmentForm({ DefaultValue }: Props) {
             ) {
                 setPrompt({
                     message: "Fill out all adjustment amount",
+                    toggle: true,
+                    type: "draft",
+                });
+                return;
+            }
+            if (
+                isAccounts.some((item) => item.credit === 0 && item.debit === 0)
+            ) {
+                setPrompt({
+                    message: "Please input a value on debit or credit!",
                     toggle: true,
                     type: "draft",
                 });

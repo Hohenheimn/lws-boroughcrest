@@ -88,13 +88,22 @@ export default function InvoiceTransaction({
                                     <td>
                                         <TextNumberDisplay
                                             className="withPeso w-full text-end"
-                                            value={item.amount_due}
+                                            value={
+                                                item.amount_due === undefined
+                                                    ? 0
+                                                    : item.amount_due
+                                            }
                                         />
                                     </td>
                                     <td>
                                         <TextNumberDisplay
                                             className="withPeso w-full text-end"
-                                            value={item.remaining_advances}
+                                            value={
+                                                item.remaining_advances ===
+                                                undefined
+                                                    ? 0
+                                                    : item.remaining_advances
+                                            }
                                         />
                                     </td>
                                 </tr>

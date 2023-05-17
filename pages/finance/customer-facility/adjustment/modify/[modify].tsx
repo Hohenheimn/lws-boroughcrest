@@ -2,6 +2,7 @@ import { format, isValid, parse } from "date-fns";
 import React, { useEffect, useState } from "react";
 import { BeatLoader } from "react-spinners";
 import AdjustmentForm, {
+    AdjustmentInvoice,
     DefaultValueAdjustment,
 } from "../../../../../components/FINANCE/CustomerFacility/Adjustment/AdjustmentForm";
 import { GetAdjustmentDetail } from "../../../../../components/FINANCE/CustomerFacility/Adjustment/Query";
@@ -48,8 +49,17 @@ export default function Modify({ id }: any) {
                     charge_id: AdjustmentDetail.charge_id,
                 },
                 transaction_type: AdjustmentDetail.transaction,
-                Invoice: [],
-                AdvancesToggle: true,
+                Invoice: AdjustmentDetail.adjustment_invoice.map((item) => {
+                    return {
+                        id: Number(item.billing_invoice_list.id),
+                        adjustment_amount: Number(item.adjustment_amount),
+                        balance: Number(item.balance),
+                    };
+                }),
+                AdvancesToggle:
+                    AdjustmentDetail.adjustment_invoice.length <= 0
+                        ? true
+                        : false,
                 Accounts: AdjustmentDetail.adjustment_accounts.map(
                     (item: adjustment_accounts, index: number) => {
                         return {
