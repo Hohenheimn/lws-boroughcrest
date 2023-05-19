@@ -4,39 +4,54 @@ import { PencilButton } from "../../Reusable/Icons";
 import AccessForm from "./AccessForm";
 import AddUserForm from "./AddUserForm";
 
-export default function AccessDetail() {
+type PermissionsRole = {
+    access: string[];
+    menu: string;
+};
+
+type UserRole = {
+    id: number;
+    employee_id: number;
+    name: string;
+    position: string;
+    department: string;
+};
+
+type Props = {
+    data: any;
+};
+
+export default function AccessDetail({ data }: Props) {
     const [toggleRole, setToggleRole] = useState(false);
+
     const [toggleUser, setToggleUser] = useState(false);
+
+    const usersID = data.data.users.map((item: { id: number }) => {
+        return item.id;
+    });
+
     return (
         <div>
             {toggleUser && (
                 <AddUserForm
-                    externalDefaultValue={[1]}
+                    externalDefaultValue={usersID}
+                    roleName={data?.data.name}
                     setToggleUser={setToggleUser}
                 />
             )}
             {toggleRole && (
                 <AccessForm
                     type={"modify"}
-                    RoleName={"Admin Staff"}
-                    DefaultValue={[
-                        {
-                            menu: "Customer",
-                            role: ["modify", "create"],
-                            duration: 10,
-                        },
-                        {
-                            menu: "Chart of Accounts",
-                            role: ["modify"],
-                            duration: 10,
-                        },
-                        {
-                            menu: "Charges",
-                            role: ["approve", "view"],
-                            duration: 50,
-                        },
-                    ]}
+                    RoleName={data?.data.name}
+                    DefaultValue={data?.data.permissions.map((item: any) => {
+                        return {
+                            menu: item.menu,
+                            role: item.access,
+                            duration: 0,
+                        };
+                    })}
                     setToggleForm={setToggleRole}
+                    id={data?.data?.id}
                 />
             )}
             <div className="flex justify-between items-center mb-5">
@@ -53,17 +68,49 @@ export default function AccessDetail() {
                     </div>
                     <div className="w-full 640px:w-full">
                         <p className="label_text">ROLE</p>
-                        <h1 className="main_text">Admin Staff</h1>
+                        <h1 className="main_text">{data?.data?.name}</h1>
                     </div>
-                    <div className="w-2/4 640px:w-full">
-                        <p className="label_text">PERMISSIONS</p>
-                        <h1 className="main_text noMB">Customer</h1>
-                        <h1 className="main_text">Property</h1>
-                    </div>
-                    <div className="w-2/4 640px:w-full">
-                        <p className="label_text">ACCESS</p>
-                        <h1 className="main_text noMB">All Access</h1>
-                        <h1 className="main_text">View</h1>
+                    <div className="w-full 640px:w-full overflow-auto">
+                        <table className="w-full min-w-[300px]">
+                            <thead>
+                                <tr>
+                                    <th className="label_text">PERMISSIONS</th>
+                                    <th className="label_text">ACCESS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {data.data.permissions.map(
+                                    (item: PermissionsRole, index: number) => (
+                                        <tr key={index}>
+                                            <td>
+                                                <h1 className="main_text noMB">
+                                                    {item.menu}
+                                                </h1>
+                                            </td>
+                                            <td>
+                                                <h1 className="main_text noMB capitalize">
+                                                    {item.access.map(
+                                                        (
+                                                            itemAccess: any,
+                                                            index: number
+                                                        ) =>
+                                                            Number(
+                                                                item.access
+                                                                    .length
+                                                            ) -
+                                                                1 ===
+                                                            index
+                                                                ? itemAccess
+                                                                : itemAccess +
+                                                                  ", "
+                                                    )}
+                                                </h1>
+                                            </td>
+                                        </tr>
+                                    )
+                                )}
+                            </tbody>
+                        </table>
                     </div>
                 </li>
             </ul>
@@ -87,22 +134,32 @@ export default function AccessDetail() {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>
-                                    <h1 className="main_text">000001</h1>
-                                </td>
-                                <td>
-                                    <h1 className="main_text">
-                                        Juan Dela Cruz
-                                    </h1>
-                                </td>
-                                <td>
-                                    <h1 className="main_text">Admin Staff</h1>
-                                </td>
-                                <td>
-                                    <h1 className="main_text">Admin</h1>
-                                </td>
-                            </tr>
+                            {data.data.users.map(
+                                (item: UserRole, index: number) => (
+                                    <tr key={index}>
+                                        <td>
+                                            <h1 className="main_text noMB">
+                                                {item.employee_id}
+                                            </h1>
+                                        </td>
+                                        <td>
+                                            <h1 className="main_text noMB">
+                                                {item.name}
+                                            </h1>
+                                        </td>
+                                        <td>
+                                            <h1 className="main_text noMB">
+                                                {item.position}
+                                            </h1>
+                                        </td>
+                                        <td>
+                                            <h1 className="main_text noMB">
+                                                {item.department}
+                                            </h1>
+                                        </td>
+                                    </tr>
+                                )
+                            )}
                         </tbody>
                     </table>
                 </li>

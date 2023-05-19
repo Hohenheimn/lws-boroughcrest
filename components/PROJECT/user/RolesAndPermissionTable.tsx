@@ -147,7 +147,7 @@ export const RolesAndPermissionTable: RolePermission[] = [
     },
     {
         id: 9,
-        menu: "Customer Request View (Closed)",
+        menu: "Communication",
         type: "secondary",
         sectionEnd: true,
         roles: {

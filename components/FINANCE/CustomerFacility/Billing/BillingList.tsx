@@ -13,7 +13,7 @@ import Pagination from "../../../Reusable/Pagination";
 import AppContext from "../../../Context/AppContext";
 import { format, isValid, parse } from "date-fns";
 import ModalTemp from "../../../Reusable/ModalTemp";
-import { GetInvoiceList, MultipleUpdateBillingList } from "./Query";
+import { GetInvoiceList, MultipleUpdateBillingList, SendPortal } from "./Query";
 import { TextNumberDisplay } from "../../../Reusable/NumberFormat";
 import Calendar from "../../../Reusable/Calendar";
 import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
@@ -37,6 +37,7 @@ type isTableItemObj = {
     billing_date: string;
     due_date: string;
     date: string;
+    post_to_portal: number;
     select: boolean;
 };
 
@@ -129,6 +130,7 @@ export default function BillingList() {
                     due_date: isValid(due_date)
                         ? format(due_date, "MMM dd yyyy")
                         : "",
+                    post_to_portal: item.post_to_portal,
                     select: select,
                 };
             });
@@ -190,12 +192,28 @@ export default function BillingList() {
             selectAll: false,
         });
         setSelectedIDs([]);
+
+        let message = `Items successfully`;
+
+        if (ButtonClicked === "" || ButtonClicked === "Rejected") {
+            message = `Items successfully rejected`;
+        }
+        if (ButtonClicked === "Pending") {
+            message = `Items successfully return to pending`;
+        }
+        if (ButtonClicked === "In Process") {
+            message = `Items successfully moved to process`;
+        }
+        if (ButtonClicked === "Posted") {
+            message = `Items successfully posted`;
+        }
+
+        if (ButtonClicked === "Post to Portal") {
+            message = `Items successfully posted to portal`;
+        }
+
         setPrompt({
-            message: `Items successfully ${
-                ButtonClicked === "Pending"
-                    ? "return to pending"
-                    : ButtonClicked
-            }!`,
+            message: message,
             type: "success",
             toggle: true,
         });
@@ -206,13 +224,18 @@ export default function BillingList() {
             toggle: false,
         });
     };
+
     const onError = (e: any) => {
         ErrorSubmit(e, setPrompt);
         ButtonClicked = "";
         setButtonLoading("");
     };
+
     const { isLoading: updateLoading, mutate: updateMutate } =
         MultipleUpdateBillingList(onSuccess, onError);
+
+    const { isLoading: sendPortalLoading, mutate: SendPortalMutate } =
+        SendPortal(onSuccess, onError);
 
     const [isInProcesNoticeToggle, setInProcesNoticeToggle] = useState(false);
 
@@ -249,8 +272,13 @@ export default function BillingList() {
             updateMutate(Payload);
         } else {
             //   post to portal
+            const Payload = {
+                invoice_ids: isSelectedIDs,
+            };
+            SendPortalMutate(Payload);
         }
     };
+
     return (
         <>
             {isInProcesNoticeToggle && (
@@ -459,7 +487,15 @@ export default function BillingList() {
                                         UpdateStatus("Post to Portal")
                                     }
                                 >
-                                    POST TO PORTAL
+                                    {sendPortalLoading ? (
+                                        <ScaleLoader
+                                            color="#fff"
+                                            height="10px"
+                                            width="2px"
+                                        />
+                                    ) : (
+                                        "  POST TO PORTAL"
+                                    )}
                                 </button>
                             </li>
                         </>
@@ -765,9 +801,9 @@ const List = ({
                 </Link>
             </td>
 
-            {/* {type !== "unposted" && (
-                <td className="icon w-[100px]">
-                    <div className="item w-[150px]">
+            {type !== "unposted" && itemDetail.post_to_portal === 1 && (
+                <td>
+                    <div className="item w-[50px]">
                         <div className="finance_status">
                             <div className="status Sent">
                                 <div>
@@ -782,7 +818,7 @@ const List = ({
                         </div>
                     </div>
                 </td>
-            )} */}
+            )}
         </tr>
     );
 };

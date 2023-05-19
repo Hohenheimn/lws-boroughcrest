@@ -1,11 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import ModalTemp from "../../Reusable/ModalTemp";
 import { BiSearch } from "react-icons/bi";
 import { UserDetail, UserList } from "../user/UserTable";
 import { getCookie } from "cookies-next";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import api from "../../../util/api";
 import Pagination from "../../Reusable/Pagination";
+import { useRouter } from "next/router";
+import { ErrorSubmit } from "../../Reusable/ErrorMessage";
+import AppContext from "../../Context/AppContext";
+import { GetUser } from "../user/Query";
+import { AddUser } from "./Query";
+import TableLoadingNError from "../../Reusable/TableLoadingNError";
+import { ScaleLoader } from "react-spinners";
 
 type isTable = {
     itemArray: userGroup[];
@@ -24,28 +31,23 @@ export type userGroup = {
 type Props = {
     externalDefaultValue: number[];
     setToggleUser: Function;
+    roleName: string;
 };
 
 export default function AddUserForm({
+    roleName,
     externalDefaultValue,
     setToggleUser,
 }: Props) {
-    const sampleData = [
-        {
-            id: 1,
-            name: "Jomari Tiu",
-            position: "FrontEnd Software Developer",
-            department: "Developer",
-        },
-        {
-            id: 2,
-            name: "Brylle Ty",
-            position: "Senior BackEnd Software Developer",
-            department: "Developer",
-        },
-    ];
+    const { setPrompt } = useContext(AppContext);
+
+    const router = useRouter();
 
     const [isSearch, setSearch] = useState("");
+
+    const [TablePage, setTablePage] = useState(1);
+
+    const { data, isLoading, isError } = GetUser(isSearch, TablePage);
 
     const [isTableItem, setTableItem] = useState<isTable>({
         itemArray: [],
@@ -56,46 +58,37 @@ export default function AddUserForm({
     const [isSelectedIDs, setSelectedIDs] =
         useState<number[]>(externalDefaultValue);
 
-    const { data, isLoading, isError } = useQuery(
-        ["user-create-role-list", isSearch],
-        () => {
-            return api.get(``, {
-                headers: {
-                    Authorization: "Bearer " + getCookie("user"),
-                },
+    useEffect(() => {
+        if (!isLoading && !isError) {
+            let selectAll = false;
+            let CloneArray = data?.data?.data.map((item: any) => {
+                let select = false;
+                if (isSelectedIDs?.some((someIDs) => someIDs === item.id)) {
+                    select = true;
+                }
+                return {
+                    id: item.id,
+                    name: item.name,
+                    position: item.position,
+                    department: item.department_name,
+                    select: select,
+                };
+            });
+            if (
+                CloneArray.length !== 0 &&
+                CloneArray.every((val: any) => isSelectedIDs.includes(val.id))
+            ) {
+                selectAll = true;
+            } else {
+                selectAll = false;
+            }
+            setTableItem({
+                ...isTableItem,
+                itemArray: CloneArray,
+                selectAll: selectAll,
             });
         }
-    );
-
-    useEffect(() => {
-        let selectAll = false;
-        let CloneArray = sampleData.map((item: any) => {
-            let select = false;
-            if (isSelectedIDs?.some((someIDs) => someIDs === item.id)) {
-                select = true;
-            }
-            return {
-                id: item.id,
-                name: item.name,
-                position: item.position,
-                department: item.department,
-                select: select,
-            };
-        });
-        if (
-            CloneArray.length !== 0 &&
-            CloneArray.every((val: any) => isSelectedIDs.includes(val.id))
-        ) {
-            selectAll = true;
-        } else {
-            selectAll = false;
-        }
-        setTableItem({
-            ...isTableItem,
-            itemArray: CloneArray,
-            selectAll: selectAll,
-        });
-    }, [data?.status, isSearch, isSelectedIDs]);
+    }, [data?.data?.data, isSelectedIDs]);
 
     const selectAll = () => {
         if (isTableItem.selectAll) {
@@ -133,8 +126,48 @@ export default function AddUserForm({
         });
     };
 
+    const queryClient = useQueryClient();
+
+    const id = router.query.id;
+
+    const onSuccess = () => {
+        queryClient.invalidateQueries("get-roles");
+        queryClient.invalidateQueries(["show-role", `${id}`]);
+
+        let message = `User successfully added to role ${roleName}`;
+
+        setPrompt({
+            message: message,
+            type: "success",
+            toggle: true,
+        });
+
+        setToggleUser(false);
+    };
+
+    const onError = (e: any) => {
+        ErrorSubmit(e, setPrompt);
+    };
+
+    const { mutate, isLoading: loadingMutate } = AddUser(
+        onSuccess,
+        onError,
+        Number(id)
+    );
+
     const SaveHandler = () => {
-        console.log(isSelectedIDs);
+        if (isSelectedIDs.length <= 0) {
+            setPrompt({
+                message: "Select a user!",
+                type: "draft",
+                toggle: true,
+            });
+            return;
+        }
+        const Payload = {
+            user_ids: isSelectedIDs,
+        };
+        mutate(Payload);
     };
 
     return (
@@ -155,7 +188,7 @@ export default function AddUserForm({
                 <p className=" text-ThemeRed text-[14px] font-NHU-bold mr-3">
                     ROLE NAME:
                 </p>
-                <p className=" text-RegularColor text-[14px]">Admin Staff</p>
+                <p className=" text-RegularColor text-[14px]">{roleName}</p>
             </div>
             <div className="w-full overflow-auto max-h-[50vh]">
                 <table className="table_list miniTable">
@@ -191,13 +224,15 @@ export default function AddUserForm({
                         )}
                     </tbody>
                 </table>
-                <div className="mb-5 1550px:mb-3"></div>
-                {/* <Pagination
+                <div className="mb-5 480px:mb-3"></div>
+                <TableLoadingNError isLoading={isLoading} isError={isError} />
+                <Pagination
                     setTablePage={setTablePage}
                     TablePage={TablePage}
-                    PageNumber={data?.data.last_page}
-                    CurrentPage={data?.data.current_page}
-                /> */}
+                    PageNumber={data?.data.meta.last_page}
+                    CurrentPage={data?.data.meta.current_page}
+                />
+
                 <div className="w-full flex items-center justify-end mt-10">
                     <button
                         className="button_cancel"
@@ -206,7 +241,15 @@ export default function AddUserForm({
                         CLOSE
                     </button>
                     <button className="buttonRed" onClick={SaveHandler}>
-                        SAVE
+                        {loadingMutate ? (
+                            <ScaleLoader
+                                color="#fff"
+                                height="10px"
+                                width="2px"
+                            />
+                        ) : (
+                            "SAVE"
+                        )}
                     </button>
                 </div>
             </div>

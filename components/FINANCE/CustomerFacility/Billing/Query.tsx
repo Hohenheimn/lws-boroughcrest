@@ -104,6 +104,30 @@ export const MultipleUpdateBillingList = (onSucces: any, onError: any) => {
     );
 };
 
+export const SendPortal = (onSucces: any, onError: any) => {
+    const queryClient = useQueryClient();
+    return useMutation(
+        (Payload: any) => {
+            return api.put(
+                `/finance/customer-facility/billing/post-to-portal`,
+                Payload,
+                {
+                    headers: {
+                        Authorization: "Bearer " + getCookie("user"),
+                    },
+                }
+            );
+        },
+        {
+            onSuccess: () => {
+                onSucces();
+                queryClient.invalidateQueries(["invoice-list"]);
+            },
+            onError: onError,
+        }
+    );
+};
+
 export const GetInvoiceListDetail = (id: number | string) => {
     return useQuery(["invoice-detail", id], () => {
         return api.get(`/finance/customer-facility/billing/${id}`, {

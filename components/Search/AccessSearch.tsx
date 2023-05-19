@@ -3,16 +3,16 @@ import { MdArrowForwardIos } from "react-icons/md";
 import { BsSearch } from "react-icons/bs";
 import Link from "next/link";
 import style from "../../styles/SearchSidebar.module.scss";
-import { GetJournalRecentSearch } from "../FINANCE/General-Ledger/Journal/Query";
 import { useRouter } from "next/router";
 import { BeatLoader } from "react-spinners";
 import { format, isValid, parse } from "date-fns";
+import { GetRoles, RecentRole } from "../PROJECT/Access/Query";
 
 export default function AccessSearch() {
     const [search, setSearch] = useState<string>("");
     const router = useRouter();
     const id: any = router.query.id;
-    const { isLoading, isError, data } = GetJournalRecentSearch(id, search);
+    const { isLoading, isError, data } = GetRoles("");
 
     return (
         <div className={style.container}>
@@ -26,7 +26,7 @@ export default function AccessSearch() {
                     <h1>Project List</h1>
                 </aside>
 
-                <aside className={style.searchBar}>
+                {/* <aside className={style.searchBar}>
                     <div>
                         <input
                             type="text"
@@ -38,7 +38,7 @@ export default function AccessSearch() {
                         />
                         <BsSearch />
                     </div>
-                </aside>
+                </aside> */}
             </div>
             <div className=" overflow-y-auto">
                 {isLoading ? (
@@ -67,16 +67,8 @@ const List = ({ item }: any) => {
             <a className={style.searchedItem}>
                 <ul>
                     <li>
-                        <h4>
-                            {item.journal_no === null ? "N/A" : item.journal_no}
-                        </h4>
-                        <p>
-                            {isValid(date) ? format(date, "MMM dd yyyy") : ""}
-                        </p>
-                    </li>
-                    <li>
                         <p>ID: {item.id}</p>
-                        <p>{item.status}</p>
+                        <p>{item.name}</p>
                     </li>
                 </ul>
             </a>

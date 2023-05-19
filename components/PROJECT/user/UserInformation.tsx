@@ -47,7 +47,7 @@ export default function UserInformation({ UserInfo }: Props) {
             <li className=" w-4/12 mb-10 820px:w-2/4 480px:w-full 480px:mb-3">
                 <p className=" text-gray-400 1024px:text-[14px]">CREATED ON</p>
                 <h4 className=" text-gray-500 mb-5 1024px:text-[14px]">
-                    {UserInfo.created_at}
+                    {UserInfo.created_date}
                 </h4>
             </li>
             <li className=" w-4/12 mb-10 820px:w-2/4 480px:w-full 480px:mb-3">
