@@ -63,7 +63,7 @@ export default function FinanceSearchFilter({
         if (router.pathname.includes("/general-ledger/chart-of-account")) {
             const endPoint =
                 "/finance/general-ledger/chart-of-accounts/export-list";
-            DynamicExportHandler(endPoint, "chart-of-accounts-list");
+            DynamicExportHandler(endPoint, "chart-of-accounts-list", setPrompt);
         }
     };
 
