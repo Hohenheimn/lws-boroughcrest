@@ -1,9 +1,16 @@
-import axios from "axios";
+import { useContext } from "react";
+import axios, { AxiosError } from "axios";
 import { getCookie } from "cookies-next";
 import { format } from "date-fns";
+import AppContext from "../Context/AppContext";
 
-export const DynamicExportHandler = (endPoint: string, name: string) => {
+export const DynamicExportHandler = (
+    endPoint: string,
+    name: string,
+    setPrompt: Function
+) => {
     const date = format(new Date(), "dd/MM/yyyy");
+
     axios({
         url: `${process.env.NEXT_PUBLIC_API_URL}${endPoint}`,
         headers: {
@@ -11,14 +18,26 @@ export const DynamicExportHandler = (endPoint: string, name: string) => {
         },
         method: "get",
         responseType: "blob",
-    }).then((response) => {
-        const href = URL.createObjectURL(response.data);
-        const link = document.createElement("a");
-        link.href = href;
-        link.setAttribute("download", `${name}-${date}.xlsx`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(href);
-    });
+    })
+        .then((response) => {
+            const href = URL.createObjectURL(response.data);
+            const link = document.createElement("a");
+            link.href = href;
+            link.setAttribute("download", `${name}-${date}.xlsx`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(href);
+        })
+        .catch((reason: AxiosError) => {
+            setPrompt({
+                message: reason.message,
+                type: "error",
+                toggle: true,
+            });
+        });
+};
+
+type ErrorMessage = {
+    reason: string;
 };

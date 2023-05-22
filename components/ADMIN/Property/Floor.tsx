@@ -207,6 +207,8 @@ const List = ({
     // Mutation
     const onSuccessSave = () => {
         clientQuery.invalidateQueries("get-floor");
+        setModify(!isModify);
+        setWarning("");
         setPrompt({
             message: "Tower successfully registered!",
             type: "success",
@@ -215,6 +217,7 @@ const List = ({
     };
     const onSuccessDelete = () => {
         clientQuery.invalidateQueries("get-floor");
+
         setPrompt({
             message: "Tower successfully deleted!",
             type: "success",
@@ -223,13 +226,19 @@ const List = ({
     };
     const onSuccessUpdate = () => {
         clientQuery.invalidateQueries("get-floor");
+        setModify(!isModify);
+        setWarning("");
         setPrompt({
             message: "Tower successfully Updated!",
             type: "success",
             toggle: true,
         });
     };
+
     const onError = (e: any) => {
+        // setArray((item: any[]) =>
+        //     item.filter((x: { id: any }) => x.id !== itemDetail.id)
+        // );
         ErrorSubmit(e, setPrompt);
     };
 
@@ -265,8 +274,6 @@ const List = ({
             setWarning("Cannot save with empty name and project field");
             return;
         }
-        setModify(!isModify);
-        setWarning("");
         const Payload = {
             name: itemDetail.name,
             tower_id: isTower.id,

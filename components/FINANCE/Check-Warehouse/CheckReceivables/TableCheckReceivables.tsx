@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { BsSearch } from "react-icons/bs";
 import style from "../../../../styles/SearchFilter.module.scss";
 import Image from "next/image";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
-import { BarLoader } from "react-spinners";
+import { BarLoader, ScaleLoader } from "react-spinners";
 import PeriodCalendar from "../../../Reusable/PeriodCalendar";
 import { Advancefilter, AdvanceFilter } from "../../../Reusable/AdvanceFilter";
 import TableErrorMessage from "../../../Reusable/TableErrorMessage";
@@ -20,6 +20,13 @@ import { GetInvoiceList } from "../../CustomerFacility/Billing/Query";
 import { useRouter } from "next/router";
 import { IoCloseSharp } from "react-icons/io5";
 import { HiCheck } from "react-icons/hi";
+import { BookedCheckPost, CheckScheduleList } from "./Query";
+import { TextFieldValidation } from "../../../Reusable/InputField";
+import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
+import AppContext from "../../../Context/AppContext";
+import { DynamicExportHandler } from "../../../Reusable/DynamicExport";
+import { BookedCheckType } from "../../../../pages/finance/check-warehouse/check-receivables/booked-check";
+import { CheckScheduleType } from "../../../../pages/finance/check-warehouse/check-receivables/check-schedule";
 
 type isTableItemObj = {
     id: number;
@@ -52,9 +59,15 @@ type Props = {
     };
     setPeriod: Function;
     page: string;
+    EndPointList: string;
+    EndPointAdvFilter: string;
+    EndPointExport: string;
 };
 
 export default function TableCheckReceivables({
+    EndPointList,
+    EndPointAdvFilter,
+    EndPointExport,
     isSearch,
     setSearch,
     TablePage,
@@ -67,14 +80,11 @@ export default function TableCheckReceivables({
     setPeriod,
     page,
 }: Props) {
+    const { setPrompt } = useContext(AppContext);
+
     const router = useRouter();
-    const [updateDueDate, setUpdateDueDate] = useState({
-        value: "",
-        toggle: false,
-    });
 
     // ADVANCE FILTER
-
     useEffect(() => {
         const cloneArray = isAdvFilter.map((item) => {
             return `${item.key}:${item.value}`;
@@ -88,21 +98,63 @@ export default function TableCheckReceivables({
     };
 
     let dateFrom: any = parse(isPeriod.from, "MMM dd yyyy", new Date());
+
     let dateTo: any = parse(isPeriod.to, "MMM dd yyyy", new Date());
+
     dateFrom = isValid(dateFrom) ? format(dateFrom, "yyyy-MM-dd") : "";
+
     dateTo = isValid(dateTo) ? format(dateTo, "yyyy-MM-dd") : "";
-    const { data, isLoading, isError } = GetInvoiceList(
+
+    const { data, isLoading, isError } = CheckScheduleList(
         isSearch,
-        "",
         TablePage,
         isFilterText,
         dateFrom,
-        dateTo
+        dateTo,
+        EndPointList
     );
 
-    const onSuccess = () => {};
+    const [isReference, setReference] = useState("");
 
-    const onError = () => {};
+    const [isRemarks, setRemarks] = useState("");
+
+    const [depositDate, setDepositDate] = useState({
+        value: "",
+        toggle: false,
+    });
+
+    const onSuccess = () => {
+        router.push("");
+        setPrompt({
+            message: "Check Schedule successfully booked check",
+            type: "success",
+            toggle: true,
+        });
+    };
+
+    const onError = (e: any) => {
+        ErrorSubmit(e, setPrompt);
+    };
+
+    const { mutate, isLoading: BookCheckMutateLoading } = BookedCheckPost(
+        onSuccess,
+        onError,
+        router.query.book
+    );
+
+    const BookedHandler = (status: string) => {
+        const Payload = {
+            status: status,
+            deposit_date: depositDate,
+            reference_no: isReference,
+            remarks: isRemarks,
+        };
+        mutate(Payload);
+    };
+
+    const ExportHandler = () => {
+        DynamicExportHandler(EndPointExport, "property", setPrompt);
+    };
 
     return (
         <>
@@ -127,21 +179,21 @@ export default function TableCheckReceivables({
                                 </span>
                                 <input
                                     type="text"
-                                    value={updateDueDate.value}
+                                    value={depositDate.value}
                                     onChange={() => {}}
                                     placeholder="mm dd yyyy"
                                     onClick={() =>
-                                        setUpdateDueDate({
-                                            ...updateDueDate,
+                                        setDepositDate({
+                                            ...depositDate,
                                             toggle: true,
                                         })
                                     }
                                     className="px-2 h-10 1550px:h-8 outline-none w-full rounded-md shadow-md"
                                 />
-                                {updateDueDate.toggle && (
+                                {depositDate.toggle && (
                                     <Calendar
-                                        value={updateDueDate}
-                                        setValue={setUpdateDueDate}
+                                        value={depositDate}
+                                        setValue={setDepositDate}
                                     />
                                 )}
                             </div>
@@ -150,7 +202,16 @@ export default function TableCheckReceivables({
                             <h1 className="text-[12px] text-ThemeRed">
                                 REFERENCE NO.
                             </h1>
-                            <input type="text" className="field w-full" />
+                            <input
+                                type="text"
+                                className="field w-full"
+                                value={isReference}
+                                onChange={(e) => {
+                                    if (TextFieldValidation(e, 50)) {
+                                        setReference(e.target.value);
+                                    }
+                                }}
+                            />
                         </li>
                         <li className="w-full mb-5">
                             <h1 className="text-[12px] text-ThemeRed">
@@ -160,6 +221,12 @@ export default function TableCheckReceivables({
                                 name=""
                                 className="field w-full"
                                 id=""
+                                value={isRemarks}
+                                onChange={(e) => {
+                                    if (TextFieldValidation(e, 355)) {
+                                        setRemarks(e.target.value);
+                                    }
+                                }}
                             ></textarea>
                         </li>
                     </ul>
@@ -170,10 +237,17 @@ export default function TableCheckReceivables({
                         >
                             CANCEL
                         </button>
-                        <button className="buttonBorder mr-2">REJECT</button>
-                        <button className="buttonRed">
-                            SAVE
-                            {/* {updateLoading ? (
+                        <button
+                            className="buttonBorder mr-2"
+                            onClick={() => BookedHandler("Rejected")}
+                        >
+                            REJECT
+                        </button>
+                        <button
+                            className="buttonRed"
+                            onClick={() => BookedHandler("Deposited")}
+                        >
+                            {BookCheckMutateLoading ? (
                                 <ScaleLoader
                                     color="#fff"
                                     height="10px"
@@ -181,7 +255,7 @@ export default function TableCheckReceivables({
                                 />
                             ) : (
                                 "PROCESS"
-                            )} */}
+                            )}
                         </button>
                     </div>
                 </ModalTemp>
@@ -198,8 +272,9 @@ export default function TableCheckReceivables({
                         />
                         <BsSearch className={style.searchIcon} />
                     </div>
+                    {/* ?date_from=${dateFrom}&date_to=${dateTo} */}
                     <AdvanceFilter
-                        endpoint={`/finance/customer-facility/billing/filter-options?date_from=${dateFrom}&date_to=${dateTo}&keywords=`}
+                        endpoint={`${EndPointAdvFilter}?keywords=`}
                         setAdvFilter={setAdvFilter}
                         isAdvFilter={isAdvFilter}
                     />
@@ -207,8 +282,11 @@ export default function TableCheckReceivables({
 
                 <ul className={style.navigation}>
                     <li className={style.importExportPrint}>
-                        <Tippy theme="ThemeRed" content="Post">
-                            <div className={`${style.noFill} mr-5`}>
+                        <Tippy theme="ThemeRed" content="Export">
+                            <div
+                                className={`${style.noFill} mr-5`}
+                                onClick={ExportHandler}
+                            >
                                 <Image
                                     src="/Images/Export.png"
                                     height={35}
@@ -258,6 +336,7 @@ export default function TableCheckReceivables({
                                 <th>Check No.</th>
                                 <th>Bank & Branch</th>
                                 <th>Check Amount</th>
+                                <th>Maturity</th>
                             </tr>
                         )}
                         {page === "check-payment-list" && (
@@ -351,28 +430,36 @@ export default function TableCheckReceivables({
     );
 }
 
-type ListProps = {
-    itemDetail: isTableItemObj;
+type CheckScheduleListProps = {
+    itemDetail: CheckScheduleType;
 };
 
-const ListSchedule = ({ itemDetail }: ListProps) => {
+const ListSchedule = ({ itemDetail }: CheckScheduleListProps) => {
     const router = useRouter();
+
+    const check_date = parse(itemDetail.check_date, "yyyy-MM-dd", new Date());
 
     return (
         <tr className="hoverEffect">
             <td className="icon">
                 <div
                     className=" cursor-pointer"
-                    onClick={() => router.push(`?book=${itemDetail.id}`)}
+                    onClick={() => {
+                        router.push(`?book=${itemDetail.id}`);
+                    }}
                 >
                     <BookedCheck />
                 </div>
             </td>
             <td>
                 <div className="finance_status">
-                    <div className={`status cw ${itemDetail.status}`}>
+                    <div
+                        className={`status cw ${
+                            itemDetail.is_matured ? "Matured" : "Pending"
+                        }`}
+                    >
                         <div>
-                            {itemDetail.status === "Matured" && (
+                            {itemDetail.is_matured && (
                                 <Image
                                     src={`/Images/f_matured.png`}
                                     width={4}
@@ -380,7 +467,7 @@ const ListSchedule = ({ itemDetail }: ListProps) => {
                                     alt={itemDetail.status}
                                 />
                             )}
-                            {itemDetail.status === "Pending" && (
+                            {!itemDetail.is_matured && (
                                 <Image
                                     src={`/Images/f_cw_pending.png`}
                                     width={15}
@@ -392,23 +479,30 @@ const ListSchedule = ({ itemDetail }: ListProps) => {
                     </div>
                 </div>
             </td>
-            <td>00001</td>
-            <td>Juan Dela Cruz</td>
-            <td>Sep 28 2023</td>
-            <td>549879874</td>
-            <td>BDO Manila</td>
+            <td>{itemDetail.receipt_no}</td>
+            <td>{itemDetail.payor}</td>
+            <td>
+                {isValid(check_date) ? format(check_date, "MMM dd yyyy") : ""}
+            </td>
+            <td>{itemDetail.check_no}</td>
+            <td>{itemDetail.bank_branch}</td>
             <td>
                 <div>
                     <h2>
                         <TextNumberDisplay
-                            value={5000}
+                            value={itemDetail.amount}
                             className="withPeso w-full text-end"
                         />
                     </h2>
                 </div>
             </td>
+            <td>{itemDetail.maturity}</td>
         </tr>
     );
+};
+
+type ListProps = {
+    itemDetail: isTableItemObj;
 };
 
 const ListPaymentList = ({ itemDetail }: ListProps) => {
@@ -441,10 +535,20 @@ const ListPaymentList = ({ itemDetail }: ListProps) => {
     );
 };
 
-const ListBookedCheck = ({ itemDetail }: ListProps) => {
+type BookedListProps = {
+    itemDetail: BookedCheckType;
+};
+
+const ListBookedCheck = ({ itemDetail }: BookedListProps) => {
     const router = useRouter();
 
-    const status = itemDetail.id % 2 ? "Deposited" : "Rejected";
+    const check_date = parse(itemDetail.check_date, "yyyy-MM-dd", new Date());
+
+    const deposit_date = parse(
+        itemDetail.deposit_date,
+        "yyyy-MM-dd",
+        new Date()
+    );
 
     return (
         <tr className="hoverEffect">
@@ -458,31 +562,39 @@ const ListBookedCheck = ({ itemDetail }: ListProps) => {
             </td>
             <td>
                 <div className="finance_status">
-                    <div className={`status cw ${status}`}>
+                    <div className={`status cw ${itemDetail.status}`}>
                         <div>
-                            {status === "Deposited" && <HiCheck />}
-                            {status === "Rejected" && <IoCloseSharp />}
+                            {itemDetail.status === "Deposited" && <HiCheck />}
+                            {itemDetail.status === "Rejected" && (
+                                <IoCloseSharp />
+                            )}
                         </div>
                     </div>
                 </div>
             </td>
-            <td>00001</td>
-            <td>Juan Dela Cruz</td>
-            <td>Sep 28 2023</td>
-            <td>549879874</td>
-            <td>BDO Manila</td>
+            <td>{itemDetail.receipt_no}</td>
+            <td>{itemDetail.payor}</td>
+            <td>
+                {isValid(check_date) ? format(check_date, "MMM dd yyyy") : ""}
+            </td>
+            <td>{itemDetail.check_no}</td>
+            <td>{itemDetail.bank_branch}</td>
             <td>
                 <div>
                     <h2>
                         <TextNumberDisplay
-                            value={5000}
+                            value={itemDetail.amount}
                             className="withPeso w-full text-end"
                         />
                     </h2>
                 </div>
             </td>
-            <td>Sep 28 2023</td>
-            <td>RF89798564123</td>
+            <td>
+                {isValid(deposit_date)
+                    ? format(deposit_date, "MMM dd yyyy")
+                    : ""}
+            </td>
+            <td>{itemDetail.reference_no}</td>
         </tr>
     );
 };

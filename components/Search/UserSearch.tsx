@@ -45,8 +45,8 @@ export default function CorporateSearch() {
                 </aside>
             </div>
             <div className=" overflow-y-auto">
-                {data?.data.map((item: UserDetail, index: number) => (
-                    <Link key={index} href={`/admin/property/${item?.id}`}>
+                {data?.data.data.map((item: UserDetail, index: number) => (
+                    <Link key={index} href={`/project/user/${item?.id}`}>
                         <a className={style.searchedItem}>
                             <ul>
                                 <li>

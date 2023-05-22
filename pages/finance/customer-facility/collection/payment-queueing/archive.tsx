@@ -9,6 +9,7 @@ export default function Archive() {
         from: "",
         to: "",
     });
+    const [isStatus, setStatus] = useState("Archive");
     return (
         <>
             <HeaderCollection
@@ -20,9 +21,26 @@ export default function Archive() {
                 isPeriod={isPeriod}
                 setPeriod={setPeriod}
             />
-            <h1 className="font-bold mb-5 text-[24px] 480px:text-[20px] 1550px:mb-2">
-                Archive
-            </h1>
+            <div className="flex items-center">
+                <h1
+                    onClick={() => setStatus("Archive")}
+                    className={`${
+                        isStatus === "Archive" &&
+                        " text-ThemeRed border-b border-ThemeRed"
+                    } font-bold mb-5 text-[20px] 480px:text-[18px] 1550px:mb-2 mr-5 cursor-pointer`}
+                >
+                    Archive
+                </h1>
+                <h1
+                    onClick={() => setStatus("Rejected")}
+                    className={`${
+                        isStatus === "Rejected" &&
+                        " text-ThemeRed border-b border-ThemeRed"
+                    } font-bold mb-5 text-[20px] 480px:text-[18px] 1550px:mb-2 mr-5 cursor-pointer`}
+                >
+                    Rejected
+                </h1>
+            </div>
             <div className="table_container">
                 <table className="table_list journal">
                     <thead>

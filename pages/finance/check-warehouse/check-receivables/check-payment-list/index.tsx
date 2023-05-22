@@ -29,6 +29,9 @@ export default function CheckPaymentList() {
             isPeriod={isPeriod}
             setPeriod={setPeriod}
             page="check-payment-list"
+            EndPointList={""}
+            EndPointAdvFilter={""}
+            EndPointExport=""
         />
     );
 }

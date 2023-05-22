@@ -88,7 +88,9 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
                         <li className="mr-5">
                             <Tippy theme="ThemeRed" content="Void">
                                 <div
-                                    onClick={() => setToggle(1)}
+                                    onClick={() =>
+                                        setToggle(CollectionDetail.id)
+                                    }
                                     className="relative w-8 h-8 transition-all duration-75 hover:scale-[1.1]"
                                 >
                                     <Image

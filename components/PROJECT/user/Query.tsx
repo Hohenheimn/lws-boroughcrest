@@ -30,7 +30,7 @@ export const GetUserDetail = (id: number | string) => {
 export const GetUserRecent = (id: number | string, keyword: string) => {
     return useQuery(["user-recent", id, keyword], () => {
         return api.get(
-            `/project/user/recent-search/${id}?keywords=${keyword}`,
+            `/project/user/recent-search/${id}?keywords=${keyword}&paginate=3`,
             {
                 headers: {
                     Authorization: "Bearer " + getCookie("user"),

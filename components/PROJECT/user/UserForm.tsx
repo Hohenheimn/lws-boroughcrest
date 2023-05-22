@@ -18,6 +18,7 @@ import UserRoleAndPermissionsCheckBox from "./UserRoleAndPermissionsCheckBox";
 import Department from "./Department";
 import DynamicPopOver from "../../Reusable/DynamicPopOver";
 import { ScaleLoader } from "react-spinners";
+import { SendLink } from "../../ReactQuery/ForgotPassword";
 
 export type UserFormType = {
     profile: any;
@@ -448,6 +449,27 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
         );
     }
 
+    const SuccessSendLink = () => {
+        setPrompt({
+            message: "Email sent successfully",
+            type: "success",
+            toggle: true,
+        });
+    };
+
+    const ErrorSendLink = (e: any) => {
+        ErrorSubmit(e, setPrompt);
+    };
+
+    const { mutate: SendFPLink, isLoading: SendLinkLoading } = SendLink(
+        SuccessSendLink,
+        ErrorSendLink
+    );
+
+    const SendLinkFPHandler = () => {
+        SendFPLink(DefaultValue.email);
+    };
+
     return (
         <div className={style.container}>
             <section>
@@ -741,7 +763,21 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
                             </button>
                         </div>
                     ) : (
-                        <div className={style.SaveButton}>
+                        <div className={`relative ${style.SaveButton}`}>
+                            <div
+                                className="buttonRed absolute top-0 left-0 480px:top-[-40px]"
+                                onClick={SendLinkFPHandler}
+                            >
+                                {SendLinkLoading ? (
+                                    <ScaleLoader
+                                        color="#fff"
+                                        height="10px"
+                                        width="2px"
+                                    />
+                                ) : (
+                                    "RESET PASSWORD"
+                                )}
+                            </div>
                             <aside
                                 className={style.back}
                                 onClick={() => {
