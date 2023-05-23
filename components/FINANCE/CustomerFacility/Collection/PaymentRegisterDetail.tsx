@@ -13,6 +13,7 @@ import { GetCustomer } from "../../../ReactQuery/CustomerMethod";
 import { customer } from "../../../../types/customerList";
 import { format, isValid, parse } from "date-fns";
 import PaymentSummaryTable from "./ReceivePayment/OfficialForm/PaymentSummary";
+import { useRouter } from "next/router";
 
 type Props = {
     CollectionDetail: CollectionItem;
@@ -76,6 +77,8 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
         setTotalDue(Number(CollectionDetail?.amount_paid) + Number(OATotal));
     });
 
+    const router = useRouter();
+
     return (
         <div>
             {isToggleID !== "" && (
@@ -85,22 +88,24 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
                 <div className="flex justify-between flex-wrap">
                     <h1 className="pageTitle mb-5">Payment Details</h1>
                     <ul className="flex">
-                        <li className="mr-5">
-                            <Tippy theme="ThemeRed" content="Void">
-                                <div
-                                    onClick={() =>
-                                        setToggle(CollectionDetail.id)
-                                    }
-                                    className="relative w-8 h-8 transition-all duration-75 hover:scale-[1.1]"
-                                >
-                                    <Image
-                                        src="/Images/circle_remove.png"
-                                        layout="fill"
-                                        alt="Print"
-                                    />
-                                </div>
-                            </Tippy>
-                        </li>
+                        {!router.pathname.includes("check-warehouse") && (
+                            <li className="mr-5">
+                                <Tippy theme="ThemeRed" content="Void">
+                                    <div
+                                        onClick={() =>
+                                            setToggle(CollectionDetail.id)
+                                        }
+                                        className="relative w-8 h-8 transition-all duration-75 hover:scale-[1.1]"
+                                    >
+                                        <Image
+                                            src="/Images/circle_remove.png"
+                                            layout="fill"
+                                            alt="Print"
+                                        />
+                                    </div>
+                                </Tippy>
+                            </li>
+                        )}
                         <li className="mr-5">
                             <Tippy theme="ThemeRed" content="Print">
                                 <div className="relative w-8 h-8 transition-all duration-75 hover:scale-[1.1]">

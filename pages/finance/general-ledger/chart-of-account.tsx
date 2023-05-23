@@ -4,10 +4,7 @@ import COAForm from "../../../components/FINANCE/General-Ledger/ChartOfAccount/C
 import COATable from "../../../components/FINANCE/General-Ledger/ChartOfAccount/COATable";
 import FinanceSearchFilter from "../../../components/FINANCE/General-Ledger/ChartOfAccount/FinanceSearchFilter";
 import Modify from "../../../components/FINANCE/General-Ledger/ChartOfAccount/Modify";
-import {
-    ChartofAccountList,
-    ChartofAccountPayload,
-} from "../../../types/COAList";
+import { ChartofAccountList } from "../../../types/COAList";
 export default function ChartOfAccount() {
     const router = useRouter();
     const [isSearchTable, setSearchTable] = useState("");

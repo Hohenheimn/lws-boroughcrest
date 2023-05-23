@@ -94,8 +94,8 @@ export default function CustomerTable() {
             <Pagination
                 setTablePage={setTablePage}
                 TablePage={TablePage}
-                PageNumber={data?.data.last_page}
-                CurrentPage={data?.data.current_page}
+                PageNumber={data?.data.meta.last_page}
+                CurrentPage={data?.data.meta.current_page}
             />
         </>
     );

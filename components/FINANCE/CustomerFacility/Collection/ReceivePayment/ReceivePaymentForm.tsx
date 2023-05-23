@@ -38,13 +38,14 @@ export type HeaderForm = {
     mode_of_payment: string;
     deposit_date: string;
     chart_of_account_id: string | number | any;
+    chart_of_account_name: string;
     reference_no: string | number | any;
     amount_paid: number | string;
     credit_tax: number | string;
     discount: number;
 };
 
-type Deposits = {
+export type Deposits = {
     id: number;
     charge: string;
     charge_id: string;
@@ -96,6 +97,7 @@ export default function ReceivePaymentForm({
         amount_paid: DefaultValHeaderForm.amount_paid,
         credit_tax: DefaultValHeaderForm.credit_tax,
         discount: DefaultValHeaderForm.discount,
+        chart_of_account_name: DefaultValHeaderForm.chart_of_account_name,
     });
 
     const [isCustomer, setCustomer] = useState<any>({
@@ -157,6 +159,7 @@ export default function ReceivePaymentForm({
             mode_of_payment: DefaultValHeaderForm.mode_of_payment,
             deposit_date: DefaultValHeaderForm.deposit_date,
             chart_of_account_id: DefaultValHeaderForm.chart_of_account_id,
+            chart_of_account_name: DefaultValHeaderForm.chart_of_account_name,
             reference_no: DefaultValHeaderForm.reference_no,
             amount_paid: DefaultValHeaderForm.amount_paid,
             credit_tax: DefaultValHeaderForm.credit_tax,
@@ -181,6 +184,7 @@ export default function ReceivePaymentForm({
             mode_of_payment: "",
             deposit_date: "",
             chart_of_account_id: "",
+            chart_of_account_name: "",
             reference_no: "",
             amount_paid: "",
             credit_tax: "",
@@ -203,8 +207,8 @@ export default function ReceivePaymentForm({
     }, [isDiscount.value]);
 
     const [isChartOAccount, setChartOfAccount] = useState({
-        id: "",
-        value: "",
+        id: DefaultValHeaderForm.chart_of_account_id,
+        value: DefaultValHeaderForm.chart_of_account_name,
     });
 
     const [DepositDateRP, setDepositDateRP] = useState<{

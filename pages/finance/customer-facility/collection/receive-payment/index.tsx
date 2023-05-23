@@ -27,6 +27,7 @@ export default function ReceivePayment() {
         amount_paid: "",
         credit_tax: "",
         discount: 0,
+        chart_of_account_name: "",
     };
 
     return (
