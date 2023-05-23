@@ -33,12 +33,14 @@ export type CollectionItem = {
     credit_tax: number;
     status: string;
     deposits: {
+        id: number;
         charge_id: string;
         charge_name: string;
         amount: number;
         description: string;
     }[];
     check_warehouses: {
+        id: number;
         check_date: string;
         description: string;
         check_no: number;

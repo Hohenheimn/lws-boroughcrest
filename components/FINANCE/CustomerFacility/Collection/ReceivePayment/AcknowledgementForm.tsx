@@ -1,11 +1,8 @@
 import { format, isValid, parse } from "date-fns";
 import { useRouter } from "next/router";
 import React, { useContext, useEffect, useState } from "react";
-import { BsPlusLg } from "react-icons/bs";
-import { HiMinus } from "react-icons/hi";
 import { RiArrowDownSFill } from "react-icons/ri";
 import { ScaleLoader } from "react-spinners";
-import index from "../../../../../pages/project";
 import AppContext from "../../../../Context/AppContext";
 import DropDownCharge from "../../../../Dropdowns/DropDownCharge";
 import { MinusButtonTable, PlusButtonTable } from "../../../../Reusable/Icons";

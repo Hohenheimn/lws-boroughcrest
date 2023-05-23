@@ -27,6 +27,7 @@ import AppContext from "../../../Context/AppContext";
 import { DynamicExportHandler } from "../../../Reusable/DynamicExport";
 import { BookedCheckType } from "../../../../pages/finance/check-warehouse/check-receivables/booked-check";
 import { CheckScheduleType } from "../../../../pages/finance/check-warehouse/check-receivables/check-schedule";
+import { CollectionItem } from "../../../../pages/finance/customer-facility/collection/payment-queueing";
 
 type isTableItemObj = {
     id: number;
@@ -142,10 +143,17 @@ export default function TableCheckReceivables({
         router.query.book
     );
 
+    const depositDateConvert = parse(
+        depositDate.value,
+        "MMM dd yyyy",
+        new Date()
+    );
     const BookedHandler = (status: string) => {
         const Payload = {
             status: status,
-            deposit_date: depositDate,
+            deposit_date: isValid(depositDateConvert)
+                ? format(depositDateConvert, "yyyy-MM-dd")
+                : "",
             reference_no: isReference,
             remarks: isRemarks,
         };
@@ -423,8 +431,8 @@ export default function TableCheckReceivables({
             <Pagination
                 setTablePage={setTablePage}
                 TablePage={TablePage}
-                PageNumber={data?.data.last_page}
-                CurrentPage={data?.data.current_page}
+                PageNumber={data?.data.meta.last_page}
+                CurrentPage={data?.data.meta.current_page}
             />
         </>
     );
@@ -502,11 +510,17 @@ const ListSchedule = ({ itemDetail }: CheckScheduleListProps) => {
 };
 
 type ListProps = {
-    itemDetail: isTableItemObj;
+    itemDetail: CollectionItem;
 };
 
 const ListPaymentList = ({ itemDetail }: ListProps) => {
     const router = useRouter();
+
+    const receipt_date = parse(
+        itemDetail.receipt_date,
+        "yyyy-MM-dd",
+        new Date()
+    );
 
     return (
         <tr
@@ -517,15 +531,20 @@ const ListPaymentList = ({ itemDetail }: ListProps) => {
                 )
             }
         >
-            <td>Sep 28 2023</td>
-            <td>00002222</td>
-            <td>Juan Dela Cruz</td>
-            <td>Lorem, ipsum</td>
+            <td>
+                {" "}
+                {isValid(receipt_date)
+                    ? format(receipt_date, "MMM dd yyyy")
+                    : ""}
+            </td>
+            <td>{itemDetail.receipt_no}</td>
+            <td>customer</td>
+            <td>property</td>
             <td>
                 <div>
                     <h2>
                         <TextNumberDisplay
-                            value={5000}
+                            value={itemDetail.amount_paid}
                             className="withPeso w-full text-end"
                         />
                     </h2>

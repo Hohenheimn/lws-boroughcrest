@@ -29,8 +29,10 @@ export default function CheckPaymentList() {
             isPeriod={isPeriod}
             setPeriod={setPeriod}
             page="check-payment-list"
-            EndPointList={""}
-            EndPointAdvFilter={""}
+            EndPointList={"/finance/customer-facility/collection"}
+            EndPointAdvFilter={
+                "/finance/customer-facility/collection/filter-options"
+            }
             EndPointExport=""
         />
     );

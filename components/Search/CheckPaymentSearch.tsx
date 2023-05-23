@@ -3,20 +3,35 @@ import { MdArrowForwardIos } from "react-icons/md";
 import { BsSearch } from "react-icons/bs";
 import Link from "next/link";
 import style from "../../styles/SearchSidebar.module.scss";
-import { GetJournalRecentSearch } from "../FINANCE/General-Ledger/Journal/Query";
+import api from "../../util/api";
+import { useQuery } from "react-query";
+import { getCookie } from "cookies-next";
 import { useRouter } from "next/router";
-import { BeatLoader } from "react-spinners";
-import { format, isValid, parse } from "date-fns";
-import { AdjustmentDetailType } from "../FINANCE/CustomerFacility/Adjustment/AdjusmentDetail";
+import BeatLoader from "react-spinners/BeatLoader";
 
 export default function CheckPaymentSearch() {
     const [search, setSearch] = useState<string>("");
-
+    let dataSearch;
     const router = useRouter();
 
-    const id: any = router.query.id;
+    const {
+        isLoading,
+        data: RecentData,
+        isError,
+    } = useQuery(["recent-collection", router.query.id, search], () => {
+        return api.get(
+            `/finance/customer-facility/collection/recent-search/${router.query.id}?keywords=${search}&paginate=3`,
+            {
+                headers: {
+                    Authorization: "Bearer " + getCookie("user"),
+                },
+            }
+        );
+    });
 
-    const { isLoading, isError, data } = GetJournalRecentSearch(id, search);
+    if (!isLoading) {
+        dataSearch = RecentData?.data.data;
+    }
 
     return (
         <div className={style.container}>
@@ -37,7 +52,7 @@ export default function CheckPaymentSearch() {
                             placeholder="Search"
                             value={search}
                             onChange={(e) => {
-                                setSearch(e.target.value);
+                                setSearch((text) => (text = e.target.value));
                             }}
                         />
                         <BsSearch />
@@ -55,38 +70,29 @@ export default function CheckPaymentSearch() {
                         />
                     </div>
                 ) : (
-                    data?.data?.data.map((item: any, index: number) => (
-                        <List key={index} item={item} />
+                    dataSearch?.map((item: any, index: number) => (
+                        <Link
+                            key={index}
+                            href={`/finance/check-warehouse/check-receivables/check-payment-list/${item.id}`}
+                        >
+                            <a className={style.searchedItem}>
+                                <ul>
+                                    <li>
+                                        <h4>
+                                            {item.receipt_type} {item.com}
+                                        </h4>
+                                        <p>{item.receipt_date}</p>
+                                    </li>
+                                    <li>
+                                        <p>ID: {item.id}</p>
+                                        <p>{item.receipt_no}</p>
+                                    </li>
+                                </ul>
+                            </a>
+                        </Link>
                     ))
                 )}
             </div>
         </div>
     );
 }
-
-type PropsList = {
-    item: AdjustmentDetailType;
-};
-const List = ({ item }: PropsList) => {
-    const date = parse(item.date, "yyyy-MM-dd", new Date());
-    return (
-        <Link
-            href={`/finance/check-warehouse/check-receivables/check-payment-list/${item.id}`}
-        >
-            <a className={style.searchedItem}>
-                <ul>
-                    <li>
-                        <h4>Juan Dela Cruz</h4>
-                        <p>
-                            {isValid(date) ? format(date, "MMM dd yyyy") : ""}
-                        </p>
-                    </li>
-                    <li>
-                        <p>ID: {item.id}</p>
-                        <p>00002</p>
-                    </li>
-                </ul>
-            </a>
-        </Link>
-    );
-};

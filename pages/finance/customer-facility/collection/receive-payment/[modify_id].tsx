@@ -4,11 +4,13 @@ import React, { useEffect, useState } from "react";
 import { BeatLoader } from "react-spinners";
 import { GetCollectionDetail } from "../../../../../components/FINANCE/CustomerFacility/Collection/ReceivePayment/Query";
 import ReceivePaymentForm, {
+    Deposits,
     HeaderForm,
 } from "../../../../../components/FINANCE/CustomerFacility/Collection/ReceivePayment/ReceivePaymentForm";
 import { GetCustomer } from "../../../../../components/ReactQuery/CustomerMethod";
 import { customer } from "../../../../../types/customerList";
 import { CollectionItem } from "../payment-register";
+import { COADetail } from "../../../../../components/ReactQuery/ChartofAccount";
 
 export default function Modify({ modify_id }: any) {
     const { isLoading, data, isError } = GetCollectionDetail(modify_id);
@@ -17,11 +19,17 @@ export default function Modify({ modify_id }: any) {
         isLoading: customerLoading,
         data: customerData,
         isError: customerError,
-    } = GetCustomer(data?.data.data.customer_id);
+    } = GetCustomer(data?.data.customer_id);
 
     const customer: customer = customerData?.data;
 
-    const collection: CollectionItem = data?.data.data;
+    const collection: CollectionItem = data?.data;
+
+    const {
+        isLoading: coaLoading,
+        data: coaData,
+        isError: coaError,
+    } = COADetail(collection?.chart_of_account_id);
 
     const receipt_date = parse(
         collection?.receipt_date,
@@ -44,6 +52,7 @@ export default function Modify({ modify_id }: any) {
         mode_of_payment: "",
         deposit_date: "",
         chart_of_account_id: "",
+        chart_of_account_name: "",
         reference_no: "",
         amount_paid: "",
         credit_tax: "",
@@ -57,8 +66,10 @@ export default function Modify({ modify_id }: any) {
         property: [],
     });
 
+    const [isAcknowledgement, setAcknowledgement] = useState<Deposits[]>([]);
+
     useEffect(() => {
-        if (!isLoading && !isError) {
+        if (!isLoading && !isError && !coaLoading && !coaError) {
             setHeaderForm({
                 customer_id: collection.customer_id,
                 receipt_type: collection.receipt_type,
@@ -72,13 +83,26 @@ export default function Modify({ modify_id }: any) {
                     ? format(deposit_date, "MMM dd yyyy")
                     : "",
                 chart_of_account_id: collection.chart_of_account_id,
+                chart_of_account_name: coaData?.data.account_name,
                 reference_no: collection.reference_no,
                 amount_paid: collection.amount_paid,
                 credit_tax: collection.credit_tax,
                 discount: collection.discount,
             });
+            if (collection?.deposits !== undefined) {
+                const clone = collection.deposits.map((item) => {
+                    return {
+                        id: item.id,
+                        charge: item.charge_name,
+                        charge_id: item.charge_id,
+                        description: item.description,
+                        amount: item.amount,
+                    };
+                });
+                setAcknowledgement(clone);
+            }
         }
-    }, [data?.status]);
+    }, [collection, coaData?.data]);
 
     useEffect(() => {
         if (!customerLoading && !customerError) {
@@ -93,7 +117,7 @@ export default function Modify({ modify_id }: any) {
         }
     }, [customerData?.status]);
 
-    if (isLoading || customerLoading) {
+    if (isLoading || customerLoading || coaLoading) {
         return (
             <div className="pageDetail">
                 <BeatLoader
@@ -105,7 +129,7 @@ export default function Modify({ modify_id }: any) {
             </div>
         );
     }
-    if (isError || customerError) {
+    if (isError || customerError || coaError) {
         return (
             <div className="pageDetail">
                 <h1>Something is wrong</h1>
@@ -123,7 +147,7 @@ export default function Modify({ modify_id }: any) {
             DefaultCustomer={isCustomer}
             DefaultValHeaderForm={HeaderForm}
             type={HeaderForm.receipt_type}
-            DefaultValAcknowledgement={[]}
+            DefaultValAcknowledgement={isAcknowledgement}
             DefaultProvisional={[]}
             DefaultOfficialOutrightAdvances={{
                 Outright: [],
