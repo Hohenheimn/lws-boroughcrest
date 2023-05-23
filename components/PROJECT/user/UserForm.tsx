@@ -431,24 +431,6 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
 
     const [isSelectedRolePermission, setSelectedRolePermission] = useState([]);
 
-    if (type === "create" && userForm[1] === true) {
-        return (
-            <UserRoleAndPermissionsCheckBox
-                userInfo={isPayload}
-                setUserInfo={setPayload}
-                setUserForm={setUserForm}
-                type={"create"}
-                isSelectedRolePermission={isSelectedRolePermission}
-                setSelectedRolePermission={setSelectedRolePermission}
-                isRoleName={isRoleName}
-                setRoleName={setRoleName}
-                closeForm={closeForm}
-                Reset={Reset}
-                DefaultSelected={[]}
-            />
-        );
-    }
-
     const SuccessSendLink = () => {
         setPrompt({
             message: "Email sent successfully",
@@ -469,6 +451,24 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
     const SendLinkFPHandler = () => {
         SendFPLink(DefaultValue.email);
     };
+
+    if (type === "create" && userForm[1] === true) {
+        return (
+            <UserRoleAndPermissionsCheckBox
+                userInfo={isPayload}
+                setUserInfo={setPayload}
+                setUserForm={setUserForm}
+                type={"create"}
+                isSelectedRolePermission={isSelectedRolePermission}
+                setSelectedRolePermission={setSelectedRolePermission}
+                isRoleName={isRoleName}
+                setRoleName={setRoleName}
+                closeForm={closeForm}
+                Reset={Reset}
+                DefaultSelected={[]}
+            />
+        );
+    }
 
     return (
         <div className={style.container}>
