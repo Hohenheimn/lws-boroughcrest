@@ -148,7 +148,7 @@ export default function AcknowledgementForm({
                 ? format(deposit_date, "yyyy-MM-dd")
                 : "",
             amount_paid: headerForm.amount_paid,
-            bank_account_id: headerForm.chart_of_account_id,
+            chart_of_account_id: headerForm.chart_of_account_id,
             reference_no: headerForm.reference_no,
             deposits: isTable.map((item: isTableItem) => {
                 return {

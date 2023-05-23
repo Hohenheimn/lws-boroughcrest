@@ -523,12 +523,12 @@ export default function PropertyForm({
                                         autoComplete="off"
                                         {...register("project")}
                                         value={isProjectVal.value}
-                                        // onChange={(e: any) =>
-                                        //     setProjectVal({
-                                        //         ...isProjectVal,
-                                        //         value: e.target.value,
-                                        //     })
-                                        // }
+                                        onChange={(e: any) =>
+                                            setProjectVal({
+                                                ...isProjectVal,
+                                                value: e.target.value,
+                                            })
+                                        }
                                     />
                                 }
                                 toPop={

@@ -14,11 +14,29 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { NumberBlockInvalidKey } from "../../Reusable/InputField";
 import AppContext from "../../Context/AppContext";
+import { ErrorSubmit } from "../../Reusable/ErrorMessage";
+import { useQueryClient } from "react-query";
+import { CreateUser, UpdateUserInfo, UpdateUserRole } from "./Query";
+import { PulseLoader, ScaleLoader } from "react-spinners";
+import NameIDDropdown from "../../Dropdowns/NameIDDropdown";
+import { ShowRole } from "../Access/Query";
+import ModalLoading from "../../Reusable/ModalLoading";
 
 type Props = {
     setUserForm: Function;
     type: string;
     userInfo: UserInfo;
+    setSelectedRolePermission: Function;
+    DefaultSelected: SelectedRolePermission[];
+    isSelectedRolePermission: SelectedRolePermission[];
+    isRoleName: {
+        id: string;
+        value: string;
+    };
+    setRoleName: Function;
+    setUserInfo: Function;
+    closeForm?: Function;
+    Reset?: () => void;
 };
 type SelectedRolePermission = {
     menu: string;
@@ -30,47 +48,52 @@ export default function UserRoleAndPermissionsCheckBox({
     setUserForm,
     type,
     userInfo,
+    isSelectedRolePermission,
+    DefaultSelected,
+    setSelectedRolePermission,
+    isRoleName,
+    setRoleName,
+    closeForm,
+    Reset,
 }: Props) {
     const { setPrompt } = useContext(AppContext);
 
     const router = useRouter();
 
-    const ID: any = router.query.id;
-
     const [isSave, setSave] = useState(false);
 
     const [isButtonClicked, setButtonClicked] = useState("");
+
+    let buttonClicked = "";
 
     const [Roles, setRoles] = useState<RolePermission[]>(
         RolesAndPermissionTable
     );
 
-    const [isSelectedRolePermission, setSelectedRolePermission] = useState<
-        SelectedRolePermission[]
-    >([
-        // {
-        //     menu: "Customer",
-        //     role: ["modify", "create"],
-        //     duration: 10,
-        // },
-        // {
-        //     menu: "Chart of Accounts",
-        //     role: ["modify"],
-        //     duration: 10,
-        // },
-        // {
-        //     menu: "Charges",
-        //     role: ["approve", "view"],
-        //     duration: 50,
-        // },
-    ]);
+    const { isLoading, data, isError } = ShowRole(Number(isRoleName.id));
+
+    const RefreshTable = () => {
+        if (data?.data !== undefined) {
+            const clone = data?.data.permissions.map((item: any) => {
+                return {
+                    menu: item.menu,
+                    role: item.access,
+                    duration: 0,
+                };
+            });
+            setSelectedRolePermission(clone);
+        }
+    };
 
     useEffect(() => {
-        const CloneToUpdate = Roles.map((item: RolePermission) => {
+        const RolesTable = RolesAndPermissionTable;
+        const CloneToUpdate = RolesTable.map((item: RolePermission) => {
             let update = false;
+
             const innerCloneToFilter = isSelectedRolePermission.filter(
                 (filterItem) => filterItem.menu === item.menu
             );
+
             const innerClone = innerCloneToFilter.map((innerItem) => {
                 update = true;
                 return {
@@ -107,6 +130,7 @@ export default function UserRoleAndPermissionsCheckBox({
                     duration: innerItem.duration,
                 };
             });
+
             if (update) {
                 return innerClone[0];
             } else {
@@ -178,9 +202,6 @@ export default function UserRoleAndPermissionsCheckBox({
                         return item;
                     }
                 );
-                // const filterRole = cloneUpdateExistedMenu.filter(
-                //     (itemFilter) => itemFilter.role.length <= 0
-                // );
                 setSelectedRolePermission(cloneUpdateExistedMenu);
             } else {
                 // Add menu
@@ -217,18 +238,148 @@ export default function UserRoleAndPermissionsCheckBox({
         return allAllowedPermission;
     };
 
-    const SaveHandler = () => {
-        // note filter selected Menu na empty ang role
-        if (type === "modify" && ID !== undefined) {
-            console.log("modify");
+    const queryClient = useQueryClient();
+
+    const id = router.query.id;
+
+    const onSuccess = () => {
+        queryClient.invalidateQueries("user-list");
+
+        queryClient.invalidateQueries(["user-detail", `${id}`]);
+
+        let message = `User successfully registered`;
+
+        if (router.query.id !== undefined) {
+            message = "User roles and permissions successfully updated";
+        }
+
+        setPrompt({
+            message: message,
+            type: "success",
+            toggle: true,
+        });
+
+        if (buttonClicked === "new") {
+            Reset !== undefined && Reset();
+            router.push("/project/user?new");
         } else {
-            console.log("create");
-            console.log(isSelectedRolePermission);
+            setUserForm([true, false]);
+            closeForm !== undefined && closeForm();
+        }
+    };
+
+    const onError = (e: any) => {
+        ErrorSubmit(e, setPrompt);
+    };
+
+    const { mutate: CreateMutate, isLoading: CreateLoading } = CreateUser(
+        onSuccess,
+        onError
+    );
+
+    const { mutate: UpdateMutate, isLoading: UpdateLoading } = UpdateUserRole(
+        Number(id),
+        onSuccess,
+        onError
+    );
+
+    const SaveHandler = async (button: string) => {
+        buttonClicked = button;
+
+        const filterAccess = isSelectedRolePermission.filter(
+            (filteritem) => filteritem.role.length > 0
+        );
+
+        if (filterAccess.some((someItem) => someItem.duration === 0)) {
+            setPrompt({
+                message: "Fill out duration to selected permissions",
+                type: "draft",
+                toggle: true,
+            });
+            return;
+        }
+
+        if (type === "modify") {
+            const Payload = {
+                role_id: isRoleName.id,
+                permissions: filterAccess.map((item) => {
+                    return {
+                        menu: item.menu,
+                        access: item.role,
+                        duration: item.duration,
+                    };
+                }),
+            };
+            UpdateMutate(Payload);
+        } else {
+            const Payload: any = {
+                employee_id: userInfo.employee_id,
+                name: userInfo.name,
+                email: userInfo.email,
+                corporate_id: userInfo.corporate_id,
+                department_id: userInfo.department_id,
+                contact_no: userInfo.contact_no,
+                position: userInfo.position,
+                image_photo: userInfo.image_photo,
+                image_signature: userInfo.image_signature,
+                status: userInfo.status,
+                role_id: isRoleName.id,
+                permissions: filterAccess.map((item) => {
+                    return {
+                        menu: item.menu,
+                        access: item.role,
+                        duration: item.duration,
+                    };
+                }),
+            };
+
+            const formData = new FormData();
+
+            const arrayData: any = [];
+
+            const keys = Object.keys(Payload);
+
+            await keys.forEach((key) => {
+                if (
+                    key === "image_photo" ||
+                    key === "image_valid_id" ||
+                    key === "image_signature"
+                ) {
+                    if (Payload[key] === undefined || Payload[key] === null) {
+                        arrayData.push({
+                            key: key,
+                            keyData: "",
+                        });
+                    } else {
+                        arrayData.push({
+                            key: key,
+                            keyData: Payload[key],
+                        });
+                    }
+                } else {
+                    arrayData.push({
+                        key: key,
+                        keyData: Payload[key],
+                    });
+                }
+            });
+
+            arrayData.map(({ key, keyData }: any) => {
+                if (key === "permissions") {
+                    const stringify = JSON.stringify(keyData);
+                    formData.append(key, stringify);
+                } else {
+                    formData.append(key, keyData);
+                }
+            });
+
+            CreateMutate(formData);
         }
     };
 
     return (
         <ModalTemp wide={true} alignStart={true}>
+            {isLoading && <ModalLoading />}
             <p className=" text-[16px] mb-3 font-bold capitalize">
                 {type} Roles & Permissions
             </p>
@@ -237,104 +388,113 @@ export default function UserRoleAndPermissionsCheckBox({
                     <p className="text-Themered text-[12px] font-semibold mb-1 uppercase">
                         ROLE
                     </p>
-                    <SelectDropdown
-                        selectHandler={(value: string) => {
-                            // setReceiptType(value);
-                        }}
-                        className=""
-                        inputElement={
-                            <input
-                                className="w-full field"
-                                value={""}
-                                readOnly
-                            />
-                        }
-                        listArray={["Admin Staff", "Finance", " Accounting"]}
+                    <NameIDDropdown
+                        value={isRoleName.value}
+                        setValue={setRoleName}
+                        width={"w-[250px] 640px:w-[150px]"}
+                        placeholder={""}
+                        endpoint={"/project/roles"}
+                        onClickFunction={RefreshTable}
                     />
                 </li>
             </ul>
 
-            <div className="w-full overflow-x-auto">
-                <table className="rolePermisionTable">
-                    <thead>
-                        <tr>
-                            <th>MENU</th>
-                            <th className="flex items-center">
-                                <Tippy theme="ThemeRed" content={<AllInfo />}>
-                                    <div>
-                                        <AiOutlineInfoCircle className=" text-ThemeRed font-NHU-bold mr-1" />
-                                    </div>
-                                </Tippy>
-                                ALL
-                            </th>
-                            <th>VIEW</th>
-                            <th>CREATE</th>
-                            <th>MODIFY</th>
-                            <th>PRINT</th>
-                            <th>APPROVE</th>
-                            <th>Duration</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {Roles.map((item: RolePermission, index) => (
-                            <TableList
-                                key={index}
-                                itemDetail={item}
-                                UpdateRow={UpdateRow}
-                            />
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-
-            <div className={style.SaveButton}>
-                <aside
-                    className={style.back}
-                    onClick={() => {
-                        setUserForm([true, false]);
-                    }}
-                >
-                    BACK
-                </aside>
-
-                <div className={style.Save}>
-                    <div>
-                        <button
-                            type="submit"
-                            name="save"
-                            onClick={() => {
-                                SaveHandler();
-                                setButtonClicked("save");
-                            }}
-                            className={style.save_button}
-                        >
-                            SAVE
-                        </button>
-                        <aside className={style.Arrow}>
-                            <RiArrowDownSFill
-                                onClick={() => setSave(!isSave)}
-                            />
-                        </aside>
+            {isRoleName.id !== "" && (
+                <>
+                    <div className="w-full overflow-x-auto">
+                        <table className="rolePermisionTable">
+                            <thead>
+                                <tr>
+                                    <th>MENU</th>
+                                    <th className="flex items-center">
+                                        <Tippy
+                                            theme="ThemeRed"
+                                            content={<AllInfo />}
+                                        >
+                                            <div>
+                                                <AiOutlineInfoCircle className=" text-ThemeRed font-NHU-bold mr-1" />
+                                            </div>
+                                        </Tippy>
+                                        ALL
+                                    </th>
+                                    <th>VIEW</th>
+                                    <th>CREATE</th>
+                                    <th>MODIFY</th>
+                                    <th>PRINT</th>
+                                    <th>APPROVE</th>
+                                    <th>Duration</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {Roles.map((item: RolePermission, index) => (
+                                    <TableList
+                                        key={index}
+                                        itemDetail={item}
+                                        UpdateRow={UpdateRow}
+                                    />
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
 
-                    {isSave && (
-                        <ul>
-                            <li>
+                    <div className={style.SaveButton}>
+                        <aside
+                            className={style.back}
+                            onClick={() => {
+                                setUserForm([true, false]);
+                            }}
+                        >
+                            {router.query.id === undefined ? "BACK" : "CANCEL"}
+                        </aside>
+
+                        <div className={style.Save}>
+                            <div>
                                 <button
                                     type="submit"
-                                    name="save-new"
+                                    name="save"
                                     onClick={() => {
-                                        SaveHandler();
-                                        setButtonClicked("new");
+                                        SaveHandler("save");
+                                        setButtonClicked("save");
                                     }}
+                                    className={style.save_button}
                                 >
-                                    SAVE & NEW
+                                    {CreateLoading || UpdateLoading ? (
+                                        <ScaleLoader
+                                            color="#fff"
+                                            height="10px"
+                                            width="2px"
+                                        />
+                                    ) : (
+                                        "SAVE"
+                                    )}
                                 </button>
-                            </li>
-                        </ul>
-                    )}
-                </div>
-            </div>
+                                <aside className={style.Arrow}>
+                                    <RiArrowDownSFill
+                                        onClick={() => setSave(!isSave)}
+                                    />
+                                </aside>
+                            </div>
+
+                            {isSave && (
+                                <ul>
+                                    <li>
+                                        <button
+                                            type="submit"
+                                            name="save-new"
+                                            onClick={() => {
+                                                SaveHandler("new");
+                                                setButtonClicked("new");
+                                            }}
+                                        >
+                                            SAVE & NEW
+                                        </button>
+                                    </li>
+                                </ul>
+                            )}
+                        </div>
+                    </div>
+                </>
+            )}
         </ModalTemp>
     );
 }

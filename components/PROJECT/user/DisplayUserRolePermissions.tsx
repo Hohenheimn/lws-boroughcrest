@@ -2,18 +2,25 @@ import Tippy from "@tippy.js/react";
 import React, { useState } from "react";
 import { HiPencil } from "react-icons/hi";
 import ModifyRolesPermission from "./ModifyRolesPermission";
-import { UserDetail } from "./UserTable";
+import { UserDetail, UserPermission } from "./UserTable";
 import Image from "next/image";
 import { PencilButton } from "../../Reusable/Icons";
+import { userInfo } from "os";
 
 type Props = {
     UserDetail: UserDetail;
 };
 export default function DisplayUserRolePermissions({ UserDetail }: Props) {
     const [isToggle, setToggle] = useState(false);
+
     return (
         <div>
-            {isToggle && <ModifyRolesPermission setToggle={setToggle} />}
+            {isToggle && (
+                <ModifyRolesPermission
+                    setToggle={setToggle}
+                    UserDetail={UserDetail}
+                />
+            )}
             <header className=" flex w-full justify-between items-center mb-5">
                 <aside className=" flex">
                     <p className=" text-gray-400 1024px:text-[14px] mr-2">
@@ -47,9 +54,9 @@ export default function DisplayUserRolePermissions({ UserDetail }: Props) {
                         </tr>
                     </thead>
                     <tbody>
-                        <List />
-                        <List />
-                        <List />
+                        {UserDetail.permissions.map((item, index) => (
+                            <List key={index} itemDetail={item} />
+                        ))}
                     </tbody>
                 </table>
             </div>
@@ -57,17 +64,25 @@ export default function DisplayUserRolePermissions({ UserDetail }: Props) {
     );
 }
 
-const List = () => {
+type PropsList = {
+    itemDetail: UserPermission;
+};
+
+const List = ({ itemDetail }: PropsList) => {
     return (
         <tr>
             <td className=" text-gray-500 mb-5 1024px:text-[14px] font-bold py-2">
-                Corporate
+                {itemDetail.menu}
             </td>
             <td className=" text-gray-500 mb-5 1024px:text-[14px] font-bold py-2">
-                View Only
+                {itemDetail.access.map((itemAccess: any, index: number) =>
+                    Number(itemDetail.access.length) - 1 === index
+                        ? itemAccess
+                        : itemAccess + ", "
+                )}
             </td>
             <td className=" text-gray-500 mb-5 1024px:text-[14px] font-bold py-2">
-                -
+                {itemDetail.duration} Days
             </td>
         </tr>
     );

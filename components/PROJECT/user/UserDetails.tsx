@@ -15,6 +15,14 @@ export default function UserDetails({ UserDetail }: Props) {
     const [toggleModify, setToggleModify] = useState(false);
     const [isToggleInfoRole, setToggleInfoRole] = useState<boolean>(false);
     const [isView, setView] = useState<string | null>("");
+
+    let ImagePhoto = "/Images/sampleProfile.png";
+    if (UserDetail?.image_photo !== null) {
+        ImagePhoto =
+            "https://boroughcrest-api.lws.codes/get-img?image=" +
+            UserDetail?.image_photo;
+    }
+
     return (
         <div>
             {isView !== "" && <Modal_Image setView={setView} isView={isView} />}
@@ -23,13 +31,13 @@ export default function UserDetails({ UserDetail }: Props) {
                     setToggle={setToggleModify}
                     DefaultValue={{
                         image_photo: null,
-                        image_photo_url: UserDetail.image_photo,
+                        image_photo_url: ImagePhoto,
                         image_signature: null,
                         name: UserDetail.name,
                         position: UserDetail.position,
                         employee_id: UserDetail.employee_id,
                         department_id: UserDetail.department_id,
-                        department: UserDetail.department,
+                        department: UserDetail.department_name,
                         email: UserDetail.email,
                         contact_no: UserDetail.contact_no,
                         corporate: "Sample",
@@ -59,12 +67,9 @@ export default function UserDetails({ UserDetail }: Props) {
                 <li className="w-3/12 480px:w-full p-5 flex justify-center items-center">
                     <aside className=" w-6/12 820px:w-10/12 rounded-full overflow-hidden 480px:w-5/12 aspect-square relative shadow-xl">
                         <Image
-                            src={
-                                UserDetail.image_photo === null
-                                    ? "/Images/sampleProfile.png"
-                                    : UserDetail.image_photo
-                            }
+                            src={ImagePhoto}
                             alt=""
+                            objectFit="cover"
                             layout="fill"
                         />
                     </aside>

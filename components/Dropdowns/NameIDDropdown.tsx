@@ -12,6 +12,7 @@ type DropdownItem = {
     width: string;
     placeholder: string;
     endpoint: string;
+    onClickFunction?: () => void;
 };
 
 export default function NameIDDropdown({
@@ -21,6 +22,7 @@ export default function NameIDDropdown({
     width,
     placeholder,
     endpoint,
+    onClickFunction,
 }: DropdownItem) {
     const [isToggle, setToggle] = useState(false);
     const [tempSearch, setTempSearch] = useState(value);
@@ -55,6 +57,7 @@ export default function NameIDDropdown({
                                 endpoint={endpoint}
                                 setValue={setValue}
                                 name={placeholder}
+                                onClickFunction={onClickFunction}
                             />
                         )}
                     </>
@@ -72,6 +75,7 @@ type List = {
     tempSearch: string;
     endpoint: string;
     name: string;
+    onClickFunction?: () => void;
 };
 
 const List = ({
@@ -82,6 +86,7 @@ const List = ({
     setValue,
     endpoint,
     name,
+    onClickFunction,
 }: List) => {
     const { data, isLoading, isError } = useQuery(
         ["get-dropdown", name, tempSearch],
@@ -120,6 +125,7 @@ const List = ({
                         });
                         setTempSearch(item.name);
                         setToggle(false);
+                        onClickFunction !== undefined && onClickFunction();
                     }}
                 >
                     {item.name}

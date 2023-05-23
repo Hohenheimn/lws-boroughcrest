@@ -149,3 +149,21 @@ export function BookedCheck() {
         </Tippy>
     );
 }
+
+export function OppositeArrow() {
+    return (
+        <Tippy
+            theme="ThemeRed"
+            content={<span className="text-[12px]">Modify Collection</span>}
+        >
+            <div className=" inline-block cursor-pointer">
+                <Image
+                    src="/Images/opposite_arrow.png"
+                    width={23}
+                    height={18}
+                    alt="Modify"
+                />
+            </div>
+        </Tippy>
+    );
+}

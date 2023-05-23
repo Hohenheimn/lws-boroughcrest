@@ -151,8 +151,15 @@ const List = ({ itemDetail }: ListProps) => {
 
     const CustomerDetail: customer = data?.data;
 
+    const [isHover, setHover] = useState(false);
+
     return (
-        <tr onClick={redirect} className="cursor-pointer">
+        <tr
+            onClick={redirect}
+            onMouseOver={() => setHover(true)}
+            onMouseLeave={() => setHover(false)}
+            className="cursor-pointer"
+        >
             <td>{CustomerDetail?.name}</td>
             <td>{CustomerDetail?.class}</td>
             <td>
@@ -170,9 +177,13 @@ const List = ({ itemDetail }: ListProps) => {
             </td>
             <td>{isValid(date) ? format(date, "MMM dd yyyy") : ""}</td>
             <td>{itemDetail?.reference_no}</td>
-            <td>{itemDetail?.remarks}</td>
-            <td className="icon">
-                <ul className="flex items-center justify-around">
+            <td>{itemDetail?.remarks} sample</td>
+            <td className="">
+                <ul
+                    className={`${
+                        isHover ? "opacity-1" : "opacity-0"
+                    } flex items-center justify-around`}
+                >
                     <Tippy content={"Remark"} theme="ThemeRed">
                         <li>
                             <Link

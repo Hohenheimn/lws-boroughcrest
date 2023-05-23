@@ -1,9 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import ModalTemp from "../../Reusable/ModalTemp";
-import SelectDropdown from "../../Reusable/SelectDropdown";
 import { AiOutlineInfoCircle } from "react-icons/ai";
 import Tippy from "@tippy.js/react";
-import style from "../../../styles/Popup_Modal.module.scss";
 import { RiArrowDownSFill } from "react-icons/ri";
 import { useRouter } from "next/router";
 import AppContext from "../../Context/AppContext";
@@ -11,12 +9,17 @@ import {
     RolePermission,
     RolesAndPermissionTable,
 } from "../user/RolesAndPermissionTable";
+import { ErrorSubmit } from "../../Reusable/ErrorMessage";
+import { PostRole, UpdateRole } from "./Query";
+import { ScaleLoader } from "react-spinners";
+import { useQueryClient } from "react-query";
 
 type Props = {
     type: string;
     RoleName: string;
     DefaultValue: SelectedRolePermission[];
     setToggleForm: Function;
+    id: number;
 };
 type SelectedRolePermission = {
     menu: string;
@@ -29,6 +32,7 @@ export default function AccessForm({
     DefaultValue,
     RoleName,
     setToggleForm,
+    id,
 }: Props) {
     const { setPrompt } = useContext(AppContext);
 
@@ -39,6 +43,8 @@ export default function AccessForm({
     const [isSave, setSave] = useState(false);
 
     const [isButtonClicked, setButtonClicked] = useState("");
+
+    let buttonClicked = "";
 
     const [isRoleName, setRoleName] = useState<string>(RoleName);
 
@@ -209,13 +215,77 @@ export default function AccessForm({
         return allAllowedPermission;
     };
 
-    const SaveHandler = (button: string) => {
-        // note filter selected Menu na empty ang role
+    const queryClient = useQueryClient();
+
+    const onSuccess = () => {
+        queryClient.invalidateQueries("get-roles");
+        queryClient.invalidateQueries(["show-role", `${id}`]);
+
+        let message = "";
         if (type === "modify" && ID !== undefined) {
-            console.log("modify");
+            message = "Role successfully Updated!";
         } else {
-            console.log("create");
-            console.log(isSelectedRolePermission);
+            message = "Role successfully Registered!";
+        }
+        setPrompt({
+            message: message,
+            type: "success",
+            toggle: true,
+        });
+
+        if (buttonClicked === "new") {
+            setSelectedRolePermission([]);
+            setRoles(RolesAndPermissionTable);
+            setRoleName("");
+            router.push("/project/access?new");
+        } else {
+            CloseHandler();
+        }
+    };
+
+    const onError = (e: any) => {
+        ErrorSubmit(e, setPrompt);
+    };
+
+    const { mutate: Create, isLoading: CreateLoading } = PostRole(
+        onSuccess,
+        onError
+    );
+
+    const { mutate: Update, isLoading: UpdateLoading } = UpdateRole(
+        onSuccess,
+        onError,
+        id
+    );
+
+    const SaveHandler = (button: string) => {
+        setButtonClicked(button);
+        buttonClicked = button;
+        if (isSelectedRolePermission.length <= 0) {
+            setPrompt({
+                message: "Select a permissions",
+                type: "draft",
+                toggle: true,
+            });
+            return;
+        }
+        // note filter selected Menu na empty ang role
+        const filterAccess = isSelectedRolePermission.filter(
+            (filteritem) => filteritem.role.length > 0
+        );
+        const Payload = {
+            name: isRoleName,
+            permissions: filterAccess.map((item) => {
+                return {
+                    menu: item.menu,
+                    access: item.role,
+                };
+            }),
+        };
+        if (type === "modify") {
+            Update(Payload);
+        } else {
+            Create(Payload);
         }
     };
 
@@ -229,19 +299,15 @@ export default function AccessForm({
                     <p className="text-Themered text-[12px] font-semibold mb-1 uppercase">
                         ROLE
                     </p>
-                    <SelectDropdown
-                        selectHandler={(value: string) => {
-                            setRoleName(value);
+                    <input
+                        type="text"
+                        className="field"
+                        value={isRoleName}
+                        onChange={(e) => {
+                            if (e.target.value.length <= 50) {
+                                setRoleName(e.target.value);
+                            }
                         }}
-                        className=""
-                        inputElement={
-                            <input
-                                className="w-full field"
-                                value={isRoleName}
-                                readOnly
-                            />
-                        }
-                        listArray={["Admin Staff", "Finance", " Accounting"]}
                     />
                 </li>
             </ul>
@@ -295,7 +361,7 @@ export default function AccessForm({
                                 setSave(false);
                             }}
                         >
-                            {/* {saveLoading (
+                            {CreateLoading || UpdateLoading ? (
                                 <ScaleLoader
                                     color="#fff"
                                     height="10px"
@@ -303,8 +369,7 @@ export default function AccessForm({
                                 />
                             ) : (
                                 "SAVE"
-                            )} */}
-                            SAVE
+                            )}
                         </button>
                         <aside className="ddArrow">
                             <RiArrowDownSFill

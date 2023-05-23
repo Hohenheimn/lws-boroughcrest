@@ -117,7 +117,10 @@ export default function HeaderCollection({
                     )}
                     {page === "payment-queueing" && (
                         <li className={style.importExportPrint}>
-                            <Tippy theme="ThemeRed" content="Archive">
+                            <Tippy
+                                theme="ThemeRed"
+                                content="Archive & Rejected"
+                            >
                                 <div className={style.icon}>
                                     <Link href="/finance/customer-facility/collection/payment-queueing/archive">
                                         <a>

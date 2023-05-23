@@ -4,7 +4,6 @@ import Image from "next/image";
 import style from "../../../styles/Popup_Modal.module.scss";
 import { useForm } from "react-hook-form";
 import AppContext from "../../Context/AppContext";
-import SelectDropdown from "../../Reusable/SelectDropdown";
 import CorporateDropDown from "../../Dropdowns/CorporateDropDown";
 import { RiArrowDownSFill } from "react-icons/ri";
 import { UpdateUserInfo } from "./Query";
@@ -16,6 +15,10 @@ import {
 } from "../../Reusable/InputField";
 import { useQueryClient } from "react-query";
 import UserRoleAndPermissionsCheckBox from "./UserRoleAndPermissionsCheckBox";
+import Department from "./Department";
+import DynamicPopOver from "../../Reusable/DynamicPopOver";
+import { ScaleLoader } from "react-spinners";
+import { SendLink } from "../../ReactQuery/ForgotPassword";
 
 export type UserFormType = {
     profile: any;
@@ -56,19 +59,45 @@ type Props = {
 export default function UserForm({ DefaultValue, type, setToggle }: Props) {
     const [isButtonClicked, setButtonClicked] = useState("");
 
+    let buttonClicked = "";
+
     const { setPrompt } = useContext(AppContext);
 
     const router = useRouter();
 
-    const [isSave, setSave] = useState(false);
-
-    const [isDepartment, setDepartment] = useState<{
-        id: number | null;
-        value: string;
-    }>({
-        id: null,
+    const [isRoleName, setRoleName] = useState({
+        id: "",
         value: "",
     });
+
+    const [isSave, setSave] = useState(false);
+
+    const [isDepartmentVal, setDepartmentVal] = useState({
+        id: DefaultValue?.department_id,
+        value: DefaultValue?.department,
+        firstVal: DefaultValue?.department,
+        firstID: DefaultValue?.department_id,
+    });
+
+    useEffect(() => {
+        setPayload({
+            ...isPayload,
+            department: isDepartmentVal.value,
+            department_id: isDepartmentVal.id,
+        });
+    }, [isDepartmentVal]);
+
+    const [isDepartment, setDepartment] = useState(false);
+
+    const updateDepartmentHandler = (value: any, id: any) => {
+        setDepartmentVal({
+            id: id,
+            value: value,
+            firstVal: value,
+            firstID: id,
+        });
+        setValue("department", value);
+    };
 
     const [isPayload, setPayload] = useState<UserInfo>({
         employee_id: "",
@@ -89,9 +118,61 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
     const {
         register,
         handleSubmit,
-        trigger,
+        setValue,
+        reset,
         formState: { errors },
     } = useForm<UserFormType>();
+
+    const Reset = () => {
+        reset();
+
+        setCorporate({
+            id: DefaultValue.corporate_id,
+            value: DefaultValue.corporate,
+        });
+
+        setRoleName({
+            id: "",
+            value: "",
+        });
+
+        setDepartmentVal({
+            id: DefaultValue?.department_id,
+            value: DefaultValue?.department,
+            firstVal: DefaultValue?.department,
+            firstID: DefaultValue?.department_id,
+        });
+
+        setSelectedRolePermission([]);
+
+        setPayload({
+            employee_id: "",
+            name: "",
+            email: "",
+            corporate_id: "",
+            corporate: "",
+            department_id: null,
+            department: "",
+            contact_no: "",
+            position: "",
+            image_photo: undefined,
+            image_signature: undefined,
+            image_photo_url: "",
+            status: "Active",
+        });
+
+        setProfileUrl({
+            url: "/Images/sampleProfile.png",
+            error: "",
+        });
+
+        setSignatureUrl({
+            url: "/Images/sampleProfile.png",
+            error: "",
+        });
+
+        setUserForm([true, false]);
+    };
 
     const { setNewUserToggle } = useContext(AppContext);
 
@@ -103,9 +184,17 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
         id: string | number;
         value: any;
     }>({
-        id: "",
-        value: "",
+        id: DefaultValue.corporate_id,
+        value: DefaultValue.corporate,
     });
+
+    useEffect(() => {
+        setPayload({
+            ...isPayload,
+            corporate: isCorporate.value,
+            corporate_id: isCorporate.id,
+        });
+    }, [isCorporate]);
 
     const [isProfileUrl, setProfileUrl] = useState({
         url: "/Images/sampleProfile.png",
@@ -140,9 +229,11 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
                 error: "",
             });
         }
-        setDepartment({
-            id: DefaultValue.department_id,
-            value: DefaultValue.department,
+        setDepartmentVal({
+            id: DefaultValue?.department_id,
+            value: DefaultValue?.department,
+            firstVal: DefaultValue?.department,
+            firstID: DefaultValue?.department_id,
         });
         setCorporate({
             id: DefaultValue.corporate_id,
@@ -226,24 +317,32 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
         }
     };
 
-    const cancel = () => {
+    const closeForm = () => {
         setNewUserToggle(false);
-        router.push("");
+        if (router.query.id === undefined) {
+            router.push("");
+        }
     };
 
-    const ID: any = router.query.modify;
+    const ID: any = router.query.id;
     const queryClient = useQueryClient();
 
     const onSuccess = () => {
         if (isButtonClicked === "new") {
             router.push("/project/user?new");
         }
-        if (router.query.modify === undefined) {
-            queryClient.invalidateQueries(["user-list"]);
-        } else {
-            queryClient.invalidateQueries(["user-detail"]);
-        }
-        cancel();
+
+        queryClient.invalidateQueries(["user-list"]);
+
+        setPrompt({
+            message: "User successfully updated",
+            type: "success",
+            toggle: true,
+        });
+
+        setUserForm([true, false]);
+
+        setToggle(false);
     };
     const onError = (e: any) => {
         ErrorSubmit(e, setPrompt);
@@ -255,14 +354,14 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
         onError
     );
 
-    const Next = (data: UserFormType) => {
+    const Next = async (data: UserFormType) => {
         if (isProfileUrl.error !== "" || isSignatureUrl.error !== "") return;
         const Payload = {
             employee_id: isPayload.employee_id,
             name: isPayload.name,
             email: isPayload.email,
             corporate_id: isCorporate.id,
-            department_id: isDepartment.id,
+            department_id: isDepartmentVal.id,
             contact_no: isPayload.contact_no,
             position: isPayload.position,
             image_photo: data.profile[0] === undefined ? null : data.profile[0],
@@ -276,28 +375,100 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
             image_signature:
                 data.signature[0] === undefined ? null : data.signature[0],
         });
+
         if (type === "create") {
             setUserForm([false, true]);
         }
+
         if (type === "modify") {
-            const updatePayload = {
+            const updatePayload: any = {
                 ...Payload,
                 _method: "PUT",
             };
+            const formData = new FormData();
 
-            console.log(isButtonClicked);
+            const arrayData: any = [];
+
+            const keys = Object.keys(Payload);
+
+            await keys.forEach((key) => {
+                if (
+                    key === "image_photo" ||
+                    key === "image_valid_id" ||
+                    key === "image_signature"
+                ) {
+                    if (
+                        updatePayload[key] === undefined ||
+                        updatePayload[key] === null
+                    ) {
+                        arrayData.push({
+                            key: key,
+                            keyData: "",
+                        });
+                    } else {
+                        arrayData.push({
+                            key: key,
+                            keyData: updatePayload[key],
+                        });
+                    }
+                } else {
+                    arrayData.push({
+                        key: key,
+                        keyData: updatePayload[key],
+                    });
+                }
+            });
+
+            buttonClicked = isButtonClicked;
+
+            arrayData.map(({ key, keyData }: any) => {
+                formData.append(key, keyData);
+            });
+
+            UpdateMutate(updatePayload);
         }
     };
+
+    const [isSelectedRolePermission, setSelectedRolePermission] = useState([]);
 
     if (type === "create" && userForm[1] === true) {
         return (
             <UserRoleAndPermissionsCheckBox
-                setUserForm={setUserForm}
                 userInfo={isPayload}
+                setUserInfo={setPayload}
+                setUserForm={setUserForm}
                 type={"create"}
+                isSelectedRolePermission={isSelectedRolePermission}
+                setSelectedRolePermission={setSelectedRolePermission}
+                isRoleName={isRoleName}
+                setRoleName={setRoleName}
+                closeForm={closeForm}
+                Reset={Reset}
+                DefaultSelected={[]}
             />
         );
     }
+
+    const SuccessSendLink = () => {
+        setPrompt({
+            message: "Email sent successfully",
+            type: "success",
+            toggle: true,
+        });
+    };
+
+    const ErrorSendLink = (e: any) => {
+        ErrorSubmit(e, setPrompt);
+    };
+
+    const { mutate: SendFPLink, isLoading: SendLinkLoading } = SendLink(
+        SuccessSendLink,
+        ErrorSendLink
+    );
+
+    const SendLinkFPHandler = () => {
+        SendFPLink(DefaultValue.email);
+    };
 
     return (
         <div className={style.container}>
@@ -460,19 +631,40 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
                         </li>
                         <li>
                             <label>*DEPARTMENT</label>
-                            <SelectDropdown
-                                selectHandler={(value: string) => {}}
-                                className=""
-                                inputElement={
+                            <DynamicPopOver
+                                className="w-full"
+                                samewidth={false}
+                                toRef={
                                     <input
-                                        className="w-full field"
-                                        value={isDepartment.value}
-                                        readOnly
+                                        type="text"
+                                        className="field w-full"
+                                        onClick={() => setDepartment(true)}
+                                        autoComplete="off"
+                                        value={isDepartmentVal.value}
                                         {...register("department")}
+                                        onChange={(e: any) =>
+                                            setDepartmentVal({
+                                                ...isDepartmentVal,
+                                                value: e.target.value,
+                                            })
+                                        }
                                     />
                                 }
-                                listArray={["Sample Department"]}
+                                toPop={
+                                    <>
+                                        {isDepartment && (
+                                            <Department
+                                                set={setDepartment}
+                                                update={updateDepartmentHandler}
+                                                isValID={isDepartmentVal.id}
+                                                isObject={isDepartmentVal}
+                                                setObject={setDepartmentVal}
+                                            />
+                                        )}
+                                    </>
+                                }
                             />
+
                             {errors?.department && (
                                 <p className="text-[10px]">
                                     {errors?.department?.message}
@@ -511,7 +703,6 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
                             <input
                                 type="number"
                                 className="field"
-                                placeholder="+63"
                                 {...register("mobile", {
                                     minLength: {
                                         value: 11,
@@ -563,7 +754,7 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
                         <div className={style.button_container}>
                             <aside
                                 className="button_cancel cursor-pointer"
-                                onClick={cancel}
+                                onClick={closeForm}
                             >
                                 CANCEL
                             </aside>
@@ -572,7 +763,21 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
                             </button>
                         </div>
                     ) : (
-                        <div className={style.SaveButton}>
+                        <div className={`relative ${style.SaveButton}`}>
+                            <div
+                                className="buttonRed absolute top-0 left-0 480px:top-[-40px]"
+                                onClick={SendLinkFPHandler}
+                            >
+                                {SendLinkLoading ? (
+                                    <ScaleLoader
+                                        color="#fff"
+                                        height="10px"
+                                        width="2px"
+                                    />
+                                ) : (
+                                    "RESET PASSWORD"
+                                )}
+                            </div>
                             <aside
                                 className={style.back}
                                 onClick={() => {
@@ -591,7 +796,15 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
                                         onClick={() => setButtonClicked("save")}
                                         className={style.save_button}
                                     >
-                                        SAVE
+                                        {UpdateLoading ? (
+                                            <ScaleLoader
+                                                color="#fff"
+                                                height="10px"
+                                                width="2px"
+                                            />
+                                        ) : (
+                                            "SAVE"
+                                        )}
                                     </button>
                                     <aside className={style.Arrow}>
                                         <RiArrowDownSFill

@@ -3,31 +3,31 @@ import { MdArrowForwardIos } from "react-icons/md";
 import { BsSearch } from "react-icons/bs";
 import Link from "next/link";
 import style from "../../styles/SearchSidebar.module.scss";
-import api from "../../util/api";
-import { useQuery } from "react-query";
-import { getCookie } from "cookies-next";
+import { GetJournalRecentSearch } from "../FINANCE/General-Ledger/Journal/Query";
 import { useRouter } from "next/router";
-import BeatLoader from "react-spinners/BeatLoader";
-import { GetUserRecent } from "../PROJECT/user/Query";
-import { UserDetail } from "../PROJECT/user/UserTable";
+import { BeatLoader } from "react-spinners";
+import { format, isValid, parse } from "date-fns";
+import { AdjustmentDetailType } from "../FINANCE/CustomerFacility/Adjustment/AdjusmentDetail";
 
-export default function CorporateSearch() {
+export default function CheckPaymentSearch() {
     const [search, setSearch] = useState<string>("");
+
     const router = useRouter();
+
     const id: any = router.query.id;
 
-    const { isLoading, data, isError } = GetUserRecent(id, search);
+    const { isLoading, isError, data } = GetJournalRecentSearch(id, search);
 
     return (
         <div className={style.container}>
             <div className={style.header}>
                 <aside className={style.title}>
-                    <Link href="/project/user">
+                    <Link href="/finance/check-warehouse/check-receivables/check-payment-list">
                         <a>
                             <MdArrowForwardIos className={style.arrow} />
                         </a>
                     </Link>
-                    <h1>User</h1>
+                    <h1>Check Payment List</h1>
                 </aside>
 
                 <aside className={style.searchBar}>
@@ -37,7 +37,7 @@ export default function CorporateSearch() {
                             placeholder="Search"
                             value={search}
                             onChange={(e) => {
-                                setSearch((text) => (text = e.target.value));
+                                setSearch(e.target.value);
                             }}
                         />
                         <BsSearch />
@@ -45,25 +45,7 @@ export default function CorporateSearch() {
                 </aside>
             </div>
             <div className=" overflow-y-auto">
-                {data?.data.data.map((item: UserDetail, index: number) => (
-                    <Link key={index} href={`/project/user/${item?.id}`}>
-                        <a className={style.searchedItem}>
-                            <ul>
-                                <li>
-                                    <h4>{item?.name}</h4>
-                                    <p className=" break-words">
-                                        {item?.email}
-                                    </p>
-                                </li>
-                                <li>
-                                    <p>ID: {item?.id}</p>
-                                    <p>{item?.contact_no}</p>
-                                </li>
-                            </ul>
-                        </a>
-                    </Link>
-                ))}
-                {isLoading && (
+                {isLoading ? (
                     <div className="flex justify-center py-5">
                         <BeatLoader
                             color={"#8f384d"}
@@ -72,13 +54,39 @@ export default function CorporateSearch() {
                             data-testid="loader"
                         />
                     </div>
-                )}
-                {isError && (
-                    <div>
-                        <h2>Error Something is wrong</h2>
-                    </div>
+                ) : (
+                    data?.data?.data.map((item: any, index: number) => (
+                        <List key={index} item={item} />
+                    ))
                 )}
             </div>
         </div>
     );
 }
+
+type PropsList = {
+    item: AdjustmentDetailType;
+};
+const List = ({ item }: PropsList) => {
+    const date = parse(item.date, "yyyy-MM-dd", new Date());
+    return (
+        <Link
+            href={`/finance/check-warehouse/check-receivables/check-payment-list/${item.id}`}
+        >
+            <a className={style.searchedItem}>
+                <ul>
+                    <li>
+                        <h4>Juan Dela Cruz</h4>
+                        <p>
+                            {isValid(date) ? format(date, "MMM dd yyyy") : ""}
+                        </p>
+                    </li>
+                    <li>
+                        <p>ID: {item.id}</p>
+                        <p>00002</p>
+                    </li>
+                </ul>
+            </a>
+        </Link>
+    );
+};

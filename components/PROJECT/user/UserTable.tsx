@@ -24,17 +24,26 @@ export type UserDetail = {
     password: string;
     remember_token: string | null;
     role_id: number;
+    role_name: string;
     corporate_id: number;
     department_id: number | null;
-    department: string;
+    department_name: string;
     contact_no: number;
     position: string;
     image_photo: string;
     image_signature: null | string;
     status: string;
-    created_at: string;
+    created_date: string;
     updated_at: string;
     deleted_at: string;
+    permissions: UserPermission[];
+};
+
+export type UserPermission = {
+    menu: string;
+    duration: number;
+    expiration_date: string;
+    access: string[];
 };
 
 export default function UserTable({ isSearch }: Props) {
@@ -88,8 +97,8 @@ export default function UserTable({ isSearch }: Props) {
             <Pagination
                 setTablePage={setTablePage}
                 TablePage={TablePage}
-                PageNumber={data?.data.last_page}
-                CurrentPage={data?.data.current_page}
+                PageNumber={data?.data.meta.last_page}
+                CurrentPage={data?.data.meta.current_page}
             />
         </div>
     );
@@ -102,6 +111,13 @@ type ListProps = {
 const List = ({ itemDetail }: ListProps) => {
     const DefaultImage = "/Images/sampleProfile.png";
     const { userTableColumn } = useContext(AppContext);
+
+    let ImagePhoto = "/Images/sampleProfile.png";
+    if (itemDetail?.image_photo !== null) {
+        ImagePhoto =
+            "https://boroughcrest-api.lws.codes/get-img?image=" +
+            itemDetail?.image_photo;
+    }
     return (
         <tr>
             <td>
@@ -109,13 +125,10 @@ const List = ({ itemDetail }: ListProps) => {
                     <a className="item flex items-center">
                         <aside>
                             <Image
-                                src={`${
-                                    itemDetail.image_photo === null
-                                        ? DefaultImage
-                                        : itemDetail.image_photo
-                                }`}
+                                src={ImagePhoto}
                                 alt=""
                                 layout="fill"
+                                objectFit="cover"
                             />
                         </aside>
                         <div>

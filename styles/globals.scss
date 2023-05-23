@@ -322,7 +322,7 @@ select {
                 @apply flex items-center mt-2 text-ThemeRed text-[13px] w-[80px] min-w-0;
             }
             td.icon {
-                @apply w-[50px];
+                @apply w-[100px] min-w-[70px] max-w-[70px] flex justify-center;
             }
             td.iconHidden {
                 @apply w-[50px] min-w-[50px] duration-150;
@@ -773,6 +773,34 @@ input[type="number"] {
         }
         &::after {
             @apply bg-[#fdd19ba4];
+        }
+    }
+
+    .Deposited {
+        div {
+            @apply bg-[#00ba29] text-white;
+        }
+        &::after {
+            @apply bg-[#93bd9c];
+        }
+    }
+    .Deposited:hover {
+        &::after {
+            @apply content-['Deposited'] w-[105px] pl-[35px];
+        }
+    }
+
+    .Rejected {
+        div {
+            @apply bg-[#ff737d] text-white;
+        }
+        &::after {
+            @apply bg-[#ebbaba];
+        }
+    }
+    .Rejected:hover {
+        &::after {
+            @apply content-['Deposited'] w-[105px] pl-[35px];
         }
     }
 

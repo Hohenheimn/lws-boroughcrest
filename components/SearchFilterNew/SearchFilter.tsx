@@ -45,9 +45,8 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
         setNewPropToggle,
         // Print,
         isPrint,
-        cusTableColumn,
     } = useContext(AppContext);
-    const date = format(new Date(), "dd/MM/yyyy");
+
     const [isFilter, setFilter] = useState(false);
     const router = useRouter();
     const ValidatePathName = router.pathname.split("/")[2];
@@ -115,11 +114,11 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
     const exportHandler = () => {
         if (router.pathname.includes("admin/customer")) {
             const endPoint = "/admin/customer/export";
-            DynamicExportHandler(endPoint, "customer");
+            DynamicExportHandler(endPoint, "customer", setPrompt);
         }
         if (router.pathname.includes("admin/property")) {
             const endPoint = "/admin/property/unit/export";
-            DynamicExportHandler(endPoint, "property");
+            DynamicExportHandler(endPoint, "property", setPrompt);
         }
     };
 
