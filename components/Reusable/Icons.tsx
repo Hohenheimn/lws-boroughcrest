@@ -154,7 +154,7 @@ export function OppositeArrow() {
     return (
         <Tippy
             theme="ThemeRed"
-            content={<span className="text-[12px]">Modify Collection</span>}
+            content={<span className="text-[12px]">Copy</span>}
         >
             <div className=" inline-block cursor-pointer">
                 <Image

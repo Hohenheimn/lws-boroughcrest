@@ -92,7 +92,6 @@ export default function UserRoleAndPermissionsCheckBox({
 
     useEffect(() => {
         if (isSelectedRolePermission.length > 0) {
-            console.log(isSelectedRolePermission);
             const CloneToUpdate = RolesAndPermissionTable.map(
                 (item: RolePermission) => {
                     let update = false;

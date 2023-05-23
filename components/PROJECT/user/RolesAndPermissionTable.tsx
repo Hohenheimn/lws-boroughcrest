@@ -368,7 +368,7 @@ export const RolesAndPermissionTable: RolePermission[] = [
             approve: null,
         },
         rolesNumber: 0,
-        duration: 0,
+        duration: null,
     },
     {
         id: 23,

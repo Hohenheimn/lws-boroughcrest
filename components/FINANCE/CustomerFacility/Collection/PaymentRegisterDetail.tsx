@@ -204,7 +204,11 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
                             </li>
                             <li className="w-[32%]">
                                 <p className="label_text">CASH ACCOUNT</p>
-                                <h4 className="main_text">Sample</h4>
+                                <h4 className="main_text">
+                                    {
+                                        CollectionDetail.chart_of_account_account_name
+                                    }
+                                </h4>
                             </li>
                             <li className="w-[32%]">
                                 <p className="label_text">REFERENCE NO</p>

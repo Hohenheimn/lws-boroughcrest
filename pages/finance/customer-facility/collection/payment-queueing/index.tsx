@@ -13,30 +13,7 @@ import { TextNumberDisplay } from "../../../../../components/Reusable/NumberForm
 import Pagination from "../../../../../components/Reusable/Pagination";
 import TableErrorMessage from "../../../../../components/Reusable/TableErrorMessage";
 import { customer } from "../../../../../types/customerList";
-
-export type CollectionItem = {
-    id: number;
-    corporate_id: number;
-    depositor_type: string;
-    customer_id: number;
-    user_id: number;
-    type: string;
-    receipt_type: string;
-    receipt_date: string;
-    receipt_no: string;
-    description: string;
-    mode_of_payment: string;
-    deposit_date: string;
-    amount_paid: number;
-    reference_no: number | null;
-    credit_tax: number;
-    status: string;
-    bank_account_id: number | null;
-    parent_id: number | null;
-    remarks: string;
-    updated_at: string;
-    created_at: string;
-};
+import { CollectionItem } from "../payment-register";
 
 export default function PaymentQueueing() {
     const router = useRouter();
@@ -147,10 +124,6 @@ const List = ({ itemDetail }: ListProps) => {
 
     const date = parse(itemDetail.deposit_date, "yyyy-MM-dd", new Date());
 
-    const { data } = GetCustomer(itemDetail.customer_id);
-
-    const CustomerDetail: customer = data?.data;
-
     const [isHover, setHover] = useState(false);
 
     return (
@@ -160,13 +133,14 @@ const List = ({ itemDetail }: ListProps) => {
             onMouseLeave={() => setHover(false)}
             className="cursor-pointer"
         >
-            <td>{CustomerDetail?.name}</td>
-            <td>{CustomerDetail?.class}</td>
+            <td>{itemDetail.customer?.name}</td>
+            <td>{itemDetail.customer?.class}</td>
             <td>
-                {CustomerDetail?.properties.map((item: any, index: number) =>
-                    CustomerDetail?.properties.length - 1 === index
-                        ? item.unit_code
-                        : item.unit_code + ", "
+                {itemDetail.customer?.properties.map(
+                    (item: any, index: number) =>
+                        itemDetail.customer?.properties.length - 1 === index
+                            ? item.unit_code
+                            : item.unit_code + ", "
                 )}
             </td>
             <td>

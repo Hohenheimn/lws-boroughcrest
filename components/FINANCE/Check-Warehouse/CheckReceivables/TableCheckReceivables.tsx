@@ -16,7 +16,6 @@ import { TextNumberDisplay } from "../../../Reusable/NumberFormat";
 import Calendar from "../../../Reusable/Calendar";
 
 import { BookedCheck, OppositeArrow } from "../../../Reusable/Icons";
-import { GetInvoiceList } from "../../CustomerFacility/Billing/Query";
 import { useRouter } from "next/router";
 import { IoCloseSharp } from "react-icons/io5";
 import { HiCheck } from "react-icons/hi";
@@ -27,23 +26,8 @@ import AppContext from "../../../Context/AppContext";
 import { DynamicExportHandler } from "../../../Reusable/DynamicExport";
 import { BookedCheckType } from "../../../../pages/finance/check-warehouse/check-receivables/booked-check";
 import { CheckScheduleType } from "../../../../pages/finance/check-warehouse/check-receivables/check-schedule";
-import { CollectionItem } from "../../../../pages/finance/customer-facility/collection/payment-queueing";
-
-type isTableItemObj = {
-    id: number;
-    status: string;
-    invoice_no: number;
-    customer: {
-        name: string;
-        properties: string[];
-    };
-    due_amount: number;
-    applied_advances: number | null;
-    billing_date: string;
-    due_date: string;
-    date: string;
-    select: boolean;
-};
+import Link from "next/link";
+import { CollectionItem } from "../../../../pages/finance/customer-facility/collection/payment-register";
 
 type Props = {
     isSearch: string;
@@ -538,7 +522,14 @@ const ListPaymentList = ({ itemDetail }: ListProps) => {
                     : ""}
             </td>
             <td>{itemDetail.receipt_no}</td>
-            <td>customer</td>
+            <td>
+                {itemDetail?.customer?.properties?.map(
+                    (item: any, index: number) =>
+                        itemDetail?.customer?.properties?.length - 1 === index
+                            ? item.unit_code
+                            : item.unit_code + ", "
+                )}
+            </td>
             <td>property</td>
             <td>
                 <div>
@@ -573,10 +564,18 @@ const ListBookedCheck = ({ itemDetail }: BookedListProps) => {
         <tr className="hoverEffect">
             <td className="icon">
                 <div
-                    className=" cursor-pointer"
-                    onClick={() => router.push(`?book=${itemDetail.id}`)}
+                    className={` cursor-pointer ${
+                        itemDetail.status === "Rejected" &&
+                        "pointer-events-none"
+                    }`}
                 >
-                    <OppositeArrow />
+                    <Link
+                        href={`/finance/customer-facility/collection/receive-payment/${itemDetail.collection.id}?from=check_warehouse`}
+                    >
+                        <a>
+                            <OppositeArrow />
+                        </a>
+                    </Link>
                 </div>
             </td>
             <td>

@@ -17,6 +17,9 @@ export type BookedCheckType = {
     status: string;
     created_at: string;
     updated_at: string;
+    collection: {
+        id: number;
+    };
 };
 
 export default function BookedCheck() {
