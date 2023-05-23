@@ -5,7 +5,7 @@ export type RolePermission = {
     roles: Roles;
     rolesNumber: number;
     sectionEnd: boolean;
-    duration: number;
+    duration: number | null;
 };
 export type Roles = {
     all: boolean | null;
@@ -24,14 +24,14 @@ export const RolesAndPermissionTable: RolePermission[] = [
         sectionEnd: false,
         roles: {
             all: null,
-            view: false,
-            create: false,
-            modify: false,
-            print: false,
-            approve: false,
+            view: null,
+            create: null,
+            modify: null,
+            print: null,
+            approve: null,
         },
         rolesNumber: 5,
-        duration: 0,
+        duration: null,
     },
     {
         id: 2,
@@ -168,14 +168,14 @@ export const RolesAndPermissionTable: RolePermission[] = [
         sectionEnd: false,
         roles: {
             all: null,
-            view: false,
-            create: false,
-            modify: false,
-            print: false,
-            approve: false,
+            view: null,
+            create: null,
+            modify: null,
+            print: null,
+            approve: null,
         },
         rolesNumber: 5,
-        duration: 0,
+        duration: null,
     },
     {
         id: 11,

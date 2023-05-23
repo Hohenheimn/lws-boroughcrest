@@ -81,63 +81,73 @@ export default function UserRoleAndPermissionsCheckBox({
                     duration: 0,
                 };
             });
+
             setSelectedRolePermission(clone);
         }
     };
 
     useEffect(() => {
-        const RolesTable = RolesAndPermissionTable;
-        const CloneToUpdate = RolesTable.map((item: RolePermission) => {
-            let update = false;
+        RefreshTable();
+    }, [data?.data]);
 
-            const innerCloneToFilter = isSelectedRolePermission.filter(
-                (filterItem) => filterItem.menu === item.menu
+    useEffect(() => {
+        if (isSelectedRolePermission.length > 0) {
+            console.log(isSelectedRolePermission);
+            const CloneToUpdate = RolesAndPermissionTable.map(
+                (item: RolePermission) => {
+                    let update = false;
+
+                    const innerCloneToFilter = isSelectedRolePermission.filter(
+                        (filterItem) => filterItem.menu === item.menu
+                    );
+
+                    const innerClone = innerCloneToFilter.map((innerItem) => {
+                        update = true;
+                        return {
+                            ...item,
+                            roles: {
+                                ...item.roles,
+                                all:
+                                    item.roles.all === null
+                                        ? null
+                                        : innerItem.role.length >=
+                                          item.rolesNumber
+                                        ? true
+                                        : false,
+                                view:
+                                    item.roles.view === null
+                                        ? null
+                                        : innerItem.role.includes("view"),
+                                create:
+                                    item.roles.create === null
+                                        ? null
+                                        : innerItem.role.includes("create"),
+                                modify:
+                                    item.roles.modify === null
+                                        ? null
+                                        : innerItem.role.includes("modify"),
+                                print:
+                                    item.roles.print === null
+                                        ? null
+                                        : innerItem.role.includes("print"),
+                                approve:
+                                    item.roles.approve === null
+                                        ? null
+                                        : innerItem.role.includes("approve"),
+                            },
+                            duration: innerItem.duration,
+                        };
+                    });
+
+                    if (update) {
+                        return innerClone[0];
+                    } else {
+                        return item;
+                    }
+                }
             );
-
-            const innerClone = innerCloneToFilter.map((innerItem) => {
-                update = true;
-                return {
-                    ...item,
-                    roles: {
-                        ...item.roles,
-                        all:
-                            item.roles.all === null
-                                ? null
-                                : innerItem.role.length >= item.rolesNumber
-                                ? true
-                                : false,
-                        view:
-                            item.roles.view === null
-                                ? null
-                                : innerItem.role.includes("view"),
-                        create:
-                            item.roles.create === null
-                                ? null
-                                : innerItem.role.includes("create"),
-                        modify:
-                            item.roles.modify === null
-                                ? null
-                                : innerItem.role.includes("modify"),
-                        print:
-                            item.roles.print === null
-                                ? null
-                                : innerItem.role.includes("print"),
-                        approve:
-                            item.roles.approve === null
-                                ? null
-                                : innerItem.role.includes("approve"),
-                    },
-                    duration: innerItem.duration,
-                };
-            });
-
-            if (update) {
-                return innerClone[0];
-            } else {
-                return item;
-            }
-        });
-        setRoles(CloneToUpdate);
+            setRoles(CloneToUpdate);
+        }
     }, [isSelectedRolePermission]);
 
     const UpdateRow = (
@@ -653,33 +663,37 @@ const TableList = ({ itemDetail, UpdateRow }: TableListProps) => {
                 )}
             </td>
             <td className="duration">
-                <div className="calendar">
-                    <span className="cal">
-                        <Image
-                            src="/Images/CalendarLine.png"
-                            width={12}
-                            height={12}
+                {itemDetail.duration !== null && (
+                    <div className="calendar">
+                        <span className="cal">
+                            <Image
+                                src="/Images/CalendarLine.png"
+                                width={12}
+                                height={12}
+                            />
+                        </span>
+                        <input
+                            autoComplete="off"
+                            type="number"
+                            placeholder="Days"
+                            value={
+                                itemDetail.duration === 0
+                                    ? ""
+                                    : itemDetail.duration
+                            }
+                            onChange={(e) => {
+                                e.target.value.length <= 6 &&
+                                    UpdateRow(
+                                        itemDetail.menu,
+                                        "duration",
+                                        e.target.value
+                                    );
+                            }}
+                            onKeyDown={NumberBlockInvalidKey}
+                            className="field w-full"
                         />
-                    </span>
-                    <input
-                        autoComplete="off"
-                        type="number"
-                        placeholder="Days"
-                        value={
-                            itemDetail.duration === 0 ? "" : itemDetail.duration
-                        }
-                        onChange={(e) => {
-                            e.target.value.length <= 6 &&
-                                UpdateRow(
-                                    itemDetail.menu,
-                                    "duration",
-                                    e.target.value
-                                );
-                        }}
-                        onKeyDown={NumberBlockInvalidKey}
-                        className="field w-full"
-                    />
-                </div>
+                    </div>
+                )}
             </td>
         </tr>
     );
