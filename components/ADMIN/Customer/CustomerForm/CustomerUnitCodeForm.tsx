@@ -204,14 +204,14 @@ export default function CustomerUnitCodeForm({
                     </div>
                     {isSave && (
                         <ul>
-                            {router.query.id === undefined ||
-                                (router.query.draft === undefined && (
-                                    <li>
-                                        <button type="submit" onClick={Draft}>
-                                            SAVE AS DRAFT
-                                        </button>
-                                    </li>
-                                ))}
+                            {(router.query.id === undefined ||
+                                router.query.draft === undefined) && (
+                                <li>
+                                    <button type="submit" onClick={Draft}>
+                                        SAVE AS DRAFT
+                                    </button>
+                                </li>
+                            )}
                             <li>
                                 <button type="submit" onClick={saveNew}>
                                     SAVE & NEW

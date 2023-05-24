@@ -51,9 +51,7 @@ export const CreateInvoiceBilling = (onSuccess: any, onError: any) => {
                 onSuccess();
                 queryClient.invalidateQueries(["invoice-list"]);
             },
-            onError: () => {
-                onError();
-            },
+            onError: onError,
         }
     );
 };

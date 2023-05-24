@@ -24,7 +24,6 @@ export default function CreateJournal() {
                 <JournalForm
                     id=""
                     JournalList={isJournalList}
-                    setJournalList={setJournalList}
                     DefaultParticulars=""
                     DefaultDateValue=""
                     DefaultStatus=""

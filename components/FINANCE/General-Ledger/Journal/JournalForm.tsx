@@ -13,10 +13,7 @@ import {
 import { ScaleLoader } from "react-spinners";
 import { useRouter } from "next/router";
 import Calendar from "../../../Reusable/Calendar";
-import {
- 
-    InputNumberForTable,
-} from "../../../Reusable/NumberFormat";
+import { InputNumberForTable } from "../../../Reusable/NumberFormat";
 import { format, isValid, parse } from "date-fns";
 import { TableTwoTotal } from "../../../Reusable/TableTotal";
 import { MinusButtonTable, PlusButtonTable } from "../../../Reusable/Icons";
@@ -33,7 +30,6 @@ export type defaultObject = {
 };
 type Props = {
     JournalList: defaultArray;
-    setJournalList: Function;
     DefaultDateValue: string;
     DefaultParticulars: string;
     type: string;
@@ -43,35 +39,56 @@ type Props = {
 
 export default function JournalForm({
     JournalList,
-    setJournalList,
     DefaultDateValue,
     DefaultParticulars,
     type,
     id,
     DefaultStatus,
 }: Props) {
+    const [isJournalList, setJournalList] = useState<defaultArray>(JournalList);
+
+    useEffect(() => {
+        setJournalList(JournalList);
+    }, [JournalList]);
+
     const router = useRouter();
+
     let buttonClicked = "";
+
     const { setPrompt } = useContext(AppContext);
+
     const [isSave, setSave] = useState(false);
 
     const [isDate, setDate] = useState({
         value: DefaultDateValue,
         toggle: false,
     });
+
     const [isParticulars, setParticulars] = useState(DefaultParticulars);
 
     // TOTAL
     const [totalDebit, setTotalDebit] = useState<number>(0);
+
     const [totalCredit, setTotalCredit] = useState<number>(0);
+
     useEffect(() => {
         setTotalDebit(0);
         setTotalCredit(0);
-        JournalList.map((item: defaultObject) => {
+        isJournalList.map((item: defaultObject) => {
             setTotalDebit((temp) => Number(temp) + Number(item.debit));
             setTotalCredit((temp) => Number(temp) + Number(item.credit));
         });
-    }, [JournalList]);
+    }, [isJournalList]);
+
+    const CancelHandler = () => {
+        // setParticulars(DefaultParticulars);
+        // setDate({
+        //     value: DefaultDateValue,
+        //     toggle: false,
+        // });
+        // setJournalList(JournalList);
+        router.push("/finance/general-ledger/journal/journal-list");
+    };
 
     const onSuccess = () => {
         if (buttonClicked === "new") {
@@ -102,6 +119,7 @@ export default function JournalForm({
             router.push("/finance/general-ledger/journal/journal-list");
         }
     };
+
     const onError = (e: any) => {
         ErrorSubmit(e, setPrompt);
     };
@@ -135,7 +153,7 @@ export default function JournalForm({
                 return;
             }
         }
-        const journal = JournalList.map((item: defaultObject) => {
+        const journal = isJournalList.map((item: defaultObject) => {
             if (button !== "draft") {
                 if (item.account_id === "") {
                     setPrompt({
@@ -251,13 +269,13 @@ export default function JournalForm({
                             </tr>
                         </thead>
                         <tbody>
-                            {JournalList?.map((item: any, index: number) => (
+                            {isJournalList?.map((item: any, index: number) => (
                                 <List
                                     key={index}
                                     index={index}
                                     setDefault={setJournalList}
                                     itemList={item}
-                                    isDefault={JournalList}
+                                    isDefault={isJournalList}
                                 />
                             ))}
                         </tbody>
@@ -266,14 +284,7 @@ export default function JournalForm({
                 <TableTwoTotal total1={totalDebit} total2={totalCredit} />
             </div>
             <div className="DropDownSave">
-                <button
-                    className="ddback"
-                    onClick={() => {
-                        router.push(
-                            "/finance/general-ledger/journal/journal-list"
-                        );
-                    }}
-                >
+                <button className="ddback" onClick={CancelHandler}>
                     CANCEL
                 </button>
 
