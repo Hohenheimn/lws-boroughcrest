@@ -299,14 +299,14 @@ export default function UserRoleAndPermissionsCheckBox({
             (filteritem) => filteritem.role.length > 0
         );
 
-        if (filterAccess.some((someItem) => someItem.duration === 0)) {
-            setPrompt({
-                message: "Fill out duration to selected permissions",
-                type: "draft",
-                toggle: true,
-            });
-            return;
-        }
+        // if (filterAccess.some((someItem) => someItem.duration === 0)) {
+        //     setPrompt({
+        //         message: "Fill out duration to selected permissions",
+        //         type: "draft",
+        //         toggle: true,
+        //     });
+        //     return;
+        // }
 
         if (type === "modify") {
             const Payload = {

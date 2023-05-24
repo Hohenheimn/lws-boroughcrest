@@ -18,6 +18,8 @@ import { format, isValid, parse } from "date-fns";
 import { TableTwoTotal } from "../../../Reusable/TableTotal";
 import { MinusButtonTable, PlusButtonTable } from "../../../Reusable/Icons";
 import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
+import ModalTemp from "../../../Reusable/ModalTemp";
+import fi from "date-fns/esm/locale/fi/index.js";
 
 export type defaultArray = defaultObject[];
 export type defaultObject = {
@@ -80,14 +82,18 @@ export default function JournalForm({
         });
     }, [isJournalList]);
 
+    const [isCancel, setCancel] = useState(false);
+
     const CancelHandler = () => {
-        // setParticulars(DefaultParticulars);
-        // setDate({
-        //     value: DefaultDateValue,
-        //     toggle: false,
-        // });
-        // setJournalList(JournalList);
-        router.push("/finance/general-ledger/journal/journal-list");
+        const filter = isJournalList.filter(
+            (filter) => filter.account_id !== ""
+        );
+
+        if (isDate.value !== "" || isParticulars !== "" || filter.length > 0) {
+            setCancel(true);
+        } else {
+            router.push("/finance/general-ledger/journal/journal-list");
+        }
     };
 
     const onSuccess = () => {
@@ -217,6 +223,31 @@ export default function JournalForm({
     };
     return (
         <>
+            {isCancel && (
+                <ModalTemp narrow={true}>
+                    <h1 className="text-center mb-5 text-[20px]">
+                        Are you sure you want to cancel ?
+                    </h1>
+                    <div className="flex justify-end items-center w-full">
+                        <button
+                            className="button_cancel"
+                            onClick={() => setCancel(false)}
+                        >
+                            NO
+                        </button>
+                        <button
+                            className="buttonRed"
+                            onClick={() =>
+                                router.push(
+                                    "/finance/general-ledger/journal/journal-list"
+                                )
+                            }
+                        >
+                            YES
+                        </button>
+                    </div>
+                </ModalTemp>
+            )}
             <div>
                 <ul className="flex flex-wrap justify-between pb-8 mb-8 border-b border-gray-300">
                     <li className="w-[20%] 1366px:w-[30%] 820px:w-full 820px:mb-5 flex items-center">

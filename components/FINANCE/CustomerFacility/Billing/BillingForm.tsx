@@ -364,12 +364,52 @@ export default function JournalForm({
         mutateDelete(deleteID);
     };
 
+    const [isCancel, setCancel] = useState(false);
+
     const CancelHandler = () => {
-        router.push("/finance/customer-facility/billing/invoice-list");
+        const filter = isBilling.filter(
+            (filter) =>
+                filter.charge !== "" ||
+                filter.property_unit_code !== "" ||
+                filter.description !== "" ||
+                filter.unit_price !== "" ||
+                filter.quantity !== ""
+        );
+
+        if (isCustomer.id !== "" || filter.length > 0) {
+            setCancel(true);
+        } else {
+            router.push("/finance/customer-facility/billing/invoice-list");
+        }
     };
 
     return (
         <>
+            {isCancel && (
+                <ModalTemp narrow={true}>
+                    <h1 className="text-center mb-5 text-[20px]">
+                        Are you sure you want to cancel ?
+                    </h1>
+                    <div className="flex justify-end items-center w-full">
+                        <button
+                            className="button_cancel"
+                            onClick={() => setCancel(false)}
+                        >
+                            NO
+                        </button>
+                        <button
+                            className="buttonRed"
+                            onClick={() =>
+                                router.push(
+                                    "/finance/general-ledger/journal/journal-list"
+                                )
+                            }
+                        >
+                            YES
+                        </button>
+                    </div>
+                </ModalTemp>
+            )}
             {deleteToggle && (
                 <ModalTemp narrow={true}>
                     <h1 className="text-center mb-5">
