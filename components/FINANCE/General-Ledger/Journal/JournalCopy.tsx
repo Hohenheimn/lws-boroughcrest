@@ -54,7 +54,6 @@ export default function JournalCopy() {
             <JournalForm
                 id={id}
                 JournalList={isJournalList}
-                setJournalList={setJournalList}
                 DefaultParticulars={data?.data.particulars}
                 DefaultDateValue={
                     isValid(date) ? format(date, "MMM dd yyyy") : ""

@@ -17,7 +17,7 @@ export default function DropdownFieldCOA({
     setValue,
 }: DropdownItem) {
     const [isToggle, setToggle] = useState(false);
-    const [tempSearch, setTempSearch] = useState(value);
+    const [tempSearch, setTempSearch] = useState(value === null ? "" : value);
     useEffect(() => {
         setTempSearch(value);
     }, [value]);
@@ -74,7 +74,9 @@ const List = ({
         ["coa-list-dd", tempSearch],
         () => {
             return api.get(
-                `/finance/general-ledger/chart-of-accounts?keywords=${tempSearch}`,
+                `/finance/general-ledger/chart-of-accounts?keywords=${
+                    tempSearch === null ? "" : tempSearch
+                }`,
                 {
                     headers: {
                         Authorization: "Bearer " + getCookie("user"),

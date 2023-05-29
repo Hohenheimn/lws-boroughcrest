@@ -34,6 +34,7 @@ export type CustomerFormDefaultValue = {
     company_contact_person: string;
     tin: string;
     branch_code: string;
+    portal_id: string;
     registered_address_unit_floor: string;
     registered_address_building: string;
     registered_address_street: string;

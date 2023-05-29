@@ -1,25 +1,28 @@
 import { format, isValid, parse } from "date-fns";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { BarLoader } from "react-spinners";
 import HeaderCollection from "../../../../../components/FINANCE/CustomerFacility/Collection/HeaderCollection";
 import { GetCollectionList } from "../../../../../components/FINANCE/CustomerFacility/Collection/ReceivePayment/Query";
-import { GetCustomer } from "../../../../../components/ReactQuery/CustomerMethod";
 import { TextNumberDisplay } from "../../../../../components/Reusable/NumberFormat";
 import Pagination from "../../../../../components/Reusable/Pagination";
 import TableErrorMessage from "../../../../../components/Reusable/TableErrorMessage";
-import { customer } from "../../../../../types/customerList";
-import { GetBADetail } from "../../../../../components/ReactQuery/BankAccount";
-import {
-    COACreate,
-    COADetail,
-} from "../../../../../components/ReactQuery/ChartofAccount";
 
 export type CollectionItem = {
     id: number;
     corporate_id: number;
     depositor_type: string;
     customer_id: number;
+    customer: {
+        class: string;
+        id: number;
+        name: string;
+        properties: {
+            id: number;
+            unit_code: string;
+        }[];
+        type: "Company";
+    };
     user_id: number;
     type: string;
     receipt_type: string;
@@ -47,6 +50,8 @@ export type CollectionItem = {
         amount: number;
     }[];
     chart_of_account_id: number | null;
+    chart_of_account_account_name: string;
+    chart_of_account_chart_code: string;
     parent_id: number | null;
     updated_at: string;
     created_at: string;
@@ -72,6 +77,7 @@ export type CollectionItem = {
         charge_id: number;
     }[];
     discount: number;
+    remarks: string;
 };
 
 export type PaymentSummaryHistories = CollectionItem;
@@ -162,12 +168,6 @@ type ListProps = {
 const List = ({ itemDetail }: ListProps) => {
     const date = parse(itemDetail?.receipt_date, "yyyy-MM-dd", new Date());
 
-    const { data: chartOfAccount } = COADetail(itemDetail.chart_of_account_id);
-
-    const { data } = GetCustomer(itemDetail?.customer_id);
-
-    const CustomerDetail: customer = data?.data;
-
     const router = useRouter();
 
     return (
@@ -183,13 +183,14 @@ const List = ({ itemDetail }: ListProps) => {
 
             <td>{itemDetail?.receipt_no}</td>
 
-            <td>{CustomerDetail?.name}</td>
+            <td>{itemDetail?.customer?.name}</td>
 
             <td>
-                {CustomerDetail?.properties.map((item: any, index: number) =>
-                    CustomerDetail.properties.length - 1 === index
-                        ? item.unit_code
-                        : item.unit_code + ", "
+                {itemDetail?.customer?.properties?.map(
+                    (item: any, index: number) =>
+                        itemDetail?.customer?.properties?.length - 1 === index
+                            ? item.unit_code
+                            : item.unit_code + ", "
                 )}
             </td>
 
@@ -202,7 +203,7 @@ const List = ({ itemDetail }: ListProps) => {
 
             <td>{itemDetail?.mode_of_payment}</td>
 
-            <td>{chartOfAccount?.data?.account_name}</td>
+            <td>{itemDetail.chart_of_account_account_name}</td>
         </tr>
     );
 };

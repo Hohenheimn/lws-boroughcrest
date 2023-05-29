@@ -760,7 +760,7 @@ input[type="number"] {
 
     .cw.Pending {
         div {
-            @apply bg-[#56c6f6];
+            @apply bg-[#56c6f6] border border-red-300;
         }
         &::after {
             @apply bg-[#88d5f6];
@@ -846,6 +846,18 @@ input[type="number"] {
     .PendingDC:hover {
         &::after {
             @apply content-['Pending'] w-[105px] pl-[35px];
+        }
+    }
+
+    .cw.Matured:hover {
+        &::after {
+            @apply content-['Matured'] w-[105px] pl-[35px];
+        }
+    }
+
+    .cw.Pending:hover {
+        &::after {
+            @apply content-['Matured'] w-[105px] pl-[35px] bg-[#88d5f6];
         }
     }
 }

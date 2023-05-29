@@ -1,9 +1,6 @@
 import { format, isValid, parse } from "date-fns";
-import { GetServerSideProps } from "next";
-import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { BeatLoader } from "react-spinners";
-import { journal_list } from "../../../../../components/FINANCE/General-Ledger/Journal/JournalDetail";
 import JournalForm from "../../../../../components/FINANCE/General-Ledger/Journal/JournalForm";
 import { GetJournalDetail } from "../../../../../components/FINANCE/General-Ledger/Journal/Query";
 
@@ -20,8 +17,8 @@ export default function Modify({ id }: any) {
                     account_id: item?.chart_of_account_id,
                     accountCode: item?.chart_of_account?.chart_code,
                     accountName: item?.chart_of_account?.account_name,
-                    debit: item.debit,
-                    credit: item.credit,
+                    debit: `${item.debit}`,
+                    credit: `${item.credit}`,
                 };
             });
             setJournalList(cloneArray);
@@ -53,7 +50,6 @@ export default function Modify({ id }: any) {
             <JournalForm
                 id={id}
                 JournalList={isJournalList}
-                setJournalList={setJournalList}
                 DefaultParticulars={data?.data.particulars}
                 DefaultDateValue={
                     isValid(date) ? format(date, "MMM dd yyyy") : ""

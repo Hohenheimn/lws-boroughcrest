@@ -6,8 +6,11 @@ import { GetCollectionDetail } from "../../../../../components/FINANCE/CustomerF
 
 export default function PaymentRegisterShow() {
     const router = useRouter();
+
     const id: any = router.query.id;
+
     const { isLoading, data, isError } = GetCollectionDetail(id);
+
     if (isLoading) {
         return (
             <div className="pageDetail">
@@ -20,6 +23,7 @@ export default function PaymentRegisterShow() {
             </div>
         );
     }
+
     if (isError) {
         return (
             <div className="pageDetail">
@@ -27,6 +31,7 @@ export default function PaymentRegisterShow() {
             </div>
         );
     }
+
     return (
         <div>
             <PaymentRegisterDetail CollectionDetail={data?.data} />

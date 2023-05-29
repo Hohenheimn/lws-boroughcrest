@@ -76,6 +76,7 @@ export default function AppProvider({ children }: AppProvider) {
         company_contact_person: "",
         tin: "",
         branch_code: "",
+        portal_id: "",
         registered_address_unit_floor: "",
         registered_address_building: "",
         registered_address_street: "",

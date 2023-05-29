@@ -36,6 +36,14 @@ export const CheckScheduleList = (
     );
 };
 
+export const ShowBookedCheck = (id: number) => {
+    return useQuery(["show-booked-check", id], () => {
+        return api.get(`/finance/customer-facility/booked-check/${id}`, {
+            headers: { Authorization: "Bearer " + getCookie("user") },
+        });
+    });
+};
+
 export const BookedCheckPost = (onSuccess: any, onError: any, id: any) => {
     const queryClient = useQueryClient();
     return useMutation(

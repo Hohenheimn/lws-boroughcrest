@@ -79,9 +79,12 @@ export default function ReceivePaymentForm({
     DefaultOfficialOutrightAdvances,
     DefaultProvisional,
 }: Props) {
+    const router = useRouter();
+
     const { setPrompt } = useContext(AppContext);
 
     const date = new Date();
+
     let today = startOfDay(date);
 
     const [HeaderForm, setHeaderForm] = useState<HeaderForm>({
@@ -484,17 +487,20 @@ export default function ReceivePaymentForm({
                                             isValue={HeaderForm.amount_paid}
                                             setValue={onChangeNumber}
                                         />
-                                        <div
-                                            onClick={OpenDiscount}
-                                            className=" cursor-pointer absolute left-full top-[50%] translate-y-[-50%] w-5 h-5 flex justify-center items-center pl-1"
-                                        >
-                                            <Image
-                                                src="/Images/f_percent_tag.png"
-                                                alt=""
-                                                height={15}
-                                                width={15}
-                                            />
-                                        </div>
+                                        {router.query.from !==
+                                            "check_warehouse" && (
+                                            <div
+                                                onClick={OpenDiscount}
+                                                className=" cursor-pointer absolute left-full top-[50%] translate-y-[-50%] w-5 h-5 flex justify-center items-center pl-1"
+                                            >
+                                                <Image
+                                                    src="/Images/f_percent_tag.png"
+                                                    alt=""
+                                                    height={15}
+                                                    width={15}
+                                                />
+                                            </div>
+                                        )}
                                     </div>
                                 </label>
                                 {(HeaderForm.amount_paid === "" ||

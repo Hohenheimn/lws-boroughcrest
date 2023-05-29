@@ -10,9 +10,8 @@ import ReceivePaymentForm, {
 import { GetCustomer } from "../../../../../components/ReactQuery/CustomerMethod";
 import { customer } from "../../../../../types/customerList";
 import { CollectionItem } from "../payment-register";
-import { COADetail } from "../../../../../components/ReactQuery/ChartofAccount";
 
-export default function Modify({ modify_id }: any) {
+export default function Modify({ modify_id, from }: any) {
     const { isLoading, data, isError } = GetCollectionDetail(modify_id);
 
     const {
@@ -24,12 +23,6 @@ export default function Modify({ modify_id }: any) {
     const customer: customer = customerData?.data;
 
     const collection: CollectionItem = data?.data;
-
-    const {
-        isLoading: coaLoading,
-        data: coaData,
-        isError: coaError,
-    } = COADetail(collection?.chart_of_account_id);
 
     const receipt_date = parse(
         collection?.receipt_date,
@@ -69,10 +62,16 @@ export default function Modify({ modify_id }: any) {
     const [isAcknowledgement, setAcknowledgement] = useState<Deposits[]>([]);
 
     useEffect(() => {
-        if (!isLoading && !isError && !coaLoading && !coaError) {
+        if (!isLoading && !isError) {
+            let receipt_type = "";
+            if (from === "check_warehouse") {
+                receipt_type = "Acknowledgement";
+            } else {
+                receipt_type = collection.receipt_type;
+            }
             setHeaderForm({
                 customer_id: collection.customer_id,
-                receipt_type: collection.receipt_type,
+                receipt_type: receipt_type,
                 receipt_date: isValid(receipt_date)
                     ? format(receipt_date, "MMM dd yyyy")
                     : "",
@@ -83,7 +82,7 @@ export default function Modify({ modify_id }: any) {
                     ? format(deposit_date, "MMM dd yyyy")
                     : "",
                 chart_of_account_id: collection.chart_of_account_id,
-                chart_of_account_name: coaData?.data.account_name,
+                chart_of_account_name: collection.chart_of_account_account_name,
                 reference_no: collection.reference_no,
                 amount_paid: collection.amount_paid,
                 credit_tax: collection.credit_tax,
@@ -100,9 +99,19 @@ export default function Modify({ modify_id }: any) {
                     };
                 });
                 setAcknowledgement(clone);
+            } else {
+                setAcknowledgement([
+                    {
+                        id: 0,
+                        charge: "",
+                        charge_id: "",
+                        description: "",
+                        amount: 0,
+                    },
+                ]);
             }
         }
-    }, [collection, coaData?.data]);
+    }, [collection]);
 
     useEffect(() => {
         if (!customerLoading && !customerError) {
@@ -117,7 +126,7 @@ export default function Modify({ modify_id }: any) {
         }
     }, [customerData?.status]);
 
-    if (isLoading || customerLoading || coaLoading) {
+    if (isLoading || customerLoading) {
         return (
             <div className="pageDetail">
                 <BeatLoader
@@ -129,7 +138,7 @@ export default function Modify({ modify_id }: any) {
             </div>
         );
     }
-    if (isError || customerError || coaError) {
+    if (isError || customerError) {
         return (
             <div className="pageDetail">
                 <h1>Something is wrong</h1>
@@ -159,9 +168,11 @@ export default function Modify({ modify_id }: any) {
 
 export async function getServerSideProps({ query }: any) {
     const modify_id = query.modify_id;
+    let from = query.from;
     return {
         props: {
             modify_id: modify_id,
+            from: from,
         },
     };
 }

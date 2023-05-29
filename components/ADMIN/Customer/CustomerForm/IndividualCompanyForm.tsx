@@ -422,6 +422,26 @@ export default function IndividualCompanyForm({
                                 </p>
                             )}
                         </li>
+                        <li>
+                            <label>PORTAL ID</label>
+                            <input
+                                className="field"
+                                type="number"
+                                value={isCustomerForm.portal_id}
+                                onChange={(e) => {
+                                    if (!TextFieldValidation(e, 50)) return;
+                                    setCustomerForm({
+                                        ...isCustomerForm,
+                                        portal_id: e.target.value,
+                                    });
+                                }}
+                            />
+                            {CusError?.portal_id !== "" && (
+                                <p className="text-[10px]">
+                                    {CusError?.portal_id}
+                                </p>
+                            )}
+                        </li>
                     </ul>
 
                     <div className=" w-full flex justify-end items-center">

@@ -15,7 +15,6 @@ import {
     CreateInvoiceBilling,
     DeleteInvoice,
     GetInvoiceListByCustomer,
-    ModifyInvoiceBilling,
 } from "./Query";
 import { BarLoader, ScaleLoader } from "react-spinners";
 import ModalTemp from "../../../Reusable/ModalTemp";
@@ -334,6 +333,7 @@ export default function JournalForm({
             });
             return;
         }
+
         isBilling.map((item: billingObject) => {
             if (item.charge_id === "") {
                 validate = false;
@@ -344,6 +344,7 @@ export default function JournalForm({
                 });
             }
         });
+
         if (validate) {
             mutateSave(Payload);
         }
@@ -358,12 +359,57 @@ export default function JournalForm({
         onError
     );
     const deleteID: any = router.query.modify;
+
     const DeleteHandler = () => {
         mutateDelete(deleteID);
     };
 
+    const [isCancel, setCancel] = useState(false);
+
+    const CancelHandler = () => {
+        const filter = isBilling.filter(
+            (filter) =>
+                filter.charge !== "" ||
+                filter.property_unit_code !== "" ||
+                filter.description !== "" ||
+                filter.unit_price !== "" ||
+                filter.quantity !== ""
+        );
+
+        if (isCustomer.id !== "" || filter.length > 0) {
+            setCancel(true);
+        } else {
+            router.push("/finance/customer-facility/billing/invoice-list");
+        }
+    };
+
     return (
         <>
+            {isCancel && (
+                <ModalTemp narrow={true}>
+                    <h1 className="text-center mb-5 text-[20px]">
+                        Are you sure you want to cancel ?
+                    </h1>
+                    <div className="flex justify-end items-center w-full">
+                        <button
+                            className="button_cancel"
+                            onClick={() => setCancel(false)}
+                        >
+                            NO
+                        </button>
+                        <button
+                            className="buttonRed"
+                            onClick={() =>
+                                router.push(
+                                    "/finance/general-ledger/journal/journal-list"
+                                )
+                            }
+                        >
+                            YES
+                        </button>
+                    </div>
+                </ModalTemp>
+            )}
             {deleteToggle && (
                 <ModalTemp narrow={true}>
                     <h1 className="text-center mb-5">
@@ -502,7 +548,9 @@ export default function JournalForm({
             </div>
 
             <div className="flex w-full justify-end items-center mt-14 480px:mt-10 ">
-                <button className="button_cancel">CANCEL</button>
+                <button className="button_cancel" onClick={CancelHandler}>
+                    CANCEL
+                </button>
 
                 {formType === "modify" && (
                     <button

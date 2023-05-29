@@ -39,5 +39,9 @@ export type customer = {
     status: string;
     unit_codes: [];
     properties: [];
+    user: {
+        id: number;
+        portal_id: string;
+    };
     _method?: "PUT";
 };

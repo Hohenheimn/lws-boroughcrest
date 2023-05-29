@@ -3,6 +3,7 @@ import { HiPencil } from "react-icons/hi";
 import ModifyProperty from "./ModifyProperty";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
+import { PencilButton } from "../../Reusable/Icons";
 
 export default function CustomerProperty({ data, classType }: any) {
     const [isToggle, setToggle] = useState(false);
@@ -24,9 +25,9 @@ export default function CustomerProperty({ data, classType }: any) {
                     content={<span className="capitalize">Modify</span>}
                 >
                     <div>
-                        <HiPencil
-                            className=" text-ThemeRed font-bold text-[32px] 480px:text-[24px] cursor-pointer"
-                            onClick={() => setToggle(true)}
+                        <PencilButton
+                            FunctionOnClick={() => setToggle(true)}
+                            title={"Modify"}
                         />
                     </div>
                 </Tippy>
