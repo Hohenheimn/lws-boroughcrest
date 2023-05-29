@@ -11,6 +11,7 @@ import AppContext from "../../../Context/AppContext";
 import TableErrorMessage from "../../../Reusable/TableErrorMessage";
 import Pagination from "../../../Reusable/Pagination";
 import { TextNumberDisplay } from "../../../Reusable/NumberFormat";
+import TableLoadingNError from "../../../Reusable/TableLoadingNError";
 
 type Props = {
     page: string;
@@ -88,20 +89,7 @@ export default function ChargeTable({ page, setCreate }: Props) {
                         ))}
                     </tbody>
                 </table>
-                {isLoading && (
-                    <div className="top-0 left-0 absolute w-full h-full flex justify-center items-center">
-                        <aside className="text-center flex justify-center py-5">
-                            <BarLoader
-                                color={"#8f384d"}
-                                height="10px"
-                                width="200px"
-                                aria-label="Loading Spinner"
-                                data-testid="loader"
-                            />
-                        </aside>
-                    </div>
-                )}
-                {isError && <TableErrorMessage />}
+                <TableLoadingNError isLoading={isLoading} isError={isError} />
             </div>
             <Pagination
                 setTablePage={setTablePage}

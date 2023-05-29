@@ -11,7 +11,10 @@ export function PencilButton({ FunctionOnClick, title }: Props) {
     return (
         <div>
             <Tippy content={title} theme="ThemeRed">
-                <div onClick={FunctionOnClick} className="cursor-pointer">
+                <div
+                    onClick={FunctionOnClick}
+                    className="cursor-pointer  hover:scale-125 duration-75"
+                >
                     <Image
                         src="/Images/big_pencil.png"
                         width={20}
@@ -30,7 +33,7 @@ export function PlusButtonTable() {
             theme="ThemeRed"
             content={<span className="text-[12px]">Add row</span>}
         >
-            <div className=" inline-block cursor-pointer">
+            <div className=" inline-block cursor-pointer  hover:scale-125 duration-75">
                 <Image
                     src="/Images/f_plus.png"
                     width={12}
@@ -48,7 +51,7 @@ export function MinusButtonTable() {
             theme="ThemeRed"
             content={<span className="text-[12px]">Remove row</span>}
         >
-            <div className=" inline-block translate-y-[-3px] cursor-pointer">
+            <div className=" inline-block translate-y-[-3px] cursor-pointer  hover:scale-125 duration-75">
                 <Image
                     src="/Images/f_minus.png"
                     width={12}
@@ -66,7 +69,7 @@ export function CopyButtonTable() {
             theme="ThemeRed"
             content={<span className="text-[12px]">Copy</span>}
         >
-            <div className=" inline-block cursor-pointer">
+            <div className=" inline-block cursor-pointer hover:scale-125 duration-75">
                 <Image
                     src="/Images/f_modify.png"
                     width={15}
@@ -84,7 +87,7 @@ export function EyeButton() {
             theme="ThemeRed"
             content={<span className="text-[12px]">View</span>}
         >
-            <div className=" inline-block cursor-pointer">
+            <div className=" inline-block cursor-pointer hover:scale-125 duration-75">
                 <Image
                     src="/Images/f_eye.png"
                     width={15}
@@ -102,7 +105,7 @@ export function DeleteButton() {
             theme="ThemeRed"
             content={<span className="text-[12px]">Delete</span>}
         >
-            <div className=" inline-block cursor-pointer">
+            <div className=" inline-block cursor-pointer hover:scale-125 duration-75">
                 <Image
                     src="/Images/f_delete.png"
                     width={14}
@@ -120,7 +123,7 @@ export function PencilButtonTable() {
             theme="ThemeRed"
             content={<span className="text-[12px]">Modify</span>}
         >
-            <div className=" inline-block cursor-pointer">
+            <div className=" inline-block cursor-pointer hover:scale-125 duration-75">
                 <Image
                     src="/Images/f_pencil.png"
                     width={15}
@@ -138,7 +141,7 @@ export function BookedCheck() {
             theme="ThemeRed"
             content={<span className="text-[12px]">Booked Check</span>}
         >
-            <div className=" inline-block cursor-pointer">
+            <div className=" inline-block cursor-pointer hover:scale-125 duration-75">
                 <Image
                     src="/Images/f_book_check.png"
                     width={18}
@@ -156,11 +159,47 @@ export function OppositeArrow() {
             theme="ThemeRed"
             content={<span className="text-[12px]">Copy</span>}
         >
-            <div className=" inline-block cursor-pointer">
+            <div className=" inline-block cursor-pointer hover:scale-125 duration-75">
                 <Image
                     src="/Images/opposite_arrow.png"
                     width={23}
                     height={18}
+                    alt="Modify"
+                />
+            </div>
+        </Tippy>
+    );
+}
+
+export function RequestIcon() {
+    return (
+        <Tippy
+            theme="ThemeRed"
+            content={<span className="text-[12px]">Request</span>}
+        >
+            <div className=" inline-block cursor-pointer hover:scale-125 duration-75">
+                <Image
+                    src="/Images/f_request.png"
+                    width={30}
+                    height={35}
+                    alt="Modify"
+                />
+            </div>
+        </Tippy>
+    );
+}
+
+export function RequestRefresh() {
+    return (
+        <Tippy
+            theme="ThemeRed"
+            content={<span className="text-[12px]">Refresh</span>}
+        >
+            <div className=" inline-block cursor-pointer hover:scale-125 duration-75">
+                <Image
+                    src="/Images/f_refresh_request.png"
+                    width={35}
+                    height={28}
                     alt="Modify"
                 />
             </div>

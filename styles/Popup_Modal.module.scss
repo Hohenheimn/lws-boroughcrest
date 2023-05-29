@@ -5,7 +5,7 @@
     }
 
     section {
-        @apply p-10 bg-[#e2e3e4] rounded-lg w-[90%] max-w-[700px] text-ThemeRed shadow-lg;
+        @apply p-10 480px:p-5 bg-[#e2e3e4] rounded-lg w-[90%] max-w-[700px] text-ThemeRed shadow-lg;
 
         .modal_title {
             @apply text-[16px] mb-3;

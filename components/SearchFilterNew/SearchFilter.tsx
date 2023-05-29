@@ -196,60 +196,65 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
                         </li>
                     )}
 
-                    <li className={style.new}>
-                        <div onClick={openNew}>New {page}</div>
-                    </li>
+                    {page !== "request" && (
+                        <>
+                            <li className={style.new}>
+                                <div onClick={openNew}>New {page}</div>
+                            </li>
 
-                    <li className={style.filter}>
-                        <Tippy content="Filter" theme="ThemeRed">
-                            <button
-                                onClick={() => setFilter(true)}
-                                className={`${style.button} ${
-                                    isFilter === true && "pointer-events-none"
-                                }`}
-                            >
-                                <Image
-                                    src="/Images/New_Filter.png"
-                                    layout="fill"
-                                    alt=""
-                                />
-                            </button>
-                        </Tippy>
-                        <AnimatePresence>
-                            {isFilter && page === "corporate" && (
-                                <FilterCorporate
-                                    setFilter={setFilter}
-                                    isFilter={isFilter}
-                                />
-                            )}
-                            {isFilter && page === "user" && (
-                                <FilterDynamic
-                                    setFilter={setFilter}
-                                    TableRows={userTableRows}
-                                    setTableRows={usersetTableRows}
-                                    TableColumn={userTableColumn}
-                                    setTableColumn={setUserTableColumn}
-                                    ColumnList={userColumnList}
-                                />
-                            )}
-                            {isFilter && page === "customer" && (
-                                <FilterCustomer
-                                    setFilter={setFilter}
-                                    isFilter={isFilter}
-                                />
-                            )}
-                            {isFilter && page === "property unit" && (
-                                <FilterDynamic
-                                    setFilter={setFilter}
-                                    TableRows={propTableRows}
-                                    setTableRows={setPropTableRows}
-                                    TableColumn={propTableColumn}
-                                    setTableColumn={setPropTableColumn}
-                                    ColumnList={propList}
-                                />
-                            )}
-                        </AnimatePresence>
-                    </li>
+                            <li className={style.filter}>
+                                <Tippy content="Filter" theme="ThemeRed">
+                                    <button
+                                        onClick={() => setFilter(true)}
+                                        className={`${style.button} ${
+                                            isFilter === true &&
+                                            "pointer-events-none"
+                                        }`}
+                                    >
+                                        <Image
+                                            src="/Images/New_Filter.png"
+                                            layout="fill"
+                                            alt=""
+                                        />
+                                    </button>
+                                </Tippy>
+                                <AnimatePresence>
+                                    {isFilter && page === "corporate" && (
+                                        <FilterCorporate
+                                            setFilter={setFilter}
+                                            isFilter={isFilter}
+                                        />
+                                    )}
+                                    {isFilter && page === "user" && (
+                                        <FilterDynamic
+                                            setFilter={setFilter}
+                                            TableRows={userTableRows}
+                                            setTableRows={usersetTableRows}
+                                            TableColumn={userTableColumn}
+                                            setTableColumn={setUserTableColumn}
+                                            ColumnList={userColumnList}
+                                        />
+                                    )}
+                                    {isFilter && page === "customer" && (
+                                        <FilterCustomer
+                                            setFilter={setFilter}
+                                            isFilter={isFilter}
+                                        />
+                                    )}
+                                    {isFilter && page === "property unit" && (
+                                        <FilterDynamic
+                                            setFilter={setFilter}
+                                            TableRows={propTableRows}
+                                            setTableRows={setPropTableRows}
+                                            TableColumn={propTableColumn}
+                                            setTableColumn={setPropTableColumn}
+                                            ColumnList={propList}
+                                        />
+                                    )}
+                                </AnimatePresence>
+                            </li>
+                        </>
+                    )}
                 </ul>
             </section>
         </>

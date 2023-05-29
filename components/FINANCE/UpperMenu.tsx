@@ -10,13 +10,17 @@ export default function UpperMenu() {
     useEffect(() => {
         if (router.pathname.includes("general-ledger")) {
             setUrlData(GeneralLedger);
+            return;
         }
         if (router.pathname.includes("customer-facility")) {
             setUrlData(CustomerFacility);
+            return;
         }
         if (router.pathname.includes("check-warehouse")) {
             setUrlData(CheckWarehouse);
+            return;
         }
+        setUrlData(null);
     });
     return (
         <div className={style.wrapper}>

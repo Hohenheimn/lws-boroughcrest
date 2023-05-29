@@ -122,7 +122,7 @@ export default function Layout({ children }: Layout) {
                         isWide === true ? "pl-wide" : "pl-no-wide"
                     } ${collapseSide && !isWide && "collapse_container"}`}
                 >
-                    <div className="flex-1 flex flex-col w-full relative ">
+                    <div className="flex-1 flex flex-col w-full relative 1024px:py-5">
                         {isWindow <= 1024 && (
                             <button
                                 onClick={() => setHide(!isHide)}
