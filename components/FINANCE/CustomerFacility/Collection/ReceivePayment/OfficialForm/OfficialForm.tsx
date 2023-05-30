@@ -283,7 +283,7 @@ export default function OfficialForm({
                 <PaymentSummaryTable
                     SummaryItems={CDdata?.data}
                     CreditTax={Number(headerForm.credit_tax)}
-                    TotalDue={Number(headerForm.amount_paid) + Number(OATotal)}
+                    TotalDue={Number(isAppliedAmount) + Number(OATotal)}
                     triggerID={Number(headerForm.customer_id)}
                     LessDiscount={headerForm.discount}
                     AmoundPaid={Number(headerForm.amount_paid)}

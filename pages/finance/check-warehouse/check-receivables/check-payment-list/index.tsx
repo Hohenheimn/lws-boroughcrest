@@ -29,7 +29,9 @@ export default function CheckPaymentList() {
             isPeriod={isPeriod}
             setPeriod={setPeriod}
             page="check-payment-list"
-            EndPointList={"/finance/customer-facility/collection"}
+            EndPointList={
+                "/finance/customer-facility/collection?paginate=10&receipt_type=Acknowledgement"
+            }
             EndPointAdvFilter={
                 "/finance/customer-facility/collection/filter-options"
             }

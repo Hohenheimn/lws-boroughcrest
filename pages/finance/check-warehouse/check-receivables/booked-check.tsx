@@ -49,7 +49,7 @@ export default function BookedCheck() {
             isPeriod={isPeriod}
             setPeriod={setPeriod}
             page="booked-check"
-            EndPointList={"/finance/customer-facility/booked-check"}
+            EndPointList={"/finance/customer-facility/booked-check?paginate=10"}
             EndPointAdvFilter={
                 "/finance/customer-facility/booked-check/filter-options"
             }

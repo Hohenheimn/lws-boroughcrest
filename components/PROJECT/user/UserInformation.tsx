@@ -17,7 +17,7 @@ export default function UserInformation({ UserInfo }: Props) {
             <li className=" w-4/12 mb-10 820px:w-2/4 480px:w-full 480px:mb-3">
                 <p className=" text-gray-400 1024px:text-[14px]">DEPARTMENT</p>
                 <h4 className=" text-gray-500 mb-5 1024px:text-[14px]">
-                    {UserInfo.department_id}
+                    {UserInfo.department_name}
                 </h4>
             </li>
             <li className=" w-4/12 mb-10 820px:w-2/4 480px:w-full 480px:mb-3">
@@ -41,7 +41,7 @@ export default function UserInformation({ UserInfo }: Props) {
             <li className=" w-4/12 mb-10 820px:w-2/4 480px:w-full 480px:mb-3">
                 <p className=" text-gray-400 1024px:text-[14px]">CORPORATE</p>
                 <h4 className=" text-gray-500 mb-5 1024px:text-[14px]">
-                    {UserInfo.corporate_id}
+                    {UserInfo.corporate_name}
                 </h4>
             </li>
             <li className=" w-4/12 mb-10 820px:w-2/4 480px:w-full 480px:mb-3">

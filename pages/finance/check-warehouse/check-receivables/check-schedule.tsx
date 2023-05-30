@@ -46,7 +46,7 @@ export default function CheckSchedule() {
             setPeriod={setPeriod}
             page="check-schedule"
             EndPointAdvFilter="/finance/customer-facility/check-schedule/filter-options"
-            EndPointList="/finance/customer-facility/check-schedule"
+            EndPointList="/finance/customer-facility/check-schedule?paginate=10"
             EndPointExport="/finance/customer-facility/check-schedule/export"
         />
     );

@@ -1171,3 +1171,46 @@ table.rolePermisionTable {
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
+.wysiwyg {
+    .toolbarClassName {
+        @apply border;
+        .rdw-inline-wrapper {
+            div:nth-child(4),
+            div:nth-child(5),
+            div:nth-child(6),
+            div:nth-child(7) {
+                @apply hidden;
+            }
+        }
+        .rdw-fontsize-wrapper,
+        .rdw-fontfamily-wrapper,
+        .rdw-text-align-wrapper,
+        .rdw-colorpicker-wrapper,
+        .rdw-embedded-wrapper,
+        .rdw-emoji-wrapper,
+        .rdw-image-wrapper,
+        .rdw-remove-wrapper,
+        .rdw-history-wrapper {
+            @apply hidden;
+        }
+        .rdw-list-wrapper {
+            div:nth-child(3),
+            div:nth-child(4) {
+                @apply hidden;
+            }
+        }
+        .rdw-link-wrapper {
+            div:nth-child(2) {
+                @apply hidden;
+            }
+        }
+    }
+
+    .wrapperClassName {
+        @apply border border-gray-300 rounded-md overflow-hidden bg-white;
+    }
+
+    .editorClassName {
+        @apply min-h-[300px] max-h-[500px] overflow-auto px-3;
+    }
+}

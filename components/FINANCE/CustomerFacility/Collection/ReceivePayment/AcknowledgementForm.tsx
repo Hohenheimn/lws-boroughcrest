@@ -52,7 +52,7 @@ export default function AcknowledgementForm({
     let buttonClicked = "";
     useEffect(() => {
         setTable(DefaultValue);
-    }, []);
+    }, [DefaultValue]);
 
     const [isSave, setSave] = useState(false);
 

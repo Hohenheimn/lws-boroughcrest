@@ -26,6 +26,7 @@ export type UserDetail = {
     role_id: number;
     role_name: string;
     corporate_id: number;
+    corporate_name: string;
     department_id: number | null;
     department_name: string;
     contact_no: number;
@@ -153,7 +154,7 @@ const List = ({ itemDetail }: ListProps) => {
                         <Link href={`/project/user/${itemDetail.id}`}>
                             <a className="item">
                                 <div>
-                                    <h2>{itemDetail.department_id}</h2>
+                                    <h2>{itemDetail.department_name}</h2>
                                 </div>
                             </a>
                         </Link>
@@ -189,7 +190,7 @@ const List = ({ itemDetail }: ListProps) => {
                         <Link href={`/project/user/${itemDetail.id}`}>
                             <a className="item">
                                 <div>
-                                    <h2>{itemDetail.role_id}</h2>
+                                    <h2>{itemDetail.role_name}</h2>
                                 </div>
                             </a>
                         </Link>
