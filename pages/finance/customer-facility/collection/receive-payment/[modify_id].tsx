@@ -110,7 +110,7 @@ export default function Modify({ modify_id, from }: any) {
                             check_date: item.check_date,
                             description: item.description,
                             check_no: `${item.check_no}`,
-                            bank_branch: "",
+                            bank_branch: item.bank_branch,
                             bank_branch_id: "",
                             amount: item.amount,
                         };

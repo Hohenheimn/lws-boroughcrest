@@ -55,6 +55,7 @@ export type CollectionItem = {
         description: string;
         check_no: number;
         amount: number;
+        bank_branch: string;
     }[];
     outright_advances: {
         id: number;
@@ -184,9 +185,6 @@ const List = ({ itemDetail }: ListProps) => {
                 );
             }}
         >
-            <td>
-                {itemDetail.receipt_type} {itemDetail.id}
-            </td>
             <td>{isValid(date) ? format(date, "MMM dd yyyy") : ""}</td>
 
             <td>{itemDetail?.receipt_no}</td>
