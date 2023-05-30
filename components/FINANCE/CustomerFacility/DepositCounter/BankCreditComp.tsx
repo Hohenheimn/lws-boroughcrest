@@ -312,7 +312,7 @@ export default function BankCreditComp({
                 selectAll: selectAll,
             });
         }
-    }, [data, isSelectedBankCreditIDs]);
+    }, [data?.data.data, isSelectedBankCreditIDs]);
 
     let buttonClicked = "";
 

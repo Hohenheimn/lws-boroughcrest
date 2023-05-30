@@ -55,6 +55,11 @@ export const SidebarLinks = [
                 url: "/admin/communication",
                 ActiveName: "communication",
             },
+            {
+                name: "announcement",
+                url: "/admin/announcement",
+                ActiveName: "announcement",
+            },
         ],
     },
     {
@@ -77,6 +82,16 @@ export const SidebarLinks = [
                 name: "Check Warehouse",
                 url: "/finance/check-warehouse/check-receivables/check-schedule",
                 ActiveName: "check-warehouse",
+            },
+            {
+                name: "Email Blast",
+                url: "/finance/email-blast",
+                ActiveName: "email-blast",
+            },
+            {
+                name: "Reports",
+                url: "/finance/reports",
+                ActiveName: "reports",
             },
             {
                 name: "Policy",

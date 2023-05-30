@@ -204,41 +204,37 @@ export default function OfficialForm({
             }),
             discount: headerForm.discount,
         };
-        if (Payload.outrights.length <= 0) {
-            PayloadAdvances.map((provItem) => {
-                if (provItem.amount <= 0 || provItem.charge_id === "") {
-                    setPrompt({
-                        toggle: true,
-                        message: "Fill out the fields on Outright or Advances!",
-                        type: "draft",
-                    });
-                    validate = false;
-                    return;
-                }
-            });
-            PayloadOutRight.map((provItem) => {
-                if (
-                    provItem.amount <= 0 ||
-                    provItem.charge_id === "" ||
-                    provItem.unit_price <= 0 ||
-                    Number(provItem.quantity) <= 0
-                ) {
-                    setPrompt({
-                        toggle: true,
-                        message: "Fill out the fields on Outright or Advances!",
-                        type: "draft",
-                    });
-                    validate = false;
-                    return;
-                }
-            });
-            setPrompt({
-                toggle: true,
-                message: "Fill out the fields on Outright or Advances!",
-                type: "draft",
-            });
-            return;
-        }
+
+        PayloadAdvances.map((provItem) => {
+            if (provItem.amount <= 0 || provItem.charge_id === "") {
+                setPrompt({
+                    toggle: true,
+                    message: "Fill out the fields on Outright or Advances!",
+                    type: "draft",
+                });
+                validate = false;
+                return;
+            }
+        });
+        PayloadOutRight.map((provItem: any) => {
+            if (
+                provItem.amount <= 0 ||
+                provItem.charge_id === "" ||
+                provItem.unit_price <= 0 ||
+                Number(provItem.quantity) <= 0 ||
+                provItem.unit_price === "" ||
+                provItem.quantity === ""
+            ) {
+                setPrompt({
+                    toggle: true,
+                    message: "Fill out the fields on Outright or Advances!",
+                    type: "draft",
+                });
+                validate = false;
+                return;
+            }
+        });
+
         if (!isVarianceValidation) {
             setPrompt({
                 toggle: true,

@@ -90,18 +90,23 @@ export default function Receiptsbook({
     );
     useEffect(() => {
         let IndexParent: string[] = [];
+
         let IndexChildren: string[] = [];
+
         isReceiptBookData.itemArray.map((item: isTableItemObjRB) => {
             IndexParent = [...IndexParent, item.index];
         });
+
         isReceiptBookData.itemArray.map((item: isTableItemObjRB) => {
             item.childrenRB.map((item2) => {
                 IndexChildren = [...IndexChildren, `${item2.index}`];
             });
         });
+
         const OverallSelectedIndex = [...IndexParent, ...IndexChildren].filter(
             (filterItem) => filterItem !== ""
         );
+
         setOverallSelectedIndex(OverallSelectedIndex);
     }, [isReceiptBookData.itemArray]);
     // End
@@ -162,7 +167,7 @@ export default function Receiptsbook({
                     select: select,
                     childrenRB:
                         type === "receipts-book"
-                            ? item?.children?.map((itemChild: any) => {
+                            ? item?.bank_credit?.map((itemChild: any) => {
                                   return {
                                       id: itemChild.id,
                                       indexID: itemChild.id,

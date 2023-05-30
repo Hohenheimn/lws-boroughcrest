@@ -335,7 +335,12 @@ export default function JournalForm({
         }
 
         isBilling.map((item: billingObject) => {
-            if (item.charge_id === "") {
+            if (
+                item.charge_id === "" ||
+                item.property_id === "" ||
+                item.unit_price === "" ||
+                item.quantity === ""
+            ) {
                 validate = false;
                 setPrompt({
                     message: "Fill out all fields",
@@ -616,8 +621,6 @@ type List = {
 };
 
 const List = ({ itemList, setState, isState, index, isUnitCodes }: List) => {
-    const { setPrompt } = useContext(AppContext);
-
     // Computation of Amount and Vat
     useEffect(() => {
         const Vat =

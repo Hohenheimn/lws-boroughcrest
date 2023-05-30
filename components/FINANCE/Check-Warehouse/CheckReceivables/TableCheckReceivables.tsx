@@ -522,6 +522,7 @@ const ListPaymentList = ({ itemDetail }: ListProps) => {
                     : ""}
             </td>
             <td>{itemDetail.receipt_no}</td>
+            <td>{itemDetail.customer.name}</td>
             <td>
                 {itemDetail?.customer?.properties?.map(
                     (item: any, index: number) =>
@@ -530,7 +531,7 @@ const ListPaymentList = ({ itemDetail }: ListProps) => {
                             : item.unit_code + ", "
                 )}
             </td>
-            <td>property</td>
+
             <td>
                 <div>
                     <h2>

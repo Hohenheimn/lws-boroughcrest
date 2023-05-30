@@ -136,6 +136,7 @@ export default function DepositCounter() {
     const { mutate, isLoading } = SaveTagging(onSuccess, onError);
 
     const SaveHandler = () => {
+        console.log(ReceiptBookData);
         const filterReceipt = ReceiptBookData.itemArray.filter(
             (items) => items.indexID !== ""
         );

@@ -124,7 +124,6 @@ const ListItem = ({
             );
         }
     );
-
     const [isReceipt, setReceipt] = useState<Receipt[]>([]);
 
     useEffect(() => {
@@ -140,7 +139,7 @@ const ListItem = ({
                         };
                     }
                 } else {
-                    if (item.receipt_no !== null) {
+                    if (item.reference_no !== null) {
                         return {
                             receipt_no: item.receipt_no,
                             reference_no: item.reference_no,
@@ -154,6 +153,7 @@ const ListItem = ({
                 (filter: any) => filter !== undefined
             );
             const selecteRefRec = [...selecteRec, ...selecteRef];
+
             const filterIndex = filterUndefined.filter((item: any) => {
                 return !selecteRefRec?.includes(
                     keyType === "reference"
@@ -163,7 +163,7 @@ const ListItem = ({
             });
             setReceipt(filterIndex);
         }
-    }, [data, tempSearch]);
+    }, [data?.data, tempSearch]);
 
     const modal = useRef<any>();
 
