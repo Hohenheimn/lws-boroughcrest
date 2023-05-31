@@ -146,3 +146,16 @@ export const CheckWarehouse = [
         url: "#",
     },
 ];
+
+export const Reports = [
+    {
+        name: "General Reports",
+        activeUrl: "reports/general-reports",
+        url: "/finance/reports/general-reports",
+    },
+    {
+        name: "Customer Reports",
+        activeUrl: "reports/customer-reports",
+        url: "/finance/reports/customer-reports",
+    },
+];

@@ -16,6 +16,7 @@ import {
     MdKeyboardArrowRight,
     MdOutlineKeyboardArrowDown,
 } from "react-icons/md";
+import TableLoadingNError from "../../../Reusable/TableLoadingNError";
 
 type Props = {
     isSearchTable: string;
@@ -23,7 +24,6 @@ type Props = {
 };
 
 export default function COATable({ isSearchTable, isFilterTable }: Props) {
-    const { setPrompt } = useContext(AppContext);
     const [TablePage, setTablePage] = useState(1);
 
     const { data, isLoading, isError } = useQuery(
@@ -41,13 +41,6 @@ export default function COATable({ isSearchTable, isFilterTable }: Props) {
             );
         }
     );
-    if (isError) {
-        setPrompt({
-            message: "Something is wrong!",
-            type: "error",
-            toggle: true,
-        });
-    }
 
     const [showHeader3, setShowHeader3] = useState(false);
 
@@ -95,13 +88,6 @@ export default function COATable({ isSearchTable, isFilterTable }: Props) {
                         </tr>
                     </thead>
                     <tbody>
-                        {isError && (
-                            <tr>
-                                <td colSpan={5} className="text-center">
-                                    Error...
-                                </td>
-                            </tr>
-                        )}
                         {data?.data.data.map((item: any, index: number) => (
                             <List
                                 key={index}
@@ -112,20 +98,7 @@ export default function COATable({ isSearchTable, isFilterTable }: Props) {
                         ))}
                     </tbody>
                 </table>
-                {isLoading && (
-                    <div className="top-0 left-0 absolute w-full h-full flex justify-center items-center">
-                        <aside className="text-center flex justify-center py-5">
-                            <BarLoader
-                                color={"#8f384d"}
-                                height="10px"
-                                width="200px"
-                                aria-label="Loading Spinner"
-                                data-testid="loader"
-                            />
-                        </aside>
-                    </div>
-                )}
-                {isError && <TableErrorMessage />}
+                <TableLoadingNError isLoading={isLoading} isError={isError} />
             </div>
 
             <Pagination

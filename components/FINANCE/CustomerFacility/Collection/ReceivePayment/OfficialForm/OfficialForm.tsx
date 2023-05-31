@@ -8,6 +8,7 @@ import {
     CreateCollection,
     GetCollectionByCustomer,
     GetCollectionList,
+    UpdateCollection,
 } from "../Query";
 import { DefaultOfficial, HeaderForm } from "../ReceivePaymentForm";
 import { AdvancesType } from "./OutrightAndAdvances/Advances";
@@ -75,11 +76,18 @@ export default function OfficialForm({
     }, [isOutright, isAdvance]);
 
     const onSuccess = () => {
+        let message = "Collection successfully registered!";
+
+        if (router.query.from === "payment_queueing") {
+            message = "Collection successfully updated!";
+        }
+
         setPrompt({
-            message: "Collection successfully registered!",
+            message: message,
             type: "success",
             toggle: true,
         });
+
         if (buttonClicked === "new") {
             ResetField();
             setOutright([
@@ -113,6 +121,9 @@ export default function OfficialForm({
     const onError = (e: any) => {
         ErrorSubmit(e, setPrompt);
     };
+
+    const id: any = router.query.modify_id;
+
     const { isLoading, mutate } = CreateCollection(onSuccess, onError);
 
     const SaveHandler = (button: string) => {
@@ -151,10 +162,10 @@ export default function OfficialForm({
         if (
             headerForm.amount_paid === "" ||
             headerForm.chart_of_account_id === "" ||
-            headerForm.credit_tax === "" ||
             headerForm.customer_id === "" ||
             headerForm.deposit_date === "" ||
             headerForm.mode_of_payment === "" ||
+            headerForm.credit_tax === "" ||
             headerForm.receipt_date === "" ||
             headerForm.reference_no === "" ||
             headerForm.receipt_type === ""
@@ -244,7 +255,16 @@ export default function OfficialForm({
             validate = false;
             return;
         }
-        if (validate) mutate(Payload);
+
+        if (validate) {
+            if (router.query.from === "payment_queueing") {
+                const PayloadUpdate = { ...Payload, collection_id: id };
+                mutate(PayloadUpdate);
+            }
+            if (router.query.modify_id === undefined) {
+                mutate(Payload);
+            }
+        }
     };
 
     const {

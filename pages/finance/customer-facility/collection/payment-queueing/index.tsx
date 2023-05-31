@@ -316,7 +316,7 @@ const List = ({ itemDetail }: ListProps) => {
                     <Tippy content={"Modify"} theme="ThemeRed">
                         <li>
                             <Link
-                                href={`/finance/customer-facility/collection/receive-payment/${itemDetail.id}`}
+                                href={`/finance/customer-facility/collection/receive-payment/${itemDetail.id}?from=payment_queueing`}
                             >
                                 <a>
                                     <Image

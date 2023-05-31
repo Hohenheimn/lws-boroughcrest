@@ -9,7 +9,7 @@ import { getCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import BeatLoader from "react-spinners/BeatLoader";
 
-export default function PropertySearch() {
+export default function FavoriteReportSearch() {
     const [search, setSearch] = useState<string>("");
 
     const router = useRouter();
@@ -32,12 +32,12 @@ export default function PropertySearch() {
         <div className={style.container}>
             <div className={style.header}>
                 <aside className={style.title}>
-                    <Link href="/admin/property">
+                    <Link href="/finance/reports/favorite-list-reports">
                         <a>
                             <MdArrowForwardIos className={style.arrow} />
                         </a>
                     </Link>
-                    <h1>Property Unit</h1>
+                    <h1>Favorite List</h1>
                 </aside>
 
                 <aside className={style.searchBar}>

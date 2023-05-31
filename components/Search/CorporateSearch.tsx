@@ -75,11 +75,7 @@ export default function CorporateSearch() {
                                         <h4>
                                             {item.name} {item.com}
                                         </h4>
-                                        <p>
-                                            {
-                                                item.registered_address_municipal_city
-                                            }
-                                        </p>
+                                        <p>{item.tin}</p>
                                     </li>
                                     <li>
                                         <p>ID: {item.id}</p>

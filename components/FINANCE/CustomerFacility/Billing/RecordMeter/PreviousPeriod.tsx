@@ -68,7 +68,7 @@ export default function PreviousPeriod({
                                     : value.from + " - " + value.to
                             }
                             readOnly
-                            className=" outline-none w-[200px] font-NHU-medium text-[#545454] 1550px:text-[14px]"
+                            className=" outline-none w-[250px] 480px:w-full font-NHU-medium text-[#545454] 1550px:text-[14px]"
                         />
                         <Image
                             src="/Images/CalendarMini.png"

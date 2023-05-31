@@ -33,7 +33,7 @@ export default function CheckPaymentList() {
                 "/finance/customer-facility/collection?paginate=10&receipt_type=Acknowledgement"
             }
             EndPointAdvFilter={
-                "/finance/customer-facility/collection/filter-options"
+                "/finance/customer-facility/collection/filter-options?receipt_type=Acknowledgement&keywords="
             }
             EndPointExport=""
         />

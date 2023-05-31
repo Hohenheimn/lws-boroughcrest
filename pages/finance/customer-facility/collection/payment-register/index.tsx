@@ -56,6 +56,8 @@ export type CollectionItem = {
         check_no: number;
         amount: number;
         bank_branch: string;
+        bank_branch_id: string;
+        bank_branch_name: string;
     }[];
     outright_advances: {
         id: number;
@@ -66,6 +68,7 @@ export type CollectionItem = {
         quantity: number;
         type: string;
         unit_price: string | number;
+        uom: string;
     }[];
     outstanding_balances: {
         balance: string | number;

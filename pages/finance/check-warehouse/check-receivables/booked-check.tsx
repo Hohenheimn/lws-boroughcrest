@@ -51,7 +51,7 @@ export default function BookedCheck() {
             page="booked-check"
             EndPointList={"/finance/customer-facility/booked-check?paginate=10"}
             EndPointAdvFilter={
-                "/finance/customer-facility/booked-check/filter-options"
+                "/finance/customer-facility/booked-check/filter-options?keywords="
             }
             EndPointExport="/finance/customer-facility/booked-check/export"
         />

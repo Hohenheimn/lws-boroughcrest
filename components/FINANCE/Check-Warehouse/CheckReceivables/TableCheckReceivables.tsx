@@ -266,7 +266,7 @@ export default function TableCheckReceivables({
                     </div>
                     {/* ?date_from=${dateFrom}&date_to=${dateTo} */}
                     <AdvanceFilter
-                        endpoint={`${EndPointAdvFilter}?keywords=`}
+                        endpoint={`${EndPointAdvFilter}`}
                         setAdvFilter={setAdvFilter}
                         isAdvFilter={isAdvFilter}
                     />

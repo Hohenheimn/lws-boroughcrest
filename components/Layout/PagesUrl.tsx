@@ -90,7 +90,7 @@ export const SidebarLinks = [
             },
             {
                 name: "Reports",
-                url: "/finance/reports",
+                url: "/finance/reports/general-reports",
                 ActiveName: "reports",
             },
             {
