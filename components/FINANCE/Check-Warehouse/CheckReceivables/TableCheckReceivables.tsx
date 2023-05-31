@@ -516,13 +516,15 @@ const ListPaymentList = ({ itemDetail }: ListProps) => {
             }
         >
             <td>
-                {" "}
                 {isValid(receipt_date)
                     ? format(receipt_date, "MMM dd yyyy")
                     : ""}
             </td>
+
             <td>{itemDetail.receipt_no}</td>
+
             <td>{itemDetail.customer.name}</td>
+
             <td>
                 {itemDetail?.customer?.properties?.map(
                     (item: any, index: number) =>
@@ -551,8 +553,6 @@ type BookedListProps = {
 };
 
 const ListBookedCheck = ({ itemDetail }: BookedListProps) => {
-    const router = useRouter();
-
     const check_date = parse(itemDetail.check_date, "yyyy-MM-dd", new Date());
 
     const deposit_date = parse(

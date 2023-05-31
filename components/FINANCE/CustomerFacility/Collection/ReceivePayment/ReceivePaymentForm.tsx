@@ -11,11 +11,10 @@ import DiscountForm from "./DiscountForm";
 import DropdownFieldCOA from "../../../../Dropdowns/DropdownFieldCOA";
 import AppContext from "../../../../Context/AppContext";
 import { format, startOfDay } from "date-fns";
-import BankAccountDropDown from "../../../../Reusable/BankAccountDropDown";
 import { Outstanding } from "./OfficialForm/OutStandingBalance";
 import { Outright } from "./OfficialForm/OutrightAndAdvances/OutRight";
 import { AdvancesType } from "./OfficialForm/OutrightAndAdvances/Advances";
-import { GetCustomerOutstanding, GetCustomerSummary } from "./Query";
+import { GetCustomerOutstanding } from "./Query";
 import { useRouter } from "next/router";
 import DynamicPopOver from "../../../../Reusable/DynamicPopOver";
 
@@ -103,6 +102,24 @@ export default function ReceivePaymentForm({
         chart_of_account_name: DefaultValHeaderForm.chart_of_account_name,
     });
 
+    useEffect(() => {
+        setHeaderForm({
+            customer_id: DefaultValHeaderForm.customer_id,
+            receipt_type: DefaultValHeaderForm.receipt_type,
+            receipt_date: DefaultValHeaderForm.receipt_date,
+            receipt_no: DefaultValHeaderForm.receipt_no,
+            description: DefaultValHeaderForm.description,
+            mode_of_payment: DefaultValHeaderForm.mode_of_payment,
+            deposit_date: DefaultValHeaderForm.deposit_date,
+            chart_of_account_id: DefaultValHeaderForm.chart_of_account_id,
+            reference_no: DefaultValHeaderForm.reference_no,
+            amount_paid: DefaultValHeaderForm.amount_paid,
+            credit_tax: DefaultValHeaderForm.credit_tax,
+            discount: DefaultValHeaderForm.discount,
+            chart_of_account_name: DefaultValHeaderForm.chart_of_account_name,
+        });
+    }, [DefaultValHeaderForm]);
+
     const [isCustomer, setCustomer] = useState<any>({
         id: "",
         name: "",
@@ -152,24 +169,6 @@ export default function ReceivePaymentForm({
         }
     }, [data?.data]);
 
-    useEffect(() => {
-        setHeaderForm({
-            customer_id: DefaultValHeaderForm.customer_id,
-            receipt_type: DefaultValHeaderForm.receipt_type,
-            receipt_date: DefaultValHeaderForm.receipt_date,
-            receipt_no: DefaultValHeaderForm.receipt_no,
-            description: DefaultValHeaderForm.description,
-            mode_of_payment: DefaultValHeaderForm.mode_of_payment,
-            deposit_date: DefaultValHeaderForm.deposit_date,
-            chart_of_account_id: DefaultValHeaderForm.chart_of_account_id,
-            chart_of_account_name: DefaultValHeaderForm.chart_of_account_name,
-            reference_no: DefaultValHeaderForm.reference_no,
-            amount_paid: DefaultValHeaderForm.amount_paid,
-            credit_tax: DefaultValHeaderForm.credit_tax,
-            discount: DefaultValHeaderForm.discount,
-        });
-    }, [DefaultValHeaderForm]);
-
     const ResetField = () => {
         setCustomer({
             id: "",
@@ -203,6 +202,13 @@ export default function ReceivePaymentForm({
     });
 
     useEffect(() => {
+        setDiscountToggle({
+            value: DefaultValHeaderForm.discount,
+            toggle: false,
+        });
+    }, [DefaultValHeaderForm]);
+
+    useEffect(() => {
         setHeaderForm({
             ...HeaderForm,
             discount: isDiscount.value,
@@ -213,6 +219,13 @@ export default function ReceivePaymentForm({
         id: DefaultValHeaderForm.chart_of_account_id,
         value: DefaultValHeaderForm.chart_of_account_name,
     });
+
+    useEffect(() => {
+        setChartOfAccount({
+            id: DefaultValHeaderForm.chart_of_account_id,
+            value: DefaultValHeaderForm.chart_of_account_name,
+        });
+    }, [DefaultValHeaderForm]);
 
     const [DepositDateRP, setDepositDateRP] = useState<{
         value: string;

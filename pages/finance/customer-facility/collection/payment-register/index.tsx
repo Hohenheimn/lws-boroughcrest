@@ -35,6 +35,13 @@ export type CollectionItem = {
     reference_no: number | null;
     credit_tax: number;
     status: string;
+    chart_of_account_id: number | null;
+    chart_of_account_account_name: string;
+    chart_of_account_chart_code: string;
+    parent_id: number | null;
+    updated_at: string;
+    created_at: string;
+    histories: PaymentSummaryHistories[];
     deposits: {
         id: number;
         charge_id: string;
@@ -48,14 +55,8 @@ export type CollectionItem = {
         description: string;
         check_no: number;
         amount: number;
+        bank_branch: string;
     }[];
-    chart_of_account_id: number | null;
-    chart_of_account_account_name: string;
-    chart_of_account_chart_code: string;
-    parent_id: number | null;
-    updated_at: string;
-    created_at: string;
-    histories: PaymentSummaryHistories[];
     outright_advances: {
         id: number;
         amount: number;
@@ -77,7 +78,11 @@ export type CollectionItem = {
         charge_id: number;
     }[];
     discount: number;
-    remarks: string;
+    remarks: {
+        id: number;
+        commenter_name: string;
+        remarks: string;
+    }[];
 };
 
 export type PaymentSummaryHistories = CollectionItem;
@@ -100,7 +105,8 @@ export default function PaymentRegister() {
         isValid(dateFrom) ? format(dateFrom, "yyyy-MM-dd") : "",
         isValid(dateTo) ? format(dateTo, "yyyy-MM-dd") : "",
         TablePage,
-        isFilterText
+        isFilterText,
+        ""
     );
 
     return (

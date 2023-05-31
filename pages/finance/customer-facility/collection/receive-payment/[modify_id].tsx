@@ -10,6 +10,11 @@ import ReceivePaymentForm, {
 import { GetCustomer } from "../../../../../components/ReactQuery/CustomerMethod";
 import { customer } from "../../../../../types/customerList";
 import { CollectionItem } from "../payment-register";
+import { isProvisionalTable } from "../../../../../components/FINANCE/CustomerFacility/Collection/ReceivePayment/ProvisionalForm";
+import OutRight, {
+    Outright,
+} from "../../../../../components/FINANCE/CustomerFacility/Collection/ReceivePayment/OfficialForm/OutrightAndAdvances/OutRight";
+import { AdvancesType } from "../../../../../components/FINANCE/CustomerFacility/Collection/ReceivePayment/OfficialForm/OutrightAndAdvances/Advances";
 
 export default function Modify({ modify_id, from }: any) {
     const { isLoading, data, isError } = GetCollectionDetail(modify_id);
@@ -61,14 +66,22 @@ export default function Modify({ modify_id, from }: any) {
 
     const [isAcknowledgement, setAcknowledgement] = useState<Deposits[]>([]);
 
+    const [isProvisional, setProvisional] = useState<isProvisionalTable[]>([]);
+
+    const [isOutright, setOutRight] = useState<Outright[]>([]);
+
+    const [isAdvances, setAdvances] = useState<AdvancesType[]>([]);
+
     useEffect(() => {
         if (!isLoading && !isError) {
             let receipt_type = "";
+
             if (from === "check_warehouse") {
                 receipt_type = "Acknowledgement";
             } else {
                 receipt_type = collection.receipt_type;
             }
+
             setHeaderForm({
                 customer_id: collection.customer_id,
                 receipt_type: receipt_type,
@@ -88,6 +101,91 @@ export default function Modify({ modify_id, from }: any) {
                 credit_tax: collection.credit_tax,
                 discount: collection.discount,
             });
+
+            if (collection.check_warehouses !== undefined) {
+                setProvisional(() =>
+                    collection.check_warehouses.map((item) => {
+                        return {
+                            id: item.id,
+                            check_date: item.check_date,
+                            description: item.description,
+                            check_no: `${item.check_no}`,
+                            bank_branch: item.bank_branch,
+                            bank_branch_id: "",
+                            amount: item.amount,
+                        };
+                    })
+                );
+            } else {
+                setProvisional([
+                    {
+                        id: 1,
+                        check_date: "",
+                        description: "",
+                        check_no: "",
+                        bank_branch: "",
+                        bank_branch_id: "",
+                        amount: 0,
+                    },
+                ]);
+            }
+
+            if (collection.outstanding_balances !== undefined) {
+                const outrights = collection.outright_advances.filter(
+                    (itemFilter) => itemFilter.type === "Outright"
+                );
+                setOutRight(() =>
+                    outrights.map((item) => {
+                        return {
+                            id: item.id,
+                            charge: item.charge_name,
+                            charge_id: `${item.charge_id}`,
+                            description: item.description,
+                            uom: "",
+                            unit_price: Number(item.unit_price),
+                            qty: Number(item.quantity),
+                            amount: Number(item.amount),
+                        };
+                    })
+                );
+                const advances = collection.outright_advances.filter(
+                    (itemFilter) => itemFilter.type === "Advance"
+                );
+                setAdvances(() =>
+                    advances.map((item) => {
+                        return {
+                            id: item.id,
+                            charge: item.charge_name,
+                            charge_id: `${item.charge_id}`,
+                            description: item.description,
+                            amount: Number(item.amount),
+                        };
+                    })
+                );
+            } else {
+                setOutRight([
+                    {
+                        id: 1,
+                        charge: "",
+                        charge_id: "",
+                        description: "",
+                        uom: "",
+                        unit_price: 0,
+                        qty: "",
+                        amount: 0,
+                    },
+                ]);
+                setAdvances([
+                    {
+                        id: 1,
+                        charge: "",
+                        charge_id: "",
+                        description: "",
+                        amount: 0,
+                    },
+                ]);
+            }
+
             if (collection?.deposits !== undefined) {
                 const clone = collection.deposits.map((item) => {
                     return {
@@ -138,6 +236,7 @@ export default function Modify({ modify_id, from }: any) {
             </div>
         );
     }
+
     if (isError || customerError) {
         return (
             <div className="pageDetail">
@@ -151,16 +250,17 @@ export default function Modify({ modify_id, from }: any) {
             </div>
         );
     }
+
     return (
         <ReceivePaymentForm
             DefaultCustomer={isCustomer}
             DefaultValHeaderForm={HeaderForm}
             type={HeaderForm.receipt_type}
             DefaultValAcknowledgement={isAcknowledgement}
-            DefaultProvisional={[]}
+            DefaultProvisional={isProvisional}
             DefaultOfficialOutrightAdvances={{
-                Outright: [],
-                Advances: [],
+                Outright: isOutright,
+                Advances: isAdvances,
             }}
         />
     );
@@ -172,7 +272,7 @@ export async function getServerSideProps({ query }: any) {
     return {
         props: {
             modify_id: modify_id,
-            from: from,
+            from: from === undefined ? "" : from,
         },
     };
 }

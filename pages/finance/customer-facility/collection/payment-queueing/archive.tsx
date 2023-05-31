@@ -1,15 +1,35 @@
 import React, { useState } from "react";
 import HeaderCollection from "../../../../../components/FINANCE/CustomerFacility/Collection/HeaderCollection";
 import { TextNumberDisplay } from "../../../../../components/Reusable/NumberFormat";
+import { format, isValid, parse } from "date-fns";
+import { GetCollectionList } from "../../../../../components/FINANCE/CustomerFacility/Collection/ReceivePayment/Query";
+import TableLoadingNError from "../../../../../components/Reusable/TableLoadingNError";
+import Pagination from "../../../../../components/Reusable/Pagination";
+import { CollectionItem } from "../payment-register";
 
 export default function Archive() {
+    const [isStatus, setStatus] = useState("Archived");
+
     const [isFilterText, setFilterText] = useState<string[]>([]);
     const [isSearch, setSearch] = useState("");
     const [isPeriod, setPeriod] = useState({
         from: "",
         to: "",
     });
-    const [isStatus, setStatus] = useState("Archive");
+
+    const [TablePage, setTablePage] = useState(1);
+
+    const dateFrom = parse(isPeriod.from, "MMM dd yyyy", new Date());
+    const dateTo = parse(isPeriod.to, "MMM dd yyyy", new Date());
+
+    const { isLoading, data, isError } = GetCollectionList(
+        isSearch,
+        isValid(dateFrom) ? format(dateFrom, "yyyy-MM-dd") : "",
+        isValid(dateTo) ? format(dateTo, "yyyy-MM-dd") : "",
+        TablePage,
+        isFilterText,
+        isStatus
+    );
     return (
         <>
             <HeaderCollection
@@ -23,9 +43,9 @@ export default function Archive() {
             />
             <div className="flex items-center">
                 <h1
-                    onClick={() => setStatus("Archive")}
+                    onClick={() => setStatus("Archived")}
                     className={`${
-                        isStatus === "Archive" &&
+                        isStatus === "Archived" &&
                         " text-ThemeRed border-b border-ThemeRed"
                     } font-bold mb-5 text-[20px] 480px:text-[18px] 1550px:mb-2 mr-5 cursor-pointer`}
                 >
@@ -55,52 +75,56 @@ export default function Archive() {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Sept 28 2022</td>
-                            <td>000000</td>
-                            <td>Juan Dela Cruz</td>
-                            <td>Lorem ipsum</td>
-                            <td>
-                                <TextNumberDisplay
-                                    className="withPeso w-full"
-                                    value={2500}
-                                />
-                            </td>
-                            <td>Cash</td>
-                            <td>InBound Default</td>
-                        </tr>
-                        <tr>
-                            <td>Sept 28 2022</td>
-                            <td>000000</td>
-                            <td>Juan Dela Cruz</td>
-                            <td>Lorem ipsum</td>
-                            <td>
-                                <TextNumberDisplay
-                                    className="withPeso w-full"
-                                    value={2500}
-                                />
-                            </td>
-                            <td>Cash</td>
-                            <td>InBound Default</td>
-                        </tr>
+                        {data?.data.data.map(
+                            (item: CollectionItem, index: number) => (
+                                <List key={index} item={item} />
+                            )
+                        )}
                     </tbody>
                 </table>
-
-                {/* {isLoading && (
-                <div className="w-full flex justify-center items-center">
-                    <aside className="text-center flex justify-center py-5">
-                        <BarLoader
-                            color={"#8f384d"}
-                            height="10px"
-                            width="200px"
-                            aria-label="Loading Spinner"
-                            data-testid="loader"
-                        />
-                    </aside>
-                </div>
-            )}
-            {isError && <TableErrorMessage />} */}
+                <TableLoadingNError isLoading={isLoading} isError={isError} />
             </div>
+            <Pagination
+                setTablePage={setTablePage}
+                TablePage={TablePage}
+                PageNumber={data?.data.meta.last_page}
+                CurrentPage={data?.data.meta.current_page}
+            />
         </>
     );
 }
+
+type ListProps = {
+    item: CollectionItem;
+};
+
+const List = ({ item }: ListProps) => {
+    const receipt_date = parse(item.receipt_date, "yyyy-MM-dd", new Date());
+
+    return (
+        <tr>
+            <td>
+                {isValid(receipt_date)
+                    ? format(receipt_date, "MMM dd yyyy")
+                    : ""}
+            </td>
+            <td>{item.receipt_no}</td>
+            <td>{item.customer.name}</td>
+            <td>
+                {item.customer?.properties.map((item: any, index: number) =>
+                    item.customer?.properties.length - 1 === index
+                        ? item.unit_code
+                        : item.unit_code + ", "
+                )}
+            </td>
+            <td>
+                <TextNumberDisplay
+                    className="withPeso w-full"
+                    value={item.amount_paid}
+                />
+            </td>
+            <td>{item.mode_of_payment}</td>
+            <td>{item.chart_of_account_account_name}</td>
+        </tr>
+    );
+};

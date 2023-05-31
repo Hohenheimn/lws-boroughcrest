@@ -120,15 +120,24 @@ export const GetCollectionList = (
     date_from: string,
     date_to: string,
     page: number,
-    filterArray: string[]
+    filterArray: string[],
+    status: string
 ) => {
     return useQuery(
-        ["collection-list", search, date_from, date_to, page, filterArray],
+        [
+            "collection-list",
+            search,
+            date_from,
+            date_to,
+            page,
+            filterArray,
+            status,
+        ],
         () => {
             return api.get(
                 `/finance/customer-facility/collection?search=${search}&date_from=${date_from}&date_to=${date_to}&paginate=10&page=${
                     search === "" ? page : 1
-                }&filters=${filterArray}`,
+                }&filters=${filterArray}&status=${status}`,
                 {
                     headers: { Authorization: "Bearer " + getCookie("user") },
                 }
@@ -186,6 +195,34 @@ export const GetCustomerSummary = (id: number) => {
         },
         {
             enabled: !!id,
+        }
+    );
+};
+
+export const UpdateStatusQueueing = (
+    onSuccess: any,
+    onError: any,
+    id: number
+) => {
+    const queryClient = useQueryClient();
+    return useMutation(
+        (Payload: any) => {
+            return api.put(
+                `/finance/customer-facility/collection/remittance/${id}`,
+                Payload,
+                {
+                    headers: {
+                        Authorization: "Bearer " + getCookie("user"),
+                    },
+                }
+            );
+        },
+        {
+            onSuccess: () => {
+                onSuccess();
+                queryClient.invalidateQueries(["collection-list"]);
+            },
+            onError: onError,
         }
     );
 };

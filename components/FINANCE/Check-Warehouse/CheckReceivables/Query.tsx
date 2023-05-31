@@ -22,7 +22,7 @@ export const CheckScheduleList = (
         ],
         () => {
             return api.get(
-                `${endpoint}?paginate=10&filters=${filterArray}&keyword=${keyword}&page=${
+                `${endpoint}&filters=${filterArray}&keyword=${keyword}&page=${
                     keyword === "" ? TablePage : 1
                 }&date_from=${dateFrom}&date_to=${dateTo}`,
                 {

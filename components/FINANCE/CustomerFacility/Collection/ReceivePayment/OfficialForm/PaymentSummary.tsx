@@ -49,7 +49,7 @@ export default function PaymentSummaryTable({
 
     useEffect(() => {
         const total =
-            Number(TotalDue) - Number(LessDiscount) - Number(CreditTax);
+            Number(TotalDue) - Number(CreditTax) - Number(LessDiscount);
         setTotalPaid(total);
     }, [LessDiscount, CreditTax, TotalDue]);
 

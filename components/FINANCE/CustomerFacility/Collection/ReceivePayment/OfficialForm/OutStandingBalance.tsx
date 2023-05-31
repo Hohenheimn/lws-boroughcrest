@@ -33,6 +33,7 @@ type Props = {
     isAppliedAmount: number;
     setBalanceAmount: Function;
     isBalanceTotal: number;
+    outStandingData?: Outstanding;
 };
 
 export default function OutStandingBalance({
@@ -51,6 +52,7 @@ export default function OutStandingBalance({
 }: Props) {
     const [isToggle, setToggle] = useState(false);
     let isAmountPaid = amount_paid;
+
     useEffect(() => {
         setDueAmountTotal(0);
         setAppliedAmount(0);
@@ -66,7 +68,7 @@ export default function OutStandingBalance({
                 (prev: number) => Number(prev) + Number(item.balance)
             );
         });
-    }, [DefaultOutstanding]);
+    }, [DefaultOutstanding, amount_paid]);
 
     const SetToggleHandler = () => {
         setToggle(!isToggle);
@@ -78,6 +80,12 @@ export default function OutStandingBalance({
     useEffect(() => {
         Compute();
     }, [amount_paid, isToggle]);
+
+    useEffect(() => {
+        if (DefaultOutstanding.length > 0) {
+            Compute();
+        }
+    }, [DefaultOutstanding.length]);
 
     const Compute = () => {
         const CloneToUpdateAppliedAmount = DefaultOutstanding?.map(
