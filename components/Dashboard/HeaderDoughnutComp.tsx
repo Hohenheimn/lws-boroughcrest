@@ -3,8 +3,9 @@ import Image from "next/image";
 import Tippy from "@tippy.js/react";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { TextNumberDisplay } from "../Reusable/NumberFormat";
+import DoughnutChartComp from "./DoughnutChartComp";
 
-export default function PieChartComp() {
+export default function HeaderDoughnutComp() {
     const [isUnitArea, setUnitArea] = useState("Unit");
 
     const [toggleDropdown, setToggleDropdown] = useState({
@@ -216,7 +217,9 @@ export default function PieChartComp() {
                     </>
                 )}
             </div>
-            <div className="w-full border border-black mt-2"></div>
+            <div className="w-full flex flex-wrap justify-center mt-2">
+                <DoughnutChartComp />
+            </div>
         </section>
     );
 }
