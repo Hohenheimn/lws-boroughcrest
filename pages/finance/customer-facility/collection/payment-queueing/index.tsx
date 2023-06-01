@@ -188,7 +188,7 @@ export default function PaymentQueueing() {
                 setFilterText={setFilterText}
                 isSearch={isSearch}
                 setSearch={setSearch}
-                FilterEndpoint="/finance/general-ledger/journal/filter-options"
+                FilterEndpoint="/finance/customer-facility/collection/filter-options"
                 page="payment-queueing"
                 isPeriod={isPeriod}
                 setPeriod={setPeriod}
