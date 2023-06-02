@@ -37,6 +37,8 @@ export default function Sidebar({
     isWide,
     isWindow,
 }: SidebarType) {
+    const SideBarMenu = SidebarLinks();
+
     const router = useRouter();
     const ValidateParentUrl = router.pathname.split("/")[1];
     const { collapseSide, setCollapseSide } = useContext(AppContext);
@@ -128,7 +130,7 @@ export default function Sidebar({
                             )}
                         </div>
 
-                        {SidebarLinks.map((item, index) => (
+                        {SideBarMenu.map((item, index) => (
                             <MenuLink
                                 key={index}
                                 isProfileSearch={isProfileSearch}

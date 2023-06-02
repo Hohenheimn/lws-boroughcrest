@@ -40,7 +40,7 @@ export default function DoughnutChartComp() {
                     <Doughnut data={data} options={options} />
                 </div>
             </div>
-            <ul className=" w-full flex justify-around mb-5">
+            <ul className=" w-full flex flex-wrap justify-around mb-5">
                 <li className=" text-RegularColor text-[12px] flex items-center">
                     <div className=" h-3 w-3 rounded-full bg-ThemeRed mr-3"></div>
                     Properties owned by Owner Class

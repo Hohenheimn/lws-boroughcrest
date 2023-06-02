@@ -15,6 +15,7 @@ import ProfileMenu from "./ProfileMenu";
 import { FadeSide } from "../Animation/SimpleAnimation";
 import UpperMenu from "../FINANCE/UpperMenu";
 import PrompMessage from "../Reusable/PrompMessage";
+import { LoginUserInfo } from "../HOC/LoginUser/UserInfo";
 
 type Layout = {
     children: React.ReactNode;
@@ -24,16 +25,23 @@ export default function Layout({ children }: Layout) {
     const router = useRouter();
 
     const [title, setTitle] = useState<string>("");
-    const { togglePrompt, collapseSide, setCollapseSide, userInfo } =
+
+    const { togglePrompt, collapseSide, setCollapseSide } =
         useContext(AppContext);
+
     const [isProfileSearch, setProfileSearch] = useState(false);
+
     const [isPathName, setPathName] = useState<any>();
+
     const [toggleProfileMenu, setToggleProfileMenu] = useState(false);
+
     const [financeMenu, setFinanceMenu] = useState(false);
 
     // toggle for responsive sidebar
     const [isWide, setWide] = useState(false);
+
     const [isHide, setHide] = useState<boolean>(false);
+
     const [isWindow, setWindow] = useState<any>();
 
     useEffect(() => {
@@ -89,6 +97,23 @@ export default function Layout({ children }: Layout) {
             setFinanceMenu(false);
         }
     }, [router.asPath]);
+
+    const [userPhoto, setUserPhoto] = useState("");
+    const [userInfo, setUserInfo] = useState<LoginUserInfo>();
+
+    useEffect(() => {
+        setUserInfo(JSON.parse(localStorage.userInfo));
+    }, []);
+
+    useEffect(() => {
+        if (userInfo?.image_photo !== null) {
+            setUserPhoto(
+                `https://boroughcrest-api.lws.codes/get-img?image=${userInfo?.image_photo}`
+            );
+        } else {
+            setUserPhoto("/Images/sampleProfile.png");
+        }
+    }, [userInfo]);
 
     return (
         <>
@@ -197,16 +222,9 @@ export default function Layout({ children }: Layout) {
                                 <li className=" flex items-center">
                                     <aside className=" w-10 h-10 rounded-full overflow-hidden relative shadow-lg mr-3">
                                         <Image
-                                            src={
-                                                userInfo?.image_photo ===
-                                                    null ||
-                                                userInfo?.image_photo ===
-                                                    undefined ||
-                                                userInfo?.image_photo === ""
-                                                    ? "/Images/sampleProfile.png"
-                                                    : userInfo.image_photo
-                                            }
+                                            src={userPhoto}
                                             layout="fill"
+                                            objectFit="cover"
                                             alt=""
                                         />
                                     </aside>

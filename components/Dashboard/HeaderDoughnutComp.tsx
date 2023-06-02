@@ -25,8 +25,8 @@ export default function HeaderDoughnutComp() {
 
     return (
         <section>
-            <div className="flex justify-between">
-                <div className="flex items-center">
+            <div className="flex justify-between flex-wrap">
+                <div className="flex items-center 1280px:mb-2">
                     <h5 className=" text-[14px] mr-2">
                         Occupancy Demographic:
                     </h5>

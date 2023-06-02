@@ -24,6 +24,13 @@ export type LoginUserInfo = {
     created_at: string;
     updated_at: string;
     corporate_gst_type: string;
+    permissions: PermissionsUserLogin[];
+};
+export type PermissionsUserLogin = {
+    access: string[];
+    duration: number;
+    expiration_date: string;
+    menu: string;
 };
 
 export default function UserInfo() {

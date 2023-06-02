@@ -1,16 +1,19 @@
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { getCookie, deleteCookie } from "cookies-next";
 import api from "../../util/api";
 import AppContext from "../Context/AppContext";
 import { useQueryClient } from "react-query";
+import { LoginUserInfo } from "../HOC/LoginUser/UserInfo";
 
 type Props = {
     setToggleProfileMenu: Function;
 };
 export default function ProfileMenu({ setToggleProfileMenu }: Props) {
     const queryClient = useQueryClient();
+
     const { setPrompt } = useContext(AppContext);
+
     const router = useRouter();
 
     const Menu: any = useRef();
@@ -71,7 +74,7 @@ export default function ProfileMenu({ setToggleProfileMenu }: Props) {
     return (
         <ul
             ref={Menu}
-            className="absolute w-[200px] top-[40px] shadow-lg right-0 bg-white text-ThemeRed"
+            className="absolute w-[200px] z-50 top-[40px] shadow-lg right-0 bg-white text-ThemeRed"
         >
             <li
                 className="cursor-pointer px-5 py-1 text-[16px] 1550px:text-[14px] hover:bg-ThemeRed hover:text-white"

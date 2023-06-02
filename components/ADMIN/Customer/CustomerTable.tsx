@@ -10,6 +10,7 @@ import TableErrorMessage from "../../Reusable/TableErrorMessage";
 import Pagination from "../../Reusable/Pagination";
 import { GetCustomerList } from "../../ReactQuery/CustomerMethod";
 import { useRouter } from "next/router";
+
 export default function CustomerTable() {
     const { TableRows, cusTableColumn, isSearchBar, setPrint } =
         useContext(AppContext);
