@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { LoginUserInfo } from "../HOC/LoginUser/UserInfo";
+import { PageAccessValidation } from "../Reusable/PermissionValidation/PageAccessValidation";
+import { FinanceRedirect } from "./FinanceRedirect";
 
 export const SidebarLinks = () => {
     const [Links, setLinks] = useState([
@@ -53,34 +55,9 @@ export const SidebarLinks = () => {
             ActiveUrl: "finance",
             SubMenu: [
                 {
-                    name: "general ledger",
-                    url: "/finance/general-ledger/chart-of-account",
-                    ActiveName: "general-ledger",
-                },
-                {
-                    name: "Customer Facility",
-                    url: "/finance/customer-facility/charge",
-                    ActiveName: "customer-facility",
-                },
-                {
                     name: "Check Warehouse",
                     url: "/finance/check-warehouse/check-receivables/check-schedule",
                     ActiveName: "check-warehouse",
-                },
-                {
-                    name: "Email Blast",
-                    url: "/finance/email-blast",
-                    ActiveName: "email-blast",
-                },
-                {
-                    name: "Reports",
-                    url: "/finance/reports/general-reports",
-                    ActiveName: "reports",
-                },
-                {
-                    name: "Policy",
-                    url: "/finance/policy",
-                    ActiveName: "policy",
                 },
             ],
         },
@@ -172,26 +149,146 @@ export const SidebarLinks = () => {
                     }
                     return {
                         ...item,
+                        url:
+                            addLinks.length > 0
+                                ? addLinks[0].url
+                                : "/admin/announcement",
+                        SubMenu: [...addLinks, ...item.SubMenu],
+                    };
+                }
+
+                if (item.name === "finance") {
+                    let addLinks: any[] = [];
+                    if (
+                        userInfo?.permissions.some(
+                            (someItem) =>
+                                someItem.menu === "Chart of Accounts" ||
+                                someItem.menu === "Opening Balance" ||
+                                someItem.menu === "Bank Reconciliation" ||
+                                someItem.menu === "Journal"
+                        )
+                    ) {
+                        const urlRedirect = FinanceRedirect(
+                            `general ledger`,
+                            userInfo
+                        );
+
+                        addLinks = [
+                            ...addLinks,
+                            {
+                                name: "general ledger",
+                                url: urlRedirect,
+                                ActiveName: "general-ledger",
+                            },
+                        ];
+                    }
+
+                    if (
+                        userInfo?.permissions.some(
+                            (someItem) =>
+                                someItem.menu === "Charges" ||
+                                someItem.menu === "Billing" ||
+                                someItem.menu === "Deposit Counter" ||
+                                someItem.menu === "Collection" ||
+                                someItem.menu === "Adjustment"
+                        )
+                    ) {
+                        const urlRedirect = FinanceRedirect(
+                            `customer facility`,
+                            userInfo
+                        );
+                        addLinks = [
+                            ...addLinks,
+                            {
+                                name: "Customer Facility",
+                                url: urlRedirect,
+                                ActiveName: "customer-facility",
+                            },
+                        ];
+                    }
+
+                    if (
+                        userInfo?.permissions.some(
+                            (someItem) => someItem.menu === "Email Blast"
+                        )
+                    ) {
+                        addLinks = [
+                            ...addLinks,
+                            {
+                                name: "Email Blast",
+                                url: "/finance/email-blast",
+                                ActiveName: "email-blast",
+                            },
+                        ];
+                    }
+
+                    if (
+                        userInfo?.permissions.some(
+                            (someItem) =>
+                                someItem.menu === "General Reports" ||
+                                someItem.menu === "Customer Reports"
+                        )
+                    ) {
+                        const urlRedirect = FinanceRedirect(
+                            `reports`,
+                            userInfo
+                        );
+                        addLinks = [
+                            ...addLinks,
+                            {
+                                name: "Reports",
+                                url: urlRedirect,
+                                ActiveName: "reports",
+                            },
+                        ];
+                    }
+
+                    if (
+                        userInfo?.permissions.some(
+                            (someItem) => someItem.menu === "Policy"
+                        )
+                    ) {
+                        addLinks = [
+                            ...addLinks,
+                            {
+                                name: "Policy",
+                                url: "/finance/policy",
+                                ActiveName: "policy",
+                            },
+                        ];
+                    }
+
+                    const urlRedirect = FinanceRedirect(
+                        `${addLinks[0]?.name}`,
+                        userInfo
+                    );
+
+                    return {
+                        ...item,
+                        url:
+                            addLinks.length > 0
+                                ? urlRedirect
+                                : "/finance/check-warehouse/check-payment",
                         SubMenu: [...addLinks, ...item.SubMenu],
                     };
                 }
 
                 return item;
             });
-
-            if (
-                userInfo?.corporate_id !== null ||
-                userInfo.corporate_id !== undefined
-            ) {
-                const cloneAdmin = clone.filter(
-                    (item) => item.name !== "project"
-                );
-                setLinks(cloneAdmin);
-            } else {
+            if (userInfo?.corporate_id === null) {
                 const cloneSuperAdmin = clone.filter(
                     (item) => item.name !== "admin" && item.name !== "finance"
                 );
                 setLinks(cloneSuperAdmin);
+            }
+            if (
+                userInfo?.corporate_id !== null &&
+                userInfo?.corporate_id !== undefined
+            ) {
+                const cloneOtherUser = clone.filter(
+                    (item) => item.name !== "project"
+                );
+                setLinks(cloneOtherUser);
             }
         }
     }, [userInfo]);

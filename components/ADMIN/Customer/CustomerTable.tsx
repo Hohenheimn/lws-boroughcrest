@@ -10,11 +10,14 @@ import TableErrorMessage from "../../Reusable/TableErrorMessage";
 import Pagination from "../../Reusable/Pagination";
 import { GetCustomerList } from "../../ReactQuery/CustomerMethod";
 import { useRouter } from "next/router";
+import { AccessActionValidation } from "../../Reusable/PermissionValidation/ActionAccessValidation";
 
 export default function CustomerTable() {
     const { TableRows, cusTableColumn, isSearchBar, setPrint } =
         useContext(AppContext);
+
     const [TablePage, setTablePage] = useState(1);
+
     const { data, isLoading, isError } = GetCustomerList(
         TablePage,
         isSearchBar,
@@ -31,6 +34,8 @@ export default function CustomerTable() {
             columns: cusTableColumn,
         });
     }, [isSearchBar, TablePage, TableRows, cusTableColumn]);
+
+    const PermissionValidationView = AccessActionValidation("Customer", "view");
 
     return (
         <>
@@ -69,7 +74,13 @@ export default function CustomerTable() {
                             <>
                                 {data?.data.data.map(
                                     (item: any, index: number) => (
-                                        <List key={index} itemDetail={item} />
+                                        <List
+                                            key={index}
+                                            itemDetail={item}
+                                            PermissionValidationView={
+                                                PermissionValidationView
+                                            }
+                                        />
                                     )
                                 )}
                             </>
@@ -102,7 +113,7 @@ export default function CustomerTable() {
     );
 }
 
-const List = ({ itemDetail }: customerItemDetail) => {
+const List = ({ itemDetail, PermissionValidationView }: customerItemDetail) => {
     const router = useRouter();
     const { cusTableColumn } = useContext(AppContext);
     const [isEdit, setEdit] = useState(false);
@@ -121,6 +132,7 @@ const List = ({ itemDetail }: customerItemDetail) => {
     }
 
     const redirect = () => {
+        if (!PermissionValidationView) return;
         const url =
             itemDetail?.status === "Draft"
                 ? `/admin/customer?draft=${itemDetail?.id}`
@@ -133,7 +145,7 @@ const List = ({ itemDetail }: customerItemDetail) => {
             onMouseEnter={MouseEnter}
             onMouseLeave={MouseLeave}
             onClick={redirect}
-            className=" cursor-pointer"
+            className={` ${PermissionValidationView && "cursor-pointer"}`}
         >
             <td className={`normal ${itemDetail?.status}`}>
                 <Link
@@ -143,30 +155,22 @@ const List = ({ itemDetail }: customerItemDetail) => {
                             : `/admin/customer/${itemDetail?.id}`
                     }`}
                 >
-                    <a className="flex items-center">
+                    <div className="flex items-center">
                         <aside>
                             <Image src={Logo} alt="profile" layout="fill" />
                         </aside>
                         <div>
                             <p>{itemDetail?.id}</p>
                         </div>
-                    </a>
+                    </div>
                 </Link>
             </td>
             <td className={`normal ${itemDetail?.status}`}>
-                <Link
-                    href={`${
-                        itemDetail?.status === "Draft"
-                            ? `/admin/customer?draft=${itemDetail.id}`
-                            : `/admin/customer/${itemDetail?.id}`
-                    }`}
-                >
-                    <a className="item">
-                        <div>
-                            <p>{itemDetail?.name}</p>
-                        </div>
-                    </a>
-                </Link>
+                <div className="item">
+                    <div>
+                        <p>{itemDetail?.name}</p>
+                    </div>
+                </div>
             </td>
             {cusTableColumn.map((item: string, index: number) => (
                 <td
@@ -175,34 +179,18 @@ const List = ({ itemDetail }: customerItemDetail) => {
                     colSpan={item === "Property" ? 2 : 1}
                 >
                     {item === "Class" && (
-                        <Link
-                            href={`${
-                                itemDetail?.status === "Draft"
-                                    ? `/admin/customer?draft=${itemDetail.id}`
-                                    : `/admin/customer/${itemDetail?.id}`
-                            }`}
-                        >
-                            <a className="item">
-                                <div>
-                                    <p>{itemDetail?.class}</p>
-                                </div>
-                            </a>
-                        </Link>
+                        <div className="item">
+                            <div>
+                                <p>{itemDetail?.class}</p>
+                            </div>
+                        </div>
                     )}
                     {item === "Mobile" && (
-                        <Link
-                            href={`${
-                                itemDetail?.status === "Draft"
-                                    ? `/admin/customer?draft=${itemDetail.id}`
-                                    : `/admin/customer/${itemDetail?.id}`
-                            }`}
-                        >
-                            <a className="item">
-                                <div>
-                                    <p>{itemDetail?.contact_no}</p>
-                                </div>
-                            </a>
-                        </Link>
+                        <div className="item">
+                            <div>
+                                <p>{itemDetail?.contact_no}</p>
+                            </div>
+                        </div>
                     )}
 
                     {item === "Status" && (
@@ -218,191 +206,114 @@ const List = ({ itemDetail }: customerItemDetail) => {
                         </div>
                     )}
                     {item === "Type" && (
-                        <Link
-                            href={`${
-                                itemDetail?.status === "Draft"
-                                    ? `/admin/customer?draft=${itemDetail.id}`
-                                    : `/admin/customer/${itemDetail?.id}`
-                            }`}
-                        >
-                            <a className="item">
-                                <div>
-                                    <p>{itemDetail?.type}</p>
-                                </div>
-                            </a>
-                        </Link>
+                        <div className="item">
+                            <div>
+                                <p>{itemDetail?.type}</p>
+                            </div>
+                        </div>
                     )}
                     {item === "Email" && (
-                        <Link
-                            href={`${
-                                itemDetail?.status === "Draft"
-                                    ? `/admin/customer?draft=${itemDetail.id}`
-                                    : `/admin/customer/${itemDetail?.id}`
-                            }`}
-                        >
-                            <a className="item">
-                                <div>
-                                    <p>{itemDetail?.preferred_email}</p>
-                                </div>
-                            </a>
-                        </Link>
+                        <div className="item">
+                            <div>
+                                <p>{itemDetail?.preferred_email}</p>
+                            </div>
+                        </div>
                     )}
 
                     {item === "Spouse" && (
-                        <Link
-                            href={`${
-                                itemDetail?.status === "Draft"
-                                    ? `/admin/customer?draft=${itemDetail.id}`
-                                    : `/admin/customer/${itemDetail?.id}`
-                            }`}
-                        >
-                            <a className="item">
-                                <div>
-                                    <p>
-                                        {itemDetail?.individual_co_owner
-                                            ? itemDetail?.individual_co_owner
-                                            : "N/A"}
-                                    </p>
-                                </div>
-                            </a>
-                        </Link>
+                        <div className="item">
+                            <div>
+                                <p>
+                                    {itemDetail?.individual_co_owner
+                                        ? itemDetail?.individual_co_owner
+                                        : "N/A"}
+                                </p>
+                            </div>
+                        </div>
                     )}
                     {item === "Citizenship" && (
-                        <Link
-                            href={`${
-                                itemDetail?.status === "Draft"
-                                    ? `/admin/customer?draft=${itemDetail.id}`
-                                    : `/admin/customer/${itemDetail?.id}`
-                            }`}
-                        >
-                            <a className="item">
-                                <div>
-                                    <p>
-                                        {itemDetail?.individual_citizenship
-                                            ? itemDetail?.individual_citizenship
-                                            : "N/A"}
-                                    </p>
-                                </div>
-                            </a>
-                        </Link>
+                        <div className="item">
+                            <div>
+                                <p>
+                                    {itemDetail?.individual_citizenship
+                                        ? itemDetail?.individual_citizenship
+                                        : "N/A"}
+                                </p>
+                            </div>
+                        </div>
                     )}
                     {item === "Birth Date" && (
-                        <Link
-                            href={`${
-                                itemDetail?.status === "Draft"
-                                    ? `/admin/customer?draft=${itemDetail.id}`
-                                    : `/admin/customer/${itemDetail?.id}`
-                            }`}
-                        >
-                            <a className="item">
-                                <div>
-                                    <p>
-                                        {itemDetail?.individual_birth_date
-                                            ? itemDetail?.individual_birth_date
-                                            : "N/A"}
-                                    </p>
-                                </div>
-                            </a>
-                        </Link>
+                        <div className="item">
+                            <div>
+                                <p>
+                                    {itemDetail?.individual_birth_date
+                                        ? itemDetail?.individual_birth_date
+                                        : "N/A"}
+                                </p>
+                            </div>
+                        </div>
                     )}
                     {item === "Contact Person" && (
-                        <Link
-                            href={`${
-                                itemDetail?.status === "Draft"
-                                    ? `/admin/customer?draft=${itemDetail.id}`
-                                    : `/admin/customer/${itemDetail?.id}`
-                            }`}
-                        >
-                            <a className="item">
-                                <div>
-                                    <p>
-                                        {itemDetail?.company_contact_person
-                                            ? itemDetail?.company_contact_person
-                                            : "N/A"}
-                                    </p>
-                                </div>
-                            </a>
-                        </Link>
+                        <div className="item">
+                            <div>
+                                <p>
+                                    {itemDetail?.company_contact_person
+                                        ? itemDetail?.company_contact_person
+                                        : "N/A"}
+                                </p>
+                            </div>
+                        </div>
                     )}
                     {item === "TIN" && (
-                        <Link
-                            href={`${
-                                itemDetail?.status === "Draft"
-                                    ? `/admin/customer?draft=${itemDetail.id}`
-                                    : `/admin/customer/${itemDetail?.id}`
-                            }`}
-                        >
-                            <a className="item">
-                                <div>
-                                    <p>{itemDetail?.tin}</p>
-                                </div>
-                            </a>
-                        </Link>
+                        <div className="item">
+                            <div>
+                                <p>{itemDetail?.tin}</p>
+                            </div>
+                        </div>
                     )}
                     {item === "Branch Code" && (
-                        <Link
-                            href={`${
-                                itemDetail?.status === "Draft"
-                                    ? `/admin/customer?draft=${itemDetail.id}`
-                                    : `/admin/customer/${itemDetail?.id}`
-                            }`}
-                        >
-                            <a className="item">
-                                <div>
-                                    <p>{itemDetail?.branch_code}</p>
-                                </div>
-                            </a>
-                        </Link>
+                        <div className="item">
+                            <div>
+                                <p>{itemDetail?.branch_code}</p>
+                            </div>
+                        </div>
                     )}
                     {item === "Property" && (
-                        <Link
-                            href={`${
-                                itemDetail?.status === "Draft"
-                                    ? `/admin/customer?draft=${itemDetail.id}`
-                                    : `/admin/customer/${itemDetail?.id}`
-                            }`}
-                        >
-                            <a className="property">
-                                {itemDetail?.properties.map(
-                                    (item: any, index: number) => (
-                                        <div
-                                            className="property-container"
-                                            key={index}
-                                        >
-                                            <div className="half">
-                                                <div className="flex flex-wrap">
-                                                    {item.map(
-                                                        (
-                                                            item1: any,
-                                                            index: number
-                                                        ) => (
-                                                            <h2
-                                                                key={index}
-                                                                className="unitCode"
-                                                            >
-                                                                {
-                                                                    item1.unit_code
-                                                                }
-                                                            </h2>
-                                                        )
-                                                    )}
-                                                </div>
-                                            </div>
-                                            <div className="half">
-                                                <div
-                                                    className="flex"
-                                                    key={index}
-                                                >
-                                                    <h2 key={index}>
-                                                        {item[0].tower.name}
-                                                    </h2>
-                                                </div>
+                        <div className="property">
+                            {itemDetail?.properties.map(
+                                (item: any, index: number) => (
+                                    <div
+                                        className="property-container"
+                                        key={index}
+                                    >
+                                        <div className="half">
+                                            <div className="flex flex-wrap">
+                                                {item.map(
+                                                    (
+                                                        item1: any,
+                                                        index: number
+                                                    ) => (
+                                                        <h2
+                                                            key={index}
+                                                            className="unitCode"
+                                                        >
+                                                            {item1.unit_code}
+                                                        </h2>
+                                                    )
+                                                )}
                                             </div>
                                         </div>
-                                    )
-                                )}
-                            </a>
-                        </Link>
+                                        <div className="half">
+                                            <div className="flex" key={index}>
+                                                <h2 key={index}>
+                                                    {item[0].tower.name}
+                                                </h2>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )
+                            )}
+                        </div>
                     )}
                 </td>
             ))}

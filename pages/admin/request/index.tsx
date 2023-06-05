@@ -7,9 +7,41 @@ import CardContainer from "../../../components/ADMIN/Request/CardContainer";
 import RequestModal from "../../../components/ADMIN/Request/RequestModal";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { PageAccessValidation } from "../../../components/Reusable/PermissionValidation/PageAccessValidation";
+import NoPermissionComp from "../../../components/Reusable/PermissionValidation/NoPermissionComp";
 
 export default function Request() {
     const router = useRouter();
+
+    const PagePermisson_NewRequest = PageAccessValidation(
+        "Customer Request View (New Request)"
+    );
+
+    const PagePermisson_InProcess = PageAccessValidation(
+        "Customer Request View (In Process)"
+    );
+
+    const PagePermisson_InReview = PageAccessValidation(
+        "Customer Request View (In Review)"
+    );
+
+    const PagePermisson_Closed = PageAccessValidation(
+        "Customer Request View (Closed)"
+    );
+
+    if (
+        !PagePermisson_NewRequest &&
+        PagePermisson_NewRequest !== undefined &&
+        !PagePermisson_InProcess &&
+        PagePermisson_InProcess !== undefined &&
+        !PagePermisson_InReview &&
+        PagePermisson_InReview !== undefined &&
+        !PagePermisson_Closed &&
+        PagePermisson_Closed !== undefined
+    ) {
+        return <NoPermissionComp />;
+    }
+
     return (
         <div>
             {router.query.type !== undefined && <RequestModal />}
@@ -35,6 +67,7 @@ export default function Request() {
                             type="New Request"
                         />
                     </li>
+
                     <li className="w-1/4">
                         <CardContainer
                             endPoint=""
@@ -42,6 +75,7 @@ export default function Request() {
                             type="In Process"
                         />
                     </li>
+
                     <li className="w-1/4">
                         <CardContainer
                             endPoint=""
@@ -49,6 +83,7 @@ export default function Request() {
                             type="In Review"
                         />
                     </li>
+
                     <li className="w-1/4">
                         <CardContainer
                             endPoint=""

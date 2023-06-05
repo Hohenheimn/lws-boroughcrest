@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import TableCheckReceivables from "../../../../components/FINANCE/Check-Warehouse/CheckReceivables/TableCheckReceivables";
 import { Advancefilter } from "../../../../components/Reusable/AdvanceFilter";
+import { PageAccessValidation } from "../../../../components/Reusable/PermissionValidation/PageAccessValidation";
+import NoPermissionComp from "../../../../components/Reusable/PermissionValidation/NoPermissionComp";
 
 export type CheckScheduleType = {
     id: 1;
@@ -31,6 +33,12 @@ export default function CheckSchedule() {
     const [isAdvFilter, setAdvFilter] = useState<Advancefilter>([]);
 
     const [isFilterText, setFilterText] = useState<string>("");
+
+    const PagePermisson = PageAccessValidation("Check Receivables");
+
+    if (!PagePermisson && PagePermisson !== undefined) {
+        return <NoPermissionComp />;
+    }
 
     return (
         <TableCheckReceivables

@@ -21,6 +21,8 @@ import { AiOutlineClose } from "react-icons/ai";
 import { ErrorSubmit } from "../../../../../components/Reusable/ErrorMessage";
 import AppContext from "../../../../../components/Context/AppContext";
 import { TextFieldValidation } from "../../../../../components/Reusable/InputField";
+import NoPermissionComp from "../../../../../components/Reusable/PermissionValidation/NoPermissionComp";
+import { PageAccessValidation } from "../../../../../components/Reusable/PermissionValidation/PageAccessValidation";
 
 export default function PaymentQueueing() {
     const { setPrompt } = useContext(AppContext);
@@ -97,6 +99,12 @@ export default function PaymentQueueing() {
         };
         mutate(Payload);
     };
+
+    const PagePermisson = PageAccessValidation("Collection");
+
+    if (!PagePermisson && PagePermisson !== undefined) {
+        return <NoPermissionComp />;
+    }
 
     return (
         <>

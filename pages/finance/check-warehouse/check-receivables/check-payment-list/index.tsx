@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Advancefilter } from "../../../../../components/Reusable/AdvanceFilter";
 import TableCheckReceivables from "../../../../../components/FINANCE/Check-Warehouse/CheckReceivables/TableCheckReceivables";
+import { PageAccessValidation } from "../../../../../components/Reusable/PermissionValidation/PageAccessValidation";
+import NoPermissionComp from "../../../../../components/Reusable/PermissionValidation/NoPermissionComp";
 
 export default function CheckPaymentList() {
     const [isSearch, setSearch] = useState("");
@@ -15,6 +17,12 @@ export default function CheckPaymentList() {
     const [isAdvFilter, setAdvFilter] = useState<Advancefilter>([]);
 
     const [isFilterText, setFilterText] = useState<string>("");
+
+    const PagePermisson = PageAccessValidation("Check Receivables");
+
+    if (!PagePermisson && PagePermisson !== undefined) {
+        return <NoPermissionComp />;
+    }
 
     return (
         <TableCheckReceivables

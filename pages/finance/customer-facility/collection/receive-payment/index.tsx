@@ -2,6 +2,8 @@ import { format, startOfDay } from "date-fns";
 import React, { useState } from "react";
 import HeaderCollection from "../../../../../components/FINANCE/CustomerFacility/Collection/HeaderCollection";
 import ReceivePaymentForm from "../../../../../components/FINANCE/CustomerFacility/Collection/ReceivePayment/ReceivePaymentForm";
+import { PageAccessValidation } from "../../../../../components/Reusable/PermissionValidation/PageAccessValidation";
+import NoPermissionComp from "../../../../../components/Reusable/PermissionValidation/NoPermissionComp";
 
 export default function ReceivePayment() {
     const [isFilterText, setFilterText] = useState<string[]>([]);
@@ -29,6 +31,12 @@ export default function ReceivePayment() {
         discount: 0,
         chart_of_account_name: "",
     };
+
+    const PagePermisson = PageAccessValidation("Collection");
+
+    if (!PagePermisson && PagePermisson !== undefined) {
+        return <NoPermissionComp />;
+    }
 
     return (
         <>

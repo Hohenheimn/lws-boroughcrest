@@ -3,6 +3,8 @@ import BatchForm from "../../../../components/FINANCE/CustomerFacility/Billing/B
 import BatchList from "../../../../components/FINANCE/CustomerFacility/Billing/Batch-Invoice/BatchList";
 import { useRouter } from "next/router";
 import ModifyBatchInvoice from "../../../../components/FINANCE/CustomerFacility/Billing/Batch-Invoice/ModifyBatchInvoice";
+import { PageAccessValidation } from "../../../../components/Reusable/PermissionValidation/PageAccessValidation";
+import NoPermissionComp from "../../../../components/Reusable/PermissionValidation/NoPermissionComp";
 
 export default function BatchInvoice() {
     const router = useRouter();
@@ -16,6 +18,12 @@ export default function BatchInvoice() {
             application: [],
         },
     ];
+
+    const PagePermisson = PageAccessValidation("Billing");
+
+    if (!PagePermisson && PagePermisson !== undefined) {
+        return <NoPermissionComp />;
+    }
     return (
         <>
             {router.query.modify === undefined ? (

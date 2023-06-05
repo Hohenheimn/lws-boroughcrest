@@ -9,6 +9,8 @@ import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 import PrintTemplate from "../../../components/Reusable/PrintTemplate";
 import { GetPropertyList } from "../../../components/ReactQuery/PropertyMethod";
+import { PageAccessValidation } from "../../../components/Reusable/PermissionValidation/PageAccessValidation";
+import NoPermissionComp from "../../../components/Reusable/PermissionValidation/NoPermissionComp";
 
 type Props = {
     Keyword: string;
@@ -34,6 +36,12 @@ export default function Print({
     const printhandler = () => {
         print();
     };
+
+    const PagePermisson = PageAccessValidation("Customer");
+
+    if (!PagePermisson && PagePermisson !== undefined) {
+        return <NoPermissionComp />;
+    }
 
     return (
         <>

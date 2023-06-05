@@ -1,7 +1,14 @@
 import React from "react";
 import Wysiwyg from "../../../components/Reusable/Wysiwyg";
+import NoPermissionComp from "../../../components/Reusable/PermissionValidation/NoPermissionComp";
+import { PageAccessValidation } from "../../../components/Reusable/PermissionValidation/PageAccessValidation";
 
 export default function Index() {
+    const PagePermisson = PageAccessValidation("Email Blast");
+
+    if (!PagePermisson && PagePermisson !== undefined) {
+        return <NoPermissionComp />;
+    }
     return (
         <>
             <h1 className="pageTitle">Email Blast</h1>

@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import JournalTable from "../../../../../components/FINANCE/General-Ledger/Journal/JournalTable";
+import { PageAccessValidation } from "../../../../../components/Reusable/PermissionValidation/PageAccessValidation";
+import NoPermissionComp from "../../../../../components/Reusable/PermissionValidation/NoPermissionComp";
 
 export default function Index() {
     const [isJounalType, setJournalType] = useState("unposted");
@@ -8,6 +10,13 @@ export default function Index() {
         from: "",
         to: "",
     });
+
+    const PagePermisson = PageAccessValidation("Journal");
+
+    if (!PagePermisson && PagePermisson !== undefined) {
+        return <NoPermissionComp />;
+    }
+
     return (
         <>
             <ul className="SimpleTab">

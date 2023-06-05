@@ -6,12 +6,18 @@ import AppContext from "../../Context/AppContext";
 import { property, PropertyDefaultValue } from "../../../types/PropertyList";
 import { format, isValid, parse } from "date-fns";
 import { PencilButton } from "../../Reusable/Icons";
+import { AccessActionValidation } from "../../Reusable/PermissionValidation/ActionAccessValidation";
 
 type Props = {
     data: property;
 };
 
 export default function PropertyDetails({ data }: Props) {
+    const PermissionValidationView = AccessActionValidation(
+        "Property",
+        "modify"
+    );
+
     const { newPropToggle, setNewPropToggle, setPrompt } =
         useContext(AppContext);
 
@@ -52,12 +58,15 @@ export default function PropertyDetails({ data }: Props) {
             )}
             <h1 className="pageTitle mb-5">Property Details</h1>
             <ul className={style.FourRows}>
-                <aside className="-mt-4">
-                    <PencilButton
-                        FunctionOnClick={() => setNewPropToggle(true)}
-                        title={"Modify"}
-                    />
-                </aside>
+                {PermissionValidationView && (
+                    <aside className="-mt-4">
+                        <PencilButton
+                            FunctionOnClick={() => setNewPropToggle(true)}
+                            title={"Modify"}
+                        />
+                    </aside>
+                )}
+
                 <li>
                     <p className="label_text">ID</p>
                     <h4 className="main_text">{data?.id}</h4>

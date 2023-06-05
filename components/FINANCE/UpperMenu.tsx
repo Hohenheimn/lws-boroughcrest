@@ -3,7 +3,7 @@ import style from "../../styles/finance/UpperMenu.module.scss";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import {
-    GeneralLedger,
+    GeneralLedgerLinks,
     CustomerFacility,
     CheckWarehouse,
     Reports,
@@ -12,9 +12,10 @@ import {
 export default function UpperMenu() {
     const router = useRouter();
     const [isUrlData, setUrlData] = useState<any>();
+    const GeneralLedgerLink = GeneralLedgerLinks();
     useEffect(() => {
         if (router.pathname.includes("general-ledger")) {
-            setUrlData(GeneralLedger);
+            setUrlData(GeneralLedgerLink);
             return;
         }
         if (router.pathname.includes("customer-facility")) {
@@ -30,7 +31,7 @@ export default function UpperMenu() {
             return;
         }
         setUrlData(null);
-    });
+    }, [GeneralLedgerLink]);
     return (
         <div className={style.wrapper}>
             <ul className={style.container}>

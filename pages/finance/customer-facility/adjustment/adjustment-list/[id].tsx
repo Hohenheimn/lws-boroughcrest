@@ -3,6 +3,8 @@ import React from "react";
 import { BeatLoader } from "react-spinners";
 import AdjustmentDetail from "../../../../../components/FINANCE/CustomerFacility/Adjustment/AdjusmentDetail";
 import { GetAdjustmentDetail } from "../../../../../components/FINANCE/CustomerFacility/Adjustment/Query";
+import { PageAccessValidation } from "../../../../../components/Reusable/PermissionValidation/PageAccessValidation";
+import NoPermissionComp from "../../../../../components/Reusable/PermissionValidation/NoPermissionComp";
 
 export default function Id() {
     const router = useRouter();
@@ -10,6 +12,12 @@ export default function Id() {
     const id: any = router.query.id;
 
     const { isLoading, data, isError } = GetAdjustmentDetail(id);
+
+    const PagePermisson = PageAccessValidation("Adjustment");
+
+    if (!PagePermisson && PagePermisson !== undefined) {
+        return <NoPermissionComp />;
+    }
 
     if (isLoading) {
         return (

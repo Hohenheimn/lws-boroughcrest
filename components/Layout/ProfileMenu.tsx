@@ -4,7 +4,6 @@ import { getCookie, deleteCookie } from "cookies-next";
 import api from "../../util/api";
 import AppContext from "../Context/AppContext";
 import { useQueryClient } from "react-query";
-import { LoginUserInfo } from "../HOC/LoginUser/UserInfo";
 
 type Props = {
     setToggleProfileMenu: Function;

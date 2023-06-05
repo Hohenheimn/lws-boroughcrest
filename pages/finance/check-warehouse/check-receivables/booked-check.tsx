@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Advancefilter } from "../../../../components/Reusable/AdvanceFilter";
 import TableCheckReceivables from "../../../../components/FINANCE/Check-Warehouse/CheckReceivables/TableCheckReceivables";
+import { PageAccessValidation } from "../../../../components/Reusable/PermissionValidation/PageAccessValidation";
+import NoPermissionComp from "../../../../components/Reusable/PermissionValidation/NoPermissionComp";
 
 export type BookedCheckType = {
     id: 1;
@@ -35,6 +37,12 @@ export default function BookedCheck() {
     const [isAdvFilter, setAdvFilter] = useState<Advancefilter>([]);
 
     const [isFilterText, setFilterText] = useState<string>("");
+
+    const PagePermisson = PageAccessValidation("Check Receivables");
+
+    if (!PagePermisson && PagePermisson !== undefined) {
+        return <NoPermissionComp />;
+    }
 
     return (
         <TableCheckReceivables

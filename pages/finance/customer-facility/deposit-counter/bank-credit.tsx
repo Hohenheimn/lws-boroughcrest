@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import BankCreditComp from "../../../../components/FINANCE/CustomerFacility/DepositCounter/BankCreditComp";
+import { PageAccessValidation } from "../../../../components/Reusable/PermissionValidation/PageAccessValidation";
+import NoPermissionComp from "../../../../components/Reusable/PermissionValidation/NoPermissionComp";
 
 export default function BankCredit() {
-    const [triggerRefresh, setTriggerRefresh] = useState(false);
     const [isChangeData, setChangeData] = useState({});
     const [isReceiptBookData, setReceiptBookData] = useState({
         itemArray: [],
@@ -12,6 +13,12 @@ export default function BankCredit() {
         itemArray: [],
         selectAll: false,
     });
+
+    const PagePermisson = PageAccessValidation("Deposit Counter");
+
+    if (!PagePermisson && PagePermisson !== undefined) {
+        return <NoPermissionComp />;
+    }
     return (
         <BankCreditComp
             setChangeData={setChangeData}

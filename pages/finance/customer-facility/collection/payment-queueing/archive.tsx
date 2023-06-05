@@ -6,6 +6,8 @@ import { GetCollectionList } from "../../../../../components/FINANCE/CustomerFac
 import TableLoadingNError from "../../../../../components/Reusable/TableLoadingNError";
 import Pagination from "../../../../../components/Reusable/Pagination";
 import { CollectionItem } from "../payment-register";
+import { PageAccessValidation } from "../../../../../components/Reusable/PermissionValidation/PageAccessValidation";
+import NoPermissionComp from "../../../../../components/Reusable/PermissionValidation/NoPermissionComp";
 
 export default function Archive() {
     const [isStatus, setStatus] = useState("Archived");
@@ -30,6 +32,13 @@ export default function Archive() {
         isFilterText,
         isStatus
     );
+
+    const PagePermisson = PageAccessValidation("Collection");
+
+    if (!PagePermisson && PagePermisson !== undefined) {
+        return <NoPermissionComp />;
+    }
+
     return (
         <>
             <HeaderCollection

@@ -1,5 +1,7 @@
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { AccessActionValidation } from "../../Reusable/PermissionValidation/ActionAccessValidation";
+import AppContext from "../../Context/AppContext";
 
 type Props = {
     Detail: {
@@ -13,7 +15,15 @@ type Props = {
 };
 
 export default function Card({ Detail, type }: Props) {
+    const { setPrompt } = useContext(AppContext);
+
+    const ActionPermision_view = AccessActionValidation(
+        `Customer Request View (${type})`,
+        "view"
+    );
+
     const [color, setColor] = useState("");
+
     useEffect(() => {
         if (type === "New Request") {
             setColor("#8f384d");
@@ -28,10 +38,21 @@ export default function Card({ Detail, type }: Props) {
             setColor("#41b6ff");
         }
     }, [Detail]);
+
     const router = useRouter();
+
     const OpenModalHandler = () => {
-        router.push(`/admin/request?type=${type}&request=${1}`);
+        if (ActionPermision_view) {
+            router.push(`/admin/request?type=${type}&request=${1}`);
+        } else {
+            setPrompt({
+                message: "You have no permission to view",
+                type: "draft",
+                toggle: true,
+            });
+        }
     };
+
     return (
         <div
             onClick={OpenModalHandler}

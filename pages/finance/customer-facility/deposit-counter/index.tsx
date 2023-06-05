@@ -9,6 +9,8 @@ import Receiptsbook, {
     isReceiptBookData,
     isTableItemObjRB,
 } from "../../../../components/FINANCE/CustomerFacility/DepositCounter/Receiptsbook";
+import NoPermissionComp from "../../../../components/Reusable/PermissionValidation/NoPermissionComp";
+import { PageAccessValidation } from "../../../../components/Reusable/PermissionValidation/PageAccessValidation";
 
 type Payload = {
     id: number;
@@ -176,6 +178,12 @@ export default function DepositCounter() {
             });
         }
     };
+
+    const PagePermisson = PageAccessValidation("Deposit Counter");
+
+    if (!PagePermisson && PagePermisson !== undefined) {
+        return <NoPermissionComp />;
+    }
 
     return (
         <>

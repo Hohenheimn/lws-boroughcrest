@@ -1,6 +1,7 @@
 export type customerItemDetail = {
     itemDetail?: customer;
     isNewCustomer?: customer;
+    PermissionValidationView?: any;
 };
 
 export type customer = {

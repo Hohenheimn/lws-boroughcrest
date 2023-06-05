@@ -98,7 +98,7 @@ export default function Layout({ children }: Layout) {
         }
     }, [router.asPath]);
 
-    const [userPhoto, setUserPhoto] = useState("");
+    const [userPhoto, setUserPhoto] = useState("/Images/sampleProfile.png");
     const [userInfo, setUserInfo] = useState<LoginUserInfo>();
 
     useEffect(() => {

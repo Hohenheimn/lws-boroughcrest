@@ -5,7 +5,11 @@ import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 import { PencilButton } from "../../Reusable/Icons";
 
-export default function CustomerProperty({ data, classType }: any) {
+export default function CustomerProperty({
+    data,
+    classType,
+    PermissionValidationModify,
+}: any) {
     const [isToggle, setToggle] = useState(false);
     return (
         <div>
@@ -20,17 +24,19 @@ export default function CustomerProperty({ data, classType }: any) {
                 <h1 className=" w-full text-[24px] mb-3 480px:text-[16px]">
                     Property Information
                 </h1>
-                <Tippy
-                    theme="ThemeRed"
-                    content={<span className="capitalize">Modify</span>}
-                >
-                    <div>
-                        <PencilButton
-                            FunctionOnClick={() => setToggle(true)}
-                            title={"Modify"}
-                        />
-                    </div>
-                </Tippy>
+                {PermissionValidationModify && (
+                    <Tippy
+                        theme="ThemeRed"
+                        content={<span className="capitalize">Modify</span>}
+                    >
+                        <div>
+                            <PencilButton
+                                FunctionOnClick={() => setToggle(true)}
+                                title={"Modify"}
+                            />
+                        </div>
+                    </Tippy>
+                )}
             </header>
             <div className=" overflow-auto w-full">
                 <table className=" w-full 480px:w-[800px]">

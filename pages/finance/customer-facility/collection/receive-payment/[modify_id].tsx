@@ -16,6 +16,8 @@ import OutRight, {
 } from "../../../../../components/FINANCE/CustomerFacility/Collection/ReceivePayment/OfficialForm/OutrightAndAdvances/OutRight";
 import { AdvancesType } from "../../../../../components/FINANCE/CustomerFacility/Collection/ReceivePayment/OfficialForm/OutrightAndAdvances/Advances";
 import { useQueryClient } from "react-query";
+import { PageAccessValidation } from "../../../../../components/Reusable/PermissionValidation/PageAccessValidation";
+import NoPermissionComp from "../../../../../components/Reusable/PermissionValidation/NoPermissionComp";
 
 export default function Modify({ modify_id, from }: any) {
     const queryClient = useQueryClient();
@@ -230,6 +232,12 @@ export default function Modify({ modify_id, from }: any) {
             });
         }
     }, [customerData?.status]);
+
+    const PagePermisson = PageAccessValidation("Collection");
+
+    if (!PagePermisson && PagePermisson !== undefined) {
+        return <NoPermissionComp />;
+    }
 
     if (isLoading || customerLoading) {
         return (

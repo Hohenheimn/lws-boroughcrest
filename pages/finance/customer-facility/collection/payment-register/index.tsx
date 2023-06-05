@@ -7,6 +7,8 @@ import { GetCollectionList } from "../../../../../components/FINANCE/CustomerFac
 import { TextNumberDisplay } from "../../../../../components/Reusable/NumberFormat";
 import Pagination from "../../../../../components/Reusable/Pagination";
 import TableErrorMessage from "../../../../../components/Reusable/TableErrorMessage";
+import { PageAccessValidation } from "../../../../../components/Reusable/PermissionValidation/PageAccessValidation";
+import NoPermissionComp from "../../../../../components/Reusable/PermissionValidation/NoPermissionComp";
 
 export type CollectionItem = {
     id: number;
@@ -111,6 +113,12 @@ export default function PaymentRegister() {
         isFilterText,
         ""
     );
+
+    const PagePermisson = PageAccessValidation("Collection");
+
+    if (!PagePermisson && PagePermisson !== undefined) {
+        return <NoPermissionComp />;
+    }
 
     return (
         <>

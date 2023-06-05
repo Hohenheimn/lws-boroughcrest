@@ -3,6 +3,8 @@ import { BeatLoader } from "react-spinners";
 import { ShowInvoice } from "../../../../../components/FINANCE/CustomerFacility/Billing/BillingDetail";
 import BillingForm from "../../../../../components/FINANCE/CustomerFacility/Billing/BillingForm";
 import { GetInvoiceListDetail } from "../../../../../components/FINANCE/CustomerFacility/Billing/Query";
+import { PageAccessValidation } from "../../../../../components/Reusable/PermissionValidation/PageAccessValidation";
+import NoPermissionComp from "../../../../../components/Reusable/PermissionValidation/NoPermissionComp";
 
 export default function Id({ id }: any) {
     const { isLoading, data, isError } = GetInvoiceListDetail(id);
@@ -45,6 +47,12 @@ export default function Id({ id }: any) {
             };
         }),
     };
+
+    const PagePermisson = PageAccessValidation("Billing");
+
+    if (!PagePermisson && PagePermisson !== undefined) {
+        return <NoPermissionComp />;
+    }
 
     if (isLoading) {
         return (

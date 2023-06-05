@@ -15,7 +15,7 @@ export default function PropertySearch() {
     const router = useRouter();
 
     const { isLoading, data } = useQuery(
-        ["recent-customer", router.query.id, search],
+        ["recent-property", router.query.id, search],
         () => {
             return api.get(
                 `/admin/property/unit/recent-search/${router.query.id}?keywords=${search}&paginate=3`,

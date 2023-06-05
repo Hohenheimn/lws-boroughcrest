@@ -5,17 +5,24 @@ import { GetPropertyList } from "../../ReactQuery/PropertyMethod";
 import { BarLoader } from "react-spinners";
 import TableErrorMessage from "../../Reusable/TableErrorMessage";
 import Pagination from "../../Reusable/Pagination";
+import { AccessActionValidation } from "../../Reusable/PermissionValidation/ActionAccessValidation";
+import { useRouter } from "next/router";
 
 export default function PropertyTable({ isSearchTable }: any) {
+    const PermissionValidationView = AccessActionValidation("Property", "view");
+
     const { propTableColumn, propTableRows, setPrint } = useContext(AppContext);
 
     const [TablePage, setTablePage] = useState(1);
+
     const { isLoading, data, isError } = GetPropertyList(
         TablePage,
         isSearchTable,
         propTableRows
     );
+
     const PropertyData = data?.data?.data;
+
     // Set parameter for print
     useEffect(() => {
         setPrint({
@@ -26,6 +33,7 @@ export default function PropertyTable({ isSearchTable }: any) {
             columns: propTableColumn,
         });
     }, [isSearchTable, TablePage, propTableRows, propTableColumn]);
+
     return (
         <>
             <div className="table_container">
@@ -42,7 +50,13 @@ export default function PropertyTable({ isSearchTable }: any) {
                     </thead>
                     <tbody>
                         {PropertyData?.map((itemDetail: any, index: number) => (
-                            <List key={index} itemDetail={itemDetail} />
+                            <List
+                                key={index}
+                                itemDetail={itemDetail}
+                                PermissionValidationView={
+                                    PermissionValidationView
+                                }
+                            />
                         ))}
                     </tbody>
                 </table>
@@ -72,113 +86,120 @@ export default function PropertyTable({ isSearchTable }: any) {
     );
 }
 
-const List = ({ itemDetail }: any) => {
+const List = ({ itemDetail, PermissionValidationView }: any) => {
     const { ImgUrl, propTableColumn } = useContext(AppContext);
     const Owner = itemDetail.owner;
+
+    const router = useRouter();
+
+    const redirect = () => {
+        if (!PermissionValidationView) return;
+        router.push(
+            `${
+                itemDetail.status === "Draft"
+                    ? `?draft=${itemDetail.id}`
+                    : `/admin/property/${itemDetail.id}`
+            }`
+        );
+    };
+
     return (
-        <tr>
+        <tr
+            onClick={redirect}
+            className={` ${PermissionValidationView && "cursor-pointer"}`}
+        >
             <td>
-                <Link href={`/admin/property/${itemDetail.id}`}>
-                    <a className="item">
-                        <div>
-                            <h2>{itemDetail.id}</h2>
-                        </div>
-                    </a>
-                </Link>
+                <div className="item">
+                    <div>
+                        <h2>{itemDetail.id}</h2>
+                    </div>
+                </div>
             </td>
             {propTableColumn.map((item: any, index: number) => (
                 <td key={index}>
-                    <Link
-                        href={`${
-                            itemDetail.status === "Draft"
-                                ? `?draft=${itemDetail.id}`
-                                : `/admin/property/${itemDetail.id}`
-                        }`}
-                    >
-                        <a className="item">
-                            {item === "Unit Code" && (
-                                <div>
-                                    <h2>
-                                        {itemDetail?.unit_code
-                                            ? itemDetail?.unit_code
-                                            : "N/A"}
-                                    </h2>
-                                </div>
-                            )}
-                            {item === "Project" && (
-                                <div>
-                                    <h2>
-                                        {itemDetail?.project?.name
-                                            ? itemDetail?.project?.name
-                                            : "N/A"}
-                                    </h2>
-                                </div>
-                            )}
-                            {item === "Developer" && (
-                                <div>
-                                    <h2>
-                                        {itemDetail?.developer?.name
-                                            ? itemDetail?.developer?.name
-                                            : "N/A"}
-                                    </h2>
-                                </div>
-                            )}
-                            {item === "Tower" && (
-                                <div>
-                                    <h2>
-                                        {itemDetail?.tower?.name
-                                            ? itemDetail?.tower?.name
-                                            : "N/A"}
-                                    </h2>
-                                </div>
-                            )}
-                            {item === "Floor" && (
-                                <div>
-                                    <h2>
-                                        {itemDetail?.floor?.name
-                                            ? itemDetail?.floor?.name
-                                            : "N/A"}
-                                    </h2>
-                                </div>
-                            )}
-                            {item === "Class" && (
-                                <div>
-                                    <h2>
-                                        {itemDetail?.class
-                                            ? itemDetail?.class
-                                            : "N/A"}
-                                    </h2>
-                                </div>
-                            )}
-                            {item === "Type" && (
-                                <div>
-                                    <h2>
-                                        {itemDetail?.type
-                                            ? itemDetail?.type
-                                            : "N/A"}
-                                    </h2>
-                                </div>
-                            )}
-                            {item === "Turn Over" && (
-                                <div>
-                                    <h2>
-                                        {itemDetail?.turnover_date
-                                            ? itemDetail?.turnover_date
-                                            : "N/A"}
-                                    </h2>
-                                </div>
-                            )}
-                            {item === "Owner" && (
-                                <div>
-                                    <h2 key={index}>
-                                        {itemDetail?.owner?.name
-                                            ? itemDetail?.owner?.name
-                                            : "N/A"}
-                                    </h2>
-                                </div>
-                            )}
-                        </a>
-                    </Link>
+                    <div className="item">
+                        {item === "Unit Code" && (
+                            <div>
+                                <h2>
+                                    {itemDetail?.unit_code
+                                        ? itemDetail?.unit_code
+                                        : "N/A"}
+                                </h2>
+                            </div>
+                        )}
+                        {item === "Project" && (
+                            <div>
+                                <h2>
+                                    {itemDetail?.project?.name
+                                        ? itemDetail?.project?.name
+                                        : "N/A"}
+                                </h2>
+                            </div>
+                        )}
+                        {item === "Developer" && (
+                            <div>
+                                <h2>
+                                    {itemDetail?.developer?.name
+                                        ? itemDetail?.developer?.name
+                                        : "N/A"}
+                                </h2>
+                            </div>
+                        )}
+                        {item === "Tower" && (
+                            <div>
+                                <h2>
+                                    {itemDetail?.tower?.name
+                                        ? itemDetail?.tower?.name
+                                        : "N/A"}
+                                </h2>
+                            </div>
+                        )}
+                        {item === "Floor" && (
+                            <div>
+                                <h2>
+                                    {itemDetail?.floor?.name
+                                        ? itemDetail?.floor?.name
+                                        : "N/A"}
+                                </h2>
+                            </div>
+                        )}
+                        {item === "Class" && (
+                            <div>
+                                <h2>
+                                    {itemDetail?.class
+                                        ? itemDetail?.class
+                                        : "N/A"}
+                                </h2>
+                            </div>
+                        )}
+                        {item === "Type" && (
+                            <div>
+                                <h2>
+                                    {itemDetail?.type
+                                        ? itemDetail?.type
+                                        : "N/A"}
+                                </h2>
+                            </div>
+                        )}
+                        {item === "Turn Over" && (
+                            <div>
+                                <h2>
+                                    {itemDetail?.turnover_date
+                                        ? itemDetail?.turnover_date
+                                        : "N/A"}
+                                </h2>
+                            </div>
+                        )}
+                        {item === "Owner" && (
+                            <div>
+                                <h2 key={index}>
+                                    {itemDetail?.owner?.name
+                                        ? itemDetail?.owner?.name
+                                        : "N/A"}
+                                </h2>
+                            </div>
+                        )}
+                    </div>
                 </td>
             ))}
         </tr>

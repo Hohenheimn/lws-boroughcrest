@@ -208,15 +208,31 @@ export default function Index() {
 
                     <section className="mt-10 1366px:mt-5">
                         <h1 className="text-ThemeRed mb-5">POST REVIEW</h1>
-                        <PostComponent Post={isPost} type="preview" />
+                        <PostComponent
+                            Post={isPost}
+                            type="preview"
+                            date={"Today"}
+                        />
                     </section>
                 </li>
                 <li className=" w-2/4 pl-5 820px:pl-2 640px:w-full 640px:p-0 640px:border-none border-l border-ThemeRed50">
                     <h1 className="text-ThemeRed text-[20px] mb-5">Posted</h1>
                     <div className="max-h-[90vh] overflow-auto">
-                        <PostComponent Post={samplePosted} type="posted" />
-                        <PostComponent Post={samplePosted} type="posted" />
-                        <PostComponent Post={samplePosted} type="posted" />
+                        <PostComponent
+                            Post={samplePosted}
+                            type="posted"
+                            date={"Today"}
+                        />
+                        <PostComponent
+                            Post={samplePosted}
+                            type="posted"
+                            date={"Yesterday"}
+                        />
+                        <PostComponent
+                            Post={samplePosted}
+                            type="posted"
+                            date={"Mar 03 1998"}
+                        />
                     </div>
                 </li>
             </ul>
