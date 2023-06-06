@@ -2,36 +2,24 @@ import React, { useEffect, useState } from "react";
 import style from "../../styles/finance/UpperMenu.module.scss";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import {
-    GeneralLedgerLinks,
-    CustomerFacility,
-    CheckWarehouse,
-    Reports,
-} from "./FinanceUrl";
+import { FinanceUpperLinks } from "./FinanceUrl";
 
 export default function UpperMenu() {
     const router = useRouter();
     const [isUrlData, setUrlData] = useState<any>();
-    const GeneralLedgerLink = GeneralLedgerLinks();
+    const FinanceUpperLinksMenu = FinanceUpperLinks();
     useEffect(() => {
-        if (router.pathname.includes("general-ledger")) {
-            setUrlData(GeneralLedgerLink);
+        if (
+            router.pathname.includes("general-ledger") ||
+            router.pathname.includes("customer-facility") ||
+            router.pathname.includes("check-warehouse") ||
+            router.pathname.includes("reports")
+        ) {
+            setUrlData(FinanceUpperLinksMenu);
             return;
         }
-        if (router.pathname.includes("customer-facility")) {
-            setUrlData(CustomerFacility);
-            return;
-        }
-        if (router.pathname.includes("check-warehouse")) {
-            setUrlData(CheckWarehouse);
-            return;
-        }
-        if (router.pathname.includes("reports")) {
-            setUrlData(Reports);
-            return;
-        }
-        setUrlData(null);
-    }, [GeneralLedgerLink]);
+        setUrlData([]);
+    }, [FinanceUpperLinksMenu, router.pathname]);
     return (
         <div className={style.wrapper}>
             <ul className={style.container}>

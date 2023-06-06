@@ -1,9 +1,21 @@
 import React from "react";
+import { PageAccessValidation } from "../../../../components/Reusable/PermissionValidation/PageAccessValidation";
+import NoPermissionComp from "../../../../components/Reusable/PermissionValidation/NoPermissionComp";
 
 const detailContainer =
     "w-1/5 1024px:w-1/4 1024px:mb-3 640px:w-1/3 480px:w-1/2";
 
 export default function Index() {
+    const PagePermisson_customer = PageAccessValidation("Customer Reports");
+
+    const PagePermisson_general = PageAccessValidation("General Reports");
+
+    if (
+        (!PagePermisson_general && PagePermisson_general !== undefined) ||
+        (!PagePermisson_customer && PagePermisson_customer !== undefined)
+    ) {
+        return <NoPermissionComp />;
+    }
     return (
         <div>
             <h1 className="pageTitle">Favorite Detail</h1>

@@ -159,6 +159,16 @@ export default function JournalForm({
                 return;
             }
         }
+
+        if (Number(totalCredit) !== Number(totalDebit)) {
+            setPrompt({
+                message: "Total Debit and Credit should equal!",
+                toggle: true,
+                type: "draft",
+            });
+            return;
+        }
+
         const journal = isJournalList.map((item: defaultObject) => {
             if (button !== "draft") {
                 if (item.account_id === "") {

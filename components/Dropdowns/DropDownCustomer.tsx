@@ -9,11 +9,13 @@ import { isTableItemObj } from "../FINANCE/General-Ledger/OpeningBalance/SubTabl
 type DropdownItem = {
     UpdateStateHandler: (key: string, e: any) => void;
     itemDetail: isTableItemObj;
+    classnameInput?: string;
 };
 
 export default function DropDownCustomer({
     UpdateStateHandler,
     itemDetail,
+    classnameInput,
 }: DropdownItem) {
     const [isToggle, setToggle] = useState(false);
     const [tempSearch, setTempSearch] = useState(itemDetail.customer_name);
@@ -28,7 +30,7 @@ export default function DropDownCustomer({
                 toRef={
                     <input
                         type="text"
-                        className="field w-full"
+                        className={`field w-full ${classnameInput}`}
                         onClick={() => setToggle(true)}
                         value={tempSearch}
                         onChange={(e) => {

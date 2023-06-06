@@ -15,7 +15,6 @@ import {
     CreateBA,
     UpdateBA,
 } from "../../../ReactQuery/BankAccount";
-import { DeleteButton } from "../../../Reusable/Icons";
 
 type Props = {
     update: (value: string, e: any) => void;
@@ -145,12 +144,11 @@ const CrudBankAccNum = ({
                     />
                 </div>
             )}
-            {isError ||
-                (data?.data.length <= 0 && (
-                    <div className="w-full flex justify-center py-3">
-                        <h1>Bank Account number cannot be found!</h1>
-                    </div>
-                ))}
+            {data?.data.length <= 0 && (
+                <div className="w-full flex justify-center py-3 text-center">
+                    <h5 className="text-center mb-5">No Bank Account found!</h5>
+                </div>
+            )}
             {isWarning !== "" && (
                 <p className="text-[12px] text-ThemeRed">{isWarning}</p>
             )}
@@ -337,7 +335,11 @@ const List = ({
                     type="text"
                     className={`${!isModify && "disabled"}`}
                     value={itemDetail.column1}
-                    onChange={(e) => ModifyArray(e, "column1")}
+                    onChange={(e) => {
+                        if (e.target.value.length <= 12) {
+                            ModifyArray(e, "column1");
+                        }
+                    }}
                 />
             </td>
             <td onClick={(e) => !isModify && Selected(e)} className="bg-hover">

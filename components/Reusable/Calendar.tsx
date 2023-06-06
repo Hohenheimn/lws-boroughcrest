@@ -151,7 +151,7 @@ export default function Calendar({
         <div
             className={` z-[60] ${
                 forTable
-                    ? "fixed top-0 left-0 w-full h-full z-[99] bg-[#00000040] flex justify-center items-center"
+                    ? "fixed top-0 left-0 w-full h-full z-[99999999] bg-[#00000040] flex justify-center items-center"
                     : "absolute mt-2 "
             }`}
         >

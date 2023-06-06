@@ -993,6 +993,13 @@ input[type="number"] {
     }
 }
 
+.ToggleAccount.disabled {
+    @apply pointer-events-none relative overflow-hidden;
+    &::after {
+        @apply content-[''] absolute top-0 left-0 w-full h-full bg-[#757575] opacity-[.5];
+    }
+}
+
 .withPeso {
     @apply relative pl-[20px];
     &::before {

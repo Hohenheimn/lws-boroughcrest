@@ -23,6 +23,8 @@ import {
     TextFieldValidation,
     TextFieldValidationNoSpace,
 } from "../../../Reusable/InputField";
+import { AccessActionValidation } from "../../../Reusable/PermissionValidation/ActionAccessValidation";
+import { MinusButtonTable, PlusButtonTable } from "../../../Reusable/Icons";
 
 export type isTableItemArray = isTableItemObj[];
 
@@ -40,7 +42,20 @@ export type isTableItemObj = {
 };
 
 export default function SubTable() {
+    const Permission_modify = AccessActionValidation(
+        "Opening Balance",
+        "modify"
+    );
+
+    const Permission_create = AccessActionValidation(
+        "Opening Balance",
+        "create"
+    );
+
+    const Permission_view = AccessActionValidation("Opening Balance", "view");
+
     const { setPrompt } = useContext(AppContext);
+
     const onSucces = () => {
         setPrompt({
             toggle: true,
@@ -48,15 +63,26 @@ export default function SubTable() {
             type: "success",
         });
     };
+
     const onError = (e: any) => {
         ErrorSubmit(e, setPrompt);
     };
+
     const { data, isLoading, isError } = GetSubledger();
+
     const { isLoading: mutateLoading, mutate } = CreateUpdateSubledger(
         onSucces,
         onError
     );
+
     const [isTableItem, setTableItem] = useState<isTableItemArray>([]);
+
+    const Removehandler = (id: string | number) => {
+        const cloneFilter = isTableItem.filter(
+            (itemFilter) => itemFilter.id !== id
+        );
+        setTableItem(cloneFilter);
+    };
 
     useEffect(() => {
         if (!isLoading && !isError) {
@@ -78,9 +104,8 @@ export default function SubTable() {
                 };
             });
 
-            if (data?.data.length <= 0) {
+            if (data?.data.length <= 0 || !Permission_view) {
                 setTableItem([
-                    ...CloneArray,
                     {
                         id: random,
                         id_backend: null,
@@ -163,6 +188,7 @@ export default function SubTable() {
                             <th>CHARGE</th>
                             <th>ACCOUNT</th>
                             <th>AMOUNT</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -173,6 +199,9 @@ export default function SubTable() {
                                 isTableItem={isTableItem}
                                 key={index}
                                 rowNumber={index}
+                                Permission_modify={Permission_modify}
+                                Permission_create={Permission_create}
+                                RemoveHandler={Removehandler}
                             />
                         ))}
                     </tbody>
@@ -205,14 +234,20 @@ export default function SubTable() {
                 </div>
             </div>
             <div className="flex justify-end py-5 mt-5">
-                <button className="button_cancel">Cancel</button>
-                <button className="buttonRed" onClick={SubmitHandler}>
-                    {mutateLoading ? (
-                        <ScaleLoader color="#fff" height="10px" width="2px" />
-                    ) : (
-                        "SAVE"
-                    )}
-                </button>
+                {/* <button className="button_cancel">Cancel</button> */}
+                {(Permission_create || Permission_modify) && (
+                    <button className="buttonRed" onClick={SubmitHandler}>
+                        {mutateLoading ? (
+                            <ScaleLoader
+                                color="#fff"
+                                height="10px"
+                                width="2px"
+                            />
+                        ) : (
+                            "SAVE"
+                        )}
+                    </button>
+                )}
             </div>
         </>
     );
@@ -222,9 +257,22 @@ type List = {
     setTableItem: Function;
     isTableItem: isTableItemArray;
     rowNumber: number;
+    Permission_create: boolean;
+    Permission_modify: boolean;
+    RemoveHandler: (id: string | number) => void;
 };
 
-const List = ({ itemDetail, setTableItem, isTableItem, rowNumber }: List) => {
+const List = ({
+    itemDetail,
+    setTableItem,
+    isTableItem,
+    rowNumber,
+    Permission_create,
+    Permission_modify,
+    RemoveHandler,
+}: List) => {
+    const { setPrompt } = useContext(AppContext);
+
     const itemData: isTableItemObj = itemDetail;
     const [isDate, setDate] = useState({
         value: itemData.date,
@@ -290,8 +338,16 @@ const List = ({ itemDetail, setTableItem, isTableItem, rowNumber }: List) => {
     };
 
     const AddRowHandler = (e: any) => {
-        if (e.key !== "Enter") {
-            return;
+        // console.log("asdasd");
+        // if (e.key !== "Enter") {
+        //     return;
+        // }
+        if (!Permission_create) {
+            setPrompt({
+                message: "You do not have an access to create new row",
+                toggle: true,
+                type: "draft",
+            });
         }
         if (isTableItem.length !== rowNumber + 1) {
             return;
@@ -306,20 +362,26 @@ const List = ({ itemDetail, setTableItem, isTableItem, rowNumber }: List) => {
             itemData.amount === "" ||
             itemData.amount === null
         ) {
+            setPrompt({
+                message: "Complete the current row before creating new row",
+                toggle: true,
+                type: "draft",
+            });
             return;
         }
         setTableItem([
             ...isTableItem,
             {
                 id: random,
-                customer_id: 0,
+                id_backend: null,
+                customer_id: "",
                 customer_name: "",
                 date: "",
-                reference_no: 0,
-                charge_id: 0,
+                reference_no: "",
+                charge_id: "",
                 charge: "",
                 account: "advance",
-                amount: 0,
+                amount: "",
             },
         ]);
     };
@@ -333,10 +395,15 @@ const List = ({ itemDetail, setTableItem, isTableItem, rowNumber }: List) => {
                 <DropDownCustomer
                     UpdateStateHandler={UpdateStateHandler}
                     itemDetail={itemData}
+                    classnameInput={` ${
+                        !Permission_modify &&
+                        itemData.id_backend !== null &&
+                        "disabled"
+                    }`}
                 />
             </td>
             <td onKeyUp={(e) => AddRowHandler(e)}>
-                <article className="calendar  relative">
+                <article className="calendar relative">
                     <span className="cal ">
                         <Image
                             src="/Images/CalendarMini.png"
@@ -348,6 +415,11 @@ const List = ({ itemDetail, setTableItem, isTableItem, rowNumber }: List) => {
                     <input
                         type="text"
                         value={isDate.value}
+                        className={`${
+                            !Permission_modify &&
+                            itemData.id_backend !== null &&
+                            "disabled"
+                        }`}
                         onChange={() => {}}
                         placeholder="MM dd yyyy"
                         onClick={() => setDate({ ...isDate, toggle: true })}
@@ -365,7 +437,11 @@ const List = ({ itemDetail, setTableItem, isTableItem, rowNumber }: List) => {
                 <input
                     type="text"
                     value={itemData.reference_no}
-                    className="field w-full"
+                    className={`field w-full ${
+                        !Permission_modify &&
+                        itemData.id_backend !== null &&
+                        "disabled"
+                    }`}
                     onChange={(e) => {
                         if (!TextFieldValidationNoSpace(e, 20)) return;
                         UpdateStateHandler("reference_no", e);
@@ -376,10 +452,21 @@ const List = ({ itemDetail, setTableItem, isTableItem, rowNumber }: List) => {
                 <DropDownCharge
                     UpdateStateHandler={UpdateStateHandler}
                     itemDetail={itemData}
+                    className={` ${
+                        !Permission_modify &&
+                        itemData.id_backend !== null &&
+                        "disabled"
+                    }`}
                 />
             </td>
             <td onKeyUp={(e) => AddRowHandler(e)}>
-                <div className={`ToggleAccount ${itemData.account}`}>
+                <div
+                    className={`ToggleAccount ${itemData.account} ${
+                        !Permission_modify &&
+                        itemData.id_backend !== null &&
+                        "disabled"
+                    }`}
+                >
                     <ul className="min-w-[180px] flex relative">
                         <li
                             className="item ad"
@@ -403,11 +490,43 @@ const List = ({ itemDetail, setTableItem, isTableItem, rowNumber }: List) => {
             </td>
             <td onKeyUp={(e) => AddRowHandler(e)}>
                 <InputNumberForTable
-                    className="field w-full number"
+                    className={`field w-full number ${
+                        !Permission_modify &&
+                        itemData.id_backend !== null &&
+                        "disabled"
+                    }`}
                     value={itemData.amount}
                     type="amount"
                     onChange={UpdateStateHandler}
                 />
+            </td>
+            <td className="actionIcon flex items-center">
+                {Permission_modify && itemData.id_backend !== null && (
+                    <>
+                        {isTableItem.length > 1 && (
+                            <div onClick={() => RemoveHandler(itemData.id)}>
+                                <MinusButtonTable />
+                            </div>
+                        )}
+                    </>
+                )}
+                {itemData.id_backend === null && Permission_create && (
+                    <>
+                        {isTableItem.length > 1 && (
+                            <div onClick={() => RemoveHandler(itemData.id)}>
+                                <MinusButtonTable />
+                            </div>
+                        )}
+                    </>
+                )}
+                {isTableItem.length - 1 === rowNumber && Permission_create && (
+                    <div
+                        className="ml-5 1024px:ml-2"
+                        onClick={(e) => AddRowHandler(e)}
+                    >
+                        <PlusButtonTable />
+                    </div>
+                )}
             </td>
         </tr>
     );

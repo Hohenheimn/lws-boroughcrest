@@ -7,6 +7,7 @@ import Image from "next/image";
 import { TextNumberDisplay } from "../../../Reusable/NumberFormat";
 import { format, isValid, parse } from "date-fns";
 import { PencilButton } from "../../../Reusable/Icons";
+import { AccessActionValidation } from "../../../Reusable/PermissionValidation/ActionAccessValidation";
 
 export type AdjustmentDetailType = {
     id: number;
@@ -104,6 +105,10 @@ type props = {
 export type account_entries_list = {};
 
 export default function AdjustmentDetail({ Detail }: props) {
+    const Permission_modify = AccessActionValidation("Adjustment", "modify");
+
+    const Permission_print = AccessActionValidation("Adjustment", "print");
+
     const [totalDebit, setTotalDebit] = useState(0);
 
     const [totalCredit, setTotalCredit] = useState(0);
@@ -123,19 +128,21 @@ export default function AdjustmentDetail({ Detail }: props) {
         <div>
             <div className="flex justify-between items-center mb-5">
                 <h1 className="pageTitle mb-5">Adjustment Details</h1>
-                <ul className="flex">
-                    <li className="mr-5">
-                        <Tippy theme="ThemeRed" content="Print">
-                            <div className="relative w-8 h-8 transition-all duration-75 hover:scale-[1.1]">
-                                <Image
-                                    src="/Images/Print.png"
-                                    layout="fill"
-                                    alt="Print"
-                                />
-                            </div>
-                        </Tippy>
-                    </li>
-                </ul>
+                {Permission_print && (
+                    <ul className="flex">
+                        <li className="mr-5">
+                            <Tippy theme="ThemeRed" content="Print">
+                                <div className="relative w-8 h-8 transition-all duration-75 hover:scale-[1.1]">
+                                    <Image
+                                        src="/Images/Print.png"
+                                        layout="fill"
+                                        alt="Print"
+                                    />
+                                </div>
+                            </Tippy>
+                        </li>
+                    </ul>
+                )}
             </div>
             <ul className="rounded-lg mb-10 flex flex-wrap w-full justify-between">
                 <li className="bg-white shadow-lg w-[28%] 640px:w-[48%] 480px:w-full 480px:mb-5 p-10 rounded-2xl">
@@ -161,16 +168,19 @@ export default function AdjustmentDetail({ Detail }: props) {
                     </div>
                 </li>
                 <li className="bg-white flex flex-wrap shadow-lg w-[70%] 640px:w-[48%] 480px:w-full  p-10 rounded-2xl relative">
-                    <Link
-                        href={`/finance/customer-facility/adjustment//modify/${Detail.id}`}
-                    >
-                        <a className="absolute right-4 top-4">
-                            <PencilButton
-                                FunctionOnClick={() => {}}
-                                title={"Modify"}
-                            />
-                        </a>
-                    </Link>
+                    {Permission_modify && (
+                        <Link
+                            href={`/finance/customer-facility/adjustment//modify/${Detail.id}`}
+                        >
+                            <a className="absolute right-4 top-4">
+                                <PencilButton
+                                    FunctionOnClick={() => {}}
+                                    title={"Modify"}
+                                />
+                            </a>
+                        </Link>
+                    )}
+
                     <div className="w-2/4 640px:w-full">
                         <p className="label_text">DATE</p>
                         <h1 className="main_text">

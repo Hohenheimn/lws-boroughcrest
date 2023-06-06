@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
     RequestIcon,
     RequestRefresh,
@@ -10,8 +10,15 @@ import Link from "next/link";
 import { PageAccessValidation } from "../../../components/Reusable/PermissionValidation/PageAccessValidation";
 import NoPermissionComp from "../../../components/Reusable/PermissionValidation/NoPermissionComp";
 
+const four = "w-1/4";
+const three = "w-4/12";
+const two = "w-2/4";
+const one = "w-2/4";
+
 export default function Request() {
     const router = useRouter();
+
+    const [colNo, setColNo] = useState(4);
 
     const PagePermisson_NewRequest = PageAccessValidation(
         "Customer Request View (New Request)"
@@ -28,6 +35,27 @@ export default function Request() {
     const PagePermisson_Closed = PageAccessValidation(
         "Customer Request View (Closed)"
     );
+
+    useEffect(() => {
+        setColNo(0);
+        if (PagePermisson_NewRequest) {
+            setColNo((prev) => Number(prev) + 1);
+        }
+        if (PagePermisson_InProcess) {
+            setColNo((prev) => Number(prev) + 1);
+        }
+        if (PagePermisson_InReview) {
+            setColNo((prev) => Number(prev) + 1);
+        }
+        if (PagePermisson_Closed) {
+            setColNo((prev) => Number(prev) + 1);
+        }
+    }, [
+        PagePermisson_NewRequest,
+        PagePermisson_InProcess,
+        PagePermisson_InReview,
+        PagePermisson_Closed,
+    ]);
 
     if (
         !PagePermisson_NewRequest &&
@@ -60,37 +88,58 @@ export default function Request() {
             </ul>
             <div className=" overflow-auto w-full">
                 <ul className="flex flex-wrap mt-5 min-w-[1000px]">
-                    <li className="w-1/4">
-                        <CardContainer
-                            endPoint=""
-                            color="#8f384d"
-                            type="New Request"
-                        />
-                    </li>
-
-                    <li className="w-1/4">
-                        <CardContainer
-                            endPoint=""
-                            color="#5c6e91"
-                            type="In Process"
-                        />
-                    </li>
-
-                    <li className="w-1/4">
-                        <CardContainer
-                            endPoint=""
-                            color="#dd9866"
-                            type="In Review"
-                        />
-                    </li>
-
-                    <li className="w-1/4">
-                        <CardContainer
-                            endPoint=""
-                            color="#41b6ff"
-                            type="Closed"
-                        />
-                    </li>
+                    {PagePermisson_NewRequest && (
+                        <li
+                            className={`${colNo === 1 && one} ${
+                                colNo === 2 && two
+                            } ${colNo === 3 && three} ${colNo === 4 && four}`}
+                        >
+                            <CardContainer
+                                endPoint=""
+                                color="#8f384d"
+                                type="New Request"
+                            />
+                        </li>
+                    )}
+                    {PagePermisson_InProcess && (
+                        <li
+                            className={`${colNo === 1 && one} ${
+                                colNo === 2 && two
+                            } ${colNo === 3 && three} ${colNo === 4 && four}`}
+                        >
+                            <CardContainer
+                                endPoint=""
+                                color="#5c6e91"
+                                type="In Process"
+                            />
+                        </li>
+                    )}
+                    {PagePermisson_InReview && (
+                        <li
+                            className={`${colNo === 1 && one} ${
+                                colNo === 2 && two
+                            } ${colNo === 3 && three} ${colNo === 4 && four}`}
+                        >
+                            <CardContainer
+                                endPoint=""
+                                color="#dd9866"
+                                type="In Review"
+                            />
+                        </li>
+                    )}
+                    {PagePermisson_Closed && (
+                        <li
+                            className={`${colNo === 1 && one} ${
+                                colNo === 2 && two
+                            } ${colNo === 3 && three} ${colNo === 4 && four}`}
+                        >
+                            <CardContainer
+                                endPoint=""
+                                color="#41b6ff"
+                                type="Closed"
+                            />
+                        </li>
+                    )}
                 </ul>
             </div>
         </div>

@@ -14,6 +14,8 @@ import { ErrorSubmit } from "../../../components/Reusable/ErrorMessage";
 import { ScaleLoader } from "react-spinners";
 import { PageAccessValidation } from "../../../components/Reusable/PermissionValidation/PageAccessValidation";
 import NoPermissionComp from "../../../components/Reusable/PermissionValidation/NoPermissionComp";
+import { AccessActionValidation } from "../../../components/Reusable/PermissionValidation/ActionAccessValidation";
+import { FaLock } from "react-icons/fa";
 
 type FinanceReference = {
     document: string;
@@ -148,12 +150,13 @@ export default function Policy() {
         mutate(Payload);
     };
 
+    const Permission_modify = AccessActionValidation("Policy", "modify");
+
     const PagePermisson = PageAccessValidation("Policy");
 
     if (!PagePermisson && PagePermisson !== undefined) {
         return <NoPermissionComp />;
     }
-
     return (
         <div className="py-20 640px:py-10">
             <h1 className="pageTitle mb-5">Finance Policy</h1>
@@ -163,7 +166,7 @@ export default function Policy() {
                 }`}
             >
                 <li className="absolute top-4 right-4">
-                    {!isToggle && (
+                    {!isToggle && Permission_modify && (
                         <PencilButton
                             FunctionOnClick={() => {
                                 setToggle(true);

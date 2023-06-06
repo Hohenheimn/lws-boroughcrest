@@ -35,7 +35,7 @@ export default function Property() {
         developer: "",
     };
 
-    const PagePermisson = PageAccessValidation("Customer");
+    const PagePermisson = PageAccessValidation("Property");
 
     if (!PagePermisson && PagePermisson !== undefined) {
         return <NoPermissionComp />;

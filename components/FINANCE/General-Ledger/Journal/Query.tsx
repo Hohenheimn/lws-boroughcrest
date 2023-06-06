@@ -200,14 +200,20 @@ export const GetJournalRecentSearch = (
     id: string | number,
     keyword: string
 ) => {
-    return useQuery(["adjustment-recent-search", id, keyword], () => {
-        return api.get(
-            `/finance/customer-facility/adjustment/recent-search/${id}?search=${keyword}&paginate=3`,
-            {
-                headers: {
-                    Authorization: "Bearer " + getCookie("user"),
-                },
-            }
-        );
-    });
+    return useQuery(
+        ["journal-recent-search", id, keyword],
+        () => {
+            return api.get(
+                `/finance/general-ledger/journal/recent-search/${id}?keywords=${keyword}&paginate=3`,
+                {
+                    headers: {
+                        Authorization: "Bearer " + getCookie("user"),
+                    },
+                }
+            );
+        },
+        {
+            enabled: !!id,
+        }
+    );
 };

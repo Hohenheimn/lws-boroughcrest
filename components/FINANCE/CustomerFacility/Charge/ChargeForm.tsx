@@ -20,6 +20,7 @@ import {
     NumberBlockInvalidKey,
     TextFieldValidation,
 } from "../../../Reusable/InputField";
+import { AccessActionValidation } from "../../../Reusable/PermissionValidation/ActionAccessValidation";
 
 type Props = {
     setCreate: Function;
@@ -42,8 +43,16 @@ type Error = {
     soa_sort_order: string;
 };
 export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
-    const { setPrompt, userInfo } = useContext(AppContext);
-    const LoginUserInfo: LoginUserInfo = userInfo;
+    const Permission_modify = AccessActionValidation("Charges", "modify");
+
+    const { setPrompt } = useContext(AppContext);
+
+    const [userInfo, setUserInfo] = useState<LoginUserInfo>();
+
+    useEffect(() => {
+        setUserInfo(JSON.parse(localStorage.userInfo));
+    }, []);
+
     const [isSelect, setSelect] = useState({
         type: false,
         interest: false,
@@ -490,7 +499,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                     <div className="percentage w-full">
                                         <input
                                             className={`field w-full ${
-                                                LoginUserInfo.corporate_gst_type ===
+                                                userInfo?.corporate_gst_type ===
                                                     "NON-VAT" && "disabled"
                                             }`}
                                             type="number"
@@ -498,7 +507,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                                 required: "Required!",
                                             })}
                                             value={
-                                                LoginUserInfo.corporate_gst_type ===
+                                                userInfo?.corporate_gst_type ===
                                                 "NON-VAT"
                                                     ? 0
                                                     : fieldValue.vat_percent
@@ -919,54 +928,60 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                         >
                                             BACK
                                         </aside>
-
-                                        <div className={style.Save}>
-                                            <div>
-                                                <button
-                                                    type="submit"
-                                                    name="save"
-                                                    className={
-                                                        style.save_button
-                                                    }
-                                                    onClick={() =>
-                                                        SubmitHandler("save")
-                                                    }
-                                                >
-                                                    {SaveLoading ||
-                                                    UpdateLoading ? (
-                                                        <ScaleLoader
-                                                            color="#fff"
-                                                            height="10px"
-                                                            width="2px"
-                                                        />
-                                                    ) : (
-                                                        "SAVE"
-                                                    )}
-                                                </button>
-                                                <aside className={style.Arrow}>
-                                                    <RiArrowDownSFill
-                                                        onClick={() =>
-                                                            setSave(!isSave)
+                                        {(router.query.modify === undefined ||
+                                            Permission_modify) && (
+                                            <div className={style.Save}>
+                                                <div>
+                                                    <button
+                                                        type="submit"
+                                                        name="save"
+                                                        className={
+                                                            style.save_button
                                                         }
-                                                    />
-                                                </aside>
-                                            </div>
-                                            {isSave && (
-                                                <ul>
-                                                    <li>
-                                                        <button
+                                                        onClick={() =>
+                                                            SubmitHandler(
+                                                                "save"
+                                                            )
+                                                        }
+                                                    >
+                                                        {SaveLoading ||
+                                                        UpdateLoading ? (
+                                                            <ScaleLoader
+                                                                color="#fff"
+                                                                height="10px"
+                                                                width="2px"
+                                                            />
+                                                        ) : (
+                                                            "SAVE"
+                                                        )}
+                                                    </button>
+                                                    <aside
+                                                        className={style.Arrow}
+                                                    >
+                                                        <RiArrowDownSFill
                                                             onClick={() =>
-                                                                SubmitHandler(
-                                                                    "new"
-                                                                )
+                                                                setSave(!isSave)
                                                             }
-                                                        >
-                                                            SAVE & NEW
-                                                        </button>
-                                                    </li>
-                                                </ul>
-                                            )}
-                                        </div>
+                                                        />
+                                                    </aside>
+                                                </div>
+                                                {isSave && (
+                                                    <ul>
+                                                        <li>
+                                                            <button
+                                                                onClick={() =>
+                                                                    SubmitHandler(
+                                                                        "new"
+                                                                    )
+                                                                }
+                                                            >
+                                                                SAVE & NEW
+                                                            </button>
+                                                        </li>
+                                                    </ul>
+                                                )}
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </form>

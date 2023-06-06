@@ -12,6 +12,7 @@ import TableErrorMessage from "../../../Reusable/TableErrorMessage";
 import Pagination from "../../../Reusable/Pagination";
 import { TextNumberDisplay } from "../../../Reusable/NumberFormat";
 import TableLoadingNError from "../../../Reusable/TableLoadingNError";
+import { AccessActionValidation } from "../../../Reusable/PermissionValidation/ActionAccessValidation";
 
 type Props = {
     page: string;
@@ -19,9 +20,12 @@ type Props = {
 };
 
 export default function ChargeTable({ page, setCreate }: Props) {
-    const { setPrompt } = useContext(AppContext);
+    const Permission_create = AccessActionValidation("Charges", "create");
+
     const [TablePage, setTablePage] = useState(1);
+
     const [isSearch, setSearch] = useState("");
+
     const { data, isLoading, isError } = useQuery(
         ["charge-list", isSearch, TablePage],
         () => {
@@ -49,17 +53,19 @@ export default function ChargeTable({ page, setCreate }: Props) {
                     />
                     <BsSearch className={style.searchIcon} />
                 </div>
-
-                <ul className={style.navigation}>
-                    <li className={style.new}>
-                        <button
-                            className="buttonRed"
-                            onClick={() => setCreate(true)}
-                        >
-                            CREATE <span className=" uppercase">{page}</span>
-                        </button>
-                    </li>
-                </ul>
+                {Permission_create && (
+                    <ul className={style.navigation}>
+                        <li className={style.new}>
+                            <button
+                                className="buttonRed"
+                                onClick={() => setCreate(true)}
+                            >
+                                CREATE{" "}
+                                <span className=" uppercase">{page}</span>
+                            </button>
+                        </li>
+                    </ul>
+                )}
             </section>
 
             <div className="table_container">

@@ -5,6 +5,7 @@ import { TextNumberDisplay } from "../../../Reusable/NumberFormat";
 import { PencilButton } from "../../../Reusable/Icons";
 import Link from "next/link";
 import { format, isValid, parse } from "date-fns";
+import { AccessActionValidation } from "../../../Reusable/PermissionValidation/ActionAccessValidation";
 
 export type InvoiceDetail = {
     id: string | number;
@@ -82,6 +83,7 @@ type Props = {
 };
 
 export default function BillingDetail({ InvoiceDetail }: Props) {
+    const Permission_modify = AccessActionValidation("Billing", "modify");
     const [isTotalVat, setTotalVat] = useState(0);
     const [isTotalAmount, setTotalAmount] = useState(0);
     useEffect(() => {
@@ -105,7 +107,7 @@ export default function BillingDetail({ InvoiceDetail }: Props) {
                 <h1 className="pageTitle mb-5">Billing Details</h1>
             </div>
             <ul className={`${style.ThreeRows} relative ${style.narrow}`}>
-                {InvoiceDetail.status === "Pending" && (
+                {InvoiceDetail.status === "Pending" && Permission_modify && (
                     <Link
                         href={`/finance/customer-facility/billing/modify/${InvoiceDetail.id}`}
                     >
