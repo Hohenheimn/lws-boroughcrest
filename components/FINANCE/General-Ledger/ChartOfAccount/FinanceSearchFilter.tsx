@@ -9,6 +9,7 @@ import style from "../../../../styles/SearchFilter.module.scss";
 import { CustomerImport } from "../../../ReactQuery/CustomerMethod";
 import { MoonLoader } from "react-spinners";
 import { DynamicExportHandler } from "../../../Reusable/DynamicExport";
+import { AccessActionValidation } from "../../../Reusable/PermissionValidation/ActionAccessValidation";
 
 type SearchFilter = {
     page: string;
@@ -25,7 +26,13 @@ export default function FinanceSearchFilter({
     isFilterTable,
     setFilterTable,
 }: SearchFilter) {
+    const Permission_Create_coa = AccessActionValidation(
+        "Chart of Accounts",
+        "create"
+    );
+
     const { setPrompt } = useContext(AppContext);
+
     const router = useRouter();
 
     const openNew = () => {
@@ -39,6 +46,7 @@ export default function FinanceSearchFilter({
             toggle: true,
         });
     };
+
     const ImportError = () => {
         setPrompt({
             type: "error",
@@ -46,6 +54,7 @@ export default function FinanceSearchFilter({
             toggle: true,
         });
     };
+
     // Imports
     // used as example
     const { isLoading: CusLoading, mutate: CusMutate } = CustomerImport(
@@ -126,9 +135,14 @@ export default function FinanceSearchFilter({
                         </Tippy>
                     </li>
 
-                    <li className={`${style.new} mr-0`}>
-                        <div onClick={openNew}>Create {page}</div>
-                    </li>
+                    {router.pathname.includes(
+                        "general-ledger/chart-of-account"
+                    ) &&
+                        Permission_Create_coa && (
+                            <li className={`${style.new} mr-0`}>
+                                <div onClick={openNew}>Create {page}</div>
+                            </li>
+                        )}
                 </ul>
             </section>
         </>

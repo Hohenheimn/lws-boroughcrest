@@ -18,6 +18,7 @@ import { TextNumberDisplay } from "../../../Reusable/NumberFormat";
 import Calendar from "../../../Reusable/Calendar";
 import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
 import { PencilButtonTable } from "../../../Reusable/Icons";
+import { AccessActionValidation } from "../../../Reusable/PermissionValidation/ActionAccessValidation";
 
 type isTable = {
     itemArray: isTableItemObj[];
@@ -42,6 +43,7 @@ type isTableItemObj = {
 };
 
 export default function BillingList() {
+    const Permission_approve = AccessActionValidation("Billing", "approve");
     const [type, setType] = useState("unposted");
     const [isPeriod, setPeriod] = useState({
         from: "",
@@ -380,30 +382,35 @@ export default function BillingList() {
                 <ul className={style.navigation}>
                     {type === "unposted" ? (
                         <>
-                            <li className={style.importExportPrint}>
-                                <Tippy theme="ThemeRed" content="Post">
-                                    <div
-                                        className={`${style.noFill} mr-5`}
-                                        onClick={() => UpdateStatus("Posted")}
-                                    >
-                                        {updateLoading &&
-                                        buttonLoading === "Posted" ? (
-                                            <MoonLoader
-                                                className="text-ThemeRed mr-2"
-                                                color="#8f384d"
-                                                size={16}
-                                            />
-                                        ) : (
-                                            <Image
-                                                src="/Images/f_check.png"
-                                                height={25}
-                                                width={30}
-                                                alt="Posted"
-                                            />
-                                        )}
-                                    </div>
-                                </Tippy>
-                            </li>
+                            {Permission_approve && (
+                                <li className={style.importExportPrint}>
+                                    <Tippy theme="ThemeRed" content="Post">
+                                        <div
+                                            className={`${style.noFill} mr-5`}
+                                            onClick={() =>
+                                                UpdateStatus("Posted")
+                                            }
+                                        >
+                                            {updateLoading &&
+                                            buttonLoading === "Posted" ? (
+                                                <MoonLoader
+                                                    className="text-ThemeRed mr-2"
+                                                    color="#8f384d"
+                                                    size={16}
+                                                />
+                                            ) : (
+                                                <Image
+                                                    src="/Images/f_check.png"
+                                                    height={25}
+                                                    width={30}
+                                                    alt="Posted"
+                                                />
+                                            )}
+                                        </div>
+                                    </Tippy>
+                                </li>
+                            )}
+
                             <li className={style.importExportPrint}>
                                 <Tippy theme="ThemeRed" content="In Process">
                                     <div

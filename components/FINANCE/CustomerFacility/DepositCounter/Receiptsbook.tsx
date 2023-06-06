@@ -4,15 +4,11 @@ import React, { useContext, useEffect, useState } from "react";
 import styleSearch from "../../../../styles/SearchFilter.module.scss";
 import Image from "next/image";
 import { GoEye } from "react-icons/go";
-
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { GetReceiptsBook, MultipleUpdateReceiptBook } from "./Query";
-
 import { BarLoader, ScaleLoader } from "react-spinners";
-import { BsPlusLg, BsSearch } from "react-icons/bs";
 import DepositDetail from "./DepositDetail";
-import { HiMinus } from "react-icons/hi";
 import { isTableBankCredit } from "./BankCreditComp";
 import DropdownIndex from "./DropdownIndex";
 import Pagination from "../../../Reusable/Pagination";
@@ -22,10 +18,11 @@ import {
 } from "../../../Reusable/NumberFormat";
 import TableErrorMessage from "../../../Reusable/TableErrorMessage";
 import AppContext from "../../../Context/AppContext";
-import { useQueryClient } from "react-query";
 import { format, isValid, parse } from "date-fns";
 import { MinusButtonTable, PlusButtonTable } from "../../../Reusable/Icons";
 import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
+import { BsSearch } from "react-icons/bs";
+import { AccessActionValidation } from "../../../Reusable/PermissionValidation/ActionAccessValidation";
 
 export type isReceiptBookData = {
     itemArray: isTableItemObjRB[];
@@ -133,6 +130,21 @@ export default function Receiptsbook({
             selectAll: !isReceiptBookData.selectAll,
         });
     };
+
+    const Permission_create = AccessActionValidation(
+        "Deposit Counter",
+        "create"
+    );
+
+    const Permission_modify = AccessActionValidation(
+        "Deposit Counter",
+        "modify"
+    );
+
+    const Permission_approve = AccessActionValidation(
+        "Deposit Counter",
+        "approve"
+    );
 
     const displayType = type === "receipts-book" ? "matched" : "unmatched";
 
@@ -334,21 +346,25 @@ export default function Receiptsbook({
                                     </div>
                                 </Tippy>
                             </li>
-                            <li className={styleSearch.importExportPrint}>
-                                <Tippy theme="ThemeRed" content="Approve">
-                                    <div
-                                        className={`${styleSearch.noFill} mr-5`}
-                                        onClick={() => UpdateStatus("Posted")}
-                                    >
-                                        <Image
-                                            src="/Images/f_check.png"
-                                            height={25}
-                                            width={30}
-                                            alt="Export"
-                                        />
-                                    </div>
-                                </Tippy>
-                            </li>
+                            {Permission_approve && (
+                                <li className={styleSearch.importExportPrint}>
+                                    <Tippy theme="ThemeRed" content="Approve">
+                                        <div
+                                            className={`${styleSearch.noFill} mr-5`}
+                                            onClick={() =>
+                                                UpdateStatus("Posted")
+                                            }
+                                        >
+                                            <Image
+                                                src="/Images/f_check.png"
+                                                height={25}
+                                                width={30}
+                                                alt="Export"
+                                            />
+                                        </div>
+                                    </Tippy>
+                                </li>
+                            )}
                         </ul>
                     </section>
                 </>
@@ -368,23 +384,29 @@ export default function Receiptsbook({
 
                     <ul className={styleSearch.navigation}>
                         <li className={styleSearch.importExportPrint}>
-                            <Link href="/finance/customer-facility/deposit-counter/create-deposit">
-                                <a className="buttonRed mr-5">CREATE DEPOSIT</a>
-                            </Link>
-                            <button
-                                className="buttonRed"
-                                onClick={() => SaveHandler()}
-                            >
-                                {isLoadingSave ? (
-                                    <ScaleLoader
-                                        color="#fff"
-                                        height="10px"
-                                        width="2px"
-                                    />
-                                ) : (
-                                    "SAVE"
-                                )}
-                            </button>
+                            {Permission_create && (
+                                <Link href="/finance/customer-facility/deposit-counter/create-deposit">
+                                    <a className="buttonRed mr-5">
+                                        CREATE DEPOSIT
+                                    </a>
+                                </Link>
+                            )}
+                            {Permission_modify && (
+                                <button
+                                    className="buttonRed"
+                                    onClick={() => SaveHandler()}
+                                >
+                                    {isLoadingSave ? (
+                                        <ScaleLoader
+                                            color="#fff"
+                                            height="10px"
+                                            width="2px"
+                                        />
+                                    ) : (
+                                        "SAVE"
+                                    )}
+                                </button>
+                            )}
                         </li>
                     </ul>
                 </section>
@@ -442,6 +464,7 @@ export default function Receiptsbook({
                                     setSelectedIDs={setSelectedIDs}
                                     isSelectedIDs={isSelectedIDs}
                                     SelectedIndex={OverallSelectedIndex}
+                                    Permission_modify={Permission_modify}
                                 />
                             )
                         )}
@@ -490,6 +513,7 @@ type ListProps = {
     isSelectedIDs: number[];
     setSelectedIDs: Function;
     SelectedIndex: string[];
+    Permission_modify: boolean;
 };
 
 const List = ({
@@ -503,6 +527,7 @@ const List = ({
     isSelectedIDs,
     setSelectedIDs,
     SelectedIndex,
+    Permission_modify,
 }: ListProps) => {
     const updateValue = (key: string, e: any) => {
         const indexID = e.target.getAttribute("data-indexID");
@@ -668,13 +693,19 @@ const List = ({
                     {type === "receipts-book" ? (
                         itemDetail?.index
                     ) : (
-                        <DropdownIndex
-                            name="index"
-                            value={itemDetail?.index}
-                            selectHandler={SelectHandler}
-                            rowID={itemDetail.id}
-                            selectedIndex={SelectedIndex}
-                        />
+                        <>
+                            {Permission_modify ? (
+                                <DropdownIndex
+                                    name="index"
+                                    value={itemDetail?.index}
+                                    selectHandler={SelectHandler}
+                                    rowID={itemDetail.id}
+                                    selectedIndex={SelectedIndex}
+                                />
+                            ) : (
+                                <input type="text" className="field disabled" />
+                            )}
+                        </>
                     )}
                 </td>
                 {type !== "receipts-book" && (
@@ -692,7 +723,8 @@ const List = ({
                 {type !== "receipts-book" && (
                     <td className="actionIcon">
                         {itemDetail?.variance !== 0 &&
-                            itemDetail?.childrenRB?.length <= 0 && (
+                            itemDetail?.childrenRB?.length <= 0 &&
+                            Permission_modify && (
                                 <div
                                     className={`ml-5 1024px:ml-2 ${
                                         itemDetail?.variance !== "0" &&

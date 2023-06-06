@@ -3,7 +3,7 @@ import { PageAccessValidation } from "../../components/Reusable/PermissionValida
 import NoPermissionComp from "../../components/Reusable/PermissionValidation/NoPermissionComp";
 
 export default function Communication() {
-    const PagePermisson = PageAccessValidation("Customer");
+    const PagePermisson = PageAccessValidation("Property");
 
     if (!PagePermisson && PagePermisson !== undefined) {
         return <NoPermissionComp />;

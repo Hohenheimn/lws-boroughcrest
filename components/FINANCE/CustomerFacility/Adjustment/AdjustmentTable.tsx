@@ -18,6 +18,7 @@ import { GetAdjustmentList, MultipleUpdateAdjustment } from "./Query";
 import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
 import { AdjustmentDetailType } from "./AdjusmentDetail";
 import ModalTemp from "../../../Reusable/ModalTemp";
+import { AccessActionValidation } from "../../../Reusable/PermissionValidation/ActionAccessValidation";
 
 type Props = {
     type: string;
@@ -45,11 +46,18 @@ type isTableItemObj = {
 };
 
 export default function AdjustmentTable({ type, isPeriod, setPeriod }: Props) {
+    const Permission_approve = AccessActionValidation("Adjustment", "approve");
+
     let buttonClicked = "";
+
     const [buttonLoading, setButtonLoading] = useState("");
+
     const { setPrompt } = useContext(AppContext);
+
     const [isSearch, setSearch] = useState("");
+
     const [TablePage, setTablePage] = useState(1);
+
     const [isTableItem, setTableItem] = useState<isTable>({
         itemArray: [],
         selectAll: false,
@@ -280,30 +288,35 @@ export default function AdjustmentTable({ type, isPeriod, setPeriod }: Props) {
                 <ul className={style.navigation}>
                     {type === "unposted" ? (
                         <>
-                            <li className={style.importExportPrint}>
-                                <Tippy theme="ThemeRed" content="Approve">
-                                    <div
-                                        className={`${style.noFill} mr-5`}
-                                        onClick={() => UpdateStatus("Posted")}
-                                    >
-                                        {updateLoading &&
-                                        buttonLoading === "Posted" ? (
-                                            <MoonLoader
-                                                className="text-ThemeRed mr-2"
-                                                color="#8f384d"
-                                                size={16}
-                                            />
-                                        ) : (
-                                            <Image
-                                                src="/Images/f_check.png"
-                                                height={25}
-                                                width={30}
-                                                alt="Posted"
-                                            />
-                                        )}
-                                    </div>
-                                </Tippy>
-                            </li>
+                            {Permission_approve && (
+                                <li className={style.importExportPrint}>
+                                    <Tippy theme="ThemeRed" content="Approve">
+                                        <div
+                                            className={`${style.noFill} mr-5`}
+                                            onClick={() =>
+                                                UpdateStatus("Posted")
+                                            }
+                                        >
+                                            {updateLoading &&
+                                            buttonLoading === "Posted" ? (
+                                                <MoonLoader
+                                                    className="text-ThemeRed mr-2"
+                                                    color="#8f384d"
+                                                    size={16}
+                                                />
+                                            ) : (
+                                                <Image
+                                                    src="/Images/f_check.png"
+                                                    height={25}
+                                                    width={30}
+                                                    alt="Posted"
+                                                />
+                                            )}
+                                        </div>
+                                    </Tippy>
+                                </li>
+                            )}
+
                             <li className={style.importExportPrint}>
                                 <Tippy theme="ThemeRed" content="In Process">
                                     <div

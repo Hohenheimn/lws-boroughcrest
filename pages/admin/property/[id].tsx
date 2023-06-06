@@ -36,7 +36,7 @@ export default function Id() {
         );
     }
 
-    const PagePermisson = PageAccessValidation("Customer");
+    const PagePermisson = PageAccessValidation("Property");
 
     if (!PagePermisson && PagePermisson !== undefined) {
         return <NoPermissionComp />;

@@ -14,15 +14,21 @@ import { customer } from "../../../../types/customerList";
 import { format, isValid, parse } from "date-fns";
 import PaymentSummaryTable from "./ReceivePayment/OfficialForm/PaymentSummary";
 import { useRouter } from "next/router";
+import { AccessActionValidation } from "../../../Reusable/PermissionValidation/ActionAccessValidation";
 
 type Props = {
     CollectionDetail: CollectionItem;
 };
 
 export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
+    const Permission_print = AccessActionValidation("Collection", "print");
+
     const { data } = GetCustomer(CollectionDetail?.customer_id);
+
     const CustomerDetail: customer = data?.data;
+
     const [isToggleID, setToggle] = useState<number | string>("");
+
     const receipt_date = parse(
         CollectionDetail?.receipt_date,
         "yyyy-MM-dd",
@@ -107,17 +113,19 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
                                 </Tippy>
                             </li>
                         )}
-                        <li className="mr-5">
-                            <Tippy theme="ThemeRed" content="Print">
-                                <div className="relative w-8 h-8 transition-all duration-75 hover:scale-[1.1]">
-                                    <Image
-                                        src="/Images/Print.png"
-                                        layout="fill"
-                                        alt="Print"
-                                    />
-                                </div>
-                            </Tippy>
-                        </li>
+                        {Permission_print && (
+                            <li className="mr-5">
+                                <Tippy theme="ThemeRed" content="Print">
+                                    <div className="relative w-8 h-8 transition-all duration-75 hover:scale-[1.1]">
+                                        <Image
+                                            src="/Images/Print.png"
+                                            layout="fill"
+                                            alt="Print"
+                                        />
+                                    </div>
+                                </Tippy>
+                            </li>
+                        )}
                     </ul>
                 </div>
 

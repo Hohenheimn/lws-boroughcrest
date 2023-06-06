@@ -25,6 +25,7 @@ import { MinusButtonTable, PlusButtonTable } from "../../../Reusable/Icons";
 import { BsSearch } from "react-icons/bs";
 import { m } from "framer-motion";
 import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
+import { AccessActionValidation } from "../../../Reusable/PermissionValidation/ActionAccessValidation";
 
 export type isTableBankCredit = {
     itemArray: isTableItemObjBC[];
@@ -78,8 +79,20 @@ export default function BankCreditComp({
     setBankCredit,
     setChangeData,
 }: Props) {
+    const Permission_modify = AccessActionValidation(
+        "Deposit Counter",
+        "modify"
+    );
+
+    const Permission_approve = AccessActionValidation(
+        "Deposit Counter",
+        "approve"
+    );
+
     const { setPrompt } = useContext(AppContext);
+
     const [isSearch, setSearch] = useState("");
+
     const [isSelectedBankCreditIDs, setSelectedBankCreditIDs] = useState<
         number[]
     >([]);
@@ -420,21 +433,23 @@ export default function BankCreditComp({
                                 </div>
                             </Tippy>
                         </li>
-                        <li className={styleSearch.importExportPrint}>
-                            <Tippy theme="ThemeRed" content="Approved">
-                                <div
-                                    className={`${styleSearch.noFill} mr-5`}
-                                    onClick={() => UpdateStatus("Posted")}
-                                >
-                                    <Image
-                                        src="/Images/f_check.png"
-                                        height={25}
-                                        width={30}
-                                        alt="Approved"
-                                    />
-                                </div>
-                            </Tippy>
-                        </li>
+                        {Permission_approve && (
+                            <li className={styleSearch.importExportPrint}>
+                                <Tippy theme="ThemeRed" content="Approved">
+                                    <div
+                                        className={`${styleSearch.noFill} mr-5`}
+                                        onClick={() => UpdateStatus("Posted")}
+                                    >
+                                        <Image
+                                            src="/Images/f_check.png"
+                                            height={25}
+                                            width={30}
+                                            alt="Approved"
+                                        />
+                                    </div>
+                                </Tippy>
+                            </li>
+                        )}
                     </ul>
                 )}
             </section>
@@ -493,6 +508,7 @@ export default function BankCreditComp({
                                     }
                                     SelectedReceipt={OverallSelectedReceipt}
                                     SelectedReference={OverallSelectedReference}
+                                    Permission_modify={Permission_modify}
                                 />
                             )
                         )}
@@ -542,6 +558,7 @@ type ListProps = {
     setSelectedBankCreditIDs: Function;
     SelectedReceipt: string[];
     SelectedReference: string[];
+    Permission_modify: boolean;
 };
 
 const List = ({
@@ -558,6 +575,7 @@ const List = ({
     setSelectedBankCreditIDs,
     SelectedReceipt,
     SelectedReference,
+    Permission_modify,
 }: ListProps) => {
     const [isSelect, setSelect] = useState({
         toggle: false,
@@ -792,20 +810,29 @@ const List = ({
                                 />
                             </div>
                         ) : (
-                            <DropdownReceipt_Reference
-                                setSelectField={SelectField}
-                                name="index"
-                                value={
-                                    isSelect.rec_ref === "receipt"
-                                        ? itemDetail.receipt_no
-                                        : itemDetail.reference_no
-                                }
-                                selectHandler={SelectHandler}
-                                keyType={isSelect.rec_ref}
-                                rowID={1}
-                                selecteRef={SelectedReference}
-                                selecteRec={SelectedReceipt}
-                            />
+                            <>
+                                {Permission_modify ? (
+                                    <DropdownReceipt_Reference
+                                        setSelectField={SelectField}
+                                        name="index"
+                                        value={
+                                            isSelect.rec_ref === "receipt"
+                                                ? itemDetail.receipt_no
+                                                : itemDetail.reference_no
+                                        }
+                                        selectHandler={SelectHandler}
+                                        keyType={isSelect.rec_ref}
+                                        rowID={1}
+                                        selecteRef={SelectedReference}
+                                        selecteRec={SelectedReceipt}
+                                    />
+                                ) : (
+                                    <input
+                                        type="text"
+                                        className="field disabled"
+                                    />
+                                )}
+                            </>
                         )}
                     </td>
                 )}
@@ -853,7 +880,8 @@ const List = ({
                 {type !== "bank-credit" && (
                     <td className="actionIcon">
                         {itemDetail?.variance !== 0 &&
-                            itemDetail?.childrenBC.length <= 0 && (
+                            itemDetail?.childrenBC.length <= 0 &&
+                            Permission_modify && (
                                 <div>
                                     <div
                                         className={`ml-5 1024px:ml-2 ${

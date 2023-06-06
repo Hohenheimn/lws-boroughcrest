@@ -53,13 +53,7 @@ export const SidebarLinks = () => {
             url: "/finance/general-ledger/chart-of-account",
             iconUrl: "Finance.png",
             ActiveUrl: "finance",
-            SubMenu: [
-                {
-                    name: "Check Warehouse",
-                    url: "/finance/check-warehouse/check-receivables/check-schedule",
-                    ActiveName: "check-warehouse",
-                },
-            ],
+            SubMenu: [],
         },
     ]);
 
@@ -68,6 +62,17 @@ export const SidebarLinks = () => {
     useEffect(() => {
         setUserInfo(JSON.parse(localStorage.userInfo));
     }, []);
+
+    const ValidatePermissionPage = (menu: string) => {
+        const cloneFilter: any = userInfo?.permissions.filter(
+            (filterItem) => filterItem.menu === menu
+        );
+        if (cloneFilter[0]?.access.includes("view")) {
+            return true;
+        } else {
+            return false;
+        }
+    };
 
     useEffect(() => {
         if (localStorage.userInfo !== undefined) {
@@ -79,42 +84,48 @@ export const SidebarLinks = () => {
                             (someItem) => someItem.menu === "Customer"
                         )
                     ) {
-                        addLinks = [
-                            ...addLinks,
-                            {
-                                name: "customer",
-                                url: "/admin/customer",
-                                ActiveName: "customer",
-                            },
-                        ];
+                        if (ValidatePermissionPage("Customer")) {
+                            addLinks = [
+                                ...addLinks,
+                                {
+                                    name: "customer",
+                                    url: "/admin/customer",
+                                    ActiveName: "customer",
+                                },
+                            ];
+                        }
                     }
                     if (
                         userInfo?.permissions.some(
                             (someItem) => someItem.menu === "Property"
                         )
                     ) {
-                        addLinks = [
-                            ...addLinks,
-                            {
-                                name: "property",
-                                url: "/admin/property",
-                                ActiveName: "property",
-                            },
-                        ];
+                        if (ValidatePermissionPage("Property")) {
+                            addLinks = [
+                                ...addLinks,
+                                {
+                                    name: "property",
+                                    url: "/admin/property",
+                                    ActiveName: "property",
+                                },
+                            ];
+                        }
                     }
                     if (
                         userInfo?.permissions.some(
                             (someItem) => someItem.menu === "Communication"
                         )
                     ) {
-                        addLinks = [
-                            ...addLinks,
-                            {
-                                name: "communication",
-                                url: "/admin/communication",
-                                ActiveName: "communication",
-                            },
-                        ];
+                        if (ValidatePermissionPage("Communication")) {
+                            addLinks = [
+                                ...addLinks,
+                                {
+                                    name: "communication",
+                                    url: "/admin/communication",
+                                    ActiveName: "communication",
+                                },
+                            ];
+                        }
                     }
                     if (
                         userInfo?.permissions.some(
@@ -138,14 +149,29 @@ export const SidebarLinks = () => {
                                 "Customer Request View (Closed)"
                         )
                     ) {
-                        addLinks = [
-                            ...addLinks,
-                            {
-                                name: "request",
-                                url: "/admin/request",
-                                ActiveName: "request",
-                            },
-                        ];
+                        if (
+                            ValidatePermissionPage(
+                                "Customer Request View (New Request)"
+                            ) ||
+                            ValidatePermissionPage(
+                                "Customer Request View (In Process)"
+                            ) ||
+                            ValidatePermissionPage(
+                                "Customer Request View (In Review)"
+                            ) ||
+                            ValidatePermissionPage(
+                                "Customer Request View (Closed)"
+                            )
+                        ) {
+                            addLinks = [
+                                ...addLinks,
+                                {
+                                    name: "request",
+                                    url: "/admin/request",
+                                    ActiveName: "request",
+                                },
+                            ];
+                        }
                     }
                     return {
                         ...item,
@@ -262,6 +288,12 @@ export const SidebarLinks = () => {
                         `${addLinks[0]?.name}`,
                         userInfo
                     );
+
+                    addLinks.splice(2, 0, {
+                        name: "Check Warehouse",
+                        url: "/finance/check-warehouse/check-receivables/check-schedule",
+                        ActiveName: "check-warehouse",
+                    });
 
                     return {
                         ...item,

@@ -23,6 +23,7 @@ import DefaultAccount from "./DefaultAccount";
 import Parent from "./Parent";
 import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
 import { InputTextForm } from "../../../Reusable/InputField";
+import { AccessActionValidation } from "../../../Reusable/PermissionValidation/ActionAccessValidation";
 
 type Props = {
     setCreate: Function;
@@ -35,16 +36,27 @@ export default function COAForm({
     DefaultFormData,
     transaction,
 }: Props) {
+    const Permission_modify = AccessActionValidation(
+        "Chart of Accounts",
+        "modify"
+    );
+
     const { setPrompt } = useContext(AppContext);
+
     const [saveButton, setSaveButton] = useState("");
+
     const queryClient = useQueryClient();
+
     const router = useRouter();
+
     const [isSave, setSave] = useState(false);
+
     const [isChartCode, setChartcode] = useState({
         parent:
             DefaultFormData.parent === undefined ? "" : DefaultFormData.parent,
         suffix: DefaultFormData.code_suffix,
     });
+
     const [isBankAccountToggle, setBankAccountToggle] = useState(false);
 
     const [isBankAccountVal, setBankAccountVal] = useState({
@@ -491,66 +503,72 @@ export default function COAForm({
                             CANCEL
                         </aside>
 
-                        {router.query.modify !== undefined && (
-                            <>
-                                {transaction ? (
-                                    <aside
-                                        className={`mr-5 ${style.next}`}
-                                        onClick={deleteHandler}
+                        {router.query.modify !== undefined &&
+                            Permission_modify && (
+                                <>
+                                    {transaction ? (
+                                        <aside
+                                            className={`mr-5 ${style.next}`}
+                                            onClick={deleteHandler}
+                                        >
+                                            {DeleteLoading ? (
+                                                <ScaleLoader
+                                                    color="#fff"
+                                                    height="10px"
+                                                    width="2px"
+                                                />
+                                            ) : (
+                                                "DELETE"
+                                            )}
+                                        </aside>
+                                    ) : (
+                                        ""
+                                    )}
+                                </>
+                            )}
+
+                        {(Permission_modify ||
+                            router.query.modify === undefined) && (
+                            <div className={style.Save}>
+                                <div>
+                                    <button
+                                        name="save"
+                                        className={style.save_button}
+                                        type="submit"
+                                        onClick={() => setSaveButton("save")}
                                     >
-                                        {DeleteLoading ? (
+                                        {SaveLoading || UpdateLoading ? (
                                             <ScaleLoader
                                                 color="#fff"
                                                 height="10px"
                                                 width="2px"
                                             />
                                         ) : (
-                                            "DELETE"
+                                            "SAVE"
                                         )}
-                                    </aside>
-                                ) : (
-                                    ""
-                                )}
-                            </>
-                        )}
-
-                        <div className={style.Save}>
-                            <div>
-                                <button
-                                    name="save"
-                                    className={style.save_button}
-                                    type="submit"
-                                    onClick={() => setSaveButton("save")}
-                                >
-                                    {SaveLoading || UpdateLoading ? (
-                                        <ScaleLoader
-                                            color="#fff"
-                                            height="10px"
-                                            width="2px"
+                                    </button>
+                                    <aside className={style.Arrow}>
+                                        <RiArrowDownSFill
+                                            onClick={() => setSave(!isSave)}
                                         />
-                                    ) : (
-                                        "SAVE"
-                                    )}
-                                </button>
-                                <aside className={style.Arrow}>
-                                    <RiArrowDownSFill
-                                        onClick={() => setSave(!isSave)}
-                                    />
-                                </aside>
+                                    </aside>
+                                </div>
+                                {isSave && (
+                                    <ul>
+                                        <li>
+                                            <button
+                                                type="submit"
+                                                onClick={() =>
+                                                    setSaveButton("new")
+                                                }
+                                            >
+                                                SAVE & NEW
+                                            </button>
+                                        </li>
+                                    </ul>
+                                )}
                             </div>
-                            {isSave && (
-                                <ul>
-                                    <li>
-                                        <button
-                                            type="submit"
-                                            onClick={() => setSaveButton("new")}
-                                        >
-                                            SAVE & NEW
-                                        </button>
-                                    </li>
-                                </ul>
-                            )}
-                        </div>
+                        )}
                     </div>
                 </motion.div>
             </section>

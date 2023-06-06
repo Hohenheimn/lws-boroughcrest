@@ -11,6 +11,8 @@ import {
 } from "../../../../../components/FINANCE/CustomerFacility/Adjustment/AdjusmentDetail";
 import { PageAccessValidation } from "../../../../../components/Reusable/PermissionValidation/PageAccessValidation";
 import NoPermissionComp from "../../../../../components/Reusable/PermissionValidation/NoPermissionComp";
+import { FaLock } from "react-icons/fa";
+import { AccessActionValidation } from "../../../../../components/Reusable/PermissionValidation/ActionAccessValidation";
 
 export default function Modify({ id }: any) {
     const { isLoading, data, isError } = GetAdjustmentDetail(id);
@@ -75,10 +77,27 @@ export default function Modify({ id }: any) {
         }
     }, [data?.data]);
 
+    const Permission_modify = AccessActionValidation("Adjustment", "modify");
+
     const PagePermisson = PageAccessValidation("Adjustment");
 
     if (!PagePermisson && PagePermisson !== undefined) {
         return <NoPermissionComp />;
+    }
+
+    if (!Permission_modify && Permission_modify !== undefined) {
+        return (
+            <div className="w-full h-full z-[9999999] bg-[#f8f9f9] flex justify-center items-center">
+                <div className="flex flex-col items-center ">
+                    <h1>
+                        <FaLock className=" text-ThemeRed text-[45px] mb-3" />
+                    </h1>
+                    <h1 className=" text-ThemeRed text-[16px]">
+                        You do not have permission to modify Adjustment
+                    </h1>
+                </div>
+            </div>
+        );
     }
 
     if (isLoading) {

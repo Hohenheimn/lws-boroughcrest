@@ -37,7 +37,7 @@ export default function Print({
         print();
     };
 
-    const PagePermisson = PageAccessValidation("Customer");
+    const PagePermisson = PageAccessValidation("Property");
 
     if (!PagePermisson && PagePermisson !== undefined) {
         return <NoPermissionComp />;

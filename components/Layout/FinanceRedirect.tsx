@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { LoginUserInfo } from "../HOC/LoginUser/UserInfo";
 
 export const FinanceRedirect = (name: string, userInfo?: LoginUserInfo) => {
@@ -10,23 +9,32 @@ export const FinanceRedirect = (name: string, userInfo?: LoginUserInfo) => {
                 item.menu === "Bank Reconciliation" ||
                 item.menu === "Journal"
         );
-        let url = "";
         if (cloneGL !== undefined) {
-            if (cloneGL[0]?.menu === "Chart of Accounts") {
-                url = "/finance/general-ledger/chart-of-account";
+            if (
+                cloneGL.some(
+                    (someItem) => someItem.menu === "Chart of Accounts"
+                )
+            ) {
+                return "/finance/general-ledger/chart-of-account";
             }
-            if (cloneGL[0]?.menu === "Opening Balance") {
-                url = "/finance/general-ledger/opening-balance/general-ledger";
+            if (
+                cloneGL.some((someItem) => someItem.menu === "Opening Balance")
+            ) {
+                return "/finance/general-ledger/opening-balance/general-ledger";
             }
-            if (cloneGL[0]?.menu === "Bank Reconciliation") {
-                url = "/finance/general-ledger/bank-reconciliation";
+            if (
+                cloneGL.some(
+                    (someItem) => someItem.menu === "Bank Reconciliation"
+                )
+            ) {
+                return "/finance/general-ledger/bank-reconciliation";
             }
-            if (cloneGL[0]?.menu === "Journal") {
-                url = "/finance/general-ledger/journal/create-journal";
+            if (cloneGL.some((someItem) => someItem.menu === "Journal")) {
+                return "/finance/general-ledger/journal/create-journal";
             }
         }
-        return url;
     }
+
     if (name === "customer facility") {
         const cloneGL = userInfo?.permissions.filter(
             (item) =>
@@ -36,25 +44,26 @@ export const FinanceRedirect = (name: string, userInfo?: LoginUserInfo) => {
                 item.menu === "Deposit Counter" ||
                 item.menu === "Adjustment"
         );
-        let url = "";
+
         if (cloneGL !== undefined) {
-            if (cloneGL[0]?.menu === "Charges") {
-                url = "/finance/customer-facility/charge";
+            if (cloneGL.some((someItem) => someItem.menu === "Charges")) {
+                return "/finance/customer-facility/charge";
             }
-            if (cloneGL[0]?.menu === "Billing") {
-                url = "/finance/customer-facility/billing/create-invoice";
+            if (cloneGL.some((someItem) => someItem.menu === "Billing")) {
+                return "/finance/customer-facility/billing/create-invoice";
             }
-            if (cloneGL[0]?.menu === "Collection") {
-                url = "/finance/customer-facility/collection/receive-payment";
+            if (cloneGL.some((someItem) => someItem.menu === "Collection")) {
+                return "/finance/customer-facility/collection/receive-payment";
             }
-            if (cloneGL[0]?.menu === "Deposit Counter") {
-                url = "/finance/customer-facility/deposit-counter";
+            if (
+                cloneGL.some((someItem) => someItem.menu === "Deposit Counter")
+            ) {
+                return "/finance/customer-facility/deposit-counter";
             }
-            if (cloneGL[0]?.menu === "Adjustment") {
-                url = "/finance/customer-facility/adjustment/create-adjustment";
+            if (cloneGL.some((someItem) => someItem.menu === "Adjustment")) {
+                return "/finance/customer-facility/adjustment/create-adjustment";
             }
         }
-        return url;
     }
 
     if (name === "reports") {
@@ -63,15 +72,18 @@ export const FinanceRedirect = (name: string, userInfo?: LoginUserInfo) => {
                 item.menu === "General Reports" ||
                 item.menu === "Customer Reports"
         );
-        let url = "";
+
         if (cloneGL !== undefined) {
-            if (cloneGL[0]?.menu === "General Reports") {
-                url = "/finance/reports/general-reports";
+            if (
+                cloneGL.some((someItem) => someItem.menu === "General Reports")
+            ) {
+                return "/finance/reports/general-reports";
             }
-            if (cloneGL[0]?.menu === "Customer Reports") {
-                url = "/finance/reports/customer-reports";
+            if (
+                cloneGL.some((someItem) => someItem.menu === "Customer Reports")
+            ) {
+                return "/finance/reports/customer-reports";
             }
         }
-        return url;
     }
 };

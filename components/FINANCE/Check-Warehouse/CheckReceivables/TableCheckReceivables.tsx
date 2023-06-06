@@ -28,6 +28,7 @@ import { BookedCheckType } from "../../../../pages/finance/check-warehouse/check
 import { CheckScheduleType } from "../../../../pages/finance/check-warehouse/check-receivables/check-schedule";
 import Link from "next/link";
 import { CollectionItem } from "../../../../pages/finance/customer-facility/collection/payment-register";
+import { AccessActionValidation } from "../../../Reusable/PermissionValidation/ActionAccessValidation";
 
 type Props = {
     isSearch: string;
@@ -553,6 +554,8 @@ type BookedListProps = {
 };
 
 const ListBookedCheck = ({ itemDetail }: BookedListProps) => {
+    const Permission_create = AccessActionValidation("Collection", "create");
+
     const check_date = parse(itemDetail.check_date, "yyyy-MM-dd", new Date());
 
     const deposit_date = parse(
@@ -564,20 +567,22 @@ const ListBookedCheck = ({ itemDetail }: BookedListProps) => {
     return (
         <tr className="hoverEffect">
             <td className="icon">
-                <div
-                    className={` cursor-pointer ${
-                        itemDetail.status === "Rejected" &&
-                        "pointer-events-none"
-                    }`}
-                >
-                    <Link
-                        href={`/finance/customer-facility/collection/receive-payment/${itemDetail.collection.id}?from=check_warehouse`}
+                {Permission_create && (
+                    <div
+                        className={` cursor-pointer ${
+                            itemDetail.status === "Rejected" &&
+                            "pointer-events-none"
+                        }`}
                     >
-                        <a>
-                            <OppositeArrow />
-                        </a>
-                    </Link>
-                </div>
+                        <Link
+                            href={`/finance/customer-facility/collection/receive-payment/${itemDetail.collection.id}?from=check_warehouse`}
+                        >
+                            <a>
+                                <OppositeArrow />
+                            </a>
+                        </Link>
+                    </div>
+                )}
             </td>
             <td>
                 <div className="finance_status">

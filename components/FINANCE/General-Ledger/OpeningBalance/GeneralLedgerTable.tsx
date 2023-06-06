@@ -11,6 +11,7 @@ import {
 import TableErrorMessage from "../../../Reusable/TableErrorMessage";
 import { format, isValid, parse } from "date-fns";
 import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
+import { AccessActionValidation } from "../../../Reusable/PermissionValidation/ActionAccessValidation";
 
 type isTableItem = isTableItemObj[];
 
@@ -29,7 +30,20 @@ type GeneralLedgerTableProps = {
     date: string;
 };
 export default function GeneralLedgerTable({ date }: GeneralLedgerTableProps) {
+    const Permission_view = AccessActionValidation("Opening Balance", "view");
+
+    const Permission_modify = AccessActionValidation(
+        "Opening Balance",
+        "modify"
+    );
+
+    const Permission_create = AccessActionValidation(
+        "Opening Balance",
+        "create"
+    );
+
     const { setPrompt } = useContext(AppContext);
+
     const onSucces = () => {
         setPrompt({
             toggle: true,
@@ -37,17 +51,22 @@ export default function GeneralLedgerTable({ date }: GeneralLedgerTableProps) {
             type: "success",
         });
     };
+
     const onError = (e: any) => {
         ErrorSubmit(e, setPrompt);
     };
+
     const { isLoading: mutateLoading, mutate } = CreateUpdateGeneralLedger(
         onSucces,
         onError
     );
+
     const { data, isLoading, isError } = GetGeneralLedger();
+
     const [isTableItem, setTableItem] = useState<isTableItem>([]);
 
     const [totalDebit, setTotalDebit] = useState<number>(0);
+
     const [totalCredit, setTotalCredit] = useState<number>(0);
 
     useEffect(() => {
@@ -71,8 +90,12 @@ export default function GeneralLedgerTable({ date }: GeneralLedgerTableProps) {
                             : item.credit,
                 };
             });
-            // Additional blank row field
-            setTableItem(CloneArray);
+
+            if (Permission_view) {
+                setTableItem(CloneArray);
+            } else {
+                setTableItem([]);
+            }
         }
     }, [data?.status]);
 
@@ -150,6 +173,12 @@ export default function GeneralLedgerTable({ date }: GeneralLedgerTableProps) {
                                             setTableItem={setTableItem}
                                             isTableItem={isTableItem}
                                             key={index}
+                                            Permission_modify={
+                                                Permission_modify
+                                            }
+                                            Permission_create={
+                                                Permission_create
+                                            }
                                         />
                                     )
                                 )}
@@ -193,14 +222,20 @@ export default function GeneralLedgerTable({ date }: GeneralLedgerTableProps) {
             </div>
 
             <div className="flex justify-end py-5 mt-5">
-                <button className="button_cancel">Cancel</button>
-                <button className="buttonRed" onClick={SubmitHandler}>
-                    {mutateLoading ? (
-                        <ScaleLoader color="#fff" height="10px" width="2px" />
-                    ) : (
-                        "SAVE"
-                    )}
-                </button>
+                {/* <button className="button_cancel">Cancel</button> */}
+                {(Permission_create || Permission_modify) && (
+                    <button className="buttonRed" onClick={SubmitHandler}>
+                        {mutateLoading ? (
+                            <ScaleLoader
+                                color="#fff"
+                                height="10px"
+                                width="2px"
+                            />
+                        ) : (
+                            "SAVE"
+                        )}
+                    </button>
+                )}
             </div>
         </>
     );
@@ -210,9 +245,17 @@ type List = {
     itemDetail: isTableItemObj;
     setTableItem: Function;
     isTableItem: isTableItem;
+    Permission_create: boolean;
+    Permission_modify: boolean;
 };
 
-const List = ({ itemDetail, setTableItem, isTableItem }: List) => {
+const List = ({
+    itemDetail,
+    setTableItem,
+    isTableItem,
+    Permission_create,
+    Permission_modify,
+}: List) => {
     const UpdateStateHandler = (key: string, value: any) => {
         const newItems = isTableItem.map((item: any) => {
             if (itemDetail.id == item.id) {
@@ -252,6 +295,24 @@ const List = ({ itemDetail, setTableItem, isTableItem }: List) => {
             setcreditValidate
         );
     }, [itemDetail.debit, itemDetail.credit]);
+
+    useEffect(() => {
+        if (
+            !Permission_create &&
+            itemDetail.debit === "" &&
+            itemDetail.credit === ""
+        ) {
+            setDebitValidate("disabled");
+            setcreditValidate("disabled");
+        }
+        if (
+            !Permission_modify &&
+            (itemDetail.debit !== "" || itemDetail.credit !== "")
+        ) {
+            setDebitValidate("disabled");
+            setcreditValidate("disabled");
+        }
+    }, [Permission_create, Permission_modify]);
 
     return (
         <tr>

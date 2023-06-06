@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { LoginUserInfo } from "../../HOC/LoginUser/UserInfo";
 
 export const AccessActionValidation = (menu: string, action: string) => {
-    const [Validation, setValidation] = useState(false);
+    const [Validation, setValidation] = useState<boolean>(true);
     const [userInfo, setUserInfo] = useState<LoginUserInfo>();
     useEffect(() => {
         setUserInfo(JSON.parse(localStorage.userInfo));

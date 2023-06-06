@@ -8,6 +8,7 @@ import Image from "next/image";
 import { TextNumberDisplay } from "../../../Reusable/NumberFormat";
 import { format, isValid, parse } from "date-fns";
 import { PencilButton } from "../../../Reusable/Icons";
+import { AccessActionValidation } from "../../../Reusable/PermissionValidation/ActionAccessValidation";
 
 type JournalDetail = {
     Detail: {
@@ -39,7 +40,10 @@ export type journal_list = {
 };
 
 export default function JournalDetail({ Detail }: JournalDetail) {
+    const Permission_modify = AccessActionValidation("Journal", "modify");
+
     const [totalDebit, setTotalDebit] = useState(0);
+
     const [totalCredit, setTotalCredit] = useState(0);
 
     useEffect(() => {
@@ -52,6 +56,7 @@ export default function JournalDetail({ Detail }: JournalDetail) {
     }, []);
 
     const date = parse(Detail.date, "yyyy-MM-dd", new Date());
+
     return (
         <div>
             <div className="flex justify-between items-center mb-5">
@@ -72,7 +77,8 @@ export default function JournalDetail({ Detail }: JournalDetail) {
             </div>
             <ul className={`${style.FourRows} ${style.narrow}`}>
                 {Detail.status !== "Approved" &&
-                    Detail.status !== "In Progress" && (
+                    Detail.status !== "In Progress" &&
+                    Permission_modify && (
                         <aside className=" mt-[-15px]">
                             <Link
                                 href={`/finance/general-ledger/journal/modify-journal/${Detail.id}`}

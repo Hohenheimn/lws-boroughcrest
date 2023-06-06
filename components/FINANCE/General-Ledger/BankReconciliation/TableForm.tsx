@@ -4,11 +4,9 @@ import Calendar from "../../../Reusable/Calendar";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 import styleSearch from "../../../../styles/SearchFilter.module.scss";
-import { BarLoader, MoonLoader, ScaleLoader } from "react-spinners";
+import { BarLoader, ScaleLoader } from "react-spinners";
 import AppContext from "../../../Context/AppContext";
-import { CustomerImport } from "../../../ReactQuery/CustomerMethod";
 import PeriodCalendar from "../../../Reusable/PeriodCalendar";
-import DropdownSearch from "../../../Reusable/DropdownSearch";
 import BankAccountDropDown from "../../../Reusable/BankAccountDropDown";
 import { CreateUpdateBR, GetBR } from "./Query";
 import TableErrorMessage from "../../../Reusable/TableErrorMessage";
@@ -17,8 +15,6 @@ import {
     TextNumberDisplay,
 } from "../../../Reusable/NumberFormat";
 import { validateCreditDebitField } from "../OpeningBalance/ValidateCreditDebitField";
-import { HiMinus } from "react-icons/hi";
-import { BsPlusLg } from "react-icons/bs";
 import { format, isValid, parse } from "date-fns";
 import { AiOutlineInfoCircle } from "react-icons/ai";
 import Link from "next/link";
@@ -31,6 +27,7 @@ import {
 } from "../../../Reusable/Icons";
 import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
 import { TextFieldValidation } from "../../../Reusable/InputField";
+import { AccessActionValidation } from "../../../Reusable/PermissionValidation/ActionAccessValidation";
 
 type isTableitemArray = isTableitemObj[];
 
@@ -46,18 +43,39 @@ type isTableitemObj = {
 };
 
 export default function TableForm() {
+    const Permission_create = AccessActionValidation(
+        "Bank Reconciliation",
+        "create"
+    );
+
+    const Permission_modify = AccessActionValidation(
+        "Bank Reconciliation",
+        "create"
+    );
+
+    const Permission_view = AccessActionValidation(
+        "Bank Reconciliation",
+        "create"
+    );
+
     const router = useRouter();
+
     const [isEdit, setEdit] = useState(false);
+
     const { setPrompt } = useContext(AppContext);
+
     const [isPeriod, setPeriod] = useState({
         from: "",
         to: "",
     });
+
     const [isBankAccount, setBankAccount] = useState({
         id: "",
         value: "",
     });
+
     const [isTableItem, setTableItem] = useState<isTableitemArray>([]);
+
     const onSucces = () => {
         setEdit(false);
         setPrompt({
@@ -66,20 +84,26 @@ export default function TableForm() {
             type: "success",
         });
     };
+
     const onError = (e: any) => {
         ErrorSubmit(e, setPrompt);
     };
+
     const { isLoading: mutateLoading, mutate } = CreateUpdateBR(
         onSucces,
         onError
     );
+
     const dateFrom = parse(isPeriod.from, "MMM dd yyyy", new Date());
+
     const dateTo = parse(isPeriod.to, "MMM dd yyyy", new Date());
+
     const { isLoading, isError, data } = GetBR(
         isValid(dateFrom) ? format(dateFrom, "yyyy-MM-dd") : "",
         isValid(dateTo) ? format(dateTo, "yyyy-MM-dd") : "",
         isBankAccount.id
     );
+
     useEffect(() => {
         if (data?.status === 200) {
             const CloneArray = data?.data.map((item: any, index: number) => {
@@ -102,9 +126,8 @@ export default function TableForm() {
                 };
             });
             // Additional blank row field
-            if (data?.data.length <= 0) {
+            if (data?.data.length <= 0 || !Permission_view) {
                 setTableItem([
-                    ...CloneArray,
                     {
                         id: "",
                         date: "",
@@ -113,7 +136,7 @@ export default function TableForm() {
                         document_no: "",
                         debit: "",
                         credit: "",
-                        status: null,
+                        status: "",
                     },
                 ]);
             } else {
@@ -195,14 +218,20 @@ export default function TableForm() {
 
                 <ul className={styleSearch.navigation}>
                     <li className={styleSearch.importExportPrint}>
-                        <div className="mr-5">
-                            {!isEdit && (
-                                <PencilButton
-                                    FunctionOnClick={() => setEdit(true)}
-                                    title={"Edit"}
-                                />
-                            )}
-                        </div>
+                        {(Permission_create || Permission_modify) && (
+                            <div className="mr-5">
+                                {!isEdit && (
+                                    <PencilButton
+                                        FunctionOnClick={() => {
+                                            if (isBankAccount.id !== "") {
+                                                setEdit(true);
+                                            }
+                                        }}
+                                        title={"Edit"}
+                                    />
+                                )}
+                            </div>
+                        )}
                         <Tippy theme="ThemeRed" content="Export">
                             <div className={styleSearch.icon}>
                                 <Image
@@ -293,6 +322,15 @@ export default function TableForm() {
                                                 dateFrom={dateFrom}
                                                 dateTo={dateTo}
                                                 isEdit={isEdit}
+                                                Permission_create={
+                                                    Permission_create
+                                                }
+                                                Permission_modify={
+                                                    Permission_modify
+                                                }
+                                                Permission_view={
+                                                    Permission_view
+                                                }
                                             />
                                         )
                                     )}
@@ -354,6 +392,10 @@ type ListProps = {
     dateFrom: Date;
     dateTo: Date;
     isEdit: boolean;
+
+    Permission_create: boolean;
+    Permission_modify: boolean;
+    Permission_view: boolean;
 };
 
 const List = ({
@@ -366,6 +408,9 @@ const List = ({
     dateFrom,
     dateTo,
     isEdit,
+    Permission_create,
+    Permission_modify,
+    Permission_view,
 }: ListProps) => {
     const { setPrompt } = useContext(AppContext);
     const itemData: isTableitemObj = itemDetail;
@@ -590,30 +635,51 @@ const List = ({
                             href={`/finance/general-ledger/bank-reconciliation?view=${itemData.id}`}
                         >
                             <a>
-                                <AiOutlineInfoCircle className=" text-[16px]" />
+                                <Tippy content={"View"}>
+                                    <div>
+                                        <AiOutlineInfoCircle className=" text-[16px]" />
+                                    </div>
+                                </Tippy>
                             </a>
                         </Link>
                     ) : (
                         <>
-                            {isTableItem.length > 1 && (
-                                <div
-                                    className=" cursor-pointer"
-                                    onClick={RemoveRowHandler}
-                                >
-                                    <MinusButtonTable />
-                                </div>
+                            {Permission_modify && itemData.status !== "" && (
+                                <>
+                                    {isTableItem.length > 1 && (
+                                        <div
+                                            className=" cursor-pointer"
+                                            onClick={RemoveRowHandler}
+                                        >
+                                            <MinusButtonTable />
+                                        </div>
+                                    )}
+                                </>
+                            )}
+                            {itemData.status === "" && (
+                                <>
+                                    {isTableItem.length > 1 && (
+                                        <div
+                                            className=" cursor-pointer"
+                                            onClick={RemoveRowHandler}
+                                        >
+                                            <MinusButtonTable />
+                                        </div>
+                                    )}
+                                </>
                             )}
                         </>
                     )}
 
-                    {isTableItem.length - 1 === rowNumber && (
-                        <div
-                            className="ml-5 1024px:ml-2 cursor-pointer"
-                            onClick={(e) => AddRowHandler(e)}
-                        >
-                            <PlusButtonTable />
-                        </div>
-                    )}
+                    {isTableItem.length - 1 === rowNumber &&
+                        Permission_create && (
+                            <div
+                                className="ml-5 1024px:ml-2 cursor-pointer"
+                                onClick={(e) => AddRowHandler(e)}
+                            >
+                                <PlusButtonTable />
+                            </div>
+                        )}
                 </td>
             )}
         </tr>

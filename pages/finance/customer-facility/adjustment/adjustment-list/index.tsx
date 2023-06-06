@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import AdjustmentTable from "../../../../../components/FINANCE/CustomerFacility/Adjustment/AdjustmentTable";
 import { PageAccessValidation } from "../../../../../components/Reusable/PermissionValidation/PageAccessValidation";
 import NoPermissionComp from "../../../../../components/Reusable/PermissionValidation/NoPermissionComp";
+import { AccessActionValidation } from "../../../../../components/Reusable/PermissionValidation/ActionAccessValidation";
 
 export default function AdjustmentList() {
     const [isType, setType] = useState("unposted");

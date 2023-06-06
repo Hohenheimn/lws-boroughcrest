@@ -21,6 +21,7 @@ import ModalTemp from "../../../Reusable/ModalTemp";
 import { CopyButtonTable } from "../../../Reusable/Icons";
 import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
 import TableLoadingNError from "../../../Reusable/TableLoadingNError";
+import { AccessActionValidation } from "../../../Reusable/PermissionValidation/ActionAccessValidation";
 
 type Props = {
     type: string;
@@ -46,10 +47,16 @@ type isTableItemObj = {
 };
 
 export default function JournalTable({ type, isPeriod, setPeriod }: Props) {
+    const Permission_approve = AccessActionValidation("Journal", "approve");
+
     const [ButtonClicked, setButtonClicked] = useState("");
+
     const { setPrompt } = useContext(AppContext);
+
     const [isSearch, setSearch] = useState("");
+
     const [TablePage, setTablePage] = useState(1);
+
     const [isTableItem, setTableItem] = useState<isTable>({
         itemArray: [],
         selectAll: false,
@@ -179,7 +186,6 @@ export default function JournalTable({ type, isPeriod, setPeriod }: Props) {
 
     const UpdateStatus = (button: string) => {
         setButtonClicked(button);
-
         if (isSelectedIDs.length > 0) {
             if (button === "Rejected") {
                 setRejectNoticeToggle(true);
@@ -247,30 +253,34 @@ export default function JournalTable({ type, isPeriod, setPeriod }: Props) {
                 <ul className={style.navigation}>
                     {type === "unposted" ? (
                         <>
-                            <li className={style.importExportPrint}>
-                                <Tippy theme="ThemeRed" content="Approve">
-                                    <div
-                                        className={`${style.noFill} mr-5`}
-                                        onClick={() => UpdateStatus("Approved")}
-                                    >
-                                        {updateLoading &&
-                                        ButtonClicked === "Approved" ? (
-                                            <MoonLoader
-                                                className="text-ThemeRed mr-2"
-                                                color="#8f384d"
-                                                size={16}
-                                            />
-                                        ) : (
-                                            <Image
-                                                src="/Images/f_check.png"
-                                                height={25}
-                                                width={30}
-                                                alt="Approved"
-                                            />
-                                        )}
-                                    </div>
-                                </Tippy>
-                            </li>
+                            {Permission_approve && (
+                                <li className={style.importExportPrint}>
+                                    <Tippy theme="ThemeRed" content="Approve">
+                                        <div
+                                            className={`${style.noFill} mr-5`}
+                                            onClick={() =>
+                                                UpdateStatus("Approved")
+                                            }
+                                        >
+                                            {updateLoading &&
+                                            ButtonClicked === "Approved" ? (
+                                                <MoonLoader
+                                                    className="text-ThemeRed mr-2"
+                                                    color="#8f384d"
+                                                    size={16}
+                                                />
+                                            ) : (
+                                                <Image
+                                                    src="/Images/f_check.png"
+                                                    height={25}
+                                                    width={30}
+                                                    alt="Approved"
+                                                />
+                                            )}
+                                        </div>
+                                    </Tippy>
+                                </li>
+                            )}{" "}
                             <li className={style.importExportPrint}>
                                 <Tippy theme="ThemeRed" content="In Process">
                                     <div

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { LoginUserInfo } from "../HOC/LoginUser/UserInfo";
+import { useRouter } from "next/router";
 
 type FinanceUrls = {
     name: string;
@@ -12,114 +13,130 @@ type FinanceUrls = {
     }[];
 };
 
-export const GeneralLedgerLinks = () => {
+export const FinanceUpperLinks = () => {
+    const router = useRouter();
+
     const [userInfo, setUserInfo] = useState<LoginUserInfo>();
 
     useEffect(() => {
         setUserInfo(JSON.parse(localStorage.userInfo));
     }, []);
 
-    const [Links, setLinks] = useState<FinanceUrls[]>([
-        {
-            name: "Chart of Accounts",
-            activeUrl: "chart-of-account",
-            url: "/finance/general-ledger/chart-of-account",
-            type: "",
-        },
-        {
-            name: "Opening Balance",
-            activeUrl: "opening-balance",
-            url: "/finance/general-ledger/opening-balance/general-ledger",
-            type: "",
-            submenu: [
-                {
-                    name: "General Ledger Opening Balance",
-                    url: "/finance/general-ledger/opening-balance/general-ledger",
-                },
-                {
-                    name: "Subledger Opening Balance",
-                    url: "/finance/general-ledger/opening-balance/subledger",
-                },
-            ],
-        },
-        {
-            name: "Bank Reconciliation",
-            activeUrl: "bank-reconciliation",
-            url: "/finance/general-ledger/bank-reconciliation",
-            type: "",
-        },
-        // {
-        //     name: "Asset Management",
-        //     activeUrl: "asset-management",
-        //     url: "/finance/general-ledger/asset-management",
-        //     type: "disabled",
-        // },
-        {
-            name: "Journal",
-            activeUrl: "journal",
-            url: "/finance/general-ledger/journal/create-journal",
-            type: "",
-            submenu: [
-                {
-                    name: "Create Journal",
-                    url: "/finance/general-ledger/journal/create-journal",
-                },
-                {
-                    name: "Journal List",
-                    url: "/finance/general-ledger/journal/journal-list",
-                },
-            ],
-        },
-    ]);
+    const [Links, setLinks] = useState<FinanceUrls[]>([]);
 
-    const CheckValidation = () => {
-        let validate = false;
-        userInfo?.permissions.map((item) => {
-            console.log(item.menu);
-            if (item.menu === "Journal") {
-                validate = true;
-                return;
-            }
-        });
-        return validate;
-    };
     useEffect(() => {
         if (localStorage.userInfo !== undefined) {
-            userInfo?.permissions.map((item) => {
-                console.log(item.menu);
-            });
-            const GetLink = Links.map((mapItem) => {
-                if (CheckValidation()) {
-                    return mapItem;
-                } else {
-                    return {
-                        name: "",
-                        activeUrl: "",
-                        url: "",
+            if (router.pathname.includes("general-ledger")) {
+                const GetLink = GeneralLedger.filter((filterItem) =>
+                    userInfo?.permissions.some(
+                        (someItem) => someItem.menu === filterItem.name
+                    )
+                );
+                setLinks(GetLink);
+            }
+            if (router.pathname.includes("customer-facility")) {
+                const GetLink = CustomerFacility.filter((filterItem) =>
+                    userInfo?.permissions.some(
+                        (someItem) => someItem.menu === filterItem.name
+                    )
+                );
+                setLinks(GetLink);
+            }
+            if (router.pathname.includes("check-warehouse")) {
+                const GetLink = CheckWarehouse.filter((filterItem) =>
+                    userInfo?.permissions.some(
+                        (someItem) => someItem.menu === filterItem.name
+                    )
+                );
+                setLinks([
+                    ...GetLink,
+                    {
+                        name: "Check Payment",
+                        activeUrl: "#",
+                        url: "#",
                         type: "",
-                    };
-                }
-            });
-            const FilterLink = GetLink.filter(
-                (filterItem) => filterItem.name !== ""
-            );
-            setLinks(FilterLink);
+                    },
+                ]);
+            }
+            if (router.pathname.includes("reports")) {
+                const GetLink = Reports.filter((filterItem) =>
+                    userInfo?.permissions.some(
+                        (someItem) => someItem.menu === filterItem.name
+                    )
+                );
+                setLinks(GetLink);
+            }
         }
-    }, [userInfo]);
+    }, [userInfo, router.pathname]);
 
     return Links;
 };
 
-export const CustomerFacility = [
+const GeneralLedger = [
     {
-        name: "Charge",
+        name: "Chart of Accounts",
+        activeUrl: "chart-of-account",
+        url: "/finance/general-ledger/chart-of-account",
+        type: "",
+    },
+    {
+        name: "Opening Balance",
+        activeUrl: "opening-balance",
+        url: "/finance/general-ledger/opening-balance/general-ledger",
+        type: "",
+        submenu: [
+            {
+                name: "General Ledger Opening Balance",
+                url: "/finance/general-ledger/opening-balance/general-ledger",
+            },
+            {
+                name: "Subledger Opening Balance",
+                url: "/finance/general-ledger/opening-balance/subledger",
+            },
+        ],
+    },
+    {
+        name: "Bank Reconciliation",
+        activeUrl: "bank-reconciliation",
+        url: "/finance/general-ledger/bank-reconciliation",
+        type: "",
+    },
+    // {
+    //     name: "Asset Management",
+    //     activeUrl: "asset-management",
+    //     url: "/finance/general-ledger/asset-management",
+    //     type: "disabled",
+    // },
+    {
+        name: "Journal",
+        activeUrl: "journal",
+        url: "/finance/general-ledger/journal/create-journal",
+        type: "",
+        submenu: [
+            {
+                name: "Create Journal",
+                url: "/finance/general-ledger/journal/create-journal",
+            },
+            {
+                name: "Journal List",
+                url: "/finance/general-ledger/journal/journal-list",
+            },
+        ],
+    },
+];
+
+const CustomerFacility = [
+    {
+        name: "Charges",
         activeUrl: "charge",
         url: "/finance/customer-facility/charge",
+        type: "",
     },
     {
         name: "Billing",
         activeUrl: "billing",
         url: "/finance/customer-facility/billing/create-invoice",
+        type: "",
         submenu: [
             {
                 name: "Create Invoice",
@@ -143,6 +160,7 @@ export const CustomerFacility = [
         name: "Collection",
         activeUrl: "collection",
         url: "/finance/customer-facility/collection/receive-payment",
+        type: "",
         submenu: [
             {
                 name: "Receive Payment",
@@ -162,11 +180,13 @@ export const CustomerFacility = [
         name: "Deposit Counter",
         activeUrl: "deposit-counter",
         url: "/finance/customer-facility/deposit-counter",
+        type: "",
     },
     {
         name: "Adjustment",
         activeUrl: "adjustment",
-        url: "/finance/customer-facility/adjustment",
+        url: "/finance/customer-facility/adjustment/create-adjustment",
+        type: "",
         submenu: [
             {
                 name: "Create Customer Adjustment",
@@ -179,11 +199,13 @@ export const CustomerFacility = [
         ],
     },
 ];
-export const CheckWarehouse = [
+
+const CheckWarehouse = [
     {
         name: "Check Receivables",
         activeUrl: "check-warehouse/check-receivables",
         url: "/finance/check-warehouse/check-receivables/check-schedule",
+        type: "",
         submenu: [
             {
                 name: "Check Schedule",
@@ -203,18 +225,20 @@ export const CheckWarehouse = [
         name: "Check Payment",
         activeUrl: "check-warehouse/check-payment",
         url: "#",
+        type: "",
     },
 ];
-
-export const Reports = [
+const Reports = [
     {
         name: "General Reports",
         activeUrl: "reports/general-reports",
         url: "/finance/reports/general-reports",
+        type: "",
     },
     {
         name: "Customer Reports",
         activeUrl: "reports/customer-reports",
         url: "/finance/reports/customer-reports",
+        type: "",
     },
 ];
