@@ -3,14 +3,32 @@ import React, { useContext, useEffect, useState } from "react";
 import { AccessActionValidation } from "../../Reusable/PermissionValidation/ActionAccessValidation";
 import AppContext from "../../Context/AppContext";
 
+export type RequestDetailType = {
+    customer_id: number;
+    customer_name: string;
+    property_unit_id: number;
+    property_unit_code: string;
+    date: string;
+    request: string;
+    ticket_no: string;
+    details: string;
+    status: string;
+    create_at: string;
+    trail: string[];
+    remarks: RequestRemarks[];
+};
+
+export type RequestRemarks = {
+    id: number;
+    request_id: number;
+    user_name: string;
+    user_image_photo: null | string;
+    remarks: string;
+    create_at: string;
+};
+
 type Props = {
-    Detail: {
-        ticket_no: string;
-        requestor: string;
-        property: string;
-        request: string;
-        date: string;
-    };
+    Detail: RequestDetailType;
     type: string;
 };
 
@@ -68,11 +86,11 @@ export default function Card({ Detail, type }: Props) {
                 <li className="w-2/4">Ticket No.</li>
                 <li className="w-2/4">{Detail.ticket_no}</li>
                 <li className="w-2/4">Requestor</li>
-                <li className="w-2/4">{Detail.requestor}</li>
+                <li className="w-2/4">{Detail.customer_name}</li>
                 <li className="w-2/4">Property</li>
-                <li className="w-2/4">{Detail.property}</li>
+                <li className="w-2/4">{Detail.property_unit_code}</li>
                 <li className="w-2/4">Request</li>
-                <li className="w-2/4">{Detail.property}</li>
+                <li className="w-2/4">{Detail.request}</li>
             </ul>
         </div>
     );

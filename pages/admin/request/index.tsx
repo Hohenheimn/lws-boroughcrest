@@ -94,11 +94,7 @@ export default function Request() {
                                 colNo === 2 && two
                             } ${colNo === 3 && three} ${colNo === 4 && four}`}
                         >
-                            <CardContainer
-                                endPoint=""
-                                color="#8f384d"
-                                type="New Request"
-                            />
+                            <CardContainer color="#8f384d" type="New Request" />
                         </li>
                     )}
                     {PagePermisson_InProcess && (
@@ -107,11 +103,7 @@ export default function Request() {
                                 colNo === 2 && two
                             } ${colNo === 3 && three} ${colNo === 4 && four}`}
                         >
-                            <CardContainer
-                                endPoint=""
-                                color="#5c6e91"
-                                type="In Process"
-                            />
+                            <CardContainer color="#5c6e91" type="In Process" />
                         </li>
                     )}
                     {PagePermisson_InReview && (
@@ -120,11 +112,7 @@ export default function Request() {
                                 colNo === 2 && two
                             } ${colNo === 3 && three} ${colNo === 4 && four}`}
                         >
-                            <CardContainer
-                                endPoint=""
-                                color="#dd9866"
-                                type="In Review"
-                            />
+                            <CardContainer color="#dd9866" type="In Review" />
                         </li>
                     )}
                     {PagePermisson_Closed && (
@@ -133,11 +121,7 @@ export default function Request() {
                                 colNo === 2 && two
                             } ${colNo === 3 && three} ${colNo === 4 && four}`}
                         >
-                            <CardContainer
-                                endPoint=""
-                                color="#41b6ff"
-                                type="Closed"
-                            />
+                            <CardContainer color="#41b6ff" type="Closed" />
                         </li>
                     )}
                 </ul>

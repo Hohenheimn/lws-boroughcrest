@@ -1,14 +1,16 @@
 import React from "react";
 import { BsSearch } from "react-icons/bs";
-import Card from "./Card";
+import Card, { RequestDetailType } from "./Card";
+import { GetRequest } from "./Query";
+import { BarLoader } from "react-spinners";
 
 type Props = {
-    endPoint: string;
     type: string;
     color: string;
 };
 
-export default function CardContainer({ endPoint, type, color }: Props) {
+export default function CardContainer({ type, color }: Props) {
+    const { isLoading, data, isError } = GetRequest(type, "");
     return (
         <>
             <div
@@ -25,7 +27,7 @@ export default function CardContainer({ endPoint, type, color }: Props) {
                     >
                         {type}
                     </p>
-                    <h1 style={{ color: color }}>1</h1>
+                    <h1 style={{ color: color }}>{data?.data.length}</h1>
                 </div>
                 <div className=" px-5">
                     <div className="w-full py-3">
@@ -41,66 +43,21 @@ export default function CardContainer({ endPoint, type, color }: Props) {
                             <BsSearch className="ml-2 text-RegularColor" />
                         </div>
                     </div>
-                    <Card
-                        Detail={{
-                            ticket_no: "0754979844648",
-                            requestor: "Juan Dela Cruz",
-                            property: "Lorem ipsum",
-                            request: "Gate Pass",
-                            date: "08/16/23",
-                        }}
-                        type={type}
-                    />
-                    <Card
-                        Detail={{
-                            ticket_no: "0754979844648",
-                            requestor: "Juan Dela Cruz",
-                            property: "Lorem ipsum",
-                            request: "Gate Pass",
-                            date: "08/16/23",
-                        }}
-                        type={type}
-                    />
-                    <Card
-                        Detail={{
-                            ticket_no: "0754979844648",
-                            requestor: "Juan Dela Cruz",
-                            property: "Lorem ipsum",
-                            request: "Gate Pass",
-                            date: "08/16/23",
-                        }}
-                        type={type}
-                    />
-                    <Card
-                        Detail={{
-                            ticket_no: "0754979844648",
-                            requestor: "Juan Dela Cruz",
-                            property: "Lorem ipsum",
-                            request: "Gate Pass",
-                            date: "08/16/23",
-                        }}
-                        type={type}
-                    />
-                    <Card
-                        Detail={{
-                            ticket_no: "0754979844648",
-                            requestor: "Juan Dela Cruz",
-                            property: "Lorem ipsum",
-                            request: "Gate Pass",
-                            date: "08/16/23",
-                        }}
-                        type={type}
-                    />
-                    <Card
-                        Detail={{
-                            ticket_no: "0754979844648",
-                            requestor: "Juan Dela Cruz",
-                            property: "Lorem ipsum",
-                            request: "Gate Pass",
-                            date: "08/16/23",
-                        }}
-                        type={type}
-                    />
+                    {isLoading && (
+                        <div className="flex justify-center mt-5">
+                            <BarLoader color={color} height={7} />
+                        </div>
+                    )}
+                    {isError && (
+                        <h1 className=" text-ThemeRed text-center">
+                            Something went wrong
+                        </h1>
+                    )}
+                    {data?.data.map(
+                        (item: RequestDetailType, index: number) => (
+                            <Card key={index} Detail={item} type={type} />
+                        )
+                    )}
                 </div>
             </div>
         </>

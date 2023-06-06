@@ -567,13 +567,8 @@ const ListBookedCheck = ({ itemDetail }: BookedListProps) => {
     return (
         <tr className="hoverEffect">
             <td className="icon">
-                {Permission_create && (
-                    <div
-                        className={` cursor-pointer ${
-                            itemDetail.status === "Rejected" &&
-                            "pointer-events-none"
-                        }`}
-                    >
+                {Permission_create && itemDetail.status !== "Rejected" && (
+                    <div className={` cursor-pointer`}>
                         <Link
                             href={`/finance/customer-facility/collection/receive-payment/${itemDetail.collection.id}?from=check_warehouse`}
                         >

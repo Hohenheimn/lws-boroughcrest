@@ -146,6 +146,10 @@ export default function AcknowledgementForm({
                 : "",
             amount_paid: headerForm.amount_paid,
             chart_of_account_id: headerForm.chart_of_account_id,
+            collection_check_warehouse_id:
+                router.query.modify_id === undefined
+                    ? null
+                    : router.query.modify_id,
             reference_no: headerForm.reference_no,
             deposits: isTable.map((item: isTableItem) => {
                 return {
@@ -155,6 +159,7 @@ export default function AcknowledgementForm({
                 };
             }),
         };
+
         if (validate) mutate(Payload);
     };
 
