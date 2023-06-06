@@ -3,11 +3,20 @@ import ModalTemp from "../../Reusable/ModalTemp";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { AccessActionValidation } from "../../Reusable/PermissionValidation/ActionAccessValidation";
+import { ShowRequest } from "./Query";
+import { RequestDetailType, RequestRemarks } from "./Card";
+import { BeatLoader } from "react-spinners";
 
 export default function RequestModal() {
     const router = useRouter();
 
     const type = router.query.type;
+
+    const request_id: any = router.query.request;
+
+    const { isLoading, data, isError } = ShowRequest(request_id);
+
+    const RequestDetail: RequestDetailType = data?.data;
 
     const PermissionValidationApprove = AccessActionValidation(
         `Customer Request View (${type})`,
@@ -36,6 +45,47 @@ export default function RequestModal() {
         }
     }, [type]);
 
+    const ActionHandler = (button: string) => {};
+
+    if (isLoading) {
+        return (
+            <ModalTemp>
+                <div className="flex items-center mb-5">
+                    <h1 className="mr-3 640px:text-[14px]">Customer Request</h1>
+                    <span
+                        className="text-white text-[11px] px-3 py-1 rounded-[50px]"
+                        style={{ backgroundColor: color }}
+                    >
+                        {type}
+                    </span>
+                </div>
+
+                <div className="flex justify-center py-10">
+                    <BeatLoader color={color} />
+                </div>
+            </ModalTemp>
+        );
+    }
+    if (isError) {
+        return (
+            <ModalTemp>
+                <div className="flex items-center mb-5">
+                    <h1 className="mr-3 640px:text-[14px]">Customer Request</h1>
+                    <span
+                        className="text-white text-[11px] px-3 py-1 rounded-[50px]"
+                        style={{ backgroundColor: color }}
+                    >
+                        {type}
+                    </span>
+                </div>
+
+                <h1 className=" text-ThemeRed text-center">
+                    Something went wrong
+                </h1>
+            </ModalTemp>
+        );
+    }
+
     return (
         <ModalTemp>
             <div className="flex items-center mb-5">
@@ -48,27 +98,35 @@ export default function RequestModal() {
                 </span>
             </div>
             <ul className="flex flex-wrap text-[14px] 640px:text-[12px] mb-5">
-                <Detail Label={"DATE"} Value={"09/20/2022"} />
-                <Detail Label={"TICKET NO."} Value={"00000"} />
-                <Detail Label={"REQUESTOR"} Value={"Juan Dela Cruz"} />
-                <Detail Label={"PROPERTY"} Value={"lorem ipsum"} />
-                <Detail Label={"REQUEST"} Value={"lorem ipsum"} />
-                <Detail Label={"TRAIL"} Value={"08/20/2022 | 08:00 AM"} />
-                <Detail Label={"REMARKS"} Value={"lorem ipsum"} />
+                <Detail Label={"DATE"} Value={RequestDetail.date} />
+                <Detail Label={"TICKET NO."} Value={RequestDetail.ticket_no} />
+                <Detail
+                    Label={"REQUESTOR"}
+                    Value={RequestDetail.customer_name}
+                />
+                <Detail
+                    Label={"PROPERTY"}
+                    Value={RequestDetail.property_unit_code}
+                />
+                <Detail Label={"REQUEST"} Value={RequestDetail.request} />
+                <Detail Label={"TRAIL"} Value={RequestDetail.create_at} />
+                <Detail Label={"REMARKS"} Value={"12312"} />
             </ul>
+
             {(type === "In Review" || type === "Closed") && (
                 <div className="py-5 mb-5 border-t border-gray-400">
                     <h1 className=" text-[20px]  640px:text-[16px] mb-2 text-ThemeRed">
                         REMARKS
                     </h1>
                     <ul className="max-h-[40vh] 1366px:max-h-[30vh] 640px:max-h-[50vh] overflow-auto">
-                        <RemarksProfile />
-                        <RemarksProfile />
-                        <RemarksProfile />
-                        <RemarksProfile />
-                        <RemarksProfile />
-                        <RemarksProfile />
-                        <RemarksProfile />
+                        {RequestDetail.remarks.map(
+                            (item: RequestRemarks, index: number) => (
+                                <RemarksProfile
+                                    remarkDetail={item}
+                                    key={index}
+                                />
+                            )
+                        )}
                     </ul>
                 </div>
             )}
@@ -127,24 +185,30 @@ const Detail = ({ Label, Value }: Detail) => {
         </li>
     );
 };
-const RemarksProfile = () => {
+
+type PropsRemarkProfile = {
+    remarkDetail: RequestRemarks;
+};
+
+const RemarksProfile = ({ remarkDetail }: PropsRemarkProfile) => {
+    const Image_Photo =
+        remarkDetail.user_image_photo === null
+            ? "/Images/sampleProfile.png"
+            : "https://boroughcrest-api.lws.codes/get-img?image=" +
+              remarkDetail.user_image_photo;
+
     return (
         <li className="flex  640px:flex-col items-start mb-5">
             <div className="w-[40px] h-[40px] rounded-full overflow-hidden relative 640px:mb-1">
-                <Image
-                    src={"/Images/sampleProfile.png"}
-                    layout="fill"
-                    objectFit="cover"
-                />
+                <Image src={Image_Photo} layout="fill" objectFit="cover" />
             </div>
             <div className="pl-2 flex flex-col">
-                <h3 className="text-ThemeRed">John Doe</h3>
+                <h3 className="text-ThemeRed">{remarkDetail.user_name}</h3>
                 <span className=" text-gray-400 mb-1 text-[12px]">
-                    September 26, 2022 | 01:30 PM
+                    {remarkDetail.create_at}
                 </span>
                 <p className=" text-RegularColor 640px:text-[14px]">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Culpa, laborum?
+                    {remarkDetail.remarks}
                 </p>
             </div>
         </li>
