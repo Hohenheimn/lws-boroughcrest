@@ -16,6 +16,7 @@ export type RequestDetailType = {
     create_at: string;
     trail: string[];
     remarks: RequestRemarks[];
+    updated_at: string;
 };
 
 export type RequestRemarks = {

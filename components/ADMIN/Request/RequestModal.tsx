@@ -110,7 +110,7 @@ export default function RequestModal() {
                 />
                 <Detail Label={"REQUEST"} Value={RequestDetail.request} />
                 <Detail Label={"TRAIL"} Value={RequestDetail.create_at} />
-                <Detail Label={"REMARKS"} Value={"12312"} />
+                <Detail Label={"REMARKS"} Value={RequestDetail.details} />
             </ul>
 
             {(type === "In Review" || type === "Closed") && (
@@ -138,7 +138,12 @@ export default function RequestModal() {
                     CANCEL
                 </button>
                 {type === "New Request" && PermissionValidationApprove && (
-                    <button className="buttonRed">PROCESS</button>
+                    <button
+                        className="buttonRed"
+                        onClick={() => ActionHandler("New Request")}
+                    >
+                        PROCESS
+                    </button>
                 )}
                 {type === "In Process" && (
                     <>

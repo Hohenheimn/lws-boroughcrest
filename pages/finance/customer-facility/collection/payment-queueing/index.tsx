@@ -49,9 +49,10 @@ export default function PaymentQueueing() {
 
     const [isRemark, setRemark] = useState("");
 
-    const [isProofPayment, setProofPayment] = useState(
-        "/Images/sample_coming.png"
-    );
+    const [isProofPayment, setProofPayment] = useState({
+        url: "/Images/sample_coming.png",
+        toggle: false,
+    });
 
     useEffect(() => {
         setRemark("");
@@ -176,20 +177,29 @@ export default function PaymentQueueing() {
                     </div>
                 </ModalTemp>
             )}
-            {router.query.view_proof_of_payment !== undefined && (
+            {isProofPayment.toggle && (
                 <ModalTemp narrow={true}>
                     <div className="relative w-full">
                         <Image
-                            src={isProofPayment}
+                            src={isProofPayment.url}
                             height={500}
                             width={500}
                             objectFit="contain"
                             alt="alt"
                         />
                     </div>
-                    <Link href="">
-                        <a className="buttonRed">CLOSE</a>
-                    </Link>
+
+                    <button
+                        className="buttonRed"
+                        onClick={() => {
+                            setProofPayment({
+                                ...isProofPayment,
+                                toggle: false,
+                            });
+                        }}
+                    >
+                        CLOSE
+                    </button>
                 </ModalTemp>
             )}
             <HeaderCollection
@@ -218,7 +228,11 @@ export default function PaymentQueueing() {
                     <tbody>
                         {data?.data.data.map(
                             (item: CollectionItem, index: number) => (
-                                <List key={index} itemDetail={item} />
+                                <List
+                                    key={index}
+                                    itemDetail={item}
+                                    setProofPayment={setProofPayment}
+                                />
                             )
                         )}
                     </tbody>
@@ -251,9 +265,10 @@ export default function PaymentQueueing() {
 
 type ListProps = {
     itemDetail: CollectionItem;
+    setProofPayment: Function;
 };
 
-const List = ({ itemDetail }: ListProps) => {
+const List = ({ itemDetail, setProofPayment }: ListProps) => {
     const router = useRouter();
 
     const date = parse(itemDetail.deposit_date, "yyyy-MM-dd", new Date());
@@ -340,18 +355,24 @@ const List = ({ itemDetail }: ListProps) => {
 
                     <Tippy content={"View Proof of Payment"} theme="ThemeRed">
                         <li>
-                            <Link
-                                href={`?view_proof_of_payment=${itemDetail.id}`}
+                            <div
+                                onClick={() =>
+                                    setProofPayment({
+                                        url:
+                                            itemDetail.proof_payment === null
+                                                ? "/Images/sample_coming.png"
+                                                : `https://boroughcrest-api.lws.codes/get-img?image=${itemDetail.proof_payment}`,
+                                        toggle: true,
+                                    })
+                                }
                             >
-                                <a>
-                                    <Image
-                                        src="/Images/f_attach.png"
-                                        width={20}
-                                        height={20}
-                                        alt="Attach"
-                                    />
-                                </a>
-                            </Link>
+                                <Image
+                                    src="/Images/f_attach.png"
+                                    width={20}
+                                    height={20}
+                                    alt="Attach"
+                                />
+                            </div>
                         </li>
                     </Tippy>
                 </ul>

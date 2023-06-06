@@ -248,6 +248,8 @@ export default function Modify({ modify_id, from }: any) {
         return <NoPermissionComp />;
     }
 
+    console.log(Permission_modify);
+
     if (
         !Permission_modify &&
         Permission_modify !== undefined &&

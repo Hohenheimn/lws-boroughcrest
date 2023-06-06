@@ -38,10 +38,10 @@ export default function CheckPaymentList() {
             setPeriod={setPeriod}
             page="check-payment-list"
             EndPointList={
-                "/finance/customer-facility/collection?paginate=10&receipt_type=Acknowledgement"
+                "/finance/customer-facility/collection?paginate=10&collection_check_warehouse_id=not null&receipt_type=Acknowledgement"
             }
             EndPointAdvFilter={
-                "/finance/customer-facility/collection/filter-options?receipt_type=Acknowledgement&keywords="
+                "/finance/customer-facility/collection/filter-options?receipt_type=Acknowledgement&collection_check_warehouse_id=not null&keywords="
             }
             EndPointExport=""
         />

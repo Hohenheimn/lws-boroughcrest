@@ -88,6 +88,7 @@ export type CollectionItem = {
         commenter_name: string;
         remarks: string;
     }[];
+    proof_payment: string;
 };
 
 export type PaymentSummaryHistories = CollectionItem;
