@@ -151,6 +151,9 @@ select {
 .pageTitle {
     @apply font-bold mb-5 text-[24px]  480px:text-[20px]  1550px:mb-3 capitalize;
 }
+.pageTitle.noMB {
+    @apply mb-0 1550px:mb-0;
+}
 .SectionTitle {
     @apply text-[20px] 1366px:text-[20px] flex items-center;
 }
@@ -1167,7 +1170,7 @@ table.rolePermisionTable {
 
 .card_preview {
     display: -webkit-box;
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }

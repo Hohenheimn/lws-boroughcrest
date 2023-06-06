@@ -3,6 +3,8 @@ import { GetReceiptsBook } from "../../../../components/FINANCE/CustomerFacility
 import Receiptsbook, {
     isReceiptBookData,
 } from "../../../../components/FINANCE/CustomerFacility/DepositCounter/Receiptsbook";
+import NoPermissionComp from "../../../../components/Reusable/PermissionValidation/NoPermissionComp";
+import { PageAccessValidation } from "../../../../components/Reusable/PermissionValidation/PageAccessValidation";
 
 export default function ReceiptsBook() {
     const [isChangeData, setChangeData] = useState({});
@@ -15,6 +17,12 @@ export default function ReceiptsBook() {
         selectAll: false,
         itemArray: [],
     });
+
+    const PagePermisson = PageAccessValidation("Deposit Counter");
+
+    if (!PagePermisson && PagePermisson !== undefined) {
+        return <NoPermissionComp />;
+    }
 
     return (
         <Receiptsbook

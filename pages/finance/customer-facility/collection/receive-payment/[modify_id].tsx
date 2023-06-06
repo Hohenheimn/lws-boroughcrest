@@ -1,4 +1,4 @@
-import { format, isValid, parse } from "date-fns";
+import { format, isValid, parse, startOfDay } from "date-fns";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { BeatLoader } from "react-spinners";
@@ -15,8 +15,16 @@ import OutRight, {
     Outright,
 } from "../../../../../components/FINANCE/CustomerFacility/Collection/ReceivePayment/OfficialForm/OutrightAndAdvances/OutRight";
 import { AdvancesType } from "../../../../../components/FINANCE/CustomerFacility/Collection/ReceivePayment/OfficialForm/OutrightAndAdvances/Advances";
+import { useQueryClient } from "react-query";
+import { PageAccessValidation } from "../../../../../components/Reusable/PermissionValidation/PageAccessValidation";
+import NoPermissionComp from "../../../../../components/Reusable/PermissionValidation/NoPermissionComp";
 
 export default function Modify({ modify_id, from }: any) {
+    const queryClient = useQueryClient();
+    useEffect(() => {
+        queryClient.removeQueries("collection-detail");
+    }, []);
+
     const { isLoading, data, isError } = GetCollectionDetail(modify_id);
 
     const {
@@ -72,6 +80,9 @@ export default function Modify({ modify_id, from }: any) {
 
     const [isAdvances, setAdvances] = useState<AdvancesType[]>([]);
 
+    const date = new Date();
+    let today = startOfDay(date);
+
     useEffect(() => {
         if (!isLoading && !isError) {
             let receipt_type = "";
@@ -85,9 +96,7 @@ export default function Modify({ modify_id, from }: any) {
             setHeaderForm({
                 customer_id: collection.customer_id,
                 receipt_type: receipt_type,
-                receipt_date: isValid(receipt_date)
-                    ? format(receipt_date, "MMM dd yyyy")
-                    : "",
+                receipt_date: format(today, "MMM dd yyyy"),
                 receipt_no: collection.receipt_no,
                 description: collection.description,
                 mode_of_payment: collection.mode_of_payment,
@@ -110,8 +119,8 @@ export default function Modify({ modify_id, from }: any) {
                             check_date: item.check_date,
                             description: item.description,
                             check_no: `${item.check_no}`,
-                            bank_branch: item.bank_branch,
-                            bank_branch_id: "",
+                            bank_branch: item.bank_branch_name,
+                            bank_branch_id: item.bank_branch_id,
                             amount: item.amount,
                         };
                     })
@@ -141,7 +150,7 @@ export default function Modify({ modify_id, from }: any) {
                             charge: item.charge_name,
                             charge_id: `${item.charge_id}`,
                             description: item.description,
-                            uom: "",
+                            uom: item.uom,
                             unit_price: Number(item.unit_price),
                             qty: Number(item.quantity),
                             amount: Number(item.amount),
@@ -223,6 +232,12 @@ export default function Modify({ modify_id, from }: any) {
             });
         }
     }, [customerData?.status]);
+
+    const PagePermisson = PageAccessValidation("Collection");
+
+    if (!PagePermisson && PagePermisson !== undefined) {
+        return <NoPermissionComp />;
+    }
 
     if (isLoading || customerLoading) {
         return (

@@ -18,6 +18,7 @@ import { DynamicExportHandler } from "../Reusable/DynamicExport";
 import { DynamicImport } from "../Reusable/DynamicImport";
 import Link from "next/link";
 import { useQueryClient } from "react-query";
+import { AccessActionValidation } from "../Reusable/PermissionValidation/ActionAccessValidation";
 
 type SearchFilter = {
     page: string;
@@ -25,6 +26,10 @@ type SearchFilter = {
 };
 
 export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
+    const PermissionValidationCreate = AccessActionValidation(page, "create");
+
+    const PermissionValidationPrint = AccessActionValidation(page, "print");
+
     const {
         setCorpToggle,
         setCusToggle,
@@ -48,7 +53,9 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
     } = useContext(AppContext);
 
     const [isFilter, setFilter] = useState(false);
+
     const router = useRouter();
+
     const ValidatePathName = router.pathname.split("/")[2];
 
     // Print Columns
@@ -176,31 +183,44 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
                                 onChange={importHandler}
                                 className="hidden"
                             />
-                            <Tippy theme="ThemeRed" content="Print">
-                                <div>
-                                    <Link
-                                        href={`${isPrint.url}?keyword=${isPrint.keyword}&limit=${isPrint.limit}&page=${isPrint.page}&columns=${isPrint.columns}`}
-                                    >
-                                        <a target="_blank">
-                                            <div className={style.icon}>
-                                                <Image
-                                                    src="/Images/Print.png"
-                                                    layout="fill"
-                                                    alt="Print"
-                                                />
-                                            </div>
-                                        </a>
-                                    </Link>
-                                </div>
-                            </Tippy>
+
+                            {PermissionValidationPrint &&
+                                router.pathname.includes("/admin") && (
+                                    <Tippy theme="ThemeRed" content="Print">
+                                        <div>
+                                            <Link
+                                                href={`${isPrint.url}?keyword=${isPrint.keyword}&limit=${isPrint.limit}&page=${isPrint.page}&columns=${isPrint.columns}`}
+                                            >
+                                                <a target="_blank">
+                                                    <div className={style.icon}>
+                                                        <Image
+                                                            src="/Images/Print.png"
+                                                            layout="fill"
+                                                            alt="Print"
+                                                        />
+                                                    </div>
+                                                </a>
+                                            </Link>
+                                        </div>
+                                    </Tippy>
+                                )}
                         </li>
                     )}
 
                     {page !== "request" && (
                         <>
-                            <li className={style.new}>
-                                <div onClick={openNew}>New {page}</div>
-                            </li>
+                            {PermissionValidationCreate &&
+                                router.pathname.includes("/admin") && (
+                                    <li className={style.new}>
+                                        <div onClick={openNew}>New {page}</div>
+                                    </li>
+                                )}
+
+                            {router.pathname.includes("/project") && (
+                                <li className={style.new}>
+                                    <div onClick={openNew}>New {page}</div>
+                                </li>
+                            )}
 
                             <li className={style.filter}>
                                 <Tippy content="Filter" theme="ThemeRed">

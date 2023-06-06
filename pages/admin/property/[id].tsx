@@ -3,6 +3,8 @@ import { BeatLoader } from "react-spinners";
 import PropertyDetails from "../../../components/ADMIN/Property/PropertyDetails";
 import { useRouter } from "next/router";
 import { GetPropertyDetail } from "../../../components/ReactQuery/PropertyMethod";
+import { PageAccessValidation } from "../../../components/Reusable/PermissionValidation/PageAccessValidation";
+import NoPermissionComp from "../../../components/Reusable/PermissionValidation/NoPermissionComp";
 
 export default function Id() {
     const router = useRouter();
@@ -33,6 +35,13 @@ export default function Id() {
             </div>
         );
     }
+
+    const PagePermisson = PageAccessValidation("Customer");
+
+    if (!PagePermisson && PagePermisson !== undefined) {
+        return <NoPermissionComp />;
+    }
+
     return (
         <div>
             <PropertyDetails data={data?.data} />

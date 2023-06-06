@@ -4,10 +4,12 @@ import JournalCopy from "../../../../components/FINANCE/General-Ledger/Journal/J
 import JournalForm, {
     defaultArray,
 } from "../../../../components/FINANCE/General-Ledger/Journal/JournalForm";
+import { PageAccessValidation } from "../../../../components/Reusable/PermissionValidation/PageAccessValidation";
+import NoPermissionComp from "../../../../components/Reusable/PermissionValidation/NoPermissionComp";
 
 export default function CreateJournal() {
     const router = useRouter();
-    const [isJournalList, setJournalList] = useState<defaultArray>([
+    const isJournalList: defaultArray = [
         {
             id: 1,
             account_id: "",
@@ -16,7 +18,13 @@ export default function CreateJournal() {
             debit: "",
             credit: "",
         },
-    ]);
+    ];
+
+    const PagePermisson = PageAccessValidation("Journal");
+
+    if (!PagePermisson && PagePermisson !== undefined) {
+        return <NoPermissionComp />;
+    }
 
     return (
         <>

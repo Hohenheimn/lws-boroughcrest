@@ -18,6 +18,7 @@ import PaymentRegisterSearch from "../Search/PaymentRegisterSearch";
 import AdjustmentSearch from "../Search/SearchAdjusment";
 import AccessSearch from "../Search/AccessSearch";
 import CheckPaymentSearch from "../Search/CheckPaymentSearch";
+import FavoriteReportSearch from "../Search/FavoriteReportSearch";
 
 type SidebarType = {
     isProfileSearch: boolean;
@@ -36,6 +37,8 @@ export default function Sidebar({
     isWide,
     isWindow,
 }: SidebarType) {
+    const SideBarMenu = SidebarLinks();
+
     const router = useRouter();
     const ValidateParentUrl = router.pathname.split("/")[1];
     const { collapseSide, setCollapseSide } = useContext(AppContext);
@@ -127,7 +130,7 @@ export default function Sidebar({
                             )}
                         </div>
 
-                        {SidebarLinks.map((item, index) => (
+                        {SideBarMenu.map((item, index) => (
                             <MenuLink
                                 key={index}
                                 isProfileSearch={isProfileSearch}
@@ -190,6 +193,9 @@ export default function Sidebar({
                                     {router.pathname.includes(
                                         "check-payment-list/[id]"
                                     ) && <CheckPaymentSearch />}
+                                    {router.pathname.includes(
+                                        "favorite-list-reports/[id]"
+                                    ) && <FavoriteReportSearch />}
                                 </motion.ul>
                             )}
                         </AnimatePresence>

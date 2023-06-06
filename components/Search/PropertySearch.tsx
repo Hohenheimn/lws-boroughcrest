@@ -14,11 +14,11 @@ export default function PropertySearch() {
 
     const router = useRouter();
 
-    const { isLoading, data, isError } = useQuery(
-        ["recent-customer", router.query.id, search],
+    const { isLoading, data } = useQuery(
+        ["recent-property", router.query.id, search],
         () => {
             return api.get(
-                `/admin/property/unit/recent-search/${router.query.id}&keywords=${search}&paginate=3`,
+                `/admin/property/unit/recent-search/${router.query.id}?keywords=${search}&paginate=3`,
                 {
                     headers: {
                         Authorization: "Bearer " + getCookie("user"),
@@ -55,7 +55,7 @@ export default function PropertySearch() {
                 </aside>
             </div>
             <div className=" overflow-y-auto">
-                {data?.data.map((item: any, index: number) => (
+                {data?.data.data.map((item: any, index: number) => (
                     <Link key={index} href={`/admin/property/${item?.id}`}>
                         <a className={style.searchedItem}>
                             <ul>

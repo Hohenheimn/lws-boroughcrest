@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import { BeatLoader } from "react-spinners";
 import JournalForm from "../../../../../components/FINANCE/General-Ledger/Journal/JournalForm";
 import { GetJournalDetail } from "../../../../../components/FINANCE/General-Ledger/Journal/Query";
+import { PageAccessValidation } from "../../../../../components/Reusable/PermissionValidation/PageAccessValidation";
+import NoPermissionComp from "../../../../../components/Reusable/PermissionValidation/NoPermissionComp";
 
 export default function Modify({ id }: any) {
     const { isLoading, data, isError } = GetJournalDetail(id);
@@ -24,6 +26,12 @@ export default function Modify({ id }: any) {
             setJournalList(cloneArray);
         }
     }, [data?.status]);
+
+    const PagePermisson = PageAccessValidation("Journal");
+
+    if (!PagePermisson && PagePermisson !== undefined) {
+        return <NoPermissionComp />;
+    }
 
     if (isLoading) {
         return (

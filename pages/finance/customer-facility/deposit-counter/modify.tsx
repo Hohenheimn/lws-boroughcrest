@@ -3,6 +3,8 @@ import React from "react";
 import { BeatLoader } from "react-spinners";
 import DepositForm from "../../../../components/FINANCE/CustomerFacility/DepositCounter/DepositForm";
 import { ShowDeposit } from "../../../../components/FINANCE/CustomerFacility/DepositCounter/Query";
+import NoPermissionComp from "../../../../components/Reusable/PermissionValidation/NoPermissionComp";
+import { PageAccessValidation } from "../../../../components/Reusable/PermissionValidation/PageAccessValidation";
 
 export default function modify({ id }: any) {
     const { isLoading, data, isError } = ShowDeposit(id);
@@ -43,6 +45,12 @@ export default function modify({ id }: any) {
         "yyyy-MM-dd",
         new Date()
     );
+
+    const PagePermisson = PageAccessValidation("Deposit Counter");
+
+    if (!PagePermisson && PagePermisson !== undefined) {
+        return <NoPermissionComp />;
+    }
 
     return (
         <>

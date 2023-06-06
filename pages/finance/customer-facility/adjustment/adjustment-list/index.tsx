@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import AdjustmentTable from "../../../../../components/FINANCE/CustomerFacility/Adjustment/AdjustmentTable";
+import { PageAccessValidation } from "../../../../../components/Reusable/PermissionValidation/PageAccessValidation";
+import NoPermissionComp from "../../../../../components/Reusable/PermissionValidation/NoPermissionComp";
 
 export default function AdjustmentList() {
     const [isType, setType] = useState("unposted");
@@ -8,6 +10,13 @@ export default function AdjustmentList() {
         from: "",
         to: "",
     });
+
+    const PagePermisson = PageAccessValidation("Adjustment");
+
+    if (!PagePermisson && PagePermisson !== undefined) {
+        return <NoPermissionComp />;
+    }
+
     return (
         <>
             <ul className="SimpleTab">

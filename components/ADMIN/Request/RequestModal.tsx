@@ -2,12 +2,24 @@ import React, { useEffect, useState } from "react";
 import ModalTemp from "../../Reusable/ModalTemp";
 import { useRouter } from "next/router";
 import Image from "next/image";
+import { AccessActionValidation } from "../../Reusable/PermissionValidation/ActionAccessValidation";
 
 export default function RequestModal() {
-    const [color, setColor] = useState("");
     const router = useRouter();
 
     const type = router.query.type;
+
+    const PermissionValidationApprove = AccessActionValidation(
+        `Customer Request View (${type})`,
+        "approve"
+    );
+
+    const PermissionValidationPrint = AccessActionValidation(
+        `Customer Request View (${type})`,
+        "print"
+    );
+
+    const [color, setColor] = useState("");
 
     useEffect(() => {
         if (type === "New Request") {
@@ -23,6 +35,7 @@ export default function RequestModal() {
             setColor("#41b6ff");
         }
     }, [type]);
+
     return (
         <ModalTemp>
             <div className="flex items-center mb-5">
@@ -66,7 +79,7 @@ export default function RequestModal() {
                 >
                     CANCEL
                 </button>
-                {type === "New Request" && (
+                {type === "New Request" && PermissionValidationApprove && (
                     <button className="buttonRed">PROCESS</button>
                 )}
                 {type === "In Process" && (
@@ -79,9 +92,12 @@ export default function RequestModal() {
                 )}
                 {type === "In Review" && (
                     <>
-                        <button className="buttonRed mr-5  640px:mr-0 640px:mb-2">
-                            APPROVED
-                        </button>
+                        {PermissionValidationApprove && (
+                            <button className="buttonRed mr-5  640px:mr-0 640px:mb-2">
+                                APPROVED
+                            </button>
+                        )}
+
                         <button className="buttonBlue mr-5 640px:mr-0 640px:mb-2">
                             RETURN
                         </button>
@@ -90,7 +106,7 @@ export default function RequestModal() {
                         </button>
                     </>
                 )}
-                {type === "Closed" && (
+                {type === "Closed" && PermissionValidationPrint && (
                     <button className="buttonRed">PRINT</button>
                 )}
             </div>

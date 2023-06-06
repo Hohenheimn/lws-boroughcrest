@@ -1,55 +1,114 @@
-export const GeneralLedger = [
-    {
-        name: "Chart of Account",
-        activeUrl: "chart-of-account",
-        url: "/finance/general-ledger/chart-of-account",
-        type: "",
-    },
-    {
-        name: "Opening Balance",
-        activeUrl: "opening-balance",
-        url: "/finance/general-ledger/opening-balance/general-ledger",
-        type: "",
-        submenu: [
-            {
-                name: "General Ledger Opening Balance",
-                url: "/finance/general-ledger/opening-balance/general-ledger",
-            },
-            {
-                name: "Subledger Opening Balance",
-                url: "/finance/general-ledger/opening-balance/subledger",
-            },
-        ],
-    },
-    {
-        name: "Bank Reconciliation",
-        activeUrl: "bank-reconciliation",
-        url: "/finance/general-ledger/bank-reconciliation",
-        type: "",
-    },
-    {
-        name: "Asset Management",
-        activeUrl: "asset-management",
-        url: "/finance/general-ledger/asset-management",
-        type: "disabled",
-    },
-    {
-        name: "Journal",
-        activeUrl: "journal",
-        url: "/finance/general-ledger/journal/create-journal",
-        type: "",
-        submenu: [
-            {
-                name: "Create Journal",
-                url: "/finance/general-ledger/journal/create-journal",
-            },
-            {
-                name: "Journal List",
-                url: "/finance/general-ledger/journal/journal-list",
-            },
-        ],
-    },
-];
+import { useEffect, useState } from "react";
+import { LoginUserInfo } from "../HOC/LoginUser/UserInfo";
+
+type FinanceUrls = {
+    name: string;
+    activeUrl: string;
+    url: string;
+    type: string;
+    submenu?: {
+        name: string;
+        url: string;
+    }[];
+};
+
+export const GeneralLedgerLinks = () => {
+    const [userInfo, setUserInfo] = useState<LoginUserInfo>();
+
+    useEffect(() => {
+        setUserInfo(JSON.parse(localStorage.userInfo));
+    }, []);
+
+    const [Links, setLinks] = useState<FinanceUrls[]>([
+        {
+            name: "Chart of Accounts",
+            activeUrl: "chart-of-account",
+            url: "/finance/general-ledger/chart-of-account",
+            type: "",
+        },
+        {
+            name: "Opening Balance",
+            activeUrl: "opening-balance",
+            url: "/finance/general-ledger/opening-balance/general-ledger",
+            type: "",
+            submenu: [
+                {
+                    name: "General Ledger Opening Balance",
+                    url: "/finance/general-ledger/opening-balance/general-ledger",
+                },
+                {
+                    name: "Subledger Opening Balance",
+                    url: "/finance/general-ledger/opening-balance/subledger",
+                },
+            ],
+        },
+        {
+            name: "Bank Reconciliation",
+            activeUrl: "bank-reconciliation",
+            url: "/finance/general-ledger/bank-reconciliation",
+            type: "",
+        },
+        // {
+        //     name: "Asset Management",
+        //     activeUrl: "asset-management",
+        //     url: "/finance/general-ledger/asset-management",
+        //     type: "disabled",
+        // },
+        {
+            name: "Journal",
+            activeUrl: "journal",
+            url: "/finance/general-ledger/journal/create-journal",
+            type: "",
+            submenu: [
+                {
+                    name: "Create Journal",
+                    url: "/finance/general-ledger/journal/create-journal",
+                },
+                {
+                    name: "Journal List",
+                    url: "/finance/general-ledger/journal/journal-list",
+                },
+            ],
+        },
+    ]);
+
+    const CheckValidation = () => {
+        let validate = false;
+        userInfo?.permissions.map((item) => {
+            console.log(item.menu);
+            if (item.menu === "Journal") {
+                validate = true;
+                return;
+            }
+        });
+        return validate;
+    };
+    useEffect(() => {
+        if (localStorage.userInfo !== undefined) {
+            userInfo?.permissions.map((item) => {
+                console.log(item.menu);
+            });
+            const GetLink = Links.map((mapItem) => {
+                if (CheckValidation()) {
+                    return mapItem;
+                } else {
+                    return {
+                        name: "",
+                        activeUrl: "",
+                        url: "",
+                        type: "",
+                    };
+                }
+            });
+            const FilterLink = GetLink.filter(
+                (filterItem) => filterItem.name !== ""
+            );
+            setLinks(FilterLink);
+        }
+    }, [userInfo]);
+
+    return Links;
+};
 
 export const CustomerFacility = [
     {
@@ -144,5 +203,18 @@ export const CheckWarehouse = [
         name: "Check Payment",
         activeUrl: "check-warehouse/check-payment",
         url: "#",
+    },
+];
+
+export const Reports = [
+    {
+        name: "General Reports",
+        activeUrl: "reports/general-reports",
+        url: "/finance/reports/general-reports",
+    },
+    {
+        name: "Customer Reports",
+        activeUrl: "reports/customer-reports",
+        url: "/finance/reports/customer-reports",
     },
 ];

@@ -6,6 +6,10 @@ import Form from "../../../components/ADMIN/Property/PropertyForm";
 import { PropertyDefaultValue } from "../../../types/PropertyList";
 import { useRouter } from "next/router";
 import Draft from "../../../components/ADMIN/Property/Draft";
+import { GetServerSideProps } from "next";
+import { requiredAuthentication } from "../../../components/HOC/Authentication";
+import { PageAccessValidation } from "../../../components/Reusable/PermissionValidation/PageAccessValidation";
+import NoPermissionComp from "../../../components/Reusable/PermissionValidation/NoPermissionComp";
 
 export default function Property() {
     const { newPropToggle } = useContext(AppContext);
@@ -31,12 +35,15 @@ export default function Property() {
         developer: "",
     };
 
+    const PagePermisson = PageAccessValidation("Customer");
+
+    if (!PagePermisson && PagePermisson !== undefined) {
+        return <NoPermissionComp />;
+    }
+
     return (
         <div>
-            <SearchFilter
-                page="property unit"
-                setSearchTable={setSearchTable}
-            />
+            <SearchFilter page="Property" setSearchTable={setSearchTable} />
             <PropertyTable isSearchTable={isSearchTable} />
             {newPropToggle && (
                 <Form
@@ -50,3 +57,11 @@ export default function Property() {
         </div>
     );
 }
+
+export const getServerSideProps: GetServerSideProps = requiredAuthentication(
+    async (context) => {
+        return {
+            props: {},
+        };
+    }
+);

@@ -12,6 +12,8 @@ import TableLoadingNError from "../../../components/Reusable/TableLoadingNError"
 import AppContext from "../../../components/Context/AppContext";
 import { ErrorSubmit } from "../../../components/Reusable/ErrorMessage";
 import { ScaleLoader } from "react-spinners";
+import { PageAccessValidation } from "../../../components/Reusable/PermissionValidation/PageAccessValidation";
+import NoPermissionComp from "../../../components/Reusable/PermissionValidation/NoPermissionComp";
 
 type FinanceReference = {
     document: string;
@@ -145,6 +147,12 @@ export default function Policy() {
         };
         mutate(Payload);
     };
+
+    const PagePermisson = PageAccessValidation("Policy");
+
+    if (!PagePermisson && PagePermisson !== undefined) {
+        return <NoPermissionComp />;
+    }
 
     return (
         <div className="py-20 640px:py-10">

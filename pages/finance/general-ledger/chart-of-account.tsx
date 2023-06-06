@@ -5,6 +5,8 @@ import COATable from "../../../components/FINANCE/General-Ledger/ChartOfAccount/
 import FinanceSearchFilter from "../../../components/FINANCE/General-Ledger/ChartOfAccount/FinanceSearchFilter";
 import Modify from "../../../components/FINANCE/General-Ledger/ChartOfAccount/Modify";
 import { ChartofAccountList } from "../../../types/COAList";
+import { PageAccessValidation } from "../../../components/Reusable/PermissionValidation/PageAccessValidation";
+import NoPermissionComp from "../../../components/Reusable/PermissionValidation/NoPermissionComp";
 export default function ChartOfAccount() {
     const router = useRouter();
     const [isSearchTable, setSearchTable] = useState("");
@@ -23,6 +25,13 @@ export default function ChartOfAccount() {
         parent_id: "",
         parent: "",
     };
+
+    const PagePermisson = PageAccessValidation("Chart of Accounts");
+
+    if (!PagePermisson && PagePermisson !== undefined) {
+        return <NoPermissionComp />;
+    }
+
     return (
         <>
             <FinanceSearchFilter

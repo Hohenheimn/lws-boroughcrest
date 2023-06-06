@@ -102,6 +102,13 @@ export default function ReceivePaymentForm({
         chart_of_account_name: DefaultValHeaderForm.chart_of_account_name,
     });
 
+    const [isCustomer, setCustomer] = useState<any>({
+        id: "",
+        name: "",
+        class: "",
+        property: [],
+    });
+
     useEffect(() => {
         setHeaderForm({
             customer_id: DefaultValHeaderForm.customer_id,
@@ -118,23 +125,14 @@ export default function ReceivePaymentForm({
             discount: DefaultValHeaderForm.discount,
             chart_of_account_name: DefaultValHeaderForm.chart_of_account_name,
         });
-    }, [DefaultValHeaderForm]);
 
-    const [isCustomer, setCustomer] = useState<any>({
-        id: "",
-        name: "",
-        class: "",
-        property: [],
-    });
-
-    useEffect(() => {
         setCustomer({
             id: DefaultCustomer.id,
             name: DefaultCustomer.name,
             class: DefaultCustomer.class,
             property: DefaultCustomer.property,
         });
-    }, [DefaultCustomer]);
+    }, [DefaultValHeaderForm, DefaultCustomer]);
 
     const [isOutStanding, setOutstanding] = useState<Outstanding[]>([]);
 

@@ -6,6 +6,8 @@ import TableLoadingNError from "../../../components/Reusable/TableLoadingNError"
 import { useQuery } from "react-query";
 import { getCookie } from "cookies-next";
 import api from "../../../util/api";
+import { PageAccessValidation } from "../../../components/Reusable/PermissionValidation/PageAccessValidation";
+import NoPermissionComp from "../../../components/Reusable/PermissionValidation/NoPermissionComp";
 
 export type RequestDetail = {
     id: string;
@@ -37,6 +39,36 @@ export default function RequestList() {
             );
         }
     );
+
+    const PagePermisson_NewRequest = PageAccessValidation(
+        "Customer Request View (New Request)"
+    );
+
+    const PagePermisson_InProcess = PageAccessValidation(
+        "Customer Request View (In Process)"
+    );
+
+    const PagePermisson_InReview = PageAccessValidation(
+        "Customer Request View (In Review)"
+    );
+
+    const PagePermisson_Closed = PageAccessValidation(
+        "Customer Request View (Closed)"
+    );
+
+    if (
+        !PagePermisson_NewRequest &&
+        PagePermisson_NewRequest !== undefined &&
+        !PagePermisson_InProcess &&
+        PagePermisson_InProcess !== undefined &&
+        !PagePermisson_InReview &&
+        PagePermisson_InReview !== undefined &&
+        !PagePermisson_Closed &&
+        PagePermisson_Closed !== undefined
+    ) {
+        return <NoPermissionComp />;
+    }
+
     return (
         <div>
             <h1 className="pageTitle">Request</h1>

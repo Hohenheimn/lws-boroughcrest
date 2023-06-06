@@ -765,7 +765,7 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
                     ) : (
                         <div className={`relative ${style.SaveButton}`}>
                             <div
-                                className="buttonRed absolute top-0 left-0 480px:top-[-40px]"
+                                className="buttonRed cursor-pointer absolute top-0 left-0 480px:top-[-40px]"
                                 onClick={SendLinkFPHandler}
                             >
                                 {SendLinkLoading ? (

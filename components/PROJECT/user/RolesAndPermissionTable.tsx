@@ -79,7 +79,7 @@ export const RolesAndPermissionTable: RolePermission[] = [
             approve: null,
         },
         rolesNumber: 0,
-        duration: 0,
+        duration: null,
     },
     {
         id: 5,
@@ -88,7 +88,7 @@ export const RolesAndPermissionTable: RolePermission[] = [
         sectionEnd: false,
         roles: {
             all: false,
-            view: null,
+            view: false,
             create: null,
             modify: null,
             print: null,

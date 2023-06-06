@@ -21,6 +21,8 @@ import { AiOutlineClose } from "react-icons/ai";
 import { ErrorSubmit } from "../../../../../components/Reusable/ErrorMessage";
 import AppContext from "../../../../../components/Context/AppContext";
 import { TextFieldValidation } from "../../../../../components/Reusable/InputField";
+import NoPermissionComp from "../../../../../components/Reusable/PermissionValidation/NoPermissionComp";
+import { PageAccessValidation } from "../../../../../components/Reusable/PermissionValidation/PageAccessValidation";
 
 export default function PaymentQueueing() {
     const { setPrompt } = useContext(AppContext);
@@ -97,6 +99,12 @@ export default function PaymentQueueing() {
         };
         mutate(Payload);
     };
+
+    const PagePermisson = PageAccessValidation("Collection");
+
+    if (!PagePermisson && PagePermisson !== undefined) {
+        return <NoPermissionComp />;
+    }
 
     return (
         <>
@@ -188,7 +196,7 @@ export default function PaymentQueueing() {
                 setFilterText={setFilterText}
                 isSearch={isSearch}
                 setSearch={setSearch}
-                FilterEndpoint="/finance/general-ledger/journal/filter-options"
+                FilterEndpoint="/finance/customer-facility/collection/filter-options"
                 page="payment-queueing"
                 isPeriod={isPeriod}
                 setPeriod={setPeriod}
@@ -316,7 +324,7 @@ const List = ({ itemDetail }: ListProps) => {
                     <Tippy content={"Modify"} theme="ThemeRed">
                         <li>
                             <Link
-                                href={`/finance/customer-facility/collection/receive-payment/${itemDetail.id}`}
+                                href={`/finance/customer-facility/collection/receive-payment/${itemDetail.id}?from=payment_queueing`}
                             >
                                 <a>
                                     <Image

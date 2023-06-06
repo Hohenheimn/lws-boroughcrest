@@ -70,9 +70,25 @@ export default function UserRoleAndPermissionsCheckBox({
         RolesAndPermissionTable
     );
 
-    const { isLoading, data, isError } = ShowRole(Number(isRoleName.id));
+    const [loadOnce, setLoadOnce] = useState(true);
+
+    useEffect(() => {
+        if (!loadOnce) {
+            setRoleID(isRoleName.id);
+            setLoadOnce(false);
+        }
+    }, [isRoleName.id]);
+
+    const [isRoleID, setRoleID] = useState<any>(undefined);
+
+    const { isLoading, data } = ShowRole(isRoleID);
 
     const RefreshTable = () => {
+        if (router.query.id !== undefined && loadOnce) {
+            setSelectedRolePermission(DefaultSelected);
+            setLoadOnce(false);
+            return;
+        }
         if (data?.data !== undefined) {
             const clone = data?.data.permissions.map((item: any) => {
                 return {

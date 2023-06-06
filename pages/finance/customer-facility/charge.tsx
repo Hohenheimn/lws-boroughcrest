@@ -4,6 +4,8 @@ import ChargeForm from "../../../components/FINANCE/CustomerFacility/Charge/Char
 import ChargeTable from "../../../components/FINANCE/CustomerFacility/Charge/ChargeTable";
 import Modify from "../../../components/FINANCE/CustomerFacility/Charge/Modify";
 import { ChargePayload } from "../../../components/FINANCE/CustomerFacility/Charge/Type";
+import { PageAccessValidation } from "../../../components/Reusable/PermissionValidation/PageAccessValidation";
+import NoPermissionComp from "../../../components/Reusable/PermissionValidation/NoPermissionComp";
 
 export default function Charge() {
     const [create, setCreate] = useState(false);
@@ -31,6 +33,12 @@ export default function Charge() {
         revenue_coa_value: "",
         revenue_coa_id: "",
     };
+
+    const PagePermisson = PageAccessValidation("Charges");
+
+    if (!PagePermisson && PagePermisson !== undefined) {
+        return <NoPermissionComp />;
+    }
 
     return (
         <>

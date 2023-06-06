@@ -2,16 +2,15 @@ import { format, isValid, parse } from "date-fns";
 import React, { useEffect, useState } from "react";
 import { BeatLoader } from "react-spinners";
 import AdjustmentForm, {
-    AdjustmentInvoice,
     DefaultValueAdjustment,
 } from "../../../../../components/FINANCE/CustomerFacility/Adjustment/AdjustmentForm";
 import { GetAdjustmentDetail } from "../../../../../components/FINANCE/CustomerFacility/Adjustment/Query";
 import {
     AdjustmentDetailType,
-    Invoice_list,
     adjustment_accounts,
-    adjustment_invoice,
 } from "../../../../../components/FINANCE/CustomerFacility/Adjustment/AdjusmentDetail";
+import { PageAccessValidation } from "../../../../../components/Reusable/PermissionValidation/PageAccessValidation";
+import NoPermissionComp from "../../../../../components/Reusable/PermissionValidation/NoPermissionComp";
 
 export default function Modify({ id }: any) {
     const { isLoading, data, isError } = GetAdjustmentDetail(id);
@@ -75,6 +74,12 @@ export default function Modify({ id }: any) {
             });
         }
     }, [data?.data]);
+
+    const PagePermisson = PageAccessValidation("Adjustment");
+
+    if (!PagePermisson && PagePermisson !== undefined) {
+        return <NoPermissionComp />;
+    }
 
     if (isLoading) {
         return (

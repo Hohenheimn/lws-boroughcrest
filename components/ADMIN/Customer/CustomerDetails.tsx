@@ -13,14 +13,23 @@ import { customer } from "../../../types/customerList";
 import Modal_Image from "../../Reusable/Modal_Image";
 import { PencilButton } from "../../Reusable/Icons";
 import ModifyCustomer from "./CustomerForm/ModifyCustomer";
+import { AccessActionValidation } from "../../Reusable/PermissionValidation/ActionAccessValidation";
 
 export default function CustomerDetail() {
+    const PermissionValidationModify = AccessActionValidation(
+        "Customer",
+        "modify"
+    );
+
     const { ImgUrl, setPrompt, cusToggle, setCusToggle } =
         useContext(AppContext);
+
     const [isToggleInfoRole, setToggleInfoRole] = useState<boolean>(false);
+
     const [isView, setView] = useState("");
 
     const router = useRouter();
+
     const id = router.query.id;
 
     // Send Portal
@@ -90,13 +99,14 @@ export default function CustomerDetail() {
                     <h1 className=" font-bold text-[24px] 480px:mb-0 480px:text-[16px]">
                         Primary Informations
                     </h1>
-
-                    <PencilButton
-                        FunctionOnClick={() => {
-                            setCusToggle(true);
-                        }}
-                        title={"Modify"}
-                    />
+                    {PermissionValidationModify && (
+                        <PencilButton
+                            FunctionOnClick={() => {
+                                setCusToggle(true);
+                            }}
+                            title={"Modify"}
+                        />
+                    )}
                 </li>
                 <li className="w-3/12 1280px:w-4/12 flex-col 480px:w-full p-5 flex justify-center items-center">
                     <aside className=" w-6/12 820px:w-10/12 rounded-full overflow-hidden 480px:w-5/12 aspect-square relative shadow-xl">
@@ -245,6 +255,7 @@ export default function CustomerDetail() {
                     <CustomerProperty
                         data={data?.properties}
                         classType={data?.class}
+                        PermissionValidationModify={PermissionValidationModify}
                     />
                 )}
             </ul>

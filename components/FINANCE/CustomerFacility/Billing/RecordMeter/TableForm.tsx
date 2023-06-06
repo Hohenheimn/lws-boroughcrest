@@ -60,7 +60,9 @@ export default function TableForm() {
         from: "",
         to: "",
     });
+
     const [RecordMeterTablePage, RecordMetersetTablePage] = useState(1);
+
     const [isReading, setReading] = useState({
         reading_id: "",
         reading_name: "",

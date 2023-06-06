@@ -1,11 +1,12 @@
 import { deleteCookie, getCookie } from "cookies-next";
 import { startOfDay, format } from "date-fns";
 import { useRouter } from "next/router";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import api from "../../util/api";
 import AppContext from "../Context/AppContext";
 import Image from "next/image";
+import { LoginUserInfo } from "../HOC/LoginUser/UserInfo";
 
 type Props = {
     title: string;
@@ -13,28 +14,16 @@ type Props = {
 };
 
 export default function PrintTemplate({ title, children }: Props) {
-    const { setPrompt } = useContext(AppContext);
-    const router = useRouter();
-    const { isLoading, data, isError } = useQuery("user-info", () => {
-        return api.get("/auth/me", {
-            headers: {
-                Authorization: "Bearer " + getCookie("user"),
-            },
-        });
-    });
+    const [userInfo, setUserInfo] = useState<LoginUserInfo>();
 
-    if (isError) {
-        router.push("/login");
-        deleteCookie("user");
-        setPrompt({
-            message: "Unauthorized!",
-            type: "error",
-            toggle: true,
-        });
-    }
+    useEffect(() => {
+        setUserInfo(JSON.parse(localStorage.userInfo));
+    }, []);
 
     const date = new Date();
+
     let today = startOfDay(date);
+
     return (
         <div className="w-[95%] max-w-[1366px] printThis print:h-full top-0 ">
             <table className=" w-full">
@@ -60,8 +49,8 @@ export default function PrintTemplate({ title, children }: Props) {
                 </tfoot>
             </table>
             <footer className=" print:fixed bottom-0 h-[100px] flex flex-col justify-center">
-                <h2>{format(today, "yyyy-MM-dd")}</h2>
-                <h3>{data?.data.name}</h3>
+                <h2>{format(today, "MMM dd yyyy")}</h2>
+                <h3>{userInfo?.name}</h3>
             </footer>
         </div>
     );

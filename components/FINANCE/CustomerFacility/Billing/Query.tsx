@@ -157,7 +157,7 @@ export const GetInvoiceRecentSearch = (
 ) => {
     return useQuery(["billing-recent-search", id, keyword], () => {
         return api.get(
-            `/finance/customer-facility/billing/recent-search/${id}?keywords=${keyword}`,
+            `/finance/customer-facility/billing/recent-search/${id}?keywords=${keyword}&paginate=3`,
             {
                 headers: {
                     Authorization: "Bearer " + getCookie("user"),

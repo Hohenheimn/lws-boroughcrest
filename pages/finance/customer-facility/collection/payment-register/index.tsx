@@ -7,6 +7,8 @@ import { GetCollectionList } from "../../../../../components/FINANCE/CustomerFac
 import { TextNumberDisplay } from "../../../../../components/Reusable/NumberFormat";
 import Pagination from "../../../../../components/Reusable/Pagination";
 import TableErrorMessage from "../../../../../components/Reusable/TableErrorMessage";
+import { PageAccessValidation } from "../../../../../components/Reusable/PermissionValidation/PageAccessValidation";
+import NoPermissionComp from "../../../../../components/Reusable/PermissionValidation/NoPermissionComp";
 
 export type CollectionItem = {
     id: number;
@@ -56,6 +58,8 @@ export type CollectionItem = {
         check_no: number;
         amount: number;
         bank_branch: string;
+        bank_branch_id: string;
+        bank_branch_name: string;
     }[];
     outright_advances: {
         id: number;
@@ -66,6 +70,7 @@ export type CollectionItem = {
         quantity: number;
         type: string;
         unit_price: string | number;
+        uom: string;
     }[];
     outstanding_balances: {
         balance: string | number;
@@ -108,6 +113,12 @@ export default function PaymentRegister() {
         isFilterText,
         ""
     );
+
+    const PagePermisson = PageAccessValidation("Collection");
+
+    if (!PagePermisson && PagePermisson !== undefined) {
+        return <NoPermissionComp />;
+    }
 
     return (
         <>

@@ -66,6 +66,30 @@ export const CreateCollection = (onSuccess: any, onError: any) => {
     );
 };
 
+export const UpdateCollection = (onSuccess: any, onError: any, id: number) => {
+    const queryClient = useQueryClient();
+    return useMutation(
+        (Payload: any) => {
+            return api.put(
+                `/finance/customer-facility/collection/${id}`,
+                Payload,
+                {
+                    headers: {
+                        Authorization: "Bearer " + getCookie("user"),
+                    },
+                }
+            );
+        },
+        {
+            onSuccess: () => {
+                onSuccess();
+                queryClient.invalidateQueries(["collection-list"]);
+            },
+            onError: onError,
+        }
+    );
+};
+
 export const DeleteDiscount = (onSuccess: any, onError: any) => {
     const queryClient = useQueryClient();
     return useMutation(

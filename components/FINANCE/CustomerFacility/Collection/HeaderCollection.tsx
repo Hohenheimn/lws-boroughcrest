@@ -9,6 +9,7 @@ import PeriodCalendar from "../../../Reusable/PeriodCalendar";
 import Link from "next/link";
 import { MdArrowForwardIos } from "react-icons/md";
 import { format, isValid, parse } from "date-fns";
+import { useRouter } from "next/router";
 
 type Props = {
     isSearch: string;
@@ -32,19 +33,24 @@ export default function HeaderCollection({
     isPeriod,
     setPeriod,
 }: Props) {
+    const router = useRouter();
+
     const [isAdvFilter, setAdvFilter] = useState<Advancefilter>([]);
+
     useEffect(() => {
         const cloneArray = isAdvFilter.map((item) => {
             return `${item.key}:${item.value}`;
         });
         setFilterText(cloneArray);
     }, [isAdvFilter]);
+
     const removeItemFromFilter = (value: string) => {
         const cloneFilter = isAdvFilter.filter((item) => item.value !== value);
         setAdvFilter(cloneFilter);
     };
 
     const dateFrom = parse(isPeriod.from, "MMM dd yyyy", new Date());
+
     const dateTo = parse(isPeriod.to, "MMM dd yyyy", new Date());
 
     return (
@@ -77,6 +83,12 @@ export default function HeaderCollection({
                                 }&date_to=${
                                     isValid(dateTo)
                                         ? format(dateTo, "yyyy-MM-dd")
+                                        : ""
+                                }${
+                                    router.pathname.includes(
+                                        "/collection/payment-queueing"
+                                    )
+                                        ? "&status=Queued"
                                         : ""
                                 }&keywords=`}
                                 setAdvFilter={setAdvFilter}

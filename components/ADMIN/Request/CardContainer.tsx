@@ -41,12 +41,66 @@ export default function CardContainer({ endPoint, type, color }: Props) {
                             <BsSearch className="ml-2 text-RegularColor" />
                         </div>
                     </div>
-                    <Card Detail={""} type={type} color={color} />
-                    <Card Detail={""} type={type} color={color} />
-                    <Card Detail={""} type={type} color={color} />
-                    <Card Detail={""} type={type} color={color} />
-                    <Card Detail={""} type={type} color={color} />
-                    <Card Detail={""} type={type} color={color} />
+                    <Card
+                        Detail={{
+                            ticket_no: "0754979844648",
+                            requestor: "Juan Dela Cruz",
+                            property: "Lorem ipsum",
+                            request: "Gate Pass",
+                            date: "08/16/23",
+                        }}
+                        type={type}
+                    />
+                    <Card
+                        Detail={{
+                            ticket_no: "0754979844648",
+                            requestor: "Juan Dela Cruz",
+                            property: "Lorem ipsum",
+                            request: "Gate Pass",
+                            date: "08/16/23",
+                        }}
+                        type={type}
+                    />
+                    <Card
+                        Detail={{
+                            ticket_no: "0754979844648",
+                            requestor: "Juan Dela Cruz",
+                            property: "Lorem ipsum",
+                            request: "Gate Pass",
+                            date: "08/16/23",
+                        }}
+                        type={type}
+                    />
+                    <Card
+                        Detail={{
+                            ticket_no: "0754979844648",
+                            requestor: "Juan Dela Cruz",
+                            property: "Lorem ipsum",
+                            request: "Gate Pass",
+                            date: "08/16/23",
+                        }}
+                        type={type}
+                    />
+                    <Card
+                        Detail={{
+                            ticket_no: "0754979844648",
+                            requestor: "Juan Dela Cruz",
+                            property: "Lorem ipsum",
+                            request: "Gate Pass",
+                            date: "08/16/23",
+                        }}
+                        type={type}
+                    />
+                    <Card
+                        Detail={{
+                            ticket_no: "0754979844648",
+                            requestor: "Juan Dela Cruz",
+                            property: "Lorem ipsum",
+                            request: "Gate Pass",
+                            date: "08/16/23",
+                        }}
+                        type={type}
+                    />
                 </div>
             </div>
         </>
