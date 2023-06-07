@@ -7,6 +7,7 @@ import LineChartComp from "../components/Dashboard/LineChartComp";
 import AnnoucementBoard from "../components/Dashboard/AnnoucementBoard";
 import RequestComp from "../components/Dashboard/RequestComp";
 import DraftDashboard from "../components/Dashboard/DraftDashboard";
+import AnnouncementList from "../components/ADMIN/Announcement/AnnouncementList";
 
 function Dashboard() {
     return (
@@ -29,7 +30,7 @@ function Dashboard() {
                 <li className="w-[49%] flex flex-col h-[800px] 640px:w-full 640px:mb-10 640px:h-[500px]">
                     <h4 className=" mb-3">Announcement Board</h4>
                     <div className="p-4 bg-white shadow-md rounded-lg w-full h-full overflow-auto">
-                        <AnnoucementBoard />
+                        <AnnouncementList type="dashboard" />
                     </div>
                 </li>
                 <li className="w-[49%] flex flex-col h-[800px] 640px:w-full">

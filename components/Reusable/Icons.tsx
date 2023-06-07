@@ -175,7 +175,7 @@ export function RequestIcon() {
     return (
         <Tippy
             theme="ThemeRed"
-            content={<span className="text-[12px]">Request</span>}
+            content={<span className="text-[12px]">Closed Request</span>}
         >
             <div className=" inline-block cursor-pointer hover:scale-125 duration-75">
                 <Image

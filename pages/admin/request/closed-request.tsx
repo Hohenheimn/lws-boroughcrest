@@ -8,36 +8,19 @@ import { getCookie } from "cookies-next";
 import api from "../../../util/api";
 import { PageAccessValidation } from "../../../components/Reusable/PermissionValidation/PageAccessValidation";
 import NoPermissionComp from "../../../components/Reusable/PermissionValidation/NoPermissionComp";
+import { GetRequest } from "../../../components/ADMIN/Request/Query";
+import { RequestDetailType } from "../../../components/ADMIN/Request/Card";
 
-export type RequestDetail = {
-    id: string;
-    date: string;
-    ticket_no: string;
-    requestor: string;
-    property: string;
-    request: string;
-    status: string;
-};
-
-export default function RequestList() {
+export default function ClosedRequest() {
     const [isSearchTable, setSearchTable] = useState("");
 
     const [TablePage, setTablePage] = useState(1);
 
-    const { data, isLoading, isError } = useQuery(
-        ["charge-list", isSearchTable, TablePage],
-        () => {
-            return api.get(
-                `/finance/customer-facility/charges?keywords=${isSearchTable}&paginate=10&page=${
-                    isSearchTable === "" ? TablePage : 1
-                }`,
-                {
-                    headers: {
-                        Authorization: "Bearer " + getCookie("user"),
-                    },
-                }
-            );
-        }
+    const { data, isLoading, isError } = GetRequest(
+        "Closed",
+        isSearchTable,
+        10,
+        TablePage
     );
 
     const PagePermisson_NewRequest = PageAccessValidation(
@@ -78,6 +61,7 @@ export default function RequestList() {
                         type="text"
                         className="flex-1 outline-none text-[14px] shadow-none"
                         placeholder="Search"
+                        value={isSearchTable}
                         onChange={(e) => setSearchTable(e.target.value)}
                     />
                     <BsSearch className=" mr-2 text-gray-500 text-[18px]" />
@@ -113,15 +97,15 @@ export default function RequestList() {
             <Pagination
                 setTablePage={setTablePage}
                 TablePage={TablePage}
-                PageNumber={data?.data.last_page}
-                CurrentPage={data?.data.current_page}
+                PageNumber={data?.data.meta.last_page}
+                CurrentPage={data?.data.meta.current_page}
             />
         </div>
     );
 }
 
 type ListProps = {
-    itemDetail: RequestDetail;
+    itemDetail: RequestDetailType;
 };
 
 const List = ({ itemDetail }: ListProps) => {
@@ -144,35 +128,35 @@ const List = ({ itemDetail }: ListProps) => {
         <tr>
             <td>
                 <div>
-                    <h2>08/22/2020</h2>
+                    <h2>{itemDetail.date}</h2>
                 </div>
             </td>
             <td>
                 <div>
-                    <h2>043644879</h2>
+                    <h2>{itemDetail.ticket_no}</h2>
                 </div>
             </td>
             <td>
                 <div>
-                    <h2>Juan Dela Cruz</h2>
-                </div>
-            </td>
-
-            <td>
-                <div>
-                    <h2>lorem ipsum</h2>
+                    <h2>{itemDetail.customer_name}</h2>
                 </div>
             </td>
 
             <td>
                 <div>
-                    <h2>Gate Pass</h2>
+                    <h2>{itemDetail.property_unit_code}</h2>
                 </div>
             </td>
 
             <td>
                 <div>
-                    <h2 style={{ color: color }}>Closed</h2>
+                    <h2>{itemDetail.request}</h2>
+                </div>
+            </td>
+
+            <td>
+                <div>
+                    <h2 style={{ color: color }}>{itemDetail.status}</h2>
                 </div>
             </td>
         </tr>

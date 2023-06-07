@@ -1,13 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import ModalTemp from "../../Reusable/ModalTemp";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { AccessActionValidation } from "../../Reusable/PermissionValidation/ActionAccessValidation";
-import { ShowRequest } from "./Query";
+import { ActionMutationRequest, ShowRequest } from "./Query";
 import { RequestDetailType, RequestRemarks } from "./Card";
-import { BeatLoader } from "react-spinners";
+import { BeatLoader, ScaleLoader } from "react-spinners";
+import Link from "next/link";
+import { ErrorSubmit } from "../../Reusable/ErrorMessage";
+import AppContext from "../../Context/AppContext";
 
 export default function RequestModal() {
+    const { setPrompt } = useContext(AppContext);
+
+    const [isButtonClicked, setButtonClicked] = useState("");
+
+    let buttonClicked = "";
+
     const router = useRouter();
 
     const type = router.query.type;
@@ -45,7 +54,33 @@ export default function RequestModal() {
         }
     }, [type]);
 
-    const ActionHandler = (button: string) => {};
+    const onSuccess = () => {
+        setPrompt({
+            message: `Request successfully ${buttonClicked}`,
+            type: "success",
+            toggle: true,
+        });
+        router.push("");
+    };
+
+    const onError = (e: any) => {
+        ErrorSubmit(e, setPrompt);
+    };
+
+    const { isLoading: mutateLoading, mutate } = ActionMutationRequest(
+        onSuccess,
+        onError
+    );
+
+    const ActionHandler = (button: string, id: number) => {
+        setButtonClicked(button);
+        buttonClicked = button;
+        const Payload = {
+            status: button,
+            remarks: "",
+        };
+        mutate({ id: id, payload: Payload });
+    };
 
     if (isLoading) {
         return (
@@ -109,8 +144,17 @@ export default function RequestModal() {
                     Value={RequestDetail.property_unit_code}
                 />
                 <Detail Label={"REQUEST"} Value={RequestDetail.request} />
-                <Detail Label={"TRAIL"} Value={RequestDetail.create_at} />
+
                 <Detail Label={"REMARKS"} Value={RequestDetail.details} />
+
+                <li className="w-full">
+                    <h1 className=" text-ThemeRed">TRAIL</h1>
+                    {RequestDetail.trail.map((item, index: number) => (
+                        <h4 key={index}>
+                            {item.event}, {item.date}, {item.time} | {item.user}
+                        </h4>
+                    ))}
+                </li>
             </ul>
 
             {(type === "In Review" || type === "Closed") && (
@@ -140,37 +184,119 @@ export default function RequestModal() {
                 {type === "New Request" && PermissionValidationApprove && (
                     <button
                         className="buttonRed"
-                        onClick={() => ActionHandler("New Request")}
+                        onClick={() =>
+                            ActionHandler("In Process", RequestDetail.id)
+                        }
                     >
-                        PROCESS
+                        {mutateLoading && isButtonClicked === "In Process" ? (
+                            <ScaleLoader
+                                color="#fff"
+                                height="10px"
+                                width="2px"
+                            />
+                        ) : (
+                            "PROCESS"
+                        )}
                     </button>
                 )}
                 {type === "In Process" && (
                     <>
-                        <button className="buttonRed mr-5 640px:mr-0 640px:mb-2">
-                            REVIEW
+                        <button
+                            className="buttonRed mr-5 640px:mr-0 640px:mb-2"
+                            onClick={() =>
+                                ActionHandler("In Review", RequestDetail.id)
+                            }
+                        >
+                            {mutateLoading &&
+                            isButtonClicked === "In Review" ? (
+                                <ScaleLoader
+                                    color="#fff"
+                                    height="10px"
+                                    width="2px"
+                                />
+                            ) : (
+                                "REVIEW"
+                            )}
                         </button>
-                        <button className="buttonBorder">REJECT</button>
+                        <button
+                            className="buttonBorder"
+                            onClick={() =>
+                                ActionHandler("Reject", RequestDetail.id)
+                            }
+                        >
+                            {mutateLoading && isButtonClicked === "Reject" ? (
+                                <ScaleLoader
+                                    color="#fff"
+                                    height="10px"
+                                    width="2px"
+                                />
+                            ) : (
+                                "REJECT"
+                            )}
+                        </button>
                     </>
                 )}
                 {type === "In Review" && (
                     <>
                         {PermissionValidationApprove && (
-                            <button className="buttonRed mr-5  640px:mr-0 640px:mb-2">
-                                APPROVED
+                            <button
+                                className="buttonRed mr-5  640px:mr-0 640px:mb-2"
+                                onClick={() =>
+                                    ActionHandler("Approved", RequestDetail.id)
+                                }
+                            >
+                                {mutateLoading &&
+                                isButtonClicked === "Approved" ? (
+                                    <ScaleLoader
+                                        color="#fff"
+                                        height="10px"
+                                        width="2px"
+                                    />
+                                ) : (
+                                    "APPROVED"
+                                )}
                             </button>
                         )}
 
-                        <button className="buttonBlue mr-5 640px:mr-0 640px:mb-2">
-                            RETURN
+                        <button
+                            className="buttonBlue mr-5 640px:mr-0 640px:mb-2"
+                            onClick={() =>
+                                ActionHandler("In Process", RequestDetail.id)
+                            }
+                        >
+                            {mutateLoading &&
+                            isButtonClicked === "In Process" ? (
+                                <ScaleLoader
+                                    color="#fff"
+                                    height="10px"
+                                    width="2px"
+                                />
+                            ) : (
+                                "RETURN"
+                            )}
                         </button>
-                        <button className="buttonBorder 640px:mr-0 640px:mb-2">
-                            REJECT
+                        <button
+                            className="buttonBorder 640px:mr-0 640px:mb-2"
+                            onClick={() =>
+                                ActionHandler("Reject", RequestDetail.id)
+                            }
+                        >
+                            {mutateLoading && isButtonClicked === "Reject" ? (
+                                <ScaleLoader
+                                    color="#fff"
+                                    height="10px"
+                                    width="2px"
+                                />
+                            ) : (
+                                "REJECT"
+                            )}
                         </button>
                     </>
                 )}
                 {type === "Closed" && PermissionValidationPrint && (
-                    <button className="buttonRed">PRINT</button>
+                    <Link href={`/admin/request/print/${RequestDetail.id}`}>
+                        <a className="buttonRed">PRINT</a>
+                    </Link>
                 )}
             </div>
         </ModalTemp>
@@ -210,7 +336,7 @@ const RemarksProfile = ({ remarkDetail }: PropsRemarkProfile) => {
             <div className="pl-2 flex flex-col">
                 <h3 className="text-ThemeRed">{remarkDetail.user_name}</h3>
                 <span className=" text-gray-400 mb-1 text-[12px]">
-                    {remarkDetail.create_at}
+                    {remarkDetail.created_at}
                 </span>
                 <p className=" text-RegularColor 640px:text-[14px]">
                     {remarkDetail.remarks}

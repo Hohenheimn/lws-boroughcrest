@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { BsSearch } from "react-icons/bs";
 import Card, { RequestDetailType } from "./Card";
 import { GetRequest } from "./Query";
@@ -7,10 +7,39 @@ import { BarLoader } from "react-spinners";
 type Props = {
     type: string;
     color: string;
+    refreshToggle: boolean;
+    setRefetching: Function;
 };
 
-export default function CardContainer({ type, color }: Props) {
-    const { isLoading, data, isError } = GetRequest(type, "");
+export default function CardContainer({
+    type,
+    color,
+    refreshToggle,
+    setRefetching,
+}: Props) {
+    const [isSearch, setSearch] = useState("");
+
+    const [isPaginate, setPaginate] = useState(10);
+
+    const { isLoading, data, isError, refetch, isFetching } = GetRequest(
+        type,
+        isSearch,
+        isPaginate,
+        1
+    );
+
+    useEffect(() => {
+        if (isFetching) {
+            setRefetching(true);
+        } else {
+            setRefetching(false);
+        }
+    });
+
+    useEffect(() => {
+        refetch();
+    }, [refreshToggle]);
+
     return (
         <>
             <div
@@ -27,7 +56,7 @@ export default function CardContainer({ type, color }: Props) {
                     >
                         {type}
                     </p>
-                    <h1 style={{ color: color }}>{data?.data.length}</h1>
+                    <h1 style={{ color: color }}>{data?.data.data.length}</h1>
                 </div>
                 <div className=" px-5">
                     <div className="w-full py-3">
@@ -39,12 +68,14 @@ export default function CardContainer({ type, color }: Props) {
                                 type="text"
                                 className=" outline-none bg-transparent w-full text-[14px]"
                                 placeholder="Search New Request here..."
+                                value={isSearch}
+                                onChange={(e) => setSearch(e.target.value)}
                             />
                             <BsSearch className="ml-2 text-RegularColor" />
                         </div>
                     </div>
                     {isLoading && (
-                        <div className="flex justify-center mt-5">
+                        <div className="flex justify-center my-5">
                             <BarLoader color={color} height={7} />
                         </div>
                     )}
@@ -53,10 +84,22 @@ export default function CardContainer({ type, color }: Props) {
                             Something went wrong
                         </h1>
                     )}
-                    {data?.data.map(
+                    {data?.data.data.map(
                         (item: RequestDetailType, index: number) => (
                             <Card key={index} Detail={item} type={type} />
                         )
+                    )}
+                    {Number(isPaginate) === Number(data?.data.data.length) && (
+                        <div className=" flex justify-center">
+                            <button
+                                className=" text-ThemeRed hover:underline text-[14px] mt-2"
+                                onClick={() =>
+                                    setPaginate((prev) => Number(prev) + 10)
+                                }
+                            >
+                                See More
+                            </button>
+                        </div>
                     )}
                 </div>
             </div>

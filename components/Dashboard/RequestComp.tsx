@@ -38,37 +38,9 @@ export default function RequestComp() {
                 w-[49%] 1024px:w-full"
                 >
                     <Card
-                        type={"In Process"}
+                        type={"New Request"}
                         Detail={{
-                            customer_id: 0,
-                            customer_name: "sample",
-                            property_unit_id: 0,
-                            property_unit_code: "qwwe",
-                            date: "08/16/1998",
-                            request: "sample",
-                            ticket_no: "213123",
-                            details: "sample",
-                            status: "Pending",
-                            create_at: "09/16/1998",
-                            trail: [],
-                            remarks: [],
-                            updated_at: "",
-                        }}
-                    />
-                </li>
-
-                <li
-                    className="
-                w-[49%] 1024px:w-full"
-                ></li>
-
-                <li
-                    className="
-                w-[49%] 1024px:w-full"
-                >
-                    <Card
-                        type={"In Process"}
-                        Detail={{
+                            id: 0,
                             customer_id: 0,
                             customer_name: "sample",
                             property_unit_id: 0,
@@ -93,6 +65,57 @@ export default function RequestComp() {
                     <Card
                         type={"In Process"}
                         Detail={{
+                            id: 0,
+                            customer_id: 0,
+                            customer_name: "sample",
+                            property_unit_id: 0,
+                            property_unit_code: "qwwe",
+                            date: "08/16/1998",
+                            request: "sample",
+                            ticket_no: "213123",
+                            details: "sample",
+                            status: "Pending",
+                            create_at: "09/16/1998",
+                            trail: [],
+                            remarks: [],
+                            updated_at: "",
+                        }}
+                    />
+                </li>
+
+                <li
+                    className="
+                w-[49%] 1024px:w-full"
+                >
+                    <Card
+                        type={"In Review"}
+                        Detail={{
+                            id: 0,
+                            customer_id: 0,
+                            customer_name: "sample",
+                            property_unit_id: 0,
+                            property_unit_code: "qwwe",
+                            date: "08/16/1998",
+                            request: "sample",
+                            ticket_no: "213123",
+                            details: "sample",
+                            status: "Pending",
+                            create_at: "09/16/1998",
+                            trail: [],
+                            remarks: [],
+                            updated_at: "",
+                        }}
+                    />
+                </li>
+
+                <li
+                    className="
+                w-[49%] 1024px:w-full"
+                >
+                    <Card
+                        type={"Closed"}
+                        Detail={{
+                            id: 0,
                             customer_id: 0,
                             customer_name: "sample",
                             property_unit_id: 0,

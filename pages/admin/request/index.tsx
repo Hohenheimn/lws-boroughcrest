@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import { PageAccessValidation } from "../../../components/Reusable/PermissionValidation/PageAccessValidation";
 import NoPermissionComp from "../../../components/Reusable/PermissionValidation/NoPermissionComp";
+import { MoonLoader } from "react-spinners";
 
 const four = "w-1/4";
 const three = "w-4/12";
@@ -19,6 +20,10 @@ export default function Request() {
     const router = useRouter();
 
     const [colNo, setColNo] = useState(4);
+
+    const [refreshToggle, setRefreshToggle] = useState(false);
+
+    const [isRefetching, setRefetching] = useState(false);
 
     const PagePermisson_NewRequest = PageAccessValidation(
         "Customer Request View (New Request)"
@@ -76,14 +81,20 @@ export default function Request() {
             <h1 className="pageTitle">Request Board</h1>
             <ul className="w-full flex justify-end items-center">
                 <li className="mr-5">
-                    <Link href="/admin/request/request-list">
+                    <Link href="/admin/request/closed-request">
                         <a>
                             <RequestIcon />
                         </a>
                     </Link>
                 </li>
                 <li>
-                    <RequestRefresh />
+                    {isRefetching ? (
+                        <MoonLoader size={20} color="#8f384d" />
+                    ) : (
+                        <div onClick={() => setRefreshToggle(!refreshToggle)}>
+                            <RequestRefresh />
+                        </div>
+                    )}
                 </li>
             </ul>
             <div className=" overflow-auto w-full">
@@ -94,7 +105,12 @@ export default function Request() {
                                 colNo === 2 && two
                             } ${colNo === 3 && three} ${colNo === 4 && four}`}
                         >
-                            <CardContainer color="#8f384d" type="New Request" />
+                            <CardContainer
+                                color="#8f384d"
+                                type="New Request"
+                                refreshToggle={refreshToggle}
+                                setRefetching={setRefetching}
+                            />
                         </li>
                     )}
                     {PagePermisson_InProcess && (
@@ -103,7 +119,12 @@ export default function Request() {
                                 colNo === 2 && two
                             } ${colNo === 3 && three} ${colNo === 4 && four}`}
                         >
-                            <CardContainer color="#5c6e91" type="In Process" />
+                            <CardContainer
+                                color="#5c6e91"
+                                type="In Process"
+                                refreshToggle={refreshToggle}
+                                setRefetching={setRefetching}
+                            />
                         </li>
                     )}
                     {PagePermisson_InReview && (
@@ -112,7 +133,12 @@ export default function Request() {
                                 colNo === 2 && two
                             } ${colNo === 3 && three} ${colNo === 4 && four}`}
                         >
-                            <CardContainer color="#dd9866" type="In Review" />
+                            <CardContainer
+                                color="#dd9866"
+                                type="In Review"
+                                refreshToggle={refreshToggle}
+                                setRefetching={setRefetching}
+                            />
                         </li>
                     )}
                     {PagePermisson_Closed && (
@@ -121,7 +147,12 @@ export default function Request() {
                                 colNo === 2 && two
                             } ${colNo === 3 && three} ${colNo === 4 && four}`}
                         >
-                            <CardContainer color="#41b6ff" type="Closed" />
+                            <CardContainer
+                                color="#41b6ff"
+                                type="Closed"
+                                refreshToggle={refreshToggle}
+                                setRefetching={setRefetching}
+                            />
                         </li>
                     )}
                 </ul>
