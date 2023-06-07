@@ -40,11 +40,48 @@ export default function RequestComp() {
                     <Card
                         type={"In Process"}
                         Detail={{
-                            ticket_no: "0754979844648",
-                            requestor: "Juan Dela Cruz",
-                            property: "Lorem ipsum",
-                            request: "Gate Pass",
-                            date: "08/16/23",
+                            customer_id: 0,
+                            customer_name: "sample",
+                            property_unit_id: 0,
+                            property_unit_code: "qwwe",
+                            date: "08/16/1998",
+                            request: "sample",
+                            ticket_no: "213123",
+                            details: "sample",
+                            status: "Pending",
+                            create_at: "09/16/1998",
+                            trail: [],
+                            remarks: [],
+                            updated_at: "",
+                        }}
+                    />
+                </li>
+
+                <li
+                    className="
+                w-[49%] 1024px:w-full"
+                ></li>
+
+                <li
+                    className="
+                w-[49%] 1024px:w-full"
+                >
+                    <Card
+                        type={"In Process"}
+                        Detail={{
+                            customer_id: 0,
+                            customer_name: "sample",
+                            property_unit_id: 0,
+                            property_unit_code: "qwwe",
+                            date: "08/16/1998",
+                            request: "sample",
+                            ticket_no: "213123",
+                            details: "sample",
+                            status: "Pending",
+                            create_at: "09/16/1998",
+                            trail: [],
+                            remarks: [],
+                            updated_at: "",
                         }}
                     />
                 </li>
@@ -54,45 +91,21 @@ export default function RequestComp() {
                 w-[49%] 1024px:w-full"
                 >
                     <Card
-                        type={"New Request"}
+                        type={"In Process"}
                         Detail={{
-                            ticket_no: "0754979844648",
-                            requestor: "Juan Dela Cruz",
-                            property: "Lorem ipsum",
-                            request: "Gate Pass",
-                            date: "08/16/23",
-                        }}
-                    />
-                </li>
-
-                <li
-                    className="
-                w-[49%] 1024px:w-full"
-                >
-                    <Card
-                        type={"In Review"}
-                        Detail={{
-                            ticket_no: "0754979844648",
-                            requestor: "Juan Dela Cruz",
-                            property: "Lorem ipsum",
-                            request: "Gate Pass",
-                            date: "08/16/23",
-                        }}
-                    />
-                </li>
-
-                <li
-                    className="
-                w-[49%] 1024px:w-full"
-                >
-                    <Card
-                        type={"Closed"}
-                        Detail={{
-                            ticket_no: "0754979844648",
-                            requestor: "Juan Dela Cruz",
-                            property: "Lorem ipsum",
-                            request: "Gate Pass",
-                            date: "08/16/23",
+                            customer_id: 0,
+                            customer_name: "sample",
+                            property_unit_id: 0,
+                            property_unit_code: "qwwe",
+                            date: "08/16/1998",
+                            request: "sample",
+                            ticket_no: "213123",
+                            details: "sample",
+                            status: "Pending",
+                            create_at: "09/16/1998",
+                            trail: [],
+                            remarks: [],
+                            updated_at: "",
                         }}
                     />
                 </li>
