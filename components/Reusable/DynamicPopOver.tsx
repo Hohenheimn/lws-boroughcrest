@@ -8,6 +8,7 @@ type Props = {
     className: string;
     fixed?: boolean;
     rightPosition?: boolean;
+    forTable?: boolean;
 };
 
 // For Dynamic Positioning only, its your command to toggle it
@@ -19,6 +20,7 @@ export default function DynamicPopOver({
     className,
     fixed,
     rightPosition,
+    forTable,
 }: Props) {
     const inputField = useRef<any>();
     const toPopOver = useRef<any>();
@@ -27,7 +29,11 @@ export default function DynamicPopOver({
         inputField.current,
         toPopOver.current,
         {
-            placement: rightPosition ? "bottom-end" : "bottom-start",
+            placement: forTable
+                ? "auto"
+                : rightPosition
+                ? "bottom-end"
+                : "bottom-start",
             modifiers: [
                 { name: "preventOverflow", enabled: true },
                 {
@@ -55,7 +61,11 @@ export default function DynamicPopOver({
 
     if (!fixed) {
         return (
-            <div className="relative">
+            <div
+                className={
+                    "relative " + className.includes("w-full") && "w-full"
+                }
+            >
                 <div ref={inputField} className={className}>
                     {toRef}
                 </div>

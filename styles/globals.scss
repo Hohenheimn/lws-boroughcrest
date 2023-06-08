@@ -213,6 +213,9 @@ select {
         }
     }
 }
+.table_container.noMB {
+    @apply mb-0;
+}
 .table_container.max-half {
     @apply max-h-[30vh] min-h-[300px] 640px:min-h-[300px];
 }

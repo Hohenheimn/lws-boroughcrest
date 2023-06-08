@@ -150,16 +150,18 @@ export default function Layout({ children }: Layout) {
                 >
                     <div className="flex-1 flex flex-col w-full relative 1024px:py-5">
                         {isWindow <= 1024 && (
-                            <button
-                                onClick={() => setHide(!isHide)}
-                                className={`absolute z-[99]  right-5 top-3 text-[16px] duration-75 ease-in-out p-1 px-5 shadow-lg rounded-full ${
-                                    isHide
-                                        ? "bg-ThemeRed text-white"
-                                        : "bg-white text-ThemeRed pointer-events-none"
-                                }`}
-                            >
-                                <BiMenuAltRight />
-                            </button>
+                            <div className=" flex justify-end pr-5">
+                                <button
+                                    onClick={() => setHide(!isHide)}
+                                    className={`  right-5 top-3 text-[16px] duration-75 ease-in-out p-1 px-5 shadow-lg rounded-full ${
+                                        isHide
+                                            ? "bg-ThemeRed text-white"
+                                            : "bg-white text-ThemeRed pointer-events-none"
+                                    }`}
+                                >
+                                    <BiMenuAltRight />
+                                </button>
+                            </div>
                         )}
                         <header
                             className={` flex ${

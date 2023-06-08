@@ -74,13 +74,11 @@ export default function Archive() {
                 <table className="table_list journal">
                     <thead>
                         <tr>
-                            <th>Receipt Date</th>
-                            <th>Receipt No.</th>
+                            <th>Deposit Date</th>
+                            <th>Reference No.</th>
                             <th>Customer</th>
                             <th>Property</th>
                             <th>Amount Received</th>
-                            <th>Mode of Payment</th>
-                            <th>Cash Account</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -108,7 +106,7 @@ type ListProps = {
 };
 
 const List = ({ item }: ListProps) => {
-    const receipt_date = parse(item.receipt_date, "yyyy-MM-dd", new Date());
+    const receipt_date = parse(item.deposit_date, "yyyy-MM-dd", new Date());
 
     return (
         <tr>
@@ -117,7 +115,7 @@ const List = ({ item }: ListProps) => {
                     ? format(receipt_date, "MMM dd yyyy")
                     : ""}
             </td>
-            <td>{item.receipt_no}</td>
+            <td>{item.reference_no}</td>
             <td>{item.customer.name}</td>
             <td>
                 {item.customer?.properties.map((item: any, index: number) =>
@@ -132,8 +130,6 @@ const List = ({ item }: ListProps) => {
                     value={item.amount_paid}
                 />
             </td>
-            <td>{item.mode_of_payment}</td>
-            <td>{item.chart_of_account_account_name}</td>
         </tr>
     );
 };

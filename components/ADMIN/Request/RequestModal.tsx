@@ -221,10 +221,10 @@ export default function RequestModal() {
                         <button
                             className="buttonBorder"
                             onClick={() =>
-                                ActionHandler("Reject", RequestDetail.id)
+                                ActionHandler("Rejected", RequestDetail.id)
                             }
                         >
-                            {mutateLoading && isButtonClicked === "Reject" ? (
+                            {mutateLoading && isButtonClicked === "Rejected" ? (
                                 <ScaleLoader
                                     color="#fff"
                                     height="10px"

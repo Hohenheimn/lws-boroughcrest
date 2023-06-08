@@ -350,7 +350,7 @@ export default function Calendar({
                                             ? " bg-ThemeRed text-white"
                                             : isEqual(day, currentValue)
                                             ? " bg-RegularColor text-white"
-                                            : "hover:bg-gray-300"
+                                            : "hover:bg-RegularColor hover:text-white"
                                     }
                             
                                     ${
@@ -371,13 +371,16 @@ export default function Calendar({
                                                 compareDesc(period.to, day) ===
                                                     -1)
                                                 ? ""
-                                                : " pointer-events-none"
+                                                : ` pointer-events-none ${
+                                                      !isEqual(day, today) &&
+                                                      "bg-gray-200 "
+                                                  }`
                                         } `
                                     } ${
                                         birthday === true &&
                                         compareDesc(YearCanbeSelected, day) ===
                                             1 &&
-                                        "pointer-events-none bg-gray-200"
+                                        "pointer-events-none cursor-default bg-gray-200"
                                     }`}
                                 >
                                     <time dateTime={format(day, "yyyy-MM-dd")}>

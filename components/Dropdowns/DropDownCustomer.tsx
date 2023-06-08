@@ -10,12 +10,14 @@ type DropdownItem = {
     UpdateStateHandler: (key: string, e: any) => void;
     itemDetail: isTableItemObj;
     classnameInput?: string;
+    forTable?: boolean;
 };
 
 export default function DropDownCustomer({
     UpdateStateHandler,
     itemDetail,
     classnameInput,
+    forTable,
 }: DropdownItem) {
     const [isToggle, setToggle] = useState(false);
     const [tempSearch, setTempSearch] = useState(itemDetail.customer_name);
@@ -27,6 +29,7 @@ export default function DropDownCustomer({
             <DynamicPopOver
                 className="w-full"
                 samewidth={true}
+                forTable={forTable}
                 toRef={
                     <input
                         type="text"

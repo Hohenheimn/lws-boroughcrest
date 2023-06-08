@@ -6,13 +6,14 @@ export const GetReceiptsBook = (
     keyword: string,
     tablepage: string | number,
     status: string,
-    listType: string
+    listType: string,
+    paginate: number
 ) => {
     return useQuery(
-        ["receipts-book-list", keyword, tablepage, listType, status],
+        ["receipts-book-list", keyword, tablepage, listType, status, paginate],
         () => {
             return api.get(
-                `/finance/customer-facility/deposit-counter?list_type=${listType}&status=${status}&keywords=${keyword}&paginate=10&page=${tablepage}`,
+                `/finance/customer-facility/deposit-counter?list_type=${listType}&paginate=${paginate}&status=${status}&keywords=${keyword}&paginate=10&page=${tablepage}`,
 
                 {
                     headers: {
@@ -53,7 +54,8 @@ export const GetBankCredit = (
     dateTo: string,
     bankIDs: number[],
     page: number | string,
-    keywords: string
+    keywords: string,
+    paginate: number
 ) => {
     return useQuery(
         ["bank-credit-list", status, dateFrom, dateTo, bankIDs, page, keywords],
@@ -61,7 +63,7 @@ export const GetBankCredit = (
             return api.get(
                 `/finance/customer-facility/bank-credit?status=${status}&date_from=${dateFrom}&date_to=${dateTo}&bank_account_ids=${
                     bankIDs.length <= 0 ? "" : `[${bankIDs}]`
-                }&paginate=10&page=${page}&keywords=${keywords}`,
+                }&paginate=${paginate}&page=${page}&keywords=${keywords}`,
                 {
                     headers: {
                         Authorization: "Bearer " + getCookie("user"),
@@ -92,6 +94,7 @@ export const CreateDepositCounter = (onSuccess: any, onError: any) => {
         {
             onSuccess: () => {
                 onSuccess();
+                queryClient.invalidateQueries("cash-receipts-list");
                 queryClient.invalidateQueries([
                     "bank-credit-list",
                     "unmatched",

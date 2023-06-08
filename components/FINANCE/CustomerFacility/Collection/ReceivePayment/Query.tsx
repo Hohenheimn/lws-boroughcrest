@@ -182,11 +182,17 @@ export const GetCollectionByCustomer = (customer_id: string | number) => {
 };
 
 export const GetCollectionDetail = (id: number) => {
-    return useQuery(["collection-detail", id], () => {
-        return api.get(`/finance/customer-facility/collection/${id}`, {
-            headers: { Authorization: "Bearer " + getCookie("user") },
-        });
-    });
+    return useQuery(
+        ["collection-detail", id],
+        () => {
+            return api.get(`/finance/customer-facility/collection/${id}`, {
+                headers: { Authorization: "Bearer " + getCookie("user") },
+            });
+        },
+        {
+            enabled: !!id,
+        }
+    );
 };
 
 export const GetCustomerOutstanding = (id: number) => {

@@ -357,7 +357,10 @@ export default function ReceivePaymentForm({
                                 className=""
                                 inputElement={
                                     <input
-                                        className="w-full field"
+                                        className={`w-full field ${
+                                            router.query.from ===
+                                                "check_warehouse" && "disabled"
+                                        }`}
                                         value={HeaderForm.receipt_type}
                                         readOnly
                                     />

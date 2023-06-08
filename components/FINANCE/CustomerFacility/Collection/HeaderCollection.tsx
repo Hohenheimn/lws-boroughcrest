@@ -1,5 +1,5 @@
 import Tippy from "@tippy.js/react";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { BsSearch } from "react-icons/bs";
 import { MoonLoader } from "react-spinners";
 import style from "../../../../styles/SearchFilter.module.scss";
@@ -10,6 +10,8 @@ import Link from "next/link";
 import { MdArrowForwardIos } from "react-icons/md";
 import { format, isValid, parse } from "date-fns";
 import { useRouter } from "next/router";
+import AppContext from "../../../Context/AppContext";
+import { DynamicExportHandler } from "../../../Reusable/DynamicExport";
 
 type Props = {
     isSearch: string;
@@ -33,6 +35,8 @@ export default function HeaderCollection({
     isPeriod,
     setPeriod,
 }: Props) {
+    const { setPrompt } = useContext(AppContext);
+
     const router = useRouter();
 
     const [isAdvFilter, setAdvFilter] = useState<Advancefilter>([]);
@@ -52,6 +56,14 @@ export default function HeaderCollection({
     const dateFrom = parse(isPeriod.from, "MMM dd yyyy", new Date());
 
     const dateTo = parse(isPeriod.to, "MMM dd yyyy", new Date());
+
+    const ExportHandler = () => {
+        DynamicExportHandler(
+            "/finance/customer-facility/collection/export",
+            "Collection-Payment-Register",
+            setPrompt
+        );
+    };
 
     return (
         <>
@@ -104,7 +116,10 @@ export default function HeaderCollection({
                         page !== "archive" && (
                             <li className={style.importExportPrint}>
                                 <Tippy theme="ThemeRed" content="Export">
-                                    <div className={style.icon}>
+                                    <div
+                                        className={style.icon}
+                                        onClick={ExportHandler}
+                                    >
                                         <Image
                                             src="/Images/Export.png"
                                             layout="fill"

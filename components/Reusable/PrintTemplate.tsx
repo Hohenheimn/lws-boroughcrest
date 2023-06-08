@@ -1,19 +1,16 @@
-import { deleteCookie, getCookie } from "cookies-next";
 import { startOfDay, format } from "date-fns";
-import { useRouter } from "next/router";
-import React, { useContext, useEffect, useState } from "react";
-import { useQuery } from "react-query";
-import api from "../../util/api";
-import AppContext from "../Context/AppContext";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { LoginUserInfo } from "../HOC/LoginUser/UserInfo";
+import Tippy from "@tippy.js/react";
 
 type Props = {
     title: string;
     children: React.ReactNode;
+    narrow?: boolean;
 };
 
-export default function PrintTemplate({ title, children }: Props) {
+export default function PrintTemplate({ title, children, narrow }: Props) {
     const [userInfo, setUserInfo] = useState<LoginUserInfo>();
 
     useEffect(() => {
@@ -24,8 +21,27 @@ export default function PrintTemplate({ title, children }: Props) {
 
     let today = startOfDay(date);
 
+    const printhandler = () => {
+        print();
+    };
+
     return (
-        <div className="w-[95%] max-w-[1366px] printThis print:h-full top-0 ">
+        <div
+            className={`${
+                narrow ? "w-[80%]" : "w-[95%]"
+            } max-w-[1366px] printThis print:h-full top-0 `}
+        >
+            <aside className="w-full max-w-[1366px] py-5 flex justify-end px-5 hidePrint">
+                <Tippy theme="ThemeRed" content="Print">
+                    <div
+                        className="relative h-[35px] w-[35px] hover:scale-[1.1] transition-all duration-75"
+                        onClick={printhandler}
+                    >
+                        <Image src="/Images/Print.png" alt="" layout="fill" />
+                    </div>
+                </Tippy>
+            </aside>
+
             <table className=" w-full">
                 <thead>
                     <tr>

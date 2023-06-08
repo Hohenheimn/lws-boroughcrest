@@ -606,8 +606,8 @@ export default function BillingList() {
             <Pagination
                 setTablePage={setTablePage}
                 TablePage={TablePage}
-                PageNumber={data?.data.last_page}
-                CurrentPage={data?.data.current_page}
+                PageNumber={data?.data.meta.last_page}
+                CurrentPage={data?.data.meta.current_page}
             />
         </>
     );

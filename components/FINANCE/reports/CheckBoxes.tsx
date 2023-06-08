@@ -2,66 +2,20 @@ export const GeneralReports = {
     document_type: [
         {
             id: 1,
-            name: "lorem ipsum",
+            name: "Billing",
             parent: "Document Type",
             grandParent: "",
         },
         {
             id: 2,
-            name: "lorem ipsum",
+            name: "Collection",
             parent: "Document Type",
             grandParent: "",
         },
         {
             id: 3,
-            name: "lorem ipsum",
+            name: "Adjustment",
             parent: "Document Type",
-            grandParent: "",
-        },
-        {
-            id: 4,
-            name: "lorem ipsum",
-            parent: "Document Type",
-            grandParent: "",
-        },
-
-        {
-            id: 5,
-            name: "lorem ipsum",
-            parent: "Document Type",
-            grandParent: "",
-        },
-    ],
-    AccountName: [
-        {
-            id: 1,
-            name: "lorem ipsum",
-            parent: "Account Name",
-            grandParent: "",
-        },
-        {
-            id: 2,
-            name: "lorem ipsum",
-            parent: "Account Name",
-            grandParent: "",
-        },
-        {
-            id: 3,
-            name: "lorem ipsum",
-            parent: "Account Name",
-            grandParent: "",
-        },
-        {
-            id: 4,
-            name: "lorem ipsum",
-            parent: "Account Name",
-            grandParent: "",
-        },
-
-        {
-            id: 5,
-            name: "lorem ipsum",
-            parent: "Account Name",
             grandParent: "",
         },
     ],
@@ -156,6 +110,21 @@ export const CustomerReports = {
             id: 3,
             name: "Provisional Receipt",
             parent: "Receipt Type",
+            grandParent: "Report",
+        },
+    ],
+
+    memo_type: [
+        {
+            id: 1,
+            name: "Credit Memo",
+            parent: "Memo Type",
+            grandParent: "Report",
+        },
+        {
+            id: 2,
+            name: "Debit Memo",
+            parent: "Memo Type",
             grandParent: "Report",
         },
     ],

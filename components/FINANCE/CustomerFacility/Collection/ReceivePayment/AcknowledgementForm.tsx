@@ -39,7 +39,6 @@ export default function AcknowledgementForm({
     const [isTable, setTable] = useState<isTableItem[]>([]);
     useEffect(() => {
         setSubDue(0);
-        setVariance(0);
         isTable.map((item) => {
             setSubDue((prev) => Number(prev) + Number(item.amount));
         });
@@ -90,6 +89,7 @@ export default function AcknowledgementForm({
     const SaveHandler = (button: string) => {
         buttonClicked = button;
         let validate = true;
+
         isTable.map((provItem: isTableItem) => {
             if (
                 provItem.amount === "" ||
@@ -122,6 +122,17 @@ export default function AcknowledgementForm({
             validate = false;
             return;
         }
+
+        if (Number(isVariance) !== 0) {
+            setPrompt({
+                toggle: true,
+                message: "Variance should be zero to save",
+                type: "draft",
+            });
+            validate = false;
+            return;
+        }
+
         const receipt_date = parse(
             headerForm.receipt_date,
             "MMM dd yyyy",

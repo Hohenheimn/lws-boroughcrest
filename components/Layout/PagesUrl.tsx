@@ -76,6 +76,7 @@ export const SidebarLinks = () => {
 
     useEffect(() => {
         if (localStorage.userInfo !== undefined) {
+            console.log(userInfo);
             const clone = Links.map((item) => {
                 if (item.name === "admin") {
                     let addLinks: any[] = [];

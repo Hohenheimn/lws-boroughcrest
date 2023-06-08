@@ -17,7 +17,7 @@ export default function Pagination({
     CurrentPage,
 }: Pagination) {
     const SelectPage = (page: number) => {
-        const SelectedPage = page + 1;
+        const SelectedPage = Number(page) + 1;
         setTablePage(SelectedPage);
     };
     return (

@@ -504,7 +504,11 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                             }`}
                                             type="number"
                                             {...register("vat_percent", {
-                                                required: "Required!",
+                                                required:
+                                                    userInfo?.corporate_gst_type ===
+                                                    "NON-VAT"
+                                                        ? false
+                                                        : "Required!",
                                             })}
                                             value={
                                                 userInfo?.corporate_gst_type ===

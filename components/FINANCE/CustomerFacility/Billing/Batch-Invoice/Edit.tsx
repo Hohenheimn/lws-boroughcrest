@@ -14,14 +14,6 @@ type Props = {
 
 export default function EditView({ typeBatchForm, id, toggle }: Props) {
     const { data, isLoading, isError } = ShowGroup(id);
-    let customerGroup: CustomerGroup[] = [];
-
-    const [isGroupName, setGroupName] = useState("");
-    useEffect(() => {
-        if (!isLoading && !isError) {
-            setGroupName(data?.data.name);
-        }
-    }, [data?.data, id, typeBatchForm]);
 
     if (isLoading) {
         return (
@@ -64,7 +56,7 @@ export default function EditView({ typeBatchForm, id, toggle }: Props) {
                 )}
                 formType={"edit"}
                 id={id}
-                groupName={isGroupName}
+                groupName={data?.data.name}
             />
         </>
     );

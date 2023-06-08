@@ -24,6 +24,7 @@ export default function ReportComponent() {
         from: "",
         to: "",
     });
+
     return (
         <>
             <ul className="w-full border-b border-gray-300 pb-10 mb-10 640px:pb-5 640px:mb-5">
@@ -61,7 +62,7 @@ export default function ReportComponent() {
                                               "Customer Memo Register",
                                               "Account Subsidiary Ledger",
                                               "Customer Subsidiary Ledger",
-                                              "Outstanding Balance Report",
+                                              "Outstanding Advances Report",
                                               "Aging Receivable Report",
                                               "Collection Efficiency Report",
                                           ]
@@ -125,11 +126,6 @@ export default function ReportComponent() {
             {reportPage === "customer_reports" && isReportType !== "" && (
                 <CustomerReportsCheckboxes isReportType={isReportType} />
             )}
-
-            <div className="flex justify-end items-center mt-10">
-                <button className="button_cancel">CANCEL</button>
-                <button className="buttonRed">APPLY</button>
-            </div>
         </>
     );
 }

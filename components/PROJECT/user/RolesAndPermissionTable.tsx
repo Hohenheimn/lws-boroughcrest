@@ -283,7 +283,7 @@ export const RolesAndPermissionTable: RolePermission[] = [
             all: false,
             view: false,
             create: false,
-            modify: null,
+            modify: false,
             print: false,
             approve: false,
         },

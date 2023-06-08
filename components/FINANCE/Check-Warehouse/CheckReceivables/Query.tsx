@@ -2,33 +2,13 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import api from "../../../../util/api";
 import { getCookie } from "cookies-next";
 
-export const CheckScheduleList = (
-    keyword: string,
-    TablePage: number | string,
-    filterArray: string,
-    dateFrom: string,
-    dateTo: string,
-    endpoint: string
-) => {
+export const CheckScheduleList = (endpoint: string) => {
     return useQuery(
-        [
-            "check-schedule-list",
-            keyword,
-            TablePage,
-            filterArray,
-            dateFrom,
-            dateTo,
-            endpoint,
-        ],
+        ["check-schedule-list", endpoint],
         () => {
-            return api.get(
-                `${endpoint}&filters=${filterArray}&keyword=${keyword}&page=${
-                    keyword === "" ? TablePage : 1
-                }&date_from=${dateFrom}&date_to=${dateTo}`,
-                {
-                    headers: { Authorization: "Bearer " + getCookie("user") },
-                }
-            );
+            return api.get(`${endpoint}`, {
+                headers: { Authorization: "Bearer " + getCookie("user") },
+            });
         },
         {
             refetchOnWindowFocus: false,
@@ -37,11 +17,17 @@ export const CheckScheduleList = (
 };
 
 export const ShowBookedCheck = (id: number) => {
-    return useQuery(["show-booked-check", id], () => {
-        return api.get(`/finance/customer-facility/booked-check/${id}`, {
-            headers: { Authorization: "Bearer " + getCookie("user") },
-        });
-    });
+    return useQuery(
+        ["show-booked-check", id],
+        () => {
+            return api.get(`/finance/customer-facility/booked-check/${id}`, {
+                headers: { Authorization: "Bearer " + getCookie("user") },
+            });
+        },
+        {
+            enabled: !!id,
+        }
+    );
 };
 
 export const BookedCheckPost = (onSuccess: any, onError: any, id: any) => {
