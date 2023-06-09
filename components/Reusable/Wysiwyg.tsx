@@ -1,28 +1,63 @@
-import React, { useState } from "react";
 import dynamic from "next/dynamic";
-import { EditorProps } from "react-draft-wysiwyg";
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import { EditorState } from "draft-js";
-const Editor = dynamic<EditorProps>(
-    () => import("react-draft-wysiwyg").then((mod) => mod.Editor),
-    { ssr: false }
-);
+import React, { useEffect, useState } from "react";
 
-export default function Wysiwyg() {
-    const [isText, setText] = useState<any>();
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+import "react-quill/dist/quill.snow.css";
 
-    const [editorState, setEditorState] = useState(() =>
-        EditorState.createEmpty()
-    );
+type Props = {
+    setTextOS: Function;
+    isTextOS: string;
+};
 
+export default function Wysiwyg({ setTextOS, isTextOS }: Props) {
+    const [isText, setText] = useState("");
+
+    useEffect(() => {
+        setTextOS(isText);
+    }, [isText]);
+
+    useEffect(() => {
+        setText(isTextOS);
+    }, [isTextOS]);
+
+    const modules = {
+        toolbar: [
+            [{ header: [1, 2, 3, 4, 5, 6, false] }],
+            ["bold", "italic", "underline", "strike", "blockquote"],
+            [
+                { list: "ordered" },
+                { list: "bullet" },
+                { indent: "-1" },
+                { indent: "+1" },
+            ],
+            ["link"],
+            ["clean"],
+        ],
+    };
+
+    const formats = [
+        "header",
+        "bold",
+        "italic",
+        "underline",
+        "strike",
+        "blockquote",
+        "list",
+        "bullet",
+        "indent",
+        "link",
+        "direction",
+        "align",
+        "code-block",
+    ];
     return (
-        <div className="wysiwyg">
-            <Editor
-                editorState={editorState}
-                toolbarClassName="toolbarClassName"
-                wrapperClassName="wrapperClassName"
-                editorClassName="editorClassName"
-                onEditorStateChange={setEditorState}
+        <div>
+            <ReactQuill
+                theme="snow"
+                value={isText}
+                onChange={setText}
+                formats={formats}
+                modules={modules}
             />
         </div>
     );

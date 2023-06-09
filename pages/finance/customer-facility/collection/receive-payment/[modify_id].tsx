@@ -42,15 +42,19 @@ export default function Modify({ modify_id, from }: any) {
 
     const BookedCheck: BookedCheckType = BookedData?.data;
 
+    const collection: CollectionItem = data?.data;
+
     const {
         isLoading: customerLoading,
         data: customerData,
         isError: customerError,
-    } = GetCustomer(data?.data.customer_id);
+    } = GetCustomer(
+        router.query.from === "check_warehouse"
+            ? BookedCheck?.customer_id
+            : collection?.customer_id
+    );
 
     const customer: customer = customerData?.data;
-
-    const collection: CollectionItem = data?.data;
 
     const deposit_date_collection = parse(
         collection?.deposit_date,

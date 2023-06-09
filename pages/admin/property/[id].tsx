@@ -10,6 +10,12 @@ export default function Id() {
     const router = useRouter();
     const id = router.query.id;
     const { isLoading, data, isError } = GetPropertyDetail(id);
+
+    const PagePermisson = PageAccessValidation("Property");
+
+    if (!PagePermisson && PagePermisson !== undefined) {
+        return <NoPermissionComp />;
+    }
     if (isLoading) {
         return (
             <div className="pageDetail">
@@ -34,12 +40,6 @@ export default function Id() {
                 />
             </div>
         );
-    }
-
-    const PagePermisson = PageAccessValidation("Property");
-
-    if (!PagePermisson && PagePermisson !== undefined) {
-        return <NoPermissionComp />;
     }
 
     return (

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import SelectDropdown from "../../../components/Reusable/SelectDropdown";
 import Image from "next/image";
 import Tippy from "@tippy.js/react";
@@ -6,9 +6,14 @@ import Link from "next/link";
 import GeneralReportsCheckbox from "./GeneralReportsCheckbox";
 import { useRouter } from "next/router";
 import CustomerReportsCheckboxes from "./CustomerReportsCheckboxes";
-import PreviousPeriod from "../CustomerFacility/Billing/RecordMeter/PreviousPeriod";
+import PeriodCalendar from "../../Reusable/PeriodCalendar";
+import { DynamicExportHandler } from "../../Reusable/DynamicExport";
+import AppContext from "../../Context/AppContext";
+import { MoonLoader } from "react-spinners";
 
 export default function ReportComponent() {
+    const { setPrompt } = useContext(AppContext);
+
     const router = useRouter();
 
     const [isReportType, setReportType] = useState("");
@@ -19,15 +24,86 @@ export default function ReportComponent() {
         ? "general_reports"
         : "customer_reports";
 
-    const [isPreviousPeriod, setPreviousPeriod] = useState({
-        year: "",
+    const [isPeriod, setPeriod] = useState({
         from: "",
         to: "",
     });
 
+    const [isExportEndpoint, setExportEndpoint] = useState(``);
+
+    const [isExportLoading, setExportLoading] = useState(false);
+
+    const ExportHandler = () => {
+        if (isReportType !== "" && isExportEndpoint !== "") {
+            DynamicExportHandler(
+                `${isExportEndpoint}&is_favorite=${isFavorite}`,
+                isReportType,
+                setPrompt,
+                setExportLoading
+            );
+        } else {
+            setPrompt({
+                message: "Apply a Report Type",
+                toggle: true,
+                type: "draft",
+            });
+        }
+    };
+
+    const [isFavoritePayload, setFavoritePayload] = useState<any>(null);
+
+    const FavoriteHandler = (
+        report_type: string[],
+        customer_name: string,
+        customer_class: string[],
+        property_type: string[],
+        property_class: string[],
+        property_tower: string[],
+        property_floor: string[],
+        property_project: string[],
+        report_mode_of_payment: string[],
+        report_charge: string[],
+        report_account: string[],
+        report_memo_type: string[],
+        report_receipt_type: string[]
+    ) => {
+        if (isFavorite === false) {
+            setFavoritePayload({
+                report_type: report_type,
+                customer_name: customer_name,
+                customer_class: customer_class,
+                property_type: property_type,
+                property_class: property_class,
+                property_tower: property_tower,
+                property_floor: property_floor,
+                property_project: property_project,
+                report_mode_of_payment: report_mode_of_payment,
+                report_charge: report_charge,
+                report_account: report_account,
+                report_memo_type: report_memo_type,
+                report_receipt_type: report_receipt_type,
+            });
+        }
+    };
+
+    const SaveFavoriteHandler = () => {
+        if (isFavorite === false) {
+            if (isFavoritePayload === null) {
+                console.log(isFavoritePayload);
+                setFavorite(true);
+            } else {
+                setPrompt({
+                    message: "Apply a Report Type",
+                    toggle: true,
+                    type: "draft",
+                });
+            }
+        }
+    };
+
     return (
         <>
-            <ul className="w-full border-b border-gray-300 pb-10 mb-10 640px:pb-5 640px:mb-5">
+            <ul className="w-full border-b border-gray-300 pb-10 mb-10 1280px:pb-5 1280px:mb-5">
                 <li className="flex pr-5 640px:p-0 640px:w-full 640px:mb-5 640px:flex-col">
                     <div>
                         <div className="flex mb-5">
@@ -70,12 +146,9 @@ export default function ReportComponent() {
                             />
                         </div>
                         <div className="flex">
-                            <PreviousPeriod
-                                value={isPreviousPeriod}
-                                setValue={setPreviousPeriod}
-                                year={isPreviousPeriod.year}
-                                reading_id={1}
-                                endPoint="/finance/customer-facility/billing/record-meter-reading/period-options?billing_readings_name_id="
+                            <PeriodCalendar
+                                value={isPeriod}
+                                setValue={setPeriod}
                             />
                         </div>
                     </div>
@@ -84,7 +157,7 @@ export default function ReportComponent() {
                             <Tippy theme="ThemeRed" content="Favorite">
                                 <div
                                     className=" hover:scale-125 duration-100"
-                                    onClick={() => setFavorite(!isFavorite)}
+                                    onClick={SaveFavoriteHandler}
                                 >
                                     <Image
                                         src={`/Images/f_favorite${
@@ -104,15 +177,24 @@ export default function ReportComponent() {
                             </Link>
                         </div>
                         <div className="flex ml-5 640px:ml-0 items-center">
-                            <Tippy theme="ThemeRed" content="Export">
-                                <div className=" hover:scale-125 duration-100">
-                                    <Image
-                                        src="/Images/Export.png"
-                                        height={33}
-                                        width={33}
-                                    />
+                            {isExportLoading ? (
+                                <MoonLoader color="#8f384d" size={20} />
+                            ) : (
+                                <div>
+                                    <Tippy theme="ThemeRed" content="Export">
+                                        <div
+                                            className=" hover:scale-125 duration-100 cursor-pointer"
+                                            onClick={ExportHandler}
+                                        >
+                                            <Image
+                                                src="/Images/Export.png"
+                                                height={33}
+                                                width={33}
+                                            />
+                                        </div>
+                                    </Tippy>
                                 </div>
-                            </Tippy>
+                            )}
                         </div>
                     </div>
                 </li>
@@ -120,11 +202,23 @@ export default function ReportComponent() {
 
             <h3 className="text-[20px] mb-5">Advance Filter</h3>
             {reportPage === "general_reports" && (
-                <GeneralReportsCheckbox isReportType={isReportType} />
+                <GeneralReportsCheckbox
+                    isReportType={isReportType}
+                    Period={isPeriod}
+                    setPeriod={setPeriod}
+                    setReportType={setReportType}
+                    setExportEndpoint={setExportEndpoint}
+                />
             )}
 
             {reportPage === "customer_reports" && isReportType !== "" && (
-                <CustomerReportsCheckboxes isReportType={isReportType} />
+                <CustomerReportsCheckboxes
+                    isReportType={isReportType}
+                    Period={isPeriod}
+                    setPeriod={setPeriod}
+                    setReportType={setReportType}
+                    setExportEndpoint={setExportEndpoint}
+                />
             )}
         </>
     );

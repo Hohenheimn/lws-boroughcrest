@@ -7,9 +7,16 @@ import { BarLoader } from "react-spinners";
 type Props = {
     name: string;
     endpoint: string;
+    SelectHandler: (e: any, column: string, id: number, value: string) => void;
+    isCheckBox: { id: number; name: string }[];
 };
 
-export default function CheckBoxNameAndID({ name, endpoint }: Props) {
+export default function CheckBoxNameAndID({
+    name,
+    endpoint,
+    isCheckBox,
+    SelectHandler,
+}: Props) {
     const { isLoading, data, isError } = useQuery([name, "report"], () => {
         return api.get(`${endpoint}`, {
             headers: {
@@ -51,7 +58,19 @@ export default function CheckBoxNameAndID({ name, endpoint }: Props) {
                                     <input
                                         type="checkbox"
                                         id={`${item.account_name}_${name}_${item.id}`}
+                                        checked={isCheckBox.some(
+                                            (someItem) =>
+                                                someItem.id === item.id
+                                        )}
                                         className="checkbox"
+                                        onChange={(e) =>
+                                            SelectHandler(
+                                                e,
+                                                name,
+                                                item.id,
+                                                item.account_name
+                                            )
+                                        }
                                     />
                                     <label
                                         htmlFor={`${item.account_name}_${name}_${item.id}`}
@@ -68,7 +87,19 @@ export default function CheckBoxNameAndID({ name, endpoint }: Props) {
                                     <input
                                         type="checkbox"
                                         id={`${item.name}_${name}_${item.id}`}
+                                        checked={isCheckBox.some(
+                                            (someItem) =>
+                                                someItem.id === item.id
+                                        )}
                                         className="checkbox"
+                                        onChange={(e) =>
+                                            SelectHandler(
+                                                e,
+                                                name,
+                                                item.id,
+                                                `${item.name}`
+                                            )
+                                        }
                                     />
                                     <label
                                         htmlFor={`${item.name}_${name}_${item.id}`}

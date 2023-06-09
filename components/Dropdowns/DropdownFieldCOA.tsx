@@ -76,7 +76,7 @@ const List = ({
             return api.get(
                 `/finance/general-ledger/chart-of-accounts?keywords=${
                     tempSearch === null ? "" : tempSearch
-                }`,
+                }&default_account=Cash Account Inbound`,
                 {
                     headers: {
                         Authorization: "Bearer " + getCookie("user"),

@@ -33,7 +33,7 @@ export default function SelectDropdown({
         };
     }, [container.current]);
     return (
-        <div className="select">
+        <div className="select w-full">
             <span className="z-10">
                 <MdOutlineKeyboardArrowDown
                     className={`${noStyle && "hidden"}`}
