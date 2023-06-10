@@ -111,22 +111,22 @@ export const SidebarLinks = () => {
                             ];
                         }
                     }
-                    if (
-                        userInfo?.permissions.some(
-                            (someItem) => someItem.menu === "Communication"
-                        )
-                    ) {
-                        if (ValidatePermissionPage("Communication")) {
-                            addLinks = [
-                                ...addLinks,
-                                {
-                                    name: "communication",
-                                    url: "/admin/communication",
-                                    ActiveName: "communication",
-                                },
-                            ];
-                        }
-                    }
+                    // if (
+                    //     userInfo?.permissions.some(
+                    //         (someItem) => someItem.menu === "Communication"
+                    //     )
+                    // ) {
+                    //     if (ValidatePermissionPage("Communication")) {
+                    //         addLinks = [
+                    //             ...addLinks,
+                    //             {
+                    //                 name: "communication",
+                    //                 url: "/admin/communication",
+                    //                 ActiveName: "communication",
+                    //             },
+                    //         ];
+                    //     }
+                    // }
                     if (
                         userInfo?.permissions.some(
                             (someItem) =>

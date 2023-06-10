@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import AppContext from "../../../Context/AppContext";
 import Image from "next/image";
 import { BsSearch } from "react-icons/bs";
@@ -68,11 +68,17 @@ export default function FinanceSearchFilter({
         // DynamicImport(e, setPrompt, ImportMutate);
     };
     // Export
+    const [isExportLoading, setExportLoading] = useState(false);
     const exportHandler = () => {
         if (router.pathname.includes("/general-ledger/chart-of-account")) {
             const endPoint =
                 "/finance/general-ledger/chart-of-accounts/export-list";
-            DynamicExportHandler(endPoint, "chart-of-accounts-list", setPrompt);
+            DynamicExportHandler(
+                endPoint,
+                "chart-of-accounts-list",
+                setPrompt,
+                setExportLoading
+            );
         }
     };
 
@@ -94,15 +100,24 @@ export default function FinanceSearchFilter({
 
                 <ul className={style.navigation}>
                     <li className={style.importExportPrint}>
-                        <Tippy theme="ThemeRed" content="Export">
-                            <div className={style.icon} onClick={exportHandler}>
-                                <Image
-                                    src="/Images/Export.png"
-                                    layout="fill"
-                                    alt="Export"
-                                />
+                        {isExportLoading ? (
+                            <MoonLoader color="#8f384d" size={20} />
+                        ) : (
+                            <div>
+                                <Tippy theme="ThemeRed" content="Export">
+                                    <div
+                                        className={style.icon}
+                                        onClick={exportHandler}
+                                    >
+                                        <Image
+                                            src="/Images/Export.png"
+                                            layout="fill"
+                                            alt="Export"
+                                        />
+                                    </div>
+                                </Tippy>
                             </div>
-                        </Tippy>
+                        )}
                         <Tippy theme="ThemeRed" content="Import">
                             <div className={style.icon}>
                                 {CusLoading ? (
@@ -129,7 +144,7 @@ export default function FinanceSearchFilter({
                                 <Image
                                     src="/Images/Filter2.png"
                                     layout="fill"
-                                    alt="Print"
+                                    alt="filters"
                                 />
                             </div>
                         </Tippy>

@@ -14,6 +14,21 @@ type Props = {
     setPeriod: Function;
     setReportType: Function;
     setExportEndpoint: Function;
+    FavoriteHandler: (
+        report_type: string,
+        customer_name: string,
+        customer_class: string,
+        property_type: string,
+        property_class: string,
+        property_tower: string,
+        property_floor: string,
+        property_project: string,
+        report_mode_of_payment: string,
+        report_charge: string,
+        report_account: string,
+        report_memo_type: string,
+        report_receipt_type: string
+    ) => void;
 };
 
 const checkBoxLabel = " text-RegularColor text-[16px] 1024px:text-[14px]";
@@ -27,6 +42,7 @@ export default function CustomerReportsCheckboxes({
     setPeriod,
     setReportType,
     setExportEndpoint,
+    FavoriteHandler,
 }: Props) {
     const { setPrompt } = useContext(AppContext);
     // Customer
@@ -256,6 +272,21 @@ export default function CustomerReportsCheckboxes({
             )}&report_receipt_type=${isReceiptType.map(
                 (item) => item.name
             )}&date_from=${dateFrom}&date_to=${dateTo}`
+        );
+        FavoriteHandler(
+            isReportType,
+            isName,
+            isCustomer_Class.map((item) => item.name).toString(),
+            isType.map((item) => item.name).toString(),
+            isClass.map((item) => item.name).toString(),
+            isTower.map((item) => item.id).toString(),
+            isFloor.map((item) => item.id).toString(),
+            isProject.map((item) => item.id).toString(),
+            isMode_of_payment.map((item) => item.name).toString(),
+            isCharge.map((item) => item.id).toString(),
+            isAccount.map((item) => item.id).toString(),
+            isMemoType.map((item) => item.name).toString(),
+            isReceiptType.map((item) => item.name).toString()
         );
         setPrompt({
             message: "Filter applied",

@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import AppContext from "../Context/AppContext";
 import Image from "next/image";
 import { BsSearch } from "react-icons/bs";
@@ -13,7 +13,6 @@ import style from "../../styles/SearchFilter.module.scss";
 import { CustomerImport } from "../ReactQuery/CustomerMethod";
 import { MoonLoader } from "react-spinners";
 import { PropertyImport } from "../ReactQuery/PropertyMethod";
-import { format } from "date-fns";
 import { DynamicExportHandler } from "../Reusable/DynamicExport";
 import { DynamicImport } from "../Reusable/DynamicImport";
 import Link from "next/link";
@@ -118,14 +117,25 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
     };
 
     //Exports
-    const exportHandler = () => {
+    const [isExportLoading, setExportLoading] = useState(false);
+    const ExportHandler = () => {
         if (router.pathname.includes("admin/customer")) {
             const endPoint = "/admin/customer/export";
-            DynamicExportHandler(endPoint, "customer", setPrompt);
+            DynamicExportHandler(
+                endPoint,
+                "customer",
+                setPrompt,
+                setExportLoading
+            );
         }
         if (router.pathname.includes("admin/property")) {
             const endPoint = "/admin/property/unit/export";
-            DynamicExportHandler(endPoint, "property", setPrompt);
+            DynamicExportHandler(
+                endPoint,
+                "property",
+                setPrompt,
+                setExportLoading
+            );
         }
     };
 
@@ -146,18 +156,24 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
                     {(ValidatePathName === "customer" ||
                         ValidatePathName === "property") && (
                         <li className={style.importExportPrint}>
-                            <Tippy theme="ThemeRed" content="Export">
-                                <div
-                                    className={style.icon}
-                                    onClick={exportHandler}
-                                >
-                                    <Image
-                                        src="/Images/Export.png"
-                                        layout="fill"
-                                        alt="Export"
-                                    />
+                            {isExportLoading ? (
+                                <MoonLoader color="#8f384d" size={20} />
+                            ) : (
+                                <div>
+                                    <Tippy theme="ThemeRed" content="Export">
+                                        <div
+                                            className={style.icon}
+                                            onClick={ExportHandler}
+                                        >
+                                            <Image
+                                                src="/Images/Export.png"
+                                                layout="fill"
+                                                alt="Export"
+                                            />
+                                        </div>
+                                    </Tippy>
                                 </div>
-                            </Tippy>
+                            )}
                             <Tippy theme="ThemeRed" content="Import">
                                 <div className={style.icon}>
                                     {CusLoading || PropLoading ? (

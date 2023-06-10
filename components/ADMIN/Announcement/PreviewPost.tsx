@@ -37,6 +37,7 @@ export default function PreviewPost({ Post, date }: Props) {
                             src={Post.photo_url}
                             layout="fill"
                             objectFit="cover"
+                            alt=""
                         />
                     </div>
                 )}

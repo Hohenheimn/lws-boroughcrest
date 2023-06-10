@@ -57,11 +57,14 @@ export default function HeaderCollection({
 
     const dateTo = parse(isPeriod.to, "MMM dd yyyy", new Date());
 
+    const [isExportLoading, setExportLoading] = useState(false);
+
     const ExportHandler = () => {
         DynamicExportHandler(
             "/finance/customer-facility/collection/export",
             "Collection-Payment-Register",
-            setPrompt
+            setPrompt,
+            setExportLoading
         );
     };
 
@@ -115,18 +118,27 @@ export default function HeaderCollection({
                         page !== "payment-queueing" &&
                         page !== "archive" && (
                             <li className={style.importExportPrint}>
-                                <Tippy theme="ThemeRed" content="Export">
-                                    <div
-                                        className={style.icon}
-                                        onClick={ExportHandler}
-                                    >
-                                        <Image
-                                            src="/Images/Export.png"
-                                            layout="fill"
-                                            alt="Export"
-                                        />
+                                {isExportLoading ? (
+                                    <MoonLoader color="#8f384d" size={20} />
+                                ) : (
+                                    <div>
+                                        <Tippy
+                                            theme="ThemeRed"
+                                            content="Export"
+                                        >
+                                            <div
+                                                className=" hover:scale-125 duration-100 cursor-pointer"
+                                                onClick={ExportHandler}
+                                            >
+                                                <Image
+                                                    src="/Images/Export.png"
+                                                    height={33}
+                                                    width={33}
+                                                />
+                                            </div>
+                                        </Tippy>
                                     </div>
-                                </Tippy>
+                                )}
                             </li>
                         )}
                     {page !== "payment-queueing" && page !== "archive" && (

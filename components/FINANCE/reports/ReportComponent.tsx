@@ -10,6 +10,8 @@ import PeriodCalendar from "../../Reusable/PeriodCalendar";
 import { DynamicExportHandler } from "../../Reusable/DynamicExport";
 import AppContext from "../../Context/AppContext";
 import { MoonLoader } from "react-spinners";
+import { ErrorSubmit } from "../../Reusable/ErrorMessage";
+import { SaveFavorite } from "./Query";
 
 export default function ReportComponent() {
     const { setPrompt } = useContext(AppContext);
@@ -50,22 +52,37 @@ export default function ReportComponent() {
         }
     };
 
+    const onSuccess = () => {
+        setPrompt({
+            message: "Favorite successfully saved",
+            type: "success",
+            toggle: true,
+        });
+        setFavorite(true);
+    };
+
+    const onError = (e: any) => {
+        ErrorSubmit(e, setPrompt);
+    };
+
+    const { isLoading, mutate } = SaveFavorite(onSuccess, onError);
+
     const [isFavoritePayload, setFavoritePayload] = useState<any>(null);
 
     const FavoriteHandler = (
-        report_type: string[],
+        report_type: string,
         customer_name: string,
-        customer_class: string[],
-        property_type: string[],
-        property_class: string[],
-        property_tower: string[],
-        property_floor: string[],
-        property_project: string[],
-        report_mode_of_payment: string[],
-        report_charge: string[],
-        report_account: string[],
-        report_memo_type: string[],
-        report_receipt_type: string[]
+        customer_class: string,
+        property_type: string,
+        property_class: string,
+        property_tower: string,
+        property_floor: string,
+        property_project: string,
+        report_mode_of_payment: string,
+        report_charge: string,
+        report_account: string,
+        report_memo_type: string,
+        report_receipt_type: string
     ) => {
         if (isFavorite === false) {
             setFavoritePayload({
@@ -88,9 +105,8 @@ export default function ReportComponent() {
 
     const SaveFavoriteHandler = () => {
         if (isFavorite === false) {
-            if (isFavoritePayload === null) {
-                console.log(isFavoritePayload);
-                setFavorite(true);
+            if (isFavoritePayload !== null) {
+                mutate(isFavoritePayload);
             } else {
                 setPrompt({
                     message: "Apply a Report Type",
@@ -154,21 +170,27 @@ export default function ReportComponent() {
                     </div>
                     <div className="640px:flex 640px:mt-5">
                         <div className="flex ml-5 640px:ml-0 items-center mb-3 640px:mb-0">
-                            <Tippy theme="ThemeRed" content="Favorite">
-                                <div
-                                    className=" hover:scale-125 duration-100"
-                                    onClick={SaveFavoriteHandler}
-                                >
-                                    <Image
-                                        src={`/Images/f_favorite${
-                                            isFavorite ? "Active" : ""
-                                        }.png`}
-                                        height={33}
-                                        width={33}
-                                        alt=""
-                                    />
+                            {isLoading ? (
+                                <MoonLoader color="#8f384d" size={20} />
+                            ) : (
+                                <div>
+                                    <Tippy theme="ThemeRed" content="Favorite">
+                                        <div
+                                            className=" hover:scale-125 duration-100"
+                                            onClick={SaveFavoriteHandler}
+                                        >
+                                            <Image
+                                                src={`/Images/f_favorite${
+                                                    isFavorite ? "Active" : ""
+                                                }.png`}
+                                                height={33}
+                                                width={33}
+                                                alt=""
+                                            />
+                                        </div>
+                                    </Tippy>
                                 </div>
-                            </Tippy>
+                            )}
 
                             <Link href="/finance/reports/favorite-list-reports">
                                 <a className="text-ThemeRed font-NHU-bold mr-5 mt-[-7px] 1024px:text-[14px] ml-3">
@@ -218,6 +240,7 @@ export default function ReportComponent() {
                     setPeriod={setPeriod}
                     setReportType={setReportType}
                     setExportEndpoint={setExportEndpoint}
+                    FavoriteHandler={FavoriteHandler}
                 />
             )}
         </>

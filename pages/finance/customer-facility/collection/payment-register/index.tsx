@@ -221,7 +221,7 @@ const List = ({ itemDetail }: ListProps) => {
 
             <td>{itemDetail?.mode_of_payment}</td>
 
-            <td>{itemDetail.chart_of_account_account_name}</td>
+            <td>{itemDetail?.chart_of_account_account_name}</td>
         </tr>
     );
 };

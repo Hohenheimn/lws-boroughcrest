@@ -687,6 +687,7 @@ const TableList = ({ itemDetail, UpdateRow }: TableListProps) => {
                                 src="/Images/CalendarLine.png"
                                 width={12}
                                 height={12}
+                                alt="Calendar"
                             />
                         </span>
                         <input

@@ -6,7 +6,7 @@ import { GetCollectionDetail } from "../../../../../components/FINANCE/CustomerF
 import { PageAccessValidation } from "../../../../../components/Reusable/PermissionValidation/PageAccessValidation";
 import NoPermissionComp from "../../../../../components/Reusable/PermissionValidation/NoPermissionComp";
 
-export default function CheckPaymentDetail() {
+export default function CheckPaymentDetailPage() {
     const router = useRouter();
 
     const id: any = router.query.id;

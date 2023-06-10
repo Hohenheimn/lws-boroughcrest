@@ -90,6 +90,7 @@ export default function PostComponent({ Post, type, DeleteHandler }: Props) {
                             src={Image_Photo}
                             layout="fill"
                             objectFit="cover"
+                            alt=""
                         />
                     </div>
                 )}

@@ -331,7 +331,12 @@ const RemarksProfile = ({ remarkDetail }: PropsRemarkProfile) => {
     return (
         <li className="flex  640px:flex-col items-start mb-5">
             <div className="w-[40px] h-[40px] rounded-full overflow-hidden relative 640px:mb-1">
-                <Image src={Image_Photo} layout="fill" objectFit="cover" />
+                <Image
+                    src={Image_Photo}
+                    layout="fill"
+                    objectFit="cover"
+                    alt="img"
+                />
             </div>
             <div className="pl-2 flex flex-col">
                 <h3 className="text-ThemeRed">{remarkDetail.user_name}</h3>

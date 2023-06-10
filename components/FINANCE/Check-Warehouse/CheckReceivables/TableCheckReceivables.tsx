@@ -4,7 +4,7 @@ import style from "../../../../styles/SearchFilter.module.scss";
 import Image from "next/image";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
-import { BarLoader, ScaleLoader } from "react-spinners";
+import { BarLoader, MoonLoader, ScaleLoader } from "react-spinners";
 import PeriodCalendar from "../../../Reusable/PeriodCalendar";
 import { Advancefilter, AdvanceFilter } from "../../../Reusable/AdvanceFilter";
 import TableErrorMessage from "../../../Reusable/TableErrorMessage";
@@ -128,8 +128,14 @@ export default function TableCheckReceivables({
         mutate(Payload);
     };
 
+    const [isExportLoading, setExportLoading] = useState(false);
     const ExportHandler = () => {
-        DynamicExportHandler(EndPointExport, ExportName, setPrompt);
+        DynamicExportHandler(
+            EndPointExport,
+            ExportName,
+            setPrompt,
+            setExportLoading
+        );
     };
 
     return (
@@ -268,19 +274,25 @@ export default function TableCheckReceivables({
 
                 <ul className={style.navigation}>
                     <li className={style.importExportPrint}>
-                        <Tippy theme="ThemeRed" content="Export">
-                            <div
-                                className={`${style.noFill} mr-5`}
-                                onClick={ExportHandler}
-                            >
-                                <Image
-                                    src="/Images/Export.png"
-                                    height={35}
-                                    width={35}
-                                    alt="Posted"
-                                />
+                        {isExportLoading ? (
+                            <MoonLoader color="#8f384d" size={20} />
+                        ) : (
+                            <div>
+                                <Tippy theme="ThemeRed" content="Export">
+                                    <div
+                                        className=" hover:scale-125 duration-100 cursor-pointer"
+                                        onClick={ExportHandler}
+                                    >
+                                        <Image
+                                            src="/Images/Export.png"
+                                            height={33}
+                                            width={33}
+                                            alt="export"
+                                        />
+                                    </div>
+                                </Tippy>
                             </div>
-                        </Tippy>
+                        )}
                     </li>
                 </ul>
             </section>
