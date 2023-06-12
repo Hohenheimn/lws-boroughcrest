@@ -69,7 +69,7 @@ export default function ReportComponent() {
 
     const [isFavoritePayload, setFavoritePayload] = useState<any>(null);
 
-    const FavoriteHandler = (
+    const FavoriteCustomerHandler = (
         report_type: string,
         customer_name: string,
         customer_class: string,
@@ -99,6 +99,20 @@ export default function ReportComponent() {
                 report_account: report_account,
                 report_memo_type: report_memo_type,
                 report_receipt_type: report_receipt_type,
+            });
+        }
+    };
+
+    const FavoriteCustomerGeneral = (
+        report_type: string,
+        document_type: string,
+        report_account: string
+    ) => {
+        if (isFavorite === false) {
+            setFavoritePayload({
+                report_type: report_type,
+                document_type: document_type,
+                report_account: report_account,
             });
         }
     };
@@ -230,6 +244,7 @@ export default function ReportComponent() {
                     setPeriod={setPeriod}
                     setReportType={setReportType}
                     setExportEndpoint={setExportEndpoint}
+                    FavoriteHandler={FavoriteCustomerGeneral}
                 />
             )}
 
@@ -240,7 +255,7 @@ export default function ReportComponent() {
                     setPeriod={setPeriod}
                     setReportType={setReportType}
                     setExportEndpoint={setExportEndpoint}
-                    FavoriteHandler={FavoriteHandler}
+                    FavoriteHandler={FavoriteCustomerHandler}
                 />
             )}
         </>

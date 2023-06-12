@@ -15,6 +15,11 @@ type Props = {
     setPeriod: Function;
     setReportType: Function;
     setExportEndpoint: Function;
+    FavoriteHandler: (
+        report_type: string,
+        document_type: string,
+        report_account: string
+    ) => void;
 };
 
 const checkBoxLabel = " text-RegularColor text-[16px] 1024px:text-[14px]";
