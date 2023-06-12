@@ -4,13 +4,17 @@ import { Doughnut } from "react-chartjs-2";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-export default function DoughnutChartComp() {
+type Props = {
+    dataSet: number[];
+};
+
+export default function DoughnutChartComp({ dataSet }: Props) {
     const data = {
-        labels: ["Unit", "Unit"],
+        labels: ["Developer", "Owner"],
         datasets: [
             {
                 label: `Unit`,
-                data: [12, 19],
+                data: dataSet,
                 backgroundColor: ["#d4a8a8", "#8f384d"],
                 borderColor: ["#d4a8a8", "#8f384d"],
                 borderWidth: 1,

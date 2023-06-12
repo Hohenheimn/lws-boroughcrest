@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -16,6 +16,16 @@ import {
     Utility_Consumption_Internet,
     Utility_Consumption_Water,
 } from "./SampleData";
+import { GetDashboardUtility } from "./Query";
+import {
+    BeatLoader,
+    CircleLoader,
+    ClimbingBoxLoader,
+    DotLoader,
+    GridLoader,
+    RotateLoader,
+    SyncLoader,
+} from "react-spinners";
 
 ChartJS.register(
     BarElement,
@@ -28,46 +38,67 @@ ChartJS.register(
     Legend
 );
 
+type DataSets = {
+    label: string;
+    data: number[];
+    color: string;
+};
+
 export default function LineChartComp() {
-    const [data, setdata] = useState<any>({
-        labels: Utility_Consumption_Electricity.map((item) => item.month),
-        datasets: [
-            {
-                label: "Total",
-                data: Utility_Consumption_Electricity.map(
-                    (item) => item.amount
-                ),
-                borderColor: "#939393",
-                backgroundColor: "#939393",
-                type: "bar",
-                order: 3,
-                hoverScale: 1.5,
-            },
-            {
-                label: "Electricity",
-                data: Utility_Consumption_Electricity.map(
-                    (item) => item.amount
-                ),
-                borderColor: "#8f384d",
-                backgroundColor: "#8f384d",
-                order: 2,
-            },
-            {
-                label: "Water",
-                data: Utility_Consumption_Water.map((item) => item.amount),
-                borderColor: "#fa8b00",
-                backgroundColor: "#fa8b00",
-                order: 2,
-            },
-            {
-                label: "Internet",
-                data: Utility_Consumption_Internet.map((item) => item.amount),
-                borderColor: "#2e4364",
-                backgroundColor: "#2e4364",
-                order: 2,
-            },
-        ],
+    const { data, isLoading, isError } = GetDashboardUtility();
+
+    const [isDataSets, setDataSets] = useState<DataSets[]>([]);
+
+    useEffect(() => {
+        if (data?.data !== undefined) {
+            const arrayData: any = [];
+            const keys = Object.keys(data?.data?.records);
+            keys.forEach((key, index) => {
+                let color = "#8f384d";
+                if (index % 2 == 0) {
+                    color = "#fa8b00";
+                }
+                if (index % 3 == 0) {
+                    color = "#2e4364";
+                }
+                arrayData.push({
+                    label: key,
+                    data: data?.data.records[key],
+                    color: color,
+                });
+            });
+            setDataSets(arrayData);
+        }
+    }, [data?.data]);
+
+    const [LineChart, setLineChart] = useState<any>({
+        labels: [],
+        datasets: [],
     });
+
+    useEffect(() => {
+        if (data?.data !== undefined) {
+            setLineChart({
+                labels: data?.data?.months.map((itemMap: string) => itemMap),
+                datasets: isDataSets.map((itemMap) => {
+                    return {
+                        label: itemMap.label,
+                        data: itemMap?.data.map((item) => item),
+                        borderColor:
+                            itemMap.label === "Total"
+                                ? "#939393"
+                                : itemMap.color,
+                        backgroundColor:
+                            itemMap.label === "Total"
+                                ? "#939393"
+                                : itemMap.color,
+                        order: itemMap.label === "Total" ? 2 : 1,
+                        type: itemMap.label === "Total" ? "bar" : "line",
+                    };
+                }),
+            });
+        }
+    }, [isDataSets]);
 
     const options = {
         responsive: true,
@@ -84,28 +115,44 @@ export default function LineChartComp() {
 
     return (
         <div>
-            <Line data={data} options={options} />
-            <div className=" hidden">
-                <Bar data={data} />
-            </div>
-            <ul className=" w-full flex justify-around flex-wrap mt-5">
-                <li className=" text-RegularColor text-[12px] flex items-center">
-                    <div className=" h-3 w-3 rounded-full bg-RegularColor mr-3"></div>
-                    Total
-                </li>
-                <li className=" text-RegularColor text-[12px] flex items-center">
-                    <div className=" h-3 w-3 rounded-full bg-[#8f384d] mr-3"></div>
-                    Electricity
-                </li>
-                <li className=" text-RegularColor text-[12px] flex items-center">
-                    <div className=" h-3 w-3 rounded-full bg-[#fa8b00] mr-3"></div>
-                    Water
-                </li>
-                <li className=" text-RegularColor text-[12px] flex items-center">
-                    <div className=" h-3 w-3 rounded-full bg-[#2e4364] mr-3"></div>
-                    Internet
-                </li>
-            </ul>
+            {isLoading && (
+                <div className="flex justify-center">
+                    <BeatLoader size={30} color="#8f384d" />
+                </div>
+            )}
+            {isError && (
+                <div className="flex justify-center">
+                    <h1>Something went wrong</h1>
+                </div>
+            )}
+            {!isLoading && !isError && (
+                <>
+                    <Line data={LineChart} options={options} />
+                    <div className=" hidden">
+                        <Bar data={LineChart} />
+                    </div>
+                    <ul className=" w-full flex justify-around flex-wrap mt-5">
+                        {isDataSets.map((item, index) => (
+                            <li
+                                key={index}
+                                className=" text-RegularColor text-[12px] flex items-center"
+                            >
+                                <div
+                                    className={` h-3 w-3 rounded-full mr-3`}
+                                    style={{
+                                        backgroundColor: `${
+                                            item.label === "Total"
+                                                ? "#939393"
+                                                : item.color
+                                        }`,
+                                    }}
+                                ></div>
+                                {item.label}
+                            </li>
+                        ))}
+                    </ul>
+                </>
+            )}
         </div>
     );
 }

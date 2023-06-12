@@ -1,8 +1,16 @@
 import React, { useState } from "react";
-import Card from "../ADMIN/Request/Card";
+import Card, { RequestDetailType } from "../ADMIN/Request/Card";
+import { GetRequest } from "../ADMIN/Request/Query";
 
 export default function RequestComp() {
     const [isTab, setTab] = useState("All");
+
+    const { isLoading, data } = GetRequest(
+        isTab === "All" ? "" : "New Request",
+        "",
+        10,
+        1
+    );
     return (
         <div>
             <ul className="flex">
@@ -33,105 +41,35 @@ export default function RequestComp() {
             </ul>
 
             <ul className=" flex flex-wrap justify-between w-full mt-2">
-                <li
-                    className="
+                {data?.data.data.map(
+                    (item: RequestDetailType, index: number) => (
+                        <li
+                            key={index}
+                            className="
                 w-[49%] 1024px:w-full"
-                >
-                    <Card
-                        type={"New Request"}
-                        Detail={{
-                            id: 0,
-                            customer_id: 0,
-                            customer_name: "sample",
-                            property_unit_id: 0,
-                            property_unit_code: "qwwe",
-                            date: "08/16/1998",
-                            request: "sample",
-                            ticket_no: "213123",
-                            details: "sample",
-                            status: "Pending",
-                            create_at: "09/16/1998",
-                            trail: [],
-                            remarks: [],
-                            updated_at: "",
-                        }}
-                    />
-                </li>
-
-                <li
-                    className="
-                w-[49%] 1024px:w-full"
-                >
-                    <Card
-                        type={"In Process"}
-                        Detail={{
-                            id: 0,
-                            customer_id: 0,
-                            customer_name: "sample",
-                            property_unit_id: 0,
-                            property_unit_code: "qwwe",
-                            date: "08/16/1998",
-                            request: "sample",
-                            ticket_no: "213123",
-                            details: "sample",
-                            status: "Pending",
-                            create_at: "09/16/1998",
-                            trail: [],
-                            remarks: [],
-                            updated_at: "",
-                        }}
-                    />
-                </li>
-
-                <li
-                    className="
-                w-[49%] 1024px:w-full"
-                >
-                    <Card
-                        type={"In Review"}
-                        Detail={{
-                            id: 0,
-                            customer_id: 0,
-                            customer_name: "sample",
-                            property_unit_id: 0,
-                            property_unit_code: "qwwe",
-                            date: "08/16/1998",
-                            request: "sample",
-                            ticket_no: "213123",
-                            details: "sample",
-                            status: "Pending",
-                            create_at: "09/16/1998",
-                            trail: [],
-                            remarks: [],
-                            updated_at: "",
-                        }}
-                    />
-                </li>
-
-                <li
-                    className="
-                w-[49%] 1024px:w-full"
-                >
-                    <Card
-                        type={"Closed"}
-                        Detail={{
-                            id: 0,
-                            customer_id: 0,
-                            customer_name: "sample",
-                            property_unit_id: 0,
-                            property_unit_code: "qwwe",
-                            date: "08/16/1998",
-                            request: "sample",
-                            ticket_no: "213123",
-                            details: "sample",
-                            status: "Pending",
-                            create_at: "09/16/1998",
-                            trail: [],
-                            remarks: [],
-                            updated_at: "",
-                        }}
-                    />
-                </li>
+                        >
+                            <Card
+                                type={item.status}
+                                Detail={{
+                                    id: item.id,
+                                    customer_id: item.customer_id,
+                                    customer_name: item.customer_name,
+                                    property_unit_id: item.property_unit_id,
+                                    property_unit_code: item.property_unit_code,
+                                    date: item.date,
+                                    request: item.request,
+                                    ticket_no: item.ticket_no,
+                                    details: item.details,
+                                    status: item.status,
+                                    create_at: "",
+                                    trail: [],
+                                    remarks: [],
+                                    updated_at: "",
+                                }}
+                            />
+                        </li>
+                    )
+                )}
             </ul>
         </div>
     );

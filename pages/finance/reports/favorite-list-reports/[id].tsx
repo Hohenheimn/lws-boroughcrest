@@ -5,7 +5,29 @@ import NoPermissionComp from "../../../../components/Reusable/PermissionValidati
 const detailContainer =
     "w-1/5 1024px:w-1/4 1024px:mb-3 640px:w-1/3 480px:w-1/2";
 
-export default function Index() {
+export type FavoriteDetail = {
+    created_at: string;
+    id: number;
+    report_name: string;
+    updated_at: string;
+    user_id: number;
+    report_type: string;
+    customer_name: string;
+    customer_class: string;
+    property_type: string;
+    property_class: string;
+    property_tower: string;
+    property_floor: string;
+    property_project: string;
+    report_mode_of_payment: string;
+    report_charge: string;
+    report_account: string;
+    report_memo_type: string;
+    report_receipt_type: string;
+    document_type: string;
+};
+
+export default function FavoriteDetailPage() {
     const PagePermisson_customer = PageAccessValidation("Customer Reports");
 
     const PagePermisson_general = PageAccessValidation("General Reports");

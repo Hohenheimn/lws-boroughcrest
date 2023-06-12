@@ -8,29 +8,19 @@ import SelectDropdown from "../../Reusable/SelectDropdown";
 import { MdArrowForwardIos } from "react-icons/md";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { GetFavoriteList } from "./Query";
+import { FavoriteDetail } from "../../../pages/finance/reports/favorite-list-reports/[id]";
 
 export default function FavoriteList() {
     const [isReportType, setReportType] = useState("");
 
-    const [isSearchTable, setSearchTable] = useState("");
-
     const [TablePage, setTablePage] = useState(1);
 
-    const { data, isLoading, isError } = useQuery(
-        ["COA-list", TablePage, isSearchTable],
-        () => {
-            return api.get(
-                `/finance/general-ledger/chart-of-accounts?keywords=${isSearchTable}&paginate=10&page=${
-                    isSearchTable === "" ? TablePage : 1
-                }`,
-                {
-                    headers: {
-                        Authorization: "Bearer " + getCookie("user"),
-                    },
-                }
-            );
-        }
+    const { data, isLoading, isError } = GetFavoriteList(
+        isReportType,
+        TablePage
     );
+
     return (
         <>
             <div className="flex items-center mb-5">
@@ -85,7 +75,7 @@ export default function FavoriteList() {
                     </thead>
                     <tbody>
                         {data?.data.data.map((item: any, index: number) => (
-                            <List key={index} />
+                            <List key={index} itemDetail={item} />
                         ))}
                     </tbody>
                 </table>
@@ -95,17 +85,20 @@ export default function FavoriteList() {
             <Pagination
                 setTablePage={setTablePage}
                 TablePage={TablePage}
-                PageNumber={data?.data.last_page}
-                CurrentPage={data?.data.current_page}
+                PageNumber={data?.data.meta.last_page}
+                CurrentPage={data?.data.meta.current_page}
             />
         </>
     );
 }
+type PropsList = {
+    itemDetail: FavoriteDetail;
+};
 
-const List = () => {
+const List = ({ itemDetail }: PropsList) => {
     const router = useRouter();
     const redirect = () => {
-        router.push(`/finance/reports/favorite-list-reports/1`);
+        router.push(`/finance/reports/favorite-list-reports/${itemDetail.id}`);
     };
 
     return (
