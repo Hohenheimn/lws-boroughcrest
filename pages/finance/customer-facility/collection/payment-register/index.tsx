@@ -88,7 +88,7 @@ export type CollectionItem = {
         commenter_name: string;
         remarks: string;
     }[];
-    proof_payment: string;
+    proof_of_payment: string;
 };
 
 export type PaymentSummaryHistories = CollectionItem;
@@ -221,7 +221,7 @@ const List = ({ itemDetail }: ListProps) => {
 
             <td>{itemDetail?.mode_of_payment}</td>
 
-            <td>{itemDetail.chart_of_account_account_name}</td>
+            <td>{itemDetail?.chart_of_account_account_name}</td>
         </tr>
     );
 };

@@ -72,6 +72,8 @@ export default function UserRoleAndPermissionsCheckBox({
 
     const [loadOnce, setLoadOnce] = useState(true);
 
+    const [isRoleID, setRoleID] = useState<any>(undefined);
+
     useEffect(() => {
         if (!loadOnce) {
             setRoleID(isRoleName.id);
@@ -79,9 +81,9 @@ export default function UserRoleAndPermissionsCheckBox({
         }
     }, [isRoleName.id]);
 
-    const [isRoleID, setRoleID] = useState<any>(undefined);
-
-    const { isLoading, data } = ShowRole(isRoleID);
+    const { isLoading, data } = ShowRole(
+        type !== "modify" ? isRoleName.id : isRoleID
+    );
 
     const RefreshTable = () => {
         if (router.query.id !== undefined && loadOnce) {
@@ -685,6 +687,7 @@ const TableList = ({ itemDetail, UpdateRow }: TableListProps) => {
                                 src="/Images/CalendarLine.png"
                                 width={12}
                                 height={12}
+                                alt="Calendar"
                             />
                         </span>
                         <input

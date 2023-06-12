@@ -34,6 +34,8 @@ type Props = {
     setBalanceAmount: Function;
     isBalanceTotal: number;
     outStandingData?: Outstanding;
+    DiscountAmount: number;
+    CreditTax: number;
 };
 
 export default function OutStandingBalance({
@@ -49,9 +51,11 @@ export default function OutStandingBalance({
     isAppliedAmount,
     setBalanceAmount,
     isBalanceTotal,
+    DiscountAmount,
+    CreditTax,
 }: Props) {
     const [isToggle, setToggle] = useState(false);
-    let isAmountPaid = amount_paid;
+    let isAmountPaid = amount_paid + DiscountAmount + CreditTax;
 
     useEffect(() => {
         setDueAmountTotal(0);
@@ -68,7 +72,7 @@ export default function OutStandingBalance({
                 (prev: number) => Number(prev) + Number(item.balance)
             );
         });
-    }, [DefaultOutstanding, amount_paid]);
+    }, [DefaultOutstanding, isAmountPaid]);
 
     const SetToggleHandler = () => {
         setToggle(!isToggle);
@@ -79,7 +83,7 @@ export default function OutStandingBalance({
 
     useEffect(() => {
         Compute();
-    }, [amount_paid, isToggle]);
+    }, [isAmountPaid, isToggle]);
 
     useEffect(() => {
         if (DefaultOutstanding.length > 0) {

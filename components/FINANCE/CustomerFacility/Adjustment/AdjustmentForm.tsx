@@ -606,6 +606,7 @@ export default function AdjustmentForm({ DefaultValue }: Props) {
                                                         src="/Images/CalendarMini.png"
                                                         width={15}
                                                         height={15}
+                                                        alt="calendar"
                                                     />
                                                 </span>
                                                 <input

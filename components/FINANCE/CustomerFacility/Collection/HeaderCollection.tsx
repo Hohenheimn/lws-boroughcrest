@@ -1,5 +1,5 @@
 import Tippy from "@tippy.js/react";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { BsSearch } from "react-icons/bs";
 import { MoonLoader } from "react-spinners";
 import style from "../../../../styles/SearchFilter.module.scss";
@@ -10,6 +10,8 @@ import Link from "next/link";
 import { MdArrowForwardIos } from "react-icons/md";
 import { format, isValid, parse } from "date-fns";
 import { useRouter } from "next/router";
+import AppContext from "../../../Context/AppContext";
+import { DynamicExportHandler } from "../../../Reusable/DynamicExport";
 
 type Props = {
     isSearch: string;
@@ -33,6 +35,8 @@ export default function HeaderCollection({
     isPeriod,
     setPeriod,
 }: Props) {
+    const { setPrompt } = useContext(AppContext);
+
     const router = useRouter();
 
     const [isAdvFilter, setAdvFilter] = useState<Advancefilter>([]);
@@ -52,6 +56,17 @@ export default function HeaderCollection({
     const dateFrom = parse(isPeriod.from, "MMM dd yyyy", new Date());
 
     const dateTo = parse(isPeriod.to, "MMM dd yyyy", new Date());
+
+    const [isExportLoading, setExportLoading] = useState(false);
+
+    const ExportHandler = () => {
+        DynamicExportHandler(
+            "/finance/customer-facility/collection/export",
+            "Collection-Payment-Register",
+            setPrompt,
+            setExportLoading
+        );
+    };
 
     return (
         <>
@@ -103,15 +118,27 @@ export default function HeaderCollection({
                         page !== "payment-queueing" &&
                         page !== "archive" && (
                             <li className={style.importExportPrint}>
-                                <Tippy theme="ThemeRed" content="Export">
-                                    <div className={style.icon}>
-                                        <Image
-                                            src="/Images/Export.png"
-                                            layout="fill"
-                                            alt="Export"
-                                        />
+                                {isExportLoading ? (
+                                    <MoonLoader color="#8f384d" size={20} />
+                                ) : (
+                                    <div>
+                                        <Tippy
+                                            theme="ThemeRed"
+                                            content="Export"
+                                        >
+                                            <div
+                                                className=" hover:scale-125 duration-100 cursor-pointer"
+                                                onClick={ExportHandler}
+                                            >
+                                                <Image
+                                                    src="/Images/Export.png"
+                                                    height={33}
+                                                    width={33}
+                                                />
+                                            </div>
+                                        </Tippy>
                                     </div>
-                                </Tippy>
+                                )}
                             </li>
                         )}
                     {page !== "payment-queueing" && page !== "archive" && (

@@ -1,16 +1,15 @@
-import { useContext } from "react";
 import axios, { AxiosError } from "axios";
 import { getCookie } from "cookies-next";
 import { format } from "date-fns";
-import AppContext from "../Context/AppContext";
 
 export const DynamicExportHandler = (
     endPoint: string,
     name: string,
-    setPrompt: Function
+    setPrompt: Function,
+    setExportLoading: Function
 ) => {
     const date = format(new Date(), "dd/MM/yyyy");
-
+    setExportLoading(true);
     axios({
         url: `${process.env.NEXT_PUBLIC_API_URL}${endPoint}`,
         headers: {
@@ -28,8 +27,10 @@ export const DynamicExportHandler = (
             link.click();
             document.body.removeChild(link);
             URL.revokeObjectURL(href);
+            setExportLoading(false);
         })
         .catch((reason: AxiosError) => {
+            setExportLoading(false);
             setPrompt({
                 message: reason.message,
                 type: "error",

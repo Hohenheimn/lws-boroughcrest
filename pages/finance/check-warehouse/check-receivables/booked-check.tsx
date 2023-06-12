@@ -1,14 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Advancefilter } from "../../../../components/Reusable/AdvanceFilter";
 import TableCheckReceivables from "../../../../components/FINANCE/Check-Warehouse/CheckReceivables/TableCheckReceivables";
 import { PageAccessValidation } from "../../../../components/Reusable/PermissionValidation/PageAccessValidation";
 import NoPermissionComp from "../../../../components/Reusable/PermissionValidation/NoPermissionComp";
+import { format, isValid, parse } from "date-fns";
 
 export type BookedCheckType = {
     id: 1;
     payor: string;
     receipt_no: string;
     check_date: string;
+    customer_id: number;
     description: string;
     check_no: string;
     bank_branch: string;
@@ -19,6 +21,7 @@ export type BookedCheckType = {
     status: string;
     created_at: string;
     updated_at: string;
+    acknowledge: boolean;
     collection: {
         id: number;
     };
@@ -37,6 +40,22 @@ export default function BookedCheck() {
     const [isAdvFilter, setAdvFilter] = useState<Advancefilter>([]);
 
     const [isFilterText, setFilterText] = useState<string>("");
+
+    // ADVANCE FILTER
+    useEffect(() => {
+        const cloneArray = isAdvFilter.map((item) => {
+            return `${item.key}:${item.value}`;
+        });
+        setFilterText(cloneArray.toString());
+    }, [isAdvFilter]);
+
+    let dateFrom: any = parse(isPeriod.from, "MMM dd yyyy", new Date());
+
+    let dateTo: any = parse(isPeriod.to, "MMM dd yyyy", new Date());
+
+    dateFrom = isValid(dateFrom) ? format(dateFrom, "yyyy-MM-dd") : "";
+
+    dateTo = isValid(dateTo) ? format(dateTo, "yyyy-MM-dd") : "";
 
     const PagePermisson = PageAccessValidation("Check Receivables");
 
@@ -57,11 +76,14 @@ export default function BookedCheck() {
             isPeriod={isPeriod}
             setPeriod={setPeriod}
             page="booked-check"
-            EndPointList={"/finance/customer-facility/booked-check?paginate=10"}
-            EndPointAdvFilter={
-                "/finance/customer-facility/booked-check/filter-options?keywords="
-            }
-            EndPointExport="/finance/customer-facility/booked-check/export"
+            EndPointList={`/finance/customer-facility/booked-check?paginate=10&filters=${isFilterText}&keyword=${isSearch}&page=${
+                isSearch === "" ? TablePage : 1
+            }&date_from=${dateFrom}&date_to=${dateTo}`}
+            EndPointAdvFilter={`/finance/customer-facility/booked-check/filter-options?keywords=`}
+            EndPointExport={`/finance/customer-facility/booked-check/export?paginate=10&filters=${isFilterText}&keyword=${isSearch}&page=${
+                isSearch === "" ? TablePage : 1
+            }&date_from=${dateFrom}&date_to=${dateTo}`}
+            ExportName="Booked-check"
         />
     );
 }

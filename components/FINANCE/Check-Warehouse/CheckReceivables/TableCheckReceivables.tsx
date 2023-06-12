@@ -4,7 +4,7 @@ import style from "../../../../styles/SearchFilter.module.scss";
 import Image from "next/image";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
-import { BarLoader, ScaleLoader } from "react-spinners";
+import { BarLoader, MoonLoader, ScaleLoader } from "react-spinners";
 import PeriodCalendar from "../../../Reusable/PeriodCalendar";
 import { Advancefilter, AdvanceFilter } from "../../../Reusable/AdvanceFilter";
 import TableErrorMessage from "../../../Reusable/TableErrorMessage";
@@ -48,6 +48,7 @@ type Props = {
     EndPointList: string;
     EndPointAdvFilter: string;
     EndPointExport: string;
+    ExportName: string;
 };
 
 export default function TableCheckReceivables({
@@ -65,40 +66,18 @@ export default function TableCheckReceivables({
     isPeriod,
     setPeriod,
     page,
+    ExportName,
 }: Props) {
     const { setPrompt } = useContext(AppContext);
 
     const router = useRouter();
-
-    // ADVANCE FILTER
-    useEffect(() => {
-        const cloneArray = isAdvFilter.map((item) => {
-            return `${item.key}:${item.value}`;
-        });
-        setFilterText(cloneArray.toString());
-    }, [isAdvFilter]);
 
     const removeItemFromFilter = (value: string) => {
         const cloneFilter = isAdvFilter.filter((item) => item.value !== value);
         setAdvFilter(cloneFilter);
     };
 
-    let dateFrom: any = parse(isPeriod.from, "MMM dd yyyy", new Date());
-
-    let dateTo: any = parse(isPeriod.to, "MMM dd yyyy", new Date());
-
-    dateFrom = isValid(dateFrom) ? format(dateFrom, "yyyy-MM-dd") : "";
-
-    dateTo = isValid(dateTo) ? format(dateTo, "yyyy-MM-dd") : "";
-
-    const { data, isLoading, isError } = CheckScheduleList(
-        isSearch,
-        TablePage,
-        isFilterText,
-        dateFrom,
-        dateTo,
-        EndPointList
-    );
+    const { data, isLoading, isError } = CheckScheduleList(EndPointList);
 
     const [isReference, setReference] = useState("");
 
@@ -133,7 +112,11 @@ export default function TableCheckReceivables({
         "MMM dd yyyy",
         new Date()
     );
+
+    const [isStatus, setStatus] = useState("");
+
     const BookedHandler = (status: string) => {
+        setStatus(status);
         const Payload = {
             status: status,
             deposit_date: isValid(depositDateConvert)
@@ -145,8 +128,14 @@ export default function TableCheckReceivables({
         mutate(Payload);
     };
 
+    const [isExportLoading, setExportLoading] = useState(false);
     const ExportHandler = () => {
-        DynamicExportHandler(EndPointExport, "property", setPrompt);
+        DynamicExportHandler(
+            EndPointExport,
+            ExportName,
+            setPrompt,
+            setExportLoading
+        );
     };
 
     return (
@@ -234,13 +223,23 @@ export default function TableCheckReceivables({
                             className="buttonBorder mr-2"
                             onClick={() => BookedHandler("Rejected")}
                         >
-                            REJECT
+                            {BookCheckMutateLoading &&
+                            isStatus === "Rejected" ? (
+                                <ScaleLoader
+                                    color="#fff"
+                                    height="10px"
+                                    width="2px"
+                                />
+                            ) : (
+                                "REJECT"
+                            )}
                         </button>
                         <button
                             className="buttonRed"
                             onClick={() => BookedHandler("Deposited")}
                         >
-                            {BookCheckMutateLoading ? (
+                            {BookCheckMutateLoading &&
+                            isStatus === "Deposited" ? (
                                 <ScaleLoader
                                     color="#fff"
                                     height="10px"
@@ -275,19 +274,25 @@ export default function TableCheckReceivables({
 
                 <ul className={style.navigation}>
                     <li className={style.importExportPrint}>
-                        <Tippy theme="ThemeRed" content="Export">
-                            <div
-                                className={`${style.noFill} mr-5`}
-                                onClick={ExportHandler}
-                            >
-                                <Image
-                                    src="/Images/Export.png"
-                                    height={35}
-                                    width={35}
-                                    alt="Posted"
-                                />
+                        {isExportLoading ? (
+                            <MoonLoader color="#8f384d" size={20} />
+                        ) : (
+                            <div>
+                                <Tippy theme="ThemeRed" content="Export">
+                                    <div
+                                        className=" hover:scale-125 duration-100 cursor-pointer"
+                                        onClick={ExportHandler}
+                                    >
+                                        <Image
+                                            src="/Images/Export.png"
+                                            height={33}
+                                            width={33}
+                                            alt="export"
+                                        />
+                                    </div>
+                                </Tippy>
                             </div>
-                        </Tippy>
+                        )}
                     </li>
                 </ul>
             </section>
@@ -567,17 +572,19 @@ const ListBookedCheck = ({ itemDetail }: BookedListProps) => {
     return (
         <tr className="hoverEffect">
             <td className="icon">
-                {Permission_create && itemDetail.status !== "Rejected" && (
-                    <div className={` cursor-pointer`}>
-                        <Link
-                            href={`/finance/customer-facility/collection/receive-payment/${itemDetail.collection.id}?from=check_warehouse`}
-                        >
-                            <a>
-                                <OppositeArrow />
-                            </a>
-                        </Link>
-                    </div>
-                )}
+                {Permission_create &&
+                    itemDetail.status !== "Rejected" &&
+                    !itemDetail.acknowledge && (
+                        <div className={` cursor-pointer`}>
+                            <Link
+                                href={`/finance/customer-facility/collection/receive-payment/${itemDetail.id}?from=check_warehouse`}
+                            >
+                                <a>
+                                    <OppositeArrow />
+                                </a>
+                            </Link>
+                        </div>
+                    )}
             </td>
             <td>
                 <div className="finance_status">

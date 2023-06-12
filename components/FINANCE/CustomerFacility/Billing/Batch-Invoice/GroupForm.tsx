@@ -56,6 +56,13 @@ export default function GroupForm({
         selectAll: false,
     });
 
+    useEffect(() => {
+        setTableItem({
+            ...isTableItem,
+            group_name: groupName,
+        });
+    }, [groupName]);
+
     const [isSelectedIDs, setSelectedIDs] = useState<number[]>([]);
 
     const selectAll = () => {

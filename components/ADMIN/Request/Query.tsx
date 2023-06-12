@@ -6,7 +6,7 @@ export const ActionMutationRequest = (onSucces: any, onError: any) => {
     const queryClient = useQueryClient();
     return useMutation(
         (Payload: { id: any; payload: any }) => {
-            return api.post(`/admin/requests/${Payload.id}`, Payload.payload, {
+            return api.put(`/admin/requests/${Payload.id}`, Payload.payload, {
                 headers: {
                     Authorization: "Bearer " + getCookie("user"),
                 },
@@ -38,15 +38,28 @@ export const ShowRequest = (id: string | number) => {
     );
 };
 
-export const GetRequest = (status: string, keywords: string) => {
-    return useQuery(["request-list", status], () => {
-        return api.get(
-            `/admin/requests?status=${status}&keywords=${keywords}`,
-            {
-                headers: {
-                    Authorization: "Bearer " + getCookie("user"),
-                },
-            }
-        );
-    });
+export const GetRequest = (
+    status: string,
+    keywords: string,
+    paginate: number,
+    page: number
+) => {
+    return useQuery(
+        ["request-list", status, paginate],
+        () => {
+            return api.get(
+                `/admin/requests?status=${status}&keywords=${keywords}&paginate=${
+                    keywords !== "" ? "" : paginate
+                }&page=${keywords === "" ? 1 : page}`,
+                {
+                    headers: {
+                        Authorization: "Bearer " + getCookie("user"),
+                    },
+                }
+            );
+        },
+        {
+            refetchOnWindowFocus: false,
+        }
+    );
 };

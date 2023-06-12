@@ -11,7 +11,6 @@ import { BarLoader, ScaleLoader } from "react-spinners";
 import { CreateUpdateSubledger, GetSubledger } from "./Query";
 import AppContext from "../../../Context/AppContext";
 import Calendar from "../../../Reusable/Calendar";
-import DynamicPopOver from "../../../Reusable/DynamicPopOver";
 import {
     TextNumberDisplay,
     InputNumberForTable,
@@ -19,10 +18,7 @@ import {
 import TableErrorMessage from "../../../Reusable/TableErrorMessage";
 import { format, isValid, parse } from "date-fns";
 import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
-import {
-    TextFieldValidation,
-    TextFieldValidationNoSpace,
-} from "../../../Reusable/InputField";
+import { TextFieldValidationNoSpace } from "../../../Reusable/InputField";
 import { AccessActionValidation } from "../../../Reusable/PermissionValidation/ActionAccessValidation";
 import { MinusButtonTable, PlusButtonTable } from "../../../Reusable/Icons";
 
@@ -176,7 +172,7 @@ export default function SubTable() {
     return (
         <>
             <div className="table_container">
-                <table className="table_list forCrud">
+                <table className="table_list">
                     <thead className="textRed">
                         <tr>
                             <th className=" min-w-[130px] 480px:min-w-0">
@@ -395,6 +391,7 @@ const List = ({
                 <DropDownCustomer
                     UpdateStateHandler={UpdateStateHandler}
                     itemDetail={itemData}
+                    forTable={true}
                     classnameInput={` ${
                         !Permission_modify &&
                         itemData.id_backend !== null &&
@@ -452,6 +449,7 @@ const List = ({
                 <DropDownCharge
                     UpdateStateHandler={UpdateStateHandler}
                     itemDetail={itemData}
+                    forTable={true}
                     className={` ${
                         !Permission_modify &&
                         itemData.id_backend !== null &&

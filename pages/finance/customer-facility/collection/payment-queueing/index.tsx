@@ -10,12 +10,10 @@ import {
     GetCollectionList,
     UpdateStatusQueueing,
 } from "../../../../../components/FINANCE/CustomerFacility/Collection/ReceivePayment/Query";
-import { GetCustomer } from "../../../../../components/ReactQuery/CustomerMethod";
 import ModalTemp from "../../../../../components/Reusable/ModalTemp";
 import { TextNumberDisplay } from "../../../../../components/Reusable/NumberFormat";
 import Pagination from "../../../../../components/Reusable/Pagination";
 import TableErrorMessage from "../../../../../components/Reusable/TableErrorMessage";
-import { customer } from "../../../../../types/customerList";
 import { CollectionItem } from "../payment-register";
 import { AiOutlineClose } from "react-icons/ai";
 import { ErrorSubmit } from "../../../../../components/Reusable/ErrorMessage";
@@ -359,9 +357,12 @@ const List = ({ itemDetail, setProofPayment }: ListProps) => {
                                 onClick={() =>
                                     setProofPayment({
                                         url:
-                                            itemDetail.proof_payment === null
+                                            itemDetail.proof_of_payment ===
+                                                null ||
+                                            itemDetail.proof_of_payment ===
+                                                undefined
                                                 ? "/Images/sample_coming.png"
-                                                : `https://boroughcrest-api.lws.codes/get-img?image=${itemDetail.proof_payment}`,
+                                                : `https://boroughcrest-api.lws.codes/get-img?image=${itemDetail.proof_of_payment}`,
                                         toggle: true,
                                     })
                                 }

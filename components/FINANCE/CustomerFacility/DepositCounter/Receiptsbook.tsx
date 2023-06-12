@@ -146,14 +146,18 @@ export default function Receiptsbook({
         "approve"
     );
 
+    const [isPaginate, setPaginate] = useState(10);
+
     const displayType = type === "receipts-book" ? "matched" : "unmatched";
 
     const { data, isLoading, isError } = GetReceiptsBook(
         isSearch,
         TablePage,
         displayType,
-        "receipt_book"
+        "receipt_book",
+        isPaginate
     );
+
     // APPLY RECEIPT BOOK DATA FROM API
     useEffect(() => {
         if (data?.status === 200 || !isLoading) {
@@ -166,7 +170,7 @@ export default function Receiptsbook({
                 return {
                     id: item.id,
                     document_date: item?.receipt_date,
-                    depositor: item?.depositor.name,
+                    depositor: item?.depositor?.name,
                     receipt_no: item?.receipt_no,
                     bank_and_account_no: `${item?.bank_account?.bank_branch} - ${item?.bank_account?.bank_acc_no}`,
                     reference_no: item?.reference_no,
@@ -185,6 +189,7 @@ export default function Receiptsbook({
                                       indexID: itemChild.id,
                                       index: itemChild.index,
                                       amount: itemChild.credit,
+                                      variance: itemChild.variance,
                                   };
                               })
                             : [],
@@ -203,7 +208,7 @@ export default function Receiptsbook({
                 selectAll: selectAll,
             });
         }
-    }, [data]);
+    }, [data?.data.data]);
 
     const AddHandler = (id: string | number) => {
         const cloneToAdd = isReceiptBookData?.itemArray?.map(
@@ -217,6 +222,7 @@ export default function Receiptsbook({
                                 id: Math.random(),
                                 index: "",
                                 amount: "",
+                                // variance: 0,
                             },
                         ],
                     };
@@ -280,6 +286,7 @@ export default function Receiptsbook({
             toggle: true,
         });
         buttonClicked = "";
+        setOverallSelectedIndex([]);
     };
     const onError = (e: any) => {
         ErrorSubmit(e, setPrompt);
@@ -413,24 +420,20 @@ export default function Receiptsbook({
             )}
 
             <div
-                className={`table_container ${
+                className={`table_container relative  ${
                     type !== "receipts-book" && "max-half"
                 }`}
             >
-                <table className="table_list">
+                <table className="table_list relative">
                     <thead className="textRed">
                         <tr>
                             {type === "receipts-book" && (
-                                <th className="checkbox">
-                                    <div className="item">
-                                        <input
-                                            type="checkbox"
-                                            checked={
-                                                isReceiptBookData.selectAll
-                                            }
-                                            onChange={selectAll}
-                                        />
-                                    </div>
+                                <th className=" w-10">
+                                    <input
+                                        type="checkbox"
+                                        checked={isReceiptBookData.selectAll}
+                                        onChange={selectAll}
+                                    />
                                 </th>
                             )}
                             <th>DOC. DATE</th>
@@ -470,6 +473,21 @@ export default function Receiptsbook({
                         )}
                     </tbody>
                 </table>
+                {Number(isPaginate) ===
+                    Number(isReceiptBookData?.itemArray.length) &&
+                    type !== "receipts-book" && (
+                        <div className=" h-[40px] w-full flex justify-center items-center">
+                            <button
+                                className=" text-ThemeRed hover:underline font-NHU-bold"
+                                onClick={() =>
+                                    setPaginate((prev) => Number(prev) + 10)
+                                }
+                            >
+                                Load more...
+                            </button>
+                        </div>
+                    )}
+
                 {isLoading && (
                     <div className="w-full flex justify-center items-center">
                         <aside className="text-center flex justify-center py-5">
@@ -485,12 +503,13 @@ export default function Receiptsbook({
                 )}
                 {isError && <TableErrorMessage />}
             </div>
+
             {type === "receipts-book" && (
                 <Pagination
                     setTablePage={setTablePage}
                     TablePage={TablePage}
-                    PageNumber={data?.data.last_page}
-                    CurrentPage={data?.data.current_page}
+                    PageNumber={data?.data.meta.last_page}
+                    CurrentPage={data?.data.meta.current_page}
                 />
             )}
         </>
@@ -644,18 +663,14 @@ const List = ({
                 }`}
             >
                 {type === "receipts-book" && (
-                    <td className="checkbox">
-                        <div className="item">
-                            {itemDetail?.status !== "Posted" && (
-                                <input
-                                    type="checkbox"
-                                    onChange={(e: any) =>
-                                        updateValue("select", e)
-                                    }
-                                    checked={itemDetail?.select}
-                                />
-                            )}
-                        </div>
+                    <td className="checkbox w-[50px]">
+                        {itemDetail?.status !== "Posted" && (
+                            <input
+                                type="checkbox"
+                                onChange={(e: any) => updateValue("select", e)}
+                                checked={itemDetail?.select}
+                            />
+                        )}
                     </td>
                 )}
 
@@ -841,22 +856,22 @@ const ChildList = ({
                         >
                             <MinusButtonTable />
                         </div>
-
-                        {itemDetail?.variance !== 0 && (
-                            <div
-                                className={`ml-5 1024px:ml-2 ${
-                                    itemDetail?.variance !== "0" &&
-                                    itemChildren.index === "" &&
-                                    itemDetail?.variance !== 0 &&
-                                    itemDetail?.childrenRB?.length - 1 ===
-                                        index &&
-                                    "pointer-events-none opacity-[.5]"
-                                }`}
-                                onClick={() => AddHandler(itemDetail.id)}
-                            >
-                                <PlusButtonTable />
-                            </div>
-                        )}
+                        {itemDetail?.variance !== 0 &&
+                            index === itemDetail?.childrenRB?.length - 1 && (
+                                <div
+                                    className={`ml-5 1024px:ml-2 ${
+                                        itemDetail?.variance !== "0" &&
+                                        itemChildren.index === "" &&
+                                        itemDetail?.variance !== 0 &&
+                                        itemDetail?.childrenRB?.length - 1 ===
+                                            index &&
+                                        "pointer-events-none opacity-[.5]"
+                                    }`}
+                                    onClick={() => AddHandler(itemDetail.id)}
+                                >
+                                    <PlusButtonTable />
+                                </div>
+                            )}
                     </td>
                 )}
             </tr>

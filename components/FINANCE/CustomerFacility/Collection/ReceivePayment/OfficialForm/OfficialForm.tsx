@@ -216,40 +216,40 @@ export default function OfficialForm({
             discount: headerForm.discount,
         };
 
-        PayloadAdvances.map((provItem) => {
-            if (provItem.amount <= 0 || provItem.charge_id === "") {
-                setPrompt({
-                    toggle: true,
-                    message: "Fill out the fields on Outright or Advances!",
-                    type: "draft",
-                });
-                validate = false;
-                return;
-            }
-        });
-        PayloadOutRight.map((provItem: any) => {
-            if (
-                provItem.amount <= 0 ||
-                provItem.charge_id === "" ||
-                provItem.unit_price <= 0 ||
-                Number(provItem.quantity) <= 0 ||
-                provItem.unit_price === "" ||
-                provItem.quantity === ""
-            ) {
-                setPrompt({
-                    toggle: true,
-                    message: "Fill out the fields on Outright or Advances!",
-                    type: "draft",
-                });
-                validate = false;
-                return;
-            }
-        });
+        // PayloadAdvances.map((provItem) => {
+        //     if (provItem.amount <= 0 || provItem.charge_id === "") {
+        //         setPrompt({
+        //             toggle: true,
+        //             message: "Fill out the fields on Outright or Advances!",
+        //             type: "draft",
+        //         });
+        //         validate = false;
+        //         return;
+        //     }
+        // });
+        // PayloadOutRight.map((provItem: any) => {
+        //     if (
+        //         provItem.amount <= 0 ||
+        //         provItem.charge_id === "" ||
+        //         provItem.unit_price <= 0 ||
+        //         Number(provItem.quantity) <= 0 ||
+        //         provItem.unit_price === "" ||
+        //         provItem.quantity === ""
+        //     ) {
+        //         setPrompt({
+        //             toggle: true,
+        //             message: "Fill out the fields on Outright or Advances!",
+        //             type: "draft",
+        //         });
+        //         validate = false;
+        //         return;
+        //     }
+        // });
 
         if (!isVarianceValidation) {
             setPrompt({
                 toggle: true,
-                message: "Invalid amount, Variance should be zero to save",
+                message: "Variance should be zero to save",
                 type: "draft",
             });
             validate = false;
@@ -290,6 +290,8 @@ export default function OfficialForm({
                 isAppliedAmount={isAppliedAmount}
                 setBalanceAmount={setBalanceAmount}
                 isBalanceTotal={isBalanceTotal}
+                DiscountAmount={Number(headerForm.discount)}
+                CreditTax={Number(headerForm.credit_tax)}
             />
             <OutrightAndAdvances
                 DefaultOutright={isOutright}

@@ -27,15 +27,7 @@ export default function Print({
 }: Props) {
     const ColumnsArray = Columns.split(",");
 
-    const { data, isLoading, isError } = GetPropertyList(
-        PageNumber,
-        Keyword,
-        RowNumber
-    );
-
-    const printhandler = () => {
-        print();
-    };
+    const { data, isLoading } = GetPropertyList(PageNumber, Keyword, RowNumber);
 
     const PagePermisson = PageAccessValidation("Property");
 
@@ -46,21 +38,6 @@ export default function Print({
     return (
         <>
             <div className="flex items-center flex-col">
-                <aside className="w-full max-w-[1366px] py-5 flex justify-end px-5 hidePrint">
-                    <Tippy theme="ThemeRed" content="Print">
-                        <div
-                            className="relative h-[35px] w-[35px] hover:scale-[1.1] transition-all duration-75"
-                            onClick={printhandler}
-                        >
-                            <Image
-                                src="/Images/Print.png"
-                                alt=""
-                                layout="fill"
-                            />
-                        </div>
-                    </Tippy>
-                </aside>
-
                 <PrintTemplate title="Property">
                     <table className="w-full">
                         <thead className="text-[#545454] text-[14px] text-start">

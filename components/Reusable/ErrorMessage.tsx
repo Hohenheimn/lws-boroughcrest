@@ -1,6 +1,6 @@
 export const ErrorSubmit = (e: any, setPrompt: Function) => {
     const clientError = [400, 401, 403, 404, 409];
-    console.log(e);
+
     if (e !== undefined) {
         const propertyValues = Object.values(e.response.data);
 

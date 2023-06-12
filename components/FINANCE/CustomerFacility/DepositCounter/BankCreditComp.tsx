@@ -89,6 +89,8 @@ export default function BankCreditComp({
         "approve"
     );
 
+    const [isPaginate, setPaginate] = useState(10);
+
     const { setPrompt } = useContext(AppContext);
 
     const [isSearch, setSearch] = useState("");
@@ -264,15 +266,19 @@ export default function BankCreditComp({
     const displayStatus = type === "bank-credit" ? "matched" : "unmatched";
 
     const dateFrom = parse(isPeriod.from, "MMM dd yyyy", new Date());
+
     const dateTo = parse(isPeriod.to, "MMM dd yyyy", new Date());
+
     const { data, isLoading, isError } = GetBankCredit(
         displayStatus,
         isValid(dateFrom) ? format(dateFrom, "yyyy-MM-dd") : "",
         isValid(dateTo) ? format(dateTo, "yyyy-MM-dd") : "",
         isSelectBankIDS,
         TablePage,
-        isSearch
+        isSearch,
+        isPaginate
     );
+
     // APPLY DATA FROM API
     useEffect(() => {
         if (data?.status === 200) {
@@ -336,6 +342,7 @@ export default function BankCreditComp({
             toggle: true,
         });
         buttonClicked = "";
+        setSelectedBankCreditIDs([]);
     };
     const onError = (e: any) => {
         ErrorSubmit(e, setPrompt);
@@ -514,6 +521,20 @@ export default function BankCreditComp({
                         )}
                     </tbody>
                 </table>
+                {Number(isPaginate) ===
+                    Number(isBankCredit?.itemArray.length) &&
+                    type !== "bank-credit" && (
+                        <div className=" h-[40px] w-full flex justify-center items-center">
+                            <button
+                                className=" text-ThemeRed hover:underline font-NHU-bold"
+                                onClick={() =>
+                                    setPaginate((prev) => Number(prev) + 10)
+                                }
+                            >
+                                Load more...
+                            </button>
+                        </div>
+                    )}
                 {isLoading && (
                     <div className="w-full flex justify-center items-center">
                         <aside className="text-center flex justify-center py-5">

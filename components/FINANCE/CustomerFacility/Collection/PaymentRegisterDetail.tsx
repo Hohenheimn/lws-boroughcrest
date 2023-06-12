@@ -215,7 +215,7 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
                                 <p className="label_text">CASH ACCOUNT</p>
                                 <h4 className="main_text">
                                     {
-                                        CollectionDetail.chart_of_account_account_name
+                                        CollectionDetail?.chart_of_account_account_name
                                     }
                                 </h4>
                             </li>

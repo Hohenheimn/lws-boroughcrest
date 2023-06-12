@@ -165,6 +165,7 @@ export default function HeaderDoughnutComp() {
                                 src="/Images/d_filter_2.png"
                                 width={15}
                                 height={10}
+                                alt="filter"
                             />
                         </div>
                     </Tippy>

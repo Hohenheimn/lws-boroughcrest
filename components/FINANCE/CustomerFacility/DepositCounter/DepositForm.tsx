@@ -76,12 +76,6 @@ export default function DepositForm({
 
     const onErrorMutate = (e: any) => {
         ErrorSubmit(e, setPrompt);
-        console.log(e);
-        // setPrompt({
-        //     message: "Something is wrong!",
-        //     toggle: true,
-        //     type: "error",
-        // });
     };
     const { mutate: SaveMutate, isLoading: SaveLoading } = CreateDepositCounter(
         onSuccessMutate,

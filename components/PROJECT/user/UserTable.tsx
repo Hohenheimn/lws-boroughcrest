@@ -110,7 +110,6 @@ type ListProps = {
 };
 
 const List = ({ itemDetail }: ListProps) => {
-    const DefaultImage = "/Images/sampleProfile.png";
     const { userTableColumn } = useContext(AppContext);
 
     let ImagePhoto = "/Images/sampleProfile.png";

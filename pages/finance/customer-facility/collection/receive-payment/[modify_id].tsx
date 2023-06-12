@@ -20,6 +20,8 @@ import { PageAccessValidation } from "../../../../../components/Reusable/Permiss
 import NoPermissionComp from "../../../../../components/Reusable/PermissionValidation/NoPermissionComp";
 import { AccessActionValidation } from "../../../../../components/Reusable/PermissionValidation/ActionAccessValidation";
 import { FaLock } from "react-icons/fa";
+import { ShowBookedCheck } from "../../../../../components/FINANCE/Check-Warehouse/CheckReceivables/Query";
+import { BookedCheckType } from "../../../check-warehouse/check-receivables/booked-check";
 
 export default function Modify({ modify_id, from }: any) {
     const router = useRouter();
@@ -33,23 +35,35 @@ export default function Modify({ modify_id, from }: any) {
     const { isLoading, data, isError } = GetCollectionDetail(modify_id);
 
     const {
-        isLoading: customerLoading,
-        data: customerData,
-        isError: customerError,
-    } = GetCustomer(data?.data.customer_id);
+        isLoading: BookedLoading,
+        data: BookedData,
+        isError: BookedError,
+    } = ShowBookedCheck(modify_id);
 
-    const customer: customer = customerData?.data;
+    const BookedCheck: BookedCheckType = BookedData?.data;
 
     const collection: CollectionItem = data?.data;
 
-    const receipt_date = parse(
-        collection?.receipt_date,
+    const {
+        isLoading: customerLoading,
+        data: customerData,
+        isError: customerError,
+    } = GetCustomer(
+        router.query.from === "check_warehouse"
+            ? BookedCheck?.customer_id
+            : collection?.customer_id
+    );
+
+    const customer: customer = customerData?.data;
+
+    const deposit_date_collection = parse(
+        collection?.deposit_date,
         "yyyy-MM-dd",
         new Date()
     );
 
-    const deposit_date = parse(
-        collection?.deposit_date,
+    const deposit_date_booked_check = parse(
+        BookedCheck?.deposit_date,
         "yyyy-MM-dd",
         new Date()
     );
@@ -86,10 +100,15 @@ export default function Modify({ modify_id, from }: any) {
     const [isAdvances, setAdvances] = useState<AdvancesType[]>([]);
 
     const date = new Date();
+
     let today = startOfDay(date);
 
     useEffect(() => {
-        if (!isLoading && !isError) {
+        if (
+            !isLoading &&
+            !isError &&
+            router.query.from === "payment_queueing"
+        ) {
             let receipt_type = "";
 
             if (from === "check_warehouse") {
@@ -105,8 +124,8 @@ export default function Modify({ modify_id, from }: any) {
                 receipt_no: collection.receipt_no,
                 description: collection.description,
                 mode_of_payment: collection.mode_of_payment,
-                deposit_date: isValid(deposit_date)
-                    ? format(deposit_date, "MMM dd yyyy")
+                deposit_date: isValid(deposit_date_collection)
+                    ? format(deposit_date_collection, "MMM dd yyyy")
                     : "",
                 chart_of_account_id: collection.chart_of_account_id,
                 chart_of_account_name: collection.chart_of_account_account_name,
@@ -223,6 +242,38 @@ export default function Modify({ modify_id, from }: any) {
                 ]);
             }
         }
+
+        if (
+            router.query.from === "check_warehouse" &&
+            BookedCheck !== undefined
+        ) {
+            setHeaderForm({
+                customer_id: BookedCheck.customer_id,
+                receipt_type: "Acknowledgement",
+                receipt_date: format(today, "MMM dd yyyy"),
+                receipt_no: "",
+                description: BookedCheck.description,
+                mode_of_payment: "Deposit",
+                deposit_date: isValid(deposit_date_booked_check)
+                    ? format(deposit_date_booked_check, "MMM dd yyyy")
+                    : "",
+                chart_of_account_id: "",
+                chart_of_account_name: "",
+                reference_no: BookedCheck.reference_no,
+                amount_paid: BookedCheck.amount,
+                credit_tax: 0,
+                discount: 0,
+            });
+            setAcknowledgement([
+                {
+                    id: 0,
+                    charge: "",
+                    charge_id: "",
+                    description: "",
+                    amount: 0,
+                },
+            ]);
+        }
     }, [collection]);
 
     useEffect(() => {
@@ -247,8 +298,6 @@ export default function Modify({ modify_id, from }: any) {
     if (!PagePermisson && PagePermisson !== undefined) {
         return <NoPermissionComp />;
     }
-
-    console.log(Permission_modify);
 
     if (
         !Permission_modify &&
@@ -288,7 +337,7 @@ export default function Modify({ modify_id, from }: any) {
         );
     }
 
-    if (isLoading || customerLoading) {
+    if (isLoading || customerLoading || BookedLoading) {
         return (
             <div className="pageDetail">
                 <BeatLoader
@@ -301,7 +350,7 @@ export default function Modify({ modify_id, from }: any) {
         );
     }
 
-    if (isError || customerError) {
+    if (isError || customerError || BookedError) {
         return (
             <div className="pageDetail">
                 <h1>Something is wrong</h1>

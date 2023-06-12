@@ -4,6 +4,7 @@ import { AccessActionValidation } from "../../Reusable/PermissionValidation/Acti
 import AppContext from "../../Context/AppContext";
 
 export type RequestDetailType = {
+    id: number;
     customer_id: number;
     customer_name: string;
     property_unit_id: number;
@@ -14,7 +15,13 @@ export type RequestDetailType = {
     details: string;
     status: string;
     create_at: string;
-    trail: string[];
+    trail: {
+        event: string;
+        user: string;
+        date: string;
+        time: string;
+        datetime: string;
+    }[];
     remarks: RequestRemarks[];
     updated_at: string;
 };
@@ -25,7 +32,7 @@ export type RequestRemarks = {
     user_name: string;
     user_image_photo: null | string;
     remarks: string;
-    create_at: string;
+    created_at: string;
 };
 
 type Props = {

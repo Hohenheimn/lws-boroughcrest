@@ -21,13 +21,16 @@ type Payload = {
 export default function DepositCounter() {
     // use to trigger refresh of table of bank credit and receipt book
     const [isTriggerRefresh, setTriggerRefresh] = useState(false);
+
     const { setPrompt } = useContext(AppContext);
+
     const [changeData, setChangeData] = useState({
         dataThatChangeID: "",
         fromWhere: "",
         parentID: "",
         childreID: "",
     });
+
     const [ReceiptBookData, setReceiptBookData] = useState<isReceiptBookData>({
         selectAll: false,
         itemArray: [],
@@ -37,6 +40,7 @@ export default function DepositCounter() {
         itemArray: [],
         selectAll: false,
     });
+
     // Compute Pairing of Receipt Book and Bank Credit
     useEffect(() => {
         if (changeData.dataThatChangeID === "") return;
@@ -45,27 +49,22 @@ export default function DepositCounter() {
             const cloneReceiptBook = ReceiptBookData.itemArray.map(
                 (item: isTableItemObjRB) => {
                     if (Number(changeData.parentID) === Number(item?.id)) {
-                        let variance = item?.deposit_amount;
-                        item?.childrenRB?.map((item) => {
+                        let variance = item?.variance;
+                        const children = item?.childrenRB?.map((item) => {
                             variance = Number(variance) - Number(item?.amount);
-                        });
-                        variance = Number(variance) - Number(item?.indexAmount);
 
-                        if (Number.isNaN(variance)) {
                             return {
                                 ...item,
-                                variance: item?.deposit_amount,
+                                variance: variance,
                             };
-                        } else {
-                            return {
-                                ...item,
-                                variance: variance <= 0 ? 0 : variance,
-                            };
-                        }
+                        });
+                        return { ...item, childrenRB: children };
                     }
                     return item;
                 }
             );
+
+            console.log(cloneReceiptBook);
 
             setReceiptBookData({
                 selectAll: false,
@@ -80,26 +79,44 @@ export default function DepositCounter() {
         }
         // Bank Credit's Reference no and receipt no to Receipt Book
         if (changeData.fromWhere === "bank credit") {
+            // const cloneBankCredit = isBankCredit.itemArray.map(
+            //     (item: isTableItemObjBC) => {
+            //         if (Number(changeData.parentID) === Number(item?.id)) {
+            //             let variance = item?.credit_amount;
+            //             item?.childrenBC.map((item) => {
+            //                 variance = Number(variance) - Number(item?.amount);
+            //             });
+            //             variance =
+            //                 Number(variance) - Number(item?.rec_ref_amount);
+            //             if (Number.isNaN(variance)) {
+            //                 return {
+            //                     ...item,
+            //                     variance: item?.credit_amount,
+            //                 };
+            //             } else {
+            //                 return {
+            //                     ...item,
+            //                     variance: variance <= 0 ? 0 : variance,
+            //                 };
+            //             }
+            //         }
+            //         return item;
+            //     }
+            // );
+
             const cloneBankCredit = isBankCredit.itemArray.map(
                 (item: isTableItemObjBC) => {
                     if (Number(changeData.parentID) === Number(item?.id)) {
-                        let variance = item?.credit_amount;
-                        item?.childrenBC.map((item) => {
+                        let variance = item?.variance;
+                        const children = item?.childrenBC?.map((item) => {
                             variance = Number(variance) - Number(item?.amount);
+
+                            return {
+                                ...item,
+                                variance: variance,
+                            };
                         });
-                        variance =
-                            Number(variance) - Number(item?.rec_ref_amount);
-                        if (Number.isNaN(variance)) {
-                            return {
-                                ...item,
-                                variance: item?.credit_amount,
-                            };
-                        } else {
-                            return {
-                                ...item,
-                                variance: variance <= 0 ? 0 : variance,
-                            };
-                        }
+                        return { ...item, childrenRB: children };
                     }
                     return item;
                 }
@@ -138,7 +155,6 @@ export default function DepositCounter() {
     const { mutate, isLoading } = SaveTagging(onSuccess, onError);
 
     const SaveHandler = () => {
-        console.log(ReceiptBookData);
         const filterReceipt = ReceiptBookData.itemArray.filter(
             (items) => items.indexID !== ""
         );
@@ -153,6 +169,12 @@ export default function DepositCounter() {
                 id: itemRB.id,
                 type_of_id: "receipt_book",
                 tag_ids: [...childrenID, itemRB.indexID],
+                variance:
+                    itemRB.childrenRB.length <= 0
+                        ? itemRB.variance
+                        : itemRB.childrenRB[
+                              Number(itemRB.childrenRB.length) - 1
+                          ].variance,
             };
         });
         const PayloadBC = filterBankCredit.map((itemBC) => {
@@ -163,6 +185,12 @@ export default function DepositCounter() {
                 id: itemBC.id,
                 type_of_id: "bank_credit",
                 tag_ids: [...childrenID, itemBC.rec_ref_id],
+                variance:
+                    itemBC.childrenBC.length <= 0
+                        ? itemBC.variance
+                        : itemBC.childrenBC[
+                              Number(itemBC.childrenBC.length) - 1
+                          ].variance,
             };
         });
 

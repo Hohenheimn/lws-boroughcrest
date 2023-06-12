@@ -12,6 +12,7 @@ type DropdownItem = {
     forCrudTableDD?: boolean;
     displayID?: boolean;
     filter?: boolean;
+    forTable?: boolean;
 };
 
 export default function DropDownCharge({
@@ -21,6 +22,7 @@ export default function DropDownCharge({
     forCrudTableDD,
     displayID,
     filter,
+    forTable,
 }: DropdownItem) {
     const [isToggle, setToggle] = useState(false);
     const [tempSearch, setTempSearch] = useState(itemDetail?.charge);
@@ -32,7 +34,8 @@ export default function DropDownCharge({
     return (
         <>
             <DynamicPopOver
-                className={"w-full "}
+                className={"w-full"}
+                forTable={forTable}
                 samewidth={true}
                 toRef={
                     <input
