@@ -85,6 +85,9 @@ export default function LineChartComp() {
     return (
         <div>
             <Line data={data} options={options} />
+            <div className=" hidden">
+                <Bar data={data} />
+            </div>
             <ul className=" w-full flex justify-around flex-wrap mt-5">
                 <li className=" text-RegularColor text-[12px] flex items-center">
                     <div className=" h-3 w-3 rounded-full bg-RegularColor mr-3"></div>
