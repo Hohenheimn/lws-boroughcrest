@@ -30,7 +30,7 @@ function Dashboard() {
                 <li className="w-[49%] flex flex-col h-[800px] 640px:w-full 640px:mb-10 640px:h-[500px]">
                     <h4 className=" mb-3">Announcement Board</h4>
                     <div className="p-4 bg-white shadow-md rounded-lg w-full h-full overflow-auto">
-                        <AnnouncementList type="dashboard" />
+                        {/* <AnnouncementList type="dashboard" /> */}
                     </div>
                 </li>
                 <li className="w-[49%] flex flex-col h-[800px] 640px:w-full">
