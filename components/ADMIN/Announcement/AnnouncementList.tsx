@@ -46,6 +46,10 @@ export default function AnnouncementList({ type }: Props) {
         deleteMutate(isConfirmDeleteID);
     };
 
+    if (data?.data === "") {
+        return <div></div>;
+    }
+
     return (
         <div>
             {isConfirmDeleteID !== null && (

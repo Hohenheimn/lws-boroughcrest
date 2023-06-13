@@ -6,10 +6,11 @@ import { getCookie } from "cookies-next";
 export const GetPropertyList = (
     PageNumber: any,
     Keyword: any,
-    RowNumber: number
+    RowNumber: number,
+    status?: string
 ) => {
     return useQuery(
-        ["Property-List", PageNumber, Keyword, RowNumber],
+        ["Property-List", PageNumber, Keyword, RowNumber, status],
         () => {
             return api.get(
                 `/admin/property/unit?page=${
@@ -21,6 +22,22 @@ export const GetPropertyList = (
                     },
                 }
             );
+        },
+        {
+            refetchOnWindowFocus: false,
+        }
+    );
+};
+
+export const GetPropertyListDraft = () => {
+    return useQuery(
+        ["Property-draft-list"],
+        () => {
+            return api.get(`/admin/property/unit?status=draft`, {
+                headers: {
+                    Authorization: "Bearer " + getCookie("user"),
+                },
+            });
         },
         {
             refetchOnWindowFocus: false,

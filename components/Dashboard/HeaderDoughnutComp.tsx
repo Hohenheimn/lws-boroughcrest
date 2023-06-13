@@ -1,20 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Tippy from "@tippy.js/react";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { TextNumberDisplay } from "../Reusable/NumberFormat";
 import DoughnutChartComp from "./DoughnutChartComp";
+import { GetDashboardProperty } from "./Query";
+import SelectDropdown from "../Reusable/SelectDropdown";
+import NameIDDropdown from "../Dropdowns/NameIDDropdown";
 
 export default function HeaderDoughnutComp() {
     const [isUnitArea, setUnitArea] = useState("Unit");
 
-    const [toggleDropdown, setToggleDropdown] = useState({
+    const [OccupancyDemographic, setOccupancyDemographic] = useState({
         value: "Ownership",
         toggle: false,
     });
 
-    const [toggleDropdown2, setToggleDropdown2] = useState({
-        value: "Owner & Developer Class",
+    const [CitizenType, setCitizenType] = useState({
+        value: "Owner and Developer",
         toggle: false,
     });
 
@@ -22,6 +25,97 @@ export default function HeaderDoughnutComp() {
         value: "",
         toggle: false,
     });
+
+    const [isTower, setTower] = useState({
+        id: "",
+        value: "",
+    });
+    const [isFloor, setFloor] = useState({
+        id: "",
+        value: "",
+    });
+
+    const [isType, setType] = useState({
+        value: "",
+        toggle: false,
+    });
+
+    const [isClass, setClass] = useState({
+        value: "",
+        toggle: false,
+    });
+
+    const { data, isLoading } = GetDashboardProperty(
+        isTower.id,
+        isFloor.id,
+        isType.value,
+        OccupancyDemographic.value,
+        CitizenType.value,
+        isClass.value
+    );
+
+    // left - owner, right developer
+    const [dataSetUnit, setDataSetUnit] = useState([0, 0]);
+
+    const [dataSetArea, setDataSetArea] = useState([0, 0]);
+
+    useEffect(() => {
+        if (data?.data !== undefined) {
+            let OwnerUnit = 0;
+            let DeveloperUnit = 0;
+            data?.data?.recordsPerUnit.map((itemMap: any) => {
+                if (itemMap.label === "Owner") {
+                    OwnerUnit = itemMap.percentage;
+                }
+                return;
+            });
+            data?.data?.recordsPerUnit.map((itemMap: any) => {
+                if (itemMap.label === "Developer") {
+                    DeveloperUnit = itemMap.percentage;
+                }
+                return;
+            });
+            const UnitDataSet = [Number(OwnerUnit), Number(DeveloperUnit)];
+            setDataSetUnit(UnitDataSet);
+            // ----------------------------------------------------------------------------------------
+            let OwnerArea = 0;
+            let DeveloperArea = 0;
+            data?.data?.recordsPerArea.map((itemMap: any) => {
+                if (itemMap.label === "Owner") {
+                    OwnerArea = itemMap.count;
+                }
+                return;
+            });
+            data?.data?.recordsPerArea.map((itemMap: any) => {
+                if (itemMap.label === "Developer") {
+                    console.log(itemMap);
+                    DeveloperArea = itemMap.count;
+                }
+                return;
+            });
+            const AreaDataSet = [Number(DeveloperArea), Number(OwnerArea)];
+            setDataSetArea(AreaDataSet);
+        }
+    }, [data?.data]);
+
+    useEffect(() => {
+        setTower({
+            id: "",
+            value: "",
+        });
+        setFloor({
+            id: "",
+            value: "",
+        });
+        setType({
+            value: "",
+            toggle: false,
+        });
+        setClass({
+            value: "",
+            toggle: false,
+        });
+    }, [filter.value]);
 
     return (
         <section>
@@ -34,21 +128,21 @@ export default function HeaderDoughnutComp() {
                         <span
                             className="flex items-center font-NHU-bold"
                             onClick={() =>
-                                setToggleDropdown({
-                                    ...toggleDropdown,
+                                setOccupancyDemographic({
+                                    ...OccupancyDemographic,
                                     toggle: true,
                                 })
                             }
                         >
-                            {toggleDropdown.value}
+                            {OccupancyDemographic.value}
                             <IoMdArrowDropdown className=" text-[20px]" />
                         </span>
 
-                        {toggleDropdown.toggle && (
+                        {OccupancyDemographic.toggle && (
                             <ul className="text-ThemeRed bg-white shadow-lg absolute top-full left-0">
                                 <li
                                     onClick={() =>
-                                        setToggleDropdown({
+                                        setOccupancyDemographic({
                                             toggle: false,
                                             value: "Ownership",
                                         })
@@ -59,7 +153,7 @@ export default function HeaderDoughnutComp() {
                                 </li>
                                 <li
                                     onClick={() =>
-                                        setToggleDropdown({
+                                        setOccupancyDemographic({
                                             toggle: false,
                                             value: "Occupancy",
                                         })
@@ -76,23 +170,23 @@ export default function HeaderDoughnutComp() {
                     <span
                         className="flex items-center font-NHU-bold"
                         onClick={() =>
-                            setToggleDropdown2({
-                                ...toggleDropdown2,
+                            setCitizenType({
+                                ...CitizenType,
                                 toggle: true,
                             })
                         }
                     >
-                        {toggleDropdown2.value}
+                        {CitizenType.value}
                         <IoMdArrowDropdown className=" text-[20px]" />
                     </span>
 
-                    {toggleDropdown2.toggle && (
+                    {CitizenType.toggle && (
                         <ul className="text-ThemeRed bg-white shadow-lg absolute top-full left-0">
                             <li
                                 onClick={() =>
-                                    setToggleDropdown2({
+                                    setCitizenType({
                                         toggle: false,
-                                        value: "Owner & Developer Class",
+                                        value: "Owner and Developer",
                                     })
                                 }
                                 className="font-NHU-bold  text-[12px] cursor-pointer hover:bg-ThemeRed hover:text-white  px-2 py-1"
@@ -101,9 +195,9 @@ export default function HeaderDoughnutComp() {
                             </li>
                             <li
                                 onClick={() =>
-                                    setToggleDropdown2({
+                                    setCitizenType({
                                         toggle: false,
-                                        value: "Filipino & Foreigner Class",
+                                        value: "Filipino and Foreigner",
                                     })
                                 }
                                 className="font-NHU-bold text-[12px] cursor-pointer hover:bg-ThemeRed hover:text-white  px-2 py-1"
@@ -120,7 +214,11 @@ export default function HeaderDoughnutComp() {
                     <h5 className=" font-NHU-bold text-[12px] flex items-center text-ThemeRed">
                         Total Properties:{" "}
                         <TextNumberDisplay
-                            value={1000}
+                            value={
+                                isUnitArea === "Unit"
+                                    ? data?.data?.totalPerUnit
+                                    : data?.data?.totalPerArea
+                            }
                             className={
                                 " text-RegularColor font-NHU-bold text-[12px]"
                             }
@@ -211,15 +309,75 @@ export default function HeaderDoughnutComp() {
                         <h5 className=" text-ThemeRed ml-2 mr-2 text-[12px]">
                             {filter.value}
                         </h5>
-                        <input
-                            type="text"
-                            className=" border border-gray-300 rounded-md outline-none text-[12px] px-2 py-1"
-                        />
+                        {filter.value === "Class" && (
+                            <SelectDropdown
+                                selectHandler={(value: string) => {
+                                    setClass({
+                                        ...isClass,
+                                        value: value,
+                                    });
+                                }}
+                                className=""
+                                inputElement={
+                                    <input
+                                        className="w-full field mini"
+                                        value={isClass.value}
+                                        readOnly
+                                        autoComplete="off"
+                                    />
+                                }
+                                listArray={["Saleable", "Leaseable", "Common"]}
+                            />
+                        )}
+                        {filter.value === "Type" && (
+                            <SelectDropdown
+                                selectHandler={(value: string) => {
+                                    setType({
+                                        ...isType,
+                                        value: value,
+                                    });
+                                }}
+                                className=""
+                                inputElement={
+                                    <input
+                                        className="w-full field mini"
+                                        value={isType.value}
+                                        readOnly
+                                        autoComplete="off"
+                                    />
+                                }
+                                listArray={["Parking", "Unit", "Commercial"]}
+                            />
+                        )}
+                        {filter.value === "Tower" && (
+                            <div className="w-[200px]">
+                                <NameIDDropdown
+                                    value={isTower.value}
+                                    setValue={setTower}
+                                    width={""}
+                                    placeholder={""}
+                                    endpoint={"/admin/property/tower"}
+                                />
+                            </div>
+                        )}
+                        {filter.value === "Floor" && (
+                            <div className="w-[200px]">
+                                <NameIDDropdown
+                                    value={isFloor.value}
+                                    setValue={setFloor}
+                                    width={""}
+                                    placeholder={""}
+                                    endpoint={"/admin/property/floor"}
+                                />
+                            </div>
+                        )}
                     </>
                 )}
             </div>
             <div className="w-full flex flex-wrap justify-center mt-2">
-                <DoughnutChartComp />
+                <DoughnutChartComp
+                    dataSet={isUnitArea === "Unit" ? dataSetUnit : dataSetArea}
+                />
             </div>
         </section>
     );

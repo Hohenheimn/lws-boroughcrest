@@ -42,9 +42,9 @@ export default function ModifyCustomer() {
                 ? ""
                 : CustomerDetail?.branch_code,
         portal_id:
-            CustomerDetail?.user.portal_id === null
+            CustomerDetail?.user?.portal_id === null
                 ? ""
-                : CustomerDetail?.user.portal_id,
+                : CustomerDetail?.user?.portal_id,
         registered_address_unit_floor:
             CustomerDetail?.registered_address_unit_floor === null
                 ? ""

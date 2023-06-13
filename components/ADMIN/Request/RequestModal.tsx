@@ -133,23 +133,23 @@ export default function RequestModal() {
                 </span>
             </div>
             <ul className="flex flex-wrap text-[14px] 640px:text-[12px] mb-5">
-                <Detail Label={"DATE"} Value={RequestDetail.date} />
-                <Detail Label={"TICKET NO."} Value={RequestDetail.ticket_no} />
+                <Detail Label={"DATE"} Value={RequestDetail?.date} />
+                <Detail Label={"TICKET NO."} Value={RequestDetail?.ticket_no} />
                 <Detail
                     Label={"REQUESTOR"}
-                    Value={RequestDetail.customer_name}
+                    Value={RequestDetail?.customer_name}
                 />
                 <Detail
                     Label={"PROPERTY"}
-                    Value={RequestDetail.property_unit_code}
+                    Value={RequestDetail?.property_unit_code}
                 />
-                <Detail Label={"REQUEST"} Value={RequestDetail.request} />
+                <Detail Label={"REQUEST"} Value={RequestDetail?.request} />
 
-                <Detail Label={"REMARKS"} Value={RequestDetail.details} />
+                <Detail Label={"REMARKS"} Value={RequestDetail?.details} />
 
                 <li className="w-full">
                     <h1 className=" text-ThemeRed">TRAIL</h1>
-                    {RequestDetail.trail.map((item, index: number) => (
+                    {RequestDetail?.trail.map((item, index: number) => (
                         <h4 key={index}>
                             {item.event}, {item.date}, {item.time} | {item.user}
                         </h4>
@@ -163,7 +163,7 @@ export default function RequestModal() {
                         REMARKS
                     </h1>
                     <ul className="max-h-[40vh] 1366px:max-h-[30vh] 640px:max-h-[50vh] overflow-auto">
-                        {RequestDetail.remarks.map(
+                        {RequestDetail?.remarks.map(
                             (item: RequestRemarks, index: number) => (
                                 <RemarksProfile
                                     remarkDetail={item}
@@ -185,7 +185,7 @@ export default function RequestModal() {
                     <button
                         className="buttonRed"
                         onClick={() =>
-                            ActionHandler("In Process", RequestDetail.id)
+                            ActionHandler("In Process", RequestDetail?.id)
                         }
                     >
                         {mutateLoading && isButtonClicked === "In Process" ? (
@@ -204,7 +204,7 @@ export default function RequestModal() {
                         <button
                             className="buttonRed mr-5 640px:mr-0 640px:mb-2"
                             onClick={() =>
-                                ActionHandler("In Review", RequestDetail.id)
+                                ActionHandler("In Review", RequestDetail?.id)
                             }
                         >
                             {mutateLoading &&
@@ -221,7 +221,7 @@ export default function RequestModal() {
                         <button
                             className="buttonBorder"
                             onClick={() =>
-                                ActionHandler("Rejected", RequestDetail.id)
+                                ActionHandler("Rejected", RequestDetail?.id)
                             }
                         >
                             {mutateLoading && isButtonClicked === "Rejected" ? (
@@ -242,7 +242,7 @@ export default function RequestModal() {
                             <button
                                 className="buttonRed mr-5  640px:mr-0 640px:mb-2"
                                 onClick={() =>
-                                    ActionHandler("Approved", RequestDetail.id)
+                                    ActionHandler("Approved", RequestDetail?.id)
                                 }
                             >
                                 {mutateLoading &&
@@ -261,7 +261,7 @@ export default function RequestModal() {
                         <button
                             className="buttonBlue mr-5 640px:mr-0 640px:mb-2"
                             onClick={() =>
-                                ActionHandler("In Process", RequestDetail.id)
+                                ActionHandler("In Process", RequestDetail?.id)
                             }
                         >
                             {mutateLoading &&
@@ -278,7 +278,7 @@ export default function RequestModal() {
                         <button
                             className="buttonBorder 640px:mr-0 640px:mb-2"
                             onClick={() =>
-                                ActionHandler("Reject", RequestDetail.id)
+                                ActionHandler("Reject", RequestDetail?.id)
                             }
                         >
                             {mutateLoading && isButtonClicked === "Reject" ? (
@@ -294,7 +294,7 @@ export default function RequestModal() {
                     </>
                 )}
                 {type === "Closed" && PermissionValidationPrint && (
-                    <Link href={`/admin/request/print/${RequestDetail.id}`}>
+                    <Link href={`/admin/request/print/${RequestDetail?.id}`}>
                         <a className="buttonRed">PRINT</a>
                     </Link>
                 )}
@@ -323,10 +323,10 @@ type PropsRemarkProfile = {
 
 const RemarksProfile = ({ remarkDetail }: PropsRemarkProfile) => {
     const Image_Photo =
-        remarkDetail.user_image_photo === null
+        remarkDetail?.user_image_photo === null
             ? "/Images/sampleProfile.png"
             : "https://boroughcrest-api.lws.codes/get-img?image=" +
-              remarkDetail.user_image_photo;
+              remarkDetail?.user_image_photo;
 
     return (
         <li className="flex  640px:flex-col items-start mb-5">
@@ -339,12 +339,12 @@ const RemarksProfile = ({ remarkDetail }: PropsRemarkProfile) => {
                 />
             </div>
             <div className="pl-2 flex flex-col">
-                <h3 className="text-ThemeRed">{remarkDetail.user_name}</h3>
+                <h3 className="text-ThemeRed">{remarkDetail?.user_name}</h3>
                 <span className=" text-gray-400 mb-1 text-[12px]">
-                    {remarkDetail.created_at}
+                    {remarkDetail?.created_at}
                 </span>
                 <p className=" text-RegularColor 640px:text-[14px]">
-                    {remarkDetail.remarks}
+                    {remarkDetail?.remarks}
                 </p>
             </div>
         </li>

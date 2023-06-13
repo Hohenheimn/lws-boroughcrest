@@ -92,6 +92,7 @@ export const GetAnnouncement = (dashboard: string, paginate: number) => {
         },
         {
             refetchOnWindowFocus: false,
+            keepPreviousData: true,
         }
     );
 };

@@ -1,36 +1,22 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TableLoadingNError from "../../Reusable/TableLoadingNError";
 import Pagination from "../../Reusable/Pagination";
-import { useQuery } from "react-query";
-import api from "../../../util/api";
-import { getCookie } from "cookies-next";
 import SelectDropdown from "../../Reusable/SelectDropdown";
 import { MdArrowForwardIos } from "react-icons/md";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { GetFavoriteList } from "./Query";
 
 export default function FavoriteList() {
     const [isReportType, setReportType] = useState("");
 
-    const [isSearchTable, setSearchTable] = useState("");
-
     const [TablePage, setTablePage] = useState(1);
 
-    const { data, isLoading, isError } = useQuery(
-        ["COA-list", TablePage, isSearchTable],
-        () => {
-            return api.get(
-                `/finance/general-ledger/chart-of-accounts?keywords=${isSearchTable}&paginate=10&page=${
-                    isSearchTable === "" ? TablePage : 1
-                }`,
-                {
-                    headers: {
-                        Authorization: "Bearer " + getCookie("user"),
-                    },
-                }
-            );
-        }
+    const { data, isLoading, isError } = GetFavoriteList(
+        isReportType,
+        TablePage
     );
+
     return (
         <>
             <div className="flex items-center mb-5">
@@ -85,7 +71,7 @@ export default function FavoriteList() {
                     </thead>
                     <tbody>
                         {data?.data.data.map((item: any, index: number) => (
-                            <List key={index} />
+                            <List key={index} itemDetail={item} />
                         ))}
                     </tbody>
                 </table>
@@ -95,26 +81,76 @@ export default function FavoriteList() {
             <Pagination
                 setTablePage={setTablePage}
                 TablePage={TablePage}
-                PageNumber={data?.data.last_page}
-                CurrentPage={data?.data.current_page}
+                PageNumber={data?.data.meta.last_page}
+                CurrentPage={data?.data.meta.current_page}
             />
         </>
     );
 }
+type PropsList = {
+    itemDetail: any;
+};
 
-const List = () => {
+const List = ({ itemDetail }: PropsList) => {
     const router = useRouter();
+
     const redirect = () => {
-        router.push(`/finance/reports/favorite-list-reports/1`);
+        router.push(`/finance/reports/favorite-list-reports/${itemDetail.id}`);
     };
+
+    const Type = itemDetail.columns.filter(
+        (itemFilter: any) => itemFilter.label === "property_type"
+    )[0].value;
+
+    const Class = itemDetail.columns.filter(
+        (itemFilter: any) => itemFilter.label === "property_class"
+    )[0].value;
+
+    const Project = itemDetail.columns.filter(
+        (itemFilter: any) => itemFilter.label === "property_project"
+    )[0].value;
+
+    const Tower = itemDetail.columns.filter(
+        (itemFilter: any) => itemFilter.label === "property_tower"
+    )[0].value;
+
+    const Floor = itemDetail.columns.filter(
+        (itemFilter: any) => itemFilter.label === "property_floor"
+    )[0].value;
 
     return (
         <tr onClick={redirect} className=" cursor-pointer">
-            <td>Parking</td>
-            <td>Common</td>
-            <td>Lorem Ipsum</td>
-            <td>Tower 1</td>
-            <td>3rd Floor</td>
+            <td>
+                {Type.map((itemMap: string, index: number) =>
+                    index === Type.length - 1 ? itemMap : itemMap + ", "
+                )}
+            </td>
+            <td>
+                {Class.map((itemMap: string, index: number) =>
+                    index === Class.length - 1 ? itemMap : itemMap + ", "
+                )}
+            </td>
+            <td>
+                {Project.map((itemMap: any, index: number) =>
+                    index === Project.length - 1
+                        ? itemMap.name
+                        : itemMap.name + ", "
+                )}
+            </td>
+            <td>
+                {Tower.map((itemMap: any, index: number) =>
+                    index === Tower.length - 1
+                        ? itemMap.name
+                        : itemMap.name + ", "
+                )}
+            </td>
+            <td>
+                {Floor.map((itemMap: any, index: number) =>
+                    index === Floor.length - 1
+                        ? itemMap.name
+                        : itemMap.name + ", "
+                )}
+            </td>
         </tr>
     );
 };

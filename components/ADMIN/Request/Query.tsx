@@ -60,6 +60,7 @@ export const GetRequest = (
         },
         {
             refetchOnWindowFocus: false,
+            keepPreviousData: true,
         }
     );
 };

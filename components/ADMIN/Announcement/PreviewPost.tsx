@@ -32,7 +32,7 @@ export default function PreviewPost({ Post, date }: Props) {
                     </h5>
                 )}
                 {Post.photo_url !== "" && (
-                    <div className="relative w-full aspect-[2/1]">
+                    <div className="relative w-full aspect-[1.5/1]">
                         <Image
                             src={Post.photo_url}
                             layout="fill"

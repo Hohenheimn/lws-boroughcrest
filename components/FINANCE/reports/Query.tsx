@@ -2,13 +2,16 @@ import { useMutation, useQuery } from "react-query";
 import api from "../../../util/api";
 import { getCookie } from "cookies-next";
 
-export const GetFavoriteList = (Keyword: string) => {
-    return useQuery(["favorite-list", Keyword], () => {
-        return api.get(`/project/roles?keywords=${Keyword}&paginate=10`, {
-            headers: {
-                Authorization: "Bearer " + getCookie("user"),
-            },
-        });
+export const GetFavoriteList = (report_type: string, page: number) => {
+    return useQuery(["favorite-list", report_type], () => {
+        return api.get(
+            `/finance/customer-facility/customer-reports/favorite-reports?report_type=${report_type}&paginate=10&page=${page}`,
+            {
+                headers: {
+                    Authorization: "Bearer " + getCookie("user"),
+                },
+            }
+        );
     });
 };
 
@@ -16,11 +19,14 @@ export const ShowFavorite = (id: number) => {
     return useQuery(
         ["show-favorite", id],
         () => {
-            return api.get(`/project/roles/${id}`, {
-                headers: {
-                    Authorization: "Bearer " + getCookie("user"),
-                },
-            });
+            return api.get(
+                `/finance/customer-facility/customer-reports/favorite-reports/${id}`,
+                {
+                    headers: {
+                        Authorization: "Bearer " + getCookie("user"),
+                    },
+                }
+            );
         },
         {
             enabled: !!id,

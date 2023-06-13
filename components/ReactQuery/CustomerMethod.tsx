@@ -62,10 +62,11 @@ export const GetCustomer = (id: any) => {
 export const GetCustomerList = (
     TablePage: number,
     isSearchBar: string,
-    TableRows: number
+    TableRows: number,
+    status?: string
 ) => {
     return useQuery(
-        ["get-customer-list", TablePage, isSearchBar, TableRows],
+        ["get-customer-list", TablePage, isSearchBar, TableRows, status],
         () => {
             return api.get(
                 `/admin/customer?keywords=${isSearchBar}&paginate=${TableRows}&page=${
@@ -79,6 +80,16 @@ export const GetCustomerList = (
             );
         }
     );
+};
+
+export const GetCustomerListDraft = () => {
+    return useQuery(["get-customer-draft-list"], () => {
+        return api.get(`/admin/customer?status=draft`, {
+            headers: {
+                Authorization: "Bearer " + getCookie("user"),
+            },
+        });
+    });
 };
 
 export const GetCustomerDraft = (id: any) => {
