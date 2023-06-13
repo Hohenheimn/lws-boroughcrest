@@ -4,12 +4,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { RiArrowDownSFill } from "react-icons/ri";
 import { BarLoader, ScaleLoader } from "react-spinners";
 import AppContext from "../../../../../Context/AppContext";
-import {
-    CreateCollection,
-    GetCollectionByCustomer,
-    GetCollectionList,
-    UpdateCollection,
-} from "../Query";
+import { CreateCollection, GetCollectionByCustomer } from "../Query";
 import { DefaultOfficial, HeaderForm } from "../ReceivePaymentForm";
 import { AdvancesType } from "./OutrightAndAdvances/Advances";
 import { Outright } from "./OutrightAndAdvances/OutRight";

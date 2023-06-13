@@ -410,6 +410,7 @@ const DefaultDisplayForm = () => {
                                 src={`${isProfileUrl}`}
                                 alt=""
                                 layout="fill"
+                                objectFit="cover"
                             />
                         </aside>
                         <input
@@ -442,6 +443,7 @@ const DefaultDisplayForm = () => {
                                 src={`${isValidIDUrl}`}
                                 alt=""
                                 layout="fill"
+                                objectFit="cover"
                             />
                         </aside>
                         UPLOAD VALID ID

@@ -22,7 +22,10 @@ export const PageAccessValidation = (menu: string) => {
                 const cloneFilter = userInfo.permissions.filter(
                     (filterItem) => filterItem.menu === menu
                 );
+
                 setValidation(cloneFilter[0].access.includes("view"));
+            } else {
+                setValidation(false);
             }
         }
     }, [userInfo]);

@@ -184,6 +184,39 @@ export default function OutStandingBalance({
                                 ))}
                             </>
                         )}
+                        <tr className=" noBorder">
+                            <td></td>
+                            <td></td>
+                            <td className="flex justify-end">
+                                <h1 className="text-start text-[16px]1280px:text-[13px] text-ThemeRed  pt-10">
+                                    SUB TOTAL
+                                </h1>
+                            </td>
+                            <td>
+                                <div className=" w-full flex justify-end  pt-10">
+                                    <TextNumberDisplay
+                                        value={isDueAmountTotal}
+                                        className="text-end withPeso w-full text-[#757575] font-NHU-bold text-[18px] 1280px:text-[13px]"
+                                    />
+                                </div>
+                            </td>
+                            <td>
+                                <div className=" w-full flex justify-end  pt-10">
+                                    <TextNumberDisplay
+                                        value={isAppliedAmount}
+                                        className="text-end withPeso w-full text-[#757575] font-NHU-bold text-[18px] 1280px:text-[13px]"
+                                    />
+                                </div>
+                            </td>
+                            <td>
+                                <div className=" w-full flex justify-end  pt-10">
+                                    <TextNumberDisplay
+                                        value={isBalanceTotal}
+                                        className="text-end withPeso w-full text-[#757575] font-NHU-bold text-[18px] 1280px:text-[13px]"
+                                    />
+                                </div>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
                 {outStandingLoading && (
@@ -201,13 +234,13 @@ export default function OutStandingBalance({
                 )}
                 {outStandingError && <TableErrorMessage />}
             </div>
-            <TableThreeTotal
+            {/* <TableThreeTotal
                 total1={isDueAmountTotal}
                 total2={isAppliedAmount}
                 total3={isBalanceTotal}
                 label={"SUB TOTAL"}
                 redBG={false}
-            />
+            /> */}
         </div>
     );
 }
@@ -244,10 +277,12 @@ const List = ({ setTable, isTable, itemDetail, index, isToggle }: List) => {
             <td>{itemDetail.charge}</td>
             <td>{itemDetail.description}</td>
             <td>
-                <TextNumberDisplay
-                    value={itemDetail.due_amount}
-                    className="withPeso w-full"
-                />
+                <div className="w-full flex justify-end">
+                    <TextNumberDisplay
+                        value={itemDetail.due_amount}
+                        className="withPeso w-full text-end"
+                    />
+                </div>
             </td>
             <td>
                 <InputNumberForTable
@@ -261,10 +296,12 @@ const List = ({ setTable, isTable, itemDetail, index, isToggle }: List) => {
                 />
             </td>
             <td>
-                <TextNumberDisplay
-                    value={itemDetail.balance}
-                    className="withPeso w-full"
-                />
+                <div className="w-full flex justify-end">
+                    <TextNumberDisplay
+                        value={itemDetail.balance}
+                        className="withPeso w-full text-end"
+                    />
+                </div>
             </td>
         </tr>
     );

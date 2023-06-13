@@ -184,6 +184,23 @@ export default function GeneralLedgerTable({ date }: GeneralLedgerTableProps) {
                                 )}
                             </>
                         )}
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <TextNumberDisplay
+                                    value={totalDebit}
+                                    className="text-end w-full text-[#757575] font-NHU-bold text-[18px] 1280px:text-[13px]"
+                                />
+                            </td>
+                            <td>
+                                <TextNumberDisplay
+                                    value={totalCredit}
+                                    className="text-end w-full text-[#757575] font-NHU-bold text-[18px] 1280px:text-[13px]"
+                                />
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
 
@@ -202,8 +219,8 @@ export default function GeneralLedgerTable({ date }: GeneralLedgerTableProps) {
                 )}
                 {isError && <TableErrorMessage />}
             </div>
-            <div className="mt-10 border-b border-ThemeRed"></div>
-            <div className="flex flex-wrap justify-end py-5 480px:justify-start">
+            {/* <div className="mt-10 border-b border-ThemeRed"></div> */}
+            {/* <div className="flex flex-wrap justify-end py-5 480px:justify-start">
                 <h1 className="text-start text-[16px] min-w-[200px] 1280px:text-[13px] text-ThemeRed pb-1">
                     SUBTOTAL
                 </h1>
@@ -219,7 +236,7 @@ export default function GeneralLedgerTable({ date }: GeneralLedgerTableProps) {
                         className="text-end w-full text-[#757575] font-NHU-bold text-[18px] 1280px:text-[13px]"
                     />
                 </div>
-            </div>
+            </div> */}
 
             <div className="flex justify-end py-5 mt-5">
                 {/* <button className="button_cancel">Cancel</button> */}

@@ -346,7 +346,7 @@ export default function ReceivePaymentForm({
                 <ul className=" flex flex-wrap justify-between w-[75%] pl-10">
                     <li className="w-[30%]">
                         <label htmlFor="" className="labelField">
-                            *RECEIPT TYPE
+                            *RECEIPT&nbsp;TYPE
                             <SelectDropdown
                                 selectHandler={(value: string) => {
                                     setHeaderForm({
@@ -376,14 +376,14 @@ export default function ReceivePaymentForm({
 
                     <li className="w-[30%]">
                         <label htmlFor="" className="labelField">
-                            RECEIPT DATE
+                            RECEIPT&nbsp;DATE
                         </label>
                         <h1>{HeaderForm.receipt_date}</h1>
                     </li>
 
                     <li className="w-[30%]">
                         <label htmlFor="" className="labelField">
-                            RECEIPT NO.
+                            RECEIPT&nbsp;NO.
                         </label>
                         <h1>{HeaderForm.receipt_no}</h1>
                     </li>
@@ -410,7 +410,7 @@ export default function ReceivePaymentForm({
                         <>
                             <li className="w-[30%] -mt-1">
                                 <label htmlFor="" className="labelField">
-                                    *MODE OF PAYMENT
+                                    *MODE&nbsp;OF&nbsp;PAYMENT
                                     <SelectDropdown
                                         selectHandler={(value: string) => {
                                             setHeaderForm({
@@ -442,7 +442,7 @@ export default function ReceivePaymentForm({
                                 <DynamicPopOver
                                     toRef={
                                         <label className="labelField flex flex-col">
-                                            *DEPOSIT DATE
+                                            *DEPOSIT&nbsp;DATE
                                             <div className="calendar">
                                                 <span className="cal">
                                                     <Image
@@ -492,7 +492,7 @@ export default function ReceivePaymentForm({
                             </li>
                             <li className="w-[30%]">
                                 <label className="labelField flex flex-col">
-                                    *AMOUNT PAID
+                                    *AMOUNT&nbsp;PAID
                                     <div className="relative">
                                         <InputNumberForForm
                                             className=" field w-full text-end"
@@ -527,7 +527,7 @@ export default function ReceivePaymentForm({
                             </li>
                             <li className="w-[30%]  -mt-1">
                                 <label htmlFor="" className="labelField">
-                                    *CASH ACCOUNT
+                                    *CASH&nbsp;ACCOUNT
                                     <DropdownFieldCOA
                                         className={"field"}
                                         value={isChartOAccount.value}
@@ -543,7 +543,7 @@ export default function ReceivePaymentForm({
                             </li>
                             <li className="w-[30%]">
                                 <label className="labelField flex flex-col">
-                                    *REFERENCE NO.
+                                    *REFERENCE&nbsp;NO.
                                     <input
                                         type="text"
                                         value={HeaderForm.reference_no}
@@ -569,7 +569,7 @@ export default function ReceivePaymentForm({
                             {HeaderForm.receipt_type === "Official" && (
                                 <li className="w-[30%]">
                                     <label className="labelField flex flex-col">
-                                        *CREDIT TAX
+                                        *CREDIT&nbsp;TAX
                                         <InputNumberForForm
                                             className=" field w-full text-end"
                                             prefix=""

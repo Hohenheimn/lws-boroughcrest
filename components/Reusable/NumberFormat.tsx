@@ -22,7 +22,7 @@ export const InputNumberForTable = ({
     return (
         <div className="withPesoField">
             <NumericFormat
-                className={className + " max-w-[400px]"}
+                className={className + ""}
                 prefix={prefix}
                 placeholder="-"
                 value={Number(InputValue) === 0 ? "" : InputValue}

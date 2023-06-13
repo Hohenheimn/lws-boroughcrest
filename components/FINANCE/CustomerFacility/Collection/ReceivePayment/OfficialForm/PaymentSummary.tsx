@@ -90,13 +90,45 @@ export default function PaymentSummaryTable({
                                         ))}
                                     </>
                                 )}
+                                <tr className=" noBorder">
+                                    <td></td>
+                                    <td>
+                                        <h1 className=" w-full text-end text-[16px]1280px:text-[13px] text-ThemeRed  pt-10">
+                                            SUB TOTAL
+                                        </h1>
+                                    </td>
+                                    <td>
+                                        <div className="flex justify-end pt-10">
+                                            <TextNumberDisplay
+                                                value={
+                                                    triggerID !== 0
+                                                        ? PSVatTotal
+                                                        : 0
+                                                }
+                                                className="text-end withPeso w-full text-[#757575] font-NHU-bold text-[18px] 1280px:text-[13px]"
+                                            />
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div className="flex justify-end pt-10">
+                                            <TextNumberDisplay
+                                                value={
+                                                    triggerID !== 0
+                                                        ? PStotal
+                                                        : 0
+                                                }
+                                                className="text-end withPeso w-full text-[#757575] font-NHU-bold text-[18px] 1280px:text-[13px]"
+                                            />
+                                        </div>
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
-                    <TableTwoTotal
+                    {/* <TableTwoTotal
                         total1={triggerID !== 0 ? PSVatTotal : 0}
                         total2={triggerID !== 0 ? PStotal : 0}
-                    />
+                    /> */}
                 </div>
                 <div className="table_container min-zero  noMB w-[29%] 640px:w-full 640px:mt-5">
                     <table className="table_list journal">
@@ -187,19 +219,26 @@ const PaymentSummaryListItem = ({ item }: PaymentSummaryList) => {
             </td>
             <td>
                 <TextNumberDisplay
-                    className="w-full"
+                    className="w-full  text-end"
                     value={vatPercentage}
                     suffix="%"
                 />
             </td>
             <td>
-                <TextNumberDisplay
-                    className="w-full withPeso"
-                    value={vatAmount}
-                />
+                <div className=" w-full flex justify-end">
+                    <TextNumberDisplay
+                        className="w-full text-end withPeso"
+                        value={vatAmount}
+                    />
+                </div>
             </td>
             <td>
-                <TextNumberDisplay className="w-full withPeso" value={total} />
+                <div className=" w-full flex justify-end">
+                    <TextNumberDisplay
+                        className="w-full text-end withPeso"
+                        value={total}
+                    />
+                </div>
             </td>
         </tr>
     );

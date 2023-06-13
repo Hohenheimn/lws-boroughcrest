@@ -337,7 +337,12 @@ export default function Modify({ modify_id, from }: any) {
         );
     }
 
-    if (isLoading || customerLoading || BookedLoading) {
+    if (
+        isLoading ||
+        customerLoading ||
+        BookedLoading ||
+        HeaderForm.receipt_type === ""
+    ) {
         return (
             <div className="pageDetail">
                 <BeatLoader

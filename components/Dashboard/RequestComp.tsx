@@ -1,16 +1,18 @@
 import React, { useState } from "react";
 import Card, { RequestDetailType } from "../ADMIN/Request/Card";
 import { GetRequest } from "../ADMIN/Request/Query";
+import { PageAccessValidation } from "../Reusable/PermissionValidation/PageAccessValidation";
 
 export default function RequestComp() {
     const [isTab, setTab] = useState("All");
 
-    const { isLoading, data } = GetRequest(
+    const { isLoading, data, isError } = GetRequest(
         isTab === "All" ? "" : "New Request",
         "",
         10,
         1
     );
+
     return (
         <div>
             <ul className="flex">
@@ -41,6 +43,11 @@ export default function RequestComp() {
             </ul>
 
             <ul className=" flex flex-wrap justify-between w-full mt-2">
+                {isError && (
+                    <li className="w-full flex justify-center py-10">
+                        <h1>Something went wrong</h1>
+                    </li>
+                )}
                 {data?.data.data.map(
                     (item: RequestDetailType, index: number) => (
                         <li

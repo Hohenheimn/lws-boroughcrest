@@ -100,52 +100,54 @@ const List = ({ itemDetail }: PropsList) => {
 
     const Type = itemDetail.columns.filter(
         (itemFilter: any) => itemFilter.label === "property_type"
-    )[0].value;
+    )[0]?.value;
 
     const Class = itemDetail.columns.filter(
         (itemFilter: any) => itemFilter.label === "property_class"
-    )[0].value;
+    )[0]?.value;
 
     const Project = itemDetail.columns.filter(
         (itemFilter: any) => itemFilter.label === "property_project"
-    )[0].value;
+    )[0]?.value;
 
     const Tower = itemDetail.columns.filter(
         (itemFilter: any) => itemFilter.label === "property_tower"
-    )[0].value;
+    )[0]?.value;
 
     const Floor = itemDetail.columns.filter(
         (itemFilter: any) => itemFilter.label === "property_floor"
-    )[0].value;
+    )[0]?.value;
 
     return (
         <tr onClick={redirect} className=" cursor-pointer">
             <td>
-                {Type.map((itemMap: string, index: number) =>
-                    index === Type.length - 1 ? itemMap : itemMap + ", "
-                )}
+                {Type?.length <= 0
+                    ? "N/A"
+                    : Type?.map((itemMap: string, index: number) =>
+                          index === Type.length - 1 ? itemMap : itemMap + ", "
+                      )}
             </td>
             <td>
-                {Class.map((itemMap: string, index: number) =>
+                {Class?.map((itemMap: string, index: number) =>
                     index === Class.length - 1 ? itemMap : itemMap + ", "
                 )}
             </td>
             <td>
-                {Project.map((itemMap: any, index: number) =>
+                {Project?.map((itemMap: any, index: number) =>
                     index === Project.length - 1
                         ? itemMap.name
                         : itemMap.name + ", "
                 )}
             </td>
             <td>
-                {Tower.map((itemMap: any, index: number) =>
+                {Tower?.map((itemMap: any, index: number) =>
                     index === Tower.length - 1
                         ? itemMap.name
                         : itemMap.name + ", "
                 )}
             </td>
             <td>
-                {Floor.map((itemMap: any, index: number) =>
+                {Floor?.map((itemMap: any, index: number) =>
                     index === Floor.length - 1
                         ? itemMap.name
                         : itemMap.name + ", "
