@@ -19,11 +19,14 @@ export const ShowFavorite = (id: number) => {
     return useQuery(
         ["show-favorite", id],
         () => {
-            return api.get(`/project/roles/${id}`, {
-                headers: {
-                    Authorization: "Bearer " + getCookie("user"),
-                },
-            });
+            return api.get(
+                `/finance/customer-facility/customer-reports/favorite-reports/${id}`,
+                {
+                    headers: {
+                        Authorization: "Bearer " + getCookie("user"),
+                    },
+                }
+            );
         },
         {
             enabled: !!id,

@@ -214,7 +214,11 @@ export default function HeaderDoughnutComp() {
                     <h5 className=" font-NHU-bold text-[12px] flex items-center text-ThemeRed">
                         Total Properties:{" "}
                         <TextNumberDisplay
-                            value={1000}
+                            value={
+                                isUnitArea === "Unit"
+                                    ? data?.data?.totalPerUnit
+                                    : data?.data?.totalPerArea
+                            }
                             className={
                                 " text-RegularColor font-NHU-bold text-[12px]"
                             }

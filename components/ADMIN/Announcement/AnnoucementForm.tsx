@@ -46,8 +46,9 @@ export default function AnnoucementForm({
 
     const DisplayImage = (e: any) => {
         let defaultUrl = "";
-        if (e.target.files[0]?.size > 100000) {
-            setImageError("Photo must be 100kb only");
+        if (e.target.files[0]?.size > 2000000) {
+            // if (e.target.files[0]?.size > 100000) {
+            setImageError("Photo must be 2mb only");
             setPost({
                 ...isPost,
                 photo_file: null,
@@ -222,7 +223,7 @@ export default function AnnoucementForm({
             </div>
             <div className="flex justify-between 1366px:flex-col mb-5">
                 <p className="text-gray-400 italic text-[14px] flex flex-col">
-                    Note: Image should be 400x180px and max of 100kb
+                    Note: Image should be 400x180px and max of 2mb
                     <span className="text-ThemeRed font-NHU-bold">
                         {isImageError}
                     </span>
