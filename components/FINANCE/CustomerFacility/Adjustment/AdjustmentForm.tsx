@@ -288,12 +288,11 @@ export default function AdjustmentForm({ DefaultValue }: Props) {
     useEffect(() => {
         if (invoiceData !== undefined) {
             let getCustomerOutstanding: any[] = [];
-
             invoiceData?.data.map((item: any) => {
                 const date = parse(item.billing_date, "yyyy-MM-dd", new Date());
                 item?.invoice_list?.map((invoiceItem: any) => {
                     let adjustment_amount = 0;
-                    let balance = item?.applied_advances;
+                    let balance = Number(item?.applied_advances);
                     DefaultValue.Invoice.map((itemDV) => {
                         if (itemDV.id === invoiceItem.id) {
                             adjustment_amount = itemDV.adjustment_amount;
@@ -314,7 +313,7 @@ export default function AdjustmentForm({ DefaultValue }: Props) {
                                 : "",
                             document_no: item?.invoice_no,
                             description: invoiceItem?.description,
-                            amount_due: invoiceItem?.amount,
+                            amount_due: invoiceItem?.due_amount,
                             remaining_advances: item?.applied_advances,
                         },
                     ];
