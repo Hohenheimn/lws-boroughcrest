@@ -63,7 +63,7 @@ export default function DynamicPopOver({
         return (
             <div
                 className={
-                    "relative " + className.includes("w-full") && "w-full"
+                    " " + className.includes("w-full") && " relative w-full"
                 }
             >
                 <div ref={inputField} className={className}>

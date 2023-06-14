@@ -204,6 +204,7 @@ export default function OfficialForm({
                 return {
                     charge_id: item.charge_id,
                     billing_invoice_id: item.billing_invoice_id,
+                    billing_invoice_list_id: item.id,
                     payment_amount: item.applied_amount,
                     balance: item.balance,
                 };
@@ -211,35 +212,35 @@ export default function OfficialForm({
             discount: headerForm.discount,
         };
 
-        // PayloadAdvances.map((provItem) => {
-        //     if (provItem.amount <= 0 || provItem.charge_id === "") {
-        //         setPrompt({
-        //             toggle: true,
-        //             message: "Fill out the fields on Outright or Advances!",
-        //             type: "draft",
-        //         });
-        //         validate = false;
-        //         return;
-        //     }
-        // });
-        // PayloadOutRight.map((provItem: any) => {
-        //     if (
-        //         provItem.amount <= 0 ||
-        //         provItem.charge_id === "" ||
-        //         provItem.unit_price <= 0 ||
-        //         Number(provItem.quantity) <= 0 ||
-        //         provItem.unit_price === "" ||
-        //         provItem.quantity === ""
-        //     ) {
-        //         setPrompt({
-        //             toggle: true,
-        //             message: "Fill out the fields on Outright or Advances!",
-        //             type: "draft",
-        //         });
-        //         validate = false;
-        //         return;
-        //     }
-        // });
+        PayloadAdvances.map((provItem) => {
+            if (provItem.amount <= 0 || provItem.charge_id === "") {
+                setPrompt({
+                    toggle: true,
+                    message: "Fill out the fields on Outright or Advances!",
+                    type: "draft",
+                });
+                validate = false;
+                return;
+            }
+        });
+        PayloadOutRight.map((provItem: any) => {
+            if (
+                provItem.amount <= 0 ||
+                provItem.charge_id === "" ||
+                provItem.unit_price <= 0 ||
+                Number(provItem.quantity) <= 0 ||
+                provItem.unit_price === "" ||
+                provItem.quantity === ""
+            ) {
+                setPrompt({
+                    toggle: true,
+                    message: "Fill out the fields on Outright or Advances!",
+                    type: "draft",
+                });
+                validate = false;
+                return;
+            }
+        });
 
         if (!isVarianceValidation) {
             setPrompt({
@@ -260,6 +261,7 @@ export default function OfficialForm({
                 mutate(Payload);
             }
         }
+        console.log(Payload);
     };
 
     const {
