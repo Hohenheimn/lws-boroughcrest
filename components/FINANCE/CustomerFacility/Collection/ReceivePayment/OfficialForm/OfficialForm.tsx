@@ -261,7 +261,6 @@ export default function OfficialForm({
                 mutate(Payload);
             }
         }
-        console.log(Payload);
     };
 
     const {

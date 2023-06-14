@@ -154,7 +154,7 @@ export default function ReceivePaymentForm({
                             description: invoiceItem.description,
                             due_amount: invoiceItem.due_amount,
                             applied_amount: 0,
-                            balance: invoiceItem.amount,
+                            balance: invoiceItem.due_amount,
                         },
                     ];
                 });
