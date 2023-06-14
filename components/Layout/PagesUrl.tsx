@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { LoginUserInfo } from "../HOC/LoginUser/UserInfo";
-import { PageAccessValidation } from "../Reusable/PermissionValidation/PageAccessValidation";
 import { FinanceRedirect } from "./FinanceRedirect";
 
 export const SidebarLinks = () => {
@@ -40,13 +39,7 @@ export const SidebarLinks = () => {
             url: "/admin/customer",
             iconUrl: "Admin.png",
             ActiveUrl: "admin",
-            SubMenu: [
-                {
-                    name: "announcement",
-                    url: "/admin/announcement",
-                    ActiveName: "announcement",
-                },
-            ],
+            SubMenu: [],
         },
         {
             name: "finance",
@@ -76,7 +69,6 @@ export const SidebarLinks = () => {
 
     useEffect(() => {
         if (localStorage.userInfo !== undefined) {
-            console.log(userInfo);
             const clone = Links.map((item) => {
                 if (item.name === "admin") {
                     let addLinks: any[] = [];
@@ -92,6 +84,22 @@ export const SidebarLinks = () => {
                                     name: "customer",
                                     url: "/admin/customer",
                                     ActiveName: "customer",
+                                },
+                            ];
+                        }
+                    }
+                    if (
+                        userInfo?.permissions.some(
+                            (someItem) => someItem.menu === "Announcement"
+                        )
+                    ) {
+                        if (ValidatePermissionPage("Announcement")) {
+                            addLinks = [
+                                ...addLinks,
+                                {
+                                    name: "announcement",
+                                    url: "/admin/announcement",
+                                    ActiveName: "announcement",
                                 },
                             ];
                         }
@@ -176,10 +184,7 @@ export const SidebarLinks = () => {
                     }
                     return {
                         ...item,
-                        url:
-                            addLinks.length > 0
-                                ? addLinks[0].url
-                                : "/admin/announcement",
+                        url: addLinks.length > 0 ? addLinks[0].url : "",
                         SubMenu: [...addLinks, ...item.SubMenu],
                     };
                 }

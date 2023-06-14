@@ -36,6 +36,7 @@ export default function DropDownCharge({
     return (
         <>
             <DynamicPopOver
+                rightPosition={true}
                 className={"w-full"}
                 forTable={forTable}
                 samewidth={true}
@@ -92,19 +93,12 @@ const List = ({
     onlyDeposit,
 }: List) => {
     const { data, isLoading, isError } = useQuery(
-        [
-            "charge-list-dd",
-            tempSearch,
-            filter ? "&meter_reading=1" : "",
-            onlyDeposit && "&type=Deposit",
-        ],
+        ["charge-list-dd", tempSearch, filter, onlyDeposit],
         () => {
             return api.get(
-                `/finance/customer-facility/charges?keywords=${
-                    tempSearch === undefined ? "" : tempSearch
-                }${filter ? "&meter_reading=1" : ""}${
-                    onlyDeposit && "&type=Deposit"
-                }`,
+                `/finance/customer-facility/charges?keywords=${tempSearch}${
+                    filter ? "&meter_reading=1" : ""
+                }${onlyDeposit ? "&type=Deposit" : ""}`,
                 {
                     headers: {
                         Authorization: "Bearer " + getCookie("user"),
@@ -163,7 +157,7 @@ const List = ({
             {isError ||
                 (data?.data.length <= 0 && (
                     <li>
-                        <h1>Charge name cannot be found!</h1>
+                        <h1 className="text-center">No Charge found!</h1>
                     </li>
                 ))}
         </ul>

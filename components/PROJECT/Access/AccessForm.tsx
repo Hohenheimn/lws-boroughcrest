@@ -164,6 +164,7 @@ export default function AccessForm({
                                 // Add Permision
                                 const allAllowedPermission: string[] =
                                     GetAllowedPermissionPerRow(menu);
+                                console.log(allAllowedPermission);
                                 return {
                                     ...item,
                                     role:

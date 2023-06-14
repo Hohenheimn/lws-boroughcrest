@@ -14,6 +14,7 @@ type childrenCashReceipt = {
         name: string;
     };
     receipt_no: number | string;
+    reference_no: number | string;
     amount_paid: number;
 };
 
@@ -24,11 +25,11 @@ export default function Details() {
     const [total, setTotal] = useState(0);
     useEffect(() => {
         setTotal(0);
-        data?.data.children.map((item: any) => {
+        data?.data.receipt_book.map((item: any) => {
             setTotal((prev) => Number(prev) + item.amount_paid);
         });
     }, [data]);
-    const date = parse(data?.data.receipt_date, "yyyy-MM-dd", new Date());
+    const date = parse(data?.data.date, "yyyy-MM-dd", new Date());
     return (
         <ModalTemp>
             <h1 className=" text-ThemeRed mb-3 text-[20px]">
@@ -55,9 +56,9 @@ export default function Details() {
                             </span>
                         </li>
                         <li className=" text-RegularColor w-2/4 480px:w-full">
-                            Reference No.:{" "}
+                            Index:
                             <span className=" text-ThemeRed">
-                                {data?.data.reference_no}
+                                {data?.data.index}
                             </span>
                         </li>
                     </ul>
@@ -65,13 +66,14 @@ export default function Details() {
                         <table className="table_list">
                             <thead className="modalColor textRed">
                                 <tr>
+                                    <th>Date</th>
                                     <th>Depositor</th>
-                                    <th>Receipt No.</th>
+                                    <th>Reference No.</th>
                                     <th>Deposit Amount</th>
                                 </tr>
                             </thead>
                             <tbody className="textBlack">
-                                {data?.data.children.map(
+                                {data?.data?.receipt_book.map(
                                     (
                                         item: childrenCashReceipt,
                                         index: number
@@ -104,16 +106,16 @@ type TableList = {
     item: childrenCashReceipt;
 };
 const TableList = ({ item }: TableList) => {
-    const date = parse(item.deposit_date, "yyyy-MM-dd", new Date());
+    const date = parse(item?.deposit_date, "yyyy-MM-dd", new Date());
     return (
         <tr>
             <td> {isValid(date) ? format(date, "MMM dd yyyy") : ""}</td>
-            <td>{item.depositor.name}</td>
-            <td>{item.receipt_no}</td>
+            <td>{item?.depositor?.name}</td>
+            <td>{item?.reference_no}</td>
             <td>
                 <TextNumberDisplay
                     className="withPeso"
-                    value={item.amount_paid}
+                    value={item?.amount_paid}
                 />
             </td>
         </tr>

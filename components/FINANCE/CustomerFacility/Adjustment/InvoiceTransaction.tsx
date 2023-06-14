@@ -180,14 +180,14 @@ export default function InvoiceTransaction({
                         </tbody>
                     </table>
                 </div>
-                <div className="flex justify-end">
+                {/* <div className="flex justify-end">
                     <button
                         className="buttonRed"
                         onClick={ApplyAccountEntriesHandler}
                     >
                         APPLY
                     </button>
-                </div>
+                </div> */}
             </li>
         </ul>
     );

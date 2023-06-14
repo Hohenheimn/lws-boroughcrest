@@ -172,7 +172,10 @@ export default function Receiptsbook({
                     document_date: item?.receipt_date,
                     depositor: item?.depositor?.name,
                     receipt_no: item?.receipt_no,
-                    bank_and_account_no: `${item?.bank_account?.bank_branch} - ${item?.bank_account?.bank_acc_no}`,
+                    bank_and_account_no:
+                        item?.bank_account?.bank_branch === undefined
+                            ? "???"
+                            : `${item?.bank_account?.bank_branch} - ${item?.bank_account?.bank_acc_no}`,
                     reference_no: item?.reference_no,
                     deposit_date: item?.deposit_date,
                     deposit_amount: item?.amount_paid,

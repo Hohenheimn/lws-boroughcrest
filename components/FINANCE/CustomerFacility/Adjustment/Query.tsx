@@ -186,16 +186,20 @@ export const GetInvoiceByCustomerAndCharge = (
 
 export const GetAccountEntriesList = (
     charge_id: number | string,
-    document_no: string
+    document_no: string,
+    customer_id: any
 ) => {
-    return useQuery(["account-entries-list", charge_id, document_no], () => {
-        return api.get(
-            `/finance-report/accounting-entries?charge_id=${charge_id}&document_no=${document_no}`,
-            {
-                headers: { Authorization: "Bearer " + getCookie("user") },
-            }
-        );
-    });
+    return useQuery(
+        ["account-entries-list", charge_id, document_no, customer_id],
+        () => {
+            return api.get(
+                `/finance-report/accounting-entries?charge_id=${charge_id}&document_no=${document_no}&customer_id=${customer_id}`,
+                {
+                    headers: { Authorization: "Bearer " + getCookie("user") },
+                }
+            );
+        }
+    );
 };
 
 export const GetFilteredAccountEntriesList = (
