@@ -121,18 +121,19 @@ const List = ({ itemDetail }: PropsList) => {
     return (
         <tr onClick={redirect} className=" cursor-pointer">
             <td>
-                {Type?.length <= 0
-                    ? "N/A"
-                    : Type?.map((itemMap: string, index: number) =>
-                          index === Type.length - 1 ? itemMap : itemMap + ", "
-                      )}
+                {(Type?.length <= 0 || Type === undefined) && "N/A"}
+                {Type?.map((itemMap: string, index: number) =>
+                    index === Type.length - 1 ? itemMap : itemMap + ", "
+                )}
             </td>
             <td>
+                {(Class?.length <= 0 || Class === undefined) && "N/A"}
                 {Class?.map((itemMap: string, index: number) =>
                     index === Class.length - 1 ? itemMap : itemMap + ", "
                 )}
             </td>
             <td>
+                {(Project?.length <= 0 || Project === undefined) && "N/A"}
                 {Project?.map((itemMap: any, index: number) =>
                     index === Project.length - 1
                         ? itemMap.name
@@ -140,6 +141,7 @@ const List = ({ itemDetail }: PropsList) => {
                 )}
             </td>
             <td>
+                {(Tower?.length <= 0 || Tower === undefined) && "N/A"}
                 {Tower?.map((itemMap: any, index: number) =>
                     index === Tower.length - 1
                         ? itemMap.name
@@ -147,6 +149,7 @@ const List = ({ itemDetail }: PropsList) => {
                 )}
             </td>
             <td>
+                {(Floor?.length <= 0 || Floor === undefined) && "N/A"}
                 {Floor?.map((itemMap: any, index: number) =>
                     index === Floor.length - 1
                         ? itemMap.name

@@ -56,7 +56,7 @@ export default function FavoriteReportSearch() {
             </div>
             <div className=" overflow-y-auto">
                 {data?.data.map((item: any, index: number) => (
-                    <ItemList item={item} />
+                    <ItemList item={item} key={index} />
                 ))}
                 {isLoading && (
                     <div className="flex justify-center py-5">
