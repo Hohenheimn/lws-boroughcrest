@@ -17,6 +17,8 @@ import { AdvancesType } from "./OfficialForm/OutrightAndAdvances/Advances";
 import { GetCustomerOutstanding } from "./Query";
 import { useRouter } from "next/router";
 import DynamicPopOver from "../../../../Reusable/DynamicPopOver";
+import { GetInvoiceByCustomerPostedOnly } from "../../Adjustment/Query";
+import { Type_Invoice_list } from "../../Adjustment/AdjustmentForm";
 
 export type ReceivePaymentForm = {
     description: string;
@@ -136,34 +138,44 @@ export default function ReceivePaymentForm({
 
     const [isOutStanding, setOutstanding] = useState<Outstanding[]>([]);
 
-    const { isLoading, data, isError } = GetCustomerOutstanding(isCustomer.id);
+    // const { isLoading, data, isError } = GetCustomerOutstanding(isCustomer.id);
+
+    const { isLoading, data, isError } = GetInvoiceByCustomerPostedOnly(
+        isCustomer.id
+    );
 
     useEffect(() => {
         if (data?.status === 200) {
-            let getCustomerOutstanding: any[] = [];
-            data?.data.map((item: any) => {
-                item.invoice_list.map((invoiceItem: any) => {
-                    getCustomerOutstanding = [
-                        ...getCustomerOutstanding,
-                        {
-                            id: invoiceItem.id,
-                            billing_invoice_id: invoiceItem.billing_invoice_id,
-                            document_no: item.invoice_no,
-                            charge: invoiceItem.charge.name,
-                            charge_id: invoiceItem.charge_id,
-                            description: invoiceItem.description,
-                            due_amount: invoiceItem.due_amount,
-                            applied_amount: 0,
-                            balance: invoiceItem.due_amount,
-                        },
-                    ];
-                });
-            });
+            let Discount_Total = 0;
+            let getCustomerOutstanding = data?.data.map(
+                (item: Type_Invoice_list) => {
+                    const balance =
+                        Number(item.due_amount) - Number(item.discount_amount);
+                    Discount_Total =
+                        Number(Discount_Total) + Number(item.discount_amount);
+                    return {
+                        id: item.id,
+                        billing_invoice_id: item.billing_invoice_id,
+                        document_no: item.document_no,
+                        charge: item.name,
+                        charge_id: item.charge_id,
+                        description: item.description,
+                        due_amount: item.due_amount,
+                        applied_amount: item.discount_amount,
+                        balance: balance,
+                        discount_ids: item.discount_ids,
+                    };
+                }
+            );
             setOutstanding(
                 getCustomerOutstanding === undefined
                     ? []
                     : getCustomerOutstanding
             );
+            setDiscountToggle({
+                value: Discount_Total,
+                toggle: false,
+            });
         }
     }, [data?.data]);
 

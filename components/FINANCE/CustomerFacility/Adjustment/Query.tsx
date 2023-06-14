@@ -184,6 +184,45 @@ export const GetInvoiceByCustomerAndCharge = (
     );
 };
 
+export const GetInvoiceByCustomerAndChargePostedOnly = (
+    customer_id: number | string,
+    charge_id: number | string
+) => {
+    return useQuery(
+        ["posted-Invoice-list-customer-charge", customer_id, charge_id],
+        () => {
+            return api.get(
+                `/finance/customer-facility/billing/billing-invoice-list?customer_id=${customer_id}&charge_id=${charge_id}`,
+                {
+                    headers: { Authorization: "Bearer " + getCookie("user") },
+                }
+            );
+        },
+        {
+            enabled: !!charge_id && !!customer_id,
+        }
+    );
+};
+
+export const GetInvoiceByCustomerPostedOnly = (
+    customer_id: number | string
+) => {
+    return useQuery(
+        ["posted-Invoice-list-customer", customer_id],
+        () => {
+            return api.get(
+                `/finance/customer-facility/billing/billing-invoice-list?customer_id=${customer_id}`,
+                {
+                    headers: { Authorization: "Bearer " + getCookie("user") },
+                }
+            );
+        },
+        {
+            enabled: !!customer_id,
+        }
+    );
+};
+
 export const GetAccountEntriesList = (
     charge_id: number | string,
     document_no: string,

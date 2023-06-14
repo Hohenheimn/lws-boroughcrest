@@ -42,6 +42,7 @@ export const InputNumberForTable = ({
                 onValueChange={(values) => {
                     // formattedValue = $2,223z
                     const { formattedValue, value } = values;
+
                     onChange(type, value);
                 }}
             />
