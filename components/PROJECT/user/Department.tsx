@@ -60,7 +60,10 @@ const Department = ({ set, update, isValID, isObject, setObject }: Props) => {
             },
         ]);
     };
-    const { isLoading, data, isError } = GetDepartment(isObject.value);
+
+    const { isLoading, data, isError } = GetDepartment(
+        isObject.value === null ? "" : isObject.value
+    );
 
     useEffect(() => {
         if (data?.status === 200) {
@@ -110,7 +113,7 @@ const Department = ({ set, update, isValID, isObject, setObject }: Props) => {
             {isError ||
                 (data?.data.length <= 0 && (
                     <div className="w-full flex justify-center py-2 text-[14px]">
-                        <p> Floor cannot be found!</p>
+                        <p> Department cannot be found!</p>
                     </div>
                 ))}
             {isLoading && (
