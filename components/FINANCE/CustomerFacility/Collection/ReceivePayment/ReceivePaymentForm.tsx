@@ -152,7 +152,7 @@ export default function ReceivePaymentForm({
                             charge: invoiceItem.charge.name,
                             charge_id: invoiceItem.charge_id,
                             description: invoiceItem.description,
-                            due_amount: invoiceItem.amount,
+                            due_amount: invoiceItem.due_amount,
                             applied_amount: 0,
                             balance: invoiceItem.amount,
                         },
