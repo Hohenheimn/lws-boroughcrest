@@ -4,6 +4,7 @@ import { PostDetail } from "../../../pages/admin/announcement";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
 import { FormattedDate } from "./FormatDate";
 import { useRouter } from "next/router";
+import { AccessActionValidation } from "../../Reusable/PermissionValidation/ActionAccessValidation";
 
 type Props = {
     Post: PostDetail;
@@ -23,6 +24,8 @@ export default function PostComponent({ Post, type, DeleteHandler }: Props) {
             ? "/Images/sample_coming.png"
             : "https://boroughcrest-api.lws.codes/get-img?image=" +
               Post.image_photo;
+
+    const Permission_modify = AccessActionValidation("Announcement", "modify");
 
     return (
         <div>
@@ -45,7 +48,7 @@ export default function PostComponent({ Post, type, DeleteHandler }: Props) {
                                 onClick={() => setToggleMenu(!toggleMenu)}
                                 className=" cursor-pointer text-[30px] mt-[-5px] text-ThemeRed"
                             />
-                            {toggleMenu && (
+                            {toggleMenu && Permission_modify && (
                                 <ul className=" overflow-hidden absolute top-full right-0 bg-white shadow-lg rounded-md">
                                     <li
                                         onClick={() => {

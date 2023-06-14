@@ -162,6 +162,22 @@ export const RolesAndPermissionTable: RolePermission[] = [
         duration: 0,
     },
     {
+        id: 555555555,
+        menu: "Announcement",
+        type: "secondary",
+        sectionEnd: false,
+        roles: {
+            all: false,
+            view: false,
+            create: false,
+            modify: false,
+            print: null,
+            approve: null,
+        },
+        rolesNumber: 3,
+        duration: 0,
+    },
+    {
         id: 10,
         menu: "Finance",
         type: "primary",

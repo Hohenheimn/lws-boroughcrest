@@ -152,7 +152,10 @@ export default function UserRoleAndPermissionsCheckBox({
                                         ? null
                                         : innerItem.role.includes("approve"),
                             },
-                            duration: innerItem.duration,
+                            duration:
+                                innerItem.duration === null
+                                    ? 0
+                                    : innerItem.duration,
                         };
                     });
 
@@ -317,15 +320,6 @@ export default function UserRoleAndPermissionsCheckBox({
             (filteritem) => filteritem.role.length > 0
         );
 
-        // if (filterAccess.some((someItem) => someItem.duration === 0)) {
-        //     setPrompt({
-        //         message: "Fill out duration to selected permissions",
-        //         type: "draft",
-        //         toggle: true,
-        //     });
-        //     return;
-        // }
-
         if (type === "modify") {
             const Payload = {
                 role_id: isRoleName.id,
@@ -333,7 +327,11 @@ export default function UserRoleAndPermissionsCheckBox({
                     return {
                         menu: item.menu,
                         access: item.role,
-                        duration: item.duration,
+                        duration:
+                            item.duration === null ||
+                            item.duration === undefined
+                                ? 0
+                                : item.duration,
                     };
                 }),
             };
@@ -355,7 +353,11 @@ export default function UserRoleAndPermissionsCheckBox({
                     return {
                         menu: item.menu,
                         access: item.role,
-                        duration: item.duration,
+                        duration:
+                            item.duration === null ||
+                            item.duration === undefined
+                                ? 0
+                                : item.duration,
                     };
                 }),
             };

@@ -57,6 +57,7 @@ export default function CustomerDropdown({ isCustomer, setCustomer }: Props) {
         <>
             <DynamicPopOver
                 className="w-full max-w-[300px]"
+                rightPosition={true}
                 samewidth={true}
                 toRef={
                     <input

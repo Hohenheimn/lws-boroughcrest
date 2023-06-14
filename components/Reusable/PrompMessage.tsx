@@ -31,7 +31,7 @@ export default function PrompMessage() {
                 togglePrompt.type === "success" && "bg-[#1c9f11] flex flex-col"
             } ${togglePrompt.type === "error" && "bg-[#8f384d]"} ${
                 togglePrompt.type === "draft" && "bg-[#f19308]"
-            } transition duration-75 fixed top-10 right-10 480px:top-5 480px:right-5 z-[99999] 820px:px-7 820px:py-3 opacity-90 px-10 py-5 shadow-lg rounded-lg`}
+            } transition duration-75 fixed top-10 right-10 480px:top-5 480px:right-5 z-[99999999] 820px:px-7 820px:py-3 opacity-90 px-10 py-5 shadow-lg rounded-lg`}
         >
             {typeof togglePrompt.message === "object" ? (
                 <>

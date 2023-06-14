@@ -264,7 +264,11 @@ export default function AdjustmentForm({ DefaultValue }: Props) {
         data: refAccEntries,
         isLoading: refAccEntriesLoading,
         isError: refAccEntriesError,
-    } = GetAccountEntriesList(isChargeHeader.charge_id, HeaderForm.document_no);
+    } = GetAccountEntriesList(
+        isChargeHeader.charge_id,
+        HeaderForm.document_no,
+        isCustomer.id
+    );
 
     // Create
     const { mutate: createMutate, isLoading: createLoading } =
@@ -343,10 +347,9 @@ export default function AdjustmentForm({ DefaultValue }: Props) {
 
     useEffect(() => {
         ApplyAccountEntriesHandler();
-    }, [AccountEntries?.data, DefaultValue.Accounts]);
+    }, [AccountEntries?.data, DefaultValue.Accounts, isAdjustmentTotal]);
 
     const ApplyAccountEntriesHandler = () => {
-        console.log(AccountEntries?.data);
         const cloneTogetData = AccountEntries?.data.map(
             (item: FilteredAccuntEntries, index: number) => {
                 const validationDebitOrCreditField = ValidationDebitCredit(
@@ -744,51 +747,70 @@ export default function AdjustmentForm({ DefaultValue }: Props) {
                                     </tr>
                                 </thead>
                                 <tbody className="textBlack">
-                                    {refAccEntries?.data.map(
-                                        (
-                                            item: AccountEntries,
-                                            index: number
-                                        ) => (
-                                            <tr key={index}>
-                                                <td>
-                                                    {
-                                                        item.document
-                                                            .document_date
-                                                    }
-                                                </td>
-                                                <td>
-                                                    {item.document.document_no}
-                                                </td>
-                                                <td>
-                                                    {item.charge.description}
-                                                </td>
-                                                <td>
-                                                    {
-                                                        item.chart_of_account
-                                                            .chart_code
-                                                    }
-                                                </td>
-                                                <td>
-                                                    {
-                                                        item.chart_of_account
-                                                            .account_name
-                                                    }
-                                                </td>
-                                                <td>
-                                                    <TextNumberDisplay
-                                                        className="withPeso w-full text-end"
-                                                        value={item.debit}
-                                                    />
-                                                </td>
-                                                <td>
-                                                    <TextNumberDisplay
-                                                        className="withPeso w-full text-end"
-                                                        value={item.credit}
-                                                    />
-                                                </td>
-                                            </tr>
-                                        )
-                                    )}
+                                    {isChargeHeader.charge_id !== "" &&
+                                        isCustomer.id !== "" && (
+                                            <>
+                                                {refAccEntries?.data.map(
+                                                    (
+                                                        item: AccountEntries,
+                                                        index: number
+                                                    ) => (
+                                                        <tr key={index}>
+                                                            <td>
+                                                                {
+                                                                    item
+                                                                        .document
+                                                                        .document_date
+                                                                }
+                                                            </td>
+                                                            <td>
+                                                                {
+                                                                    item
+                                                                        .document
+                                                                        .document_no
+                                                                }
+                                                            </td>
+                                                            <td>
+                                                                {
+                                                                    item.charge
+                                                                        .description
+                                                                }
+                                                            </td>
+                                                            <td>
+                                                                {
+                                                                    item
+                                                                        .chart_of_account
+                                                                        .chart_code
+                                                                }
+                                                            </td>
+                                                            <td>
+                                                                {
+                                                                    item
+                                                                        .chart_of_account
+                                                                        .account_name
+                                                                }
+                                                            </td>
+                                                            <td>
+                                                                <TextNumberDisplay
+                                                                    className="withPeso w-full text-end"
+                                                                    value={
+                                                                        item.debit
+                                                                    }
+                                                                />
+                                                            </td>
+                                                            <td>
+                                                                <TextNumberDisplay
+                                                                    className="withPeso w-full text-end"
+                                                                    value={
+                                                                        item.credit
+                                                                    }
+                                                                />
+                                                            </td>
+                                                        </tr>
+                                                    )
+                                                )}
+                                            </>
+                                        )}
                                 </tbody>
                             </table>
                             <TableLoadingNError
