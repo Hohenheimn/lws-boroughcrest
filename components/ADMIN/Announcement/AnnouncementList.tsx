@@ -47,7 +47,13 @@ export default function AnnouncementList({ type }: Props) {
     };
 
     if (data?.data === "") {
-        return <div></div>;
+        return (
+            <div>
+                <div className="flex justify-center my-10">
+                    <h1>No permission to view</h1>
+                </div>
+            </div>
+        );
     }
 
     return (

@@ -74,11 +74,36 @@ export default function AccountTable({
                                 toggle={toggle}
                             />
                         ))}
+                        <tr className=" noBorder">
+                            <td></td>
+
+                            <td>
+                                <h1 className=" w-full text-end text-[16px]1280px:text-[13px] text-ThemeRed  pt-10">
+                                    TOTAL
+                                </h1>
+                            </td>
+                            <td>
+                                <div className="flex justify-end pt-10">
+                                    <TextNumberDisplay
+                                        value={TotalDebit}
+                                        className="text-end withPeso w-full text-[#757575] font-NHU-bold text-[18px] 1280px:text-[13px]"
+                                    />
+                                </div>
+                            </td>
+                            <td>
+                                <div className="flex justify-end pt-10">
+                                    <TextNumberDisplay
+                                        value={TotalCredit}
+                                        className="text-end withPeso w-full text-[#757575] font-NHU-bold text-[18px] 1280px:text-[13px]"
+                                    />
+                                </div>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
                 <TableLoadingNError isLoading={isLoading} isError={isError} />
             </div>
-            <TableTwoTotal total1={TotalDebit} total2={TotalCredit} />
+            {/* <TableTwoTotal total1={TotalDebit} total2={TotalCredit} /> */}
         </div>
     );
 }

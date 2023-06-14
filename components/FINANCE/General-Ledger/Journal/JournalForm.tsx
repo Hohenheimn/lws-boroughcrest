@@ -13,13 +13,15 @@ import {
 import { ScaleLoader } from "react-spinners";
 import { useRouter } from "next/router";
 import Calendar from "../../../Reusable/Calendar";
-import { InputNumberForTable } from "../../../Reusable/NumberFormat";
+import {
+    InputNumberForTable,
+    TextNumberDisplay,
+} from "../../../Reusable/NumberFormat";
 import { format, isValid, parse } from "date-fns";
 import { TableTwoTotal } from "../../../Reusable/TableTotal";
 import { MinusButtonTable, PlusButtonTable } from "../../../Reusable/Icons";
 import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
 import ModalTemp from "../../../Reusable/ModalTemp";
-import fi from "date-fns/esm/locale/fi/index.js";
 
 export type defaultArray = defaultObject[];
 export type defaultObject = {
@@ -319,10 +321,35 @@ export default function JournalForm({
                                     isDefault={isJournalList}
                                 />
                             ))}
+                            <tr className="noBorder">
+                                <td></td>
+
+                                <td className="flex justify-end">
+                                    <h1 className="text-start text-[16px]1280px:text-[13px] text-ThemeRed  pt-10">
+                                        SUBTOTAL
+                                    </h1>
+                                </td>
+                                <td>
+                                    <div className=" w-full flex justify-end  pt-10">
+                                        <TextNumberDisplay
+                                            value={totalDebit}
+                                            className="text-end withPeso w-full text-[#757575] font-NHU-bold text-[18px] 1280px:text-[13px]"
+                                        />
+                                    </div>
+                                </td>
+                                <td>
+                                    <div className=" w-full flex justify-end  pt-10">
+                                        <TextNumberDisplay
+                                            value={totalCredit}
+                                            className="text-end withPeso w-full text-[#757575] font-NHU-bold text-[18px] 1280px:text-[13px]"
+                                        />
+                                    </div>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
-                <TableTwoTotal total1={totalDebit} total2={totalCredit} />
+                {/* <TableTwoTotal total1={totalDebit} total2={totalCredit} /> */}
             </div>
             <div className="DropDownSave">
                 <button className="ddback" onClick={CancelHandler}>

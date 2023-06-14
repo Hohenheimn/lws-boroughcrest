@@ -509,6 +509,27 @@ export default function JournalForm({
                                     />
                                 )
                             )}
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td className="flex justify-end">
+                                    <h1 className="text-start text-[16px]1280px:text-[13px] text-ThemeRed  pt-10">
+                                        TOTAL
+                                    </h1>
+                                </td>
+                                <td>
+                                    <div className=" w-full flex justify-end  pt-10">
+                                        <TextNumberDisplay
+                                            value={totalAmount}
+                                            className="text-end withPeso w-full text-[#757575] font-NHU-bold text-[18px] 1280px:text-[13px]"
+                                        />
+                                    </div>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                     {isLoading && (
@@ -526,7 +547,7 @@ export default function JournalForm({
                     )}
                     {isError && <TableErrorMessage />}
                 </div>
-                <div className="mt-10 border-b border-ThemeRed"></div>
+                {/* <div className="mt-10 border-b border-ThemeRed"></div>
                 <div className="flex flex-wrap justify-end py-5 480px:justify-start">
                     <h1 className="text-start text-[16px] min-w-[200px] 1280px:text-[13px] text-ThemeRed pb-1">
                         TOTAL
@@ -549,7 +570,7 @@ export default function JournalForm({
                             }
                         />
                     </div>
-                </div>
+                </div> */}
             </div>
 
             <div className="flex w-full justify-end items-center mt-14 480px:mt-10 ">

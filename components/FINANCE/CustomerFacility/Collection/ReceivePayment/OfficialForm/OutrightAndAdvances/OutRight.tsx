@@ -76,10 +76,29 @@ export default function OutRight({
                                 index={index}
                             />
                         ))}
+                        <tr className=" noBorder">
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td className="flex justify-end">
+                                <h1 className="text-start text-[16px]1280px:text-[13px] text-ThemeRed  pt-10">
+                                    SUB TOTAL
+                                </h1>
+                            </td>
+                            <td>
+                                <div className=" w-full flex justify-end  pt-10">
+                                    <TextNumberDisplay
+                                        value={isTotal}
+                                        className="text-end withPeso w-full text-[#757575] font-NHU-bold text-[18px] 1280px:text-[13px]"
+                                    />
+                                </div>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
-            <TableOneTotal total={isTotal} label={"SUB TOTAL"} redBG={false} />
+            {/* <TableOneTotal total={isTotal} label={"SUB TOTAL"} redBG={false} /> */}
         </motion.div>
     );
 }
@@ -195,10 +214,12 @@ const List = ({ setTable, isTable, itemDetail, index }: List) => {
             </td>
             <td>{itemDetail.uom}</td>
             <td>
-                <TextNumberDisplay
-                    value={itemDetail.amount}
-                    className={"withPeso w-full"}
-                />
+                <div className="w-full flex justify-end">
+                    <TextNumberDisplay
+                        value={itemDetail.amount}
+                        className={"withPeso w-full text-end"}
+                    />
+                </div>
             </td>
             <td className="actionIcon">
                 {isTable.length > 1 && (

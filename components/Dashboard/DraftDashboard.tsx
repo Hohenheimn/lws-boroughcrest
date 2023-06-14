@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
     GetCustomerList,
     GetCustomerListDraft,
@@ -11,6 +11,8 @@ import { BeatLoader } from "react-spinners";
 import { customer } from "../../types/customerList";
 import { property } from "../../types/PropertyList";
 import { useRouter } from "next/router";
+import { LoginUserInfo } from "../HOC/LoginUser/UserInfo";
+import { PageAccessValidation } from "../Reusable/PermissionValidation/PageAccessValidation";
 
 export default function DraftDashboard() {
     const {
@@ -52,8 +54,13 @@ type DraftCustomerProps = {
 
 const DraftCustomerList = ({ itemDetail }: DraftCustomerProps) => {
     const router = useRouter();
+
+    const PagePermissonCustomer = PageAccessValidation("Customer");
+
     const RedirectHandler = () => {
-        router.push(`/admin/customer?draft=${itemDetail.id}`);
+        if (PagePermissonCustomer) {
+            router.push(`/admin/customer?draft=${itemDetail.id}`);
+        }
     };
     return (
         <ul
@@ -90,9 +97,12 @@ type DraftPropertyProps = {
 };
 
 const DraftPropertyList = ({ itemDetail }: DraftPropertyProps) => {
+    const PagePermissonProperty = PageAccessValidation("Property");
     const router = useRouter();
     const RedirectHandler = () => {
-        router.push(`/admin/property?draft=${itemDetail.id}`);
+        if (PagePermissonProperty) {
+            router.push(`/admin/property?draft=${itemDetail.id}`);
+        }
     };
     return (
         <ul

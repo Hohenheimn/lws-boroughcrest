@@ -5,14 +5,8 @@ import Image from "next/image";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 import Link from "next/link";
-import { getCookie } from "cookies-next";
-import { useQuery } from "react-query";
-import api from "../../../../util/api";
-import { BarLoader, MoonLoader } from "react-spinners";
 import PeriodCalendar from "../../../Reusable/PeriodCalendar";
 import { Advancefilter, AdvanceFilter } from "../../../Reusable/AdvanceFilter";
-import PeriodFNS from "../../../Reusable/PeriodFNS";
-import TableErrorMessage from "../../../Reusable/TableErrorMessage";
 import { GetJournal, MultipleUpdate } from "./Query";
 import Pagination from "../../../Reusable/Pagination";
 import AppContext from "../../../Context/AppContext";
@@ -22,6 +16,7 @@ import { CopyButtonTable } from "../../../Reusable/Icons";
 import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
 import TableLoadingNError from "../../../Reusable/TableLoadingNError";
 import { AccessActionValidation } from "../../../Reusable/PermissionValidation/ActionAccessValidation";
+import { MoonLoader } from "react-spinners";
 
 type Props = {
     type: string;

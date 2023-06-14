@@ -127,13 +127,13 @@ export default function HeaderCollection({
                                             content="Export"
                                         >
                                             <div
-                                                className=" hover:scale-125 duration-100 cursor-pointer"
+                                                className={style.icon}
                                                 onClick={ExportHandler}
                                             >
                                                 <Image
                                                     src="/Images/Export.png"
-                                                    height={33}
-                                                    width={33}
+                                                    layout="fill"
+                                                    alt="Export"
                                                 />
                                             </div>
                                         </Tippy>

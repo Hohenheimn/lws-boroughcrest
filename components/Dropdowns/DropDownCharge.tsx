@@ -13,6 +13,7 @@ type DropdownItem = {
     displayID?: boolean;
     filter?: boolean;
     forTable?: boolean;
+    onlyDeposit?: boolean;
 };
 
 export default function DropDownCharge({
@@ -23,6 +24,7 @@ export default function DropDownCharge({
     displayID,
     filter,
     forTable,
+    onlyDeposit,
 }: DropdownItem) {
     const [isToggle, setToggle] = useState(false);
     const [tempSearch, setTempSearch] = useState(itemDetail?.charge);
@@ -60,6 +62,7 @@ export default function DropDownCharge({
                                 UpdateStateHandler={UpdateStateHandler}
                                 itemDetail={itemDetail}
                                 filter={filter}
+                                onlyDeposit={onlyDeposit}
                             />
                         )}
                     </>
@@ -76,6 +79,7 @@ type List = {
     itemDetail: any;
     tempSearch: string;
     filter?: boolean;
+    onlyDeposit?: boolean;
 };
 
 const List = ({
@@ -85,14 +89,22 @@ const List = ({
     UpdateStateHandler,
     itemDetail,
     filter,
+    onlyDeposit,
 }: List) => {
     const { data, isLoading, isError } = useQuery(
-        ["charge-list-dd", tempSearch],
+        [
+            "charge-list-dd",
+            tempSearch,
+            filter ? "&meter_reading=1" : "",
+            onlyDeposit && "&type=Deposit",
+        ],
         () => {
             return api.get(
                 `/finance/customer-facility/charges?keywords=${
                     tempSearch === undefined ? "" : tempSearch
-                }${filter ? "&meter_reading=1" : ""}`,
+                }${filter ? "&meter_reading=1" : ""}${
+                    onlyDeposit && "&type=Deposit"
+                }`,
                 {
                     headers: {
                         Authorization: "Bearer " + getCookie("user"),

@@ -4,7 +4,10 @@ import { TableOneTotal } from "../../../../Reusable/TableTotal";
 import Image from "next/image";
 import Calendar from "../../../../Reusable/Calendar";
 import BankAccountDropDown from "../../../../Reusable/BankAccountDropDown";
-import { InputNumberForTable } from "../../../../Reusable/NumberFormat";
+import {
+    InputNumberForTable,
+    TextNumberDisplay,
+} from "../../../../Reusable/NumberFormat";
 import { GetPropertyList } from "../../../../ReactQuery/PropertyMethod";
 import TableErrorMessage from "../../../../Reusable/TableErrorMessage";
 import { HiMinus } from "react-icons/hi";
@@ -178,10 +181,28 @@ export default function ProvisionalForm({
                                 index={index}
                             />
                         ))}
+                        <tr className=" noBorder">
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <h1 className=" w-full text-end text-[16px]1280px:text-[13px] text-ThemeRed  pt-10">
+                                    TOTAL
+                                </h1>
+                            </td>
+                            <td>
+                                <div className="flex justify-end pt-10">
+                                    <TextNumberDisplay
+                                        value={isTotal}
+                                        className="text-end withPeso w-full text-[#757575] font-NHU-bold text-[18px] 1280px:text-[13px]"
+                                    />
+                                </div>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
-            <TableOneTotal total={isTotal} label="Total" redBG={false} />
+            {/* <TableOneTotal total={isTotal} label="Total" redBG={false} /> */}
             <div className="DropDownSave">
                 <button className="ddback">CANCEL</button>
 

@@ -33,6 +33,7 @@ export default function GeneralReportsCheckbox({
     setPeriod,
     setReportType,
     setExportEndpoint,
+    FavoriteHandler,
 }: Props) {
     const { setPrompt } = useContext(AppContext);
 
@@ -105,6 +106,11 @@ export default function GeneralReportsCheckbox({
             `/finance/customer-facility/customer-reports?report_type=${isReportType}&account=${isAccount.map(
                 (item) => item.name
             )}&document_type=${isDocuments.map((item) => item.name)}`
+        );
+        FavoriteHandler(
+            isReportType,
+            isDocuments.map((item) => item.name).toString(),
+            isAccount.map((item) => item.id).toString()
         );
         setPrompt({
             message: "Filter applied",

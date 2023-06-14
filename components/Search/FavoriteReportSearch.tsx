@@ -15,10 +15,10 @@ export default function FavoriteReportSearch() {
     const router = useRouter();
 
     const { isLoading, data } = useQuery(
-        ["recent-customer", router.query.id, search],
+        ["recent-favorite", router.query.id, search],
         () => {
             return api.get(
-                `/admin/property/unit/recent-search/${router.query.id}?keywords=${search}&paginate=3`,
+                `/finance/customer-facility/customer-reports/recent-favorite-reports/${router.query.id}?keywords=${search}&paginate=3`,
                 {
                     headers: {
                         Authorization: "Bearer " + getCookie("user"),
@@ -55,21 +55,8 @@ export default function FavoriteReportSearch() {
                 </aside>
             </div>
             <div className=" overflow-y-auto">
-                {data?.data.data.map((item: any, index: number) => (
-                    <Link key={index} href={`/admin/property/${item?.id}`}>
-                        <a className={style.searchedItem}>
-                            <ul>
-                                <li>
-                                    <h4>{item?.unit_code}</h4>
-                                    <p>{item?.class}</p>
-                                </li>
-                                <li>
-                                    <p>ID: {item?.id}</p>
-                                    <p>{item?.type}</p>
-                                </li>
-                            </ul>
-                        </a>
-                    </Link>
+                {data?.data.map((item: any, index: number) => (
+                    <ItemList item={item} key={index} />
                 ))}
                 {isLoading && (
                     <div className="flex justify-center py-5">
@@ -85,3 +72,18 @@ export default function FavoriteReportSearch() {
         </div>
     );
 }
+const ItemList = ({ item }: any) => {
+    console.log(item);
+    return (
+        <Link href={`/admin/property/${item?.id}`}>
+            <a className={style.searchedItem}>
+                <ul>
+                    <li>
+                        <p>ID: {item?.id}</p>
+                        <p>{item?.report_name}</p>
+                    </li>
+                </ul>
+            </a>
+        </Link>
+    );
+};

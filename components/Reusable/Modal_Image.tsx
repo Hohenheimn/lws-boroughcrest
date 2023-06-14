@@ -25,7 +25,7 @@ export default function Modal_Image({ setView, isView }: Modal_Image) {
     });
 
     return (
-        <div className=" fixed top-0 left-0 h-screen overflow-auto w-full bg-[#00000040] p-10 z-50 flex justify-center items-center origin-top 480px:p-5">
+        <div className=" fixed top-0 left-0 h-screen overflow-auto w-full bg-[#00000040] p-10 z-[99999] flex justify-center items-center origin-top 480px:p-5">
             <section
                 ref={modal}
                 className=" p-10 bg-[#e2e3e4ef] rounded-lg w-[90%] max-w-[700px] text-ThemeRed shadow-lg"
@@ -36,7 +36,12 @@ export default function Modal_Image({ setView, isView }: Modal_Image) {
                     isView === "" ? (
                         <h2>No Image Registered</h2>
                     ) : (
-                        <Image src={ImgUrl + isView} layout="fill" alt="" />
+                        <Image
+                            src={ImgUrl + isView}
+                            layout="fill"
+                            alt=""
+                            objectFit="contain"
+                        />
                     )}
                 </aside>
             </section>

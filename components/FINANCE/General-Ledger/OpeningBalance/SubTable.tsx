@@ -200,6 +200,26 @@ export default function SubTable() {
                                 RemoveHandler={Removehandler}
                             />
                         ))}
+                        <tr className="noBorder">
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td className="flex justify-end">
+                                <h1 className="text-start text-[16px]1280px:text-[13px] text-ThemeRed  pt-10">
+                                    SUBTOTAL
+                                </h1>
+                            </td>
+                            <td>
+                                <div className=" w-full flex justify-end  pt-10">
+                                    <TextNumberDisplay
+                                        value={isTotal}
+                                        className="text-end withPeso w-full text-[#757575] font-NHU-bold text-[18px] 1280px:text-[13px]"
+                                    />
+                                </div>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
                 {isLoading && (
@@ -217,8 +237,8 @@ export default function SubTable() {
                 )}
                 {isError && <TableErrorMessage />}
             </div>
-            <div className="mt-10 border-b border-ThemeRed"></div>
-            <div className="flex flex-wrap justify-end py-5 480px:justify-start">
+            {/* <div className="mt-10 border-b border-ThemeRed"></div> */}
+            {/* <div className="flex flex-wrap justify-end py-5 480px:justify-start">
                 <h1 className="text-start text-[16px] min-w-[200px] 1280px:text-[13px] text-ThemeRed pb-1">
                     SUBTOTAL
                 </h1>
@@ -228,7 +248,7 @@ export default function SubTable() {
                         className="text-end w-full text-[#757575] font-NHU-bold text-[18px] 1280px:text-[13px]"
                     />
                 </div>
-            </div>
+            </div> */}
             <div className="flex justify-end py-5 mt-5">
                 {/* <button className="button_cancel">Cancel</button> */}
                 {(Permission_create || Permission_modify) && (

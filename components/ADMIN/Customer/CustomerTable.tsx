@@ -157,7 +157,12 @@ const List = ({ itemDetail, PermissionValidationView }: customerItemDetail) => {
                 >
                     <div className="flex items-center">
                         <aside>
-                            <Image src={Logo} alt="profile" layout="fill" />
+                            <Image
+                                src={Logo}
+                                alt="profile"
+                                layout="fill"
+                                objectFit="cover"
+                            />
                         </aside>
                         <div>
                             <p>{itemDetail?.id}</p>
