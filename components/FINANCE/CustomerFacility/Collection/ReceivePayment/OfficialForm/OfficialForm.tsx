@@ -207,6 +207,7 @@ export default function OfficialForm({
                     billing_invoice_list_id: item.id,
                     payment_amount: item.applied_amount,
                     balance: item.balance,
+                    discount_ids: item.discount_ids,
                 };
             }),
             discount: headerForm.discount,

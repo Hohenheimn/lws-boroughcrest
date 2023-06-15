@@ -1,16 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import { BarLoader, MoonLoader, ScaleLoader } from "react-spinners";
 import { TableOneTotal } from "../../../../Reusable/TableTotal";
-import Image from "next/image";
-import Calendar from "../../../../Reusable/Calendar";
-import BankAccountDropDown from "../../../../Reusable/BankAccountDropDown";
 import { InputNumberForTable } from "../../../../Reusable/NumberFormat";
-import { GetPropertyList } from "../../../../ReactQuery/PropertyMethod";
 import TableErrorMessage from "../../../../Reusable/TableErrorMessage";
-import { HiMinus } from "react-icons/hi";
-import { BsPlusLg } from "react-icons/bs";
-import { RiArrowDownSFill } from "react-icons/ri";
-import { HeaderForm } from "./ReceivePaymentForm";
 import AppContext from "../../../../Context/AppContext";
 import DropDownCharge from "../../../../Dropdowns/DropDownCharge";
 import ModalTemp from "../../../../Reusable/ModalTemp";
@@ -52,7 +44,7 @@ export default function DiscountForm({
             toggle: true,
         });
         setDiscountToggle({
-            value: isTotal,
+            ...isDiscount,
             toggle: false,
         });
     };

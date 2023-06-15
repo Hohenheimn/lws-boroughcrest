@@ -16,7 +16,10 @@ export default function AnnouncementList({ type }: Props) {
 
     const [isPaginate, setPaginate] = useState(3);
 
-    const { data, isLoading, isError } = GetAnnouncement("", isPaginate);
+    const { data, isLoading, isError } = GetAnnouncement(
+        type === "dashboard" ? "deus" : "",
+        isPaginate
+    );
 
     const onSucces = () => {
         setPrompt({

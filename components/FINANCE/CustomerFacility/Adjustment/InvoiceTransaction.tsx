@@ -205,7 +205,10 @@ const List = ({
     const Updatevalue = (type: string, value: string | number) => {
         const CloneToUpdate = isInvoicesAdjustment.map((item) => {
             if (item.id === itemDetail.id) {
-                const balance = Number(item.remaining_advances) - Number(value);
+                const balance =
+                    Number(item.amount_due) -
+                    Number(item.remaining_advances) -
+                    Number(value);
                 return {
                     ...item,
                     balance: balance <= 0 ? 0 : balance,

@@ -17,7 +17,7 @@ import {
     CreateNewAdjustment,
     GetAccountEntriesList,
     GetFilteredAccountEntriesList,
-    GetInvoiceByCustomerAndCharge,
+    GetInvoiceByCustomerAndChargePostedOnly,
     ModifyAdjustment,
     ModifyDraftAdjustment,
 } from "./Query";
@@ -27,7 +27,6 @@ import { ValidationDebitCredit } from "./AdjustmentDistribution";
 import { useRouter } from "next/router";
 import { ScaleLoader } from "react-spinners";
 import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
-import { UserInfo } from "../../../PROJECT/user/UserForm";
 import { LoginUserInfo } from "../../../HOC/LoginUser/UserInfo";
 
 export type AdjustmentHeaderForm = {
@@ -38,6 +37,23 @@ export type AdjustmentHeaderForm = {
     charge_id_header: string | number;
     charge_id: string | number;
     document_no: string;
+};
+
+export type Type_Invoice_list = {
+    adjustment_amount: number;
+    amount: number;
+    amount_paid: number;
+    billing_invoice_id: number;
+    charge_id: number;
+    description: string;
+    document_date: string;
+    document_no: string;
+    due_amount: number;
+    id: number;
+    name: string;
+    remaining_advances: 0;
+    discount_ids: number[];
+    discount_amount: number;
 };
 
 export type AdjustmentAccounts = {
@@ -258,7 +274,10 @@ export default function AdjustmentForm({ DefaultValue }: Props) {
         data: invoiceData,
         isLoading,
         isError,
-    } = GetInvoiceByCustomerAndCharge(isCustomer.id, isCharge.charge_id);
+    } = GetInvoiceByCustomerAndChargePostedOnly(
+        isCustomer.id,
+        isCharge.charge_id
+    );
 
     const {
         data: refAccEntries,
@@ -287,38 +306,44 @@ export default function AdjustmentForm({ DefaultValue }: Props) {
 
     useEffect(() => {
         if (invoiceData !== undefined) {
-            let getCustomerOutstanding: any[] = [];
-            invoiceData?.data.map((item: any) => {
-                const date = parse(item.billing_date, "yyyy-MM-dd", new Date());
-                item?.invoice_list?.map((invoiceItem: any) => {
+            let getCustomerOutstanding = invoiceData?.data.map(
+                (item: Type_Invoice_list) => {
                     let adjustment_amount = 0;
-                    let balance = Number(item?.applied_advances);
+
+                    let balance =
+                        Number(item.due_amount) -
+                        Number(item?.remaining_advances);
+
+                    const date = parse(
+                        item.document_date,
+                        "yyyy-MM-dd",
+                        new Date()
+                    );
+
                     DefaultValue.Invoice.map((itemDV) => {
-                        if (itemDV.id === invoiceItem.id) {
+                        if (itemDV.id === item.id) {
                             adjustment_amount = itemDV.adjustment_amount;
                             balance =
-                                Number(item?.applied_advances) -
+                                Number(item?.remaining_advances) -
                                 Number(itemDV.adjustment_amount);
                         }
                     });
-                    getCustomerOutstanding = [
-                        ...getCustomerOutstanding,
-                        {
-                            id: invoiceItem?.id,
-                            billing_invoice_id: item?.id,
-                            adjustment_amount: adjustment_amount,
-                            balance: balance <= 0 ? 0 : balance,
-                            billing_date: isValid(date)
-                                ? format(date, "MMM dd yyyy")
-                                : "",
-                            document_no: item?.invoice_no,
-                            description: invoiceItem?.description,
-                            amount_due: invoiceItem?.due_amount,
-                            remaining_advances: item?.applied_advances,
-                        },
-                    ];
-                });
-            });
+
+                    return {
+                        id: item?.id,
+                        billing_invoice_id: item?.billing_invoice_id,
+                        adjustment_amount: adjustment_amount,
+                        balance: balance <= 0 ? 0 : balance,
+                        billing_date: isValid(date)
+                            ? format(date, "MMM dd yyyy")
+                            : "",
+                        document_no: item?.document_no,
+                        description: item?.description,
+                        amount_due: item?.due_amount,
+                        remaining_advances: item?.remaining_advances,
+                    };
+                }
+            );
             setInvoices(
                 getCustomerOutstanding === undefined
                     ? []

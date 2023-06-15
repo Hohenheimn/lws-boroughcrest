@@ -17,6 +17,7 @@ export type Outstanding = {
     applied_amount: number;
     balance: number;
     billing_invoice_id: number;
+    discount_ids: number[];
 };
 
 type Props = {
