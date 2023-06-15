@@ -163,8 +163,8 @@ export default function AnnoucementForm({
             title: isPost.title,
             description: isPost.description,
             image_photo: isPost.photo_file === null ? "" : isPost.photo_file,
-            deus_dashboard: deusCheck,
-            portal_dashboard: portalCheck,
+            deus_dashboard: deusCheck === true ? 1 : 0,
+            portal_dashboard: portalCheck === true ? 1 : 0,
         };
 
         const formData = new FormData();

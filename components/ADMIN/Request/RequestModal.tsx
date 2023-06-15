@@ -145,7 +145,7 @@ export default function RequestModal() {
                 />
                 <Detail Label={"REQUEST"} Value={RequestDetail?.request} />
 
-                <Detail Label={"REMARKS"} Value={RequestDetail?.details} />
+                <Detail Label={"REMARKS"} Value={RequestDetail?.remarks} />
 
                 <li className="w-full">
                     <h1 className=" text-ThemeRed">TRAIL</h1>
@@ -163,7 +163,7 @@ export default function RequestModal() {
                         REMARKS
                     </h1>
                     <ul className="max-h-[40vh] 1366px:max-h-[30vh] 640px:max-h-[50vh] overflow-auto">
-                        {RequestDetail?.remarks.map(
+                        {RequestDetail?.request_remarks.map(
                             (item: RequestRemarks, index: number) => (
                                 <RemarksProfile
                                     remarkDetail={item}
