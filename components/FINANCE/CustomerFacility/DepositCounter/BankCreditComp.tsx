@@ -23,7 +23,6 @@ import { format, isValid, parse } from "date-fns";
 import AppContext from "../../../Context/AppContext";
 import { MinusButtonTable, PlusButtonTable } from "../../../Reusable/Icons";
 import { BsSearch } from "react-icons/bs";
-import { m } from "framer-motion";
 import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
 import { AccessActionValidation } from "../../../Reusable/PermissionValidation/ActionAccessValidation";
 
@@ -402,7 +401,9 @@ export default function BankCreditComp({
                     )}
 
                     <div className="flex items-center ml-5">
-                        <p className="labelField">BANK & ACCOUNT NO.</p>
+                        <p className="labelField">
+                            BANK&nbsp;&&nbsp;ACCOUNT&nbsp;NO.
+                        </p>
 
                         <SelectBankAccount
                             isArrayBA={isSelectBank}

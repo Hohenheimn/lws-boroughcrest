@@ -24,6 +24,7 @@ type Props = {
         to: string;
     };
     setPeriod: Function;
+    ExportEndpoint: string;
 };
 
 export default function HeaderCollection({
@@ -34,6 +35,7 @@ export default function HeaderCollection({
     page,
     isPeriod,
     setPeriod,
+    ExportEndpoint,
 }: Props) {
     const { setPrompt } = useContext(AppContext);
 
@@ -61,7 +63,7 @@ export default function HeaderCollection({
 
     const ExportHandler = () => {
         DynamicExportHandler(
-            "/finance/customer-facility/collection/export",
+            ExportEndpoint,
             "Collection-Payment-Register",
             setPrompt,
             setExportLoading
@@ -119,7 +121,9 @@ export default function HeaderCollection({
                         page !== "archive" && (
                             <li className={style.importExportPrint}>
                                 {isExportLoading ? (
-                                    <MoonLoader color="#8f384d" size={20} />
+                                    <div className={style.icon}>
+                                        <MoonLoader color="#8f384d" size={20} />
+                                    </div>
                                 ) : (
                                     <div>
                                         <Tippy

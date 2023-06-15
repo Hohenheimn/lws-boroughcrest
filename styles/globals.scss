@@ -206,7 +206,7 @@ select {
 }
 // Table
 .table_container {
-    @apply overflow-x-auto mb-10 480px:mb-5 overflow-y-auto min-h-[300px] max-h-[60vh] relative;
+    @apply overflow-x-auto mb-10 480px:mb-5 overflow-y-auto min-h-[300px] max-h-[80vh] relative;
     table {
         thead {
             @apply sticky top-0 z-[40];

@@ -407,7 +407,8 @@ const List = ({
             <td>
                 <h2>{itemData.customer_id} </h2>
             </td>
-            <td onKeyUp={(e) => AddRowHandler(e)}>
+            <td>
+                {/* <td onKeyUp={(e) => AddRowHandler(e)}> */}
                 <DropDownCustomer
                     UpdateStateHandler={UpdateStateHandler}
                     itemDetail={itemData}
@@ -419,7 +420,7 @@ const List = ({
                     }`}
                 />
             </td>
-            <td onKeyUp={(e) => AddRowHandler(e)}>
+            <td>
                 <article className="calendar relative">
                     <span className="cal ">
                         <Image
@@ -450,7 +451,7 @@ const List = ({
                     )}
                 </article>
             </td>
-            <td onKeyUp={(e) => AddRowHandler(e)}>
+            <td>
                 <input
                     type="text"
                     value={itemData.reference_no}
@@ -465,7 +466,7 @@ const List = ({
                     }}
                 />
             </td>
-            <td onKeyUp={(e) => AddRowHandler(e)}>
+            <td>
                 <DropDownCharge
                     UpdateStateHandler={UpdateStateHandler}
                     itemDetail={itemData}
@@ -477,7 +478,7 @@ const List = ({
                     }`}
                 />
             </td>
-            <td onKeyUp={(e) => AddRowHandler(e)}>
+            <td>
                 <div
                     className={`ToggleAccount ${itemData.account} ${
                         !Permission_modify &&
@@ -506,7 +507,7 @@ const List = ({
                     </ul>
                 </div>
             </td>
-            <td onKeyUp={(e) => AddRowHandler(e)}>
+            <td>
                 <InputNumberForTable
                     className={`field w-full number ${
                         !Permission_modify &&

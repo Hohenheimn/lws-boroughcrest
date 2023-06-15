@@ -75,10 +75,19 @@ const List = ({
     UpdateStateHandler,
     itemDetail,
 }: List) => {
+    // Reset show item when open
+    const [showItemAll, setshowItemAll] = useState(true);
+    const keywordSearch = showItemAll ? "" : tempSearch;
+    useEffect(() => {
+        if (itemDetail.customer_name !== tempSearch) {
+            setshowItemAll(false);
+        }
+    }, [tempSearch]);
+    // end
     const { data, isLoading, isError } = useQuery(
-        ["customer-list-dd", tempSearch],
+        ["customer-list-dd", keywordSearch],
         () => {
-            return api.get(`/admin/customer?keywords=${tempSearch}`, {
+            return api.get(`/admin/customer?keywords=${keywordSearch}`, {
                 headers: {
                     Authorization: "Bearer " + getCookie("user"),
                 },

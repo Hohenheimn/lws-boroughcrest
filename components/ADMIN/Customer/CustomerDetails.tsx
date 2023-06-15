@@ -110,7 +110,12 @@ export default function CustomerDetail() {
                 </li>
                 <li className="w-3/12 1280px:w-4/12 flex-col 480px:w-full p-5 flex justify-center items-center">
                     <aside className=" w-6/12 820px:w-10/12 rounded-full overflow-hidden 480px:w-5/12 aspect-square relative shadow-xl">
-                        <Image src={Logo} alt="profile" layout="fill" />
+                        <Image
+                            src={Logo}
+                            alt="profile"
+                            layout="fill"
+                            objectFit="cover"
+                        />
                     </aside>
                     <Tippy content={`${data?.status}`} theme="ThemeRed">
                         <div
@@ -183,7 +188,7 @@ export default function CustomerDetail() {
                                 PORTAL ID
                             </p>
                             <h4 className=" text-gray-500 mb-5 1024px:text-[14px]">
-                                {data?.portal_id}
+                                {data?.user.portal_id}
                             </h4>
                         </li>
                         {data?.type !== "Company" && (

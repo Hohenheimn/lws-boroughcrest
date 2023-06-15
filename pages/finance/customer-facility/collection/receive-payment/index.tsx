@@ -67,6 +67,7 @@ export default function ReceivePayment() {
                 page="receive-payment"
                 isPeriod={isPeriod}
                 setPeriod={setPeriod}
+                ExportEndpoint={""}
             />
             <ReceivePaymentForm
                 DefaultValHeaderForm={HeaderForm}

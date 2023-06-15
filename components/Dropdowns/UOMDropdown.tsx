@@ -23,26 +23,44 @@ export default function UOMDropdown({
 }: Props) {
     const modal = useRef<any>();
 
-    const [isSearchTemp, setSearchTemp] = useState("");
+    const [isSearchTemp, setSearchTemp] = useState(value.value);
 
     useEffect(() => {
         setSearchTemp(value.value);
     }, [value]);
 
-    const { isLoading, data, isError } = useQuery([name, isSearchTemp], () => {
-        return api.get(`${endpoint}?keywords=${isSearchTemp}`, {
+    // Reset show item when open
+    const [showItemAll, setshowItemAll] = useState(true);
+    const keywordSearch = showItemAll ? "" : isSearchTemp;
+    useEffect(() => {
+        if (value.value !== isSearchTemp) {
+            setshowItemAll(false);
+        }
+    }, [isSearchTemp]);
+    // end
+    const { isLoading, data, isError } = useQuery([name, keywordSearch], () => {
+        return api.get(`${endpoint}?keywords=${keywordSearch}`, {
             headers: {
                 Authorization: "Bearer " + getCookie("user"),
             },
         });
     });
-
     useEffect(() => {
         const clickOutSide = (e: any) => {
             if (!modal?.current?.contains(e.target)) {
+                if (value.value === "") {
+                    setSearchTemp(value.value);
+                    setFunction({
+                        value: "",
+                        id: "",
+                        toggle: false,
+                    });
+                    return;
+                }
                 setSearchTemp(value.value);
                 setFunction({
                     ...value,
+
                     toggle: false,
                 });
             }

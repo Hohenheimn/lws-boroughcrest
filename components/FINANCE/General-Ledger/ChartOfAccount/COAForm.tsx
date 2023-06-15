@@ -284,6 +284,7 @@ export default function COAForm({
                                 <label>PARENT</label>
                                 <DynamicPopOver
                                     className=""
+                                    samewidth={false}
                                     toRef={
                                         <input
                                             type="number"

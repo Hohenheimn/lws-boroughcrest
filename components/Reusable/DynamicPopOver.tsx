@@ -29,11 +29,7 @@ export default function DynamicPopOver({
         inputField.current,
         toPopOver.current,
         {
-            placement: forTable
-                ? "auto"
-                : rightPosition
-                ? "bottom-end"
-                : "bottom-start",
+            placement: rightPosition ? "bottom-end" : "bottom-start",
             modifiers: [
                 { name: "preventOverflow", enabled: true },
                 {

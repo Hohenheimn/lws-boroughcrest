@@ -49,6 +49,7 @@ export default function Archive() {
                 page="archive"
                 isPeriod={isPeriod}
                 setPeriod={setPeriod}
+                ExportEndpoint={""}
             />
             <div className="flex items-center">
                 <h1

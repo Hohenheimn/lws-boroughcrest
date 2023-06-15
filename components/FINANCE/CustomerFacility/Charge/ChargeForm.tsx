@@ -293,12 +293,16 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                         className="field"
                                         {...register("code", {
                                             required: "Required!",
+                                            minLength: {
+                                                value: 4,
+                                                message: "4 Character to 10",
+                                            },
                                         })}
                                         type="text"
                                         autoComplete="off"
                                         value={fieldValue.code}
                                         onChange={(e: any) => {
-                                            if (!TextFieldValidation(e, 4))
+                                            if (!TextFieldValidation(e, 10))
                                                 return;
                                             setFieldValue({
                                                 ...fieldValue,

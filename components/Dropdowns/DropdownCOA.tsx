@@ -68,11 +68,20 @@ const List = ({
     UpdateStateHandler,
     itemDetail,
 }: List) => {
+    // Reset show item when open
+    const [showItemAll, setshowItemAll] = useState(true);
+    const keywordSearch = showItemAll ? "" : tempSearch;
+    useEffect(() => {
+        if (itemDetail.accountName !== tempSearch) {
+            setshowItemAll(false);
+        }
+    }, [tempSearch]);
+    // end
     const { data, isLoading, isError } = useQuery(
-        ["COA-list-dd", tempSearch],
+        ["COA-list-dd", keywordSearch],
         () => {
             return api.get(
-                `/finance/general-ledger/chart-of-accounts?keywords=${tempSearch}`,
+                `/finance/general-ledger/chart-of-accounts?keywords=${keywordSearch}`,
                 {
                     headers: {
                         Authorization: "Bearer " + getCookie("user"),

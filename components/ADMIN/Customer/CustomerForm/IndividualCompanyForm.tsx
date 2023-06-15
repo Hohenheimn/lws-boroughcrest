@@ -202,6 +202,7 @@ export default function IndividualCompanyForm({
                                             src={`${imgID.url}`}
                                             alt=""
                                             layout="fill"
+                                            objectFit="cover"
                                         />
                                     </aside>
                                     <div>

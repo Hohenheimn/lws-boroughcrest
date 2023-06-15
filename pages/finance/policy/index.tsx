@@ -15,7 +15,6 @@ import { ScaleLoader } from "react-spinners";
 import { PageAccessValidation } from "../../../components/Reusable/PermissionValidation/PageAccessValidation";
 import NoPermissionComp from "../../../components/Reusable/PermissionValidation/NoPermissionComp";
 import { AccessActionValidation } from "../../../components/Reusable/PermissionValidation/ActionAccessValidation";
-import { FaLock } from "react-icons/fa";
 
 type FinanceReference = {
     document: string;
@@ -208,7 +207,7 @@ export default function Policy() {
                                 "Calendar",
                                 "Febuary",
                                 "March",
-                                "Aprill",
+                                "April",
                                 "May",
                                 "June",
                                 "July",

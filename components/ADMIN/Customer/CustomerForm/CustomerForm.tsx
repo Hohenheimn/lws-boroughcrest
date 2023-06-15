@@ -443,7 +443,7 @@ const DefaultDisplayForm = () => {
                                 src={`${isValidIDUrl}`}
                                 alt=""
                                 layout="fill"
-                                objectFit="cover"
+                                objectFit="contain"
                             />
                         </aside>
                         UPLOAD VALID ID

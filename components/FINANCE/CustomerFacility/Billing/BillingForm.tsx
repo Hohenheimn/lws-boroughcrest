@@ -703,6 +703,7 @@ const List = ({ itemList, setState, isState, index, isUnitCodes }: List) => {
                         description: e.target.getAttribute("data-description"),
                         uom: e.target.getAttribute("data-uom"),
                         charge_vat: e.target.getAttribute("data-vat"),
+                        unit_price: e.target.getAttribute("data-rate"),
                     };
                 } else if (key === "description") {
                     return {

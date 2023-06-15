@@ -92,11 +92,20 @@ const List = ({
     filter,
     onlyDeposit,
 }: List) => {
+    // Reset show item when open
+    const [showItemAll, setshowItemAll] = useState(true);
+    const keywordSearch = showItemAll ? "" : tempSearch;
+    useEffect(() => {
+        if (itemDetail.charge !== tempSearch) {
+            setshowItemAll(false);
+        }
+    }, [tempSearch]);
+    // end
     const { data, isLoading, isError } = useQuery(
-        ["charge-list-dd", tempSearch, filter, onlyDeposit],
+        ["charge-list-dd", keywordSearch, filter, onlyDeposit],
         () => {
             return api.get(
-                `/finance/customer-facility/charges?keywords=${tempSearch}${
+                `/finance/customer-facility/charges?keywords=${keywordSearch}${
                     filter ? "&meter_reading=1" : ""
                 }${onlyDeposit ? "&type=Deposit" : ""}`,
                 {
