@@ -12,7 +12,7 @@ export type RequestDetailType = {
     date: string;
     request: string;
     ticket_no: string;
-    details: string;
+    remarks: string;
     status: string;
     create_at: string;
     trail: {
@@ -22,7 +22,7 @@ export type RequestDetailType = {
         time: string;
         datetime: string;
     }[];
-    remarks: RequestRemarks[];
+    request_remarks: RequestRemarks[];
     updated_at: string;
 };
 

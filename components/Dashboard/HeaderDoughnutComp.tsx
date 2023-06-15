@@ -55,46 +55,65 @@ export default function HeaderDoughnutComp() {
     );
 
     // left - owner, right developer
-    const [dataSetUnit, setDataSetUnit] = useState([0, 0]);
+    const [dataSetUnit, setDataSetUnit] = useState([
+        {
+            label: "",
+            dataSet: 0,
+            color: "",
+        },
+    ]);
 
-    const [dataSetArea, setDataSetArea] = useState([0, 0]);
+    const [dataSetArea, setDataSetArea] = useState([
+        {
+            label: "",
+            dataSet: 0,
+            color: "",
+        },
+    ]);
 
     useEffect(() => {
         if (data?.data !== undefined) {
-            let OwnerUnit = 0;
-            let DeveloperUnit = 0;
-            data?.data?.recordsPerUnit.map((itemMap: any) => {
-                if (itemMap.label === "Owner") {
-                    OwnerUnit = itemMap.percentage;
+            const recordPerUnit = data?.data?.recordsPerUnit.map(
+                (itemMap: any, index: number) => {
+                    let color = "#8f384d";
+                    if (index % 2 === 0) {
+                        color = "#d4a8a8";
+                    }
+                    if (index % 3 === 0) {
+                        color = "#fa8b00";
+                    }
+                    if (index % 4 === 0) {
+                        color = "#2e4364";
+                    }
+                    return {
+                        label: itemMap.label,
+                        dataSet: itemMap.percentage,
+                        color: color,
+                    };
                 }
-                return;
-            });
-            data?.data?.recordsPerUnit.map((itemMap: any) => {
-                if (itemMap.label === "Developer") {
-                    DeveloperUnit = itemMap.percentage;
-                }
-                return;
-            });
-            const UnitDataSet = [Number(OwnerUnit), Number(DeveloperUnit)];
-            setDataSetUnit(UnitDataSet);
+            );
+            setDataSetUnit(recordPerUnit);
             // ----------------------------------------------------------------------------------------
-            let OwnerArea = 0;
-            let DeveloperArea = 0;
-            data?.data?.recordsPerArea.map((itemMap: any) => {
-                if (itemMap.label === "Owner") {
-                    OwnerArea = itemMap.count;
+            const recordPerArea = data?.data?.recordsPerArea.map(
+                (itemMap: any, index: number) => {
+                    let color = "#8f384d";
+                    if (index % 2 === 0) {
+                        color = "#d4a8a8";
+                    }
+                    if (index % 3 === 0) {
+                        color = "#fa8b00";
+                    }
+                    if (index % 4 === 0) {
+                        color = "#2e4364";
+                    }
+                    return {
+                        label: itemMap.label,
+                        dataSet: itemMap.count,
+                        color: color,
+                    };
                 }
-                return;
-            });
-            data?.data?.recordsPerArea.map((itemMap: any) => {
-                if (itemMap.label === "Developer") {
-                    console.log(itemMap);
-                    DeveloperArea = itemMap.count;
-                }
-                return;
-            });
-            const AreaDataSet = [Number(DeveloperArea), Number(OwnerArea)];
-            setDataSetArea(AreaDataSet);
+            );
+            setDataSetArea(recordPerArea);
         }
     }, [data?.data]);
 
