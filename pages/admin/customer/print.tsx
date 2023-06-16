@@ -8,7 +8,10 @@ import Image from "next/image";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 import PrintTemplate from "../../../components/Reusable/PrintTemplate";
-import { GetCustomerList } from "../../../components/ReactQuery/CustomerMethod";
+import {
+    GetCustomerList,
+    GetPrintCustomerList,
+} from "../../../components/ReactQuery/CustomerMethod";
 import { PageAccessValidation } from "../../../components/Reusable/PermissionValidation/PageAccessValidation";
 import NoPermissionComp from "../../../components/Reusable/PermissionValidation/NoPermissionComp";
 
@@ -28,15 +31,12 @@ export default function Print({
     // Getting column from parameter
     const ColumnsArray = Columns.split(",");
 
-    const { data, isLoading, isError } = GetCustomerList(
-        Number(PageNumber),
-        Keyword,
-        RowNumber
-    );
-
-    const printhandler = () => {
-        print();
-    };
+    // const { data, isLoading, isError } = GetCustomerList(
+    //     Number(PageNumber),
+    //     Keyword,
+    //     RowNumber
+    // );
+    const { data, isLoading, isError } = GetPrintCustomerList();
 
     const PagePermisson = PageAccessValidation("Customer");
 
@@ -82,7 +82,7 @@ export default function Print({
                         <tbody className="text-[14px]">
                             {!isLoading && !isError && (
                                 <>
-                                    {data?.data?.data.map(
+                                    {data?.data?.map(
                                         (item: any, index: number) => (
                                             <List
                                                 key={index}

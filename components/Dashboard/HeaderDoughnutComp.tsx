@@ -75,15 +75,30 @@ export default function HeaderDoughnutComp() {
         if (data?.data !== undefined) {
             const recordPerUnit = data?.data?.recordsPerUnit.map(
                 (itemMap: any, index: number) => {
-                    let color = "#8f384d";
+                    let color = "#87352d";
                     if (index % 2 === 0) {
                         color = "#d4a8a8";
                     }
                     if (index % 3 === 0) {
-                        color = "#fa8b00";
+                        color = "#c75543";
                     }
                     if (index % 4 === 0) {
                         color = "#2e4364";
+                    }
+                    if (index % 5 === 0) {
+                        color = "#d57f5a";
+                    }
+                    if (index % 6 === 0) {
+                        color = "#d6a278";
+                    }
+                    if (index % 7 === 0) {
+                        color = "#444a66";
+                    }
+                    if (index % 8 === 0) {
+                        color = "#8d8949";
+                    }
+                    if (index % 9 === 0) {
+                        color = "#b2c1ad";
                     }
                     return {
                         label: itemMap.label,
@@ -96,16 +111,32 @@ export default function HeaderDoughnutComp() {
             // ----------------------------------------------------------------------------------------
             const recordPerArea = data?.data?.recordsPerArea.map(
                 (itemMap: any, index: number) => {
-                    let color = "#8f384d";
+                    let color = "#87352d";
                     if (index % 2 === 0) {
                         color = "#d4a8a8";
                     }
                     if (index % 3 === 0) {
-                        color = "#fa8b00";
+                        color = "#c75543";
                     }
                     if (index % 4 === 0) {
                         color = "#2e4364";
                     }
+                    if (index % 5 === 0) {
+                        color = "#d57f5a";
+                    }
+                    if (index % 6 === 0) {
+                        color = "#d6a278";
+                    }
+                    if (index % 7 === 0) {
+                        color = "#444a66";
+                    }
+                    if (index % 8 === 0) {
+                        color = "#8d8949";
+                    }
+                    if (index % 9 === 0) {
+                        color = "#b2c1ad";
+                    }
+
                     return {
                         label: itemMap.label,
                         dataSet: itemMap.count,

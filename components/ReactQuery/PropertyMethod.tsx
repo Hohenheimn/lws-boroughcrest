@@ -29,6 +29,22 @@ export const GetPropertyList = (
     );
 };
 
+export const GetPrintPropertyList = () => {
+    return useQuery(
+        "Property-List-Print",
+        () => {
+            return api.get(`/admin/property/unit`, {
+                headers: {
+                    Authorization: "Bearer " + getCookie("user"),
+                },
+            });
+        },
+        {
+            refetchOnWindowFocus: false,
+        }
+    );
+};
+
 export const GetPropertyListDraft = () => {
     return useQuery(
         ["Property-draft-list"],

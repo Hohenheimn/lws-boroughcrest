@@ -101,7 +101,9 @@ export default function FinanceSearchFilter({
                 <ul className={style.navigation}>
                     <li className={style.importExportPrint}>
                         {isExportLoading ? (
-                            <MoonLoader color="#8f384d" size={20} />
+                            <div className={style.icon} onClick={exportHandler}>
+                                <MoonLoader color="#8f384d" size={20} />
+                            </div>
                         ) : (
                             <div>
                                 <Tippy theme="ThemeRed" content="Export">

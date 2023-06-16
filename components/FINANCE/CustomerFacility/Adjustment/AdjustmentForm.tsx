@@ -135,6 +135,10 @@ export default function AdjustmentForm({ DefaultValue }: Props) {
         setUserInfo(JSON.parse(localStorage.userInfo));
     }, []);
 
+    // useEffect(() => {
+    //     console.log(userInfo);
+    // }, [userInfo]);
+
     const { setPrompt } = useContext(AppContext);
 
     const [isErrorMessage, setErrorMessage] = useState(false);
@@ -385,20 +389,24 @@ export default function AdjustmentForm({ DefaultValue }: Props) {
 
                 let deferred_customer_gst_account = isAdjustmentTotal;
 
-                let other_account = isAdjustmentTotal;
+                let less_vat = isAdjustmentTotal;
+
+                let two_percent_amount = 0;
 
                 const vat_rate = 12;
 
                 if (userInfo?.corporate_gst_type == "NON-VAT") {
-                    other_account = isAdjustmentTotal;
+                    less_vat = isAdjustmentTotal;
                 } else {
-                    // computation here
+                    // amount of vat rate on adjustment total
                     deferred_customer_gst_account =
                         adjustment_total * (vat_rate / (vat_rate + 100));
-
-                    other_account =
+                    // amount of remaining amount after to subtract the vat rate
+                    less_vat =
                         Number(adjustment_total) -
                         Number(deferred_customer_gst_account);
+                    // amount of 2% of adjustment
+                    two_percent_amount = adjustment_total * 0.02;
                 }
                 if (AdvancesToggle && router.query.modify !== undefined) {
                     let debit = 0;
@@ -419,25 +427,69 @@ export default function AdjustmentForm({ DefaultValue }: Props) {
                         credit: Number(credit),
                     };
                 }
+
+                let debit = 0;
+                let credit = 0;
+                if (isTransaction === "Charge Debit") {
+                    if (item.account_name === "A R - Association Dues") {
+                        debit =
+                            Number(deferred_customer_gst_account) +
+                            Number(less_vat);
+                    }
+                    if (item.account_name === "Deferred Output Vat") {
+                        credit = deferred_customer_gst_account;
+                    }
+                    if (item.account_name === "Revenue - Association Dues") {
+                        credit = less_vat;
+                    }
+                }
+
+                if (
+                    isTransaction === "Charge Reversal" ||
+                    isTransaction === "Discounts" ||
+                    isTransaction === "Applied Advances"
+                ) {
+                    if (item.account_name === "A R - Association Dues") {
+                        credit =
+                            Number(deferred_customer_gst_account) +
+                            Number(less_vat);
+                    }
+                    if (item.account_name === "Deferred Output Vat") {
+                        debit = deferred_customer_gst_account;
+                    }
+                    if (item.account_name === "Revenue - Association Dues") {
+                        debit = less_vat;
+                    }
+                    if (item.account_name === "Discount Association Dues") {
+                        debit = less_vat;
+                    }
+                    if (
+                        item.account_name ===
+                        "Members Advances - Association Dues"
+                    ) {
+                        debit = less_vat;
+                    }
+                }
+
+                if (isTransaction === "Credit Tax") {
+                    if (
+                        item.account_name ===
+                        "Creditable Withholding Tax - Expanded"
+                    ) {
+                        debit = two_percent_amount;
+                    }
+                    if (item.account_name === "A R - Association Dues") {
+                        credit = two_percent_amount;
+                    }
+                }
+
                 return {
                     id: index,
                     coa_id: item.id,
                     chart_code: item.chart_code,
                     account_name: item.account_name,
-                    debit:
-                        validationDebitOrCreditField === "debit"
-                            ? item.default_account ===
-                              "Deferred Customer GST Account"
-                                ? deferred_customer_gst_account
-                                : other_account
-                            : 0,
-                    credit:
-                        validationDebitOrCreditField === "credit"
-                            ? item.default_account ===
-                              "Deferred Customer GST Account"
-                                ? deferred_customer_gst_account
-                                : other_account
-                            : 0,
+                    debit: debit,
+                    credit: credit,
                 };
             }
         );

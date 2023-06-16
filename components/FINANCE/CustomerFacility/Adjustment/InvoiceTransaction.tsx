@@ -180,14 +180,6 @@ export default function InvoiceTransaction({
                         </tbody>
                     </table>
                 </div>
-                {/* <div className="flex justify-end">
-                    <button
-                        className="buttonRed"
-                        onClick={ApplyAccountEntriesHandler}
-                    >
-                        APPLY
-                    </button>
-                </div> */}
             </li>
         </ul>
     );
@@ -228,6 +220,7 @@ const List = ({
                     value={itemDetail.adjustment_amount}
                     type={""}
                     onChange={Updatevalue}
+                    valueLimit={itemDetail.amount_due}
                 />
             </td>
             <td style={{ padding: "5px 0 !important" }}>
