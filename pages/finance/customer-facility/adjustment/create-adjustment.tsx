@@ -51,6 +51,7 @@ export default function CreateAdjustment() {
                     Charge: {
                         charge: "",
                         charge_id: 0,
+                        vat_rate: 0,
                     },
                     transaction_type: "",
                     AdvancesToggle: false,

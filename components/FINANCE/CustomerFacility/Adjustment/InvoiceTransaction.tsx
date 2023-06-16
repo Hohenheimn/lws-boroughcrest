@@ -60,6 +60,7 @@ export default function InvoiceTransaction({
                             setCharge({
                                 charge: e.target.innerHTML,
                                 charge_id: e.target.getAttribute("data-id"),
+                                vat_rate: e.target.getAttribute("data-vat"),
                             });
                         }}
                         itemDetail={isCharge}
@@ -86,25 +87,30 @@ export default function InvoiceTransaction({
                                     <td>{item.document_no}</td>
                                     <td>{item.description}</td>
                                     <td>
-                                        <TextNumberDisplay
-                                            className="withPeso w-full text-end"
-                                            value={
-                                                item.amount_due === undefined
-                                                    ? 0
-                                                    : item.amount_due
-                                            }
-                                        />
+                                        <div className="w-full flex justify-end">
+                                            <TextNumberDisplay
+                                                className="withPeso w-full text-end"
+                                                value={
+                                                    item.amount_due ===
+                                                    undefined
+                                                        ? 0
+                                                        : item.amount_due
+                                                }
+                                            />
+                                        </div>
                                     </td>
                                     <td>
-                                        <TextNumberDisplay
-                                            className="withPeso w-full text-end"
-                                            value={
-                                                item.remaining_advances ===
-                                                undefined
-                                                    ? 0
-                                                    : item.remaining_advances
-                                            }
-                                        />
+                                        <div className="w-full flex justify-end">
+                                            <TextNumberDisplay
+                                                className="withPeso w-full text-end"
+                                                value={
+                                                    item.remaining_advances ===
+                                                    undefined
+                                                        ? 0
+                                                        : item.remaining_advances
+                                                }
+                                            />
+                                        </div>
                                     </td>
                                 </tr>
                             ))}
@@ -171,10 +177,12 @@ export default function InvoiceTransaction({
                                     </h4>
                                 </td>
                                 <td>
-                                    <TextNumberDisplay
-                                        className="withPeso w-full text-end"
-                                        value={isAdjustmentTotal}
-                                    />
+                                    <div className=" w-full flex justify-end">
+                                        <TextNumberDisplay
+                                            className="withPeso w-full text-end"
+                                            value={isAdjustmentTotal}
+                                        />
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>
@@ -224,10 +232,12 @@ const List = ({
                 />
             </td>
             <td style={{ padding: "5px 0 !important" }}>
-                <TextNumberDisplay
-                    className="withPeso w-full text-end"
-                    value={itemDetail.balance}
-                />
+                <div className="w-full flex justify-end">
+                    <TextNumberDisplay
+                        className="withPeso w-full text-end"
+                        value={itemDetail.balance}
+                    />
+                </div>
             </td>
         </tr>
     );

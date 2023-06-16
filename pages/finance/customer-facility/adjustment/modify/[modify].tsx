@@ -48,6 +48,7 @@ export default function Modify({ id }: any) {
                 Charge: {
                     charge: AdjustmentDetail.charge,
                     charge_id: AdjustmentDetail.charge_id,
+                    vat_rate: AdjustmentDetail.vat_percentage,
                 },
                 transaction_type: AdjustmentDetail.transaction,
                 Invoice: AdjustmentDetail.adjustment_invoice.map((item) => {

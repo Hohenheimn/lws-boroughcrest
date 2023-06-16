@@ -59,6 +59,10 @@ export default function JournalTable({ type, isPeriod, setPeriod }: Props) {
 
     const [isSelectedIDs, setSelectedIDs] = useState<number[]>([]);
 
+    useEffect(() => {
+        setSelectedIDs([]);
+    }, [type]);
+
     // ADVANCE FILTER
     const [isAdvFilter, setAdvFilter] = useState<Advancefilter>([]);
 

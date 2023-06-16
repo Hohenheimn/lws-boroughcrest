@@ -227,31 +227,35 @@ const List = ({
             <td>
                 {toggle ? (
                     <InputNumberForTable
-                        className={`number field inline-block w-full bg-white ${debitValidate} `}
+                        className={`number field text-end inline-block w-full bg-white ${debitValidate} `}
                         value={itemDetail.debit}
                         onChange={UpdateStateHandler}
                         type={"debit"}
                     />
                 ) : (
-                    <TextNumberDisplay
-                        className="withPeso w-full text-end"
-                        value={itemDetail.debit}
-                    />
+                    <div className="w-full flex justify-end">
+                        <TextNumberDisplay
+                            className="withPeso w-full text-end"
+                            value={itemDetail.debit}
+                        />
+                    </div>
                 )}
             </td>
             <td>
                 {toggle ? (
                     <InputNumberForTable
-                        className={`number field inline-block w-full bg-white ${creditValidate} `}
+                        className={`number field inline-block text-end w-full bg-white ${creditValidate} `}
                         value={itemDetail.credit}
                         onChange={UpdateStateHandler}
                         type={"credit"}
                     />
                 ) : (
-                    <TextNumberDisplay
-                        className="withPeso w-full text-end"
-                        value={itemDetail.credit}
-                    />
+                    <div className="w-full flex justify-end">
+                        <TextNumberDisplay
+                            className="withPeso w-full text-end"
+                            value={itemDetail.credit}
+                        />
+                    </div>
                 )}
             </td>
 

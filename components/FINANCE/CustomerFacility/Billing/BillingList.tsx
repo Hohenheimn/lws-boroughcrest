@@ -61,6 +61,10 @@ export default function BillingList() {
 
     const [isSelectedIDs, setSelectedIDs] = useState<number[]>([]);
 
+    useEffect(() => {
+        setSelectedIDs([]);
+    }, [type]);
+
     const [updateDueDate, setUpdateDueDate] = useState({
         value: "",
         toggle: false,
