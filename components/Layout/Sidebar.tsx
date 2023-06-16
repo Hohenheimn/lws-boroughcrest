@@ -143,6 +143,7 @@ export default function Sidebar({
                                 }}
                             >
                                 {ValidateParentUrl === item.ActiveUrl &&
+                                    item.name !== "dashboard" &&
                                     item.SubMenu.length !== 0 && (
                                         <Submenu
                                             SubmenuDetail={item.SubMenu}

@@ -278,7 +278,7 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
                                             isFilter={isFilter}
                                         />
                                     )}
-                                    {isFilter && page === "property unit" && (
+                                    {isFilter && page === "Property" && (
                                         <FilterDynamic
                                             setFilter={setFilter}
                                             TableRows={propTableRows}

@@ -185,7 +185,7 @@ const List = ({ setTable, isTable, itemDetail, index }: List) => {
                 <DropDownCharge
                     UpdateStateHandler={updateValue}
                     itemDetail={itemDetail}
-                    onlyDeposit={true}
+                    type="Charge"
                 />
             </td>
             <td>

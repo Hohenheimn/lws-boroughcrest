@@ -40,7 +40,7 @@ export default function UserDetails({ UserDetail }: Props) {
                         department: UserDetail.department_name,
                         email: UserDetail.email,
                         contact_no: UserDetail.contact_no,
-                        corporate: "Sample",
+                        corporate: UserDetail.corporate_name,
                         corporate_id: UserDetail.corporate_id,
                         status: UserDetail.status,
                     }}

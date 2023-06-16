@@ -13,7 +13,7 @@ type DropdownItem = {
     displayID?: boolean;
     filter?: boolean;
     forTable?: boolean;
-    onlyDeposit?: boolean;
+    type?: string;
 };
 
 export default function DropDownCharge({
@@ -24,7 +24,7 @@ export default function DropDownCharge({
     displayID,
     filter,
     forTable,
-    onlyDeposit,
+    type,
 }: DropdownItem) {
     const [isToggle, setToggle] = useState(false);
     const [tempSearch, setTempSearch] = useState(itemDetail?.charge);
@@ -63,7 +63,7 @@ export default function DropDownCharge({
                                 UpdateStateHandler={UpdateStateHandler}
                                 itemDetail={itemDetail}
                                 filter={filter}
-                                onlyDeposit={onlyDeposit}
+                                type={type}
                             />
                         )}
                     </>
@@ -80,7 +80,7 @@ type List = {
     itemDetail: any;
     tempSearch: string;
     filter?: boolean;
-    onlyDeposit?: boolean;
+    type?: string;
 };
 
 const List = ({
@@ -90,7 +90,7 @@ const List = ({
     UpdateStateHandler,
     itemDetail,
     filter,
-    onlyDeposit,
+    type,
 }: List) => {
     // Reset show item when open
     const [showItemAll, setshowItemAll] = useState(true);
@@ -102,12 +102,12 @@ const List = ({
     }, [tempSearch]);
     // end
     const { data, isLoading, isError } = useQuery(
-        ["charge-list-dd", keywordSearch, filter, onlyDeposit],
+        ["charge-list-dd", keywordSearch, filter, type],
         () => {
             return api.get(
                 `/finance/customer-facility/charges?keywords=${keywordSearch}${
                     filter ? "&meter_reading=1" : ""
-                }${onlyDeposit ? "&type=Deposit" : ""}`,
+                }${type !== undefined ? `&type=${type}` : ""}`,
                 {
                     headers: {
                         Authorization: "Bearer " + getCookie("user"),

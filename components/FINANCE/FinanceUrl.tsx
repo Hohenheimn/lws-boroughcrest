@@ -28,7 +28,7 @@ export const FinanceUpperLinks = () => {
         if (localStorage.userInfo !== undefined) {
             if (router.pathname.includes("general-ledger")) {
                 const GetLink = GeneralLedger.filter((filterItem) =>
-                    userInfo?.permissions.some(
+                    userInfo?.permissions?.some(
                         (someItem) => someItem.menu === filterItem.name
                     )
                 );
@@ -36,7 +36,7 @@ export const FinanceUpperLinks = () => {
             }
             if (router.pathname.includes("customer-facility")) {
                 const GetLink = CustomerFacility.filter((filterItem) =>
-                    userInfo?.permissions.some(
+                    userInfo?.permissions?.some(
                         (someItem) => someItem.menu === filterItem.name
                     )
                 );
@@ -44,7 +44,7 @@ export const FinanceUpperLinks = () => {
             }
             if (router.pathname.includes("check-warehouse")) {
                 const GetLink = CheckWarehouse.filter((filterItem) =>
-                    userInfo?.permissions.some(
+                    userInfo?.permissions?.some(
                         (someItem) => someItem.menu === filterItem.name
                     )
                 );
@@ -60,7 +60,7 @@ export const FinanceUpperLinks = () => {
             }
             if (router.pathname.includes("reports")) {
                 const GetLink = Reports.filter((filterItem) =>
-                    userInfo?.permissions.some(
+                    userInfo?.permissions?.some(
                         (someItem) => someItem.menu === filterItem.name
                     )
                 );

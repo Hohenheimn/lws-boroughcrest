@@ -28,7 +28,6 @@ export default function DoughnutChartComp({ dataSet }: Props) {
     });
 
     useEffect(() => {
-        console.log(dataSet);
         setData({
             labels: dataSet.map((item) => item.label),
             datasets: [
@@ -66,14 +65,6 @@ export default function DoughnutChartComp({ dataSet }: Props) {
                 </div>
             </div>
             <ul className=" w-full flex flex-wrap justify-around mb-0">
-                {/* <li className=" text-RegularColor text-[12px] flex items-center">
-                    <div className=" h-3 w-3 rounded-full bg-ThemeRed mr-3"></div>
-                    Properties owned by Owner Class
-                </li>
-                <li className=" text-RegularColor text-[12px] flex items-center">
-                    <div className=" h-3 w-3 rounded-full bg-[#d4a8a8] mr-3"></div>
-                    Properties owned by Developer Class
-                </li> */}
                 {dataSet.map((item, index) => (
                     <li
                         key={index}
