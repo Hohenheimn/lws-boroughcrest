@@ -167,6 +167,7 @@ export default function JournalTable({ type, isPeriod, setPeriod }: Props) {
             toggle: true,
         });
         setButtonClicked("");
+        setRejectNoticeToggle(false);
     };
     const onError = (e: any) => {
         ErrorSubmit(e, setPrompt);

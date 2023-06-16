@@ -8,7 +8,10 @@ import Image from "next/image";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 import PrintTemplate from "../../../components/Reusable/PrintTemplate";
-import { GetPropertyList } from "../../../components/ReactQuery/PropertyMethod";
+import {
+    GetPrintPropertyList,
+    GetPropertyList,
+} from "../../../components/ReactQuery/PropertyMethod";
 import { PageAccessValidation } from "../../../components/Reusable/PermissionValidation/PageAccessValidation";
 import NoPermissionComp from "../../../components/Reusable/PermissionValidation/NoPermissionComp";
 
@@ -27,7 +30,7 @@ export default function Print({
 }: Props) {
     const ColumnsArray = Columns.split(",");
 
-    const { data, isLoading } = GetPropertyList(PageNumber, Keyword, RowNumber);
+    const { data, isLoading } = GetPrintPropertyList();
 
     const PagePermisson = PageAccessValidation("Property");
 
@@ -53,15 +56,13 @@ export default function Print({
                             </tr>
                         </thead>
                         <tbody className="text-[14px]">
-                            {data?.data?.data.map(
-                                (item: any, index: number) => (
-                                    <List
-                                        key={index}
-                                        itemDetail={item}
-                                        Columns={ColumnsArray}
-                                    />
-                                )
-                            )}
+                            {data?.data.map((item: any, index: number) => (
+                                <List
+                                    key={index}
+                                    itemDetail={item}
+                                    Columns={ColumnsArray}
+                                />
+                            ))}
                         </tbody>
                     </table>
                 </PrintTemplate>

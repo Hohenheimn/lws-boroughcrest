@@ -82,6 +82,16 @@ export const GetCustomerList = (
     );
 };
 
+export const GetPrintCustomerList = () => {
+    return useQuery(["get-print-list"], () => {
+        return api.get(`/admin/customer`, {
+            headers: {
+                Authorization: "Bearer " + getCookie("user"),
+            },
+        });
+    });
+};
+
 export const GetCustomerListDraft = () => {
     return useQuery(["get-customer-draft-list"], () => {
         return api.get(`/admin/customer?status=draft`, {
