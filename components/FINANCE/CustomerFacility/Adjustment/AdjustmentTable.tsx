@@ -65,6 +65,10 @@ export default function AdjustmentTable({ type, isPeriod, setPeriod }: Props) {
 
     const [isSelectedIDs, setSelectedIDs] = useState<number[]>([]);
 
+    useEffect(() => {
+        setSelectedIDs([]);
+    }, [type]);
+
     // ADVANCE FILTER
     const [isAdvFilter, setAdvFilter] = useState<Advancefilter>([]);
 
