@@ -115,6 +115,7 @@ export type DefaultValueAdjustment = {
     Charge: {
         charge: string;
         charge_id: number;
+        vat_rate: number;
     };
     transaction_type: string;
     Invoice: AdjustmentInvoice[];
@@ -134,10 +135,6 @@ export default function AdjustmentForm({ DefaultValue }: Props) {
     useEffect(() => {
         setUserInfo(JSON.parse(localStorage.userInfo));
     }, []);
-
-    // useEffect(() => {
-    //     console.log(userInfo);
-    // }, [userInfo]);
 
     const { setPrompt } = useContext(AppContext);
 
@@ -258,6 +255,7 @@ export default function AdjustmentForm({ DefaultValue }: Props) {
             setCharge({
                 charge: "",
                 charge_id: 0,
+                vat_rate: 0,
             });
 
             setTransaction("");
@@ -393,7 +391,7 @@ export default function AdjustmentForm({ DefaultValue }: Props) {
 
                 let two_percent_amount = 0;
 
-                const vat_rate = 12;
+                const vat_rate = isCharge.vat_rate;
 
                 if (userInfo?.corporate_gst_type == "NON-VAT") {
                     less_vat = isAdjustmentTotal;
@@ -867,20 +865,24 @@ export default function AdjustmentForm({ DefaultValue }: Props) {
                                                                 }
                                                             </td>
                                                             <td>
-                                                                <TextNumberDisplay
-                                                                    className="withPeso w-full text-end"
-                                                                    value={
-                                                                        item.debit
-                                                                    }
-                                                                />
+                                                                <div className="w-full flex justify-end">
+                                                                    <TextNumberDisplay
+                                                                        className="withPeso w-full text-end"
+                                                                        value={
+                                                                            item.debit
+                                                                        }
+                                                                    />
+                                                                </div>
                                                             </td>
                                                             <td>
-                                                                <TextNumberDisplay
-                                                                    className="withPeso w-full text-end"
-                                                                    value={
-                                                                        item.credit
-                                                                    }
-                                                                />
+                                                                <div className="w-full flex justify-end">
+                                                                    <TextNumberDisplay
+                                                                        className="withPeso w-full text-end"
+                                                                        value={
+                                                                            item.credit
+                                                                        }
+                                                                    />
+                                                                </div>
                                                             </td>
                                                         </tr>
                                                     )

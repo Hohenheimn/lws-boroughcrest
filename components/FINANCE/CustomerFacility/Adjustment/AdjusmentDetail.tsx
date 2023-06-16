@@ -13,6 +13,7 @@ export type AdjustmentDetailType = {
     id: number;
     charge: string;
     charge_id: number;
+    vat_percentage: number;
     memo_type: string;
     memo_no: string;
     date: string;
