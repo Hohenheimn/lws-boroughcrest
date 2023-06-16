@@ -134,7 +134,7 @@ const ReadingCrudList = ({
             });
             setArray(cloneArray);
         }
-    }, [data?.status]);
+    }, [data?.data]);
 
     return (
         <div className="crud-container" ref={modal}>

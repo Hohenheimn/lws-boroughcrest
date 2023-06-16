@@ -9,7 +9,7 @@ export const AccessActionValidation = (menu: string, action: string) => {
     }, []);
 
     useEffect(() => {
-        const menu_permission = userInfo?.permissions.filter(
+        const menu_permission = userInfo?.permissions?.filter(
             (filter) => filter.menu === menu
         );
         if (menu_permission !== undefined) {

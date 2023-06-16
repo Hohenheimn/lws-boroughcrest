@@ -9,7 +9,13 @@ export const SidebarLinks = () => {
             url: "/dashboard",
             iconUrl: "Dashboard.png",
             ActiveUrl: "dashboard",
-            SubMenu: [],
+            SubMenu: [
+                {
+                    name: "",
+                    url: "",
+                    ActiveName: "",
+                },
+            ],
         },
         {
             name: "project",
@@ -57,7 +63,7 @@ export const SidebarLinks = () => {
     }, []);
 
     const ValidatePermissionPage = (menu: string) => {
-        const cloneFilter: any = userInfo?.permissions.filter(
+        const cloneFilter: any = userInfo?.permissions?.filter(
             (filterItem) => filterItem.menu === menu
         );
         if (cloneFilter[0]?.access.includes("view")) {
@@ -73,7 +79,7 @@ export const SidebarLinks = () => {
                 if (item.name === "admin") {
                     let addLinks: any[] = [];
                     if (
-                        userInfo?.permissions.some(
+                        userInfo?.permissions?.some(
                             (someItem) => someItem.menu === "Customer"
                         )
                     ) {
@@ -89,7 +95,7 @@ export const SidebarLinks = () => {
                         }
                     }
                     if (
-                        userInfo?.permissions.some(
+                        userInfo?.permissions?.some(
                             (someItem) => someItem.menu === "Announcement"
                         )
                     ) {
@@ -105,7 +111,7 @@ export const SidebarLinks = () => {
                         }
                     }
                     if (
-                        userInfo?.permissions.some(
+                        userInfo?.permissions?.some(
                             (someItem) => someItem.menu === "Property"
                         )
                     ) {
@@ -121,7 +127,7 @@ export const SidebarLinks = () => {
                         }
                     }
                     // if (
-                    //     userInfo?.permissions.some(
+                    //     userInfo?.permissions?.some(
                     //         (someItem) => someItem.menu === "Communication"
                     //     )
                     // ) {
@@ -137,22 +143,22 @@ export const SidebarLinks = () => {
                     //     }
                     // }
                     if (
-                        userInfo?.permissions.some(
+                        userInfo?.permissions?.some(
                             (someItem) =>
                                 someItem.menu ===
                                 "Customer Request View (New Request)"
                         ) ||
-                        userInfo?.permissions.some(
+                        userInfo?.permissions?.some(
                             (someItem) =>
                                 someItem.menu ===
                                 "Customer Request View (In Process)"
                         ) ||
-                        userInfo?.permissions.some(
+                        userInfo?.permissions?.some(
                             (someItem) =>
                                 someItem.menu ===
                                 "Customer Request View (In Review)"
                         ) ||
-                        userInfo?.permissions.some(
+                        userInfo?.permissions?.some(
                             (someItem) =>
                                 someItem.menu ===
                                 "Customer Request View (Closed)"
@@ -192,7 +198,7 @@ export const SidebarLinks = () => {
                 if (item.name === "finance") {
                     let addLinks: any[] = [];
                     if (
-                        userInfo?.permissions.some(
+                        userInfo?.permissions?.some(
                             (someItem) =>
                                 someItem.menu === "Chart of Accounts" ||
                                 someItem.menu === "Opening Balance" ||
@@ -216,7 +222,7 @@ export const SidebarLinks = () => {
                     }
 
                     if (
-                        userInfo?.permissions.some(
+                        userInfo?.permissions?.some(
                             (someItem) =>
                                 someItem.menu === "Charges" ||
                                 someItem.menu === "Billing" ||
@@ -240,7 +246,7 @@ export const SidebarLinks = () => {
                     }
 
                     if (
-                        userInfo?.permissions.some(
+                        userInfo?.permissions?.some(
                             (someItem) => someItem.menu === "Email Blast"
                         )
                     ) {
@@ -255,7 +261,7 @@ export const SidebarLinks = () => {
                     }
 
                     if (
-                        userInfo?.permissions.some(
+                        userInfo?.permissions?.some(
                             (someItem) =>
                                 someItem.menu === "General Reports" ||
                                 someItem.menu === "Customer Reports"
@@ -276,7 +282,7 @@ export const SidebarLinks = () => {
                     }
 
                     if (
-                        userInfo?.permissions.some(
+                        userInfo?.permissions?.some(
                             (someItem) => someItem.menu === "Policy"
                         )
                     ) {
@@ -290,21 +296,21 @@ export const SidebarLinks = () => {
                         ];
                     }
 
-                    const urlRedirect = FinanceRedirect(
-                        `${addLinks[0]?.name}`,
-                        userInfo
-                    );
-
                     addLinks.splice(2, 0, {
                         name: "Check Warehouse",
                         url: "/finance/check-warehouse/check-receivables/check-schedule",
                         ActiveName: "check-warehouse",
                     });
 
+                    const urlRedirect = FinanceRedirect(
+                        `${addLinks[0]?.name}`,
+                        userInfo
+                    );
+
                     return {
                         ...item,
                         url:
-                            addLinks.length > 0
+                            addLinks.length > 0 && urlRedirect !== undefined
                                 ? urlRedirect
                                 : "/finance/check-warehouse/check-payment",
                         SubMenu: [...addLinks, ...item.SubMenu],
@@ -326,7 +332,10 @@ export const SidebarLinks = () => {
                 const cloneOtherUser = clone.filter(
                     (item) => item.name !== "project"
                 );
-                setLinks(cloneOtherUser);
+                const removeNoSubMenu = cloneOtherUser.filter(
+                    (filterItem) => filterItem.SubMenu.length > 0
+                );
+                setLinks(removeNoSubMenu);
             }
         }
     }, [userInfo]);

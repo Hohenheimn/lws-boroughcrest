@@ -362,6 +362,19 @@ export default function UserRoleAndPermissionsCheckBox({
                 }),
             };
 
+            // if (
+            //     Payload.corporate_id === "" ||
+            //     Payload.corporate_id === null ||
+            //     Payload.corporate_id === undefined
+            // ) {
+            //     setPrompt({
+            //         message: "Select a Corporate",
+            //         type: "draft",
+            //         toggle: "",
+            //     });
+            //     return;
+            // }
+
             const formData = new FormData();
 
             const arrayData: any = [];
@@ -421,7 +434,7 @@ export default function UserRoleAndPermissionsCheckBox({
                         value={isRoleName.value}
                         setValue={setRoleName}
                         width={"w-[250px] 640px:w-[150px]"}
-                        placeholder={""}
+                        placeholder={"Role"}
                         endpoint={"/project/roles"}
                         onClickFunction={RefreshTable}
                     />

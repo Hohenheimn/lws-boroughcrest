@@ -88,14 +88,28 @@ const List = ({
     name,
     onClickFunction,
 }: List) => {
+    // Reset show item when open
+    const [showItemAll, setshowItemAll] = useState(true);
+    const keywordSearch = showItemAll ? "" : tempSearch;
+    useEffect(() => {
+        if (value !== tempSearch) {
+            setshowItemAll(false);
+        }
+    }, [tempSearch]);
+    // end
     const { data, isLoading, isError } = useQuery(
-        ["get-dropdown", name, tempSearch],
+        ["get-dropdown", name, keywordSearch],
         () => {
-            return api.get(`${endpoint}?keywords=${tempSearch}`, {
-                headers: {
-                    Authorization: "Bearer " + getCookie("user"),
-                },
-            });
+            return api.get(
+                `${endpoint}?keywords=${
+                    keywordSearch === null ? "" : keywordSearch
+                }`,
+                {
+                    headers: {
+                        Authorization: "Bearer " + getCookie("user"),
+                    },
+                }
+            );
         }
     );
 

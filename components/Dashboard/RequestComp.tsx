@@ -66,11 +66,11 @@ export default function RequestComp() {
                                     date: item.date,
                                     request: item.request,
                                     ticket_no: item.ticket_no,
-                                    details: item.details,
+                                    remarks: item.remarks,
                                     status: item.status,
                                     create_at: "",
                                     trail: [],
-                                    remarks: [],
+                                    request_remarks: [],
                                     updated_at: "",
                                 }}
                             />

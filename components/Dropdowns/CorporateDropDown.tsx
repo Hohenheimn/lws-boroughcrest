@@ -85,14 +85,28 @@ const List = ({
     isCorporate,
     selectedItem,
 }: List) => {
+    // Reset show item when open
+    const [showItemAll, setshowItemAll] = useState(true);
+    const keywordSearch = showItemAll ? "" : isSearchTemp;
+    useEffect(() => {
+        if (isCorporate.value !== isSearchTemp) {
+            setshowItemAll(false);
+        }
+    }, [isSearchTemp]);
+    // end
     const { data, isLoading, isError } = useQuery(
         ["corporate-dd-list", isSearchTemp],
         () => {
-            return api.get(`/project/corporate?keywords=${isSearchTemp}`, {
-                headers: {
-                    Authorization: "Bearer " + getCookie("user"),
-                },
-            });
+            return api.get(
+                `/project/corporate?keywords=${
+                    keywordSearch === null ? "" : keywordSearch
+                }`,
+                {
+                    headers: {
+                        Authorization: "Bearer " + getCookie("user"),
+                    },
+                }
+            );
         }
     );
 
@@ -133,7 +147,7 @@ const List = ({
             {isError ||
                 (data?.data.length <= 0 && (
                     <li>
-                        <h1>Customer name cannot be found!</h1>
+                        <h1>Corporate cannot be found!</h1>
                     </li>
                 ))}
         </ul>

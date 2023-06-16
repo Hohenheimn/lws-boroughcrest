@@ -103,11 +103,20 @@ const List = ({
     isCustomer,
     selectedItem,
 }: List) => {
+    // Reset show item when open
+    const [showItemAll, setshowItemAll] = useState(true);
+    const keywordSearch = showItemAll ? "" : isSearchTemp;
+    useEffect(() => {
+        if (isCustomer.name !== isSearchTemp) {
+            setshowItemAll(false);
+        }
+    }, [isSearchTemp]);
+    // end
     const { data, isLoading, isError } = useQuery(
-        ["customer-dd-list", isSearchTemp],
+        ["customer-dd-list", keywordSearch],
         () => {
             return api.get(
-                `/admin/customer?keywords=${isSearchTemp}&owner_tenant_class=1`,
+                `/admin/customer?keywords=${keywordSearch}&owner_tenant_class=1`,
                 {
                     headers: {
                         Authorization: "Bearer " + getCookie("user"),

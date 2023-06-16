@@ -90,7 +90,7 @@ const Parent = ({
         );
     }
     return (
-        <ul ref={modal} className="dropdown-list w-[250px]">
+        <ul ref={modal} className="dropdown-list" style={{ width: "250px" }}>
             {data?.data.map((item: any, index: number) => (
                 <li
                     key={index}
@@ -99,8 +99,18 @@ const Parent = ({
                     onClick={clickHandler}
                     className="twoRow"
                 >
-                    <p className=" pointer-events-none">{item?.account_name}</p>
-                    <p className=" pointer-events-none">{item?.chart_code}</p>
+                    <p
+                        className=" pointer-events-none"
+                        style={{ width: "50%" }}
+                    >
+                        {item?.account_name}
+                    </p>
+                    <p
+                        className=" pointer-events-none"
+                        style={{ width: "50%" }}
+                    >
+                        {item?.chart_code}
+                    </p>
                 </li>
             ))}
             {isLoading && (

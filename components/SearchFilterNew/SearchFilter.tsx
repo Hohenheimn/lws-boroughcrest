@@ -157,7 +157,9 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
                         ValidatePathName === "property") && (
                         <li className={style.importExportPrint}>
                             {isExportLoading ? (
-                                <MoonLoader color="#8f384d" size={20} />
+                                <div className={style.icon}>
+                                    <MoonLoader color="#8f384d" size={20} />
+                                </div>
                             ) : (
                                 <div>
                                     <Tippy theme="ThemeRed" content="Export">
@@ -199,7 +201,6 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
                                 onChange={importHandler}
                                 className="hidden"
                             />
-
                             {PermissionValidationPrint &&
                                 router.pathname.includes("/admin") && (
                                     <Tippy theme="ThemeRed" content="Print">
@@ -271,13 +272,13 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
                                             ColumnList={userColumnList}
                                         />
                                     )}
-                                    {isFilter && page === "customer" && (
+                                    {isFilter && page === "Customer" && (
                                         <FilterCustomer
                                             setFilter={setFilter}
                                             isFilter={isFilter}
                                         />
                                     )}
-                                    {isFilter && page === "property unit" && (
+                                    {isFilter && page === "Property" && (
                                         <FilterDynamic
                                             setFilter={setFilter}
                                             TableRows={propTableRows}

@@ -14,12 +14,12 @@ export const PageAccessValidation = (menu: string) => {
 
     useEffect(() => {
         if (userInfo !== undefined) {
-            if (userInfo?.permissions.length <= 0) {
+            if (userInfo?.permissions?.length <= 0) {
                 setValidation(false);
                 return;
             }
-            if (userInfo?.permissions.some((some) => some.menu === menu)) {
-                const cloneFilter = userInfo.permissions.filter(
+            if (userInfo?.permissions?.some((some) => some.menu === menu)) {
+                const cloneFilter = userInfo.permissions?.filter(
                     (filterItem) => filterItem.menu === menu
                 );
 

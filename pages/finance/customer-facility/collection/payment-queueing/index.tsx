@@ -208,6 +208,7 @@ export default function PaymentQueueing() {
                 page="payment-queueing"
                 isPeriod={isPeriod}
                 setPeriod={setPeriod}
+                ExportEndpoint={""}
             />
             <div className="table_container">
                 <table className="table_list journal">

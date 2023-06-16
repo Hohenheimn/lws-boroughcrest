@@ -166,7 +166,12 @@ const List = ({ itemDetail }: ListProps) => {
                 >
                     <a className="item">
                         <div>
-                            <h2>{itemDetail?.base_rate}</h2>
+                            <h2>
+                                <TextNumberDisplay
+                                    value={itemDetail?.base_rate}
+                                    className={""}
+                                />
+                            </h2>
                         </div>
                     </a>
                 </Link>

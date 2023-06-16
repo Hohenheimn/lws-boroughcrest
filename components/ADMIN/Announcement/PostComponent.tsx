@@ -88,7 +88,7 @@ export default function PostComponent({ Post, type, DeleteHandler }: Props) {
                     </h5>
                 )}
                 {Post.image_photo !== null && (
-                    <div className="relative w-full aspect-[1.5/1]">
+                    <div className="relative w-full aspect-[2/1] border rounded-md">
                         <Image
                             src={Image_Photo}
                             layout="fill"

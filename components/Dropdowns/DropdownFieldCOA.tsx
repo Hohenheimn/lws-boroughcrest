@@ -70,12 +70,21 @@ const List = ({
     value,
     setValue,
 }: List) => {
+    // Reset show item when open
+    const [showItemAll, setshowItemAll] = useState(true);
+    const keywordSearch = showItemAll ? "" : tempSearch;
+    useEffect(() => {
+        if (value !== tempSearch) {
+            setshowItemAll(false);
+        }
+    }, [tempSearch]);
+    // end
     const { data, isLoading, isError } = useQuery(
-        ["coa-list-dd", tempSearch],
+        ["coa-list-dd", keywordSearch],
         () => {
             return api.get(
                 `/finance/general-ledger/chart-of-accounts?keywords=${
-                    tempSearch === null ? "" : tempSearch
+                    keywordSearch === null ? "" : keywordSearch
                 }&default_account=Cash Account Inbound`,
                 {
                     headers: {

@@ -131,6 +131,13 @@ export default function PaymentRegister() {
                 page="payment-register"
                 isPeriod={isPeriod}
                 setPeriod={setPeriod}
+                ExportEndpoint={`/finance/customer-facility/collection/export?paginate=10&filters=${isFilterText}&keyword=${isSearch}&page=${
+                    isSearch === "" ? TablePage : 1
+                }&date_from=${
+                    isValid(dateFrom) ? format(dateFrom, "yyyy-MM-dd") : ""
+                }&date_to=${
+                    isValid(dateTo) ? format(dateTo, "yyyy-MM-dd") : ""
+                }`}
             />
             <div className="table_container">
                 <table className="table_list journal">

@@ -1,5 +1,5 @@
 import { getCookie } from "cookies-next";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { isError, useQuery } from "react-query";
 import { BarLoader } from "react-spinners";
 import api from "../../../../util/api";
@@ -10,6 +10,16 @@ type DefaultAccountProps = {
 };
 
 const DefaultAccount = ({ setValue, isValue }: DefaultAccountProps) => {
+    // Reset show item when open
+    const [showItemAll, setshowItemAll] = useState(true);
+    const keywordSearch = showItemAll ? "" : isValue.value;
+    useEffect(() => {
+        if (isValue.firstVal !== isValue.value) {
+            setshowItemAll(false);
+        }
+    }, [isValue.value]);
+    // end
+
     const modal = useRef<any>();
 
     const clickHandler = (e: any) => {
@@ -42,10 +52,10 @@ const DefaultAccount = ({ setValue, isValue }: DefaultAccountProps) => {
     });
 
     const { data, isLoading, isError } = useQuery(
-        ["COA-DefaultAccount-list", isValue.value],
+        ["COA-DefaultAccount-list", keywordSearch],
         () => {
             return api.get(
-                `/finance/general-ledger/chart-of-accounts/default-account-options?keywords=${isValue.value}`,
+                `/finance/general-ledger/chart-of-accounts/default-account-options?keywords=${keywordSearch}`,
                 {
                     headers: {
                         Authorization: "Bearer " + getCookie("user"),

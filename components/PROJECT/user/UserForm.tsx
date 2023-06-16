@@ -381,6 +381,19 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
         }
 
         if (type === "modify") {
+            if (
+                Payload.corporate_id === "" ||
+                Payload.corporate_id === null ||
+                Payload.corporate_id === undefined
+            ) {
+                setPrompt({
+                    message: "Select a Corporate",
+                    type: "draft",
+                    toggle: "",
+                });
+                return;
+            }
+
             const updatePayload: any = {
                 ...Payload,
                 _method: "PUT",
