@@ -149,11 +149,15 @@ export default function HeaderCollection({
                         <li className={style.importExportPrint}>
                             <Tippy theme="ThemeRed" content="Print">
                                 <div className={style.icon}>
-                                    <Image
-                                        src="/Images/Print.png"
-                                        layout="fill"
-                                        alt="Export"
-                                    />
+                                    <Link href="/finance/customer-facility/collection/payment-register/print?type=payment register list">
+                                        <a target="_blank">
+                                            <Image
+                                                src="/Images/Print.png"
+                                                layout="fill"
+                                                alt="Export"
+                                            />
+                                        </a>
+                                    </Link>
                                 </div>
                             </Tippy>
                         </li>

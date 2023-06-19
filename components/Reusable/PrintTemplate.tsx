@@ -48,7 +48,9 @@ export default function PrintTemplate({ title, children, narrow }: Props) {
                         <th>
                             <header className=" w-full flex flex-col items-start">
                                 <h1 className="text-ThemeRed">Boroughcrest</h1>
-                                <h3 className=" text-[32px] ">{title}</h3>
+                                <h3 className=" text-[32px] capitalize">
+                                    {title}
+                                </h3>
                             </header>
                         </th>
                     </tr>

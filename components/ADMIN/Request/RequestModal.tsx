@@ -124,7 +124,9 @@ export default function RequestModal() {
     return (
         <ModalTemp>
             <div className="flex items-center mb-5">
-                <h1 className="mr-3 640px:text-[14px]">Customer Request</h1>
+                <h1 className="mr-3 640px:text-[14px]">
+                    Customer Request {RequestDetail.id}
+                </h1>
                 <span
                     className="text-white text-[11px] px-3 py-1 rounded-[50px]"
                     style={{ backgroundColor: color }}
@@ -295,7 +297,9 @@ export default function RequestModal() {
                 )}
                 {type === "Closed" && PermissionValidationPrint && (
                     <Link href={`/admin/request/print/${RequestDetail?.id}`}>
-                        <a className="buttonRed">PRINT</a>
+                        <a className="buttonRed" target="_blank">
+                            PRINT
+                        </a>
                     </Link>
                 )}
             </div>
@@ -303,12 +307,12 @@ export default function RequestModal() {
     );
 }
 
-type Detail = {
+export type Detail = {
     Label: string;
     Value: string;
 };
 
-const Detail = ({ Label, Value }: Detail) => {
+export const Detail = ({ Label, Value }: Detail) => {
     return (
         <li className="w-4/12 640px:w-2/4 mb-5">
             <h1 className=" text-ThemeRed">{Label}</h1>
@@ -321,7 +325,7 @@ type PropsRemarkProfile = {
     remarkDetail: RequestRemarks;
 };
 
-const RemarksProfile = ({ remarkDetail }: PropsRemarkProfile) => {
+export const RemarksProfile = ({ remarkDetail }: PropsRemarkProfile) => {
     const Image_Photo =
         remarkDetail?.user_image_photo === null
             ? "/Images/sampleProfile.png"

@@ -4,11 +4,11 @@ import Calendar from "../../../Reusable/Calendar";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 import styleSearch from "../../../../styles/SearchFilter.module.scss";
-import { BarLoader, ScaleLoader } from "react-spinners";
+import { BarLoader, MoonLoader, ScaleLoader } from "react-spinners";
 import AppContext from "../../../Context/AppContext";
 import PeriodCalendar from "../../../Reusable/PeriodCalendar";
 import BankAccountDropDown from "../../../Reusable/BankAccountDropDown";
-import { CreateUpdateBR, GetBR } from "./Query";
+import { BankReconImport, CreateUpdateBR, GetBR } from "./Query";
 import TableErrorMessage from "../../../Reusable/TableErrorMessage";
 import {
     InputNumberForTable,
@@ -28,6 +28,7 @@ import {
 import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
 import { TextFieldValidation } from "../../../Reusable/InputField";
 import { AccessActionValidation } from "../../../Reusable/PermissionValidation/ActionAccessValidation";
+import { DynamicExportHandler } from "../../../Reusable/DynamicExport";
 
 type isTableitemArray = isTableitemObj[];
 
@@ -75,6 +76,37 @@ export default function TableForm() {
     });
 
     const [isTableItem, setTableItem] = useState<isTableitemArray>([]);
+    // Imports
+    const ImportSuccess = () => {
+        setPrompt({
+            type: "success",
+            message: "Successfully imported!",
+            toggle: true,
+        });
+    };
+    const ImportError = (e: any) => {
+        ErrorSubmit(e, setPrompt);
+    };
+    const { isLoading: BankReconImportLoading, mutate: BankReconImportMutate } =
+        BankReconImport(ImportSuccess, ImportError);
+
+    const ImportMutate = (PayLoad: any) => {
+        BankReconImportMutate(PayLoad);
+    };
+
+    const [isExportLoading, setExportLoading] = useState(false);
+    const ExportHandler = () => {
+        DynamicExportHandler(
+            `/finance/general-ledger/bank-reconciliation/export?bank_account_id=${
+                isBankAccount.id
+            }&date_from=${
+                isValid(dateFrom) ? format(dateFrom, "yyyy-MM-dd") : ""
+            }&date_to=${isValid(dateTo) ? format(dateTo, "yyyy-MM-dd") : ""}`,
+            "bank-reconciliation",
+            setPrompt,
+            setExportLoading
+        );
+    };
 
     const onSucces = () => {
         setEdit(false);
@@ -232,27 +264,53 @@ export default function TableForm() {
                                 )}
                             </div>
                         )}
-                        <Tippy theme="ThemeRed" content="Export">
+                        {BankReconImportLoading ? (
                             <div className={styleSearch.icon}>
-                                <Image
-                                    src="/Images/Export.png"
-                                    layout="fill"
-                                    alt="Export"
+                                <MoonLoader color="#8f384d" size={20} />
+                            </div>
+                        ) : (
+                            <>
+                                <div>
+                                    <Tippy theme="ThemeRed" content="Import">
+                                        <div
+                                            className={styleSearch.icon}
+                                            onClick={ImportMutate}
+                                        >
+                                            <Image
+                                                src="/Images/Import.png"
+                                                layout="fill"
+                                                alt="Export"
+                                            />
+                                        </div>
+                                    </Tippy>
+                                </div>{" "}
+                                <input
+                                    type="file"
+                                    id="import"
+                                    className="hidden"
                                 />
-                            </div>
-                        </Tippy>
-                        <Tippy theme="ThemeRed" content="Import">
+                            </>
+                        )}
+                        {isExportLoading ? (
                             <div className={styleSearch.icon}>
-                                <label htmlFor="import">
-                                    <Image
-                                        src="/Images/Import.png"
-                                        layout="fill"
-                                        alt="Import"
-                                    />
-                                </label>
+                                <MoonLoader color="#8f384d" size={20} />
                             </div>
-                        </Tippy>
-                        <input type="file" id="import" className="hidden" />
+                        ) : (
+                            <div>
+                                <Tippy theme="ThemeRed" content="Export">
+                                    <div
+                                        className={styleSearch.icon}
+                                        onClick={ExportHandler}
+                                    >
+                                        <Image
+                                            src="/Images/Export.png"
+                                            layout="fill"
+                                            alt="Export"
+                                        />
+                                    </div>
+                                </Tippy>
+                            </div>
+                        )}
                     </li>
                 </ul>
             </section>

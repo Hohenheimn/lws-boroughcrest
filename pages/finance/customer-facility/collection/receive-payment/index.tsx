@@ -59,7 +59,7 @@ export default function ReceivePayment() {
 
     return (
         <>
-            <HeaderCollection
+            {/* <HeaderCollection
                 setFilterText={setFilterText}
                 isSearch={isSearch}
                 setSearch={setSearch}
@@ -68,7 +68,7 @@ export default function ReceivePayment() {
                 isPeriod={isPeriod}
                 setPeriod={setPeriod}
                 ExportEndpoint={""}
-            />
+            /> */}
             <ReceivePaymentForm
                 DefaultValHeaderForm={HeaderForm}
                 type=""

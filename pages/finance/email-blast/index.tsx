@@ -5,15 +5,15 @@ import { PageAccessValidation } from "../../../components/Reusable/PermissionVal
 import { AccessActionValidation } from "../../../components/Reusable/PermissionValidation/ActionAccessValidation";
 import { FaLock } from "react-icons/fa";
 import SelectDropdown from "../../../components/Reusable/SelectDropdown";
-import NameIDDropdown from "../../../components/Dropdowns/NameIDDropdown";
-import { GetCustomer } from "../../../components/ReactQuery/CustomerMethod";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import api from "../../../util/api";
 import { getCookie } from "cookies-next";
 import { customer } from "../../../types/customerList";
 import AppContext from "../../../components/Context/AppContext";
-import { BarLoader, BeatLoader, ScaleLoader } from "react-spinners";
+import { BarLoader, ScaleLoader } from "react-spinners";
 import { ErrorSubmit } from "../../../components/Reusable/ErrorMessage";
+import { PencilButtonTable } from "../../../components/Reusable/Icons";
+import { AiFillCloseCircle } from "react-icons/ai";
 
 export default function Index() {
     const { setPrompt } = useContext(AppContext);
@@ -22,6 +22,13 @@ export default function Index() {
         { id: number; name: string }[]
     >([]);
 
+    const RemoveCustomerHandler = (id: number) => {
+        const clone = isListCustomer.filter(
+            (filterItem) => filterItem.id !== id
+        );
+        setListCustomer(clone);
+    };
+
     const [isWysiwyg, setWysiwyg] = useState("");
 
     const [isTemplate, setTemplate] = useState("");
@@ -29,6 +36,14 @@ export default function Index() {
     const [isSubject, setSubject] = useState("");
 
     const SelectHandler = (id: number, name: string) => {
+        if (isListCustomer.some((someItem) => someItem.id === id)) {
+            setPrompt({
+                message: "Customer Already Exist",
+                toggle: true,
+                type: "draft",
+            });
+            return;
+        }
         setListCustomer([
             ...isListCustomer,
             {
@@ -49,7 +64,7 @@ export default function Index() {
 
     const onSuccess = () => {
         setPrompt({
-            message: "Email successfully sent",
+            message: "Email successfully save",
             type: "success",
             toggle: true,
         });
@@ -71,6 +86,8 @@ export default function Index() {
     }, [data?.data]);
 
     const { isLoading, mutate } = SendEmailBlast(onSuccess, onError);
+
+    const [isModifyToggle, setModifyToggle] = useState(false);
 
     const ApplyHandler = () => {
         if (
@@ -151,12 +168,36 @@ export default function Index() {
                     </div>
                 </li>
                 <li className="w-2/4 pl-5 640px:p-0 640px:w-full">
-                    <div className=" bg-white rounded-lg 1024px:text-[14px] 375px:text-[13px] shadow-lg p-2 h-20 overflow-auto font-NHU-bold text-RegularColor">
-                        {isListCustomer.map((item, index) =>
-                            isListCustomer.length - 1 === index
-                                ? item.name
-                                : item.name + ", "
-                        )}
+                    <div className=" flex flex-wrap items-start bg-white rounded-lg relative 1024px:text-[14px] 375px:text-[13px] shadow-lg p-2 h-20 overflow-auto font-NHU-bold text-RegularColor">
+                        {isListCustomer.map((item, index) => (
+                            <div
+                                key={index}
+                                className={`font-NHU-bold flex items-center mr-1 ${
+                                    isModifyToggle &&
+                                    " px-2 shadow-md rounded-lg cursor-pointer"
+                                }`}
+                            >
+                                {item.name}
+                                {isListCustomer.length - 1 !== index &&
+                                !isModifyToggle
+                                    ? ","
+                                    : ""}
+                                {isModifyToggle && (
+                                    <AiFillCloseCircle
+                                        className="mt-1 ml-1 hover:text-ThemeRed"
+                                        onClick={() =>
+                                            RemoveCustomerHandler(item.id)
+                                        }
+                                    />
+                                )}
+                            </div>
+                        ))}
+                        <div
+                            className="absolute top-2 right-2 z-10"
+                            onClick={() => setModifyToggle(!isModifyToggle)}
+                        >
+                            <PencilButtonTable />
+                        </div>
                     </div>
                 </li>
             </ul>
@@ -232,7 +273,9 @@ const DownDownCustomerReset = ({ SelectHandler }: PropsDropdown) => {
         };
     }, [container.current]);
 
-    const Customers: customer[] = data?.data;
+    const Customers: customer[] = data?.data.filter(
+        (itemFilter: any) => itemFilter.status !== "Draft"
+    );
 
     const SelectInnerHandler = (id: number, name: string) => {
         setSearchBar("");

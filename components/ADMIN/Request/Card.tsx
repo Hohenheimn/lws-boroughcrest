@@ -69,7 +69,7 @@ export default function Card({ Detail, type }: Props) {
 
     const OpenModalHandler = () => {
         if (ActionPermision_view) {
-            router.push(`/admin/request?type=${type}&request=${1}`);
+            router.push(`/admin/request?type=${type}&request=${Detail.id}`);
         } else {
             setPrompt({
                 message: "You have no permission to view",

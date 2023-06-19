@@ -15,12 +15,17 @@ import { format, isValid, parse } from "date-fns";
 import PaymentSummaryTable from "./ReceivePayment/OfficialForm/PaymentSummary";
 import { useRouter } from "next/router";
 import { AccessActionValidation } from "../../../Reusable/PermissionValidation/ActionAccessValidation";
+import Link from "next/link";
 
 type Props = {
     CollectionDetail: CollectionItem;
+    DisplayForPrint?: boolean;
 };
 
-export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
+export default function PaymentRegisterDetail({
+    CollectionDetail,
+    DisplayForPrint,
+}: Props) {
     const Permission_print = AccessActionValidation("Collection", "print");
 
     const { data } = GetCustomer(CollectionDetail?.customer_id);
@@ -92,45 +97,57 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
                 <Authorization id={isToggleID} setState={setToggle} />
             )}
             <div>
-                <div className="flex justify-between flex-wrap">
-                    <h1 className="pageTitle mb-5">Payment Details</h1>
-                    <ul className="flex">
-                        {!router.pathname.includes("check-warehouse") && (
-                            <li className="mr-5">
-                                <Tippy theme="ThemeRed" content="Void">
-                                    <div
-                                        onClick={() =>
-                                            setToggle(CollectionDetail.id)
-                                        }
-                                        className="relative w-8 h-8 transition-all duration-75 hover:scale-[1.1]"
-                                    >
-                                        <Image
-                                            src="/Images/circle_remove.png"
-                                            layout="fill"
-                                            alt="Print"
-                                        />
-                                    </div>
-                                </Tippy>
-                            </li>
-                        )}
-                        {Permission_print && (
-                            <li className="mr-5">
-                                <Tippy theme="ThemeRed" content="Print">
-                                    <div className="relative w-8 h-8 transition-all duration-75 hover:scale-[1.1]">
-                                        <Image
-                                            src="/Images/Print.png"
-                                            layout="fill"
-                                            alt="Print"
-                                        />
-                                    </div>
-                                </Tippy>
-                            </li>
-                        )}
-                    </ul>
-                </div>
+                {!DisplayForPrint && (
+                    <div className="flex justify-between flex-wrap">
+                        <h1 className="pageTitle mb-5">Payment Details</h1>
+                        <ul className="flex">
+                            {!router.pathname.includes("check-warehouse") && (
+                                <li className="mr-5">
+                                    <Tippy theme="ThemeRed" content="Void">
+                                        <div
+                                            onClick={() =>
+                                                setToggle(CollectionDetail.id)
+                                            }
+                                            className="relative w-8 h-8 transition-all duration-75 hover:scale-[1.1]"
+                                        >
+                                            <Image
+                                                src="/Images/circle_remove.png"
+                                                layout="fill"
+                                                alt="Print"
+                                            />
+                                        </div>
+                                    </Tippy>
+                                </li>
+                            )}
+                            {Permission_print && (
+                                <li className="mr-5">
+                                    <Tippy theme="ThemeRed" content="Print">
+                                        <div className="relative w-8 h-8 transition-all duration-75 hover:scale-[1.1]">
+                                            <Link
+                                                href={`/finance/customer-facility/collection/payment-register/print?type=payment register detail&payment_register_id=${CollectionDetail?.id}`}
+                                            >
+                                                <a target="_blank">
+                                                    <Image
+                                                        src="/Images/Print.png"
+                                                        layout="fill"
+                                                        alt="Print"
+                                                    />
+                                                </a>
+                                            </Link>
+                                        </div>
+                                    </Tippy>
+                                </li>
+                            )}
+                        </ul>
+                    </div>
+                )}
 
                 <ul className=" flex justify-between relative w-full mb-10 640px:mb-5 flex-wrap">
-                    <li className="w-[25%] 640px:w-full 640px:mb-5 640px:flex justify-between rounded-2xl p-10 480px:p-8 bg-white  shadow-lg">
+                    <li
+                        className={`w-[25%] 640px:w-full 640px:mb-5 640px:flex justify-between rounded-2xl p-10 480px:p-8 bg-white ${
+                            DisplayForPrint ? "border" : "shadow-lg"
+                        }`}
+                    >
                         <div className=" 640px:w-[32%]">
                             <p className="label_text">CUSTOMER</p>
                             <h4 className="main_text">
@@ -157,7 +174,11 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
                             </h4>
                         </div>
                     </li>
-                    <li className="w-[70%] 640px:w-full rounded-2xl p-10 480px:p-8 bg-white  shadow-lg">
+                    <li
+                        className={`w-[70%] 640px:w-full rounded-2xl p-10 480px:p-8 bg-white ${
+                            DisplayForPrint ? "border" : "shadow-lg"
+                        }`}
+                    >
                         <ul className="flex flex-wrap">
                             <li className="w-[32%]">
                                 <p className="label_text">RECEIPT DATE</p>
@@ -240,7 +261,11 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
                     {CollectionDetail?.receipt_type === "Official" &&
                         CollectionDetail?.outstanding_balances !==
                             undefined && (
-                            <li className="w-full rounded-2xl p-10 480px:p-8 bg-white  shadow-lg mb-10 640px:mb-5">
+                            <li
+                                className={`w-full rounded-2xl p-10 480px:p-8 bg-white mb-10 640px:mb-5 ${
+                                    DisplayForPrint ? "border" : "shadow-lg"
+                                }`}
+                            >
                                 <h1 className="SectionTitle mb-5">
                                     Outstanding Balance
                                 </h1>
@@ -327,7 +352,11 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
                         )}
                     {CollectionDetail?.receipt_type === "Acknowledgement" &&
                         CollectionDetail?.deposits !== undefined && (
-                            <li className="w-full rounded-2xl p-10 480px:p-8 bg-white  shadow-lg mb-10 640px:mb-5">
+                            <li
+                                className={`w-full rounded-2xl p-10 480px:p-8 bg-white mb-10 640px:mb-5 ${
+                                    DisplayForPrint ? "border" : "shadow-lg"
+                                }`}
+                            >
                                 <h1 className="SectionTitle mb-5">Deposit</h1>
                                 <div className="table_container min-zero border-b border-ThemeRed50 pb-10">
                                     <table className="table_list ">
@@ -371,7 +400,11 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
                         )}
                     {CollectionDetail?.receipt_type === "Provisional" &&
                         CollectionDetail?.check_warehouses !== undefined && (
-                            <li className="w-full rounded-2xl p-10 480px:p-8 bg-white  shadow-lg mb-10 640px:mb-5">
+                            <li
+                                className={`w-full rounded-2xl p-10 480px:p-8 bg-white mb-10 640px:mb-5 ${
+                                    DisplayForPrint ? "border" : "shadow-lg"
+                                }`}
+                            >
                                 <h1 className="SectionTitle mb-5">
                                     Check Warehouse
                                 </h1>
@@ -417,7 +450,11 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
                                 />
                             </li>
                         )}
-                    <li className="w-full rounded-2xl p-10 480px:p-8 bg-white mb-10 640px:mb-5 shadow-lg">
+                    <li
+                        className={`w-full rounded-2xl p-10 480px:p-8 bg-white mb-10 640px:mb-5 ${
+                            DisplayForPrint ? "border" : "shadow-lg"
+                        }`}
+                    >
                         <PaymentSummaryTable
                             SummaryItems={CollectionDetail?.histories}
                             CreditTax={CollectionDetail?.credit_tax}
@@ -427,7 +464,11 @@ export default function PaymentRegisterDetail({ CollectionDetail }: Props) {
                             AmoundPaid={CollectionDetail?.amount_paid}
                         />
                     </li>
-                    <li className="w-full rounded-2xl p-10 480px:p-8 bg-white  shadow-lg">
+                    <li
+                        className={`w-full rounded-2xl p-10 480px:p-8 bg-white ${
+                            DisplayForPrint ? "border" : "shadow-lg"
+                        }`}
+                    >
                         <p className="label_text mb-2">TRAIL</p>
                         <div className="flex items-center">
                             <p className="label_text mr-2">Created at: </p>
