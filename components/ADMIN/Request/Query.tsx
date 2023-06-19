@@ -48,7 +48,9 @@ export const GetRequest = (
         ["request-list", status, paginate],
         () => {
             return api.get(
-                `/admin/requests?status=${status}&keywords=${keywords}&paginate=${
+                `/admin/requests?status=${
+                    status === "Closed" ? "Approved" : status
+                }&keywords=${keywords}&paginate=${
                     keywords !== "" ? "" : paginate
                 }&page=${keywords === "" ? 1 : page}`,
                 {

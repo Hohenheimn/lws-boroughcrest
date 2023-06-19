@@ -14,7 +14,6 @@ import { format, startOfDay } from "date-fns";
 import { Outstanding } from "./OfficialForm/OutStandingBalance";
 import { Outright } from "./OfficialForm/OutrightAndAdvances/OutRight";
 import { AdvancesType } from "./OfficialForm/OutrightAndAdvances/Advances";
-import { GetCustomerOutstanding } from "./Query";
 import { useRouter } from "next/router";
 import DynamicPopOver from "../../../../Reusable/DynamicPopOver";
 import { GetInvoiceByCustomerPostedOnly } from "../../Adjustment/Query";

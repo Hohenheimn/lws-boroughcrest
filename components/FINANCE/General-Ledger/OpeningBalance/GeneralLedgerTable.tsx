@@ -189,16 +189,20 @@ export default function GeneralLedgerTable({ date }: GeneralLedgerTableProps) {
                             <td></td>
                             <td></td>
                             <td>
-                                <TextNumberDisplay
-                                    value={totalDebit}
-                                    className="text-end w-full text-[#757575] font-NHU-bold text-[18px] 1280px:text-[13px]"
-                                />
+                                <div className=" flex w-full justify-end">
+                                    <TextNumberDisplay
+                                        className="text-end withPeso w-full text-[#757575] font-NHU-bold text-[18px] 1280px:text-[13px]"
+                                        value={totalDebit}
+                                    />
+                                </div>
                             </td>
                             <td>
-                                <TextNumberDisplay
-                                    value={totalCredit}
-                                    className="text-end w-full text-[#757575] font-NHU-bold text-[18px] 1280px:text-[13px]"
-                                />
+                                <div className=" flex w-full justify-end">
+                                    <TextNumberDisplay
+                                        className="text-end withPeso w-full text-[#757575] font-NHU-bold text-[18px] 1280px:text-[13px]"
+                                        value={totalCredit}
+                                    />
+                                </div>
                             </td>
                         </tr>
                     </tbody>

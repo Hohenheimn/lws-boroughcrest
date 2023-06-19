@@ -107,6 +107,7 @@ type FilteredAccuntEntries = {
     chart_code: string;
     account_name: string;
     default_account: string;
+    coa_default_account_id: number;
 };
 
 export type DefaultValueAdjustment = {
@@ -128,6 +129,22 @@ type Props = {
 };
 
 export default function AdjustmentForm({ DefaultValue }: Props) {
+    const None = 1;
+    const CassAccountOutbound = 2;
+    const CashAccountInbound = 3;
+    const PSReceivableAccount = 4;
+    const CustomerWTAXAccount = 5;
+    const VendorGSTAccount = 6;
+    const PPEContraAccount = 7;
+    const PSRefundAccount = 8;
+    const PSAdvancesAccount = 9;
+    const VendorWTAXAccoubnt = 10;
+    const DeferredCustomerGSTAccount = 11;
+    const CustomerGSTAccount = 12;
+    const PSRevenueAccount = 13;
+    const DiscountContraAccount = 14;
+    const InventoryContraAccountGroup = 15;
+
     const router = useRouter();
 
     const [userInfo, setUserInfo] = useState<LoginUserInfo>();
@@ -393,12 +410,15 @@ export default function AdjustmentForm({ DefaultValue }: Props) {
 
                 const vat_rate = isCharge.vat_rate;
 
-                if (userInfo?.corporate_gst_type == "NON-VAT") {
+                if (userInfo?.corporate_gst_type === "NON-VAT") {
                     less_vat = isAdjustmentTotal;
+                    deferred_customer_gst_account = adjustment_total;
+                    two_percent_amount = adjustment_total * 0.02;
                 } else {
                     // amount of vat rate on adjustment total
                     deferred_customer_gst_account =
                         adjustment_total * (vat_rate / (vat_rate + 100));
+
                     // amount of remaining amount after to subtract the vat rate
                     less_vat =
                         Number(adjustment_total) -
@@ -428,56 +448,107 @@ export default function AdjustmentForm({ DefaultValue }: Props) {
 
                 let debit = 0;
                 let credit = 0;
-                if (isTransaction === "Charge Debit") {
-                    if (item.account_name === "A R - Association Dues") {
-                        debit =
-                            Number(deferred_customer_gst_account) +
-                            Number(less_vat);
+                if (userInfo?.corporate_gst_type === "VAT") {
+                    if (isTransaction === "Charge Debit") {
+                        if (
+                            item.coa_default_account_id === PSReceivableAccount
+                        ) {
+                            debit =
+                                Number(deferred_customer_gst_account) +
+                                Number(less_vat);
+                        }
+                        if (
+                            item.coa_default_account_id ===
+                            DeferredCustomerGSTAccount
+                        ) {
+                            credit = deferred_customer_gst_account;
+                        }
+                        if (item.coa_default_account_id === PSRevenueAccount) {
+                            credit = less_vat;
+                        }
                     }
-                    if (item.account_name === "Deferred Output Vat") {
-                        credit = deferred_customer_gst_account;
+
+                    if (isTransaction === "Charge Reversal") {
+                        if (item.coa_default_account_id === PSRevenueAccount) {
+                            debit = less_vat;
+                        }
+                        if (
+                            item.coa_default_account_id ===
+                            DeferredCustomerGSTAccount
+                        ) {
+                            debit = deferred_customer_gst_account;
+                        }
+                        if (
+                            item.coa_default_account_id === PSReceivableAccount
+                        ) {
+                            credit = adjustment_total;
+                        }
                     }
-                    if (item.account_name === "Revenue - Association Dues") {
-                        credit = less_vat;
+                    if (isTransaction === "Discounts") {
+                        if (
+                            item.coa_default_account_id ===
+                            DiscountContraAccount
+                        ) {
+                            debit = less_vat;
+                        }
+
+                        if (
+                            item.coa_default_account_id ===
+                            DeferredCustomerGSTAccount
+                        ) {
+                            debit = deferred_customer_gst_account;
+                        }
+                        if (
+                            item.coa_default_account_id === PSReceivableAccount
+                        ) {
+                            credit = adjustment_total;
+                        }
+                    }
+                    if (isTransaction === "Applied Advances") {
+                        if (item.coa_default_account_id === PSAdvancesAccount) {
+                            debit = less_vat;
+                        }
+                        if (
+                            item.coa_default_account_id ===
+                            DeferredCustomerGSTAccount
+                        ) {
+                            debit = deferred_customer_gst_account;
+                        }
+                        if (
+                            item.coa_default_account_id === PSReceivableAccount
+                        ) {
+                            credit = adjustment_total;
+                        }
+                    }
+                    if (isTransaction === "Credit Tax") {
+                        if (
+                            item.coa_default_account_id === CustomerWTAXAccount
+                        ) {
+                            debit = two_percent_amount;
+                        }
+                        if (
+                            item.coa_default_account_id === PSReceivableAccount
+                        ) {
+                            credit = two_percent_amount;
+                        }
                     }
                 }
 
-                if (
-                    isTransaction === "Charge Reversal" ||
-                    isTransaction === "Discounts" ||
-                    isTransaction === "Applied Advances"
-                ) {
-                    if (item.account_name === "A R - Association Dues") {
-                        credit =
-                            Number(deferred_customer_gst_account) +
-                            Number(less_vat);
-                    }
-                    if (item.account_name === "Deferred Output Vat") {
-                        debit = deferred_customer_gst_account;
-                    }
-                    if (item.account_name === "Revenue - Association Dues") {
-                        debit = less_vat;
-                    }
-                    if (item.account_name === "Discount Association Dues") {
-                        debit = less_vat;
-                    }
-                    if (
-                        item.account_name ===
-                        "Members Advances - Association Dues"
-                    ) {
-                        debit = less_vat;
-                    }
-                }
-
-                if (isTransaction === "Credit Tax") {
-                    if (
-                        item.account_name ===
-                        "Creditable Withholding Tax - Expanded"
-                    ) {
-                        debit = two_percent_amount;
-                    }
-                    if (item.account_name === "A R - Association Dues") {
-                        credit = two_percent_amount;
+                if (userInfo?.corporate_gst_type === "NON-VAT") {
+                    if (isTransaction === "Credit Tax") {
+                        if (validationDebitOrCreditField === "debit") {
+                            debit = two_percent_amount;
+                        }
+                        if (validationDebitOrCreditField === "credit") {
+                            credit = two_percent_amount;
+                        }
+                    } else {
+                        if (validationDebitOrCreditField === "debit") {
+                            debit = isAdjustmentTotal;
+                        }
+                        if (validationDebitOrCreditField === "credit") {
+                            credit = isAdjustmentTotal;
+                        }
                     }
                 }
 
@@ -521,18 +592,6 @@ export default function AdjustmentForm({ DefaultValue }: Props) {
                 setErrorMessage(true);
                 return;
             }
-
-            if (
-                isInvoices.some((item) => item.adjustment_amount === 0) &&
-                AdvancesToggle === false
-            ) {
-                setPrompt({
-                    message: "Fill out all adjustment amount",
-                    toggle: true,
-                    type: "draft",
-                });
-                return;
-            }
             if (
                 isAccounts.some((item) => item.credit === 0 && item.debit === 0)
             ) {
@@ -560,8 +619,8 @@ export default function AdjustmentForm({ DefaultValue }: Props) {
                     : isAccounts.map((item) => {
                           return {
                               account_id: item.coa_id,
-                              debit: item.debit,
-                              credit: item.credit,
+                              debit: Number(item.debit).toFixed(2),
+                              credit: Number(item.credit).toFixed(2),
                           };
                       }),
             invoices: AdvancesToggle
@@ -569,8 +628,10 @@ export default function AdjustmentForm({ DefaultValue }: Props) {
                 : isInvoices.map((item) => {
                       return {
                           billing_invoice_list_id: item.id,
-                          adjustment_amount: item.adjustment_amount,
-                          balance: item.balance,
+                          adjustment_amount: Number(
+                              item.adjustment_amount
+                          ).toFixed(2),
+                          balance: Number(item.balance).toFixed(2),
                       };
                   }),
         };

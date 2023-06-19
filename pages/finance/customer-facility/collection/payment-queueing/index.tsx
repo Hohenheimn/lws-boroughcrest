@@ -290,10 +290,12 @@ const List = ({ itemDetail, setProofPayment }: ListProps) => {
                 )}
             </td>
             <td>
-                <TextNumberDisplay
-                    className="withPeso w-full"
-                    value={itemDetail.amount_paid}
-                />
+                <div className=" flex w-full justify-end">
+                    <TextNumberDisplay
+                        className="withPeso w-full text-end"
+                        value={itemDetail.amount_paid}
+                    />
+                </div>
             </td>
             <td>{isValid(date) ? format(date, "MMM dd yyyy") : ""}</td>
             <td>{itemDetail?.reference_no}</td>

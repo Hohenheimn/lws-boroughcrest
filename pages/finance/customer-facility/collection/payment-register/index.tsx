@@ -220,10 +220,12 @@ const List = ({ itemDetail }: ListProps) => {
             </td>
 
             <td>
-                <TextNumberDisplay
-                    className="withPeso w-full"
-                    value={itemDetail?.amount_paid}
-                />
+                <div className=" flex w-full justify-end">
+                    <TextNumberDisplay
+                        className="withPeso w-full text-end"
+                        value={itemDetail?.amount_paid}
+                    />
+                </div>
             </td>
 
             <td>{itemDetail?.mode_of_payment}</td>

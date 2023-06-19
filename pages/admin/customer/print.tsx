@@ -1,17 +1,10 @@
 import { getCookie } from "cookies-next";
-import React, { useRef } from "react";
-import { useQuery } from "react-query";
+import React from "react";
 import { BarLoader } from "react-spinners";
-import api from "../../../util/api";
 import type { customerItemDetail } from "../../../types/customerList";
-import Image from "next/image";
-import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 import PrintTemplate from "../../../components/Reusable/PrintTemplate";
-import {
-    GetCustomerList,
-    GetPrintCustomerList,
-} from "../../../components/ReactQuery/CustomerMethod";
+import { GetPrintCustomerList } from "../../../components/ReactQuery/CustomerMethod";
 import { PageAccessValidation } from "../../../components/Reusable/PermissionValidation/PageAccessValidation";
 import NoPermissionComp from "../../../components/Reusable/PermissionValidation/NoPermissionComp";
 

@@ -10,6 +10,9 @@ import { CustomerImport } from "../../../ReactQuery/CustomerMethod";
 import { MoonLoader } from "react-spinners";
 import { DynamicExportHandler } from "../../../Reusable/DynamicExport";
 import { AccessActionValidation } from "../../../Reusable/PermissionValidation/ActionAccessValidation";
+import { DynamicImport } from "../../../Reusable/DynamicImport";
+import { ChartOfAccountImport } from "./Query";
+import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
 
 type SearchFilter = {
     page: string;
@@ -47,17 +50,13 @@ export default function FinanceSearchFilter({
         });
     };
 
-    const ImportError = () => {
-        setPrompt({
-            type: "error",
-            message: "The given data was invalid",
-            toggle: true,
-        });
+    const ImportError = (e: any) => {
+        ErrorSubmit(e, setPrompt);
     };
 
     // Imports
     // used as example
-    const { isLoading: CusLoading, mutate: CusMutate } = CustomerImport(
+    const { isLoading: CusLoading, mutate: CusMutate } = ChartOfAccountImport(
         ImportSuccess,
         ImportError
     );
@@ -65,7 +64,7 @@ export default function FinanceSearchFilter({
         CusMutate(PayLoad);
     };
     const importHandler = (e: any) => {
-        // DynamicImport(e, setPrompt, ImportMutate);
+        DynamicImport(e, setPrompt, ImportMutate);
     };
     // Export
     const [isExportLoading, setExportLoading] = useState(false);
