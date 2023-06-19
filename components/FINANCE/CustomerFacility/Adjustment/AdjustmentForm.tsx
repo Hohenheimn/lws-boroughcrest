@@ -576,6 +576,7 @@ export default function AdjustmentForm({ DefaultValue }: Props) {
     }, [isChargeHeader]);
 
     const SaveHandler = (button: string) => {
+        let validate = true;
         if (button !== "draft") {
             if (
                 isCustomer.id === 0 ||
@@ -637,6 +638,8 @@ export default function AdjustmentForm({ DefaultValue }: Props) {
         };
 
         setButton(button);
+
+        if (!validate) return;
 
         if (router.query.modify === undefined) {
             // Create

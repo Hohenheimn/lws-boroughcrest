@@ -55,3 +55,27 @@ export const ShowBankRecon = (id: string | number) => {
         });
     });
 };
+
+export const BankReconImport = (onSuccess: any, ImportError: any) => {
+    const queryClient = useQueryClient();
+    return useMutation(
+        (data: FormData) => {
+            return api.post(
+                `/finance/general-ledger/bank-reconciliation/import`,
+                data,
+                {
+                    headers: {
+                        Authorization: "Bearer " + getCookie("user"),
+                    },
+                }
+            );
+        },
+        {
+            onSuccess: () => {
+                queryClient.invalidateQueries("bank-recon-list");
+                onSuccess();
+            },
+            onError: ImportError,
+        }
+    );
+};

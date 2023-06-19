@@ -170,6 +170,13 @@ export const GetCollectionList = (
         }
     );
 };
+export const GetCollectionListPrint = () => {
+    return useQuery(["collection-print"], () => {
+        return api.get(`/finance/customer-facility/collection`, {
+            headers: { Authorization: "Bearer " + getCookie("user") },
+        });
+    });
+};
 
 export const GetCollectionByCustomer = (customer_id: string | number) => {
     return useQuery(["collection-customer", customer_id], () => {
