@@ -45,13 +45,13 @@ export const GetRequest = (
     page: number
 ) => {
     return useQuery(
-        ["request-list", status, paginate],
+        ["request-list", status, paginate, keywords],
         () => {
             return api.get(
                 `/admin/requests?status=${
                     status === "Closed" ? "Approved" : status
                 }&keywords=${keywords}&paginate=${
-                    keywords !== "" ? "" : paginate
+                    keywords !== "" ? "100" : paginate
                 }&page=${keywords === "" ? 1 : page}`,
                 {
                     headers: {
