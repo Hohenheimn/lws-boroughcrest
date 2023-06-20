@@ -21,6 +21,21 @@ export const GetUser = (
     });
 };
 
+export const GetUseradd = (keyword: string, pageNumber: number) => {
+    return useQuery(["user-list", keyword, pageNumber], () => {
+        return api.get(
+            `/project/user?keywords=${keyword}&page=${
+                keyword === "" ? pageNumber : 1
+            }`,
+            {
+                headers: {
+                    Authorization: "Bearer " + getCookie("user"),
+                },
+            }
+        );
+    });
+};
+
 export const GetUserDetail = (id: number | string) => {
     return useQuery(["user-detail", id], () => {
         return api.get(`/project/user/${id}`, {
