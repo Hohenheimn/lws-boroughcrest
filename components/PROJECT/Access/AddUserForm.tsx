@@ -9,7 +9,7 @@ import Pagination from "../../Reusable/Pagination";
 import { useRouter } from "next/router";
 import { ErrorSubmit } from "../../Reusable/ErrorMessage";
 import AppContext from "../../Context/AppContext";
-import { GetUser } from "../user/Query";
+import { GetUser, GetUseradd } from "../user/Query";
 import { AddUser } from "./Query";
 import TableLoadingNError from "../../Reusable/TableLoadingNError";
 import { ScaleLoader } from "react-spinners";
@@ -47,7 +47,7 @@ export default function AddUserForm({
 
     const [TablePage, setTablePage] = useState(1);
 
-    const { data, isLoading, isError } = GetUser(isSearch, TablePage);
+    const { data, isLoading, isError } = GetUseradd(isSearch, TablePage);
 
     const [isTableItem, setTableItem] = useState<isTable>({
         itemArray: [],

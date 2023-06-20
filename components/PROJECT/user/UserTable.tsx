@@ -48,9 +48,13 @@ export type UserPermission = {
 };
 
 export default function UserTable({ isSearch }: Props) {
-    const { userTableColumn } = useContext(AppContext);
+    const { userTableColumn, userTableRows } = useContext(AppContext);
     const [TablePage, setTablePage] = useState(1);
-    const { data, isLoading, isError } = GetUser(isSearch, TablePage);
+    const { data, isLoading, isError } = GetUser(
+        isSearch,
+        TablePage,
+        userTableRows
+    );
 
     return (
         <div className=" w-full overflow-x-auto">
