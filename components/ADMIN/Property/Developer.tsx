@@ -28,7 +28,11 @@ export default function Developer({
             document.removeEventListener("mousedown", clickOutSide);
         };
     });
-    const { data, isLoading, isError } = GetDeveloper(isObject.value);
+    const { data, isLoading, isError } = GetDeveloper(
+        isObject.value === null || isObject.value === undefined
+            ? ""
+            : isObject.value
+    );
     const updateVal = (e: any) => {
         const id = e.target.getAttribute("data-id");
         const value = e.target.getAttribute("data-value");

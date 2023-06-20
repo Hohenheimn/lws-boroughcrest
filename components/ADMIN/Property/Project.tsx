@@ -52,7 +52,11 @@ const Project = ({ set, update, isValID, isObject, setObject }: any) => {
             },
         ]);
     };
-    const { isLoading, data, isError } = GetProject(isObject.value);
+    const { isLoading, data, isError } = GetProject(
+        isObject.value === null || isObject.value === undefined
+            ? ""
+            : isObject.value
+    );
 
     useEffect(() => {
         if (data?.status === 200) {

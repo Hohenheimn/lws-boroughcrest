@@ -367,7 +367,10 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
             image_photo: data.profile[0] === undefined ? null : data.profile[0],
             image_signature:
                 data.signature[0] === undefined ? null : data.signature[0],
-            status: isStatus,
+            status:
+                isStatus === null || isStatus === undefined
+                    ? "Inactive"
+                    : isStatus,
         };
         setPayload({
             ...isPayload,
@@ -398,11 +401,12 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
                 ...Payload,
                 _method: "PUT",
             };
+
             const formData = new FormData();
 
             const arrayData: any = [];
 
-            const keys = Object.keys(Payload);
+            const keys = Object.keys(updatePayload);
 
             await keys.forEach((key) => {
                 if (
@@ -438,7 +442,7 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
                 formData.append(key, keyData);
             });
 
-            UpdateMutate(updatePayload);
+            UpdateMutate(formData);
         }
     };
 

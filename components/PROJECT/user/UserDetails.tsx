@@ -96,7 +96,14 @@ export default function UserDetails({ UserDetail }: Props) {
                             <p className=" text-gray-400 1024px:text-[14px] mb-1">
                                 STATUS
                             </p>
-                            <Tippy content={UserDetail.status} theme="ThemeRed">
+                            <Tippy
+                                content={
+                                    UserDetail.status === null
+                                        ? "Inactive"
+                                        : UserDetail.status
+                                }
+                                theme="ThemeRed"
+                            >
                                 <div className=" inline-block">
                                     <div
                                         className={`statusCircle ${UserDetail.status}`}
