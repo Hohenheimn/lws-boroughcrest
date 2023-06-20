@@ -188,7 +188,7 @@ export default function CustomerDetail() {
                                 PORTAL ID
                             </p>
                             <h4 className=" text-gray-500 mb-5 1024px:text-[14px]">
-                                {data?.user.portal_id}
+                                {data?.user?.portal_id}
                             </h4>
                         </li>
                         {data?.type !== "Company" && (

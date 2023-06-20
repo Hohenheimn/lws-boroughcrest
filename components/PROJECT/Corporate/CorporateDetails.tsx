@@ -79,7 +79,12 @@ export default function CorporateDetails({ CorporateData }: Props) {
                 </li>
                 <li className={style.image}>
                     <aside>
-                        <Image src={Logo} alt="" layout="fill" />
+                        <Image
+                            src={Logo}
+                            alt=""
+                            layout="fill"
+                            objectFit="cover"
+                        />
                     </aside>
                 </li>
                 <li className={style.details}>

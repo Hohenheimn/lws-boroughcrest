@@ -77,22 +77,22 @@ const List = ({ item }: any) => {
     return (
         <tr>
             <td className=" text-gray-500 mb-5 1024px:text-[14px] font-bold py-2 px-2">
-                {item.unit_code}
+                {item?.unit_code}
             </td>
             <td className=" text-gray-500 mb-5 1024px:text-[14px] font-bold py-2 px-2">
-                {item.type}
+                {item?.type}
             </td>
             <td className=" text-gray-500 mb-5 1024px:text-[14px] font-bold py-2 px-2">
-                {item.tower.name}
+                {item?.tower.name}
             </td>
             <td className=" text-gray-500 mb-5 1024px:text-[14px] font-bold py-2 px-2">
-                {item.floor.name}
+                {item?.floor?.name}
             </td>
             <td className=" text-gray-500 mb-5 1024px:text-[14px] font-bold py-2 px-2">
-                {item.area}
+                {item?.area}
             </td>
             <td className=" text-gray-500 mb-5 1024px:text-[14px] font-bold py-2 px-2">
-                {item.turnover_date}
+                {item?.turnover_date}
             </td>
         </tr>
     );

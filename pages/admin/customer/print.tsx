@@ -24,11 +24,6 @@ export default function Print({
     // Getting column from parameter
     const ColumnsArray = Columns.split(",");
 
-    // const { data, isLoading, isError } = GetCustomerList(
-    //     Number(PageNumber),
-    //     Keyword,
-    //     RowNumber
-    // );
     const { data, isLoading, isError } = GetPrintCustomerList();
 
     const PagePermisson = PageAccessValidation("Customer");
