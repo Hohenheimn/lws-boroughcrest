@@ -88,10 +88,14 @@ export default function TableCheckReceivables({
         toggle: false,
     });
 
+    let buttonClicked = "";
+
+    const [isStatus, setStatus] = useState("");
+
     const onSuccess = () => {
         router.push("");
         setPrompt({
-            message: "Check Schedule successfully booked check",
+            message: `Check Schedule successfully ${buttonClicked}`,
             type: "success",
             toggle: true,
         });
@@ -113,10 +117,9 @@ export default function TableCheckReceivables({
         new Date()
     );
 
-    const [isStatus, setStatus] = useState("");
-
     const BookedHandler = (status: string) => {
         setStatus(status);
+        buttonClicked = status;
         const Payload = {
             status: status,
             deposit_date: isValid(depositDateConvert)
@@ -126,6 +129,15 @@ export default function TableCheckReceivables({
             remarks: isRemarks,
         };
         mutate(Payload);
+    };
+    const CancelBookedCheckHandler = () => {
+        router.push("");
+        setRemarks("");
+        setDepositDate({
+            value: "",
+            toggle: false,
+        });
+        setReference("");
     };
 
     const [isExportLoading, setExportLoading] = useState(false);
@@ -215,7 +227,7 @@ export default function TableCheckReceivables({
                     <div className="flex justify-end items-center w-full">
                         <button
                             className="button_cancel"
-                            onClick={() => router.push("")}
+                            onClick={CancelBookedCheckHandler}
                         >
                             CANCEL
                         </button>

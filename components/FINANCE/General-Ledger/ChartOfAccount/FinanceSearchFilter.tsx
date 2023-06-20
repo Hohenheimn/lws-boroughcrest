@@ -56,12 +56,12 @@ export default function FinanceSearchFilter({
 
     // Imports
     // used as example
-    const { isLoading: CusLoading, mutate: CusMutate } = ChartOfAccountImport(
+    const { isLoading: CusLoading, mutate: COAMutate } = ChartOfAccountImport(
         ImportSuccess,
         ImportError
     );
     const ImportMutate = (PayLoad: any) => {
-        CusMutate(PayLoad);
+        COAMutate(PayLoad);
     };
     const importHandler = (e: any) => {
         DynamicImport(e, setPrompt, ImportMutate);

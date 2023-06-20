@@ -96,6 +96,18 @@ export default function TableForm() {
 
     const [isExportLoading, setExportLoading] = useState(false);
     const ExportHandler = () => {
+        if (
+            isPeriod.from === "" ||
+            isPeriod.to === "" ||
+            isBankAccount.id === ""
+        ) {
+            setPrompt({
+                message: "Set a period and Bank account",
+                type: "draft",
+                toggle: true,
+            });
+            return;
+        }
         DynamicExportHandler(
             `/finance/general-ledger/bank-reconciliation/export?bank_account_id=${
                 isBankAccount.id
