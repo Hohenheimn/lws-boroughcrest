@@ -36,6 +36,23 @@ export const GetInvoiceList = (
     );
 };
 
+export const GetInvoiceListPrint = () => {
+    return useQuery(
+        "invoice-list-print",
+        () => {
+            return api.get(
+                `/finance/customer-facility/billing?list_type=posted`,
+                {
+                    headers: { Authorization: "Bearer " + getCookie("user") },
+                }
+            );
+        },
+        {
+            refetchOnWindowFocus: false,
+        }
+    );
+};
+
 export const CreateInvoiceBilling = (onSuccess: any, onError: any) => {
     const queryClient = useQueryClient();
     return useMutation(

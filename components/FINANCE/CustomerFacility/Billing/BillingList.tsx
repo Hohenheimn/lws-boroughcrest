@@ -471,12 +471,16 @@ export default function BillingList() {
                             <li className={style.importExportPrint}>
                                 <Tippy theme="ThemeRed" content="Print">
                                     <div className={`${style.noFill} mr-5`}>
-                                        <Image
-                                            src="/Images/Print.png"
-                                            height={30}
-                                            width={30}
-                                            alt="Export"
-                                        />
+                                        <Link href="/finance/customer-facility/billing/invoice-list/print">
+                                            <a target="_blank">
+                                                <Image
+                                                    src="/Images/Print.png"
+                                                    height={30}
+                                                    width={30}
+                                                    alt="Export"
+                                                />
+                                            </a>
+                                        </Link>
                                     </div>
                                 </Tippy>
                             </li>

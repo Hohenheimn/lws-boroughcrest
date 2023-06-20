@@ -29,6 +29,7 @@ import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
 import { TextFieldValidation } from "../../../Reusable/InputField";
 import { AccessActionValidation } from "../../../Reusable/PermissionValidation/ActionAccessValidation";
 import { DynamicExportHandler } from "../../../Reusable/DynamicExport";
+import { DynamicImport } from "../../../Reusable/DynamicImport";
 
 type isTableitemArray = isTableitemObj[];
 
@@ -90,8 +91,8 @@ export default function TableForm() {
     const { isLoading: BankReconImportLoading, mutate: BankReconImportMutate } =
         BankReconImport(ImportSuccess, ImportError);
 
-    const ImportMutate = (PayLoad: any) => {
-        BankReconImportMutate(PayLoad);
+    const ImportMutate = (e: any) => {
+        DynamicImport(e, setPrompt, BankReconImportMutate);
     };
 
     const [isExportLoading, setExportLoading] = useState(false);
@@ -284,22 +285,23 @@ export default function TableForm() {
                             <>
                                 <div>
                                     <Tippy theme="ThemeRed" content="Import">
-                                        <div
+                                        <label
                                             className={styleSearch.icon}
-                                            onClick={ImportMutate}
+                                            htmlFor="import"
                                         >
                                             <Image
                                                 src="/Images/Import.png"
                                                 layout="fill"
                                                 alt="Export"
                                             />
-                                        </div>
+                                        </label>
                                     </Tippy>
-                                </div>{" "}
+                                </div>
                                 <input
                                     type="file"
                                     id="import"
                                     className="hidden"
+                                    onChange={ImportMutate}
                                 />
                             </>
                         )}

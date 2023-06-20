@@ -15,14 +15,14 @@ type Props = {
 };
 
 export default function Table({ isSearchTable }: Props) {
-    const { TableRows, corpColumn } = useContext(AppContext);
+    const { corpColumn, CorpTableRows } = useContext(AppContext);
     const [TablePage, setTablePage] = useState(1);
 
     const { data, isLoading, isError } = useQuery(
-        ["get-corporate-list", TablePage, isSearchTable, TableRows],
+        ["get-corporate-list", TablePage, isSearchTable, CorpTableRows],
         () => {
             return api.get(
-                `/project/corporate?keywords=${isSearchTable}&paginate=${TableRows}&page=${
+                `/project/corporate?keywords=${isSearchTable}&paginate=${CorpTableRows}&page=${
                     isSearchTable === "" ? TablePage : 1
                 }`,
                 {

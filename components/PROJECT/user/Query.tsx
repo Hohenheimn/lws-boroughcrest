@@ -2,12 +2,16 @@ import { getCookie } from "cookies-next";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import api from "../../../util/api";
 
-export const GetUser = (keyword: string, pageNumber: number) => {
+export const GetUser = (
+    keyword: string,
+    pageNumber: number,
+    rowNumber: number
+) => {
     return useQuery(["user-list", keyword, pageNumber], () => {
         return api.get(
             `/project/user?keywords=${keyword}&page=${
                 keyword === "" ? pageNumber : 1
-            }&paginate=10`,
+            }&paginate=${rowNumber}`,
             {
                 headers: {
                     Authorization: "Bearer " + getCookie("user"),
