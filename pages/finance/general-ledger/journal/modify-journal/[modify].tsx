@@ -27,7 +27,7 @@ export default function Modify({ id }: any) {
             });
             setJournalList(cloneArray);
         }
-    }, [data?.status]);
+    }, [data?.data]);
 
     const PagePermisson = PageAccessValidation("Journal");
 

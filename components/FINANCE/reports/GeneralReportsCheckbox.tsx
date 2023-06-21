@@ -3,6 +3,7 @@ import { GeneralReports } from "./CheckBoxes";
 import CheckBoxNameAndID from "./CheckBoxNameAndID";
 import { format, isValid, parse } from "date-fns";
 import AppContext from "../../Context/AppContext";
+import RadioButtonNameAndID from "./RadioButtonNameAndID";
 
 export type SelectedReportFilterType = { id: number; name: string };
 
@@ -61,7 +62,6 @@ export default function GeneralReportsCheckbox({
             }
             if (column === "Account") {
                 setAccount([
-                    ...isAccount,
                     {
                         id: id,
                         name: value,
@@ -123,7 +123,7 @@ export default function GeneralReportsCheckbox({
         <>
             <ul className="flex">
                 {isReportType === "General Ledger" && (
-                    <CheckBoxNameAndID
+                    <RadioButtonNameAndID
                         name="Account"
                         endpoint="/finance/general-ledger/chart-of-accounts"
                         SelectHandler={SelectHandler}

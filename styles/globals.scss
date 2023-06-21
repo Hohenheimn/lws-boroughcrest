@@ -482,6 +482,14 @@ input[type="checkbox"] {
     @apply relative w-4 h-4 shadow-lg overflow-hidden rounded-md after:bg-white after:text-white after:flex after:justify-center after:items-center mr-1 checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
 }
 
+input[type="radio"] {
+    border: 1px solid rgb(216, 216, 216) !important;
+    &:checked {
+        border: none !important;
+    }
+    @apply relative w-4 h-4 shadow-lg overflow-hidden rounded-full after:bg-white after:text-white after:flex after:justify-center after:items-center mr-1 checked:after:bg-ThemeRed appearance-none after:w-full after:h-full after:absolute after:left-0 after:top-0;
+}
+
 .pageDetail {
     @apply h-full w-full flex justify-center items-center absolute top-0 left-0;
 }
