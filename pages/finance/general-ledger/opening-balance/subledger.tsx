@@ -18,7 +18,11 @@ export default function Subledger() {
 
     return (
         <>
-            <Header isDate={isDate} setDate={setDate} />
+            <Header
+                isDate={isDate}
+                setDate={setDate}
+                importEndpoint="/finance/general-ledger/opening-balance/subledger/import"
+            />
             <SubTable />
         </>
     );

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 type Input = {
     className: string;
@@ -40,6 +40,9 @@ export const InputTextForm = ({
     limitation,
 }: Input) => {
     const [isValue, setValue] = useState(defaultValue);
+    useEffect(() => {
+        setValue(defaultValue);
+    }, [defaultValue]);
     return (
         <input
             type="text"
