@@ -70,34 +70,32 @@ export default function GeneralLedgerTable({ date }: GeneralLedgerTableProps) {
     const [totalCredit, setTotalCredit] = useState<number>(0);
 
     useEffect(() => {
-        if (data?.status === 200) {
-            const CloneArray = data?.data.map((item: any, index: number) => {
-                return {
-                    id: index,
-                    id_backend: item.id,
-                    account_id: item.chart_of_account?.id,
-                    chart_code: item.chart_of_account?.chart_code,
-                    category: item.chart_of_account?.category,
-                    account_name: item.chart_of_account?.account_name,
-                    account_type: item.account_type,
-                    debit:
-                        item.debit === 0 || item.debit === "0"
-                            ? ""
-                            : item.debit,
-                    credit:
-                        item.credit === 0 || item.credit === "0"
-                            ? ""
-                            : item.credit,
-                };
-            });
+        const CloneArray = data?.data.map((item: any, index: number) => {
+            return {
+                id: index,
+                id_backend: item.id,
+                account_id: item.chart_of_account?.id,
+                chart_code: item.chart_of_account?.chart_code,
+                category: item.chart_of_account?.category,
+                account_name: item.chart_of_account?.account_name,
+                account_type: item.account_type,
+                debit:
+                    item.debit === 0 || item.debit === "0"
+                        ? ""
+                        : `${item.debit}`,
+                credit:
+                    item.credit === 0 || item.credit === "0"
+                        ? ""
+                        : `${item.credit}`,
+            };
+        });
 
-            if (Permission_view) {
-                setTableItem(CloneArray);
-            } else {
-                setTableItem([]);
-            }
+        if (Permission_view) {
+            setTableItem(CloneArray);
+        } else {
+            setTableItem([]);
         }
-    }, [data?.status]);
+    }, [data?.data]);
 
     useEffect(() => {
         if (data?.status === 200) {
@@ -166,7 +164,7 @@ export default function GeneralLedgerTable({ date }: GeneralLedgerTableProps) {
                     <tbody>
                         {!isLoading && !isError && (
                             <>
-                                {isTableItem.map(
+                                {isTableItem?.map(
                                     (item: isTableItemObj, index) => (
                                         <List
                                             itemDetail={item}

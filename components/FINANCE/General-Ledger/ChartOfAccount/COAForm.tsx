@@ -130,15 +130,16 @@ export default function COAForm({
                 toggle: true,
                 type: "success",
             });
-            reset();
         } else {
             setPrompt({
                 message: "Account successfully updated!",
                 toggle: true,
                 type: "success",
             });
-            reset();
         }
+        reset();
+        setValue("account_name", "");
+        setValue("description", "");
         if (saveButton === "save") {
             router.push("");
             setCreate(false);
@@ -164,6 +165,7 @@ export default function COAForm({
         }
         queryClient.invalidateQueries("COA-list");
         queryClient.invalidateQueries(["COA-detail", router.query.modify]);
+        setSave(false);
         setError({
             ...ErrorDefault,
         });

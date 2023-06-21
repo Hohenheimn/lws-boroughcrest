@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Image from "next/image";
 import { BsSearch } from "react-icons/bs";
 import Tippy from "@tippy.js/react";
@@ -11,6 +11,10 @@ import { getCookie } from "cookies-next";
 import AppContext from "../../../Context/AppContext";
 import { CustomerImport } from "../../../ReactQuery/CustomerMethod";
 import Calendar from "../../../Reusable/Calendar";
+import { DynamicImport } from "../../../Reusable/DynamicImport";
+import { OpeningBalanceImport } from "./Query";
+import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
+import { useQueryClient } from "react-query";
 
 type HeaderProps = {
     isDate: {
@@ -18,10 +22,20 @@ type HeaderProps = {
         toggle: boolean;
     };
     setDate: Function;
+    importEndpoint: string;
 };
 
-export default function Header({ isDate, setDate }: HeaderProps) {
+export default function Header({
+    isDate,
+    setDate,
+    importEndpoint,
+}: HeaderProps) {
+    const [isImport, setImport] = useState<any>(null);
+
+    const queryClient = useQueryClient();
+
     const { setPrompt } = useContext(AppContext);
+
     const router = useRouter();
 
     const ImportSuccess = () => {
@@ -30,38 +44,22 @@ export default function Header({ isDate, setDate }: HeaderProps) {
             message: "Successfully imported!",
             toggle: true,
         });
+        setImport(null);
+        queryClient.invalidateQueries(["generalLedger-list"]);
+        queryClient.invalidateQueries(["subledger-list"]);
     };
-    const ImportError = () => {
-        setPrompt({
-            type: "error",
-            message: "The given data was invalid",
-            toggle: true,
-        });
+
+    const ImportError = (e: any) => {
+        setImport(null);
+        ErrorSubmit(e, setPrompt);
     };
+
     // Imports
-    const { isLoading: CusLoading, mutate: CusMutate } = CustomerImport(
-        ImportSuccess,
-        ImportError
-    );
+    const { isLoading: ImportLoading, mutate: ImportMutate } =
+        OpeningBalanceImport(ImportSuccess, ImportError, importEndpoint);
 
     const importHandler = (e: any) => {
-        // if (e.target.files.length > 0) {
-        //     const fileArray = e.target.files[0].name.split(".");
-        //     const extension = fileArray[fileArray.length - 1];
-        //     if (extension === "xlsx") {
-        //         let selectedFile = e.target.files[0];
-        //         const formData = new FormData();
-        //         formData.append("file", selectedFile);
-        //         // Mutation
-        //         CusMutate(formData);
-        //     } else {
-        //         setPrompt({
-        //             type: "error",
-        //             message: "Invalid file, must be XLSX only!",
-        //             toggle: true,
-        //         });
-        //     }
-        // }
+        DynamicImport(e, setPrompt, ImportMutate);
     };
     return (
         <>
@@ -103,7 +101,7 @@ export default function Header({ isDate, setDate }: HeaderProps) {
                     <li className={style.importExportPrint}>
                         <Tippy theme="ThemeRed" content="Import">
                             <div className={style.icon}>
-                                {CusLoading ? (
+                                {ImportLoading ? (
                                     <MoonLoader size={20} color="#8f384d" />
                                 ) : (
                                     <label htmlFor="import">
@@ -119,6 +117,7 @@ export default function Header({ isDate, setDate }: HeaderProps) {
                         <input
                             type="file"
                             id="import"
+                            value={isImport}
                             onChange={importHandler}
                             className="hidden"
                         />

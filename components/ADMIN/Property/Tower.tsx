@@ -57,7 +57,11 @@ const Tower = ({ set, update, is, isValID, isObject, setObject }: any) => {
         ]);
     };
 
-    const { isLoading, data, isError } = GetTower(isObject.value);
+    const { isLoading, data, isError } = GetTower(
+        isObject.value === null || isObject.value === undefined
+            ? ""
+            : isObject.value
+    );
 
     useEffect(() => {
         if (data?.status === 200) {

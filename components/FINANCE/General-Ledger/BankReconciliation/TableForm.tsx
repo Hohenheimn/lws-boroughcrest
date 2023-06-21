@@ -30,6 +30,7 @@ import { TextFieldValidation } from "../../../Reusable/InputField";
 import { AccessActionValidation } from "../../../Reusable/PermissionValidation/ActionAccessValidation";
 import { DynamicExportHandler } from "../../../Reusable/DynamicExport";
 import { DynamicImport } from "../../../Reusable/DynamicImport";
+import { useQueryClient } from "react-query";
 
 type isTableitemArray = isTableitemObj[];
 
@@ -40,6 +41,9 @@ type isTableitemObj = {
     credit: string;
     balance: string;
     remarks: string;
+    receipt_book: {
+        receipt_no: string;
+    }[];
     document_no: string;
     status: string;
 };
@@ -77,6 +81,8 @@ export default function TableForm() {
     });
 
     const [isTableItem, setTableItem] = useState<isTableitemArray>([]);
+
+    const queryClient = useQueryClient();
     // Imports
     const ImportSuccess = () => {
         setPrompt({
@@ -84,10 +90,18 @@ export default function TableForm() {
             message: "Successfully imported!",
             toggle: true,
         });
+        queryClient.invalidateQueries([
+            "bank-recon-list",
+            isBankAccount.id,
+            isValid(dateFrom) ? format(dateFrom, "yyyy-MM-dd") : "",
+            isValid(dateTo) ? format(dateTo, "yyyy-MM-dd") : "",
+        ]);
     };
+
     const ImportError = (e: any) => {
         ErrorSubmit(e, setPrompt);
     };
+
     const { isLoading: BankReconImportLoading, mutate: BankReconImportMutate } =
         BankReconImport(ImportSuccess, ImportError);
 
@@ -96,6 +110,7 @@ export default function TableForm() {
     };
 
     const [isExportLoading, setExportLoading] = useState(false);
+
     const ExportHandler = () => {
         if (
             isPeriod.from === "" ||
@@ -156,18 +171,19 @@ export default function TableForm() {
                 return {
                     id: item.id,
                     date: isValid(date) ? format(date, "MMM dd yyyy") : "",
-                    balance: item.balance,
-                    remarks: item.remarks,
+                    balance: item?.balance,
+                    remarks: item?.remarks,
                     document_no: "",
                     debit:
-                        item.debit === 0 || item.debit === "0"
+                        item?.debit === 0 || item?.debit === "0"
                             ? ""
                             : item.debit,
                     credit:
-                        item.credit === 0 || item.credit === "0"
+                        item?.credit === 0 || item?.credit === "0"
                             ? ""
-                            : item.credit,
-                    status: item.status,
+                            : item?.credit,
+                    status: item?.status,
+                    receipt_book: item?.receipt_book,
                 };
             });
             // Additional blank row field
@@ -182,18 +198,27 @@ export default function TableForm() {
                         debit: "",
                         credit: "",
                         status: "",
+                        receipt_book: [],
                     },
                 ]);
             } else {
                 setTableItem(CloneArray);
             }
         }
-    }, [data?.status, isBankAccount, isPeriod]);
+    }, [data?.data, isBankAccount, isPeriod, isEdit]);
+
+    const CancelHandler = () => {
+        setEdit(false);
+    };
 
     const [totalDebit, setTotalDebit] = useState<number>(0);
+
     const [totalCredit, setTotalCredit] = useState<number>(0);
+
     const [prevBalance, setPrevBalance] = useState<number>(0);
+
     const [totalBalance, setTotalBalance] = useState<number>(0);
+
     useEffect(() => {
         if (data?.status === 200) {
             setTotalDebit(0);
@@ -428,10 +453,7 @@ export default function TableForm() {
             </div>
             {isEdit && isBankAccount.id !== "" && (
                 <div className="flex justify-end py-5 mt-20">
-                    <button
-                        className="button_cancel"
-                        onClick={() => setEdit(false)}
-                    >
+                    <button className="button_cancel" onClick={CancelHandler}>
                         Cancel
                     </button>
                     <button
@@ -607,8 +629,7 @@ const List = ({
                 <article className="calendar relative w-full">
                     <span
                         className={`cal ${
-                            itemData.status === "Posted" ||
-                            (itemData.status === "Pending" && "disabled")
+                            itemData.receipt_book.length > 0 && " disabled"
                         }`}
                     >
                         <Image
@@ -625,8 +646,7 @@ const List = ({
                         onChange={() => {}}
                         placeholder="dd/mm/yyyy"
                         className={`field ${!isEdit && "disabled "} ${
-                            itemData.status === "Posted" ||
-                            (itemData.status === "Pending" && "disabled")
+                            itemData.receipt_book.length > 0 && " disabled"
                         }`}
                         onClick={() => setDate({ ...isDate, toggle: true })}
                     />
@@ -648,8 +668,7 @@ const List = ({
                     className={`number field inline-block w-full bg-white ${
                         !isEdit && "disabled "
                     } ${debitValidate} ${
-                        itemData.status === "Posted" ||
-                        (itemData.status === "Pending" && "disabled")
+                        itemData.receipt_book.length > 0 && " disabled"
                     }`}
                     value={itemData.debit}
                     onChange={UpdateStateHandler}
@@ -661,8 +680,7 @@ const List = ({
                     className={`number field inline-block w-full bg-white ${
                         !isEdit && "disabled "
                     } ${creditValidate} ${
-                        itemData.status === "Posted" ||
-                        (itemData.status === "Pending" && "disabled")
+                        itemData.receipt_book.length > 0 && " disabled"
                     }`}
                     value={itemData.credit}
                     onChange={UpdateStateHandler}
@@ -679,8 +697,7 @@ const List = ({
                 <input
                     type="text"
                     className={`field ${!isEdit && "disabled "} w-full ${
-                        itemData.status === "Posted" ||
-                        (itemData.status === "Pending" && "disabled")
+                        itemData.receipt_book.length > 0 && " disabled"
                     }`}
                     onChange={(e) => {
                         if (!TextFieldValidation(e, 50)) return;
@@ -690,24 +707,22 @@ const List = ({
                 />
             </td>
             <td>
-                <input
-                    type="text"
-                    className="field disabled w-full"
-                    onChange={(e) => {
-                        UpdateStateHandler("document_no", e.target.value);
-                    }}
-                    value={itemData.document_no}
-                />
+                <div className="field disabled w-full">
+                    {itemData.receipt_book.map((itemMap, index) =>
+                        itemData.receipt_book.length - 1 === index
+                            ? itemMap.receipt_no
+                            : itemMap.receipt_no + ", "
+                    )}
+                </div>
             </td>
             {isEdit && (
                 <td className="actionIcon">
-                    {itemData.status === "Posted" ||
-                    itemData.status === "Pending" ? (
+                    {itemData.receipt_book.length > 0 ? (
                         <Link
                             href={`/finance/general-ledger/bank-reconciliation?view=${itemData.id}`}
                         >
                             <a>
-                                <Tippy content={"View"}>
+                                <Tippy theme="ThemeRed" content={"View"}>
                                     <div>
                                         <AiOutlineInfoCircle className=" text-[16px]" />
                                     </div>

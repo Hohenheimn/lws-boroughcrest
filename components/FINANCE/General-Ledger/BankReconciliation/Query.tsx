@@ -57,7 +57,6 @@ export const ShowBankRecon = (id: string | number) => {
 };
 
 export const BankReconImport = (onSuccess: any, ImportError: any) => {
-    const queryClient = useQueryClient();
     return useMutation(
         (data: FormData) => {
             return api.post(
@@ -72,7 +71,6 @@ export const BankReconImport = (onSuccess: any, ImportError: any) => {
         },
         {
             onSuccess: () => {
-                queryClient.invalidateQueries("bank-recon-list");
                 onSuccess();
             },
             onError: ImportError,

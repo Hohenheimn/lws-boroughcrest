@@ -119,7 +119,7 @@ export default function SubTable() {
                 setTableItem(CloneArray);
             }
         }
-    }, [data?.status]);
+    }, [data?.data]);
 
     const [isTotal, setTotal] = useState<number>(0);
 

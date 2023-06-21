@@ -347,6 +347,10 @@ const Select = ({ setSelect, updateValue, classType }: any) => {
     const Menu = useRef<any>();
     // Get unit codes to display
     const { isLoading, data, isError } = GetUnitCode(classType);
+
+    const removeDraft = data?.data.filter(
+        (fitlerItem: any) => fitlerItem.status !== "Draft"
+    );
     useEffect(() => {
         const clickOutSide = (e: any) => {
             if (!Menu.current.contains(e.target)) {
@@ -371,7 +375,7 @@ const Select = ({ setSelect, updateValue, classType }: any) => {
                     <h1>Something went wrong!</h1>
                 </li>
             )}
-            {data?.data.length <= 0 && (
+            {removeDraft?.length <= 0 && (
                 <li className="flex justify-center ">
                     <h1>
                         No Available Unit Code{" "}
@@ -381,7 +385,7 @@ const Select = ({ setSelect, updateValue, classType }: any) => {
                     </h1>
                 </li>
             )}
-            {data?.data.map((item: any, index: number) => (
+            {removeDraft?.map((item: any, index: number) => (
                 <li
                     key={index}
                     data-projname={item?.project?.name}

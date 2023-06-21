@@ -18,7 +18,11 @@ export default function GeneralLedger() {
 
     return (
         <div>
-            <Header isDate={isDate} setDate={setDate} />
+            <Header
+                isDate={isDate}
+                setDate={setDate}
+                importEndpoint="/finance/general-ledger/opening-balance/general-ledger/import"
+            />
             <GeneralLedgerTable date={isDate.value} />
         </div>
     );

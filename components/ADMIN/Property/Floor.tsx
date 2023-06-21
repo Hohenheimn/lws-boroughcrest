@@ -56,7 +56,11 @@ const Floor = ({ set, update, is, isValID, isObject, setObject }: any) => {
         ]);
     };
 
-    const { isLoading, data, isError } = GetFloor(isObject.value);
+    const { isLoading, data, isError } = GetFloor(
+        isObject.value === null || isObject.value === undefined
+            ? ""
+            : isObject.value
+    );
 
     useEffect(() => {
         if (data?.status === 200) {

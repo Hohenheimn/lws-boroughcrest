@@ -26,6 +26,26 @@ export const CreateUpdateSubledger = (onSucces: any, onError: any) => {
     );
 };
 
+export const OpeningBalanceImport = (
+    onSuccess: any,
+    ImportError: any,
+    endpoint: string
+) => {
+    return useMutation(
+        (data: FormData) => {
+            return api.post(`${endpoint}`, data, {
+                headers: {
+                    Authorization: "Bearer " + getCookie("user"),
+                },
+            });
+        },
+        {
+            onSuccess: onSuccess,
+            onError: ImportError,
+        }
+    );
+};
+
 export const GetSubledger = () => {
     return useQuery("subledger-list", () => {
         return api.get(`/finance/general-ledger/opening-balance/subledger`, {
