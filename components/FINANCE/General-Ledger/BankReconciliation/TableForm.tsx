@@ -175,11 +175,17 @@ export default function TableForm() {
                     remarks: item?.remarks,
                     document_no: "",
                     debit:
-                        item?.debit === 0 || item?.debit === "0"
+                        item?.debit === 0 ||
+                        item?.debit === "0" ||
+                        item?.debit === null ||
+                        item?.debit === undefined
                             ? ""
                             : item.debit,
                     credit:
-                        item?.credit === 0 || item?.credit === "0"
+                        item?.credit === 0 ||
+                        item?.credit === "0" ||
+                        item?.credit === null ||
+                        item?.credit === undefined
                             ? ""
                             : item?.credit,
                     status: item?.status,
@@ -581,7 +587,7 @@ const List = ({
             setDebitValidate,
             setcreditValidate
         );
-    }, [itemData.debit, itemData.credit]);
+    }, [itemData]);
 
     const AddRowHandler = (e: any) => {
         if (isTableItem.length !== rowNumber + 1) {
