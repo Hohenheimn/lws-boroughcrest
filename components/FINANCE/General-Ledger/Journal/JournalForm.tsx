@@ -490,8 +490,8 @@ const List = ({ itemList, setDefault, isDefault, index }: List) => {
 
     useEffect(() => {
         validateCreditDebitField(
-            itemList.debit,
-            itemList.credit,
+            `${itemList.debit}`,
+            `${itemList.credit}`,
             setDebitValidate,
             setcreditValidate
         );

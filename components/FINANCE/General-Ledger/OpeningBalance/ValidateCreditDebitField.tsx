@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+
 type validateCreditDebitField = {
     debit: string | number;
     setDebit: Function;
