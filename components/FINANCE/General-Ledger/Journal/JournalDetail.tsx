@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { HiPencil } from "react-icons/hi";
 import style from "../../../../styles/Project/PropertyDetails.module.scss";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
@@ -50,13 +49,13 @@ export default function JournalDetail({ Detail, forPrint }: JournalDetail) {
     useEffect(() => {
         setTotalCredit(0);
         setTotalDebit(0);
-        Detail.journal_list.map((item: journal_list) => {
+        Detail?.journal_list.map((item: journal_list) => {
             setTotalDebit((value) => value + Number(item.debit));
             setTotalCredit((value) => value + Number(item.credit));
         });
-    }, []);
+    }, [Detail]);
 
-    const date = parse(Detail.date, "yyyy-MM-dd", new Date());
+    const date = parse(Detail?.date, "yyyy-MM-dd", new Date());
 
     return (
         <div>
@@ -68,7 +67,7 @@ export default function JournalDetail({ Detail, forPrint }: JournalDetail) {
                             <Tippy theme="ThemeRed" content="Print">
                                 <div className="relative w-8 h-8 transition-all duration-75 hover:scale-[1.1]">
                                     <Link
-                                        href={`/finance/general-ledger/journal/journal-list/print?journal_id=${Detail.id}`}
+                                        href={`/finance/general-ledger/journal/journal-list/print?journal_id=${Detail?.id}`}
                                     >
                                         <a target="_blank">
                                             <Image
@@ -89,12 +88,13 @@ export default function JournalDetail({ Detail, forPrint }: JournalDetail) {
                     forPrint && style.forPrint
                 }`}
             >
-                {Detail.status !== "Approved" &&
-                    Detail.status !== "In Progress" &&
+                {Detail?.status !== "Approved" &&
+                    Detail?.status !== "In Progress" &&
+                    !forPrint &&
                     Permission_modify && (
                         <aside className=" mt-[-15px]">
                             <Link
-                                href={`/finance/general-ledger/journal/modify-journal/${Detail.id}`}
+                                href={`/finance/general-ledger/journal/modify-journal/${Detail?.id}`}
                             >
                                 <a>
                                     <PencilButton

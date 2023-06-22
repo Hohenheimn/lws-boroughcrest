@@ -31,7 +31,7 @@ type CashReceiptsTable = {
     itemArray: CashReceiptsObj[];
 };
 type CashReceiptsObj = {
-    document_date: string;
+    deposit_date: string;
     customer: string;
     receipt_no: string;
     amount: number | string;
@@ -105,9 +105,9 @@ export default function DepositForm({
                         select = itemSelect.select;
                     }
                 });
-                const date = parse(item.date, "yyyy-MM-dd", new Date());
+                const date = parse(item.deposit_date, "yyyy-MM-dd", new Date());
                 return {
-                    document_date: isValid(date)
+                    deposit_date: isValid(date)
                         ? format(date, "MMM dd yyyy")
                         : "",
                     customer: item.depositor.name,
@@ -349,7 +349,7 @@ const List = ({
                                   />
                               </div>
                           </td>
-                          <td>{itemDetail.document_date}</td>
+                          <td>{itemDetail.deposit_date}</td>
                           <td>{itemDetail.customer}</td>
                           <td>{itemDetail.receipt_no}</td>
                           <td>
@@ -391,7 +391,7 @@ const List = ({
                                   />
                               </div>
                           </td>
-                          <td>{itemDetail.document_date}</td>
+                          <td>{itemDetail.deposit_date}</td>
                           <td>{itemDetail.customer}</td>
                           <td>{itemDetail.receipt_no}</td>
                           <td>

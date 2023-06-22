@@ -1,17 +1,27 @@
-import React from "react";
+import React, { useEffect } from "react";
 import CustomerForm from "./CustomerForm";
 import { GetCustomer } from "../../../ReactQuery/CustomerMethod";
 import { useRouter } from "next/router";
 import ModalTemp from "../../../Reusable/ModalTemp";
 import { BeatLoader } from "react-spinners";
 import { customer } from "../../../../types/customerList";
+import { format, isValid, parse } from "date-fns";
 
 export default function ModifyCustomer() {
     const router = useRouter();
+
     const id =
         router.query.draft === undefined ? router.query.id : router.query.draft;
+
     const { isLoading, data, isError } = GetCustomer(id);
+
     const CustomerDetail: customer = data?.data;
+
+    const BirthDate: any = parse(
+        CustomerDetail?.individual_birth_date,
+        "yyyy-MM-dd",
+        new Date()
+    );
 
     const isDefaultValue = {
         class: CustomerDetail?.class === null ? "" : CustomerDetail?.class,
@@ -28,7 +38,9 @@ export default function ModifyCustomer() {
         individual_birth_date:
             CustomerDetail?.individual_birth_date === null
                 ? ""
-                : CustomerDetail?.individual_birth_date,
+                : isValid(BirthDate)
+                ? format(BirthDate, "MMM dd yyyy")
+                : "",
         company_contact_person:
             CustomerDetail?.company_contact_person === null
                 ? ""
