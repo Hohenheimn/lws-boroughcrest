@@ -105,6 +105,11 @@ export default function JournalForm({
                 message: "Journal successfully saved!",
                 type: "success",
             });
+            setDate({
+                toggle: false,
+                value: "",
+            });
+            setParticulars("");
             setJournalList([
                 {
                     id: "",
@@ -301,7 +306,7 @@ export default function JournalForm({
                     </li>
                 </ul>
                 <div className="table_container">
-                    <table className="table_list forCrud">
+                    <table className="table_list">
                         <thead className="textRed">
                             <tr>
                                 <th>CODE</th>

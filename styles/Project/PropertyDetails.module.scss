@@ -61,6 +61,11 @@
         }
     }
 }
+
+.forPrint {
+    box-shadow: none !important;
+    @apply border border-gray-300;
+}
 .title {
     @apply text-ThemeRed mb-5 text-[16px] 480px:text-[12px];
 }
