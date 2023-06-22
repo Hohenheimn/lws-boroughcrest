@@ -226,17 +226,15 @@ export default function TableForm() {
     const [totalBalance, setTotalBalance] = useState<number>(0);
 
     useEffect(() => {
-        if (data?.status === 200) {
-            setTotalDebit(0);
-            setTotalCredit(0);
-            setTotalBalance(0);
-            isTableItem.map((item: isTableitemObj) => {
-                setTotalDebit((temp) => Number(temp) + Number(item.debit));
-                setTotalCredit((temp) => Number(temp) + Number(item.credit));
-            });
-            const totalBalance = Number(totalCredit) - Number(totalDebit);
-            setTotalBalance(totalBalance);
-        }
+        setTotalDebit(0);
+        setTotalCredit(0);
+        setTotalBalance(0);
+        isTableItem.map((item: isTableitemObj) => {
+            setTotalDebit((temp) => Number(temp) + Number(item.debit));
+            setTotalCredit((temp) => Number(temp) + Number(item.credit));
+        });
+        const totalBalance = Number(totalCredit) - Number(totalDebit);
+        setTotalBalance(totalBalance);
     }, [isTableItem]);
 
     const SubmitHandler = () => {
@@ -381,19 +379,34 @@ export default function TableForm() {
                             </td>
                             <td>
                                 <TextNumberDisplay
-                                    value={totalDebit}
+                                    value={
+                                        isPeriod.from === "" &&
+                                        isPeriod.to === ""
+                                            ? 0
+                                            : totalDebit
+                                    }
                                     className="withPeso text-end inline-block w-full"
                                 />
                             </td>
                             <td>
                                 <TextNumberDisplay
-                                    value={totalCredit}
+                                    value={
+                                        isPeriod.from === "" &&
+                                        isPeriod.to === ""
+                                            ? 0
+                                            : totalCredit
+                                    }
                                     className="withPeso text-end inline-block w-full"
                                 />
                             </td>
                             <td>
                                 <TextNumberDisplay
-                                    value={totalBalance}
+                                    value={
+                                        isPeriod.from === "" &&
+                                        isPeriod.to === ""
+                                            ? 0
+                                            : totalBalance
+                                    }
                                     className="withPeso text-end inline-block w-full"
                                 />
                             </td>
