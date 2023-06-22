@@ -21,6 +21,7 @@ type JournalDetail = {
         trail: trail[];
         journal_list: journal_list[];
     };
+    forPrint?: boolean;
 };
 type trail = {
     event: string;
@@ -39,7 +40,7 @@ export type journal_list = {
     };
 };
 
-export default function JournalDetail({ Detail }: JournalDetail) {
+export default function JournalDetail({ Detail, forPrint }: JournalDetail) {
     const Permission_modify = AccessActionValidation("Journal", "modify");
 
     const [totalDebit, setTotalDebit] = useState(0);
@@ -59,23 +60,35 @@ export default function JournalDetail({ Detail }: JournalDetail) {
 
     return (
         <div>
-            <div className="flex justify-between items-center mb-5">
-                <h1 className="pageTitle mb-5">Journal Details</h1>
-                <ul className="flex">
-                    <li className="mr-5">
-                        <Tippy theme="ThemeRed" content="Print">
-                            <div className="relative w-8 h-8 transition-all duration-75 hover:scale-[1.1]">
-                                <Image
-                                    src="/Images/Print.png"
-                                    layout="fill"
-                                    alt="Print"
-                                />
-                            </div>
-                        </Tippy>
-                    </li>
-                </ul>
-            </div>
-            <ul className={`${style.FourRows} ${style.narrow}`}>
+            {!forPrint && (
+                <div className="flex justify-between items-center mb-5">
+                    <h1 className="pageTitle mb-5">Journal Details</h1>
+                    <ul className="flex">
+                        <li className="mr-5">
+                            <Tippy theme="ThemeRed" content="Print">
+                                <div className="relative w-8 h-8 transition-all duration-75 hover:scale-[1.1]">
+                                    <Link
+                                        href={`/finance/general-ledger/journal/journal-list/print?journal_id=${Detail.id}`}
+                                    >
+                                        <a target="_blank">
+                                            <Image
+                                                src="/Images/Print.png"
+                                                layout="fill"
+                                                alt="Print"
+                                            />
+                                        </a>
+                                    </Link>
+                                </div>
+                            </Tippy>
+                        </li>
+                    </ul>
+                </div>
+            )}
+            <ul
+                className={`${style.FourRows} ${style.narrow} ${
+                    forPrint && style.forPrint
+                }`}
+            >
                 {Detail.status !== "Approved" &&
                     Detail.status !== "In Progress" &&
                     Permission_modify && (
@@ -110,7 +123,11 @@ export default function JournalDetail({ Detail }: JournalDetail) {
                     <h4 className="main_text">{Detail?.particulars}</h4>
                 </li>
             </ul>
-            <ul className={`${style.OneRow} ${style.narrow}`}>
+            <ul
+                className={`${style.OneRow} ${style.narrow} ${
+                    forPrint && style.forPrint
+                }`}
+            >
                 <li className="table-container">
                     <table>
                         <thead>
@@ -124,7 +141,10 @@ export default function JournalDetail({ Detail }: JournalDetail) {
                         <tbody>
                             {Detail?.journal_list.map(
                                 (item: journal_list, index: number) => (
-                                    <List journal_list={item} key={index} />
+                                    <JournalListComp
+                                        journal_list={item}
+                                        key={index}
+                                    />
                                 )
                             )}
 
@@ -149,7 +169,11 @@ export default function JournalDetail({ Detail }: JournalDetail) {
                     </table>
                 </li>
             </ul>
-            <ul className={`${style.Occupants} ${style.narrow}`}>
+            <ul
+                className={`${style.Occupants} ${style.narrow} ${
+                    forPrint && style.forPrint
+                }`}
+            >
                 <li className={style.noMb}>
                     <p className="label_text">TRAIL</p>
                     {Detail?.trail.map((item: trail, index) => (
@@ -164,10 +188,10 @@ export default function JournalDetail({ Detail }: JournalDetail) {
     );
 }
 
-type ListProps = {
+export type JournalListProps = {
     journal_list: journal_list;
 };
-const List = ({ journal_list }: ListProps) => {
+export const JournalListComp = ({ journal_list }: JournalListProps) => {
     return (
         <tr>
             <td>

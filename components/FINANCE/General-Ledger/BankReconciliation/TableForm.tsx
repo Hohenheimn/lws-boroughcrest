@@ -620,6 +620,7 @@ const List = ({
                 document_no: "",
                 debit: "",
                 credit: "",
+                receipt_book: [],
             },
         ]);
     };
@@ -635,7 +636,7 @@ const List = ({
                 <article className="calendar relative w-full">
                     <span
                         className={`cal ${
-                            itemData.receipt_book.length > 0 && " disabled"
+                            itemData?.receipt_book?.length > 0 && " disabled"
                         }`}
                     >
                         <Image
@@ -652,7 +653,7 @@ const List = ({
                         onChange={() => {}}
                         placeholder="dd/mm/yyyy"
                         className={`field ${!isEdit && "disabled "} ${
-                            itemData.receipt_book.length > 0 && " disabled"
+                            itemData?.receipt_book?.length > 0 && " disabled"
                         }`}
                         onClick={() => setDate({ ...isDate, toggle: true })}
                     />
@@ -674,7 +675,7 @@ const List = ({
                     className={`number field inline-block w-full bg-white ${
                         !isEdit && "disabled "
                     } ${debitValidate} ${
-                        itemData.receipt_book.length > 0 && " disabled"
+                        itemData?.receipt_book?.length > 0 && " disabled"
                     }`}
                     value={itemData.debit}
                     onChange={UpdateStateHandler}
@@ -686,7 +687,7 @@ const List = ({
                     className={`number field inline-block w-full bg-white ${
                         !isEdit && "disabled "
                     } ${creditValidate} ${
-                        itemData.receipt_book.length > 0 && " disabled"
+                        itemData?.receipt_book?.length > 0 && " disabled"
                     }`}
                     value={itemData.credit}
                     onChange={UpdateStateHandler}
@@ -703,7 +704,7 @@ const List = ({
                 <input
                     type="text"
                     className={`field ${!isEdit && "disabled "} w-full ${
-                        itemData.receipt_book.length > 0 && " disabled"
+                        itemData?.receipt_book?.length > 0 && " disabled"
                     }`}
                     onChange={(e) => {
                         if (!TextFieldValidation(e, 50)) return;
@@ -714,8 +715,8 @@ const List = ({
             </td>
             <td>
                 <div className="field disabled w-full">
-                    {itemData.receipt_book.map((itemMap, index) =>
-                        itemData.receipt_book.length - 1 === index
+                    {itemData?.receipt_book.map((itemMap, index) =>
+                        itemData?.receipt_book?.length - 1 === index
                             ? itemMap.receipt_no
                             : itemMap.receipt_no + ", "
                     )}
@@ -723,7 +724,7 @@ const List = ({
             </td>
             {isEdit && (
                 <td className="actionIcon">
-                    {itemData.receipt_book.length > 0 ? (
+                    {itemData?.receipt_book?.length > 0 ? (
                         <Link
                             href={`/finance/general-ledger/bank-reconciliation?view=${itemData.id}`}
                         >

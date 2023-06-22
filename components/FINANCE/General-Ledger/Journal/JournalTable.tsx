@@ -46,6 +46,8 @@ export default function JournalTable({ type, isPeriod, setPeriod }: Props) {
 
     const [ButtonClicked, setButtonClicked] = useState("");
 
+    let ButtonClickedLet = "";
+
     const { setPrompt } = useContext(AppContext);
 
     const [isSearch, setSearch] = useState("");
@@ -166,7 +168,7 @@ export default function JournalTable({ type, isPeriod, setPeriod }: Props) {
         });
         setSelectedIDs([]);
         setPrompt({
-            message: `Items successfully ${ButtonClicked}!`,
+            message: `Items successfully ${ButtonClickedLet}!`,
             type: "success",
             toggle: true,
         });
@@ -201,6 +203,7 @@ export default function JournalTable({ type, isPeriod, setPeriod }: Props) {
         }
     };
     const Confirm = (button: string) => {
+        ButtonClickedLet = button;
         const Payload = {
             journal_ids: "[" + isSelectedIDs + "]",
             status: button,
