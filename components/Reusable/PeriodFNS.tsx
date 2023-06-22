@@ -77,6 +77,14 @@ export default function PeriodFNS({
         });
         setToggle(false);
     };
+
+    const ResetHandler = () => {
+        setValue({
+            from: "",
+            to: "",
+        });
+    };
+
     return (
         <div
             className={`${
@@ -119,6 +127,12 @@ export default function PeriodFNS({
                         </p>
                     </li>
                     <li>
+                        <button
+                            className="button_cancel"
+                            onClick={ResetHandler}
+                        >
+                            RESET
+                        </button>
                         <button
                             className="button_cancel"
                             onClick={() => setToggle(false)}
