@@ -1,9 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { customer, customerItemDetail } from "../../../types/customerList";
+import { format, isValid, parse } from "date-fns";
 
 export default function CustomerInformation({
     itemDetail,
 }: customerItemDetail) {
+    let BirthDate: any =
+        itemDetail !== undefined
+            ? parse(itemDetail.individual_birth_date, "yyyy-MM-dd", new Date())
+            : "";
+
     return (
         <ul className="flex flex-wrap">
             <li className=" w-full">
@@ -32,7 +38,9 @@ export default function CustomerInformation({
                             BIRTH DATE
                         </p>
                         <h4 className=" text-gray-500 mb-5 1024px:text-[14px]">
-                            {itemDetail?.individual_birth_date}
+                            {isValid(BirthDate)
+                                ? format(BirthDate, "MMM dd yyyy")
+                                : ""}
                         </h4>
                     </li>
                 </>

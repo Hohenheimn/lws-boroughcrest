@@ -109,6 +109,7 @@ export default function JournalForm({
                 toggle: false,
                 value: "",
             });
+            router.push("/finance/general-ledger/journal/create-journal");
             setParticulars("");
             setJournalList([
                 {

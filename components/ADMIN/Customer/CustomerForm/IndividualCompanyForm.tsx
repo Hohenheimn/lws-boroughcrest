@@ -127,6 +127,7 @@ export default function IndividualCompanyForm({
         value: isCustomerForm.individual_birth_date,
         toggle: false,
     });
+
     useEffect(() => {
         setCustomerForm({
             ...isCustomerForm,
