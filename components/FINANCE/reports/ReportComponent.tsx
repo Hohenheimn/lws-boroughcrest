@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import SelectDropdown from "../../../components/Reusable/SelectDropdown";
 import Image from "next/image";
 import Tippy from "@tippy.js/react";
@@ -68,6 +68,33 @@ export default function ReportComponent() {
     const { isLoading, mutate } = SaveFavorite(onSuccess, onError);
 
     const [isFavoritePayload, setFavoritePayload] = useState<any>(null);
+
+    useEffect(() => {
+        if (router.pathname.includes("/customer-reports")) {
+            setFavoritePayload({
+                report_type: "",
+                customer_name: "",
+                customer_class: "",
+                property_type: "",
+                property_class: "",
+                property_tower: "",
+                property_floor: "",
+                property_project: "",
+                report_mode_of_payment: "",
+                report_charge: "",
+                report_account: "",
+                report_memo_type: "",
+                report_receipt_type: "",
+            });
+        }
+        if (router.pathname.includes("/general-reports")) {
+            setFavoritePayload({
+                report_type: "",
+                document_type: "",
+                report_account: "",
+            });
+        }
+    }, [isReportType]);
 
     const FavoriteCustomerHandler = (
         report_type: string,

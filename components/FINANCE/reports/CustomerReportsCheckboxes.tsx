@@ -4,6 +4,9 @@ import CheckBoxNameAndID from "./CheckBoxNameAndID";
 import { SelectedReportFilterType } from "./GeneralReportsCheckbox";
 import { format, isValid, parse } from "date-fns";
 import AppContext from "../../Context/AppContext";
+import RadioButtonNameAndID from "./RadioButtonNameAndID";
+import CustomerDropdown from "../../Dropdowns/CustomerDropdown";
+import { customerDD } from "../CustomerFacility/Billing/BillingForm";
 
 type Props = {
     isReportType: string;
@@ -50,6 +53,15 @@ export default function CustomerReportsCheckboxes({
         SelectedReportFilterType[]
     >([]);
     const [isName, setName] = useState<string>("");
+    const [isCustomer, setCustomer] = useState<customerDD>({
+        id: "",
+        name: "",
+        class: "",
+        property: [],
+    });
+    useEffect(() => {
+        setName(isCustomer.name);
+    }, [isCustomer]);
     // Property
     const [isType, setType] = useState<SelectedReportFilterType[]>([]);
     const [isClass, setClass] = useState<SelectedReportFilterType[]>([]);
@@ -66,6 +78,26 @@ export default function CustomerReportsCheckboxes({
     const [isReceiptType, setReceiptType] = useState<
         SelectedReportFilterType[]
     >([]);
+
+    useEffect(() => {
+        setCustomer({
+            id: "",
+            name: "",
+            class: "",
+            property: [],
+        });
+        setCustomer_Class([]);
+        setType([]);
+        setClass([]);
+        setTower([]);
+        setProject([]);
+        setFloor([]);
+        setMemoType([]);
+        setMode_of_payment([]);
+        setAccount([]);
+        setCharge([]);
+        setReceiptType([]);
+    }, [isReportType]);
 
     const SelectHandler = (
         e: any,
@@ -84,13 +116,22 @@ export default function CustomerReportsCheckboxes({
                 ]);
             }
             if (column === "Account") {
-                setAccount([
-                    ...isAccount,
-                    {
-                        id: id,
-                        name: value,
-                    },
-                ]);
+                if (isReportType === "Account Subsidiary Ledger") {
+                    setAccount([
+                        {
+                            id: id,
+                            name: value,
+                        },
+                    ]);
+                } else {
+                    setAccount([
+                        ...isAccount,
+                        {
+                            id: id,
+                            name: value,
+                        },
+                    ]);
+                }
             }
             if (column === "Type") {
                 setType([
@@ -244,6 +285,26 @@ export default function CustomerReportsCheckboxes({
     };
 
     const ApplyHandler = () => {
+        if (
+            isReportType === "Account Subsidiary Ledger" &&
+            isAccount.length <= 0
+        ) {
+            setPrompt({
+                message: "Account is Required for this report type",
+                type: "draft",
+                toggle: true,
+            });
+            return;
+        }
+        if (isReportType === "Customer Subsidiary Ledger" && isName === "") {
+            setPrompt({
+                message: "Customer name is Required for this report type",
+                type: "draft",
+                toggle: true,
+            });
+            return;
+        }
+
         let dateFrom: any = parse(Period.from, "MMM dd yyyy", new Date());
         dateFrom = isValid(dateFrom) ? format(dateFrom, "yyyy-MM-dd") : "";
         let dateTo: any = parse(Period.to, "MMM dd yyyy", new Date());
@@ -353,11 +414,9 @@ export default function CustomerReportsCheckboxes({
                     "Outstanding Advances Report") && (
                     <li className={checkboxContainer}>
                         <h3 className={CheckBoxListLabel}>NAME</h3>
-                        <input
-                            type="text"
-                            value={isName}
-                            onChange={(e) => setName(e.target.value)}
-                            className="field w-full"
+                        <CustomerDropdown
+                            isCustomer={isCustomer}
+                            setCustomer={setCustomer}
                         />
                     </li>
                 )}
@@ -495,20 +554,29 @@ export default function CustomerReportsCheckboxes({
                 <li className="w-full mt-10">
                     <h3 className={CheckBoxListLabel}>REPORT</h3>
                 </li>
-                {(isReportType === "Cash Receipt Book" ||
-                    isReportType === "Billing Summary" ||
-                    isReportType === "Billing Register" ||
-                    isReportType === "Customer Memo Register" ||
-                    isReportType === "Aging Receivable Report" ||
-                    isReportType === "Collection Efficiency Report" ||
-                    "Outstanding Advances Report") && (
-                    <CheckBoxNameAndID
+                {isReportType === "Account Subsidiary Ledger" && (
+                    <RadioButtonNameAndID
                         name="Account"
                         endpoint="/finance/general-ledger/chart-of-accounts"
                         SelectHandler={SelectHandler}
                         isCheckBox={isAccount}
                     />
                 )}
+                {(isReportType === "Cash Receipt Book" ||
+                    isReportType === "Billing Summary" ||
+                    isReportType === "Billing Register" ||
+                    isReportType === "Customer Memo Register" ||
+                    isReportType === "Aging Receivable Report" ||
+                    isReportType === "Collection Efficiency Report" ||
+                    "Outstanding Advances Report") &&
+                    isReportType !== "Account Subsidiary Ledger" && (
+                        <CheckBoxNameAndID
+                            name="Account"
+                            endpoint="/finance/general-ledger/chart-of-accounts"
+                            SelectHandler={SelectHandler}
+                            isCheckBox={isAccount}
+                        />
+                    )}
                 {(isReportType === "Collection Summary" ||
                     isReportType === "Cash Receipt Book" ||
                     isReportType === "Billing Summary" ||

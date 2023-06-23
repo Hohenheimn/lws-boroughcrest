@@ -97,6 +97,15 @@ export default function GeneralReportsCheckbox({
     };
 
     const ApplyHandler = () => {
+        if (isReportType === "General Ledger" && isAccount.length <= 0) {
+            setPrompt({
+                message: "Select an Account",
+                type: "draft",
+                toggle: true,
+            });
+            return;
+        }
+
         let dateFrom: any = parse(Period.from, "MMM dd yyyy", new Date());
         dateFrom = isValid(dateFrom) ? format(dateFrom, "yyyy-MM-dd") : "";
         let dateTo: any = parse(Period.to, "MMM dd yyyy", new Date());
