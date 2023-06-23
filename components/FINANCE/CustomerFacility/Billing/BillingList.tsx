@@ -19,6 +19,7 @@ import Calendar from "../../../Reusable/Calendar";
 import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
 import { PencilButtonTable } from "../../../Reusable/Icons";
 import { AccessActionValidation } from "../../../Reusable/PermissionValidation/ActionAccessValidation";
+import { DynamicExportHandler } from "../../../Reusable/DynamicExport";
 
 type isTable = {
     itemArray: isTableItemObj[];
@@ -285,6 +286,21 @@ export default function BillingList() {
         }
     };
 
+    const [isExportLoading, setExportLoading] = useState(false);
+
+    const ExportHandler = () => {
+        const endPoint = `/finance/customer-facility/billing/export?list_type=${type}&paginate=10&keywords=${isSearch}&page=${
+            isSearch === "" ? TablePage : 1
+        }&filters=${isFilterText}&date_from=${dateFrom}&date_to=${dateTo}`;
+        console.log(endPoint);
+        DynamicExportHandler(
+            endPoint,
+            "Posted-invoices-list",
+            setPrompt,
+            setExportLoading
+        );
+    };
+
     return (
         <>
             {isInProcesNoticeToggle && (
@@ -485,15 +501,29 @@ export default function BillingList() {
                                 </Tippy>
                             </li>
                             <li className={style.importExportPrint}>
-                                <Tippy theme="ThemeRed" content="Export">
+                                {isExportLoading ? (
                                     <div className={style.icon}>
-                                        <Image
-                                            src="/Images/Export.png"
-                                            layout="fill"
-                                            alt="Export"
-                                        />
+                                        <MoonLoader color="#8f384d" size={20} />
                                     </div>
-                                </Tippy>
+                                ) : (
+                                    <div>
+                                        <Tippy
+                                            theme="ThemeRed"
+                                            content="Export"
+                                        >
+                                            <div
+                                                className={style.icon}
+                                                onClick={ExportHandler}
+                                            >
+                                                <Image
+                                                    src="/Images/Export.png"
+                                                    layout="fill"
+                                                    alt="Export"
+                                                />
+                                            </div>
+                                        </Tippy>
+                                    </div>
+                                )}
                             </li>
                             <li className={style.new}>
                                 <button

@@ -1,5 +1,5 @@
 import { getCookie } from "cookies-next";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import api from "../../../../../util/api";
 
 export const GetReadingDD = (keyword: string) => {

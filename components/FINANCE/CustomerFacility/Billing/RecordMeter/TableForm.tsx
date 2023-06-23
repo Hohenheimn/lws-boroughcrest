@@ -6,7 +6,7 @@ import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
 import { useRouter } from "next/router";
 import style from "../../../../../styles/SearchFilter.module.scss";
-import { BarLoader, ScaleLoader } from "react-spinners";
+import { BarLoader, MoonLoader, ScaleLoader } from "react-spinners";
 import ReadingCrud from "./ReadingCrud";
 import SelectProperty from "./SelectProperty";
 import PreviousPeriod from "./PreviousPeriod";
@@ -19,6 +19,7 @@ import { ApplyRecordMeter, GetRecordMeterList } from "./Query";
 import Modify from "./Modify";
 import { useQueryClient } from "react-query";
 import { ErrorSubmit } from "../../../../Reusable/ErrorMessage";
+import { DynamicExportHandler } from "../../../../Reusable/DynamicExport";
 
 type isTable = {
     itemArray: isTableItemObj[];
@@ -102,6 +103,36 @@ export default function TableForm() {
         isValid(dateTo) ? format(dateTo, "yyyy-MM-dd") : "",
         RecordMeterTablePage
     );
+
+    const [isExportLoading, setExportLoading] = useState(false);
+
+    const ExportHandler = () => {
+        if (
+            isPreviousPeriod.from === "" &&
+            isPreviousPeriod.to === "" &&
+            isPreviousPeriod.year === ""
+        ) {
+            setPrompt({
+                message: "Select a period to be exported",
+                type: "draft",
+                toggle: true,
+            });
+            return;
+        }
+        const endPoint = `/finance/customer-facility/billing/record-meter-reading/export?billing_readings_name_id=${
+            isReading.reading_id
+        }&period_from=${
+            isValid(dateFrom) ? format(dateFrom, "yyyy-MM-dd") : ""
+        }&period_to=${
+            isValid(dateTo) ? format(dateTo, "yyyy-MM-dd") : ""
+        }&paginate=10&page=${RecordMeterTablePage}`;
+        DynamicExportHandler(
+            endPoint,
+            "record meter",
+            setPrompt,
+            setExportLoading
+        );
+    };
 
     useEffect(() => {
         if (data?.status === 200) {
@@ -307,16 +338,26 @@ export default function TableForm() {
                 </aside>
                 <ul className={`${style.navigation}`}>
                     <li className={style.importExportPrint}>
-                        <Tippy theme="ThemeRed" content="Export">
+                        {isExportLoading ? (
                             <div className={style.icon}>
-                                <Image
-                                    src="/Images/Export.png"
-                                    layout="fill"
-                                    alt="Export"
-                                />
+                                <MoonLoader color="#8f384d" size={20} />
                             </div>
-                        </Tippy>
-
+                        ) : (
+                            <div>
+                                <Tippy theme="ThemeRed" content="Export">
+                                    <div
+                                        className={style.icon}
+                                        onClick={ExportHandler}
+                                    >
+                                        <Image
+                                            src="/Images/Export.png"
+                                            layout="fill"
+                                            alt="Export"
+                                        />
+                                    </div>
+                                </Tippy>
+                            </div>
+                        )}
                         <input type="file" id="import" className="hidden" />
                     </li>
 
