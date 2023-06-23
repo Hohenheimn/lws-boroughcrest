@@ -27,7 +27,7 @@ import {
 } from "../../../Reusable/InputField";
 
 export type customerDD = {
-    id: string | number;
+    id: any;
     name: string;
     class: string;
     property: string[];
