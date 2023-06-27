@@ -38,6 +38,12 @@ export default function DraftDashboard() {
                     <h1>Something went wrong</h1>
                 </div>
             )}
+            {propertyData?.data.length <= 0 &&
+                customerData?.data.length <= 0 && (
+                    <div className="flex justify-center py-10">
+                        <h1>No Draft Found</h1>
+                    </div>
+                )}
             {customerData?.data.map((item: customer, index: number) => (
                 <DraftCustomerList itemDetail={item} key={index} />
             ))}
