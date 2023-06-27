@@ -1,5 +1,5 @@
 import { getCookie } from "cookies-next";
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useQuery } from "react-query";
 import { BarLoader } from "react-spinners";
 import api from "../../util/api";
@@ -22,12 +22,29 @@ export default function Dropdown({
 }: Props) {
     const modal = useRef<any>();
 
-    const { isLoading, data, isError } = useQuery([name, searchValue], () => {
-        return api.get(`${endpoint}?keywords=${searchValue}`, {
-            headers: {
-                Authorization: "Bearer " + getCookie("user"),
-            },
-        });
+    // Reset show item when open
+    const [showItemAll, setshowItemAll] = useState(true);
+    const keywordSearch = showItemAll ? "" : searchValue;
+    useEffect(() => {
+        if (fieldObject.firstVal !== fieldObject.value) {
+            setshowItemAll(false);
+        }
+    }, [searchValue]);
+    // end
+
+    const { isLoading, data, isError } = useQuery([name, keywordSearch], () => {
+        return api.get(
+            `${endpoint}?keywords=${
+                keywordSearch === null || keywordSearch === undefined
+                    ? ""
+                    : keywordSearch
+            }`,
+            {
+                headers: {
+                    Authorization: "Bearer " + getCookie("user"),
+                },
+            }
+        );
     });
 
     useEffect(() => {

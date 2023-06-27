@@ -21,6 +21,7 @@ import {
     TextFieldValidation,
 } from "../../../Reusable/InputField";
 import { AccessActionValidation } from "../../../Reusable/PermissionValidation/ActionAccessValidation";
+import SelectDropdown from "../../../Reusable/SelectDropdown";
 
 type Props = {
     setCreate: Function;
@@ -318,61 +319,25 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                 </li>
                                 <li>
                                     <label>*TYPE</label>
-                                    <div className="select">
-                                        <span>
-                                            <MdOutlineKeyboardArrowDown />
-                                        </span>
-                                        <DynamicPopOver
-                                            toRef={
-                                                <input
-                                                    type="text"
-                                                    autoComplete="off"
-                                                    className="field w-full"
-                                                    {...register("type", {
-                                                        required: "Required!",
-                                                    })}
-                                                    readOnly
-                                                    onClick={() =>
-                                                        setSelect({
-                                                            ...isSelect,
-                                                            type: true,
-                                                        })
-                                                    }
-                                                    value={fieldValue.type}
-                                                />
-                                            }
-                                            samewidth={true}
-                                            toPop={
-                                                <>
-                                                    {isSelect.type && (
-                                                        <ul>
-                                                            <li
-                                                                onClick={() =>
-                                                                    SelectField(
-                                                                        "Charge",
-                                                                        "type"
-                                                                    )
-                                                                }
-                                                            >
-                                                                Charge
-                                                            </li>
-                                                            <li
-                                                                onClick={() =>
-                                                                    SelectField(
-                                                                        "Deposit",
-                                                                        "type"
-                                                                    )
-                                                                }
-                                                            >
-                                                                Deposit
-                                                            </li>
-                                                        </ul>
-                                                    )}
-                                                </>
-                                            }
-                                            className=""
-                                        />
-                                    </div>
+                                    <SelectDropdown
+                                        selectHandler={(value: string) => {
+                                            SelectField(value, "type");
+                                        }}
+                                        className=""
+                                        inputElement={
+                                            <input
+                                                className="w-full field"
+                                                {...register("type", {
+                                                    required: "Required!",
+                                                })}
+                                                value={fieldValue.type}
+                                                readOnly
+                                                autoComplete="off"
+                                            />
+                                        }
+                                        listArray={["Charge", "Deposit"]}
+                                    />
+
                                     {errors?.type && (
                                         <p className="text-[12px]">
                                             {errors?.type.message}

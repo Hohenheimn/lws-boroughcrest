@@ -1,70 +1,73 @@
 export const Applied_Advances = {
-    debitAccounts: ["PS Advances Account", "Deferred Customer GST Account"],
-    creditAccounts: ["PS Receivable Account"],
+    debitAccounts: [9, 11],
+    creditAccounts: [4],
 };
 
 export const Discounts = {
-    debitAccounts: ["Discount Contra Account", "Deferred Customer GST Account"],
-    creditAccounts: ["PS Receivable Account"],
+    debitAccounts: [14, 11],
+    creditAccounts: [4],
 };
 
 export const Credit_Tax = {
-    debitAccounts: ["Customer WTAX Account"],
-    creditAccounts: ["PS Receivable Account"],
+    debitAccounts: [5],
+    creditAccounts: [4],
 };
 
 export const Charge_Reversal = {
-    debitAccounts: ["PS Revenue Account", "Deferred Customer GST Account"],
-    creditAccounts: ["PS Receivable Account"],
+    debitAccounts: [13, 11],
+    creditAccounts: [4],
 };
 
 export const Charge_Debit = {
-    debitAccounts: ["PS Receivable Account"],
-    creditAccounts: ["PS Revenue Account", "Deferred Customer GST Account"],
+    debitAccounts: [4],
+    creditAccounts: [13, 11],
 };
 
-export const ValidationDebitCredit = (type: string, defaultAccount: string) => {
+export const ValidationDebitCredit = (
+    type: string,
+    coa_default_account_id: number
+) => {
     if (type == "Applied Advances") {
-        if (Applied_Advances.debitAccounts.includes(defaultAccount)) {
+        if (Applied_Advances.debitAccounts.includes(coa_default_account_id)) {
             return "debit";
         }
-        if (Applied_Advances.creditAccounts.includes(defaultAccount)) {
+        if (Applied_Advances.creditAccounts.includes(coa_default_account_id)) {
             return "credit";
         }
     }
 
     if (type == "Discounts") {
-        if (Discounts.debitAccounts.includes(defaultAccount)) {
+        if (Discounts.debitAccounts.includes(coa_default_account_id)) {
             return "debit";
         }
-        if (Discounts.creditAccounts.includes(defaultAccount)) {
+        if (Discounts.creditAccounts.includes(coa_default_account_id)) {
             return "credit";
         }
     }
 
     if (type == "Credit Tax") {
-        if (Credit_Tax.debitAccounts.includes(defaultAccount)) {
+        if (Credit_Tax.debitAccounts.includes(coa_default_account_id)) {
             return "debit";
         }
-        if (Credit_Tax.creditAccounts.includes(defaultAccount)) {
+        if (Credit_Tax.creditAccounts.includes(coa_default_account_id)) {
             return "credit";
         }
     }
 
     if (type == "Charge Reversal") {
-        if (Charge_Reversal.debitAccounts.includes(defaultAccount)) {
+        if (Charge_Reversal.debitAccounts.includes(coa_default_account_id)) {
             return "debit";
         }
-        if (Charge_Reversal.creditAccounts.includes(defaultAccount)) {
+        if (Charge_Reversal.creditAccounts.includes(coa_default_account_id)) {
             return "credit";
         }
     }
 
     if (type == "Charge Debit") {
-        if (Charge_Debit.debitAccounts.includes(defaultAccount)) {
+        if (Charge_Debit.debitAccounts.includes(coa_default_account_id)) {
             return "debit";
         }
-        if (Charge_Debit.creditAccounts.includes(defaultAccount)) {
+        if (Charge_Debit.creditAccounts.includes(coa_default_account_id)) {
             return "credit";
         }
     }
