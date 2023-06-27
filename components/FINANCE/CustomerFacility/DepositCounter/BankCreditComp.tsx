@@ -25,6 +25,7 @@ import { MinusButtonTable, PlusButtonTable } from "../../../Reusable/Icons";
 import { BsSearch } from "react-icons/bs";
 import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
 import { AccessActionValidation } from "../../../Reusable/PermissionValidation/ActionAccessValidation";
+import { DynamicExportHandler } from "../../../Reusable/DynamicExport";
 
 export type isTableBankCredit = {
     itemArray: isTableItemObjBC[];
@@ -277,6 +278,24 @@ export default function BankCreditComp({
         isSearch,
         isPaginate
     );
+
+    const [isExportLoading, setExportLoading] = useState(false);
+
+    const ExportHandler = () => {
+        const endPoint = `/finance/customer-facility/bank-credit/export?status=${displayStatus}&date_from=${
+            isValid(dateFrom) ? format(dateFrom, "yyyy-MM-dd") : ""
+        }&date_to=${
+            isValid(dateTo) ? format(dateTo, "yyyy-MM-dd") : ""
+        }&bank_account_ids=${
+            isSelectBankIDS.length <= 0 ? "" : `[${isSelectBankIDS}]`
+        }&paginate=${isPaginate}&page=${TablePage}&keywords=${isSearch}`;
+        DynamicExportHandler(
+            endPoint,
+            "record meter",
+            setPrompt,
+            setExportLoading
+        );
+    };
 
     // APPLY DATA FROM API
     useEffect(() => {

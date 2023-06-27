@@ -93,12 +93,18 @@ export default function TableCheckReceivables({
     const [isStatus, setStatus] = useState("");
 
     const onSuccess = () => {
-        router.push("");
         setPrompt({
             message: `Check Schedule successfully ${buttonClicked}`,
             type: "success",
             toggle: true,
         });
+        router.push("");
+        setRemarks("");
+        setDepositDate({
+            value: "",
+            toggle: false,
+        });
+        setReference("");
     };
 
     const onError = (e: any) => {
