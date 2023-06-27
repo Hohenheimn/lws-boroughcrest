@@ -7,7 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { GoEye } from "react-icons/go";
 import TableErrorMessage from "../../../Reusable/TableErrorMessage";
-import { BarLoader } from "react-spinners";
+import { BarLoader, MoonLoader } from "react-spinners";
 import {
     InputNumberForTable,
     TextNumberDisplay,
@@ -288,10 +288,10 @@ export default function BankCreditComp({
             isValid(dateTo) ? format(dateTo, "yyyy-MM-dd") : ""
         }&bank_account_ids=${
             isSelectBankIDS.length <= 0 ? "" : `[${isSelectBankIDS}]`
-        }&paginate=${isPaginate}&page=${TablePage}&keywords=${isSearch}`;
+        }&keywords=${isSearch}`;
         DynamicExportHandler(
             endPoint,
-            "record meter",
+            "bank_credit-deposit_counter",
             setPrompt,
             setExportLoading
         );
@@ -433,18 +433,28 @@ export default function BankCreditComp({
 
                 {type === "bank-credit" && (
                     <ul className={styleSearch.navigation}>
-                        <li className={styleSearch.importExportPrint}>
-                            <Tippy theme="ThemeRed" content="Export">
-                                <div className={`${styleSearch.noFill} mr-5`}>
-                                    <Image
-                                        src="/Images/Export.png"
-                                        height={30}
-                                        width={30}
-                                        alt="Return"
-                                    />
-                                </div>
-                            </Tippy>
-                        </li>
+                        {isExportLoading ? (
+                            <li className=" mr-5 mb-1">
+                                <MoonLoader color="#8f384d" size={20} />
+                            </li>
+                        ) : (
+                            <li className={styleSearch.importExportPrint}>
+                                <Tippy theme="ThemeRed" content="Export">
+                                    <div
+                                        className={`${styleSearch.noFill} mr-5`}
+                                        onClick={ExportHandler}
+                                    >
+                                        <Image
+                                            src="/Images/Export.png"
+                                            height={30}
+                                            width={30}
+                                            alt="Return"
+                                        />
+                                    </div>
+                                </Tippy>
+                            </li>
+                        )}
+
                         <li className={styleSearch.importExportPrint}>
                             <Tippy theme="ThemeRed" content="Return">
                                 <div
