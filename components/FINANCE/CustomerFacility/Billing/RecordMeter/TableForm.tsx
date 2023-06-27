@@ -128,7 +128,9 @@ export default function TableForm() {
         }&paginate=10&page=${RecordMeterTablePage}`;
         DynamicExportHandler(
             endPoint,
-            "record meter",
+            `record_meter_reading-${
+                isValid(dateFrom) ? format(dateFrom, "yyyy-MM-dd") : ""
+            }_${isValid(dateTo) ? format(dateTo, "yyyy-MM-dd") : ""}`,
             setPrompt,
             setExportLoading
         );

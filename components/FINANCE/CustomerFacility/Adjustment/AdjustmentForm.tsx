@@ -593,6 +593,14 @@ export default function AdjustmentForm({ DefaultValue }: Props) {
                 setErrorMessage(true);
                 return;
             }
+            if (isAdjustmentTotal <= 0) {
+                setPrompt({
+                    message: "Cannot proceed without a adjustment total!",
+                    toggle: true,
+                    type: "draft",
+                });
+                return;
+            }
             if (
                 isAccounts.some((item) => item.credit === 0 && item.debit === 0)
             ) {
