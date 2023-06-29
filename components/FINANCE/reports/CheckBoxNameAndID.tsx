@@ -9,6 +9,7 @@ type Props = {
     endpoint: string;
     SelectHandler: (e: any, column: string, id: number, value: string) => void;
     isCheckBox: { id: number; name: string }[];
+    project_id?: number[];
 };
 
 export default function CheckBoxNameAndID({
@@ -17,13 +18,16 @@ export default function CheckBoxNameAndID({
     isCheckBox,
     SelectHandler,
 }: Props) {
-    const { isLoading, data, isError } = useQuery([name, "report"], () => {
-        return api.get(`${endpoint}`, {
-            headers: {
-                Authorization: "Bearer " + getCookie("user"),
-            },
-        });
-    });
+    const { isLoading, data, isError } = useQuery(
+        [name, "report", endpoint],
+        () => {
+            return api.get(`${endpoint}`, {
+                headers: {
+                    Authorization: "Bearer " + getCookie("user"),
+                },
+            });
+        }
+    );
 
     return (
         <li className="w-1/5 1024px:w-1/4 1024px:mb-3 640px:w-1/3 480px:w-1/2 pr-2">

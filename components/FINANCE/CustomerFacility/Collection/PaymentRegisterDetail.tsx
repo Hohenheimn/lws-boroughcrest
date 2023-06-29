@@ -320,25 +320,34 @@ export default function PaymentRegisterDetail({
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {CollectionDetail?.outright_advances.map(
-                                                (item, index) => (
-                                                    <tr key={index}>
-                                                        <td>
-                                                            {item.charge_name}
-                                                        </td>
-                                                        <td>
-                                                            {item.description}
-                                                        </td>
-                                                        <td>
-                                                            <TextNumberDisplay
-                                                                value={
-                                                                    item.amount
-                                                                }
-                                                                className="withPeso w-full text-end"
-                                                            />
-                                                        </td>
-                                                    </tr>
-                                                )
+                                            {CollectionDetail.outright_advances !==
+                                                undefined && (
+                                                <>
+                                                    {CollectionDetail?.outright_advances.map(
+                                                        (item, index) => (
+                                                            <tr key={index}>
+                                                                <td>
+                                                                    {
+                                                                        item.charge_name
+                                                                    }
+                                                                </td>
+                                                                <td>
+                                                                    {
+                                                                        item.description
+                                                                    }
+                                                                </td>
+                                                                <td>
+                                                                    <TextNumberDisplay
+                                                                        value={
+                                                                            item.amount
+                                                                        }
+                                                                        className="withPeso w-full text-end"
+                                                                    />
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                                    )}
+                                                </>
                                             )}
                                         </tbody>
                                     </table>

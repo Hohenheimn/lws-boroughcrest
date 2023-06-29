@@ -153,7 +153,6 @@ export default function CustomerReportsCheckboxes({
             }
             if (column === "Tower") {
                 setTower([
-                    ...isTower,
                     {
                         id: id,
                         name: value,
@@ -162,7 +161,6 @@ export default function CustomerReportsCheckboxes({
             }
             if (column === "Project") {
                 setProject([
-                    ...isProject,
                     {
                         id: id,
                         name: value,
@@ -511,7 +509,7 @@ export default function CustomerReportsCheckboxes({
                     isReportType === "Aging Receivable Report" ||
                     isReportType === "Collection Efficiency Report" ||
                     "Outstanding Advances Report") && (
-                    <CheckBoxNameAndID
+                    <RadioButtonNameAndID
                         name="Project"
                         endpoint="/admin/property/project"
                         SelectHandler={SelectHandler}
@@ -527,9 +525,13 @@ export default function CustomerReportsCheckboxes({
                     isReportType === "Aging Receivable Report" ||
                     isReportType === "Collection Efficiency Report" ||
                     "Outstanding Advances Report") && (
-                    <CheckBoxNameAndID
+                    <RadioButtonNameAndID
                         name="Tower"
-                        endpoint="/admin/property/tower"
+                        endpoint={`/admin/property/tower?project_id=${
+                            isProject[0]?.id === undefined
+                                ? ""
+                                : isProject[0].id
+                        }`}
                         SelectHandler={SelectHandler}
                         isCheckBox={isTower}
                     />
@@ -545,7 +547,9 @@ export default function CustomerReportsCheckboxes({
                     "Outstanding Advances Report") && (
                     <CheckBoxNameAndID
                         name="Floor"
-                        endpoint="/admin/property/floor"
+                        endpoint={`/admin/property/floor?tower_id=${
+                            isTower[0]?.id === undefined ? "" : isTower[0].id
+                        }`}
                         SelectHandler={SelectHandler}
                         isCheckBox={isFloor}
                     />
