@@ -12,7 +12,7 @@ export default function AccessSearch() {
     const [search, setSearch] = useState<string>("");
     const router = useRouter();
     const id: any = router.query.id;
-    const { isLoading, isError, data } = GetRoles("");
+    const { isLoading, data } = GetRoles("", 1);
 
     return (
         <div className={style.container}>
