@@ -146,7 +146,10 @@ export default function ReportComponent() {
 
     const SaveFavoriteHandler = () => {
         if (isFavorite === false) {
-            if (isFavoritePayload !== null) {
+            if (
+                isFavoritePayload !== null &&
+                isFavoritePayload.report_type !== ""
+            ) {
                 mutate(isFavoritePayload);
             } else {
                 setPrompt({
