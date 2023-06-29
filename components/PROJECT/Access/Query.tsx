@@ -18,13 +18,16 @@ export const PostRole = (success: any, error: any) => {
     );
 };
 
-export const GetRoles = (Keyword: string) => {
-    return useQuery(["get-roles", Keyword], () => {
-        return api.get(`/project/roles?keywords=${Keyword}&paginate=10`, {
-            headers: {
-                Authorization: "Bearer " + getCookie("user"),
-            },
-        });
+export const GetRoles = (Keyword: string, Page: number) => {
+    return useQuery(["get-roles", Keyword, Page], () => {
+        return api.get(
+            `/project/roles?keywords=${Keyword}&paginate=10&page=${Page}`,
+            {
+                headers: {
+                    Authorization: "Bearer " + getCookie("user"),
+                },
+            }
+        );
     });
 };
 

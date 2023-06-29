@@ -397,7 +397,7 @@ export default function AdjustmentForm({ DefaultValue }: Props) {
             (item: FilteredAccuntEntries, index: number) => {
                 const validationDebitOrCreditField = ValidationDebitCredit(
                     isTransaction,
-                    item.default_account
+                    item.coa_default_account_id
                 );
 
                 let adjustment_total = isAdjustmentTotal;
@@ -417,7 +417,10 @@ export default function AdjustmentForm({ DefaultValue }: Props) {
                 } else {
                     // amount of vat rate on adjustment total
                     deferred_customer_gst_account =
-                        adjustment_total * (vat_rate / (vat_rate + 100));
+                        adjustment_total *
+                        (Number(vat_rate) / (Number(vat_rate) + 100));
+                    console.log(vat_rate);
+                    console.log(deferred_customer_gst_account);
 
                     // amount of remaining amount after to subtract the vat rate
                     less_vat =
@@ -535,6 +538,7 @@ export default function AdjustmentForm({ DefaultValue }: Props) {
                 }
 
                 if (userInfo?.corporate_gst_type === "NON-VAT") {
+                    console.log(validationDebitOrCreditField);
                     if (isTransaction === "Credit Tax") {
                         if (validationDebitOrCreditField === "debit") {
                             debit = two_percent_amount;

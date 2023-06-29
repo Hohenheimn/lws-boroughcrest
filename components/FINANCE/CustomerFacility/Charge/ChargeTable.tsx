@@ -256,7 +256,12 @@ const List = ({ itemDetail }: ListProps) => {
                 >
                     <a className="item">
                         <div>
-                            <h2>{itemDetail?.minimum}</h2>
+                            <h2>
+                                <TextNumberDisplay
+                                    value={itemDetail?.minimum}
+                                    className="w-full"
+                                />
+                            </h2>
                         </div>
                     </a>
                 </Link>
