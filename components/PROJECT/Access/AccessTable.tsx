@@ -9,6 +9,7 @@ import TableLoadingNError from "../../Reusable/TableLoadingNError";
 import Pagination from "../../Reusable/Pagination";
 import AppContext from "../../Context/AppContext";
 import { useQueryClient } from "react-query";
+import { ErrorSubmit } from "../../Reusable/ErrorMessage";
 
 export default function AccessTable() {
     const { setPrompt } = useContext(AppContext);
@@ -30,9 +31,11 @@ export default function AccessTable() {
         });
     };
 
-    const onError = (e: any) => {};
+    const onError = (e: any) => {
+        ErrorSubmit(e, setPrompt);
+    };
 
-    const { isLoading, data, isError } = GetRoles("");
+    const { isLoading, data, isError } = GetRoles("", TablePage);
 
     const { mutate, isLoading: DeleteLoading } = DeleteRole(onSuccess, onError);
 
