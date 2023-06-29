@@ -5,7 +5,7 @@ import { format, isValid, parse } from "date-fns";
 import AppContext from "../../Context/AppContext";
 import RadioButtonNameAndID from "./RadioButtonNameAndID";
 
-export type SelectedReportFilterType = { id: number; name: string };
+export type SelectedReportFilterType = { id: any; name: string };
 
 type Props = {
     isReportType: string;
@@ -112,7 +112,7 @@ export default function GeneralReportsCheckbox({
         dateTo = isValid(dateTo) ? format(dateTo, "yyyy-MM-dd") : "";
 
         setExportEndpoint(
-            `/finance/customer-facility/customer-reports?report_type=${isReportType}&account=${isAccount.map(
+            `/finance/customer-facility/customer-reports?report_type=${isReportType}&report_account=${isAccount.map(
                 (item) => item.name
             )}&document_type=${isDocuments.map(
                 (item) => item.name
