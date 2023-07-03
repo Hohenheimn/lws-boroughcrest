@@ -37,7 +37,7 @@ export const CreateDiscount = (
         {
             onSuccess: () => {
                 onSuccess();
-                queryClient.invalidateQueries(["discount-list"]);
+                queryClient.invalidateQueries("discount-list");
                 queryClient.invalidateQueries("posted-Invoice-list-customer");
             },
             onError: () => {
