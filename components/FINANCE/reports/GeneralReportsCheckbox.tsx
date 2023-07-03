@@ -113,7 +113,7 @@ export default function GeneralReportsCheckbox({
 
         setExportEndpoint(
             `/finance/customer-facility/customer-reports?report_type=${isReportType}&report_account=${isAccount.map(
-                (item) => item.name
+                (item) => item.id
             )}&document_type=${isDocuments.map(
                 (item) => item.name
             )}&date_from=${dateFrom}&date_to=${dateTo}`
