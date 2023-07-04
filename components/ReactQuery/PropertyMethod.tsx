@@ -227,15 +227,18 @@ export const PostTower = (success: any, error: any) => {
     );
 };
 // Get Tower
-export const GetTower = (Keyword: string) => {
+export const GetTower = (Keyword: string, project_id: any) => {
     return useQuery(
-        ["get-tower", Keyword],
+        ["get-tower", Keyword, project_id],
         () => {
-            return api.get(`/admin/property/tower?keywords=${Keyword}`, {
-                headers: {
-                    Authorization: "Bearer " + getCookie("user"),
-                },
-            });
+            return api.get(
+                `/admin/property/tower?keywords=${Keyword}&project_id=${project_id}`,
+                {
+                    headers: {
+                        Authorization: "Bearer " + getCookie("user"),
+                    },
+                }
+            );
         },
         {
             refetchOnWindowFocus: false,
@@ -292,13 +295,16 @@ export const PostFloor = (success: any, error: any) => {
     );
 };
 // Get Floor
-export const GetFloor = (Keyword: string) => {
-    return useQuery(["get-floor", Keyword], () => {
-        return api.get(`/admin/property/floor?keywords=${Keyword}`, {
-            headers: {
-                Authorization: "Bearer " + getCookie("user"),
-            },
-        });
+export const GetFloor = (Keyword: string, tower_id: any) => {
+    return useQuery(["get-floor", Keyword, tower_id], () => {
+        return api.get(
+            `/admin/property/floor?keywords=${Keyword}&tower_id=${tower_id}`,
+            {
+                headers: {
+                    Authorization: "Bearer " + getCookie("user"),
+                },
+            }
+        );
     });
 };
 // Delete Floor

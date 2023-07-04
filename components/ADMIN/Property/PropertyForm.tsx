@@ -345,6 +345,41 @@ export default function PropertyForm({
         setSave(false);
     };
 
+    const validateCRUDField = (fieldName: string) => {
+        if (fieldName === "Tower") {
+            if (
+                isProjectVal.id === "" ||
+                isProjectVal.id === null ||
+                isProjectVal.id === undefined
+            ) {
+                setPrompt({
+                    message: "Select a PROJECT first",
+                    type: "draft",
+                    toggle: true,
+                });
+                return false;
+            } else {
+                return true;
+            }
+        }
+        if (fieldName === "Floor") {
+            if (
+                isTowerVal.id === "" ||
+                isTowerVal.id === null ||
+                isTowerVal.id === undefined
+            ) {
+                setPrompt({
+                    message: "Select a TOWER first",
+                    type: "draft",
+                    toggle: true,
+                });
+                return false;
+            } else {
+                return true;
+            }
+        }
+    };
+
     return (
         <form className={style.container} onSubmit={handleSubmit(submit)}>
             <section>
@@ -566,16 +601,22 @@ export default function PropertyForm({
                                     <input
                                         className="field w-full"
                                         type="text"
-                                        onClick={() => setTower(true)}
+                                        onClick={() => {
+                                            if (!validateCRUDField("Tower"))
+                                                return;
+                                            setTower(true);
+                                        }}
                                         autoComplete="off"
                                         {...register("tower")}
                                         value={isTowerVal.value}
-                                        onChange={(e: any) =>
+                                        onChange={(e: any) => {
+                                            if (!validateCRUDField("Tower"))
+                                                return;
                                             setTowerVal({
                                                 ...isTowerVal,
                                                 value: e.target.value,
-                                            })
-                                        }
+                                            });
+                                        }}
                                     />
                                 }
                                 toPop={
@@ -588,6 +629,7 @@ export default function PropertyForm({
                                                 isValID={isTowerVal.id}
                                                 isObject={isTowerVal}
                                                 setObject={setTowerVal}
+                                                project_id={isProjectVal.id}
                                             />
                                         )}
                                     </>
@@ -616,14 +658,20 @@ export default function PropertyForm({
                                         type="text"
                                         {...register("floor")}
                                         autoComplete="off"
-                                        onClick={() => setFloor(true)}
+                                        onClick={() => {
+                                            if (!validateCRUDField("Floor"))
+                                                return;
+                                            setFloor(true);
+                                        }}
                                         value={isFloorVal.value}
-                                        onChange={(e: any) =>
+                                        onChange={(e: any) => {
+                                            if (!validateCRUDField("Floor"))
+                                                return;
                                             setFloorVal({
                                                 ...isFloorVal,
                                                 value: e.target.value,
-                                            })
-                                        }
+                                            });
+                                        }}
                                     />
                                 }
                                 toPop={
@@ -636,6 +684,7 @@ export default function PropertyForm({
                                                 isValID={isFloorVal.id}
                                                 isObject={isFloorVal}
                                                 setObject={setFloorVal}
+                                                tower_id={isTowerVal.id}
                                             />
                                         )}
                                     </>

@@ -17,7 +17,25 @@ import AppContext from "../../Context/AppContext";
 import DynamicPopOver from "../../Reusable/DynamicPopOver";
 import { ErrorSubmit } from "../../Reusable/ErrorMessage";
 
-const Tower = ({ set, update, is, isValID, isObject, setObject }: any) => {
+type Props = {
+    set: any;
+    update: any;
+    is: any;
+    isObject: any;
+    isValID: any;
+    setObject: any;
+    project_id: any;
+};
+
+const Tower = ({
+    set,
+    update,
+    is,
+    isValID,
+    isObject,
+    setObject,
+    project_id,
+}: Props) => {
     const modal = useRef<any>();
     // Click out side, remove empty array
     useEffect(() => {
@@ -60,7 +78,8 @@ const Tower = ({ set, update, is, isValID, isObject, setObject }: any) => {
     const { isLoading, data, isError } = GetTower(
         isObject.value === null || isObject.value === undefined
             ? ""
-            : isObject.value
+            : isObject.value,
+        project_id
     );
 
     useEffect(() => {
@@ -114,7 +133,7 @@ const Tower = ({ set, update, is, isValID, isObject, setObject }: any) => {
             {isError ||
                 (data?.data.length <= 0 && (
                     <div className="w-full flex justify-center py-2 text-[14px]">
-                        <p> Tower cannot be found!</p>
+                        <p>No TOWER found!</p>
                     </div>
                 ))}
 
@@ -467,8 +486,7 @@ const ListDropdown = ({
                     {item.name}
                 </li>
             ))}
-            {isError ||
-                (data?.data.length <= 0 && <li>Project Can&apos;t found!</li>)}
+            {isError || (data?.data.length <= 0 && <li>No PROJECT found!</li>)}
         </ul>
     );
 };

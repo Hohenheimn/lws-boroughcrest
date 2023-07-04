@@ -27,13 +27,6 @@ export default function RadioButtonNameAndID({
             });
         }
     );
-
-    useEffect(() => {
-        if (name === "Project") {
-            console.log(isCheckBox);
-        }
-    });
-
     return (
         <li className="w-1/5 1024px:w-1/4 1024px:mb-3 640px:w-1/3 480px:w-1/2 pr-2">
             <h3 className={"mb-2 text-ThemeRed 1550px:text-[14px] uppercase"}>

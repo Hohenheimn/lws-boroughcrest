@@ -17,7 +17,25 @@ import AppContext from "../../Context/AppContext";
 import DynamicPopOver from "../../Reusable/DynamicPopOver";
 import { ErrorSubmit } from "../../Reusable/ErrorMessage";
 
-const Floor = ({ set, update, is, isValID, isObject, setObject }: any) => {
+type Props = {
+    set: any;
+    update: any;
+    is: any;
+    isValID: any;
+    isObject: any;
+    setObject: any;
+    tower_id: any;
+};
+
+const Floor = ({
+    set,
+    update,
+    is,
+    isValID,
+    isObject,
+    setObject,
+    tower_id,
+}: Props) => {
     const modal = useRef<any>();
     // Click out side, remove empty array
     useEffect(() => {
@@ -59,7 +77,8 @@ const Floor = ({ set, update, is, isValID, isObject, setObject }: any) => {
     const { isLoading, data, isError } = GetFloor(
         isObject.value === null || isObject.value === undefined
             ? ""
-            : isObject.value
+            : isObject.value,
+        tower_id
     );
 
     useEffect(() => {
@@ -113,7 +132,7 @@ const Floor = ({ set, update, is, isValID, isObject, setObject }: any) => {
             {isError ||
                 (data?.data.length <= 0 && (
                     <div className="w-full flex justify-center py-2 text-[14px]">
-                        <p> Floor cannot be found!</p>
+                        <p>No FLOOR found!</p>
                     </div>
                 ))}
             {isLoading && (
@@ -135,7 +154,7 @@ const Floor = ({ set, update, is, isValID, isObject, setObject }: any) => {
                 className="cursor-pointer text-ThemeRed text-[12px] inline-block py-2 hover:underline"
                 onClick={AddArray}
             >
-                ADD TOWER
+                ADD FLOOR
             </h1>
         </div>
     );
@@ -414,7 +433,7 @@ type ListDropdown = {
 };
 
 const ListDropdown = ({ set, updateVal, isTower, setTower }: ListDropdown) => {
-    const { data, isLoading, isError } = GetTower(isTower.value);
+    const { data, isLoading, isError } = GetTower(isTower.value, "");
 
     const modal = useRef<any>();
 
@@ -473,8 +492,7 @@ const ListDropdown = ({ set, updateVal, isTower, setTower }: ListDropdown) => {
                     {item.name}
                 </li>
             ))}
-            {isError ||
-                (data?.data.length <= 0 && <li>Tower Can&apos;t found!</li>)}
+            {isError || (data?.data.length <= 0 && <li>No FLOOR found!</li>)}
         </ul>
     );
 };
