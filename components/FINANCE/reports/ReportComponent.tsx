@@ -150,7 +150,8 @@ export default function ReportComponent() {
                 isFavoritePayload !== null &&
                 isFavoritePayload.report_type !== ""
             ) {
-                mutate(isFavoritePayload);
+                // mutate(isFavoritePayload);
+                console.log(isFavoritePayload);
             } else {
                 setPrompt({
                     message: "Apply a Report Type",
