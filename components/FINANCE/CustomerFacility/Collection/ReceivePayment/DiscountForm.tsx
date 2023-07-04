@@ -76,7 +76,7 @@ export default function DiscountForm({
     const { isLoading: MutateDeleteLoading, mutate: mutateDelete } =
         DeleteDiscount(onSuccessDelete, onErrorDelete);
 
-    const { isLoading, data, isError } = GetDiscountList();
+    const { isLoading, data, isError } = GetDiscountList(Number(customer_id));
 
     useEffect(() => {
         setTotal(0);

@@ -2,13 +2,16 @@ import { getCookie } from "cookies-next";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import api from "../../../../../util/api";
 
-export const GetDiscountList = () => {
+export const GetDiscountList = (customer_id: number) => {
     return useQuery(
-        ["discount-list"],
+        ["discount-list", customer_id],
         () => {
-            return api.get(`/finance/customer-facility/collection/discount`, {
-                headers: { Authorization: "Bearer " + getCookie("user") },
-            });
+            return api.get(
+                `/finance/customer-facility/collection/discount?customer_id=${customer_id}`,
+                {
+                    headers: { Authorization: "Bearer " + getCookie("user") },
+                }
+            );
         },
         {
             refetchOnWindowFocus: false,
