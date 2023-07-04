@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useQuery } from "react-query";
 import api from "../../../util/api";
 import { getCookie } from "cookies-next";
@@ -27,7 +27,6 @@ export default function RadioButtonNameAndID({
             });
         }
     );
-
     return (
         <li className="w-1/5 1024px:w-1/4 1024px:mb-3 640px:w-1/3 480px:w-1/2 pr-2">
             <h3 className={"mb-2 text-ThemeRed 1550px:text-[14px] uppercase"}>
@@ -61,8 +60,14 @@ export default function RadioButtonNameAndID({
                                         type="radio"
                                         name="radio"
                                         id={`${item.account_name}_${name}_${item.id}`}
-                                        value={item.id}
-                                        className="checkbox"
+                                        checked={
+                                            isCheckBox.some(
+                                                (someItem) =>
+                                                    someItem.id === item.id
+                                            )
+                                                ? true
+                                                : false
+                                        }
                                         onChange={(e) =>
                                             SelectHandler(
                                                 e,
@@ -101,8 +106,14 @@ export default function RadioButtonNameAndID({
                                         type="radio"
                                         name={`report_${name}`}
                                         id={`${item.name}_${name}_${item.id}`}
-                                        value={item.id}
-                                        className="checkbox"
+                                        checked={
+                                            isCheckBox.some(
+                                                (someItem) =>
+                                                    someItem.id === item.id
+                                            )
+                                                ? true
+                                                : false
+                                        }
                                         onChange={(e) =>
                                             SelectHandler(
                                                 e,

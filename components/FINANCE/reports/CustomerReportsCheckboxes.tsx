@@ -80,6 +80,14 @@ export default function CustomerReportsCheckboxes({
     >([]);
 
     useEffect(() => {
+        setTower([]);
+    }, [isProject]);
+
+    useEffect(() => {
+        setFloor([]);
+    }, [isTower]);
+
+    useEffect(() => {
         setCustomer({
             id: "",
             name: "",
