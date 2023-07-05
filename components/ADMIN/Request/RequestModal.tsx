@@ -233,7 +233,7 @@ export default function RequestModal() {
                                     width="2px"
                                 />
                             ) : (
-                                "REJECT"
+                                "Rejected"
                             )}
                         </button>
                     </>
@@ -280,17 +280,17 @@ export default function RequestModal() {
                         <button
                             className="buttonBorder 640px:mr-0 640px:mb-2"
                             onClick={() =>
-                                ActionHandler("Reject", RequestDetail?.id)
+                                ActionHandler("Rejected", RequestDetail?.id)
                             }
                         >
-                            {mutateLoading && isButtonClicked === "Reject" ? (
+                            {mutateLoading && isButtonClicked === "Rejected" ? (
                                 <ScaleLoader
                                     color="#fff"
                                     height="10px"
                                     width="2px"
                                 />
                             ) : (
-                                "REJECT"
+                                "Rejected"
                             )}
                         </button>
                     </>
