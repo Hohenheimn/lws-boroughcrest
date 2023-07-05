@@ -133,6 +133,24 @@ export default function PropertyForm({
         firstID: DefaultFormData?.developer_id,
     });
 
+    useEffect(() => {
+        setTowerVal({
+            id: "",
+            value: "",
+            firstVal: "",
+            firstID: "",
+        });
+    }, [isProjectVal.id]);
+
+    useEffect(() => {
+        setFloorVal({
+            id: "",
+            value: "",
+            firstVal: "",
+            firstID: "",
+        });
+    }, [isTowerVal.id]);
+
     const updateProject = (value: any, id: any) => {
         setValue("project", value, {
             shouldValidate: true,
@@ -630,6 +648,9 @@ export default function PropertyForm({
                                                 isObject={isTowerVal}
                                                 setObject={setTowerVal}
                                                 project_id={isProjectVal.id}
+                                                project_name={
+                                                    isProjectVal.value
+                                                }
                                             />
                                         )}
                                     </>
@@ -685,6 +706,7 @@ export default function PropertyForm({
                                                 isObject={isFloorVal}
                                                 setObject={setFloorVal}
                                                 tower_id={isTowerVal.id}
+                                                tower_name={isTowerVal.value}
                                             />
                                         )}
                                     </>

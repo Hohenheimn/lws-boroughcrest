@@ -24,7 +24,8 @@ type Props = {
     isValID: any;
     isObject: any;
     setObject: any;
-    tower_id: any;
+    tower_id: string;
+    tower_name: string;
 };
 
 const Floor = ({
@@ -35,6 +36,7 @@ const Floor = ({
     isObject,
     setObject,
     tower_id,
+    tower_name,
 }: Props) => {
     const modal = useRef<any>();
     // Click out side, remove empty array
@@ -123,6 +125,8 @@ const Floor = ({
                                     is={is}
                                     update={update}
                                     isValID={isValID}
+                                    tower_id={tower_id}
+                                    tower_name={tower_name}
                                 />
                             ))}
                         </>
@@ -168,6 +172,8 @@ type List = {
     update: any;
     is: any;
     isValID: any;
+    tower_id: string;
+    tower_name: string;
 };
 const List = ({
     itemDetail,
@@ -178,6 +184,8 @@ const List = ({
     is,
     update,
     isValID,
+    tower_id,
+    tower_name,
 }: List) => {
     const [isModify, setModify] = useState(false);
     const clientQuery = useQueryClient();
@@ -285,10 +293,10 @@ const List = ({
     );
 
     const [isTower, setTower] = useState({
-        value: itemDetail.tower,
-        firstVal: itemDetail.tower,
-        id: itemDetail.tower_id,
-        firstID: itemDetail.id,
+        value: tower_name,
+        firstVal: tower_name,
+        id: tower_id,
+        firstID: tower_id,
     });
 
     const Save = () => {
@@ -337,7 +345,12 @@ const List = ({
                 />
             </td>
             <td onClick={(e) => !isModify && Selected(e)} className="bg-hover">
-                <DynamicPopOver
+                <input
+                    type="text"
+                    className={`disabled`}
+                    value={isTower.value}
+                />
+                {/* <DynamicPopOver
                     className=""
                     samewidth={true}
                     toRef={
@@ -368,7 +381,7 @@ const List = ({
                             )}
                         </>
                     }
-                />
+                /> */}
             </td>
             <td className="action">
                 <div>
