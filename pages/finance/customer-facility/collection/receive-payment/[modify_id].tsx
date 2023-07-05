@@ -32,13 +32,17 @@ export default function Modify({ modify_id, from }: any) {
         queryClient.removeQueries("collection-detail");
     }, []);
 
-    const { isLoading, data, isError } = GetCollectionDetail(modify_id);
+    const { isLoading, data, isError } = GetCollectionDetail(
+        router.query.from === "payment_queueing" ? modify_id : null
+    );
 
     const {
         isLoading: BookedLoading,
         data: BookedData,
         isError: BookedError,
-    } = ShowBookedCheck(modify_id);
+    } = ShowBookedCheck(
+        router.query.from === "check_warehouse" ? modify_id : null
+    );
 
     const BookedCheck: BookedCheckType = BookedData?.data;
 
@@ -162,63 +166,68 @@ export default function Modify({ modify_id, from }: any) {
                     },
                 ]);
             }
-
-            if (collection.outstanding_balances !== undefined) {
+            if (collection.outright_advances !== undefined) {
                 const outrights = collection.outright_advances.filter(
                     (itemFilter) => itemFilter.type === "Outright"
                 );
-                setOutRight(() =>
-                    outrights.map((item) => {
-                        return {
-                            id: item.id,
-                            charge: item.charge_name,
-                            charge_id: `${item.charge_id}`,
-                            description: item.description,
-                            uom: item.uom,
-                            unit_price: Number(item.unit_price),
-                            qty: Number(item.quantity),
-                            amount: Number(item.amount),
-                        };
-                    })
-                );
+                if (outrights.length > 0) {
+                    setOutRight(() =>
+                        outrights.map((item) => {
+                            return {
+                                id: item.id,
+                                charge: item.charge_name,
+                                charge_id: `${item.charge_id}`,
+                                description: item.description,
+                                uom: item.uom,
+                                unit_price: Number(item.unit_price),
+                                qty: Number(item.quantity),
+                                amount: Number(item.amount),
+                            };
+                        })
+                    );
+                } else {
+                    setOutRight([
+                        {
+                            id: 1,
+                            charge: "",
+                            charge_id: "",
+                            description: "",
+                            uom: "",
+                            unit_price: 0,
+                            qty: "",
+                            amount: 0,
+                        },
+                    ]);
+                }
+
                 const advances = collection.outright_advances.filter(
                     (itemFilter) => itemFilter.type === "Advance"
                 );
-                setAdvances(() =>
-                    advances.map((item) => {
-                        return {
-                            id: item.id,
-                            charge: item.charge_name,
-                            charge_id: `${item.charge_id}`,
-                            description: item.description,
-                            amount: Number(item.amount),
-                        };
-                    })
-                );
-            } else {
-                setOutRight([
-                    {
-                        id: 1,
-                        charge: "",
-                        charge_id: "",
-                        description: "",
-                        uom: "",
-                        unit_price: 0,
-                        qty: "",
-                        amount: 0,
-                    },
-                ]);
-                setAdvances([
-                    {
-                        id: 1,
-                        charge: "",
-                        charge_id: "",
-                        description: "",
-                        amount: 0,
-                    },
-                ]);
-            }
 
+                if (advances.length > 0) {
+                    setAdvances(() =>
+                        advances.map((item) => {
+                            return {
+                                id: item.id,
+                                charge: item.charge_name,
+                                charge_id: `${item.charge_id}`,
+                                description: item.description,
+                                amount: Number(item.amount),
+                            };
+                        })
+                    );
+                } else {
+                    setAdvances([
+                        {
+                            id: 1,
+                            charge: "",
+                            charge_id: "",
+                            description: "",
+                            amount: 0,
+                        },
+                    ]);
+                }
+            }
             if (collection?.deposits !== undefined) {
                 const clone = collection.deposits.map((item) => {
                     return {
