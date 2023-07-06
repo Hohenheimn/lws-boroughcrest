@@ -4,7 +4,6 @@ import style from "../../../../styles/SearchFilter.module.scss";
 import Image from "next/image";
 import Tippy from "@tippy.js/react";
 import "tippy.js/dist/tippy.css";
-import Link from "next/link";
 import { BarLoader, MoonLoader } from "react-spinners";
 import PeriodCalendar from "../../../Reusable/PeriodCalendar";
 import { Advancefilter, AdvanceFilter } from "../../../Reusable/AdvanceFilter";
@@ -12,13 +11,13 @@ import TableErrorMessage from "../../../Reusable/TableErrorMessage";
 import Pagination from "../../../Reusable/Pagination";
 import AppContext from "../../../Context/AppContext";
 import { format, isValid, parse } from "date-fns";
-import { GetJournal, MultipleUpdate } from "../../General-Ledger/Journal/Query";
 import { useRouter } from "next/router";
 import { GetAdjustmentList, MultipleUpdateAdjustment } from "./Query";
 import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
 import { AdjustmentDetailType } from "./AdjusmentDetail";
 import ModalTemp from "../../../Reusable/ModalTemp";
 import { AccessActionValidation } from "../../../Reusable/PermissionValidation/ActionAccessValidation";
+import { DynamicExportHandler } from "../../../Reusable/DynamicExport";
 
 type Props = {
     type: string;
@@ -99,6 +98,20 @@ export default function AdjustmentTable({ type, isPeriod, setPeriod }: Props) {
         dateTo
     );
 
+    //Exports
+    const [isExportLoading, setExportLoading] = useState(false);
+    const ExportHandler = () => {
+        const endPoint = `/finance/customer-facility/adjustment/export?paginate=10&list_type=${type}&filters=${isFilterText}&search=${isSearch}&page=${
+            isSearch === "" ? TablePage : 1
+        }&date_from=${dateFrom}&date_to=${dateTo}`;
+        DynamicExportHandler(
+            endPoint,
+            "posted-adjustment",
+            setPrompt,
+            setExportLoading
+        );
+    };
+
     useEffect(() => {
         if (data?.status === 200) {
             let empty = false;
@@ -111,11 +124,15 @@ export default function AdjustmentTable({ type, isPeriod, setPeriod }: Props) {
                         empty = true;
                         return;
                     }
+
                     let select = false;
+
                     if (isSelectedIDs.includes(item.id)) {
                         select = true;
                     }
+
                     const date = parse(item.date, "yyyy-MM-dd", new Date());
+
                     return {
                         id: item.id,
                         status: item?.status,
@@ -399,15 +416,29 @@ export default function AdjustmentTable({ type, isPeriod, setPeriod }: Props) {
                     ) : (
                         <>
                             <li className={style.importExportPrint}>
-                                <Tippy theme="ThemeRed" content="Export">
+                                {isExportLoading ? (
                                     <div className={style.icon}>
-                                        <Image
-                                            src="/Images/Export.png"
-                                            layout="fill"
-                                            alt="Export"
-                                        />
+                                        <MoonLoader color="#8f384d" size={20} />
                                     </div>
-                                </Tippy>
+                                ) : (
+                                    <div>
+                                        <Tippy
+                                            theme="ThemeRed"
+                                            content="Export"
+                                        >
+                                            <div
+                                                className={style.icon}
+                                                onClick={ExportHandler}
+                                            >
+                                                <Image
+                                                    src="/Images/Export.png"
+                                                    layout="fill"
+                                                    alt="Export"
+                                                />
+                                            </div>
+                                        </Tippy>
+                                    </div>
+                                )}
                             </li>
                         </>
                     )}
