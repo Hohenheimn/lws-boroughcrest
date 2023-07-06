@@ -28,7 +28,7 @@ export default function AdjustmentList() {
                         setPeriod({ from: "", to: "" });
                     }}
                 >
-                    Unposted Journal
+                    Unposted Adjustment
                 </li>
                 <li
                     className={`${isType === "posted" && "Active"}`}
@@ -37,7 +37,7 @@ export default function AdjustmentList() {
                         setType("posted");
                     }}
                 >
-                    Posted Journal
+                    Posted Adjustment
                 </li>
             </ul>
             <AdjustmentTable

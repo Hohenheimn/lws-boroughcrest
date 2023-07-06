@@ -25,6 +25,7 @@ type Props = {
     isValID: any;
     setObject: any;
     project_id: any;
+    project_name: string;
 };
 
 const Tower = ({
@@ -35,6 +36,7 @@ const Tower = ({
     isObject,
     setObject,
     project_id,
+    project_name,
 }: Props) => {
     const modal = useRef<any>();
     // Click out side, remove empty array
@@ -124,6 +126,8 @@ const Tower = ({
                                     is={is}
                                     update={update}
                                     isValID={isValID}
+                                    project_id={project_id}
+                                    project_name={project_name}
                                 />
                             ))}
                         </>
@@ -169,6 +173,8 @@ type List = {
     update: any;
     is: any;
     isValID: any;
+    project_id: string;
+    project_name: string;
 };
 const List = ({
     itemDetail,
@@ -179,6 +185,8 @@ const List = ({
     is,
     update,
     isValID,
+    project_id,
+    project_name,
 }: List) => {
     const [isModify, setModify] = useState(false);
     const clientQuery = useQueryClient();
@@ -237,6 +245,7 @@ const List = ({
             toggle: true,
         });
     };
+
     const onSuccessDelete = () => {
         clientQuery.invalidateQueries("get-tower");
         setPrompt({
@@ -245,6 +254,7 @@ const List = ({
             toggle: true,
         });
     };
+
     const onSuccessUpdate = () => {
         clientQuery.invalidateQueries("get-tower");
         setPrompt({
@@ -256,27 +266,31 @@ const List = ({
     const onError = (e: any) => {
         ErrorSubmit(e, setPrompt);
     };
+
     // Save
     const { isLoading: loadingSave, mutate: mutateSave } = PostTower(
         onSuccessSave,
         onError
     );
+
     // Delete
     const { isLoading: loadingDelete, mutate: mutateDelete } = DeleteTower(
         onSuccessDelete,
         onError
     );
+
     // Update
     const { isLoading: loadingUpdate, mutate: mutateUpdate } = UpdateTower(
         onSuccessUpdate,
         onError,
         itemDetail.id
     );
+
     const [isProject, setProject] = useState({
-        value: itemDetail.project,
-        firstVal: itemDetail.project,
-        id: itemDetail.project_id,
-        firstID: itemDetail.project_id,
+        value: project_name,
+        firstVal: project_name,
+        id: project_id,
+        firstID: project_id,
     });
 
     const Save = () => {
@@ -328,7 +342,12 @@ const List = ({
                 />
             </td>
             <td onClick={(e) => !isModify && Selected(e)} className="bg-hover">
-                <DynamicPopOver
+                <input
+                    type="text"
+                    className={`disabled`}
+                    value={isProject.value}
+                />
+                {/* <DynamicPopOver
                     className=""
                     samewidth={true}
                     toRef={
@@ -357,7 +376,7 @@ const List = ({
                             )}
                         </>
                     }
-                />
+                /> */}
             </td>
             <td className="action">
                 <div>
