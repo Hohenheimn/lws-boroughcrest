@@ -3,7 +3,7 @@ import api from "../../../util/api";
 import { getCookie } from "cookies-next";
 
 export const GetFavoriteList = (report_type: string, page: number) => {
-    return useQuery(["favorite-list", report_type], () => {
+    return useQuery(["favorite-list", report_type, page], () => {
         return api.get(
             `/finance/customer-facility/customer-reports/favorite-reports?report_type=${report_type}&paginate=10&page=${page}`,
             {
