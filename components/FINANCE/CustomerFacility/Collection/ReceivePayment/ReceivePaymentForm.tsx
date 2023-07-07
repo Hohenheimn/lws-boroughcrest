@@ -18,6 +18,7 @@ import { useRouter } from "next/router";
 import DynamicPopOver from "../../../../Reusable/DynamicPopOver";
 import { GetInvoiceByCustomerPostedOnly } from "../../Adjustment/Query";
 import { Type_Invoice_list } from "../../Adjustment/AdjustmentForm";
+import ModalTemp from "../../../../Reusable/ModalTemp";
 
 export type ReceivePaymentForm = {
     description: string;
@@ -148,8 +149,14 @@ export default function ReceivePaymentForm({
             let Discount_Total = 0;
             let getCustomerOutstanding = data?.data.map(
                 (item: Type_Invoice_list) => {
-                    const balance =
-                        Number(item.due_amount) - Number(item.discount_amount);
+                    let balance = 0;
+                    if (applyDiscount) {
+                        balance =
+                            Number(item.due_amount) -
+                            Number(item.discount_amount);
+                    } else {
+                        balance = Number(item.due_amount) - 0;
+                    }
                     Discount_Total =
                         Number(Discount_Total) + Number(item.discount_amount);
                     return {
@@ -160,7 +167,9 @@ export default function ReceivePaymentForm({
                         charge_id: item.charge_id,
                         description: item.description,
                         due_amount: item.due_amount,
-                        applied_amount: item.discount_amount,
+                        applied_amount: applyDiscount
+                            ? item.discount_amount
+                            : 0,
                         balance: balance,
                         discount_ids: item.discount_ids,
                     };
@@ -203,12 +212,20 @@ export default function ReceivePaymentForm({
         });
     };
 
+    const [isCancel, setCancel] = useState(false);
+
+    const CancelHandler = () => {
+        setCancel(true);
+    };
+
     const [isErrorToggle, setErrorToggle] = useState(false);
 
     const [isDiscount, setDiscountToggle] = useState({
         value: DefaultValHeaderForm.discount,
         toggle: false,
     });
+
+    const [applyDiscount, setApplyDiscount] = useState(false);
 
     useEffect(() => {
         setDiscountToggle({
@@ -220,9 +237,9 @@ export default function ReceivePaymentForm({
     useEffect(() => {
         setHeaderForm({
             ...HeaderForm,
-            discount: isDiscount.value,
+            discount: applyDiscount ? isDiscount.value : 0,
         });
-    }, [isDiscount.value]);
+    }, [isDiscount.value, applyDiscount]);
 
     const [isChartOAccount, setChartOfAccount] = useState({
         id: DefaultValHeaderForm.chart_of_account_id,
@@ -316,11 +333,37 @@ export default function ReceivePaymentForm({
 
     return (
         <>
+            {isCancel && (
+                <ModalTemp narrow={true}>
+                    <h1 className="text-center mb-5 text-[20px]">
+                        Are you sure you want to cancel ?
+                    </h1>
+                    <div className="flex justify-end items-center w-full">
+                        <button
+                            className="button_cancel"
+                            onClick={() => setCancel(false)}
+                        >
+                            NO
+                        </button>
+                        <button
+                            className="buttonRed"
+                            onClick={() =>
+                                router.push(
+                                    "/finance/customer-facility/collection/payment-register"
+                                )
+                            }
+                        >
+                            YES
+                        </button>
+                    </div>
+                </ModalTemp>
+            )}
             {isDiscount.toggle && (
                 <DiscountForm
                     setDiscountToggle={setDiscountToggle}
                     isDiscount={isDiscount}
                     customer_id={isCustomer.id}
+                    setApplyDiscount={setApplyDiscount}
                 />
             )}
             <div className="flex flex-wrap border-b border-gray-300 pb-10 mb-10">
@@ -607,6 +650,7 @@ export default function ReceivePaymentForm({
                     headerForm={HeaderForm}
                     ResetField={ResetField}
                     DefaultProvisional={DefaultProvisional}
+                    CancelHandler={CancelHandler}
                 />
             )}
             {HeaderForm.receipt_type === "Acknowledgement" && (
@@ -615,6 +659,7 @@ export default function ReceivePaymentForm({
                     Error={ErrorToggleHandler}
                     headerForm={HeaderForm}
                     ResetField={ResetField}
+                    CancelHandler={CancelHandler}
                 />
             )}
             {HeaderForm.receipt_type === "Official" && (
@@ -629,6 +674,7 @@ export default function ReceivePaymentForm({
                     setOutstanding={setOutstanding}
                     outStandingLoading={isLoading}
                     outStandingError={isError}
+                    CancelHandler={CancelHandler}
                 />
             )}
         </>

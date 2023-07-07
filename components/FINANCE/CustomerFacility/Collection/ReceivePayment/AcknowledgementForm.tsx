@@ -17,6 +17,7 @@ type Props = {
     Error: () => void;
     headerForm: HeaderForm;
     ResetField: () => void;
+    CancelHandler: () => void;
 };
 
 type isTableItem = {
@@ -32,6 +33,7 @@ export default function AcknowledgementForm({
     Error,
     headerForm,
     ResetField,
+    CancelHandler,
 }: Props) {
     const { setPrompt } = useContext(AppContext);
     const [isSubDue, setSubDue] = useState(0);
@@ -204,7 +206,9 @@ export default function AcknowledgementForm({
             <TableOneTotal total={isSubDue} label="SUB DUE" redBG={false} />
             <TableOneTotal total={isVariance} label="VARIANCE" redBG={true} />
             <div className="DropDownSave">
-                <button className="ddback">CANCEL</button>
+                <button className="ddback" onClick={CancelHandler}>
+                    CANCEL
+                </button>
                 <div className="ddSave">
                     <div>
                         <button
