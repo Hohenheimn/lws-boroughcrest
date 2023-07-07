@@ -3,7 +3,6 @@ import {
     InputNumberForTable,
     TextNumberDisplay,
 } from "../../../../../Reusable/NumberFormat";
-import { TableThreeTotal } from "../../../../../Reusable/TableTotal";
 import { BarLoader } from "react-spinners";
 import TableErrorMessage from "../../../../../Reusable/TableErrorMessage";
 

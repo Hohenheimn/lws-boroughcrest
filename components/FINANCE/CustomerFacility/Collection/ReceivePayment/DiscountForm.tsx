@@ -26,12 +26,14 @@ type Props = {
         value: number;
         toggle: boolean;
     };
+    setApplyDiscount: Function;
 };
 
 export default function DiscountForm({
     setDiscountToggle,
     customer_id,
     isDiscount,
+    setApplyDiscount,
 }: Props) {
     const { setPrompt } = useContext(AppContext);
     const [isTotal, setTotal] = useState(0);
@@ -47,6 +49,7 @@ export default function DiscountForm({
             ...isDiscount,
             toggle: false,
         });
+        setApplyDiscount(true);
     };
     const onError = (e: any) => {
         ErrorSubmit(e, setPrompt);

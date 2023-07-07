@@ -37,6 +37,7 @@ type Props = {
     headerForm: HeaderForm;
     DefaultProvisional: isProvisionalTable[];
     ResetField: () => void;
+    CancelHandler: () => void;
 };
 
 export default function ProvisionalForm({
@@ -44,6 +45,7 @@ export default function ProvisionalForm({
     headerForm,
     ResetField,
     DefaultProvisional,
+    CancelHandler,
 }: Props) {
     const { setPrompt } = useContext(AppContext);
     const router = useRouter();
@@ -204,7 +206,9 @@ export default function ProvisionalForm({
             </div>
             {/* <TableOneTotal total={isTotal} label="Total" redBG={false} /> */}
             <div className="DropDownSave">
-                <button className="ddback">CANCEL</button>
+                <button className="ddback" onClick={CancelHandler}>
+                    CANCEL
+                </button>
 
                 <div className="ddSave">
                     <div>

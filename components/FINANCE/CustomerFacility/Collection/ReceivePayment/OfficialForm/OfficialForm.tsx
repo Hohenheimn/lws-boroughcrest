@@ -22,6 +22,7 @@ type Props = {
     ResetField: () => void;
     outStandingLoading: boolean;
     outStandingError: boolean;
+    CancelHandler: () => void;
 };
 
 export default function OfficialForm({
@@ -33,6 +34,7 @@ export default function OfficialForm({
     setOutstanding,
     outStandingLoading,
     outStandingError,
+    CancelHandler,
 }: Props) {
     const router = useRouter();
     const { setPrompt } = useContext(AppContext);
@@ -323,7 +325,9 @@ export default function OfficialForm({
                 </div>
             )}
             <div className="DropDownSave">
-                <button className="ddback">CANCEL</button>
+                <button className="ddback" onClick={CancelHandler}>
+                    CANCEL
+                </button>
                 <div className="ddSave">
                     <div>
                         <button

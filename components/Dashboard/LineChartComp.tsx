@@ -55,12 +55,31 @@ export default function LineChartComp() {
             const keys = Object.keys(data?.data?.records);
             keys.forEach((key, index) => {
                 let color = "#8f384d";
-                if (index % 2 == 0) {
-                    color = "#fa8b00";
+                if (index === 1) {
+                    color = "#d4a8a8";
                 }
-                if (index % 3 == 0) {
+                if (index === 2) {
+                    color = "#c75543";
+                }
+                if (index === 3) {
                     color = "#2e4364";
                 }
+                if (index === 4) {
+                    color = "#d57f5a";
+                }
+                if (index === 5) {
+                    color = "#d6a278";
+                }
+                if (index === 6) {
+                    color = "#444a66";
+                }
+                if (index === 7) {
+                    color = "#8d8949";
+                }
+                if (index === 8) {
+                    color = "#b2c1ad";
+                }
+
                 arrayData.push({
                     label: key,
                     data: data?.data.records[key],
