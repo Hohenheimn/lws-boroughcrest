@@ -96,19 +96,19 @@ export const CustomerReports = {
     receipt_type: [
         {
             id: 1,
-            name: "Official Receipt",
+            name: "Official",
             parent: "Receipt Type",
             grandParent: "Report",
         },
         {
             id: 2,
-            name: "Acknowledgement Receipt",
+            name: "Acknowledgement",
             parent: "Receipt Type",
             grandParent: "Report",
         },
         {
             id: 3,
-            name: "Provisional Receipt",
+            name: "Provisional",
             parent: "Receipt Type",
             grandParent: "Report",
         },
