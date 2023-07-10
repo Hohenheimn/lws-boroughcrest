@@ -104,6 +104,8 @@ export default function ReceivePaymentForm({
         chart_of_account_name: DefaultValHeaderForm.chart_of_account_name,
     });
 
+    const [applyDiscount, setApplyDiscount] = useState(false);
+
     const [isCustomer, setCustomer] = useState<any>({
         id: "",
         name: "",
@@ -185,7 +187,7 @@ export default function ReceivePaymentForm({
                 toggle: false,
             });
         }
-    }, [data?.data]);
+    }, [data?.data, applyDiscount]);
 
     const ResetField = () => {
         setCustomer({
@@ -224,8 +226,6 @@ export default function ReceivePaymentForm({
         value: DefaultValHeaderForm.discount,
         toggle: false,
     });
-
-    const [applyDiscount, setApplyDiscount] = useState(false);
 
     useEffect(() => {
         setDiscountToggle({
