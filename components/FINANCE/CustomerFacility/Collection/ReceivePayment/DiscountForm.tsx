@@ -122,19 +122,28 @@ export default function DiscountForm({
     const SaveHandler = () => {
         let Validate = true;
         const CloneToPayload = isTable.map((item: isDiscountTable) => {
-            if (item.charge_id === "" || item.amount === 0) {
-                Validate = false;
-            }
             return {
                 charge_id: item.charge_id,
                 description: item.description,
                 amount: item.amount,
             };
         });
+        if (
+            CloneToPayload.some(
+                (itemSome) => itemSome.amount <= 0 && itemSome.charge_id !== ""
+            )
+        ) {
+            Validate = false;
+        }
         const Payload = {
-            discounts: CloneToPayload,
+            discounts:
+                CloneToPayload.some(
+                    (itemSome) =>
+                        itemSome.amount <= 0 && itemSome.charge_id === ""
+                ) && CloneToPayload.length <= 1
+                    ? []
+                    : CloneToPayload,
         };
-
         if (Validate) {
             mutate(Payload);
         } else {
