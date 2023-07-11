@@ -145,6 +145,28 @@ export default function ReportComponent() {
     };
 
     const SaveFavoriteHandler = () => {
+        if (router.pathname.includes("/reports/general-reports")) {
+            setPrompt({
+                message: "Save Favorites is not available for General Reports",
+                toggle: true,
+                type: "draft",
+            });
+            return;
+        }
+        if (
+            isFavoritePayload.property_type === "" &&
+            isFavoritePayload.property_class === "" &&
+            isFavoritePayload.property_tower === "" &&
+            isFavoritePayload.property_floor === "" &&
+            isFavoritePayload.property_project === ""
+        ) {
+            setPrompt({
+                message: "Atleast select any property filter",
+                toggle: true,
+                type: "draft",
+            });
+            return;
+        }
         if (isFavorite === false) {
             if (
                 isFavoritePayload !== null &&
