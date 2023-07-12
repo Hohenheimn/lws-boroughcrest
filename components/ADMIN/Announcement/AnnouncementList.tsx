@@ -109,6 +109,9 @@ export default function AnnouncementList({ type }: Props) {
                         DeleteHandler={DeleteHandlerModal}
                     />
                 ))}
+                {data?.data.data.length <= 0 && (
+                    <h1 className="text-center py-10">No Announcement Found</h1>
+                )}
             </div>
 
             {Number(isPaginate) === Number(data?.data.data.length) && (

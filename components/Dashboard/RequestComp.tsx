@@ -77,6 +77,11 @@ export default function RequestComp() {
                         </li>
                     )
                 )}
+                {data?.data.data.length <= 0 && (
+                    <li className="w-full">
+                        <h1 className="text-center py-10">No Request Found</h1>
+                    </li>
+                )}
             </ul>
         </div>
     );
