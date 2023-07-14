@@ -1,11 +1,27 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+
+import AnnouncementList from "../components/ADMIN/Announcement/AnnouncementList";
+import DraftDashboard from "../components/Dashboard/DraftDashboard";
 import HeaderDoughnutComp from "../components/Dashboard/HeaderDoughnutComp";
 import LineChartComp from "../components/Dashboard/LineChartComp";
 import RequestComp from "../components/Dashboard/RequestComp";
-import DraftDashboard from "../components/Dashboard/DraftDashboard";
-import AnnouncementList from "../components/ADMIN/Announcement/AnnouncementList";
+import { LoginUserInfo } from "../components/HOC/LoginUser/UserInfo";
 
 function Dashboard() {
+    const [userInfo, setUserInfo] = useState<LoginUserInfo>();
+
+    useEffect(() => {
+        setUserInfo(JSON.parse(localStorage.userInfo));
+    }, []);
+
+    if (userInfo?.corporate_id === null) {
+        return (
+            <div className=" w-full h-full text-RegularColor flex justify-center items-center py-10">
+                <h1>Dashboard is only available for corporate account.</h1>
+            </div>
+        );
+    }
+
     return (
         <div>
             <ul className="flex justify-between flex-wrap">

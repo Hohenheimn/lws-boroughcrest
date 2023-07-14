@@ -11,21 +11,8 @@ import {
     BarElement,
 } from "chart.js";
 import { Line, Bar } from "react-chartjs-2";
-import {
-    Utility_Consumption_Electricity,
-    Utility_Consumption_Internet,
-    Utility_Consumption_Water,
-} from "./SampleData";
 import { GetDashboardUtility } from "./Query";
-import {
-    BeatLoader,
-    CircleLoader,
-    ClimbingBoxLoader,
-    DotLoader,
-    GridLoader,
-    RotateLoader,
-    SyncLoader,
-} from "react-spinners";
+import { BeatLoader } from "react-spinners";
 
 ChartJS.register(
     BarElement,
@@ -147,6 +134,11 @@ export default function LineChartComp() {
             {!isLoading && !isError && (
                 <>
                     <Line data={LineChart} options={options} />
+
+                    {LineChart.datasets.length <= 0 && (
+                        <h1 className="text-center">No Utility Data Found</h1>
+                    )}
+
                     <div className=" hidden">
                         <Bar data={LineChart} />
                     </div>

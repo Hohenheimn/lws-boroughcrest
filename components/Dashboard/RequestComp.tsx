@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+
 import Card, { RequestDetailType } from "../ADMIN/Request/Card";
 import { GetRequest } from "../ADMIN/Request/Query";
 import { PageAccessValidation } from "../Reusable/PermissionValidation/PageAccessValidation";
@@ -72,10 +73,17 @@ export default function RequestComp() {
                                     trail: [],
                                     request_remarks: [],
                                     updated_at: "",
+                                    attachment: "",
+                                    information: null,
                                 }}
                             />
                         </li>
                     )
+                )}
+                {data?.data.data.length <= 0 && (
+                    <li className="w-full">
+                        <h1 className="text-center py-10">No Request Found</h1>
+                    </li>
                 )}
             </ul>
         </div>
