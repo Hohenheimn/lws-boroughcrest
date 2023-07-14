@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+
 import Card, { RequestDetailType } from "../ADMIN/Request/Card";
 import { GetRequest } from "../ADMIN/Request/Query";
 import { PageAccessValidation } from "../Reusable/PermissionValidation/PageAccessValidation";
@@ -72,6 +73,8 @@ export default function RequestComp() {
                                     trail: [],
                                     request_remarks: [],
                                     updated_at: "",
+                                    attachment: "",
+                                    information: null,
                                 }}
                             />
                         </li>

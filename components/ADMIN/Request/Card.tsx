@@ -1,7 +1,8 @@
-import { useRouter } from "next/router";
 import React, { useContext, useEffect, useState } from "react";
-import { AccessActionValidation } from "../../Reusable/PermissionValidation/ActionAccessValidation";
+import { useRouter } from "next/router";
+
 import AppContext from "../../Context/AppContext";
+import { AccessActionValidation } from "../../Reusable/PermissionValidation/ActionAccessValidation";
 
 export type RequestDetailType = {
     id: number;
@@ -24,6 +25,8 @@ export type RequestDetailType = {
     }[];
     request_remarks: RequestRemarks[];
     updated_at: string;
+    attachment: string;
+    information: any;
 };
 
 export type RequestRemarks = {
