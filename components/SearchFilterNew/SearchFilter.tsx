@@ -1,23 +1,24 @@
 import React, { useState, useContext } from "react";
-import AppContext from "../Context/AppContext";
-import Image from "next/image";
-import { BsSearch } from "react-icons/bs";
 import { AnimatePresence } from "framer-motion";
-import FilterCorporate from "./FilterCorporate";
-import FilterDynamic from "./FilterDynamic";
-import FilterCustomer from "./FilterCustomer";
-import Tippy from "@tippy.js/react";
-import "tippy.js/dist/tippy.css";
+import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/router";
-import style from "../../styles/SearchFilter.module.scss";
-import { CustomerImport } from "../ReactQuery/CustomerMethod";
+import { BsSearch } from "react-icons/bs";
+import { useQueryClient } from "react-query";
 import { MoonLoader } from "react-spinners";
+import "tippy.js/dist/tippy.css";
+import Tippy from "@tippy.js/react";
+
+import style from "../../styles/SearchFilter.module.scss";
+import AppContext from "../Context/AppContext";
+import { CustomerImport } from "../ReactQuery/CustomerMethod";
 import { PropertyImport } from "../ReactQuery/PropertyMethod";
 import { DynamicExportHandler } from "../Reusable/DynamicExport";
 import { DynamicImport } from "../Reusable/DynamicImport";
-import Link from "next/link";
-import { useQueryClient } from "react-query";
 import { AccessActionValidation } from "../Reusable/PermissionValidation/ActionAccessValidation";
+import FilterCorporate from "./FilterCorporate";
+import FilterCustomer from "./FilterCustomer";
+import FilterDynamic from "./FilterDynamic";
 
 type SearchFilter = {
     page: string;
@@ -75,17 +76,20 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
     };
 
     const [isImport, setImport] = useState<any>();
+
     const queryClient = useQueryClient();
+
     const ImportSuccess = () => {
         setPrompt({
             type: "success",
             message: "Successfully imported!",
             toggle: true,
         });
-        queryClient.invalidateQueries(["Property-List"]);
-        queryClient.invalidateQueries(["get-customer-list"]);
+        queryClient.invalidateQueries("Property-List");
+        queryClient.invalidateQueries("get-customer-list");
         setImport("");
     };
+
     const ImportError = () => {
         setPrompt({
             type: "error",
@@ -94,15 +98,18 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
         });
         setImport("");
     };
+
     // Imports
     const { isLoading: CusLoading, mutate: CusMutate } = CustomerImport(
         ImportSuccess,
         ImportError
     );
+
     const { isLoading: PropLoading, mutate: PropMutate } = PropertyImport(
         ImportSuccess,
         ImportError
     );
+
     const ImportMutate = (PayLoad: any) => {
         if (router.pathname.includes("admin/customer")) {
             CusMutate(PayLoad);
@@ -111,6 +118,7 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
             PropMutate(PayLoad);
         }
     };
+
     const importHandler = (e: any) => {
         DynamicImport(e, setPrompt, ImportMutate);
         // setImport(e);
