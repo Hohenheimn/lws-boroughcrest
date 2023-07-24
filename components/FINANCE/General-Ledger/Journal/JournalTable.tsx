@@ -1,22 +1,24 @@
 import React, { useContext, useEffect, useState } from "react";
-import { BsSearch } from "react-icons/bs";
-import style from "../../../../styles/SearchFilter.module.scss";
-import Image from "next/image";
-import Tippy from "@tippy.js/react";
-import "tippy.js/dist/tippy.css";
-import Link from "next/link";
-import PeriodCalendar from "../../../Reusable/PeriodCalendar";
-import { Advancefilter, AdvanceFilter } from "../../../Reusable/AdvanceFilter";
-import { GetJournal, MultipleUpdate } from "./Query";
-import Pagination from "../../../Reusable/Pagination";
-import AppContext from "../../../Context/AppContext";
 import { format, isValid, parse } from "date-fns";
-import ModalTemp from "../../../Reusable/ModalTemp";
-import { CopyButtonTable } from "../../../Reusable/Icons";
-import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
-import TableLoadingNError from "../../../Reusable/TableLoadingNError";
-import { AccessActionValidation } from "../../../Reusable/PermissionValidation/ActionAccessValidation";
+import Image from "next/image";
+import Link from "next/link";
+import { BsSearch } from "react-icons/bs";
 import { MoonLoader } from "react-spinners";
+import "tippy.js/dist/tippy.css";
+import Tippy from "@tippy.js/react";
+
+import style from "../../../../styles/SearchFilter.module.scss";
+import AppContext from "../../../Context/AppContext";
+import { Advancefilter, AdvanceFilter } from "../../../Reusable/AdvanceFilter";
+import { DynamicExportHandler } from "../../../Reusable/DynamicExport";
+import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
+import { CopyButtonTable } from "../../../Reusable/Icons";
+import ModalTemp from "../../../Reusable/ModalTemp";
+import Pagination from "../../../Reusable/Pagination";
+import PeriodCalendar from "../../../Reusable/PeriodCalendar";
+import { AccessActionValidation } from "../../../Reusable/PermissionValidation/ActionAccessValidation";
+import TableLoadingNError from "../../../Reusable/TableLoadingNError";
+import { GetJournal, MultipleUpdate } from "./Query";
 
 type Props = {
     type: string;
@@ -94,6 +96,21 @@ export default function JournalTable({ type, isPeriod, setPeriod }: Props) {
         dateFrom,
         dateTo
     );
+
+    const [isExportLoading, setExportLoading] = useState(false);
+
+    const ExportHandler = () => {
+        DynamicExportHandler(
+            `/finance/general-ledger/journal/export?list_type=${type}&keywords=${isSearch}&page=${
+                isSearch === "" ? TablePage : 1
+            }&filters=${isFilterText}&date_from=${
+                isValid(dateFrom) ? format(dateFrom, "yyyy-MM-dd") : ""
+            }&date_to=${isValid(dateTo) ? format(dateTo, "yyyy-MM-dd") : ""}`,
+            "journal-list",
+            setPrompt,
+            setExportLoading
+        );
+    };
 
     useEffect(() => {
         if (data?.status === 200) {
@@ -210,6 +227,7 @@ export default function JournalTable({ type, isPeriod, setPeriod }: Props) {
         };
         updateMutate(Payload);
     };
+
     return (
         <>
             {isRejectNoticeToggle && (
@@ -361,17 +379,29 @@ export default function JournalTable({ type, isPeriod, setPeriod }: Props) {
                         </>
                     ) : (
                         <>
-                            <li className={style.importExportPrint}>
-                                <Tippy theme="ThemeRed" content="Export">
-                                    <div className={style.icon}>
-                                        <Image
-                                            src="/Images/Export.png"
-                                            layout="fill"
-                                            alt="Export"
-                                        />
-                                    </div>
-                                </Tippy>
-                            </li>
+                            {isExportLoading ? (
+                                <div className={style.importExportPrint}>
+                                    <MoonLoader color="#8f384d" size={20} />
+                                </div>
+                            ) : (
+                                <div
+                                    className={`relative ${style.importExportPrint}`}
+                                >
+                                    <Tippy theme="ThemeRed" content="Export">
+                                        <div
+                                            style={{ marginRight: "0" }}
+                                            className={style.icon}
+                                            onClick={ExportHandler}
+                                        >
+                                            <Image
+                                                src="/Images/Export.png"
+                                                layout="fill"
+                                                alt="Export"
+                                            />
+                                        </div>
+                                    </Tippy>
+                                </div>
+                            )}
                         </>
                     )}
                 </ul>
