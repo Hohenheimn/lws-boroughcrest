@@ -1,14 +1,19 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { useRouter } from "next/router";
 import { getCookie, deleteCookie } from "cookies-next";
+import { useRouter } from "next/router";
+import { useQueryClient } from "react-query";
+
 import api from "../../util/api";
 import AppContext from "../Context/AppContext";
-import { useQueryClient } from "react-query";
 
 type Props = {
     setToggleProfileMenu: Function;
+    setChangePasswordModal: Function;
 };
-export default function ProfileMenu({ setToggleProfileMenu }: Props) {
+export default function ProfileMenu({
+    setToggleProfileMenu,
+    setChangePasswordModal,
+}: Props) {
     const queryClient = useQueryClient();
 
     const { setPrompt } = useContext(AppContext);
@@ -71,16 +76,24 @@ export default function ProfileMenu({ setToggleProfileMenu }: Props) {
         }
     };
     return (
-        <ul
-            ref={Menu}
-            className="absolute w-[200px] z-50 top-[40px] shadow-lg right-0 bg-white text-ThemeRed"
-        >
-            <li
-                className="cursor-pointer px-5 py-1 text-[16px] 1550px:text-[14px] hover:bg-ThemeRed hover:text-white"
-                onClick={SignOutHandler}
+        <>
+            <ul
+                ref={Menu}
+                className="absolute w-[200px] z-50 top-[40px] shadow-lg right-0 bg-white text-ThemeRed"
             >
-                Log Out
-            </li>
-        </ul>
+                <li
+                    className="cursor-pointer px-5 py-1 text-[16px] 1550px:text-[14px] hover:bg-ThemeRed hover:text-white"
+                    onClick={() => setChangePasswordModal(true)}
+                >
+                    Change Password
+                </li>
+                <li
+                    className="cursor-pointer px-5 py-1 text-[16px] 1550px:text-[14px] hover:bg-ThemeRed hover:text-white"
+                    onClick={SignOutHandler}
+                >
+                    Log Out
+                </li>
+            </ul>
+        </>
     );
 }
