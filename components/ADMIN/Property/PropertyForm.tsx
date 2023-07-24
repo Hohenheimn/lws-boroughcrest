@@ -1,21 +1,19 @@
 import React, { useState, useContext, useEffect } from "react";
-import style from "../../../styles/Popup_Modal.module.scss";
+import { format, isValid, parse } from "date-fns";
 import { motion } from "framer-motion";
-import { ModalSideFade } from "../../Animation/SimpleAnimation";
-import { RiArrowDownSFill } from "react-icons/ri";
-import AppContext from "../../Context/AppContext";
-import Tippy from "@tippy.js/react";
-import "tippy.js/dist/tippy.css";
-import { useRouter } from "next/router";
-import Floor from "./Floor";
-import Tower from "./Tower";
-import Project from "./Project";
-import { useForm } from "react-hook-form";
-import { PropertyDefaultValue } from "../../../types/PropertyList";
-import Developer from "./Developer";
-import { ScaleLoader } from "react-spinners";
-import { useQueryClient } from "react-query";
 import Image from "next/image";
+import { useRouter } from "next/router";
+import { useForm } from "react-hook-form";
+import { RiArrowDownSFill } from "react-icons/ri";
+import { useQueryClient } from "react-query";
+import { ScaleLoader } from "react-spinners";
+import "tippy.js/dist/tippy.css";
+import Tippy from "@tippy.js/react";
+
+import style from "../../../styles/Popup_Modal.module.scss";
+import { PropertyDefaultValue } from "../../../types/PropertyList";
+import { ModalSideFade } from "../../Animation/SimpleAnimation";
+import AppContext from "../../Context/AppContext";
 import {
     PostDraftProperty,
     PostProperty,
@@ -24,14 +22,17 @@ import {
 } from "../../ReactQuery/PropertyMethod";
 import Calendar from "../../Reusable/Calendar";
 import DynamicPopOver from "../../Reusable/DynamicPopOver";
-import SelectDropdown from "../../Reusable/SelectDropdown";
-import { format, isValid, parse } from "date-fns";
 import { ErrorSubmit } from "../../Reusable/ErrorMessage";
 import {
     InputNumberForm,
     InputTextForm,
     NumberBlockInvalidKey,
 } from "../../Reusable/InputField";
+import SelectDropdown from "../../Reusable/SelectDropdown";
+import Developer from "./Developer";
+import Floor from "./Floor";
+import Project from "./Project";
+import Tower from "./Tower";
 
 type Props = {
     DefaultFormData: PropertyDefaultValue;
@@ -294,6 +295,7 @@ export default function PropertyForm({
     } = useForm<PropertyDefaultValue>({
         defaultValues: DefaultFormData,
     });
+
     const queryClient = useQueryClient();
 
     const submit = (data: any) => {

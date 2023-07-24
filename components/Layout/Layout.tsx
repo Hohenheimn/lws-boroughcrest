@@ -1,21 +1,23 @@
 import React, { useState, useEffect, useContext } from "react";
-import AppContext from "../Context/AppContext";
-import Head from "next/head";
-import { useRouter } from "next/router";
-import Sidebar from "./Sidebar";
-import { BiMenuAltRight } from "react-icons/bi";
 import { AnimatePresence, motion } from "framer-motion";
-import { BsSearch } from "react-icons/bs";
-import { IoNotificationsSharp } from "react-icons/io5";
-import { IoIosArrowDown } from "react-icons/io";
+import Head from "next/head";
 import Image from "next/image";
-import Tippy from "@tippy.js/react";
+import { useRouter } from "next/router";
+import { BiMenuAltRight } from "react-icons/bi";
+import { BsSearch } from "react-icons/bs";
+import { IoIosArrowDown } from "react-icons/io";
+import { IoNotificationsSharp } from "react-icons/io5";
 import "tippy.js/dist/tippy.css";
-import ProfileMenu from "./ProfileMenu";
+import Tippy from "@tippy.js/react";
+
 import { FadeSide } from "../Animation/SimpleAnimation";
+import AppContext from "../Context/AppContext";
 import UpperMenu from "../FINANCE/UpperMenu";
-import PrompMessage from "../Reusable/PrompMessage";
+import ChangePassword from "../HOC/ChangePassword";
 import { LoginUserInfo } from "../HOC/LoginUser/UserInfo";
+import PrompMessage from "../Reusable/PrompMessage";
+import ProfileMenu from "./ProfileMenu";
+import Sidebar from "./Sidebar";
 
 type Layout = {
     children: React.ReactNode;
@@ -36,6 +38,8 @@ export default function Layout({ children }: Layout) {
     const [toggleProfileMenu, setToggleProfileMenu] = useState(false);
 
     const [financeMenu, setFinanceMenu] = useState(false);
+
+    const [isChangePasswordModal, setChangePasswordModal] = useState(false);
 
     // toggle for responsive sidebar
     const [isWide, setWide] = useState(false);
@@ -99,6 +103,7 @@ export default function Layout({ children }: Layout) {
     }, [router.asPath]);
 
     const [userPhoto, setUserPhoto] = useState("/Images/sampleProfile.png");
+
     const [userInfo, setUserInfo] = useState<LoginUserInfo>();
 
     useEffect(() => {
@@ -142,6 +147,12 @@ export default function Layout({ children }: Layout) {
                         />
                     )}
                 </AnimatePresence>
+
+                {isChangePasswordModal && (
+                    <ChangePassword
+                        setChangePasswordModal={setChangePasswordModal}
+                    />
+                )}
 
                 <section
                     className={` transition-all duration-150 flex flex-col w-full bg-MainBG bg-no-repeat bg-cover h-screen overflow-auto ${
@@ -246,6 +257,9 @@ export default function Layout({ children }: Layout) {
                                             <ProfileMenu
                                                 setToggleProfileMenu={
                                                     setToggleProfileMenu
+                                                }
+                                                setChangePasswordModal={
+                                                    setChangePasswordModal
                                                 }
                                             />
                                         )}
