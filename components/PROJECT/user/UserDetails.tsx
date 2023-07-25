@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import Image from "next/image";
-import UserInformation from "./UserInformation";
-import Modal_Image from "../../Reusable/Modal_Image";
-import { UserDetail } from "./UserTable";
 import Tippy from "@tippy.js/react";
-import UserForm from "./UserForm";
-import DisplayUserRolePermissions from "./DisplayUserRolePermissions";
+
 import { PencilButton } from "../../Reusable/Icons";
+import Modal_Image from "../../Reusable/Modal_Image";
+import DisplayUserRolePermissions from "./DisplayUserRolePermissions";
+import UserForm from "./UserForm";
+import UserInformation from "./UserInformation";
+import { UserDetail } from "./UserTable";
 
 type Props = {
     UserDetail: UserDetail;
@@ -21,6 +22,12 @@ export default function UserDetails({ UserDetail }: Props) {
         ImagePhoto =
             "https://boroughcrest-api.lws.codes/get-img?image=" +
             UserDetail?.image_photo;
+    }
+
+    let Contact: any = UserDetail.contact_no ? UserDetail.contact_no : "";
+    const first = Contact[0];
+    if (first === 0 || first === "0") {
+        Contact = Contact.replace(first, "");
     }
 
     return (
@@ -39,7 +46,7 @@ export default function UserDetails({ UserDetail }: Props) {
                         department_id: UserDetail.department_id,
                         department: UserDetail.department_name,
                         email: UserDetail.email,
-                        contact_no: UserDetail.contact_no,
+                        contact_no: Contact,
                         corporate: UserDetail.corporate_name,
                         corporate_id: UserDetail.corporate_id,
                         status: UserDetail.status,

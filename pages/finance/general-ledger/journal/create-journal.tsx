@@ -1,16 +1,22 @@
-import { useRouter } from "next/router";
 import React, { useState } from "react";
+import { format, startOfDay } from "date-fns";
+import { useRouter } from "next/router";
+import { FaLock } from "react-icons/fa";
+
 import JournalCopy from "../../../../components/FINANCE/General-Ledger/Journal/JournalCopy";
 import JournalForm, {
     defaultArray,
 } from "../../../../components/FINANCE/General-Ledger/Journal/JournalForm";
-import { PageAccessValidation } from "../../../../components/Reusable/PermissionValidation/PageAccessValidation";
-import NoPermissionComp from "../../../../components/Reusable/PermissionValidation/NoPermissionComp";
 import { AccessActionValidation } from "../../../../components/Reusable/PermissionValidation/ActionAccessValidation";
-import { FaLock } from "react-icons/fa";
+import NoPermissionComp from "../../../../components/Reusable/PermissionValidation/NoPermissionComp";
+import { PageAccessValidation } from "../../../../components/Reusable/PermissionValidation/PageAccessValidation";
 
 export default function CreateJournal() {
     const router = useRouter();
+
+    const date = new Date();
+
+    let today = startOfDay(date);
 
     const isJournalList: defaultArray = [
         {
@@ -53,7 +59,7 @@ export default function CreateJournal() {
                     id=""
                     JournalList={isJournalList}
                     DefaultParticulars=""
-                    DefaultDateValue=""
+                    DefaultDateValue={format(today, "MMM dd yyyy")}
                     DefaultStatus=""
                     type="create"
                 />

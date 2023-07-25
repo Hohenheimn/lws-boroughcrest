@@ -1,11 +1,12 @@
 import React, { useEffect } from "react";
-import CustomerForm from "./CustomerForm";
-import { GetCustomer } from "../../../ReactQuery/CustomerMethod";
-import { useRouter } from "next/router";
-import ModalTemp from "../../../Reusable/ModalTemp";
-import { BeatLoader } from "react-spinners";
-import { customer } from "../../../../types/customerList";
 import { format, isValid, parse } from "date-fns";
+import { useRouter } from "next/router";
+import { BeatLoader } from "react-spinners";
+
+import { customer } from "../../../../types/customerList";
+import { GetCustomer } from "../../../ReactQuery/CustomerMethod";
+import ModalTemp from "../../../Reusable/ModalTemp";
+import CustomerForm from "./CustomerForm";
 
 export default function ModifyCustomer() {
     const router = useRouter();
@@ -22,6 +23,15 @@ export default function ModifyCustomer() {
         "yyyy-MM-dd",
         new Date()
     );
+
+    let Contact: any = CustomerDetail.contact_no
+        ? CustomerDetail.contact_no
+        : "";
+
+    const first = Contact[0];
+    if (first === 0 || first === "0") {
+        Contact = Contact.replace(first, "");
+    }
 
     const isDefaultValue = {
         class: CustomerDetail?.class === null ? "" : CustomerDetail?.class,
@@ -132,7 +142,7 @@ export default function ModifyCustomer() {
                 ? ""
                 : "https://boroughcrest-api.lws.codes/get-img?image=" +
                   CustomerDetail?.image_signature,
-        contact_no: CustomerDetail?.contact_no,
+        contact_no: Contact,
         registered_email:
             CustomerDetail?.registered_email === null
                 ? ""

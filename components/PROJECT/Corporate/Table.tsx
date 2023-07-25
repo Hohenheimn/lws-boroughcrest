@@ -1,14 +1,15 @@
 import React, { useState, useContext } from "react";
-import AppContext from "../../Context/AppContext";
+import { getCookie } from "cookies-next";
 import Image from "next/image";
 import Link from "next/link";
 import { GoPencil } from "react-icons/go";
-import api from "../../../util/api";
 import { useQuery } from "react-query";
 import BarLoader from "react-spinners/BarLoader";
-import { getCookie } from "cookies-next";
-import TableErrorMessage from "../../Reusable/TableErrorMessage";
+
+import api from "../../../util/api";
+import AppContext from "../../Context/AppContext";
 import Pagination from "../../Reusable/Pagination";
+import TableErrorMessage from "../../Reusable/TableErrorMessage";
 
 type Props = {
     isSearchTable: string;
@@ -105,7 +106,9 @@ const List = ({ itemDetail }: any) => {
                                         />
                                     </aside>
                                     <div>
-                                        <h2>{itemDetail.id}</h2>
+                                        <h2>
+                                            {itemDetail.assigned_corporate_id}
+                                        </h2>
                                     </div>
                                 </a>
                             </Link>

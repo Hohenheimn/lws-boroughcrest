@@ -52,6 +52,7 @@ export default function ChangePassword({
     const SubmitHandler = (data: Passwords) => {
         mutate(data);
     };
+
     return (
         <ModalTemp>
             <h1 className="mb-5">CHANGE PASSWORD</h1>
@@ -75,6 +76,7 @@ export default function ChangePassword({
                             </p>
                         )}
                     </li>
+
                     <li className="flex flex-col mb-3">
                         <label>New Password</label>
                         <input
@@ -93,6 +95,7 @@ export default function ChangePassword({
                             </p>
                         )}
                     </li>
+
                     <li className="flex flex-col mb-3">
                         <label>Confirm Password</label>
                         <input
@@ -114,6 +117,7 @@ export default function ChangePassword({
                             </p>
                         )}
                     </li>
+
                     <li className=" flex justify-end items-center mt-5">
                         <div
                             className="button_cancel"

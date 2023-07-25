@@ -1,24 +1,26 @@
 import React, { useState, useEffect, useContext } from "react";
-import { AiFillCamera } from "react-icons/ai";
 import Image from "next/image";
-import style from "../../../styles/Popup_Modal.module.scss";
+import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
+import { AiFillCamera } from "react-icons/ai";
+import { RiArrowDownSFill } from "react-icons/ri";
+import { useQueryClient } from "react-query";
+import { ScaleLoader } from "react-spinners";
+
+import style from "../../../styles/Popup_Modal.module.scss";
 import AppContext from "../../Context/AppContext";
 import CorporateDropDown from "../../Dropdowns/CorporateDropDown";
-import { RiArrowDownSFill } from "react-icons/ri";
-import { UpdateUserInfo } from "./Query";
-import { useRouter } from "next/router";
+import { SendLink } from "../../ReactQuery/ForgotPassword";
+import DynamicPopOver from "../../Reusable/DynamicPopOver";
 import { ErrorSubmit } from "../../Reusable/ErrorMessage";
 import {
     NumberBlockInvalidKey,
     TextFieldValidation,
 } from "../../Reusable/InputField";
-import { useQueryClient } from "react-query";
-import UserRoleAndPermissionsCheckBox from "./UserRoleAndPermissionsCheckBox";
+import { ContactNumberFormat } from "../../Reusable/NumberFormat";
 import Department from "./Department";
-import DynamicPopOver from "../../Reusable/DynamicPopOver";
-import { ScaleLoader } from "react-spinners";
-import { SendLink } from "../../ReactQuery/ForgotPassword";
+import { UpdateUserInfo } from "./Query";
+import UserRoleAndPermissionsCheckBox from "./UserRoleAndPermissionsCheckBox";
 
 export type UserFormType = {
     profile: any;
@@ -429,9 +431,14 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
                         });
                     }
                 } else {
+                    let value = updatePayload[key];
+                    if (key === "contact_no") {
+                        value = `0${value}`;
+                    }
+
                     arrayData.push({
                         key: key,
-                        keyData: updatePayload[key],
+                        keyData: value,
                     });
                 }
             });
@@ -559,7 +566,8 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
                                 {...register("name")}
                                 value={isPayload.name}
                                 onChange={(e) => {
-                                    if (!TextFieldValidation(e, 255)) return;
+                                    if (!TextFieldValidation(e, 9999999))
+                                        return;
                                     setPayload({
                                         ...isPayload,
                                         name: e.target.value,
@@ -612,7 +620,6 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
                                 {...register("position")}
                                 value={isPayload.position}
                                 onChange={(e) => {
-                                    if (!TextFieldValidation(e, 255)) return;
                                     setPayload({
                                         ...isPayload,
                                         position: e.target.value,
@@ -633,7 +640,6 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
                                 {...register("employee_id")}
                                 value={isPayload.employee_id}
                                 onChange={(e) => {
-                                    if (!TextFieldValidation(e, 20)) return;
                                     setPayload({
                                         ...isPayload,
                                         employee_id: e.target.value,
@@ -701,7 +707,6 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
                                 })}
                                 value={isPayload.email}
                                 onChange={(e) => {
-                                    if (e.target.value.length > 320) return;
                                     setPayload({
                                         ...isPayload,
                                         email: e.target.value,
@@ -717,31 +722,37 @@ export default function UserForm({ DefaultValue, type, setToggle }: Props) {
 
                         <li>
                             <label>*MOBILE</label>
-                            <input
-                                type="number"
-                                className="field"
-                                {...register("mobile", {
-                                    minLength: {
-                                        value: 11,
-                                        message: "Must be 11 Number",
-                                    },
-                                    maxLength: {
-                                        value: 11,
-                                        message: "Must be 11 Number",
-                                    },
-                                    pattern: {
-                                        value: /^(09)\d{9}$/,
-                                        message: "Invalid Contact Number",
-                                    },
-                                })}
+
+                            <ContactNumberFormat
                                 value={isPayload.contact_no}
-                                onKeyDown={NumberBlockInvalidKey}
-                                onChange={(e) => {
-                                    if (!TextFieldValidation(e, 11)) return;
-                                    setPayload({
-                                        ...isPayload,
-                                        contact_no: e.target.value,
-                                    });
+                                className=" w-full"
+                                register={{
+                                    ...register("mobile", {
+                                        minLength: {
+                                            value: 10,
+                                            message: "Must be 10 Number",
+                                        },
+                                        maxLength: {
+                                            value: 10,
+                                            message: "Must be 10 Number",
+                                        },
+                                        pattern: {
+                                            value: /^(9)\d{9}$/,
+                                            message: "Invalid Contact Number",
+                                        },
+                                        onChange: (e) => {
+                                            if (e.target.value.length <= 10) {
+                                                setValue(
+                                                    "mobile",
+                                                    e.target.value
+                                                );
+                                                setPayload({
+                                                    ...isPayload,
+                                                    contact_no: e.target.value,
+                                                });
+                                            }
+                                        },
+                                    }),
                                 }}
                             />
                             {errors?.mobile && (

@@ -1,4 +1,6 @@
 export type corporateColumns = {
+    assigned_corporate_id: any;
+    with_transaction: any;
     id?: number;
     logo: any;
     name: string;

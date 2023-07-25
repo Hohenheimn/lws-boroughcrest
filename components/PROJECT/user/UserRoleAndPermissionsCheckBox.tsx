@@ -1,26 +1,27 @@
 import React, { useContext, useEffect, useState } from "react";
-import ModalTemp from "../../Reusable/ModalTemp";
-import { UserInfo } from "./UserForm";
-import SelectDropdown from "../../Reusable/SelectDropdown";
+import Image from "next/image";
+import { useRouter } from "next/router";
 import { AiOutlineInfoCircle } from "react-icons/ai";
-import Tippy from "@tippy.js/react";
-import style from "../../../styles/Popup_Modal.module.scss";
 import { RiArrowDownSFill } from "react-icons/ri";
+import { useQueryClient } from "react-query";
+import { PulseLoader, ScaleLoader } from "react-spinners";
+import Tippy from "@tippy.js/react";
+
+import style from "../../../styles/Popup_Modal.module.scss";
+import AppContext from "../../Context/AppContext";
+import NameIDDropdown from "../../Dropdowns/NameIDDropdown";
+import { ErrorSubmit } from "../../Reusable/ErrorMessage";
+import { NumberBlockInvalidKey } from "../../Reusable/InputField";
+import ModalLoading from "../../Reusable/ModalLoading";
+import ModalTemp from "../../Reusable/ModalTemp";
+import SelectDropdown from "../../Reusable/SelectDropdown";
+import { ShowRole } from "../Access/Query";
+import { CreateUser, UpdateUserInfo, UpdateUserRole } from "./Query";
 import {
     RolePermission,
     RolesAndPermissionTable,
 } from "./RolesAndPermissionTable";
-import Image from "next/image";
-import { useRouter } from "next/router";
-import { NumberBlockInvalidKey } from "../../Reusable/InputField";
-import AppContext from "../../Context/AppContext";
-import { ErrorSubmit } from "../../Reusable/ErrorMessage";
-import { useQueryClient } from "react-query";
-import { CreateUser, UpdateUserInfo, UpdateUserRole } from "./Query";
-import { PulseLoader, ScaleLoader } from "react-spinners";
-import NameIDDropdown from "../../Dropdowns/NameIDDropdown";
-import { ShowRole } from "../Access/Query";
-import ModalLoading from "../../Reusable/ModalLoading";
+import { UserInfo } from "./UserForm";
 
 type Props = {
     setUserForm: Function;
@@ -362,19 +363,6 @@ export default function UserRoleAndPermissionsCheckBox({
                 }),
             };
 
-            // if (
-            //     Payload.corporate_id === "" ||
-            //     Payload.corporate_id === null ||
-            //     Payload.corporate_id === undefined
-            // ) {
-            //     setPrompt({
-            //         message: "Select a Corporate",
-            //         type: "draft",
-            //         toggle: "",
-            //     });
-            //     return;
-            // }
-
             const formData = new FormData();
 
             const arrayData: any = [];
@@ -399,9 +387,13 @@ export default function UserRoleAndPermissionsCheckBox({
                         });
                     }
                 } else {
+                    let value = Payload[key];
+                    if (key === "contact_no") {
+                        value = `0${value}`;
+                    }
                     arrayData.push({
                         key: key,
-                        keyData: Payload[key],
+                        keyData: value,
                     });
                 }
             });

@@ -1,16 +1,13 @@
 import React, { useContext, useState } from "react";
-import style from "../../../../styles/Popup_Modal.module.scss";
+import { format, isValid, parse } from "date-fns";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { AiFillCamera } from "react-icons/ai";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
-import ModalTemp from "../../../Reusable/ModalTemp";
-import SelectDropdown from "../../../Reusable/SelectDropdown";
-import IndividualCompanyForm from "./IndividualCompanyForm";
+import { useQueryClient } from "react-query";
+
+import style from "../../../../styles/Popup_Modal.module.scss";
 import AppContext from "../../../Context/AppContext";
-import { useRouter } from "next/router";
-import CustomerUnitCodeForm, {
-    CustomerUnitCodes,
-} from "./CustomerUnitCodeForm";
 import {
     PostCustomerDraft,
     PostCustomerSave,
@@ -18,8 +15,12 @@ import {
     UpdateDraft,
 } from "../../../ReactQuery/CustomerMethod";
 import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
-import { format, isValid, parse } from "date-fns";
-import { useQueryClient } from "react-query";
+import ModalTemp from "../../../Reusable/ModalTemp";
+import SelectDropdown from "../../../Reusable/SelectDropdown";
+import CustomerUnitCodeForm, {
+    CustomerUnitCodes,
+} from "./CustomerUnitCodeForm";
+import IndividualCompanyForm from "./IndividualCompanyForm";
 
 type Props = {
     DefaultValue: CustomerFormDefaultValue;
@@ -251,9 +252,16 @@ export default function CustomerForm({ DefaultValue }: Props) {
                     });
                 }
             } else {
+                let value = Payload[key];
+                if (key === "contact_no") {
+                    value = `0${value}`;
+                }
+                if (key === "tin") {
+                    value = value.replaceAll("-", "");
+                }
                 arrayData.push({
                     key: key,
-                    keyData: Payload[key],
+                    keyData: value,
                 });
             }
         });
@@ -509,10 +517,7 @@ const DefaultDisplayForm = () => {
                     <label>TIN</label>
                     <input type="text" className="field pointer-events-none" />
                 </li>
-                <li>
-                    <label>BRANCH CODE</label>
-                    <input type="text" className="field pointer-events-none" />
-                </li>
+
                 <li>
                     <label>PORTAL ID</label>
                     <input type="text" className="field pointer-events-none" />
