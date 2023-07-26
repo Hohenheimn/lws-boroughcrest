@@ -137,6 +137,8 @@ const Tower = ({
                                     isValID={isValID}
                                     project_id={project_id}
                                     project_name={project_name}
+                                    current_id={isObject.id}
+                                    RemoveValue={RemoveValue}
                                 />
                             ))}
                         </>
@@ -192,6 +194,8 @@ type List = {
     isValID: any;
     project_id: string;
     project_name: string;
+    current_id: string | number;
+    RemoveValue: () => void;
 };
 const List = ({
     itemDetail,
@@ -202,6 +206,8 @@ const List = ({
     is,
     update,
     isValID,
+    RemoveValue,
+    current_id,
     project_id,
     project_name,
 }: List) => {
@@ -351,6 +357,9 @@ const List = ({
                 item.filter((x: { id: any }) => x.id !== itemDetail.id)
             );
         } else {
+            if (itemDetail.id === current_id) {
+                RemoveValue();
+            }
             setSaving(false);
             // Delete from API
             mutateDelete(itemDetail.id);

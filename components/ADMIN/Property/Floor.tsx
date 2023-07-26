@@ -136,6 +136,8 @@ const Floor = ({
                                     isValID={isValID}
                                     tower_id={tower_id}
                                     tower_name={tower_name}
+                                    current_id={isObject.id}
+                                    RemoveValue={RemoveValue}
                                 />
                             ))}
                         </>
@@ -192,6 +194,8 @@ type List = {
     isValID: any;
     tower_id: string;
     tower_name: string;
+    current_id: string | number;
+    RemoveValue: () => void;
 };
 const List = ({
     itemDetail,
@@ -204,6 +208,8 @@ const List = ({
     isValID,
     tower_id,
     tower_name,
+    RemoveValue,
+    current_id,
 }: List) => {
     const [isModify, setModify] = useState(false);
     const clientQuery = useQueryClient();
@@ -355,6 +361,9 @@ const List = ({
                 item.filter((x: { id: any }) => x.id !== itemDetail.id)
             );
         } else {
+            if (itemDetail.id === current_id) {
+                RemoveValue();
+            }
             setSaving(false);
             // Delete from API
             mutateDelete(itemDetail.id);
