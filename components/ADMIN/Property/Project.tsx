@@ -1,18 +1,19 @@
 import React, { useEffect, useState, useRef, useContext } from "react";
 import { BiEdit } from "react-icons/bi";
 import { MdDeleteOutline } from "react-icons/md";
-import { BarLoader, MoonLoader } from "react-spinners";
 import { MdSaveAlt } from "react-icons/md";
-import Tippy from "@tippy.js/react";
+import { useQueryClient } from "react-query";
+import { BarLoader, MoonLoader } from "react-spinners";
 import "tippy.js/dist/tippy.css";
+import Tippy from "@tippy.js/react";
+
+import AppContext from "../../Context/AppContext";
 import {
     DeleteProject,
     GetProject,
     PostProject,
     UpdateProject,
 } from "../../ReactQuery/PropertyMethod";
-import { useQueryClient } from "react-query";
-import AppContext from "../../Context/AppContext";
 import { ErrorSubmit } from "../../Reusable/ErrorMessage";
 
 const Project = ({ set, update, isValID, isObject, setObject }: any) => {
@@ -51,6 +52,15 @@ const Project = ({ set, update, isValID, isObject, setObject }: any) => {
                 name: "",
             },
         ]);
+    };
+
+    const RemoveValue = () => {
+        setObject({
+            id: "",
+            value: "",
+            firstVal: "",
+            firstID: "",
+        });
     };
     const { isLoading, data, isError } = GetProject(
         isObject.value === null || isObject.value === undefined
@@ -106,7 +116,7 @@ const Project = ({ set, update, isValID, isObject, setObject }: any) => {
             {isError ||
                 (data?.data.length <= 0 && (
                     <div className="w-full flex justify-center py-2 text-[14px]">
-                        <p> Floor cannot be found!</p>
+                        <p>No Project Found</p>
                     </div>
                 ))}
             {isLoading && (
@@ -123,12 +133,20 @@ const Project = ({ set, update, isValID, isObject, setObject }: any) => {
             {isWarning !== "" && (
                 <p className="text-[12px] text-ThemeRed">{isWarning}</p>
             )}
-            <h1
-                className="cursor-pointer text-ThemeRed text-[12px] py-2 hover:underline"
-                onClick={AddArray}
-            >
-                ADD PROJECT
-            </h1>
+            <aside className="w-full flex justify-between">
+                <div
+                    onClick={AddArray}
+                    className="font-bold cursor-pointer text-ThemeRed text-[12px] inline-block  hover:underline"
+                >
+                    ADD FLOOR
+                </div>
+                <div
+                    onClick={RemoveValue}
+                    className="font-bold cursor-pointer text-ThemeRed text-[12px] inline-block hover:underline"
+                >
+                    REMOVE
+                </div>
+            </aside>
         </div>
     );
 };
@@ -139,6 +157,7 @@ type List = {
     setWarning: any;
     set: any;
     update: any;
+
     isValID: any;
 };
 const List = ({
@@ -148,6 +167,7 @@ const List = ({
     setWarning,
     set,
     update,
+
     isValID,
 }: List) => {
     const [isModify, setModify] = useState(false);
@@ -175,6 +195,14 @@ const List = ({
         setArray(newItems);
     };
     const Selected = (e: any) => {
+        if (itemDetail.id <= 1 || itemDetail.id === "----") {
+            setPrompt({
+                message: "Refetching...",
+                type: "draft",
+                toggle: "true",
+            });
+            return;
+        }
         update(itemDetail.name, itemDetail.id);
         set(false);
     };
@@ -182,9 +210,12 @@ const List = ({
         setModify(!isModify);
     };
 
+    const [isSaving, setSaving] = useState(false);
+
     // Mutation
     const onSuccessSave = () => {
         clientQuery.invalidateQueries("get-project");
+        setSaving(false);
         setPrompt({
             message: "Project successfully registered!",
             type: "success",
@@ -193,6 +224,7 @@ const List = ({
     };
     const onSuccessDelete = () => {
         clientQuery.invalidateQueries("get-project");
+        setSaving(false);
         setPrompt({
             message: "Project successfully deleted!",
             type: "success",
@@ -201,6 +233,7 @@ const List = ({
     };
     const onSuccessUpdate = () => {
         clientQuery.invalidateQueries("get-project");
+        setSaving(false);
         setPrompt({
             message: "Project successfully Updated!",
             type: "success",
@@ -239,8 +272,10 @@ const List = ({
         };
 
         if (itemDetail.displayId === "----") {
+            setSaving(true);
             mutateSave(Payload);
         } else {
+            setSaving(true);
             mutateUpdate(Payload);
         }
     };
@@ -251,20 +286,27 @@ const List = ({
                 item.filter((x: { id: any }) => x.id !== itemDetail.id)
             );
         } else {
+            setSaving(false);
             // Delete in API
             mutateDelete(itemDetail.id);
         }
     };
     return (
         <tr
-            className={`cursor-pointer container ${
-                isValID === itemDetail.id ? "active" : ""
-            }`}
+            className={` cursor-pointer container ${
+                isSaving && "bg-ThemeRed50"
+            } ${isValID === itemDetail.id ? "active" : ""}`}
         >
-            <td onClick={(e) => !isModify && Selected(e)} className="bg-hover">
+            <td
+                onClick={(e) => !isModify && Selected(e)}
+                className={`bg-hover  `}
+            >
                 <p>{itemDetail.displayId}</p>
             </td>
-            <td onClick={(e) => !isModify && Selected(e)} className="bg-hover">
+            <td
+                onClick={(e) => !isModify && Selected(e)}
+                className={`bg-hover  `}
+            >
                 <input
                     type="text"
                     className={`${!isModify && "disabled"}`}
