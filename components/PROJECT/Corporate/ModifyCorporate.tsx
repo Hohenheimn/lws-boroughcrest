@@ -359,15 +359,13 @@ const PrimaryInformation = ({
                         <input
                             className="field"
                             type="text"
-                            placeholder="000"
                             {...register("sec_registration_no")}
                             value={modifyCorporate.sec_registration_no}
                             onChange={(e) => {
-                                e.target.value.length <= 3 &&
-                                    setModifyCorporate({
-                                        ...modifyCorporate,
-                                        sec_registration_no: e.target.value,
-                                    });
+                                setModifyCorporate({
+                                    ...modifyCorporate,
+                                    sec_registration_no: e.target.value,
+                                });
                             }}
                         />
                         {errors.sec_registration_no && (
