@@ -1,24 +1,25 @@
 import React, { useContext, useEffect, useState } from "react";
-import SelectDropdown from "../../../../Reusable/SelectDropdown";
-import CustomerDropdown from "../../../../Dropdowns/CustomerDropdown";
-import Calendar from "../../../../Reusable/Calendar";
-import Image from "next/image";
-import { InputNumberForForm } from "../../../../Reusable/NumberFormat";
-import ProvisionalForm, { isProvisionalTable } from "./ProvisionalForm";
-import AcknowledgementForm from "./AcknowledgementForm";
-import OfficialForm from "./OfficialForm/OfficialForm";
-import DiscountForm from "./DiscountForm";
-import DropdownFieldCOA from "../../../../Dropdowns/DropdownFieldCOA";
-import AppContext from "../../../../Context/AppContext";
 import { format, startOfDay } from "date-fns";
-import { Outstanding } from "./OfficialForm/OutStandingBalance";
-import { Outright } from "./OfficialForm/OutrightAndAdvances/OutRight";
-import { AdvancesType } from "./OfficialForm/OutrightAndAdvances/Advances";
+import Image from "next/image";
 import { useRouter } from "next/router";
+
+import AppContext from "../../../../Context/AppContext";
+import CustomerDropdown from "../../../../Dropdowns/CustomerDropdown";
+import DropdownFieldCOA from "../../../../Dropdowns/DropdownFieldCOA";
+import Calendar from "../../../../Reusable/Calendar";
 import DynamicPopOver from "../../../../Reusable/DynamicPopOver";
-import { GetInvoiceByCustomerPostedOnly } from "../../Adjustment/Query";
-import { Type_Invoice_list } from "../../Adjustment/AdjustmentForm";
 import ModalTemp from "../../../../Reusable/ModalTemp";
+import { InputNumberForForm } from "../../../../Reusable/NumberFormat";
+import SelectDropdown from "../../../../Reusable/SelectDropdown";
+import { Type_Invoice_list } from "../../Adjustment/AdjustmentForm";
+import { GetInvoiceByCustomerPostedOnly } from "../../Adjustment/Query";
+import AcknowledgementForm from "./AcknowledgementForm";
+import DiscountForm from "./DiscountForm";
+import OfficialForm from "./OfficialForm/OfficialForm";
+import { AdvancesType } from "./OfficialForm/OutrightAndAdvances/Advances";
+import { Outright } from "./OfficialForm/OutrightAndAdvances/OutRight";
+import { Outstanding } from "./OfficialForm/OutStandingBalance";
+import ProvisionalForm, { isProvisionalTable } from "./ProvisionalForm";
 
 export type ReceivePaymentForm = {
     description: string;
@@ -516,10 +517,18 @@ export default function ReceivePaymentForm({
                                                     onClick={() =>
                                                         setDepositDateRP({
                                                             ...DepositDateRP,
-                                                            toggle: true,
+                                                            toggle:
+                                                                HeaderForm.mode_of_payment ===
+                                                                "Cash"
+                                                                    ? false
+                                                                    : true,
                                                         })
                                                     }
-                                                    className="field w-full"
+                                                    className={`field w-full ${
+                                                        HeaderForm.mode_of_payment ===
+                                                            "Cash" &&
+                                                        "pointer-events-none disabled"
+                                                    }`}
                                                 />
                                             </div>
                                         </label>
@@ -601,13 +610,20 @@ export default function ReceivePaymentForm({
                                     <input
                                         type="text"
                                         value={HeaderForm.reference_no}
+                                        disabled={
+                                            HeaderForm.mode_of_payment ===
+                                            "Cash"
+                                        }
                                         onChange={(e) => {
                                             setHeaderForm({
                                                 ...HeaderForm,
                                                 reference_no: e.target.value,
                                             });
                                         }}
-                                        className="field w-full"
+                                        className={`field w-full ${
+                                            HeaderForm.mode_of_payment ===
+                                                "Cash" && "disabled"
+                                        }`}
                                     />
                                 </label>
                                 {HeaderForm.reference_no === "" &&

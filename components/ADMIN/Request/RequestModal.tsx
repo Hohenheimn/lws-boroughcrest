@@ -94,6 +94,7 @@ export default function RequestModal() {
                     });
                 }
             });
+
             setToolEquipment(toolsEquiptment);
             setVehicleDetail(vehiclesDetail);
             setDetails(details);
@@ -257,6 +258,7 @@ export default function RequestModal() {
                         Value={RequestDetail?.information?.time_range}
                     />
                 )}
+
                 {RequestDetail?.information?.worker_names !== undefined && (
                     <Detail
                         Label={"worker_names"}
@@ -271,11 +273,46 @@ export default function RequestModal() {
                     />
                 )}
 
+                {RequestDetail?.information?.move_in_names && (
+                    <li className="w-full mt-5">
+                        <h1 className=" text-ThemeRed mb-2">MOVE IN NAMES</h1>
+                    </li>
+                )}
+                {RequestDetail?.information?.move_in_names && (
+                    <>
+                        {RequestDetail?.information?.move_in_names.map(
+                            (
+                                item: { name: string; remarks: string },
+                                index: number
+                            ) => (
+                                <li
+                                    key={index}
+                                    className="w-full flex flex-wrap"
+                                >
+                                    <div className=" w-4/12 640px:w-2/4">
+                                        <h1 className=" text-ThemeRed uppercase">
+                                            {"NAME"}
+                                        </h1>
+                                        <h4>{item.name}</h4>
+                                    </div>
+                                    <div className=" w-4/12 640px:w-2/4">
+                                        <h1 className=" text-ThemeRed uppercase">
+                                            {"remarks"}
+                                        </h1>
+                                        <h4>{item.remarks}</h4>
+                                    </div>
+                                </li>
+                            )
+                        )}
+                    </>
+                )}
+
                 {RequestDetail?.information?.move_out_names !== undefined && (
                     <li className="w-full mt-5">
                         <h1 className=" text-ThemeRed mb-2">MOVE OUT</h1>
                     </li>
                 )}
+
                 {RequestDetail?.information?.move_out_names !== undefined && (
                     <>
                         {RequestDetail?.information?.move_out_names.map(
@@ -302,6 +339,51 @@ export default function RequestModal() {
                     </>
                 )}
 
+                {RequestDetail?.information?.gate_pass_items !== undefined && (
+                    <li className="w-full mt-5">
+                        <h1 className=" text-ThemeRed mb-2">GATE PASS/ES</h1>
+                    </li>
+                )}
+
+                {RequestDetail?.information?.gate_pass_items !== undefined && (
+                    <>
+                        {RequestDetail?.information?.gate_pass_items.map(
+                            (
+                                mapItem: {
+                                    quantity: string;
+                                    item: string;
+                                    remarks: string;
+                                },
+                                index: number
+                            ) => (
+                                <li
+                                    key={index}
+                                    className="w-full flex flex-wrap mb-5"
+                                >
+                                    <div className=" w-4/12 640px:w-2/4">
+                                        <h1 className=" text-ThemeRed uppercase">
+                                            {"QUANTITY"}
+                                        </h1>
+                                        <h4>{mapItem.quantity}</h4>
+                                    </div>
+                                    <div className=" w-4/12 640px:w-2/4">
+                                        <h1 className=" text-ThemeRed uppercase">
+                                            {"ITEM"}
+                                        </h1>
+                                        <h4>{mapItem.item}</h4>
+                                    </div>
+                                    <div className=" w-4/12 640px:w-2/4">
+                                        <h1 className=" text-ThemeRed uppercase">
+                                            {"remarks"}
+                                        </h1>
+                                        <h4>{mapItem.remarks}</h4>
+                                    </div>
+                                </li>
+                            )
+                        )}
+                    </>
+                )}
+
                 {isDetails_idcards.length > 0 && (
                     <li className="w-full mt-5">
                         <h1 className=" text-ThemeRed mb-2">
@@ -309,6 +391,7 @@ export default function RequestModal() {
                         </h1>
                     </li>
                 )}
+
                 {isDetails_idcards.map((mapItem, index) => (
                     <Detail
                         key={index}
@@ -324,6 +407,7 @@ export default function RequestModal() {
                         </h1>
                     </li>
                 )}
+
                 {isDetails_accessCard.map((mapItem, index) => (
                     <Detail
                         key={index}
@@ -340,6 +424,7 @@ export default function RequestModal() {
                         <h1 className=" text-ThemeRed mb-2">VEHICLE DETAILS</h1>
                     </li>
                 )}
+
                 {isVehicleDetail.map((mapItem, index) => (
                     <Detail
                         key={index}
@@ -356,6 +441,7 @@ export default function RequestModal() {
                             </h1>
                         </li>
                     )}
+
                 {isToolEquipment.length > 0 &&
                     RequestDetail.request === "Amenity Usage" && (
                         <li className="w-full">
@@ -385,8 +471,10 @@ export default function RequestModal() {
                             </h1>
                         </li>
                     )}
+
                 {isScopeWork.length > 0 &&
-                    RequestDetail.request === "Work Permit" && (
+                    (RequestDetail.request === "Work Permit" ||
+                        RequestDetail.request === "Job Order") && (
                         <li className="w-full">
                             {isScopeWork.map((mapItem, index) => (
                                 <h1
@@ -405,6 +493,7 @@ export default function RequestModal() {
                             ))}
                         </li>
                     )}
+
                 <li className="w-full mb-5 mt-5">
                     <h1 className=" text-ThemeRed">TRAIL</h1>
                     {RequestDetail?.trail.map((item, index: number) => (
@@ -413,6 +502,7 @@ export default function RequestModal() {
                         </h4>
                     ))}
                 </li>
+
                 <li className="w-full">
                     <h1 className=" text-ThemeRed mb-5">ATTACHMENT</h1>
                     <div className="relative aspect-[2/1]">

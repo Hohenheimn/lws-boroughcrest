@@ -128,6 +128,7 @@ export default function Layout({ children }: Layout) {
                     name="viewport"
                     content="initial-scale=1.0, width=device-width"
                 />
+                {/* <link rel="icon" href="/Images/deus_favicon.png" /> */}
             </Head>
 
             <div className="flex min-h-screen bg-blend-multiply">

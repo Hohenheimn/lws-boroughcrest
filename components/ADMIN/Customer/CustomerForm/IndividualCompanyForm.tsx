@@ -1,13 +1,17 @@
 import React, { useContext, useEffect, useState } from "react";
+import { getCookie } from "cookies-next";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { AiFillCamera } from "react-icons/ai";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { RiArrowDownSFill } from "react-icons/ri";
+
+import { useQuery } from "react-query";
 import { ScaleLoader } from "react-spinners";
 
 import style from "../../../../styles/Popup_Modal.module.scss";
+import api from "../../../../util/api";
 import AppContext from "../../../Context/AppContext";
 import Calendar from "../../../Reusable/Calendar";
 import {
@@ -38,6 +42,19 @@ export default function IndividualCompanyForm({
     MutateHandler,
     loadingUpdate,
 }: Props) {
+    const { data: Citizenship } = useQuery(
+        ["get-citizenship", "citizenship"],
+        () => {
+            return api.get(`/customer-portal/nationality`, {
+                headers: {
+                    Authorization: "Bearer " + getCookie("user"),
+                },
+            });
+        }
+    );
+
+    const CitizenshipList = Citizenship?.data.map((item: any) => item.key);
+
     const router = useRouter();
     const { CusError, setCusError, ErrorDefault, setCusToggle } =
         useContext(AppContext);
@@ -338,11 +355,7 @@ export default function IndividualCompanyForm({
                                                 autoComplete="off"
                                             />
                                         }
-                                        listArray={[
-                                            "Filipino",
-                                            "Chinese",
-                                            "Japanese",
-                                        ]}
+                                        listArray={CitizenshipList}
                                     />
 
                                     {CusError?.individual_citizenship !==
