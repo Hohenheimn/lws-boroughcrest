@@ -1,10 +1,13 @@
 import React, { useEffect, useState, useRef, useContext } from "react";
 import { BiEdit } from "react-icons/bi";
 import { MdDeleteOutline } from "react-icons/md";
-import { BarLoader, MoonLoader } from "react-spinners";
 import { MdSaveAlt } from "react-icons/md";
-import Tippy from "@tippy.js/react";
+import { useQueryClient } from "react-query";
+import { BarLoader, MoonLoader } from "react-spinners";
 import "tippy.js/dist/tippy.css";
+import Tippy from "@tippy.js/react";
+
+import AppContext from "../../Context/AppContext";
 import {
     DeleteTower,
     GetTower,
@@ -12,8 +15,6 @@ import {
     UpdateTower,
     GetProject,
 } from "../../ReactQuery/PropertyMethod";
-import { useQueryClient } from "react-query";
-import AppContext from "../../Context/AppContext";
 import DynamicPopOver from "../../Reusable/DynamicPopOver";
 import { ErrorSubmit } from "../../Reusable/ErrorMessage";
 
@@ -76,6 +77,14 @@ const Tower = ({
             },
         ]);
     };
+    const RemoveValue = () => {
+        setObject({
+            id: "",
+            value: "",
+            firstVal: "",
+            firstID: "",
+        });
+    };
 
     const { isLoading, data, isError } = GetTower(
         isObject.value === null || isObject.value === undefined
@@ -137,7 +146,7 @@ const Tower = ({
             {isError ||
                 (data?.data.length <= 0 && (
                     <div className="w-full flex justify-center py-2 text-[14px]">
-                        <p>No TOWER found!</p>
+                        <p>No Tower Found</p>
                     </div>
                 ))}
 
@@ -155,12 +164,20 @@ const Tower = ({
             {isWarning !== "" && (
                 <p className="text-[12px] text-ThemeRed">{isWarning}</p>
             )}
-            <h1
-                className="cursor-pointer text-ThemeRed text-[12px] inline-block py-2 hover:underline"
-                onClick={AddArray}
-            >
-                ADD TOWER
-            </h1>
+            <aside className="w-full flex justify-between">
+                <div
+                    onClick={AddArray}
+                    className="font-bold cursor-pointer text-ThemeRed text-[12px] inline-block  hover:underline"
+                >
+                    ADD FLOOR
+                </div>
+                <div
+                    onClick={RemoveValue}
+                    className="font-bold cursor-pointer text-ThemeRed text-[12px] inline-block hover:underline"
+                >
+                    REMOVE
+                </div>
+            </aside>
         </div>
     );
 };
@@ -193,6 +210,8 @@ const List = ({
     const [isProjectList, setProjectList] = useState(false);
     const { setPrompt } = useContext(AppContext);
 
+    const [isSaving, setSaving] = useState(false);
+
     useEffect(() => {
         if (itemDetail.name === "") {
             setModify(true);
@@ -215,6 +234,14 @@ const List = ({
         setArray(newItems);
     };
     const Selected = (e: any) => {
+        if (itemDetail.id <= 1 || itemDetail.id === "----") {
+            setPrompt({
+                message: "Refetching...",
+                type: "draft",
+                toggle: "true",
+            });
+            return;
+        }
         update(itemDetail.name, itemDetail.id);
         set(false);
     };
@@ -239,6 +266,7 @@ const List = ({
     // Mutation
     const onSuccessSave = () => {
         clientQuery.invalidateQueries("get-tower");
+        setSaving(false);
         setPrompt({
             message: "Tower successfully registered!",
             type: "success",
@@ -248,6 +276,7 @@ const List = ({
 
     const onSuccessDelete = () => {
         clientQuery.invalidateQueries("get-tower");
+        setSaving(false);
         setPrompt({
             message: "Tower successfully deleted!",
             type: "success",
@@ -257,6 +286,7 @@ const List = ({
 
     const onSuccessUpdate = () => {
         clientQuery.invalidateQueries("get-tower");
+        setSaving(false);
         setPrompt({
             message: "Tower successfully Updated!",
             type: "success",
@@ -307,8 +337,10 @@ const List = ({
         };
 
         if (itemDetail.displayId === "----") {
+            setSaving(true);
             mutateSave(Payload);
         } else {
+            setSaving(true);
             mutateUpdate(Payload);
         }
     };
@@ -319,6 +351,7 @@ const List = ({
                 item.filter((x: { id: any }) => x.id !== itemDetail.id)
             );
         } else {
+            setSaving(false);
             // Delete from API
             mutateDelete(itemDetail.id);
         }
@@ -326,8 +359,8 @@ const List = ({
     return (
         <tr
             className={`cursor-pointer container ${
-                isValID === itemDetail.id ? "active" : ""
-            }`}
+                isSaving && "bg-ThemeRed50"
+            } ${isValID === itemDetail.id ? "active" : ""}`}
         >
             <td onClick={(e) => !isModify && Selected(e)} className="bg-hover">
                 {/* <p>{itemDetail.displayId}</p> */}

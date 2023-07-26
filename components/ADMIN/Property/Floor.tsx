@@ -1,10 +1,13 @@
 import React, { useEffect, useState, useRef, useContext } from "react";
 import { BiEdit } from "react-icons/bi";
 import { MdDeleteOutline } from "react-icons/md";
-import { BarLoader, MoonLoader } from "react-spinners";
 import { MdSaveAlt } from "react-icons/md";
-import Tippy from "@tippy.js/react";
+import { useQueryClient } from "react-query";
+import { BarLoader, MoonLoader } from "react-spinners";
 import "tippy.js/dist/tippy.css";
+import Tippy from "@tippy.js/react";
+
+import AppContext from "../../Context/AppContext";
 import {
     DeleteFloor,
     GetFloor,
@@ -12,9 +15,6 @@ import {
     UpdateFloor,
     GetTower,
 } from "../../ReactQuery/PropertyMethod";
-import { useQueryClient } from "react-query";
-import AppContext from "../../Context/AppContext";
-import DynamicPopOver from "../../Reusable/DynamicPopOver";
 import { ErrorSubmit } from "../../Reusable/ErrorMessage";
 
 type Props = {
@@ -74,6 +74,15 @@ const Floor = ({
                 tower: "",
             },
         ]);
+    };
+
+    const RemoveValue = () => {
+        setObject({
+            id: "",
+            value: "",
+            firstVal: "",
+            firstID: "",
+        });
     };
 
     const { isLoading, data, isError } = GetFloor(
@@ -136,7 +145,7 @@ const Floor = ({
             {isError ||
                 (data?.data.length <= 0 && (
                     <div className="w-full flex justify-center py-2 text-[14px]">
-                        <p>No FLOOR found!</p>
+                        <p>No Floor found!</p>
                     </div>
                 ))}
             {isLoading && (
@@ -154,12 +163,21 @@ const Floor = ({
             {isWarning !== "" && (
                 <p className="text-[12px] text-ThemeRed">{isWarning}</p>
             )}
-            <h1
-                className="cursor-pointer text-ThemeRed text-[12px] inline-block py-2 hover:underline"
-                onClick={AddArray}
-            >
-                ADD FLOOR
-            </h1>
+
+            <aside className="w-full flex justify-between">
+                <div
+                    onClick={AddArray}
+                    className="font-bold cursor-pointer text-ThemeRed text-[12px] inline-block  hover:underline"
+                >
+                    ADD FLOOR
+                </div>
+                <div
+                    onClick={RemoveValue}
+                    className="font-bold cursor-pointer text-ThemeRed text-[12px] inline-block hover:underline"
+                >
+                    REMOVE
+                </div>
+            </aside>
         </div>
     );
 };
@@ -192,6 +210,7 @@ const List = ({
     const [isProjectList, setProjectList] = useState(false);
     const { setPrompt } = useContext(AppContext);
 
+    const [isSaving, setSaving] = useState(false);
     useEffect(() => {
         if (itemDetail.name === "") {
             setModify(true);
@@ -214,6 +233,14 @@ const List = ({
         setArray(newItems);
     };
     const Selected = (e: any) => {
+        if (itemDetail.id <= 1 || itemDetail.id === "----") {
+            setPrompt({
+                message: "Refetching...",
+                type: "draft",
+                toggle: "true",
+            });
+            return;
+        }
         update(itemDetail.name, itemDetail.id);
         set(false);
     };
@@ -237,6 +264,7 @@ const List = ({
 
     // Mutation
     const onSuccessSave = () => {
+        setSaving(false);
         clientQuery.invalidateQueries("get-floor");
         setModify(!isModify);
         setWarning("");
@@ -247,6 +275,7 @@ const List = ({
         });
     };
     const onSuccessDelete = () => {
+        setSaving(false);
         clientQuery.invalidateQueries("get-floor");
 
         setPrompt({
@@ -256,6 +285,7 @@ const List = ({
         });
     };
     const onSuccessUpdate = () => {
+        setSaving(false);
         clientQuery.invalidateQueries("get-floor");
         setModify(!isModify);
         setWarning("");
@@ -311,8 +341,10 @@ const List = ({
         };
 
         if (itemDetail.displayId === "----") {
+            setSaving(false);
             mutateSave(Payload);
         } else {
+            setSaving(false);
             mutateUpdate(Payload);
         }
     };
@@ -323,15 +355,16 @@ const List = ({
                 item.filter((x: { id: any }) => x.id !== itemDetail.id)
             );
         } else {
+            setSaving(false);
             // Delete from API
             mutateDelete(itemDetail.id);
         }
     };
     return (
         <tr
-            className={`cursor-pointer container ${
-                isValID === itemDetail.id ? "active" : ""
-            }`}
+            className={`cursor-pointer ${
+                isSaving && "bg-ThemeRed50"
+            } container ${isValID === itemDetail.id ? "active" : ""}`}
         >
             <td onClick={(e) => !isModify && Selected(e)} className="bg-hover">
                 <p>{itemDetail.displayId}</p>
