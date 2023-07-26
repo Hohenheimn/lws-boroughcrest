@@ -1,7 +1,8 @@
-import { getCookie } from "cookies-next";
 import React, { useEffect, useRef, useState } from "react";
+import { getCookie } from "cookies-next";
 import { useQuery } from "react-query";
 import { BarLoader } from "react-spinners";
+
 import api from "../../util/api";
 import DynamicPopOver from "../Reusable/DynamicPopOver";
 

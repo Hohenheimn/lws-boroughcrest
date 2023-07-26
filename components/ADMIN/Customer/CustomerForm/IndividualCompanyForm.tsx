@@ -320,20 +320,31 @@ export default function IndividualCompanyForm({
 
                                 <li>
                                     <label>*CITIZENSHIP</label>
-                                    <input
-                                        type="text"
-                                        className="field"
-                                        value={
-                                            isCustomerForm.individual_citizenship
-                                        }
-                                        onChange={(e) => {
+                                    <SelectDropdown
+                                        selectHandler={(value: string) => {
                                             setCustomerForm({
                                                 ...isCustomerForm,
-                                                individual_citizenship:
-                                                    e.target.value,
+                                                individual_citizenship: value,
                                             });
                                         }}
+                                        className=""
+                                        inputElement={
+                                            <input
+                                                className="w-full field"
+                                                value={
+                                                    isCustomerForm.individual_citizenship
+                                                }
+                                                readOnly
+                                                autoComplete="off"
+                                            />
+                                        }
+                                        listArray={[
+                                            "Filipino",
+                                            "Chinese",
+                                            "Japanese",
+                                        ]}
                                     />
+
                                     {CusError?.individual_citizenship !==
                                         "" && (
                                         <p className="text-[10px]">

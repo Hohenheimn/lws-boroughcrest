@@ -1,19 +1,20 @@
 import React, { useState, useContext, useEffect } from "react";
-import AppContext from "../../Context/AppContext";
-import { HiPencil } from "react-icons/hi";
 import Image from "next/image";
+import { useRouter } from "next/router";
+import { HiPencil } from "react-icons/hi";
+import BeatLoader from "react-spinners/BeatLoader";
+import "tippy.js/dist/tippy.css";
+import Tippy from "@tippy.js/react";
+
+import { customer } from "../../../types/customerList";
+import AppContext from "../../Context/AppContext";
+import { GetCustomer, SendPortal } from "../../ReactQuery/CustomerMethod";
+import { PencilButton } from "../../Reusable/Icons";
+import Modal_Image from "../../Reusable/Modal_Image";
+import { AccessActionValidation } from "../../Reusable/PermissionValidation/ActionAccessValidation";
+import ModifyCustomer from "./CustomerForm/ModifyCustomer";
 import CustomerInformation from "./CustomerInformation";
 import CustomerProperty from "./CustomerProperty";
-import Tippy from "@tippy.js/react";
-import "tippy.js/dist/tippy.css";
-import { GetCustomer, SendPortal } from "../../ReactQuery/CustomerMethod";
-import { useRouter } from "next/router";
-import BeatLoader from "react-spinners/BeatLoader";
-import { customer } from "../../../types/customerList";
-import Modal_Image from "../../Reusable/Modal_Image";
-import { PencilButton } from "../../Reusable/Icons";
-import ModifyCustomer from "./CustomerForm/ModifyCustomer";
-import { AccessActionValidation } from "../../Reusable/PermissionValidation/ActionAccessValidation";
 
 export default function CustomerDetail() {
     const PermissionValidationModify = AccessActionValidation(
@@ -148,7 +149,7 @@ export default function CustomerDetail() {
                                 ID
                             </p>
                             <h4 className=" text-gray-500 mb-5 1024px:text-[14px]">
-                                {data?.id}
+                                {data?.assigned_customer_id}
                             </h4>
                         </li>
                         <li className=" w-4/12 mb-5 1280px:w-2/4 480px:w-full 480px:mb-3">
