@@ -257,6 +257,7 @@ export default function RequestModal() {
                         Value={RequestDetail?.information?.time_range}
                     />
                 )}
+
                 {RequestDetail?.information?.worker_names !== undefined && (
                     <Detail
                         Label={"worker_names"}
@@ -276,6 +277,7 @@ export default function RequestModal() {
                         <h1 className=" text-ThemeRed mb-2">MOVE OUT</h1>
                     </li>
                 )}
+
                 {RequestDetail?.information?.move_out_names !== undefined && (
                     <>
                         {RequestDetail?.information?.move_out_names.map(
@@ -309,6 +311,7 @@ export default function RequestModal() {
                         </h1>
                     </li>
                 )}
+
                 {isDetails_idcards.map((mapItem, index) => (
                     <Detail
                         key={index}
@@ -324,6 +327,7 @@ export default function RequestModal() {
                         </h1>
                     </li>
                 )}
+
                 {isDetails_accessCard.map((mapItem, index) => (
                     <Detail
                         key={index}
@@ -340,6 +344,7 @@ export default function RequestModal() {
                         <h1 className=" text-ThemeRed mb-2">VEHICLE DETAILS</h1>
                     </li>
                 )}
+
                 {isVehicleDetail.map((mapItem, index) => (
                     <Detail
                         key={index}
@@ -356,6 +361,7 @@ export default function RequestModal() {
                             </h1>
                         </li>
                     )}
+
                 {isToolEquipment.length > 0 &&
                     RequestDetail.request === "Amenity Usage" && (
                         <li className="w-full">
@@ -385,6 +391,7 @@ export default function RequestModal() {
                             </h1>
                         </li>
                     )}
+
                 {isScopeWork.length > 0 &&
                     RequestDetail.request === "Work Permit" && (
                         <li className="w-full">
@@ -405,6 +412,7 @@ export default function RequestModal() {
                             ))}
                         </li>
                     )}
+
                 <li className="w-full mb-5 mt-5">
                     <h1 className=" text-ThemeRed">TRAIL</h1>
                     {RequestDetail?.trail.map((item, index: number) => (
@@ -413,6 +421,7 @@ export default function RequestModal() {
                         </h4>
                     ))}
                 </li>
+
                 <li className="w-full">
                     <h1 className=" text-ThemeRed mb-5">ATTACHMENT</h1>
                     <div className="relative aspect-[2/1]">

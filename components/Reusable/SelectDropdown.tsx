@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
+
 import DynamicPopOver from "./DynamicPopOver";
 
 type Props = {
@@ -49,7 +50,10 @@ export default function SelectDropdown({
                 toPop={
                     <>
                         {isToggle && (
-                            <ul ref={container}>
+                            <ul
+                                ref={container}
+                                className=" max-h-[200px] overflow-y-auto"
+                            >
                                 {listArray.map((item, index) => (
                                     <li
                                         key={index}
