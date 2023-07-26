@@ -94,6 +94,7 @@ export default function RequestModal() {
                     });
                 }
             });
+
             setToolEquipment(toolsEquiptment);
             setVehicleDetail(vehiclesDetail);
             setDetails(details);
@@ -272,6 +273,40 @@ export default function RequestModal() {
                     />
                 )}
 
+                {RequestDetail?.information?.move_in_names && (
+                    <li className="w-full mt-5">
+                        <h1 className=" text-ThemeRed mb-2">MOVE IN NAMES</h1>
+                    </li>
+                )}
+                {RequestDetail?.information?.move_in_names && (
+                    <>
+                        {RequestDetail?.information?.move_in_names.map(
+                            (
+                                item: { name: string; remarks: string },
+                                index: number
+                            ) => (
+                                <li
+                                    key={index}
+                                    className="w-full flex flex-wrap"
+                                >
+                                    <div className=" w-4/12 640px:w-2/4">
+                                        <h1 className=" text-ThemeRed uppercase">
+                                            {"NAME"}
+                                        </h1>
+                                        <h4>{item.name}</h4>
+                                    </div>
+                                    <div className=" w-4/12 640px:w-2/4">
+                                        <h1 className=" text-ThemeRed uppercase">
+                                            {"remarks"}
+                                        </h1>
+                                        <h4>{item.remarks}</h4>
+                                    </div>
+                                </li>
+                            )
+                        )}
+                    </>
+                )}
+
                 {RequestDetail?.information?.move_out_names !== undefined && (
                     <li className="w-full mt-5">
                         <h1 className=" text-ThemeRed mb-2">MOVE OUT</h1>
@@ -291,6 +326,51 @@ export default function RequestModal() {
                                             {"NAME"}
                                         </h1>
                                         <h4>{mapItem.name}</h4>
+                                    </div>
+                                    <div className=" w-4/12 640px:w-2/4">
+                                        <h1 className=" text-ThemeRed uppercase">
+                                            {"remarks"}
+                                        </h1>
+                                        <h4>{mapItem.remarks}</h4>
+                                    </div>
+                                </li>
+                            )
+                        )}
+                    </>
+                )}
+
+                {RequestDetail?.information?.gate_pass_items !== undefined && (
+                    <li className="w-full mt-5">
+                        <h1 className=" text-ThemeRed mb-2">GATE PASS/ES</h1>
+                    </li>
+                )}
+
+                {RequestDetail?.information?.gate_pass_items !== undefined && (
+                    <>
+                        {RequestDetail?.information?.gate_pass_items.map(
+                            (
+                                mapItem: {
+                                    quantity: string;
+                                    item: string;
+                                    remarks: string;
+                                },
+                                index: number
+                            ) => (
+                                <li
+                                    key={index}
+                                    className="w-full flex flex-wrap mb-5"
+                                >
+                                    <div className=" w-4/12 640px:w-2/4">
+                                        <h1 className=" text-ThemeRed uppercase">
+                                            {"QUANTITY"}
+                                        </h1>
+                                        <h4>{mapItem.quantity}</h4>
+                                    </div>
+                                    <div className=" w-4/12 640px:w-2/4">
+                                        <h1 className=" text-ThemeRed uppercase">
+                                            {"ITEM"}
+                                        </h1>
+                                        <h4>{mapItem.item}</h4>
                                     </div>
                                     <div className=" w-4/12 640px:w-2/4">
                                         <h1 className=" text-ThemeRed uppercase">
@@ -393,7 +473,8 @@ export default function RequestModal() {
                     )}
 
                 {isScopeWork.length > 0 &&
-                    RequestDetail.request === "Work Permit" && (
+                    (RequestDetail.request === "Work Permit" ||
+                        RequestDetail.request === "Job Order") && (
                         <li className="w-full">
                             {isScopeWork.map((mapItem, index) => (
                                 <h1
