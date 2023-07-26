@@ -1,9 +1,10 @@
 import React, { useRef, useEffect, useState, useContext } from "react";
-import style from "../../../../styles/Popup_Modal.module.scss";
-import { RiArrowDownSFill } from "react-icons/ri";
-import { ScaleLoader } from "react-spinners";
 import { useRouter } from "next/router";
+import { RiArrowDownSFill } from "react-icons/ri";
 import { useQueryClient } from "react-query";
+import { ScaleLoader } from "react-spinners";
+
+import style from "../../../../styles/Popup_Modal.module.scss";
 import AppContext from "../../../Context/AppContext";
 import {
     GetUnitCode,
@@ -12,8 +13,8 @@ import {
     UpdateProperties,
 } from "../../../ReactQuery/CustomerMethod";
 import DynamicPopOver from "../../../Reusable/DynamicPopOver";
-import { CustomerFormDefaultValue } from "./CustomerForm";
 import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
+import { CustomerFormDefaultValue } from "./CustomerForm";
 
 type ModifyRolesPermission = {
     setToggle: Function;
@@ -47,21 +48,6 @@ export default function CustomerUnitCodeForm({
     let buttonClick = "";
     const router = useRouter();
     const id = router.query.id;
-
-    // useEffect(() => {
-    //     if (isProperty.length !== 0) {
-    //         const existedProperties = isProperty.map(
-    //             (item: CustomerUnitCodes) => {
-    //                 return {
-    //                     id: item?.id,
-    //                     unit_code: item?.unit_code,
-    //                     name: item?.name,
-    //                 };
-    //             }
-    //         );
-    //         setProperty(existedProperties);
-    //     }
-    // }, []);
 
     const OnSuccess = () => {
         setPrompt({
@@ -238,6 +224,7 @@ const List = ({ detail, setProperty, isProperty, id, classType }: List) => {
 
     const updateValue = (event: any) => {
         const unit_code = event.target.innerHTML;
+        console.log(event.target.getAttribute("data-projna0me"));
         let validate = true;
         isProperty.map((item: any) => {
             if (item.unit_code === unit_code) {

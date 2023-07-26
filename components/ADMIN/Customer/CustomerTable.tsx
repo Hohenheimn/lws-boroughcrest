@@ -1,16 +1,17 @@
 import React, { useState, useContext, useRef, useEffect } from "react";
-import AppContext from "../../Context/AppContext";
 import Image from "next/image";
 import Link from "next/link";
-import BarLoader from "react-spinners/BarLoader";
-import type { customerItemDetail } from "../../../types/customerList";
-import Tippy from "@tippy.js/react";
-import "tippy.js/dist/tippy.css";
-import TableErrorMessage from "../../Reusable/TableErrorMessage";
-import Pagination from "../../Reusable/Pagination";
-import { GetCustomerList } from "../../ReactQuery/CustomerMethod";
 import { useRouter } from "next/router";
+import BarLoader from "react-spinners/BarLoader";
+import "tippy.js/dist/tippy.css";
+import Tippy from "@tippy.js/react";
+
+import type { customerItemDetail } from "../../../types/customerList";
+import AppContext from "../../Context/AppContext";
+import { GetCustomerList } from "../../ReactQuery/CustomerMethod";
+import Pagination from "../../Reusable/Pagination";
 import { AccessActionValidation } from "../../Reusable/PermissionValidation/ActionAccessValidation";
+import TableErrorMessage from "../../Reusable/TableErrorMessage";
 
 export default function CustomerTable() {
     const { TableRows, cusTableColumn, isSearchBar, setPrint } =
@@ -165,7 +166,7 @@ const List = ({ itemDetail, PermissionValidationView }: customerItemDetail) => {
                             />
                         </aside>
                         <div>
-                            <p>{itemDetail?.id}</p>
+                            <p>{itemDetail?.assigned_customer_id}</p>
                         </div>
                     </div>
                 </Link>

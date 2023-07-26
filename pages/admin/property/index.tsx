@@ -1,15 +1,16 @@
 import React, { useContext, useState } from "react";
-import AppContext from "../../../components/Context/AppContext";
-import SearchFilter from "../../../components/SearchFilterNew/SearchFilter";
-import PropertyTable from "../../../components/ADMIN/Property/PropertyTable";
-import Form from "../../../components/ADMIN/Property/PropertyForm";
-import { PropertyDefaultValue } from "../../../types/PropertyList";
-import { useRouter } from "next/router";
-import Draft from "../../../components/ADMIN/Property/Draft";
 import { GetServerSideProps } from "next";
+import { useRouter } from "next/router";
+
+import Draft from "../../../components/ADMIN/Property/Draft";
+import Form from "../../../components/ADMIN/Property/PropertyForm";
+import PropertyTable from "../../../components/ADMIN/Property/PropertyTable";
+import AppContext from "../../../components/Context/AppContext";
 import { requiredAuthentication } from "../../../components/HOC/Authentication";
-import { PageAccessValidation } from "../../../components/Reusable/PermissionValidation/PageAccessValidation";
 import NoPermissionComp from "../../../components/Reusable/PermissionValidation/NoPermissionComp";
+import { PageAccessValidation } from "../../../components/Reusable/PermissionValidation/PageAccessValidation";
+import SearchFilter from "../../../components/SearchFilterNew/SearchFilter";
+import { PropertyDefaultValue } from "../../../types/PropertyList";
 
 export default function Property() {
     const { newPropToggle } = useContext(AppContext);
@@ -43,7 +44,11 @@ export default function Property() {
 
     return (
         <div>
-            <SearchFilter page="Property" setSearchTable={setSearchTable} />
+            <SearchFilter
+                page="Property"
+                setSearchTable={setSearchTable}
+                exportAPI={`/admin/property/unit/export?keywords=${isSearchTable}`}
+            />
             <PropertyTable isSearchTable={isSearchTable} />
             {newPropToggle && (
                 <Form

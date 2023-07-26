@@ -1,7 +1,8 @@
+import { useState, useReducer } from "react";
+
 import { CustomerFormDefaultValue } from "../ADMIN/Customer/CustomerForm/CustomerForm";
 import { LoginUserInfo } from "../HOC/LoginUser/UserInfo";
 import AppContext from "./AppContext";
-import { useState, useReducer } from "react";
 
 type AppProvider = {
     children: React.ReactNode;
@@ -21,7 +22,6 @@ export default function AppProvider({ children }: AppProvider) {
         logo: "",
         name: "",
         tin: "",
-        branch_code: "",
         gst_type: "",
         rdo_no: "",
         sec_registration_no: "",

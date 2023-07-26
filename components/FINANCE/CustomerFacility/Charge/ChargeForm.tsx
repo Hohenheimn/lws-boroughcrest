@@ -1,27 +1,29 @@
+import React, { useContext, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/router";
-import React, { useContext, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { RiArrowDownSFill } from "react-icons/ri";
 import { useQueryClient } from "react-query";
 import { ScaleLoader } from "react-spinners";
+
 import style from "../../../../styles/Popup_Modal.module.scss";
 import { ModalSideFade } from "../../../Animation/SimpleAnimation";
 import AppContext from "../../../Context/AppContext";
-import DynamicPopOver from "../../../Reusable/DynamicPopOver";
-import { ChargeCreate, ChargeUpdate } from "../../../ReactQuery/Charge";
-import Dropdown from "../../../Dropdowns/withSameKeyDropdown";
-import { ChargePayload, IDstate } from "./Type";
 import UOMDropdown from "../../../Dropdowns/UOMDropdown";
-import { useForm } from "react-hook-form";
-import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
+import Dropdown from "../../../Dropdowns/withSameKeyDropdown";
 import { LoginUserInfo } from "../../../HOC/LoginUser/UserInfo";
+import { ChargeCreate, ChargeUpdate } from "../../../ReactQuery/Charge";
+import DynamicPopOver from "../../../Reusable/DynamicPopOver";
+import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
 import {
     NumberBlockInvalidKey,
     TextFieldValidation,
 } from "../../../Reusable/InputField";
+import { InputNumberForForm } from "../../../Reusable/NumberFormat";
 import { AccessActionValidation } from "../../../Reusable/PermissionValidation/ActionAccessValidation";
 import SelectDropdown from "../../../Reusable/SelectDropdown";
+import { ChargePayload, IDstate } from "./Type";
 
 type Props = {
     setCreate: Function;
@@ -32,7 +34,7 @@ type Error = {
     code: string;
     type: string;
     name: string;
-    base_rate: string;
+    base_rate: number;
     uom: string;
     vat_percent: string;
     receivable: string;
@@ -82,28 +84,34 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
             });
         }
     };
-
-    const queryClient = useQueryClient();
-    const router = useRouter();
-    var ButtonType = "";
-    const [isForm, setForm] = useState([true, false]);
-
+    const back = () => {
+        setForm([true, false]);
+    };
     const cancel = () => {
         router.push("");
         setCreate(false);
     };
 
+    const [errorBaseRate, setErrorBaseRate] = useState(false);
+
     const next = () => {
+        if (fieldValue.base_rate === 0 || fieldValue.base_rate === "") return;
+        setErrorBaseRate(false);
         setForm([false, true]);
     };
+
+    const queryClient = useQueryClient();
+    const router = useRouter();
+    var ButtonType = "";
+    const [isForm, setForm] = useState([true, false]);
     const [isSave, setSave] = useState(false);
-    const back = () => {
-        setForm([true, false]);
-    };
 
     const [fieldValue, setFieldValue] = useState<ChargePayload>({
         ...isDefaultValue,
     });
+    useEffect(() => {
+        setValue("base_rate", Number(isDefaultValue.base_rate));
+    }, [isDefaultValue]);
     const [isDiscount, setDiscount] = useState<IDstate>({
         value: isDefaultValue.discounts_coa_value,
         id: isDefaultValue.discounts_coa_id,
@@ -355,7 +363,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                         autoComplete="off"
                                         value={fieldValue.name}
                                         onChange={(e: any) => {
-                                            if (!TextFieldValidation(e, 255))
+                                            if (!TextFieldValidation(e, 99999))
                                                 return;
                                             setFieldValue({
                                                 ...fieldValue,
@@ -377,7 +385,7 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                         autoComplete="off"
                                         value={fieldValue.description}
                                         onChange={(e: any) => {
-                                            if (!TextFieldValidation(e, 255))
+                                            if (!TextFieldValidation(e, 99999))
                                                 return;
                                             setFieldValue({
                                                 ...fieldValue,
@@ -388,29 +396,26 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                 </li>
                                 <li>
                                     <label>*BASE RATE</label>
-                                    <input
-                                        className="field"
-                                        type="number"
-                                        {...register("base_rate", {
-                                            required: "Required!",
-                                        })}
-                                        onKeyDown={NumberBlockInvalidKey}
-                                        value={fieldValue.base_rate}
-                                        onChange={(e: any) => {
-                                            if (!TextFieldValidation(e, 12))
-                                                return;
+                                    <InputNumberForForm
+                                        noPeso={true}
+                                        className={"field w-full"}
+                                        isValue={fieldValue.base_rate}
+                                        setValue={(
+                                            key: string,
+                                            value: number
+                                        ) => {
+                                            console.log(value);
                                             setFieldValue({
                                                 ...fieldValue,
-                                                base_rate: parseFloat(
-                                                    e.target.value
-                                                ),
+                                                base_rate: value,
                                             });
+                                            setValue("base_rate", value);
                                         }}
+                                        keyField={"base_rate"}
                                     />
-                                    {errors?.base_rate && (
-                                        <p className="text-[12px]">
-                                            {errors?.base_rate.message}
-                                        </p>
+
+                                    {errorBaseRate && (
+                                        <p className="text-[12px]">Required!</p>
                                     )}
                                 </li>
                                 <li>
@@ -552,7 +557,13 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                 >
                                     CANCEL
                                 </aside>
-                                <button type="submit" className="buttonRed">
+                                <button
+                                    type="submit"
+                                    className="buttonRed"
+                                    onClick={() => {
+                                        setErrorBaseRate(true);
+                                    }}
+                                >
                                     NEXT
                                 </button>
                             </div>
@@ -714,28 +725,20 @@ export default function ChargeForm({ setCreate, isDefaultValue, type }: Props) {
                                         </li>
                                         <li>
                                             <label>MINIMUM</label>
-                                            <input
-                                                className="field"
-                                                type="number"
-                                                value={fieldValue.minimum}
-                                                onKeyDown={
-                                                    NumberBlockInvalidKey
-                                                }
-                                                onChange={(e: any) => {
-                                                    if (
-                                                        !TextFieldValidation(
-                                                            e,
-                                                            10
-                                                        )
-                                                    )
-                                                        return;
+                                            <InputNumberForForm
+                                                noPeso={true}
+                                                className={"field w-full"}
+                                                isValue={fieldValue.minimum}
+                                                setValue={(
+                                                    key: string,
+                                                    value: number
+                                                ) => {
                                                     setFieldValue({
                                                         ...fieldValue,
-                                                        minimum: parseFloat(
-                                                            e.target.value
-                                                        ),
+                                                        minimum: value,
                                                     });
                                                 }}
+                                                keyField={"minimum"}
                                             />
                                         </li>
                                         <li>

@@ -23,9 +23,14 @@ import FilterDynamic from "./FilterDynamic";
 type SearchFilter = {
     page: string;
     setSearchTable: Function;
+    exportAPI: string;
 };
 
-export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
+export default function SearchFilter({
+    page,
+    setSearchTable,
+    exportAPI,
+}: SearchFilter) {
     const PermissionValidationCreate = AccessActionValidation(page, "create");
 
     const PermissionValidationPrint = AccessActionValidation(page, "print");
@@ -128,18 +133,16 @@ export default function SearchFilter({ page, setSearchTable }: SearchFilter) {
     const [isExportLoading, setExportLoading] = useState(false);
     const ExportHandler = () => {
         if (router.pathname.includes("admin/customer")) {
-            const endPoint = "/admin/customer/export";
             DynamicExportHandler(
-                endPoint,
+                exportAPI,
                 "customer",
                 setPrompt,
                 setExportLoading
             );
         }
         if (router.pathname.includes("admin/property")) {
-            const endPoint = "/admin/property/unit/export";
             DynamicExportHandler(
-                endPoint,
+                exportAPI,
                 "property",
                 setPrompt,
                 setExportLoading

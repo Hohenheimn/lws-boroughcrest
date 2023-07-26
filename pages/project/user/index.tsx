@@ -1,9 +1,11 @@
 import React, { useContext, useState } from "react";
-import SearchFilter from "../../../components/SearchFilterNew/SearchFilter";
-import UserTable from "../../../components/PROJECT/user/UserTable";
+import { useRouter } from "next/router";
+
 import AppContext from "../../../components/Context/AppContext";
 import UserForm from "../../../components/PROJECT/user/UserForm";
-import { useRouter } from "next/router";
+import UserTable from "../../../components/PROJECT/user/UserTable";
+import SearchFilter from "../../../components/SearchFilterNew/SearchFilter";
+
 export default function User() {
     const router = useRouter();
     const [isSearchTable, setSearchTable] = useState("");
@@ -28,7 +30,11 @@ export default function User() {
 
     return (
         <div>
-            <SearchFilter page="user" setSearchTable={setSearchTable} />
+            <SearchFilter
+                page="user"
+                setSearchTable={setSearchTable}
+                exportAPI={""}
+            />
             <UserTable isSearch={isSearchTable} />
             {(newUserToggle || router.query.new !== undefined) && (
                 <UserForm

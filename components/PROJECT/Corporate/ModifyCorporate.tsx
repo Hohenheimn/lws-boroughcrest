@@ -1,28 +1,33 @@
 import React, { useState, useContext, useEffect } from "react";
-import AppContext from "../../Context/AppContext";
-import { AiFillCamera } from "react-icons/ai";
-import Image from "next/image";
-import style from "../../../styles/Popup_Modal.module.scss";
-import { RiArrowDownSFill } from "react-icons/ri";
-import { motion } from "framer-motion";
-import { ModalSideFade } from "../../Animation/SimpleAnimation";
 import { getCookie } from "cookies-next";
-import { ScaleLoader } from "react-spinners";
+import { motion } from "framer-motion";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import { useForm } from "react-hook-form";
+import { AiFillCamera } from "react-icons/ai";
+import { RiArrowDownSFill } from "react-icons/ri";
 import { useMutation, useQueryClient } from "react-query";
-import api from "../../../util/api";
+import { ScaleLoader } from "react-spinners";
+
+import style from "../../../styles/Popup_Modal.module.scss";
 import type {
     corporateColumns,
     firstCorporateForm,
     secondCorporateForm,
 } from "../../../types/corporateList";
-import { useForm } from "react-hook-form";
-import { useRouter } from "next/router";
-import SelectDropdown from "../../Reusable/SelectDropdown";
+import api from "../../../util/api";
+import { ModalSideFade } from "../../Animation/SimpleAnimation";
+import AppContext from "../../Context/AppContext";
 import { ErrorSubmit } from "../../Reusable/ErrorMessage";
 import {
     NumberBlockInvalidKey,
     TextFieldValidation,
 } from "../../Reusable/InputField";
+import {
+    ContactNumberFormat,
+    TINNumberFormat,
+} from "../../Reusable/NumberFormat";
+import SelectDropdown from "../../Reusable/SelectDropdown";
 
 type ModifyCorporate = {
     setToggleModify: Function;
@@ -140,10 +145,14 @@ const PrimaryInformation = ({
             rdo_no: modifyCorporate.rdo_no,
             gst_type: modifyCorporate.gst_type,
             tin: modifyCorporate.tin,
-            branch_code: modifyCorporate.branch_code,
             sec_registration_no: modifyCorporate.sec_registration_no,
         },
     });
+
+    useEffect(() => {
+        setValue("tin", modifyCorporate.tin);
+    }, [modifyCorporate.tin]);
+
     const Next = (data: any) => {
         setModifyCorporate({
             ...modifyCorporate,
@@ -152,7 +161,7 @@ const PrimaryInformation = ({
             rdo_no: data.rdo_no,
             gst_type: data.gst_type,
             tin: data.tin,
-            branch_code: data.branch_code,
+
             sec_registration_no: data.sec_registration_no,
         });
         setNewActive((item: any) => [(item[0] = false), (item[1] = true)]);
@@ -241,7 +250,7 @@ const PrimaryInformation = ({
                         })}
                         value={modifyCorporate.name}
                         onChange={(e) => {
-                            if (!TextFieldValidation(e, 255)) return;
+                            if (!TextFieldValidation(e, 99999)) return;
                             setModifyCorporate({
                                 ...modifyCorporate,
                                 name: e.target.value,
@@ -253,81 +262,42 @@ const PrimaryInformation = ({
                         <p className="text-[10px]">{errors.name.message}</p>
                     )}
                 </li>
-            </ul>
-            {validateTransaction && (
-                <ul className={style.ThreeRows}>
+                {validateTransaction && (
                     <li>
                         <label>*TIN Number</label>
-                        <input
-                            className="field"
-                            type="number"
-                            placeholder="000000000"
-                            {...register("tin", {
-                                required: "Required",
-                                minLength: {
-                                    value: 9,
-                                    message: "Must be 9 number only",
-                                },
-                                maxLength: {
-                                    value: 11,
-                                    message: "Must be 9 number only",
-                                },
-                            })}
-                            value={modifyCorporate.tin}
-                            onKeyDown={NumberBlockInvalidKey}
-                            onChange={(e) => {
-                                if (!TextFieldValidation(e, 9)) return;
+                        <TINNumberFormat
+                            register={{
+                                ...register("tin", {
+                                    required: "Required",
+                                    minLength: {
+                                        value: 17,
+                                        message: "Must be 14 number only",
+                                    },
+                                    maxLength: {
+                                        value: 17,
+                                        message: "Must be 14 number only",
+                                    },
+                                }),
+                            }}
+                            setValue={(value: string) => {
                                 setModifyCorporate({
                                     ...modifyCorporate,
-                                    tin: e.target.value,
+                                    tin: value,
                                 });
                             }}
+                            value={modifyCorporate.tin}
                         />
+
                         {errors.tin && (
                             <p className="text-[10px]">{errors.tin.message}</p>
                         )}
                     </li>
-                    <li>
-                        <label>*Branch Code</label>
-                        <input
-                            className="field"
-                            placeholder="00000"
-                            {...register("branch_code", {
-                                required: "Required",
-                                minLength: {
-                                    value: 5,
-                                    message: "Must be 5 Number",
-                                },
-                                maxLength: {
-                                    value: 5,
-                                    message: "Must be 5 Number",
-                                },
-                            })}
-                            type="number"
-                            value={modifyCorporate.branch_code}
-                            onKeyDown={NumberBlockInvalidKey}
-                            onChange={(e) => {
-                                if (!TextFieldValidation(e, 5)) return;
-                                setModifyCorporate({
-                                    ...modifyCorporate,
-                                    branch_code: e.target.value,
-                                });
-                            }}
-                        />
-                        {errors.branch_code && (
-                            <p className="text-[10px]">
-                                {errors.branch_code.message}
-                            </p>
-                        )}
-                    </li>
-                </ul>
-            )}
-            <ul className={style.ThreeRows}>
+                )}
                 <li>
                     <label>RDO NO.</label>
                     <input
                         className="field"
-                        type="number"
+                        type="text"
                         placeholder="000"
                         {...register("rdo_no", {
                             minLength: {
@@ -340,7 +310,6 @@ const PrimaryInformation = ({
                             },
                         })}
                         value={modifyCorporate.rdo_no}
-                        onKeyDown={NumberBlockInvalidKey}
                         onChange={(e) => {
                             e.target.value.length <= 3 &&
                                 setModifyCorporate({
@@ -389,19 +358,9 @@ const PrimaryInformation = ({
                         <label>SEC. Registration</label>
                         <input
                             className="field"
-                            type="number"
+                            type="text"
                             placeholder="000"
-                            {...register("sec_registration_no", {
-                                minLength: {
-                                    value: 3,
-                                    message: "Must be 3 Number",
-                                },
-                                maxLength: {
-                                    value: 3,
-                                    message: "Must be 3 Number",
-                                },
-                            })}
-                            onKeyDown={NumberBlockInvalidKey}
+                            {...register("sec_registration_no")}
                             value={modifyCorporate.sec_registration_no}
                             onChange={(e) => {
                                 e.target.value.length <= 3 &&
@@ -427,32 +386,34 @@ const PrimaryInformation = ({
                 >
                     CANCEL
                 </button>
-
                 {validateTransaction && (
                     <>
-                        {!DeleteLoading && (
-                            <aside
-                                className="buttonRed mr-5 cursor-pointer"
-                                onClick={DeleteHandler}
-                            >
-                                DELETE
-                            </aside>
-                        )}
+                        {!modifyCorporate.with_transaction && (
+                            <>
+                                {!DeleteLoading && (
+                                    <aside
+                                        className="buttonRed mr-5 cursor-pointer"
+                                        onClick={DeleteHandler}
+                                    >
+                                        DELETE
+                                    </aside>
+                                )}
 
-                        {DeleteLoading && (
-                            <div className="buttonRed mr-5">
-                                <div>
-                                    <ScaleLoader
-                                        color="#fff"
-                                        height="10px"
-                                        width="2px"
-                                    />
-                                </div>
-                            </div>
+                                {DeleteLoading && (
+                                    <div className="buttonRed mr-5">
+                                        <div>
+                                            <ScaleLoader
+                                                color="#fff"
+                                                height="10px"
+                                                width="2px"
+                                            />
+                                        </div>
+                                    </div>
+                                )}
+                            </>
                         )}
                     </>
                 )}
-
                 <button className="buttonRed" type="submit">
                     NEXT
                 </button>
@@ -581,9 +542,16 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                         keyData: "",
                     });
                 } else {
+                    let value = modifyCorporate[key];
+                    if (key === "tin") {
+                        value = value.replaceAll("-", "");
+                    }
+                    if (key === "contact_no" || key === "alt_contact_no") {
+                        value = `0${value}`;
+                    }
                     arrayData.push({
                         key: key,
-                        keyData: modifyCorporate[key],
+                        keyData: value,
                     });
                 }
             }
@@ -591,6 +559,7 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
         arrayData.map(({ key, keyData }: any) => {
             formData.append(key, keyData);
         });
+
         mutate(formData);
     };
     return (
@@ -608,85 +577,81 @@ const Contact = ({ setNewActive, setToggleModify, isNewActive }: Props) => {
                 <ul className={style.twoRows_container}>
                     <li className="flex justify-start flex-col">
                         <label>CONTACT NO</label>
-                        <aside className="mb-2">
-                            <input
-                                className="field mr-2"
-                                type="number"
-                                placeholder="09"
-                                maxLength={11}
-                                onKeyDown={NumberBlockInvalidKey}
+                        <aside className="mb-2  items-center flex flex-wrap">
+                            <ContactNumberFormat
                                 value={modifyCorporate.contact_no}
-                                {...register("contact_no", {
-                                    required: "Required",
-                                    minLength: {
-                                        value: 11,
-                                        message: "Must be 11 Numbers",
-                                    },
-                                    maxLength: {
-                                        value: 11,
-                                        message: "Must be 11 Number",
-                                    },
-                                    pattern: {
-                                        value: /^(09)\d{9}$/,
-                                        message: "Invalid Contact Number",
-                                    },
+                                register={{
+                                    ...register("contact_no", {
+                                        required: "Required",
+                                        minLength: {
+                                            value: 10,
+                                            message: "Must be 10 Digits",
+                                        },
+                                        maxLength: {
+                                            value: 10,
+                                            message: "Must be 10 Digits",
+                                        },
+                                        pattern: {
+                                            value: /^(9)\d{9}$/,
+                                            message: "Invalid Contact Number",
+                                        },
 
-                                    onChange: (e) => {
-                                        if (e.target.value.length <= 11) {
-                                            setValue(
-                                                "contact_no",
-                                                e.target.value
-                                            );
-                                            setModifyCorporate({
-                                                ...modifyCorporate,
-                                                contact_no: e.target.value,
-                                            });
-                                        }
-                                    },
-                                })}
+                                        onChange: (e) => {
+                                            if (e.target.value.length <= 10) {
+                                                setValue(
+                                                    "contact_no",
+                                                    e.target.value
+                                                );
+                                                setModifyCorporate({
+                                                    ...modifyCorporate,
+                                                    contact_no: e.target.value,
+                                                });
+                                            }
+                                        },
+                                    }),
+                                }}
                             />
 
-                            <span>*Official</span>
+                            <span className="ml-2">*Official</span>
                             {errors.contact_no && (
-                                <p className="text-[10px]">
+                                <p className="text-[10px] w-full">
                                     {errors.contact_no.message}
                                 </p>
                             )}
                         </aside>
 
-                        <aside>
-                            <input
-                                className="field inline"
-                                type="number"
-                                placeholder="09"
-                                onKeyDown={NumberBlockInvalidKey}
+                        <aside className="">
+                            <ContactNumberFormat
                                 value={modifyCorporate.alt_contact_no}
-                                {...register("alt_contact_no", {
-                                    minLength: {
-                                        value: 11,
-                                        message: "Must be 11 Numbers",
-                                    },
-                                    maxLength: {
-                                        value: 11,
-                                        message: "Must be 11 Number",
-                                    },
-                                    pattern: {
-                                        value: /^(09)\d{9}$/,
-                                        message: "Invalid Contact Number",
-                                    },
-                                    onChange: (e) => {
-                                        if (e.target.value.length <= 11) {
-                                            setValue(
-                                                "alt_contact_no",
-                                                e.target.value
-                                            );
-                                            setModifyCorporate({
-                                                ...modifyCorporate,
-                                                alt_contact_no: e.target.value,
-                                            });
-                                        }
-                                    },
-                                })}
+                                register={{
+                                    ...register("alt_contact_no", {
+                                        minLength: {
+                                            value: 10,
+                                            message: "Must be 10 Digits",
+                                        },
+                                        maxLength: {
+                                            value: 10,
+                                            message: "Must be 10 Digits",
+                                        },
+                                        pattern: {
+                                            value: /^(9)\d{9}$/,
+                                            message: "Invalid Contact Number",
+                                        },
+                                        onChange: (e) => {
+                                            if (e.target.value.length <= 10) {
+                                                setValue(
+                                                    "alt_contact_no",
+                                                    e.target.value
+                                                );
+                                                setModifyCorporate({
+                                                    ...modifyCorporate,
+                                                    alt_contact_no:
+                                                        e.target.value,
+                                                });
+                                            }
+                                        },
+                                    }),
+                                }}
                             />
                             {errors.alt_contact_no && (
                                 <p className="text-[10px]">

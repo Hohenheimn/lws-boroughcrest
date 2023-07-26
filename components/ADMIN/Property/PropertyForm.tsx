@@ -457,9 +457,7 @@ export default function PropertyForm({
                                 type="text"
                                 value={isUnitCode}
                                 {...register("unit_code")}
-                                onKeyDown={NumberBlockInvalidKey}
                                 onChange={(e: any) =>
-                                    e.target.value.length <= 4 &&
                                     setUnitCode(e.target.value)
                                 }
                             />
@@ -507,7 +505,7 @@ export default function PropertyForm({
                                 register={{ ...register("address") }}
                                 defaultValue={watch("address")}
                                 className="field"
-                                limitation={255}
+                                limitation={99999}
                             />
                             {errors.address && (
                                 <p className="text-[10px]">

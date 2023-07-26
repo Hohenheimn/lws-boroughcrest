@@ -1,20 +1,25 @@
 import React, { useContext, useEffect, useState } from "react";
-import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import Image from "next/image";
-import { AiFillCamera } from "react-icons/ai";
-import style from "../../../../styles/Popup_Modal.module.scss";
-import { CustomerFormDefaultValue } from "./CustomerForm";
+import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
-import SelectDropdown from "../../../Reusable/SelectDropdown";
+import { AiFillCamera } from "react-icons/ai";
+import { MdOutlineKeyboardArrowDown } from "react-icons/md";
+import { RiArrowDownSFill } from "react-icons/ri";
+import { ScaleLoader } from "react-spinners";
+
+import style from "../../../../styles/Popup_Modal.module.scss";
 import AppContext from "../../../Context/AppContext";
+import Calendar from "../../../Reusable/Calendar";
 import {
     NumberBlockInvalidKey,
     TextFieldValidation,
 } from "../../../Reusable/InputField";
-import Calendar from "../../../Reusable/Calendar";
-import { useRouter } from "next/router";
-import { RiArrowDownSFill } from "react-icons/ri";
-import { ScaleLoader } from "react-spinners";
+import {
+    InputContactForForm,
+    TINNumberFormat,
+} from "../../../Reusable/NumberFormat";
+import SelectDropdown from "../../../Reusable/SelectDropdown";
+import { CustomerFormDefaultValue } from "./CustomerForm";
 
 type Props = {
     isCustomerForm: CustomerFormDefaultValue;
@@ -282,7 +287,6 @@ export default function IndividualCompanyForm({
                                 className="field"
                                 value={isCustomerForm.name}
                                 onChange={(e) => {
-                                    if (!TextFieldValidation(e, 50)) return;
                                     setCustomerForm({
                                         ...isCustomerForm,
                                         name: e.target.value,
@@ -305,8 +309,6 @@ export default function IndividualCompanyForm({
                                             isCustomerForm.individual_co_owner
                                         }
                                         onChange={(e) => {
-                                            if (!TextFieldValidation(e, 255))
-                                                return;
                                             setCustomerForm({
                                                 ...isCustomerForm,
                                                 individual_co_owner:
@@ -318,22 +320,31 @@ export default function IndividualCompanyForm({
 
                                 <li>
                                     <label>*CITIZENSHIP</label>
-                                    <input
-                                        type="text"
-                                        className="field"
-                                        value={
-                                            isCustomerForm.individual_citizenship
-                                        }
-                                        onChange={(e) => {
-                                            if (!TextFieldValidation(e, 255))
-                                                return;
+                                    <SelectDropdown
+                                        selectHandler={(value: string) => {
                                             setCustomerForm({
                                                 ...isCustomerForm,
-                                                individual_citizenship:
-                                                    e.target.value,
+                                                individual_citizenship: value,
                                             });
                                         }}
+                                        className=""
+                                        inputElement={
+                                            <input
+                                                className="w-full field"
+                                                value={
+                                                    isCustomerForm.individual_citizenship
+                                                }
+                                                readOnly
+                                                autoComplete="off"
+                                            />
+                                        }
+                                        listArray={[
+                                            "Filipino",
+                                            "Chinese",
+                                            "Japanese",
+                                        ]}
                                     />
+
                                     {CusError?.individual_citizenship !==
                                         "" && (
                                         <p className="text-[10px]">
@@ -382,19 +393,15 @@ export default function IndividualCompanyForm({
                                 {isCustomerForm.type === "Company" ? "*" : ""}
                                 TIN Number
                             </label>
-                            <input
-                                type="number"
-                                placeholder="000000000"
-                                className="field"
-                                value={isCustomerForm.tin}
-                                onKeyDown={NumberBlockInvalidKey}
-                                onChange={(e) => {
-                                    if (!TextFieldValidation(e, 9)) return;
+                            <TINNumberFormat
+                                ElevenDigit={true}
+                                setValue={(value: string) => {
                                     setCustomerForm({
                                         ...isCustomerForm,
-                                        tin: e.target.value,
+                                        tin: value,
                                     });
                                 }}
+                                value={isCustomerForm.tin}
                             />
                             {CusError?.tin !== "" && (
                                 <p className="text-[10px]">{CusError?.tin}</p>
@@ -425,6 +432,7 @@ export default function IndividualCompanyForm({
                                 </p>
                             )}
                         </li>
+
                         <li>
                             <label>PORTAL ID</label>
                             <input
@@ -585,34 +593,37 @@ const ContactInformation = ({
                 <ul className={style.ThreeRows}>
                     <li>
                         <label>*MOBILE</label>
-                        <input
-                            type="number"
-                            formNoValidate
-                            className="field"
-                            {...register("contact_no", {
-                                minLength: {
-                                    value: 11,
-                                    message: "Must be 11 Numbers",
-                                },
-                                maxLength: {
-                                    value: 11,
-                                    message: "Must be 11 Number",
-                                },
-                                pattern: {
-                                    value: /^(09)\d{9}$/,
-                                    message: "Invalid Contact Number",
-                                },
-                            })}
-                            value={isCustomerForm.contact_no}
-                            onKeyDown={NumberBlockInvalidKey}
-                            onChange={(e) =>
-                                e.target.value.length <= 11 &&
-                                setCustomerForm({
-                                    ...isCustomerForm,
-                                    contact_no: e.target.value,
-                                })
-                            }
-                        />
+
+                        <div className="contact_no">
+                            <input
+                                type="number"
+                                formNoValidate
+                                className="field w-full"
+                                {...register("contact_no", {
+                                    minLength: {
+                                        value: 10,
+                                        message: "Must be 10 Numbers",
+                                    },
+                                    maxLength: {
+                                        value: 10,
+                                        message: "Must be 10 Number",
+                                    },
+                                    pattern: {
+                                        value: /^(9)\d{9}$/,
+                                        message: "Invalid Contact Number",
+                                    },
+                                })}
+                                value={isCustomerForm.contact_no}
+                                onKeyDown={NumberBlockInvalidKey}
+                                onChange={(e) =>
+                                    e.target.value.length <= 10 &&
+                                    setCustomerForm({
+                                        ...isCustomerForm,
+                                        contact_no: e.target.value,
+                                    })
+                                }
+                            />
+                        </div>
                         {errors.contact_no && (
                             <p className="text-[10px]">
                                 {errors.contact_no.message}
@@ -637,7 +648,6 @@ const ContactInformation = ({
                             })}
                             value={isCustomerForm.registered_email}
                             onChange={(e) => {
-                                if (e.target.value.length > 70) return;
                                 setCustomerForm({
                                     ...isCustomerForm,
                                     registered_email: e.target.value,
@@ -668,7 +678,6 @@ const ContactInformation = ({
                             })}
                             value={isCustomerForm.preferred_email}
                             onChange={(e) => {
-                                if (e.target.value.length > 70) return;
                                 setCustomerForm({
                                     ...isCustomerForm,
                                     preferred_email: e.target.value,
@@ -706,7 +715,7 @@ const ContactInformation = ({
                                 type="text"
                                 value={isCustomerForm.company_contact_person}
                                 onChange={(e) => {
-                                    if (!TextFieldValidation(e, 255)) return;
+                                    if (!TextFieldValidation(e, 99999)) return;
                                     setCustomerForm({
                                         ...isCustomerForm,
                                         company_contact_person: e.target.value,
@@ -726,7 +735,7 @@ const ContactInformation = ({
                             type="text"
                             value={isCustomerForm.registered_address_unit_floor}
                             onChange={(e) => {
-                                if (!TextFieldValidation(e, 255)) return;
+                                if (!TextFieldValidation(e, 99999)) return;
 
                                 setCustomerForm({
                                     ...isCustomerForm,
@@ -748,7 +757,7 @@ const ContactInformation = ({
                             type="text"
                             value={isCustomerForm.registered_address_building}
                             onChange={(e) => {
-                                if (!TextFieldValidation(e, 255)) return;
+                                if (!TextFieldValidation(e, 99999)) return;
 
                                 setCustomerForm({
                                     ...isCustomerForm,
@@ -769,7 +778,7 @@ const ContactInformation = ({
                             type="text"
                             value={isCustomerForm.registered_address_street}
                             onChange={(e) => {
-                                if (!TextFieldValidation(e, 255)) return;
+                                if (!TextFieldValidation(e, 99999)) return;
 
                                 setCustomerForm({
                                     ...isCustomerForm,
@@ -791,7 +800,7 @@ const ContactInformation = ({
                             type="text"
                             value={isCustomerForm.registered_address_district}
                             onChange={(e) => {
-                                if (!TextFieldValidation(e, 255)) return;
+                                if (!TextFieldValidation(e, 99999)) return;
 
                                 setCustomerForm({
                                     ...isCustomerForm,
@@ -815,7 +824,7 @@ const ContactInformation = ({
                                 isCustomerForm.registered_address_municipal_city
                             }
                             onChange={(e) => {
-                                if (!TextFieldValidation(e, 255)) return;
+                                if (!TextFieldValidation(e, 99999)) return;
 
                                 setCustomerForm({
                                     ...isCustomerForm,
@@ -837,7 +846,7 @@ const ContactInformation = ({
                             type="text"
                             value={isCustomerForm.registered_address_province}
                             onChange={(e) => {
-                                if (!TextFieldValidation(e, 255)) return;
+                                if (!TextFieldValidation(e, 99999)) return;
 
                                 setCustomerForm({
                                     ...isCustomerForm,
@@ -912,7 +921,7 @@ const ContactInformation = ({
                             type="text"
                             value={isCustomerForm.mailing_address_unit_floor}
                             onChange={(e) => {
-                                if (!TextFieldValidation(e, 255)) return;
+                                if (!TextFieldValidation(e, 99999)) return;
                                 setCustomerForm({
                                     ...isCustomerForm,
                                     mailing_address_unit_floor: e.target.value,
@@ -927,7 +936,7 @@ const ContactInformation = ({
                             type="text"
                             value={isCustomerForm.mailing_address_building}
                             onChange={(e) => {
-                                if (!TextFieldValidation(e, 255)) return;
+                                if (!TextFieldValidation(e, 99999)) return;
 
                                 setCustomerForm({
                                     ...isCustomerForm,
@@ -943,7 +952,7 @@ const ContactInformation = ({
                             type="text"
                             value={isCustomerForm.mailing_address_street}
                             onChange={(e) => {
-                                if (!TextFieldValidation(e, 255)) return;
+                                if (!TextFieldValidation(e, 99999)) return;
 
                                 setCustomerForm({
                                     ...isCustomerForm,
@@ -959,7 +968,7 @@ const ContactInformation = ({
                             type="text"
                             value={isCustomerForm.mailing_address_district}
                             onChange={(e) => {
-                                if (!TextFieldValidation(e, 255)) return;
+                                if (!TextFieldValidation(e, 99999)) return;
 
                                 setCustomerForm({
                                     ...isCustomerForm,
@@ -977,7 +986,7 @@ const ContactInformation = ({
                                 isCustomerForm.mailing_address_municipal_city
                             }
                             onChange={(e) => {
-                                if (!TextFieldValidation(e, 255)) return;
+                                if (!TextFieldValidation(e, 99999)) return;
 
                                 setCustomerForm({
                                     ...isCustomerForm,
@@ -994,7 +1003,7 @@ const ContactInformation = ({
                             type="text"
                             value={isCustomerForm.mailing_address_province}
                             onChange={(e) => {
-                                if (!TextFieldValidation(e, 255)) return;
+                                if (!TextFieldValidation(e, 99999)) return;
 
                                 setCustomerForm({
                                     ...isCustomerForm,

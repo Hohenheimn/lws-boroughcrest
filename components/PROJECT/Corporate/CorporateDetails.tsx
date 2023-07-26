@@ -1,12 +1,13 @@
 import React, { useState, useContext } from "react";
-import AppContext from "../../Context/AppContext";
-import Image from "next/image";
-import ModifyCorporate from "./ModifyCorporate";
-import style from "../../../styles/Project/CorporateDetails.module.scss";
-import { FadeIn } from "../../../components/Animation/SimpleAnimation";
 import { motion } from "framer-motion";
+import Image from "next/image";
+
+import { FadeIn } from "../../../components/Animation/SimpleAnimation";
+import style from "../../../styles/Project/CorporateDetails.module.scss";
 import type { corporateColumns } from "../../../types/corporateList";
+import AppContext from "../../Context/AppContext";
 import { PencilButton } from "../../Reusable/Icons";
+import ModifyCorporate from "./ModifyCorporate";
 
 type Props = {
     CorporateData: corporateColumns;
@@ -19,19 +20,32 @@ export default function CorporateDetails({ CorporateData }: Props) {
     const tin = CorporateData.tin?.replaceAll("-", "");
 
     const setFieldValue = async () => {
+        let Contact: any = CorporateData.contact_no
+            ? CorporateData.contact_no
+            : "";
+        let contact_alt: any = CorporateData?.alt_contact_no
+            ? CorporateData.alt_contact_no
+            : "";
+        const first = Contact[0];
+        const first_alt = contact_alt[0];
+        if (first === 0 || first === "0") {
+            Contact = Contact.replace(first, "");
+        }
+        if (first_alt === 0 || first_alt === "0") {
+            contact_alt = contact_alt.replace(first_alt, "");
+        }
         await setModifyCorporate({
             ...modifyCorporate,
             id: CorporateData.id,
             name: CorporateData.name,
             tin: tin,
-            branch_code: CorporateData.branch_code,
             gst_type: CorporateData.gst_type,
             rdo_no: CorporateData.rdo_no,
             sec_registration_no: CorporateData.sec_registration_no,
             email: CorporateData.email,
-            contact_no: CorporateData.contact_no,
+            contact_no: Contact,
             alt_email: CorporateData.alt_email,
-            alt_contact_no: CorporateData.alt_contact_no,
+            alt_contact_no: contact_alt,
             address_unit_floor: CorporateData.address_unit_floor,
             address_building: CorporateData.address_building,
             address_street: CorporateData.address_street,
@@ -91,7 +105,9 @@ export default function CorporateDetails({ CorporateData }: Props) {
                     <ul>
                         <li>
                             <p className="label_text">ID</p>
-                            <h4 className="main_text">{CorporateData.id}</h4>
+                            <h4 className="main_text">
+                                {CorporateData.assigned_corporate_id}
+                            </h4>
                         </li>
                         <li>
                             <p className="label_text">CORPORATE NAME:</p>
@@ -107,12 +123,7 @@ export default function CorporateDetails({ CorporateData }: Props) {
                             <p className="label_text">TIN</p>
                             <h4 className="main_text">{CorporateData.tin}</h4>
                         </li>
-                        <li>
-                            <p className="label_text">BRANCH CODE</p>
-                            <h4 className="main_text">
-                                {CorporateData.branch_code}
-                            </h4>
-                        </li>
+
                         <li>
                             <p className="label_text">RDO NUMBER:</p>
                             <h4 className="main_text">
