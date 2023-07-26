@@ -106,6 +106,8 @@ const Project = ({ set, update, isValID, isObject, setObject }: any) => {
                                     set={set}
                                     update={update}
                                     isValID={isValID}
+                                    current_id={isObject.id}
+                                    RemoveValue={RemoveValue}
                                 />
                             ))}
                         </>
@@ -157,7 +159,8 @@ type List = {
     setWarning: any;
     set: any;
     update: any;
-
+    current_id: string | number;
+    RemoveValue: () => void;
     isValID: any;
 };
 const List = ({
@@ -167,7 +170,8 @@ const List = ({
     setWarning,
     set,
     update,
-
+    RemoveValue,
+    current_id,
     isValID,
 }: List) => {
     const [isModify, setModify] = useState(false);
@@ -286,6 +290,9 @@ const List = ({
                 item.filter((x: { id: any }) => x.id !== itemDetail.id)
             );
         } else {
+            if (itemDetail.id === current_id) {
+                RemoveValue();
+            }
             setSaving(false);
             // Delete in API
             mutateDelete(itemDetail.id);
