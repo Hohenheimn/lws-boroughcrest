@@ -1,16 +1,17 @@
+import React, { useContext, useEffect, useState } from "react";
 import { format, isValid, parse } from "date-fns";
 import { useRouter } from "next/router";
-import React, { useContext, useEffect, useState } from "react";
 import { RiArrowDownSFill } from "react-icons/ri";
 import { ScaleLoader } from "react-spinners";
+
 import AppContext from "../../../../Context/AppContext";
 import DropDownCharge from "../../../../Dropdowns/DropDownCharge";
+import { ErrorSubmit } from "../../../../Reusable/ErrorMessage";
 import { MinusButtonTable, PlusButtonTable } from "../../../../Reusable/Icons";
 import { InputNumberForTable } from "../../../../Reusable/NumberFormat";
 import { TableOneTotal } from "../../../../Reusable/TableTotal";
 import { CreateCollection } from "./Query";
 import { HeaderForm } from "./ReceivePaymentForm";
-import { ErrorSubmit } from "../../../../Reusable/ErrorMessage";
 
 type Props = {
     DefaultValue: isTableItem[];
@@ -111,10 +112,20 @@ export default function AcknowledgementForm({
             headerForm.amount_paid === "" ||
             headerForm.chart_of_account_id === "" ||
             headerForm.customer_id === "" ||
-            headerForm.deposit_date === "" ||
             headerForm.mode_of_payment === "" ||
-            headerForm.receipt_date === "" ||
-            headerForm.reference_no === ""
+            headerForm.receipt_date === ""
+        ) {
+            setPrompt({
+                toggle: true,
+                message: "Fill out the fields!",
+                type: "draft",
+            });
+            validate = false;
+            return;
+        }
+        if (
+            headerForm.mode_of_payment === "Deposit" &&
+            (headerForm.reference_no === "" || headerForm.deposit_date === "")
         ) {
             setPrompt({
                 toggle: true,
