@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { RiArrowDownSFill } from "react-icons/ri";
 import { BarLoader, ScaleLoader } from "react-spinners";
 
+
 import AppContext from "../../../../../Context/AppContext";
 import { ErrorSubmit } from "../../../../../Reusable/ErrorMessage";
 import { CreateCollection, GetCollectionByCustomer } from "../Query";
@@ -13,6 +14,7 @@ import { Outright } from "./OutrightAndAdvances/OutRight";
 import OutrightAndAdvances from "./OutrightAndAdvances/OutrightAndAdvances";
 import OutStandingBalance, { Outstanding } from "./OutStandingBalance";
 import PaymentSummaryTable from "./PaymentSummary";
+
 
 type Props = {
     Error: () => void;
@@ -267,15 +269,15 @@ export default function OfficialForm({
             return;
         }
 
-        // if (validate) {
-        //     if (router.query.from === "payment_queueing") {
-        //         const PayloadUpdate = { ...Payload, collection_id: id };
-        //         mutate(PayloadUpdate);
-        //     }
-        //     if (router.query.modify_id === undefined) {
-        //         mutate(Payload);
-        //     }
-        // }
+        if (validate) {
+            if (router.query.from === "payment_queueing") {
+                const PayloadUpdate = { ...Payload, collection_id: id };
+                mutate(PayloadUpdate);
+            }
+            if (router.query.modify_id === undefined) {
+                mutate(Payload);
+            }
+        }
     };
 
     const {
