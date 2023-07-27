@@ -105,6 +105,16 @@ export default function ReceivePaymentForm({
         chart_of_account_name: DefaultValHeaderForm.chart_of_account_name,
     });
 
+    useEffect(() => {
+        if (HeaderForm.mode_of_payment === "Cash") {
+            setHeaderForm({
+                ...HeaderForm,
+                reference_no: "",
+                deposit_date: "",
+            });
+        }
+    }, [HeaderForm.mode_of_payment]);
+
     const [applyDiscount, setApplyDiscount] = useState(false);
 
     const [isCustomer, setCustomer] = useState<any>({
@@ -547,6 +557,8 @@ export default function ReceivePaymentForm({
                                 />
 
                                 {HeaderForm.deposit_date === "" &&
+                                    (HeaderForm.mode_of_payment === "Deposit" ||
+                                        HeaderForm.mode_of_payment === "") &&
                                     isErrorToggle && (
                                         <p className="text-[10px] text-ThemeRed">
                                             Required!
@@ -627,6 +639,8 @@ export default function ReceivePaymentForm({
                                     />
                                 </label>
                                 {HeaderForm.reference_no === "" &&
+                                    (HeaderForm.mode_of_payment === "Deposit" ||
+                                        HeaderForm.mode_of_payment === "") &&
                                     isErrorToggle && (
                                         <p className="text-[10px] text-ThemeRed">
                                             Required!

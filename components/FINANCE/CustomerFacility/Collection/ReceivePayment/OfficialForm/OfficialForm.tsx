@@ -1,16 +1,17 @@
+import React, { useContext, useEffect, useState } from "react";
 import { format, isValid, parse } from "date-fns";
 import { useRouter } from "next/router";
-import React, { useContext, useEffect, useState } from "react";
 import { RiArrowDownSFill } from "react-icons/ri";
 import { BarLoader, ScaleLoader } from "react-spinners";
+
 import AppContext from "../../../../../Context/AppContext";
+import { ErrorSubmit } from "../../../../../Reusable/ErrorMessage";
 import { CreateCollection, GetCollectionByCustomer } from "../Query";
 import { DefaultOfficial, HeaderForm } from "../ReceivePaymentForm";
 import { AdvancesType } from "./OutrightAndAdvances/Advances";
 import { Outright } from "./OutrightAndAdvances/OutRight";
 import OutrightAndAdvances from "./OutrightAndAdvances/OutrightAndAdvances";
 import OutStandingBalance, { Outstanding } from "./OutStandingBalance";
-import { ErrorSubmit } from "../../../../../Reusable/ErrorMessage";
 import PaymentSummaryTable from "./PaymentSummary";
 
 type Props = {
@@ -160,16 +161,27 @@ export default function OfficialForm({
             headerForm.amount_paid === "" ||
             headerForm.chart_of_account_id === "" ||
             headerForm.customer_id === "" ||
-            headerForm.deposit_date === "" ||
             headerForm.mode_of_payment === "" ||
             headerForm.credit_tax === "" ||
             headerForm.receipt_date === "" ||
-            headerForm.reference_no === "" ||
             headerForm.receipt_type === ""
         ) {
             setPrompt({
                 toggle: true,
                 message: "Fill out the fields on the top!",
+                type: "draft",
+            });
+            validate = false;
+            return;
+        }
+
+        if (
+            headerForm.mode_of_payment === "Deposit" &&
+            (headerForm.reference_no === "" || headerForm.deposit_date === "")
+        ) {
+            setPrompt({
+                toggle: true,
+                message: "Fill out the fields!",
                 type: "draft",
             });
             validate = false;
@@ -255,15 +267,15 @@ export default function OfficialForm({
             return;
         }
 
-        if (validate) {
-            if (router.query.from === "payment_queueing") {
-                const PayloadUpdate = { ...Payload, collection_id: id };
-                mutate(PayloadUpdate);
-            }
-            if (router.query.modify_id === undefined) {
-                mutate(Payload);
-            }
-        }
+        // if (validate) {
+        //     if (router.query.from === "payment_queueing") {
+        //         const PayloadUpdate = { ...Payload, collection_id: id };
+        //         mutate(PayloadUpdate);
+        //     }
+        //     if (router.query.modify_id === undefined) {
+        //         mutate(Payload);
+        //     }
+        // }
     };
 
     const {
