@@ -161,7 +161,6 @@ const PrimaryInformation = ({
             rdo_no: data.rdo_no,
             gst_type: data.gst_type,
             tin: data.tin,
-
             sec_registration_no: data.sec_registration_no,
         });
         setNewActive((item: any) => [(item[0] = false), (item[1] = true)]);
@@ -188,6 +187,9 @@ const PrimaryInformation = ({
                     toggle: true,
                 }));
                 router.push("/project/corporate");
+            },
+            onError: (e) => {
+                ErrorSubmit(e, setPrompt);
             },
         }
     );
@@ -384,6 +386,7 @@ const PrimaryInformation = ({
                 >
                     CANCEL
                 </button>
+
                 {validateTransaction && (
                     <>
                         {!modifyCorporate.with_transaction && (
