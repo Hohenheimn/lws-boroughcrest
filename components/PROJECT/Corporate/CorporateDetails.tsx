@@ -53,6 +53,7 @@ export default function CorporateDetails({ CorporateData }: Props) {
             address_municipal_city: CorporateData.address_municipal_city,
             address_province: CorporateData.address_province,
             address_zip_code: CorporateData.address_zip_code,
+            with_transaction: CorporateData.with_transaction,
         });
         setToggleModify(true);
     };
