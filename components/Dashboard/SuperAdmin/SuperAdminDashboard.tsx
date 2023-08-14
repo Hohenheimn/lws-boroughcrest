@@ -1,74 +1,44 @@
 import React, { useState } from "react";
+import { format, isValid, parse } from "date-fns";
 import { tr } from "date-fns/locale";
+
 import { BarLoader } from "react-spinners";
 
 import { GetUser } from "../../PROJECT/user/Query";
+import { TextNumberDisplay } from "../../Reusable/NumberFormat";
 import Pagination from "../../Reusable/Pagination";
 import TableErrorMessage from "../../Reusable/TableErrorMessage";
+import { SubscriberList } from "./Query";
 import SubscriberForm from "./SubscriberForm";
 
 export type subscriber = {
   id?: number;
   name: string;
-  corporate_admin: string;
+  corporate_admin?: string;
   email: string;
-  mobile: string;
-  corporate_usage: string;
-  accounts_usage: string;
+  corporate_usage?: string;
+  accounts_usage?: string;
+  subscriber_id?: string;
+  contact_no?: string;
   status: string;
   validity_duration: string;
   price?: number;
 };
-
-const sampleData: subscriber[] = [
-  {
-    id: 1,
-    name: "Jomari",
-    corporate_admin: "Jomari corporate",
-    email: "jomtoui@gmail.com",
-    mobile: "0941264897",
-    corporate_usage: "23",
-    accounts_usage: "512564",
-    status: "Active",
-    validity_duration: "8989",
-  },
-  {
-    id: 2,
-    name: "sample any",
-    corporate_admin: "asadsasd corporate",
-    email: "223@gmail.com",
-    mobile: "0941264897",
-    corporate_usage: "23",
-    accounts_usage: "512564",
-    status: "Inactive",
-    validity_duration: "8989",
-  },
-  {
-    id: 3,
-    name: "asd",
-    corporate_admin: "Jomaasdasasdari corporate",
-    email: "jomtodasui@gmail.com",
-    mobile: "094a2asd64897",
-    corporate_usage: "asd23",
-    accounts_usage: "5125asd64",
-    status: "Expired",
-    validity_duration: "sdsa",
-  },
-];
 
 export default function SuperAdminDashboard() {
   const [page, setPage] = useState(1);
 
   const [isSearch, setSearch] = useState("");
 
-  // const { data, isLoading, isError } = GetUser(isSearch, page, 10);
+  const { data, isLoading, isError } = SubscriberList(isSearch, page, 14);
 
-  // const subscribers = data?.data?.data;
+  const subscribers = data?.data?.data;
 
   const [SelectedItem, setSelectedItem] = useState<subscriber | null>(null);
 
   return (
-    <div className="h-full flex flex-col justify-center">
+    // <div className="h-full flex flex-col justify-center">
+    <div>
       <section>
         <div className=" flex justify-between items-center mb-5">
           <h1 className="pageTitle">Subscribers</h1>
@@ -79,7 +49,7 @@ export default function SuperAdminDashboard() {
                 name: "",
                 corporate_admin: "",
                 email: "",
-                mobile: "",
+                contact_no: "",
                 corporate_usage: "",
                 accounts_usage: "",
                 status: "",
@@ -95,29 +65,24 @@ export default function SuperAdminDashboard() {
             <thead>
               <tr>
                 <th>ID</th>
-                <th>CORPORATE ADMIN</th>
-                <th>CORPORATE USAGE</th>
-                <th>ACCOUNTS USAGE</th>
+                <th>NAME</th>
+                <th>EMAIL</th>
+                <th>CONTACT NO.</th>
+                <th>VALIDITY DURATION</th>
                 <th>STATUS</th>
               </tr>
             </thead>
             <tbody>
-              {sampleData?.map((itemDetail: subscriber, index: number) => (
-                <tr
-                  className=" cursor-pointer"
+              {subscribers?.map((itemDetail: subscriber, index: number) => (
+                <List
+                  subscriber={itemDetail}
                   key={index}
-                  onClick={() => setSelectedItem(itemDetail)}
-                >
-                  <td>{itemDetail.id}</td>
-                  <td>{itemDetail.corporate_admin}</td>
-                  <td>{itemDetail.corporate_usage}</td>
-                  <td>{itemDetail.accounts_usage}</td>
-                  <td>{itemDetail.status}</td>
-                </tr>
+                  setSelectedItem={setSelectedItem}
+                />
               ))}
             </tbody>
           </table>
-          {/* {isLoading && (
+          {isLoading && (
             <div className="top-0 left-0 absolute w-full h-full flex justify-center items-center">
               <aside className="text-center flex justify-center py-5">
                 <BarLoader
@@ -129,16 +94,16 @@ export default function SuperAdminDashboard() {
                 />
               </aside>
             </div>
-          )} */}
-          {/* {isError && <TableErrorMessage />} */}
+          )}
+          {isError && <TableErrorMessage />}
         </div>
 
-        {/* <Pagination
+        <Pagination
           setTablePage={setPage}
           TablePage={page}
-          PageNumber={data?.data.last_page}
-          CurrentPage={data?.data.current_page}
-        /> */}
+          PageNumber={data?.data.meta.last_page}
+          CurrentPage={data?.data.meta.current_page}
+        />
         {SelectedItem !== null && (
           <SubscriberForm
             onClose={() => setSelectedItem(null)}
@@ -149,3 +114,31 @@ export default function SuperAdminDashboard() {
     </div>
   );
 }
+
+type ListProps = {
+  subscriber: subscriber;
+  setSelectedItem: Function;
+};
+
+const List = ({ subscriber, setSelectedItem }: ListProps) => {
+  const validity_duration_date = parse(
+    subscriber.validity_duration,
+    "yyyy-MM-dd",
+    new Date()
+  );
+  // isValid(date) ? format(date, "MMM dd yyyy") : ""
+  return (
+    <tr className=" cursor-pointer" onClick={() => setSelectedItem(subscriber)}>
+      <td>{subscriber.id}</td>
+      <td>{subscriber.name}</td>
+      <td>{subscriber.email}</td>
+      <td>{subscriber.contact_no}</td>
+      <td>
+        {isValid(validity_duration_date)
+          ? format(validity_duration_date, "MMM dd yyyy")
+          : ""}
+      </td>
+      <td>{subscriber.status}</td>
+    </tr>
+  );
+};

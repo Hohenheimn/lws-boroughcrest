@@ -31,7 +31,9 @@ function MyApp({ Component, pageProps }: ExtendAppProps) {
 
   const [userInfo, setUserInfo] = useState<LoginUserInfo>();
   useEffect(() => {
-    setUserInfo(JSON.parse(localStorage.userInfo));
+    if (!router.pathname.includes("/login")) {
+      setUserInfo(JSON.parse(localStorage.userInfo));
+    }
   }, []);
   //   block other pages from system admin
   if (userInfo?.system_admin && router.pathname.includes("/project")) {

@@ -1,10 +1,17 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { format, isValid, parse } from "date-fns";
+import Image from "next/image";
 import { useForm, Controller } from "react-hook-form";
 
-import { NumericFormat } from "react-number-format";
+import { ScaleLoader } from "react-spinners";
 
+import AppContext from "../../Context/AppContext";
+import Calendar from "../../Reusable/Calendar";
+import { ErrorSubmit } from "../../Reusable/ErrorMessage";
+import { NumberBlockInvalidKey } from "../../Reusable/InputField";
 import ModalTemp from "../../Reusable/ModalTemp";
 import SelectDropdown from "../../Reusable/SelectDropdown";
+import { PostSubscriber, UpdateSubscriber } from "./Query";
 import { subscriber } from "./SuperAdminDashboard";
 
 type Props = {
@@ -13,6 +20,13 @@ type Props = {
 };
 
 export default function SubscriberForm({ onClose, formData }: Props) {
+  const { setPrompt } = useContext(AppContext);
+
+  const [isDate, setDate] = useState({
+    value: "",
+    toggle: false,
+  });
+
   const {
     handleSubmit,
     control,
@@ -22,10 +36,55 @@ export default function SubscriberForm({ onClose, formData }: Props) {
     defaultValues: formData,
   });
 
-  const id = formData?.id;
+  const onSuccess = () => {
+    setPrompt({
+      toggle: true,
+      type: "success",
+      message: id
+        ? "Subscriber Sucessfully updated"
+        : "Subscriber Sucessfully registered",
+    });
+    onClose();
+  };
+
+  const onError = (e: any) => {
+    ErrorSubmit(e, setPrompt);
+  };
+
+  const id: any = formData?.id;
+
+  useEffect(() => {
+    const date = parse(formData.validity_duration, "yyyy-MM-dd", new Date());
+    setValue(
+      "validity_duration",
+      isValid(date) ? format(date, "MMM dd yyyy") : ""
+    );
+  }, [formData]);
+
+  const { mutate: add, isLoading: isAddLoading } = PostSubscriber(
+    onSuccess,
+    onError
+  );
+
+  const { mutate: update, isLoading: isAUpdateLoading } = UpdateSubscriber(
+    onSuccess,
+    onError,
+    id
+  );
 
   const onSubmit = (data: subscriber) => {
-    console.log(data);
+    const date = parse(data.validity_duration, "MMM dd yyyy", new Date());
+    delete data.id;
+    delete data.corporate_admin;
+    delete data.accounts_usage;
+    delete data.corporate_usage;
+    delete data.subscriber_id;
+    data.validity_duration = isValid(date) ? format(date, "yyyy-MM-dd") : "";
+    if (id) {
+      update(data);
+    } else {
+      add(data);
+    }
   };
 
   return (
@@ -34,31 +93,55 @@ export default function SubscriberForm({ onClose, formData }: Props) {
       <form onSubmit={handleSubmit(onSubmit)}>
         <ul className="grid grid-cols-3 gap-3 w-full">
           <li>
-            <p className=" text-ThemeRed text-[12px] font-semibold">ID</p>
-            <Controller
-              name="id"
-              control={control}
-              rules={{ required: "required" }}
-              render={({ field }) => (
-                <input type="text" {...field} className="field" />
-              )}
-            />
-            <span className=" text-[12px]">
-              {errors.id && errors.id.message}
-            </span>
-          </li>
-          <li>
             <p className=" text-ThemeRed text-[12px] font-semibold">NAME</p>
             <Controller
               name="name"
               control={control}
               rules={{ required: "required" }}
               render={({ field }) => (
-                <input type="text" {...field} className="field" />
+                <input type="text" {...field} className="field w-full" />
               )}
             />
             <span className=" text-[12px]">
               {errors.name && errors.name.message}
+            </span>
+          </li>
+
+          <li>
+            <p className=" text-ThemeRed text-[12px] font-semibold">
+              CONTACT NO.
+            </p>
+            <Controller
+              name="contact_no"
+              control={control}
+              rules={{
+                required: "required",
+                minLength: {
+                  value: 10,
+                  message: "Must be 10 Numbers",
+                },
+                maxLength: {
+                  value: 10,
+                  message: "Must be 10 Number",
+                },
+                pattern: {
+                  value: /^(9)\d{9}$/,
+                  message: "Invalid Contact Number",
+                },
+              }}
+              render={({ field }) => (
+                <div className="contact_no">
+                  <input
+                    type="number"
+                    onKeyDown={NumberBlockInvalidKey}
+                    {...field}
+                    className="field w-full"
+                  />
+                </div>
+              )}
+            />
+            <span className=" text-[12px]">
+              {errors.contact_no && errors.contact_no.message}
             </span>
           </li>
 
@@ -75,7 +158,7 @@ export default function SubscriberForm({ onClose, formData }: Props) {
                 },
               }}
               render={({ field }) => (
-                <input type="text" {...field} className="field" />
+                <input type="text" {...field} className="field w-full" />
               )}
             />
             <span className=" text-[12px]">
@@ -119,7 +202,39 @@ export default function SubscriberForm({ onClose, formData }: Props) {
               control={control}
               rules={{ required: "required" }}
               render={({ field }) => (
-                <input type="text" {...field} className="field" />
+                <div className="calendar">
+                  <span className="cal">
+                    <Image
+                      src="/Images/CalendarMini.png"
+                      width={15}
+                      height={15}
+                      alt="calendar"
+                    />
+                  </span>
+                  <input
+                    autoComplete="off"
+                    type="text"
+                    readOnly
+                    {...field}
+                    placeholder="MMM dd yyyy"
+                    onClick={() =>
+                      setDate({
+                        ...isDate,
+                        toggle: true,
+                      })
+                    }
+                    className="field w-full"
+                  />
+                  {isDate.toggle && (
+                    <Calendar
+                      value={isDate}
+                      setValue={setDate}
+                      onChange={(value) => {
+                        setValue("validity_duration", value);
+                      }}
+                    />
+                  )}
+                </div>
               )}
             />
             <span className=" text-[12px]">
@@ -131,8 +246,12 @@ export default function SubscriberForm({ onClose, formData }: Props) {
           <aside className="button_cancel" onClick={onClose}>
             CANCEL
           </aside>
-          <button type="submit" className="buttonRed">
-            NEXT
+          <button className="buttonRed">
+            {isAddLoading || isAUpdateLoading ? (
+              <ScaleLoader color="#fff" height="10px" width="2px" />
+            ) : (
+              "SAVE"
+            )}
           </button>
         </div>
       </form>
