@@ -78,6 +78,7 @@ export default function Calendar({
     "November",
     "December",
   ];
+
   const [toggleButton, setToggleButton] = useState({
     month: false,
     year: false,
@@ -106,7 +107,7 @@ export default function Calendar({
 
   let Years = eachYearOfInterval({
     start: new Date(1970, 6, 10),
-    end: new Date(5000, 6, 10),
+    end: today,
   });
 
   const SelectedDateHandler = (day: any) => {
@@ -249,31 +250,13 @@ export default function Calendar({
                     {currenYear}
                   </span>
                   {toggleButton.year && (
-                    <ul className="absolute top-full left-0 w-full bg-white shadow-md max-h-[200px] overflow-auto">
-                      {Years.map((year, index) => (
-                        <li
-                          key={index}
-                          style={{
-                            width: "100%",
-                            marginBottom: "0",
-                          }}
-                          className={`py-1 px-2 text-[12px] cursor-pointer hover:bg-ThemeRed50 hover:text-white ${
-                            currenYear === format(year, "yyyy")
-                              ? " bg-ThemeRed text-white"
-                              : "text-[#757575]"
-                          }`}
-                          onClick={() => {
-                            setCurrentYear(format(year, "yyyy"));
-                            setToggleButton({
-                              ...toggleButton,
-                              year: false,
-                            });
-                          }}
-                        >
-                          {format(year, "yyyy")}
-                        </li>
-                      ))}
-                    </ul>
+                    <YearsDropdown
+                      Years={Years}
+                      currenYear={currenYear}
+                      setCurrentYear={setCurrentYear}
+                      setToggleButton={setToggleButton}
+                      toggleButton={toggleButton}
+                    />
                   )}
                 </div>
               </div>
@@ -379,3 +362,65 @@ export default function Calendar({
     </div>
   );
 }
+
+type YearDropdownProps = {
+  Years: any;
+  currenYear: string;
+  setCurrentYear: Function;
+  setToggleButton: Function;
+  toggleButton: {
+    month: boolean;
+    year: boolean;
+  };
+};
+
+const YearsDropdown = ({
+  Years,
+  currenYear,
+  setCurrentYear,
+  setToggleButton,
+  toggleButton,
+}: YearDropdownProps) => {
+  const YearContainerScrollable = useRef<any>(null);
+
+  const YearsSort = Years.map((year: Date) => format(year, "yyyy")).sort(
+    (a: number, b: number) => b - a
+  );
+
+  const scrollToTarget = () => {
+    YearContainerScrollable.current.scrollIntoView();
+  };
+
+  useEffect(() => {
+    scrollToTarget();
+  }, [toggleButton]);
+
+  return (
+    <>
+      <ul className="absolute top-full left-0 w-full bg-white shadow-md max-h-[200px] overflow-auto">
+        {YearsSort.map((year: string, index: any) => (
+          <li
+            key={index}
+            style={{
+              width: "100%",
+              marginBottom: "0",
+            }}
+            ref={currenYear === year ? YearContainerScrollable : undefined}
+            className={`py-1 px-2 text-[12px] cursor-pointer hover:bg-ThemeRed50 hover:text-white ${
+              currenYear === year ? " bg-ThemeRed text-white" : "text-[#757575]"
+            }`}
+            onClick={() => {
+              setCurrentYear(year);
+              setToggleButton({
+                ...toggleButton,
+                year: false,
+              });
+            }}
+          >
+            {year}
+          </li>
+        ))}
+      </ul>
+    </>
+  );
+};
