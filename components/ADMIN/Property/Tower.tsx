@@ -9,387 +9,383 @@ import Tippy from "@tippy.js/react";
 
 import AppContext from "../../Context/AppContext";
 import {
-    DeleteTower,
-    GetTower,
-    PostTower,
-    UpdateTower,
-    GetProject,
+  DeleteTower,
+  GetTower,
+  PostTower,
+  UpdateTower,
+  GetProject,
 } from "../../ReactQuery/PropertyMethod";
 import DynamicPopOver from "../../Reusable/DynamicPopOver";
 import { ErrorSubmit } from "../../Reusable/ErrorMessage";
 
 type Props = {
-    set: any;
-    update: any;
-    is: any;
-    isObject: any;
-    isValID: any;
-    setObject: any;
-    project_id: any;
-    project_name: string;
+  set: any;
+  update: any;
+  is: any;
+  isObject: any;
+  isValID: any;
+  setObject: any;
+  project_id: any;
+  project_name: string;
 };
 
 const Tower = ({
-    set,
-    update,
-    is,
-    isValID,
-    isObject,
-    setObject,
-    project_id,
-    project_name,
+  set,
+  update,
+  is,
+  isValID,
+  isObject,
+  setObject,
+  project_id,
+  project_name,
 }: Props) => {
-    const modal = useRef<any>();
-    // Click out side, remove empty array
-    useEffect(() => {
-        const clickOutSide = (e: any) => {
-            if (!modal.current.contains(e.target)) {
-                setArray((itemList: any) =>
-                    itemList.filter((item: any) => item.name !== "")
-                );
-                set(false);
-                setWarning("");
-                setObject({
-                    ...isObject,
-                    value: isObject.firstVal,
-                    id: isObject.firstID,
-                });
-            }
-        };
-        document.addEventListener("mousedown", clickOutSide);
-        return () => {
-            document.removeEventListener("mousedown", clickOutSide);
-        };
-    });
-
-    const [isArray, setArray] = useState<any>([]);
-    const [isWarning, setWarning] = useState("");
-
-    const AddArray = () => {
-        setArray([
-            ...isArray,
-            {
-                id: Math.random(),
-                displayId: "----",
-                name: "",
-                project_id: "",
-                project: "",
-            },
-        ]);
-    };
-    const RemoveValue = () => {
+  const modal = useRef<any>();
+  // Click out side, remove empty array
+  useEffect(() => {
+    const clickOutSide = (e: any) => {
+      if (!modal.current.contains(e.target)) {
+        setArray((itemList: any) =>
+          itemList.filter((item: any) => item.name !== "")
+        );
+        set(false);
+        setWarning("");
         setObject({
-            id: "",
-            value: "",
-            firstVal: "",
-            firstID: "",
+          ...isObject,
+          value: isObject.firstVal,
+          id: isObject.firstID,
         });
+      }
     };
+    document.addEventListener("mousedown", clickOutSide);
+    return () => {
+      document.removeEventListener("mousedown", clickOutSide);
+    };
+  });
 
-    const { isLoading, data, isError } = GetTower(
-        isObject.value === null || isObject.value === undefined
-            ? ""
-            : isObject.value,
-        project_id
-    );
+  const [isArray, setArray] = useState<any>([]);
+  const [isWarning, setWarning] = useState("");
 
-    useEffect(() => {
-        if (data?.status === 200) {
-            const cloneArray = data?.data.map((item: any) => {
-                return {
-                    id: item.id,
-                    displayId: item.assigned_tower_id,
-                    name: item.name,
-                    project_id: item.project_id,
-                    project: item?.project?.name,
-                };
-            });
-            setArray(cloneArray);
-        }
-    }, [data]);
+  const AddArray = () => {
+    setArray([
+      ...isArray,
+      {
+        id: Math.random(),
+        displayId: "----",
+        name: "",
+        project_id: "",
+        project: "",
+      },
+    ]);
+  };
+  const RemoveValue = () => {
+    setObject({
+      id: "",
+      value: "",
+      firstVal: "",
+      firstID: "",
+    });
+  };
 
-    return (
-        <div className="crud-container" ref={modal}>
-            <table className="crud-table wide">
-                <thead>
-                    <tr>
-                        <th className="text-white">ID</th>
-                        <th className="text-white">NAME</th>
-                        <th className="text-white">PROJECT</th>
-                        <th className="text-white">ACTION</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {isLoading ? (
-                        <tr></tr>
-                    ) : (
-                        <>
-                            {isArray.map((item: any, index: number) => (
-                                <List
-                                    itemDetail={item}
-                                    key={index}
-                                    setArray={setArray}
-                                    isArray={isArray}
-                                    setWarning={setWarning}
-                                    set={set}
-                                    is={is}
-                                    update={update}
-                                    isValID={isValID}
-                                    project_id={project_id}
-                                    project_name={project_name}
-                                    current_id={isObject.id}
-                                    RemoveValue={RemoveValue}
-                                />
-                            ))}
-                        </>
-                    )}
-                </tbody>
-            </table>
-            {isError ||
-                (data?.data.length <= 0 && (
-                    <div className="w-full flex justify-center py-2 text-[14px]">
-                        <p>No Tower Found</p>
-                    </div>
-                ))}
+  const { isLoading, data, isError } = GetTower(
+    isObject.value === null || isObject.value === undefined
+      ? ""
+      : isObject.value,
+    project_id
+  );
 
-            {isLoading && (
-                <div className="w-full flex justify-center py-3">
-                    <BarLoader
-                        color={"#8f384d"}
-                        height="5px"
-                        width="100px"
-                        aria-label="Loading Spinner"
-                        data-testid="loader"
-                    />
-                </div>
-            )}
-            {isWarning !== "" && (
-                <p className="text-[12px] text-ThemeRed">{isWarning}</p>
-            )}
-            <aside className="w-full flex justify-between">
-                <div
-                    onClick={AddArray}
-                    className="font-bold cursor-pointer text-ThemeRed text-[12px] inline-block  hover:underline"
-                >
-                    ADD FLOOR
-                </div>
-                <div
-                    onClick={RemoveValue}
-                    className="font-bold cursor-pointer text-ThemeRed text-[12px] inline-block hover:underline"
-                >
-                    REMOVE
-                </div>
-            </aside>
+  useEffect(() => {
+    if (data?.status === 200) {
+      const cloneArray = data?.data.map((item: any) => {
+        return {
+          id: item.id,
+          displayId: item.assigned_tower_id,
+          name: item.name,
+          project_id: item.project_id,
+          project: item?.project?.name,
+        };
+      });
+      setArray(cloneArray);
+    }
+  }, [data]);
+
+  return (
+    <div className="crud-container" ref={modal}>
+      <table className="crud-table wide">
+        <thead>
+          <tr>
+            <th className="text-white">ID</th>
+            <th className="text-white">NAME</th>
+            <th className="text-white">PROJECT</th>
+            <th className="text-white">ACTION</th>
+          </tr>
+        </thead>
+        <tbody>
+          {isLoading ? (
+            <tr></tr>
+          ) : (
+            <>
+              {isArray.map((item: any, index: number) => (
+                <List
+                  itemDetail={item}
+                  key={index}
+                  setArray={setArray}
+                  isArray={isArray}
+                  setWarning={setWarning}
+                  set={set}
+                  is={is}
+                  update={update}
+                  isValID={isValID}
+                  project_id={project_id}
+                  project_name={project_name}
+                  current_id={isObject.id}
+                  RemoveValue={RemoveValue}
+                />
+              ))}
+            </>
+          )}
+        </tbody>
+      </table>
+      {isError ||
+        (data?.data.length <= 0 && (
+          <div className="w-full flex justify-center py-2 text-[14px]">
+            <p>No Tower Found</p>
+          </div>
+        ))}
+
+      {isLoading && (
+        <div className="w-full flex justify-center py-3">
+          <BarLoader
+            color={"#8f384d"}
+            height="5px"
+            width="100px"
+            aria-label="Loading Spinner"
+            data-testid="loader"
+          />
         </div>
-    );
+      )}
+      {isWarning !== "" && (
+        <p className="text-[12px] text-ThemeRed">{isWarning}</p>
+      )}
+      <aside className="w-full flex justify-between">
+        <div
+          onClick={AddArray}
+          className="font-bold cursor-pointer text-ThemeRed text-[12px] inline-block  hover:underline"
+        >
+          ADD TOWER
+        </div>
+        <div
+          onClick={RemoveValue}
+          className="font-bold cursor-pointer text-ThemeRed text-[12px] inline-block hover:underline"
+        >
+          REMOVE
+        </div>
+      </aside>
+    </div>
+  );
 };
 type List = {
-    itemDetail: any;
-    setArray: any;
-    isArray: any;
-    setWarning: any;
-    set: any;
-    update: any;
-    is: any;
-    isValID: any;
-    project_id: string;
-    project_name: string;
-    current_id: string | number;
-    RemoveValue: () => void;
+  itemDetail: any;
+  setArray: any;
+  isArray: any;
+  setWarning: any;
+  set: any;
+  update: any;
+  is: any;
+  isValID: any;
+  project_id: string;
+  project_name: string;
+  current_id: string | number;
+  RemoveValue: () => void;
 };
 const List = ({
-    itemDetail,
-    setArray,
-    isArray,
-    setWarning,
-    set,
-    is,
-    update,
-    isValID,
-    RemoveValue,
-    current_id,
-    project_id,
-    project_name,
+  itemDetail,
+  setArray,
+  isArray,
+  setWarning,
+  set,
+  is,
+  update,
+  isValID,
+  RemoveValue,
+  current_id,
+  project_id,
+  project_name,
 }: List) => {
-    const [isModify, setModify] = useState(false);
-    const clientQuery = useQueryClient();
-    const [isProjectList, setProjectList] = useState(false);
-    const { setPrompt } = useContext(AppContext);
+  const [isModify, setModify] = useState(false);
+  const clientQuery = useQueryClient();
+  const [isProjectList, setProjectList] = useState(false);
+  const { setPrompt } = useContext(AppContext);
 
-    const [isSaving, setSaving] = useState(false);
+  const [isSaving, setSaving] = useState(false);
 
-    useEffect(() => {
-        if (itemDetail.name === "") {
-            setModify(true);
+  useEffect(() => {
+    if (itemDetail.name === "") {
+      setModify(true);
+    }
+  }, [itemDetail.name]);
+
+  // Functions
+  const ModifyArray = (event: any, type: string) => {
+    const newItems = isArray.map((item: any) => {
+      if (itemDetail.id == item.id) {
+        if (type === "name") {
+          return {
+            ...item,
+            name: event.target.value,
+          };
         }
-    }, [itemDetail.name]);
-
-    // Functions
-    const ModifyArray = (event: any, type: string) => {
-        const newItems = isArray.map((item: any) => {
-            if (itemDetail.id == item.id) {
-                if (type === "name") {
-                    return {
-                        ...item,
-                        name: event.target.value,
-                    };
-                }
-            }
-            return item;
-        });
-        setArray(newItems);
-    };
-    const Selected = (e: any) => {
-        if (itemDetail.id <= 1 || itemDetail.id === "----") {
-            setPrompt({
-                message: "Refetching...",
-                type: "draft",
-                toggle: "true",
-            });
-            return;
-        }
-        update(itemDetail.name, itemDetail.id);
-        set(false);
-    };
-    const Edit = () => {
-        setModify(!isModify);
-    };
-    // Second Field Dropdown Update Value base on selected item
-    const updateVal = (value: any, id: any) => {
-        const newItems = isArray.map((item: any) => {
-            if (itemDetail.id == item.id) {
-                return {
-                    ...item,
-                    project: value,
-                    project_id: id,
-                };
-            }
-            return item;
-        });
-        setArray(newItems);
-    };
-
-    // Mutation
-    const onSuccessSave = () => {
-        clientQuery.invalidateQueries("get-tower");
-        setSaving(false);
-        setPrompt({
-            message: "Tower successfully registered!",
-            type: "success",
-            toggle: true,
-        });
-    };
-
-    const onSuccessDelete = () => {
-        clientQuery.invalidateQueries("get-tower");
-        setSaving(false);
-        setPrompt({
-            message: "Tower successfully deleted!",
-            type: "success",
-            toggle: true,
-        });
-    };
-
-    const onSuccessUpdate = () => {
-        clientQuery.invalidateQueries("get-tower");
-        setSaving(false);
-        setPrompt({
-            message: "Tower successfully Updated!",
-            type: "success",
-            toggle: true,
-        });
-    };
-    const onError = (e: any) => {
-        ErrorSubmit(e, setPrompt);
-    };
-
-    // Save
-    const { isLoading: loadingSave, mutate: mutateSave } = PostTower(
-        onSuccessSave,
-        onError
-    );
-
-    // Delete
-    const { isLoading: loadingDelete, mutate: mutateDelete } = DeleteTower(
-        onSuccessDelete,
-        onError
-    );
-
-    // Update
-    const { isLoading: loadingUpdate, mutate: mutateUpdate } = UpdateTower(
-        onSuccessUpdate,
-        onError,
-        itemDetail.id
-    );
-
-    const [isProject, setProject] = useState({
-        value: project_name,
-        firstVal: project_name,
-        id: project_id,
-        firstID: project_id,
+      }
+      return item;
     });
-
-    const Save = () => {
-        // prevent here the function if field is empty
-        if (itemDetail.name === "" && itemDetail.project === "") {
-            setWarning("Cannot save with empty name and project field");
-            return;
-        }
-        setModify(!isModify);
-        setWarning("");
-        const Payload = {
-            name: itemDetail.name,
-            project_id: isProject.id,
+    setArray(newItems);
+  };
+  const Selected = (e: any) => {
+    if (itemDetail.id <= 1 || itemDetail.id === "----") {
+      setPrompt({
+        message: "Refetching...",
+        type: "draft",
+        toggle: "true",
+      });
+      return;
+    }
+    update(itemDetail.name, itemDetail.id);
+    set(false);
+  };
+  const Edit = () => {
+    setModify(!isModify);
+  };
+  // Second Field Dropdown Update Value base on selected item
+  const updateVal = (value: any, id: any) => {
+    const newItems = isArray.map((item: any) => {
+      if (itemDetail.id == item.id) {
+        return {
+          ...item,
+          project: value,
+          project_id: id,
         };
+      }
+      return item;
+    });
+    setArray(newItems);
+  };
 
-        if (itemDetail.displayId === "----") {
-            setSaving(true);
-            mutateSave(Payload);
-        } else {
-            setSaving(true);
-            mutateUpdate(Payload);
-        }
+  // Mutation
+  const onSuccessSave = () => {
+    clientQuery.invalidateQueries("get-tower");
+    setSaving(false);
+    setPrompt({
+      message: "Tower successfully registered!",
+      type: "success",
+      toggle: true,
+    });
+  };
+
+  const onSuccessDelete = () => {
+    clientQuery.invalidateQueries("get-tower");
+    setSaving(false);
+    setPrompt({
+      message: "Tower successfully deleted!",
+      type: "success",
+      toggle: true,
+    });
+  };
+
+  const onSuccessUpdate = () => {
+    clientQuery.invalidateQueries("get-tower");
+    setSaving(false);
+    setPrompt({
+      message: "Tower successfully Updated!",
+      type: "success",
+      toggle: true,
+    });
+  };
+  const onError = (e: any) => {
+    ErrorSubmit(e, setPrompt);
+  };
+
+  // Save
+  const { isLoading: loadingSave, mutate: mutateSave } = PostTower(
+    onSuccessSave,
+    onError
+  );
+
+  // Delete
+  const { isLoading: loadingDelete, mutate: mutateDelete } = DeleteTower(
+    onSuccessDelete,
+    onError
+  );
+
+  // Update
+  const { isLoading: loadingUpdate, mutate: mutateUpdate } = UpdateTower(
+    onSuccessUpdate,
+    onError,
+    itemDetail.id
+  );
+
+  const [isProject, setProject] = useState({
+    value: project_name,
+    firstVal: project_name,
+    id: project_id,
+    firstID: project_id,
+  });
+
+  const Save = () => {
+    // prevent here the function if field is empty
+    if (itemDetail.name === "" && itemDetail.project === "") {
+      setWarning("Cannot save with empty name and project field");
+      return;
+    }
+    setModify(!isModify);
+    setWarning("");
+    const Payload = {
+      name: itemDetail.name,
+      project_id: isProject.id,
     };
-    const Delete = () => {
-        if (itemDetail.displayId === "----") {
-            // Only delete from array
-            setArray((item: any[]) =>
-                item.filter((x: { id: any }) => x.id !== itemDetail.id)
-            );
-        } else {
-            if (itemDetail.id === current_id) {
-                RemoveValue();
-            }
-            setSaving(false);
-            // Delete from API
-            mutateDelete(itemDetail.id);
-        }
-    };
-    return (
-        <tr
-            className={`cursor-pointer container ${
-                isSaving && "bg-ThemeRed50"
-            } ${isValID === itemDetail.id ? "active" : ""}`}
-        >
-            <td onClick={(e) => !isModify && Selected(e)} className="bg-hover">
-                {/* <p>{itemDetail.displayId}</p> */}
-                <p>{itemDetail.displayId}</p>
-            </td>
-            <td onClick={(e) => !isModify && Selected(e)} className="bg-hover">
-                <input
-                    type="text"
-                    className={`${!isModify && "disabled"}`}
-                    value={itemDetail.name}
-                    onChange={(e) => ModifyArray(e, "name")}
-                />
-            </td>
-            <td onClick={(e) => !isModify && Selected(e)} className="bg-hover">
-                <input
-                    type="text"
-                    className={`disabled`}
-                    value={isProject.value}
-                />
-                {/* <DynamicPopOver
+
+    if (itemDetail.displayId === "----") {
+      setSaving(true);
+      mutateSave(Payload);
+    } else {
+      setSaving(true);
+      mutateUpdate(Payload);
+    }
+  };
+  const Delete = () => {
+    if (itemDetail.displayId === "----") {
+      // Only delete from array
+      setArray((item: any[]) =>
+        item.filter((x: { id: any }) => x.id !== itemDetail.id)
+      );
+    } else {
+      if (itemDetail.id === current_id) {
+        RemoveValue();
+      }
+      setSaving(false);
+      // Delete from API
+      mutateDelete(itemDetail.id);
+    }
+  };
+  return (
+    <tr
+      className={`cursor-pointer container ${isSaving && "bg-ThemeRed50"} ${
+        isValID === itemDetail.id ? "active" : ""
+      }`}
+    >
+      <td onClick={(e) => !isModify && Selected(e)} className="bg-hover">
+        {/* <p>{itemDetail.displayId}</p> */}
+        <p>{itemDetail.displayId}</p>
+      </td>
+      <td onClick={(e) => !isModify && Selected(e)} className="bg-hover">
+        <input
+          type="text"
+          className={`${!isModify && "disabled"}`}
+          value={itemDetail.name}
+          onChange={(e) => ModifyArray(e, "name")}
+        />
+      </td>
+      <td onClick={(e) => !isModify && Selected(e)} className="bg-hover">
+        <input type="text" className={`disabled`} value={isProject.value} />
+        {/* <DynamicPopOver
                     className=""
                     samewidth={true}
                     toRef={
@@ -419,135 +415,126 @@ const List = ({
                         </>
                     }
                 /> */}
-            </td>
-            <td className="action">
-                <div>
-                    {loadingSave || loadingUpdate ? (
-                        <div className="icon">
-                            <MoonLoader size={10} color="#8f384d" />
-                        </div>
-                    ) : (
-                        <>
-                            {isModify ? (
-                                <Tippy content={"Save"} theme="ThemeRed">
-                                    <div>
-                                        <MdSaveAlt
-                                            className="icon"
-                                            onClick={Save}
-                                        />
-                                    </div>
-                                </Tippy>
-                            ) : (
-                                <Tippy content={"Edit"} theme="ThemeRed">
-                                    <div>
-                                        <BiEdit
-                                            className="icon"
-                                            onClick={Edit}
-                                        />
-                                    </div>
-                                </Tippy>
-                            )}
-                        </>
-                    )}
-                    {loadingDelete ? (
-                        <div className="icon">
-                            <MoonLoader size={10} color="#8f384d" />
-                        </div>
-                    ) : (
-                        <Tippy content={"Delete"} theme="ThemeRed">
-                            <div>
-                                <MdDeleteOutline
-                                    className="icon"
-                                    onClick={Delete}
-                                />
-                            </div>
-                        </Tippy>
-                    )}
-                </div>
-            </td>
-        </tr>
-    );
+      </td>
+      <td className="action">
+        <div>
+          {loadingSave || loadingUpdate ? (
+            <div className="icon">
+              <MoonLoader size={10} color="#8f384d" />
+            </div>
+          ) : (
+            <>
+              {isModify ? (
+                <Tippy content={"Save"} theme="ThemeRed">
+                  <div>
+                    <MdSaveAlt className="icon" onClick={Save} />
+                  </div>
+                </Tippy>
+              ) : (
+                <Tippy content={"Edit"} theme="ThemeRed">
+                  <div>
+                    <BiEdit className="icon" onClick={Edit} />
+                  </div>
+                </Tippy>
+              )}
+            </>
+          )}
+          {loadingDelete ? (
+            <div className="icon">
+              <MoonLoader size={10} color="#8f384d" />
+            </div>
+          ) : (
+            <Tippy content={"Delete"} theme="ThemeRed">
+              <div>
+                <MdDeleteOutline className="icon" onClick={Delete} />
+              </div>
+            </Tippy>
+          )}
+        </div>
+      </td>
+    </tr>
+  );
 };
 
 export default Tower;
 
 type ListDropdown = {
-    set: any;
-    updateVal: any;
-    isProject: {
-        value: string;
-        firstVal: string;
-        firstID: string;
-    };
-    setProject: Function;
+  set: any;
+  updateVal: any;
+  isProject: {
+    value: string;
+    firstVal: string;
+    firstID: string;
+  };
+  setProject: Function;
 };
 
 const ListDropdown = ({
-    set,
-    updateVal,
-    isProject,
-    setProject,
+  set,
+  updateVal,
+  isProject,
+  setProject,
 }: ListDropdown) => {
-    const { data, isLoading, isError } = GetProject(isProject.value);
+  const { data, isLoading, isError } = GetProject(isProject.value);
 
-    const modal = useRef<any>();
+  const modal = useRef<any>();
 
-    const reset = () => {
-        set(false);
-        setProject({
-            ...isProject,
-            value: isProject.firstVal,
-            id: isProject.firstID,
-        });
-    };
-
-    useEffect(() => {
-        const clickOutSide = (e: any) => {
-            if (!modal.current.contains(e.target)) {
-                reset();
-            }
-        };
-        document.addEventListener("mousedown", clickOutSide);
-        return () => {
-            document.removeEventListener("mousedown", clickOutSide);
-        };
+  const reset = () => {
+    set(false);
+    setProject({
+      ...isProject,
+      value: isProject.firstVal,
+      id: isProject.firstID,
     });
+  };
 
-    const select = (e: any) => {
-        const id = e.target.getAttribute("data-id");
-        const value = e.target.innerHTML;
-        updateVal(value, id);
-        setProject({
-            value: value,
-            firstVal: value,
-            firstID: id,
-            id: id,
-        });
-        set(false);
+  useEffect(() => {
+    const clickOutSide = (e: any) => {
+      if (!modal.current.contains(e.target)) {
+        reset();
+      }
     };
+    document.addEventListener("mousedown", clickOutSide);
+    return () => {
+      document.removeEventListener("mousedown", clickOutSide);
+    };
+  });
 
-    if (isLoading) {
-        return (
-            <ul ref={modal} className="w-full flex justify-center py-3">
-                <BarLoader
-                    color={"#8f384d"}
-                    height="5px"
-                    width="100px"
-                    aria-label="Loading Spinner"
-                    data-testid="loader"
-                />
-            </ul>
-        );
-    }
+  const select = (e: any) => {
+    const id = e.target.getAttribute("data-id");
+    const value = e.target.innerHTML;
+    updateVal(value, id);
+    setProject({
+      value: value,
+      firstVal: value,
+      firstID: id,
+      id: id,
+    });
+    set(false);
+  };
 
+  if (isLoading) {
     return (
-        <ul ref={modal} className="dropdown-list smaller">
-            {data?.data.map((item: any, index: number) => (
-                <li data-id={item.id} key={index} onClick={select}>
-                    {item.name}
-                </li>
-            ))}
-            {isError || (data?.data.length <= 0 && <li>No PROJECT found!</li>)}
-        </ul>
+      <ul ref={modal} className="w-full flex justify-center py-3">
+        <BarLoader
+          color={"#8f384d"}
+          height="5px"
+          width="100px"
+          aria-label="Loading Spinner"
+          data-testid="loader"
+        />
+      </ul>
     );
+  }
+
+  return (
+    <ul ref={modal} className="dropdown-list smaller">
+      {data?.data.map((item: any, index: number) => (
+        <li data-id={item.id} key={index} onClick={select}>
+          {item.name}
+        </li>
+      ))}
+      {isError || (data?.data.length <= 0 && <li>No PROJECT found!</li>)}
+    </ul>
+  );
 };
