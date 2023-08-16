@@ -17,7 +17,7 @@ export type subscriber = {
   corporate_admin?: string;
   email: string;
   corporate_usage?: string;
-  accounts_usage?: string;
+  account_usage?: string;
   subscriber_id?: string;
   contact_no?: string;
   status: string;
@@ -51,7 +51,7 @@ export default function SuperAdminDashboard() {
                 email: "",
                 contact_no: "",
                 corporate_usage: "",
-                accounts_usage: "",
+                account_usage: "",
                 status: "",
                 validity_duration: "",
               });
@@ -69,6 +69,8 @@ export default function SuperAdminDashboard() {
                 <th>EMAIL</th>
                 <th>CONTACT NO.</th>
                 <th>VALIDITY DURATION</th>
+                <th>ACCOUNT USAGE</th>
+                <th>CORPORATE USAGE</th>
                 <th>STATUS</th>
               </tr>
             </thead>
@@ -137,6 +139,20 @@ const List = ({ subscriber, setSelectedItem }: ListProps) => {
         {isValid(validity_duration_date)
           ? format(validity_duration_date, "MMM dd yyyy")
           : ""}
+      </td>
+      <td>
+        <TextNumberDisplay
+          value={`${subscriber.account_usage}`}
+          className={""}
+          noDecimal={true}
+        />
+      </td>
+      <td>
+        <TextNumberDisplay
+          value={`${subscriber.corporate_usage}`}
+          className={""}
+          noDecimal={true}
+        />
       </td>
       <td>{subscriber.status}</td>
     </tr>
