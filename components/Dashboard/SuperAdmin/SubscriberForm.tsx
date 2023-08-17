@@ -75,10 +75,10 @@ export default function SubscriberForm({ onClose, formData }: Props) {
   const onSubmit = (data: subscriber) => {
     const date = parse(data.validity_duration, "MMM dd yyyy", new Date());
     delete data.id;
-    delete data.corporate_admin;
-    delete data.accounts_usage;
-    delete data.corporate_usage;
-    delete data.subscriber_id;
+    delete data?.corporate_admin;
+    delete data?.account_usage;
+    delete data?.corporate_usage;
+    delete data?.subscriber_id;
     data.validity_duration = isValid(date) ? format(date, "yyyy-MM-dd") : "";
     if (id) {
       update(data);
