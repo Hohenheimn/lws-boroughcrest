@@ -363,7 +363,7 @@ export default function Calendar({
   );
 }
 
-type YearDropdownProps = {
+export type YearDropdownProps = {
   Years: any;
   currenYear: string;
   setCurrentYear: Function;
@@ -374,7 +374,7 @@ type YearDropdownProps = {
   };
 };
 
-const YearsDropdown = ({
+export const YearsDropdown = ({
   Years,
   currenYear,
   setCurrentYear,
