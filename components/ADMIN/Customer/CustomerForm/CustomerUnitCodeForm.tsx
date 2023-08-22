@@ -211,9 +211,10 @@ const List = ({ detail, setProperty, isProperty, id, classType }: List) => {
   const [isSelect, setSelect] = useState(false);
   const { setPrompt } = useContext(AppContext);
 
+  const [searchUnitCode, setSearchUnitCode] = useState("");
+
   const updateValue = (event: any) => {
     const unit_code = event.target.innerHTML;
-    console.log(event.target.getAttribute("data-projna0me"));
     let validate = true;
     isProperty.map((item: any) => {
       if (item.unit_code === unit_code) {
@@ -241,35 +242,28 @@ const List = ({ detail, setProperty, isProperty, id, classType }: List) => {
       setSelect(false);
     }
   };
-
   return (
     <tr>
       <td className=" pr-2 ">
         <div className=" relative w-full">
-          <DynamicPopOver
-            samewidth={true}
-            toRef={
-              <input
-                type="text"
-                value={detail.unit_code}
-                onChange={(e) => updateValue(e)}
-                className="field w-full"
-                onFocus={() => setSelect(true)}
-              />
-            }
-            toPop={
-              <>
-                {isSelect && (
-                  <Select
-                    setSelect={setSelect}
-                    updateValue={updateValue}
-                    classType={classType}
-                  />
-                )}
-              </>
-            }
-            className={""}
+          <input
+            type="text"
+            value={searchUnitCode === "" ? detail.unit_code : searchUnitCode}
+            onChange={(e) => setSearchUnitCode(e.target.value)}
+            className="field w-full"
+            onFocus={() => setSelect(true)}
           />
+          {isSelect && (
+            <div className=" absolute top-full left-0 w-full bg-white z-[999]">
+              <Select
+                setSelect={setSelect}
+                updateValue={updateValue}
+                classType={classType}
+                searchUnitCode={searchUnitCode}
+                setSearchUnitCode={setSearchUnitCode}
+              />
+            </div>
+          )}
         </div>
       </td>
       <td className="pr-2">
@@ -317,10 +311,16 @@ const List = ({ detail, setProperty, isProperty, id, classType }: List) => {
   );
 };
 
-const Select = ({ setSelect, updateValue, classType }: any) => {
+const Select = ({
+  setSelect,
+  updateValue,
+  classType,
+  searchUnitCode,
+  setSearchUnitCode,
+}: any) => {
   const Menu = useRef<any>();
   // Get unit codes to display
-  const { isLoading, data, isError } = GetUnitCode(classType);
+  const { isLoading, data, isError } = GetUnitCode(classType, searchUnitCode);
 
   const removeDraft = data?.data.filter(
     (fitlerItem: any) => fitlerItem.status !== "Draft"
@@ -330,6 +330,7 @@ const Select = ({ setSelect, updateValue, classType }: any) => {
     const clickOutSide = (e: any) => {
       if (!Menu.current.contains(e.target)) {
         setSelect(false);
+        setSearchUnitCode("");
       }
     };
     document.addEventListener("mousedown", clickOutSide);
