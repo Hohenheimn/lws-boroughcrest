@@ -28,6 +28,7 @@ type Props = {
   forTable?: boolean;
   birthday?: boolean;
   onChange?: (value: string) => void;
+  noYearLimit?: boolean;
 };
 
 export default function Calendar({
@@ -37,6 +38,7 @@ export default function Calendar({
   forTable,
   birthday,
   onChange,
+  noYearLimit,
 }: Props) {
   const modal = useRef<any>();
 
@@ -107,7 +109,7 @@ export default function Calendar({
 
   let Years = eachYearOfInterval({
     start: new Date(1970, 6, 10),
-    end: today,
+    end: noYearLimit ? new Date(4000, 6, 10) : today,
   });
 
   const SelectedDateHandler = (day: any) => {

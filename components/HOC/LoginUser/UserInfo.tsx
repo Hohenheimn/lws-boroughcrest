@@ -18,8 +18,8 @@ export type LoginUserInfo = {
   updated_at: string;
   corporate_gst_type: string;
   permissions: PermissionsUserLogin[];
-  system_admin: boolean;
-  corporate_admin: boolean;
+  system_admin: any;
+  corporate_admin: any;
 };
 export type PermissionsUserLogin = {
   access: string[];

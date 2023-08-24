@@ -227,6 +227,7 @@ export default function SubscriberForm({ onClose, formData }: Props) {
                   />
                   {isDate.toggle && (
                     <Calendar
+                      noYearLimit={true}
                       value={isDate}
                       setValue={setDate}
                       onChange={(value) => {
