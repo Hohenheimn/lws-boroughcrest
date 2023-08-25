@@ -35,7 +35,7 @@ function MyApp({ Component, pageProps }: ExtendAppProps) {
       setUserInfo(JSON.parse(localStorage.userInfo));
     }
   }, []);
-  //   block other pages from system admin
+  // //   block other pages from system admin
   if (userInfo?.system_admin && router.pathname.includes("/project")) {
     return <NoPermissionComp />;
   }
@@ -52,7 +52,6 @@ function MyApp({ Component, pageProps }: ExtendAppProps) {
       <>
         <QueryClientProvider client={queryClient}>
           <AppProvider>
-            {/* <UserInfo /> */}
             <Component {...pageProps} />
             <ReactQueryDevtools />
           </AppProvider>
