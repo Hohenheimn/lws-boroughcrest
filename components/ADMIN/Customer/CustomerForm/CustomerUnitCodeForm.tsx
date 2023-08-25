@@ -238,17 +238,19 @@ const List = ({ detail, setProperty, isProperty, id, classType }: List) => {
         }
         return item;
       });
+      setSearchUnitCode(unit_code);
       setProperty(newItems);
       setSelect(false);
     }
   };
+
   return (
     <tr>
       <td className=" pr-2 ">
         <div className=" relative w-full">
           <input
             type="text"
-            value={searchUnitCode === "" ? detail.unit_code : searchUnitCode}
+            value={searchUnitCode}
             onChange={(e) => setSearchUnitCode(e.target.value)}
             className="field w-full"
             onFocus={() => setSelect(true)}
@@ -261,6 +263,7 @@ const List = ({ detail, setProperty, isProperty, id, classType }: List) => {
                 classType={classType}
                 searchUnitCode={searchUnitCode}
                 setSearchUnitCode={setSearchUnitCode}
+                detail={detail}
               />
             </div>
           )}
@@ -317,10 +320,22 @@ const Select = ({
   classType,
   searchUnitCode,
   setSearchUnitCode,
+  detail,
 }: any) => {
   const Menu = useRef<any>();
+
+  // Reset show item when open
+  const [showItemAll, setshowItemAll] = useState(true);
+  const keywordSearch = showItemAll ? "" : searchUnitCode;
+  useEffect(() => {
+    if (detail.unit_code !== searchUnitCode) {
+      setshowItemAll(false);
+    }
+  }, [searchUnitCode]);
+  // end
+
   // Get unit codes to display
-  const { isLoading, data, isError } = GetUnitCode(classType, searchUnitCode);
+  const { isLoading, data, isError } = GetUnitCode(classType, keywordSearch);
 
   const removeDraft = data?.data.filter(
     (fitlerItem: any) => fitlerItem.status !== "Draft"

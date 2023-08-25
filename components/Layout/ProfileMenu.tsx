@@ -55,7 +55,7 @@ export default function ProfileMenu({
         window.localStorage.clear();
 
         // redirect to login page
-        router.push("/login");
+        router.reload();
       } else if (response.status === 401) {
         setPrompt({
           message: "Unauthorized!",

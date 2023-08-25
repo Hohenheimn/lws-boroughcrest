@@ -72,7 +72,7 @@ export default function Login() {
 
       setCookie("user", token);
 
-      router.reload();
+      router.push("/dashboard");
 
       setInvalid("");
 
