@@ -4,10 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { AiFillCamera } from "react-icons/ai";
-import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { RiArrowDownSFill } from "react-icons/ri";
-
-import { useQuery } from "react-query";
 import { ScaleLoader } from "react-spinners";
 
 import style from "../../../../styles/Popup_Modal.module.scss";

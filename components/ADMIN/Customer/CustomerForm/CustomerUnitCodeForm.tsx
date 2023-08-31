@@ -62,6 +62,7 @@ export default function CustomerUnitCodeForm({
     if (buttonClick === "saveNew") {
       router.push("/admin/customer?new");
     }
+    queryClient.invalidateQueries("get-unitcode");
   };
 
   // MUTATION START HERE
@@ -98,6 +99,7 @@ export default function CustomerUnitCodeForm({
       CreateHandler("save");
     }
   };
+
   const saveNew = () => {
     buttonClick = "saveNew";
     if (router.query.id !== undefined) {
@@ -106,6 +108,7 @@ export default function CustomerUnitCodeForm({
       CreateHandler("new");
     }
   };
+
   const Draft = () => {
     CreateHandler("draft");
   };
@@ -141,10 +144,12 @@ export default function CustomerUnitCodeForm({
         <button
           className={style.back}
           onClick={() => {
-            setToggle("contact-information");
+            router.query.id !== undefined
+              ? setToggle(false)
+              : setToggle("contact-information");
           }}
         >
-          BACK
+          {router.query.id !== undefined ? "Cancel" : "Back"}
         </button>
 
         <div className={style.Save}>
@@ -211,7 +216,11 @@ const List = ({ detail, setProperty, isProperty, id, classType }: List) => {
   const [isSelect, setSelect] = useState(false);
   const { setPrompt } = useContext(AppContext);
 
-  const [searchUnitCode, setSearchUnitCode] = useState("");
+  const [searchUnitCode, setSearchUnitCode] = useState(detail?.unit_code);
+
+  useEffect(() => {
+    setSearchUnitCode(detail?.unit_code);
+  }, [detail?.unit_code]);
 
   const updateValue = (event: any) => {
     const unit_code = event.target.innerHTML;
@@ -345,7 +354,7 @@ const Select = ({
     const clickOutSide = (e: any) => {
       if (!Menu.current.contains(e.target)) {
         setSelect(false);
-        setSearchUnitCode("");
+        setSearchUnitCode(detail.unit_code);
       }
     };
     document.addEventListener("mousedown", clickOutSide);
