@@ -389,7 +389,7 @@ export default function ReceivePaymentForm({
             <label htmlFor="" className="labelField">
               PROPERTIES
             </label>
-            <h1>{isCustomer?.property?.toString().replace(",", ", ")}</h1>
+            <h1>{isCustomer?.property.join(", ")}</h1>
           </li>
         </ul>
         <ul className=" flex flex-wrap justify-between w-[75%] pl-10">
