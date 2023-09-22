@@ -109,7 +109,6 @@ export default function PropertyForm({
 
   const [FormModify, setFormModify] = useState("New");
   const [isUnitCode, setUnitCode] = useState(DefaultFormData.unit_code);
-
   const [isProjectVal, setProjectVal] = useState({
     id: DefaultFormData?.project_id,
     value: DefaultFormData?.project,
@@ -135,22 +134,30 @@ export default function PropertyForm({
     firstID: DefaultFormData?.developer_id,
   });
 
+  const [firstLoadComp_tower, setFirstLoadComp_tower] = useState(true);
   useEffect(() => {
-    setTowerVal({
-      id: "",
-      value: "",
-      firstVal: "",
-      firstID: "",
-    });
+    if (firstLoadComp_tower === false) {
+      setTowerVal({
+        id: "",
+        value: "",
+        firstVal: "",
+        firstID: "",
+      });
+    }
+    setFirstLoadComp_tower(false);
   }, [isProjectVal.id]);
 
+  const [firstLoadComp_floor, setFirstLoadComp_floor] = useState(true);
   useEffect(() => {
-    setFloorVal({
-      id: "",
-      value: "",
-      firstVal: "",
-      firstID: "",
-    });
+    if (firstLoadComp_floor === false) {
+      setFloorVal({
+        id: "",
+        value: "",
+        firstVal: "",
+        firstID: "",
+      });
+    }
+    setFirstLoadComp_floor(false);
   }, [isTowerVal.id]);
 
   const updateProject = (value: any, id: any) => {

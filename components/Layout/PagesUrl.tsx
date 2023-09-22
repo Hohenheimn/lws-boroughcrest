@@ -75,6 +75,7 @@ export const SidebarLinks = () => {
   };
 
   useEffect(() => {
+    // console.log(userInfo);
     if (localStorage.userInfo !== undefined) {
       // SYSTEM ADMIN
       if (userInfo?.system_admin) {
