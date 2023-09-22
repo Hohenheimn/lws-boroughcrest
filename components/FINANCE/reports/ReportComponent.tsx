@@ -278,6 +278,7 @@ export default function ReportComponent() {
       {isReportType !== "Trial Balance" && (
         <h3 className="text-[20px] mb-5">Advance Filter</h3>
       )}
+
       {reportPage === "general_reports" && (
         <GeneralReportsCheckbox
           isReportType={isReportType}
