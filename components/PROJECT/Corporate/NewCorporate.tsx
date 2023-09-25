@@ -8,6 +8,7 @@ import { RiArrowDownSFill } from "react-icons/ri";
 import { useMutation, useQueryClient } from "react-query";
 import { ScaleLoader } from "react-spinners";
 
+
 import { ModalSideFade } from "../../../components/Animation/SimpleAnimation";
 import style from "../../../styles/Popup_Modal.module.scss";
 import type { firstCorporateForm } from "../../../types/corporateList";
@@ -24,6 +25,7 @@ import {
     TINNumberFormat,
 } from "../../Reusable/NumberFormat";
 import SelectDropdown from "../../Reusable/SelectDropdown";
+
 
 export default function NewCorporate() {
     const [isNewActive, setNewActive] = useState([true, false]);
