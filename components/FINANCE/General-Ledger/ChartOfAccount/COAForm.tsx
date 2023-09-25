@@ -372,44 +372,46 @@ export default function COAForm({
               />
             </li>
 
-            <li>
-              <label htmlFor="">*DEFAULT ACCOUNT</label>
-              <div className={style.Dropdown}>
-                <input
-                  autoComplete="off"
-                  type="text"
-                  className="field"
-                  value={isDefaultAccount.value}
-                  {...register("defaultAccount")}
-                  onChange={(e: any) => {
-                    setDefaultAccount({
-                      ...isDefaultAccount,
-                      value: e.target.value,
-                    });
-                    setValue("defaultAccount", isDefaultAccount, {
-                      shouldValidate: true,
-                    });
-                  }}
-                  onFocus={() =>
-                    setDefaultAccount({
-                      ...isDefaultAccount,
-                      toggle: true,
-                    })
-                  }
-                />
-                {isDefaultAccount.toggle && (
-                  <DefaultAccount
-                    setValue={setDefaultAccount}
-                    isValue={isDefaultAccount}
+            {isStatus && (
+              <li>
+                <label htmlFor="">*DEFAULT ACCOUNT</label>
+                <div className={style.Dropdown}>
+                  <input
+                    autoComplete="off"
+                    type="text"
+                    className="field"
+                    value={isDefaultAccount.value}
+                    {...register("defaultAccount")}
+                    onChange={(e: any) => {
+                      setDefaultAccount({
+                        ...isDefaultAccount,
+                        value: e.target.value,
+                      });
+                      setValue("defaultAccount", isDefaultAccount, {
+                        shouldValidate: true,
+                      });
+                    }}
+                    onFocus={() =>
+                      setDefaultAccount({
+                        ...isDefaultAccount,
+                        toggle: true,
+                      })
+                    }
                   />
-                )}
-                {isError.coa_default_account_id && (
-                  <p className="text-[10px]">
-                    {isError.coa_default_account_id}
-                  </p>
-                )}
-              </div>
-            </li>
+                  {isDefaultAccount.toggle && (
+                    <DefaultAccount
+                      setValue={setDefaultAccount}
+                      isValue={isDefaultAccount}
+                    />
+                  )}
+                  {isError.coa_default_account_id && (
+                    <p className="text-[10px]">
+                      {isError.coa_default_account_id}
+                    </p>
+                  )}
+                </div>
+              </li>
+            )}
 
             <li className={style.status}>
               <label htmlFor="status">*APPLY TO SUB-ACCOUNT</label>
