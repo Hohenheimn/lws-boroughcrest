@@ -224,6 +224,7 @@ export default function PropertyForm({
   // Mutation
   const onSuccess = () => {
     queryClient.invalidateQueries(["Property-List"]);
+    queryClient.invalidateQueries("get-property-detail");
     setError({ ...ErrorDefault });
     setUnitCode("");
     reset();

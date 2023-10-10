@@ -72,18 +72,17 @@ export default function CustomerUnitCodeForm({
 
   // Modify Property
   const mutateHandler = () => {
-    const ArrayPropertyID = isProperty.map((item: any) => {
+    const ArrayPropertyID = isProperty?.map((item: any) => {
       return item.unit_code;
     });
-    if (ArrayPropertyID.includes("")) {
-      alert("Cannot proceed, one of unit code is empty");
-      setPrompt({
-        message: "Cannot proceed, one of unit code is empty",
-        type: "draft",
-        toggle: true,
-      });
-      return;
-    }
+    // if (ArrayPropertyID.includes("")) {
+    //   setPrompt({
+    //     message: "Cannot proceed, one of unit code is empty",
+    //     type: "draft",
+    //     toggle: true,
+    //   });
+    //   return;
+    // }
     const stringify = JSON.stringify(ArrayPropertyID);
     const Payload = {
       unit_codes: stringify,
@@ -113,6 +112,16 @@ export default function CustomerUnitCodeForm({
     CreateHandler("draft");
   };
 
+  useEffect(() => {
+    if (isProperty?.length <= 0) {
+      setProperty({
+        id: 1,
+        unit_code: "",
+        name: "",
+      });
+    }
+  }, [isProperty]);
+
   return (
     <>
       <table className="w-full mb-20">
@@ -128,7 +137,7 @@ export default function CustomerUnitCodeForm({
           </tr>
         </thead>
         <tbody>
-          {isProperty.map((item, index) => (
+          {isProperty?.map((item, index) => (
             <List
               detail={item}
               setProperty={setProperty}
@@ -184,14 +193,14 @@ export default function CustomerUnitCodeForm({
           </div>
           {isSave && (
             <ul>
-              {(router.query.id === undefined ||
-                router.query.draft === undefined) && (
-                <li>
-                  <button type="submit" onClick={Draft}>
-                    SAVE AS DRAFT
-                  </button>
-                </li>
-              )}
+              {router.query.draft === undefined &&
+                router.query.id === undefined && (
+                  <li>
+                    <button type="submit" onClick={Draft}>
+                      SAVE AS DRAFT
+                    </button>
+                  </li>
+                )}
               <li>
                 <button type="submit" onClick={saveNew}>
                   SAVE & NEW
@@ -225,7 +234,7 @@ const List = ({ detail, setProperty, isProperty, id, classType }: List) => {
   const updateValue = (event: any) => {
     const unit_code = event.target.innerHTML;
     let validate = true;
-    isProperty.map((item: any) => {
+    isProperty?.map((item: any) => {
       if (item.unit_code === unit_code) {
         setPrompt({
           message: "Selected Unit Code already in the list!",
@@ -237,7 +246,7 @@ const List = ({ detail, setProperty, isProperty, id, classType }: List) => {
       }
     });
     if (validate === true) {
-      const newItems = isProperty.map((item: any) => {
+      const newItems = isProperty?.map((item: any) => {
         if (detail.id == item.id) {
           return {
             ...item,
@@ -288,19 +297,18 @@ const List = ({ detail, setProperty, isProperty, id, classType }: List) => {
       </td>
       <td className=" flex justify-center">
         <div className="flex justify-between w-10">
-          {isProperty.length > 1 && (
-            <button
-              className=" text-[32px] text-ThemeRed mr-2"
-              onClick={() =>
-                setProperty((item: any[]) =>
-                  item.filter((x: { id: any }) => x.id !== detail.id)
-                )
-              }
-            >
-              -
-            </button>
-          )}
-          {isProperty.length - 1 === id && (
+          <button
+            className=" text-[32px] text-ThemeRed mr-2"
+            onClick={() =>
+              setProperty((item: any[]) =>
+                item.filter((x: { id: any }) => x.id !== detail.id)
+              )
+            }
+          >
+            -
+          </button>
+
+          {isProperty?.length - 1 === id && (
             <button
               className=" text-[32px] text-ThemeRed"
               onClick={() =>
