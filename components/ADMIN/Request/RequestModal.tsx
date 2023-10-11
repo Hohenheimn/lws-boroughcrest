@@ -575,7 +575,7 @@ export default function RequestModal() {
                 rejectRemarksHandler("Rejected", RequestDetail?.id)
               }
             >
-              REJECTED
+              REJECT
             </button>
           </>
         )}
