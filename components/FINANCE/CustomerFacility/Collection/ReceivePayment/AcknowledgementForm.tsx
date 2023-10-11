@@ -216,8 +216,14 @@ export default function AcknowledgementForm({
         </table>
       </div>
 
-      <TableOneTotal total={isSubDue} label="SUB DUE" redBG={false} />
-      <TableOneTotal total={isVariance} label="VARIANCE" redBG={true} />
+      <ul className=" flex flex-col">
+        <li>
+          <TableOneTotal total={isSubDue} label="SUB DUE" redBG={false} />
+        </li>
+        <li>
+          <TableOneTotal total={isVariance} label="VARIANCE" redBG={true} />
+        </li>
+      </ul>
       <div className="DropDownSave">
         <button className="ddback" onClick={CancelHandler}>
           CANCEL
