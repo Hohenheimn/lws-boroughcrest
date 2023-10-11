@@ -512,11 +512,7 @@ export default function RequestModal() {
           <h1 className=" text-ThemeRed mb-5">ATTACHMENT</h1>
           <div
             className="relative aspect-[2/1] cursor-pointer"
-            onClick={() =>
-              setView(
-                `https://boroughcrest-api.lws.codes/get-img?image=${RequestDetail.attachment}`
-              )
-            }
+            onClick={() => setView(`${RequestDetail.attachment}`)}
           >
             <Image
               src={`https://boroughcrest-api.lws.codes/get-img?image=${RequestDetail.attachment}`}

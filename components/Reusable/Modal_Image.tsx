@@ -28,7 +28,7 @@ export default function Modal_Image({ setView, isView }: Modal_Image) {
           <h2>No Image Registered</h2>
         ) : (
           <Image
-            src={isView}
+            src={`https://boroughcrest-api.lws.codes/get-img?image=${isView}`}
             layout="fill"
             className=" w-full h-full"
             alt=""
