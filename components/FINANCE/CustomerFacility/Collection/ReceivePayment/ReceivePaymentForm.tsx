@@ -366,8 +366,8 @@ export default function ReceivePaymentForm({
         />
       )}
       <div className="flex flex-wrap border-b border-gray-300 pb-10 mb-10">
-        <ul className="w-[25%] flex flex-col pr-10 border-r border-gray-300">
-          <li className="w-full mb-5">
+        <ul className="w-[25%]  480px:w-full flex flex-col pr-10 border-r border-gray-300 480px:p-0 480px:border-none space-y-5">
+          <li className="w-full">
             <label htmlFor="" className="labelField">
               *CUSTOMER
             </label>
@@ -379,7 +379,7 @@ export default function ReceivePaymentForm({
               <p className="text-[10px]">Required!</p>
             )}
           </li>
-          <li className="w-full mb-5">
+          <li className="w-full">
             <label htmlFor="" className="labelField">
               CLASS
             </label>
@@ -392,8 +392,8 @@ export default function ReceivePaymentForm({
             <h1>{isCustomer?.property?.join(", ")}</h1>
           </li>
         </ul>
-        <ul className=" flex flex-wrap justify-between w-[75%] pl-10">
-          <li className="w-[30%]">
+        <ul className=" flex flex-wrap justify-between w-[75%]  480px:w-full pl-10  480px:pl-0 space-y-5">
+          <li className="w-[30%]  480px:w-full">
             <label htmlFor="" className="labelField">
               *RECEIPT&nbsp;TYPE
               <SelectDropdown
@@ -418,21 +418,21 @@ export default function ReceivePaymentForm({
             </label>
           </li>
 
-          <li className="w-[30%]">
+          <li className="w-[30%] 480px:w-full">
             <label htmlFor="" className="labelField">
               RECEIPT&nbsp;DATE
             </label>
             <h1>{HeaderForm.receipt_date}</h1>
           </li>
 
-          <li className="w-[30%]">
+          <li className="w-[30%] 480px:w-full">
             <label htmlFor="" className="labelField">
               RECEIPT&nbsp;NO.
             </label>
             <h1>{HeaderForm.receipt_no}</h1>
           </li>
 
-          <li className="w-full mb-5">
+          <li className="w-full">
             <label htmlFor="" className="labelField">
               DESCRIPTION
             </label>
@@ -452,7 +452,7 @@ export default function ReceivePaymentForm({
           {(HeaderForm.receipt_type === "Official" ||
             HeaderForm.receipt_type === "Acknowledgement") && (
             <>
-              <li className="w-[30%] -mt-1">
+              <li className="w-[30%]  480px:w-full -mt-1">
                 <label htmlFor="" className="labelField">
                   *MODE&nbsp;OF&nbsp;PAYMENT
                   <SelectDropdown
@@ -477,7 +477,7 @@ export default function ReceivePaymentForm({
                   )}
                 </label>
               </li>
-              <li className="w-[30%]">
+              <li className="w-[30%]  480px:w-full">
                 <DynamicPopOver
                   toRef={
                     <label className="labelField flex flex-col">
@@ -533,7 +533,7 @@ export default function ReceivePaymentForm({
                     <p className="text-[10px] text-ThemeRed">Required!</p>
                   )}
               </li>
-              <li className="w-[30%]">
+              <li className="w-[30%]  480px:w-full">
                 <label className="labelField flex flex-col">
                   *AMOUNT&nbsp;PAID
                   <div className="relative">
@@ -565,7 +565,7 @@ export default function ReceivePaymentForm({
                     <p className="text-[10px] text-ThemeRed">Required!</p>
                   )}
               </li>
-              <li className="w-[30%]  -mt-1">
+              <li className="w-[30%]  480px:w-full  -mt-1">
                 <label htmlFor="" className="labelField">
                   *CASH&nbsp;ACCOUNT
                   <DropdownFieldCOA
@@ -578,7 +578,7 @@ export default function ReceivePaymentForm({
                   )}
                 </label>
               </li>
-              <li className="w-[30%]">
+              <li className="w-[30%]  480px:w-full">
                 <label className="labelField flex flex-col">
                   *REFERENCE&nbsp;NO.
                   <input
@@ -604,10 +604,10 @@ export default function ReceivePaymentForm({
                   )}
               </li>
               {HeaderForm.receipt_type !== "Official" && (
-                <li className="w-[30%]"></li>
+                <li className="w-[30%]  480px:w-full"></li>
               )}
               {HeaderForm.receipt_type === "Official" && (
-                <li className="w-[30%]">
+                <li className="w-[30%]  480px:w-full">
                   <label className="labelField flex flex-col">
                     *CREDIT&nbsp;TAX
                     <InputNumberForForm
