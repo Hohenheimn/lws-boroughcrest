@@ -121,7 +121,7 @@ export default function DepositForm({
         selectAll: false,
       });
     }
-  }, [data?.status]);
+  }, [data?.data]);
 
   const selectAll = () => {
     const newItems = isCashReceipt?.itemArray.map((item: any) => {
