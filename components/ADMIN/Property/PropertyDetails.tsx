@@ -105,11 +105,11 @@ export default function PropertyDetails({ data }: Props) {
         </li>
         <li>
           <p className="label_text">ACCEPTANCE DATE</p>
-          <h4 className="main_text">{data?.acceptance_date}</h4>
+          <h4 className="main_text">{DefaultFormData?.acceptance_date}</h4>
         </li>
         <li>
           <p className="label_text">TURN OVER DATE</p>
-          <h4 className="main_text">{data?.turnover_date}</h4>
+          <h4 className="main_text">{DefaultFormData?.turnover_date}</h4>
         </li>
       </ul>
       <h1 className={style.title}>OCCUPANTS</h1>

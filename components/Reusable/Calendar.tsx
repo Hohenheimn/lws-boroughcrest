@@ -319,9 +319,9 @@ export default function Calendar({
                 key={index}
                 className={` cursor-pointer aspect-square flex justify-center items-center text-base font-medium text-center text-gray-800 w-[14.28%]`}
               >
-                <button
+                <div
                   onClick={() => SelectedDateHandler(day)}
-                  className={` w-[90%] flex justify-center items-center m-0 aspect-square text-[14px] rounded-lg 
+                  className={` w-[90%] flex justify-center items-center m-0 aspect-square cursor-pointer text-[14px] rounded-lg 
                                     ${
                                       isEqual(day, today)
                                         ? " bg-ThemeRed text-white"
@@ -355,7 +355,7 @@ export default function Calendar({
                   <time dateTime={format(day, "yyyy-MM-dd")}>
                     {format(day, "d")}
                   </time>
-                </button>
+                </div>
               </div>
             ))}
           </div>

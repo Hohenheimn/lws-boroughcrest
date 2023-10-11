@@ -52,7 +52,7 @@ export default function ModifyProperty({
   return (
     <div className={style.container}>
       <section className=" p-10 bg-[#e2e3e4ef] rounded-lg w-[90%] max-w-[700px] text-ThemeRed shadow-lg">
-        <p className=" text-[16px] mb-3 font-bold">Modify Customer</p>
+        <p className=" text-[16px] mb-3">Modify Customer</p>
 
         <motion.div
           variants={ModalSideFade}
