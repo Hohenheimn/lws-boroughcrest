@@ -114,11 +114,13 @@ export default function CustomerUnitCodeForm({
 
   useEffect(() => {
     if (isProperty?.length <= 0) {
-      setProperty({
-        id: 1,
-        unit_code: "",
-        name: "",
-      });
+      setProperty([
+        {
+          id: 1,
+          unit_code: "",
+          name: "",
+        },
+      ]);
     }
   }, [isProperty]);
 
