@@ -171,7 +171,11 @@ const List = ({ itemDetail, PermissionValidationView }: any) => {
             )}
             {item === "Owner" && (
               <div>
-                <h2 key={index}>{itemDetail?.owner?.name}</h2>
+                <h2 key={index}>
+                  {itemDetail?.owner?.name
+                    ? itemDetail?.owner?.name
+                    : itemDetail?.developer?.name}
+                </h2>
               </div>
             )}
           </div>
