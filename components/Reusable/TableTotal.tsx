@@ -34,10 +34,10 @@ type Props1 = {
 export const TableOneTotal = ({ total, label, redBG }: Props1) => {
   return (
     <div className="flex flex-wrap  items-center justify-end py-2 480px:justify-start">
-      <h1 className="text-start text-[16px] w-full max-w-[7rem] border 1280px:text-[13px] text-ThemeRed pb-1">
+      <h1 className="text-start text-[16px] w-full max-w-[7rem] 1280px:text-[13px] text-ThemeRed pb-1">
         {label}
       </h1>
-      <div className=" w-full max-w-[20rem] 480px:max-w-full border flex justify-end">
+      <div className=" w-full max-w-[20rem] 480px:max-w-full flex justify-end">
         <div
           className={` relative flex items-center font-NHU-bold ${
             redBG === true
