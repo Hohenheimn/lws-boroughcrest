@@ -173,7 +173,7 @@ export default function PaymentSummaryTable({
                   <h1 className=" text-ThemeRed">VARIANCE</h1>
                 </td>
                 <td>
-                  <div className=" text-white bg-ThemeRed  inline-block px-2 py-1">
+                  <div className=" text-white bg-ThemeRed  inline-block py-1 pr-1">
                     <TextNumberDisplay
                       className="withPesoWhite  w-full"
                       value={Number(Variance)}

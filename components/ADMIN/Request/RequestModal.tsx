@@ -170,10 +170,13 @@ export default function RequestModal() {
   const ActionHandler = (button: string, id: number) => {
     setButtonClicked(button);
     buttonClicked = button;
-    const Payload = {
+    const Payload: any = {
       status: button,
       remarks: rejectRemarks.remarks,
     };
+    if (button === "Rejected") {
+      Payload.customer_id = RequestDetail?.customer_id;
+    }
     mutate({ id: id, payload: Payload });
   };
 
@@ -589,7 +592,7 @@ export default function RequestModal() {
                 {mutateLoading && isButtonClicked === "Approved" ? (
                   <ScaleLoader color="#fff" height="10px" width="2px" />
                 ) : (
-                  "APPROVED"
+                  "APPROVE"
                 )}
               </button>
             )}
@@ -605,14 +608,12 @@ export default function RequestModal() {
               )}
             </button>
             <button
-              className="buttonBorder 640px:mr-0 640px:mb-2"
-              onClick={() => ActionHandler("Rejected", RequestDetail?.id)}
+              className="buttonBorder"
+              onClick={() =>
+                rejectRemarksHandler("Rejected", RequestDetail?.id)
+              }
             >
-              {mutateLoading && isButtonClicked === "Rejected" ? (
-                <ScaleLoader color="#fff" height="10px" width="2px" />
-              ) : (
-                "Rejected"
-              )}
+              REJECT
             </button>
           </>
         )}

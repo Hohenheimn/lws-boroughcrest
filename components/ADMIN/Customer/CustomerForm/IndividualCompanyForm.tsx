@@ -624,7 +624,7 @@ const ContactInformation = ({
             )}
           </li>
           <li>
-            <label>*PREFERED EMAIL</label>
+            <label>PREFERED EMAIL</label>
             <input
               type="text"
               className="field"
