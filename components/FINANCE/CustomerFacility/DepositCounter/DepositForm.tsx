@@ -109,7 +109,7 @@ export default function DepositForm({
         const date = parse(item.receipt_date, "yyyy-MM-dd", new Date());
         return {
           deposit_date: isValid(date) ? format(date, "MMM dd yyyy") : "",
-          customer: item?.depositor?.name,
+          customer: item?.depositor,
           receipt_no: item?.receipt_no,
           amount: item?.amount_paid,
           id: item?.id,
@@ -121,7 +121,7 @@ export default function DepositForm({
         selectAll: false,
       });
     }
-  }, [data?.status]);
+  }, [data?.data]);
 
   const selectAll = () => {
     const newItems = isCashReceipt?.itemArray.map((item: any) => {
