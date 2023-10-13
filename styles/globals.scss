@@ -81,6 +81,7 @@ textarea.field {
 .disabled {
   @apply text-white bg-[#e3e3e3] pointer-events-none;
   color: #554e50 !important;
+  background-color: #e3e3e3 !important;
 }
 .calendar {
   @apply relative;
