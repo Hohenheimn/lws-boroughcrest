@@ -21,21 +21,30 @@ export default function Modal_Image({ setView, isView }: Modal_Image) {
       document.removeEventListener("mousedown", clickOutSide);
     };
   });
+  var FileSaver = require("file-saver");
+  const downloadImage = (url: string) => {
+    FileSaver.saveAs(url, "image.jpg");
+  };
 
   return (
     <div className=" fixed top-0 left-0 h-screen overflow-auto w-full bg-[#00000040] z-[99999] flex justify-center items-center origin-top 480px:p-5">
       <aside ref={modal} className=" relative bg-white w-10/12 h-[90vh]">
         {isView === undefined || isView === null || isView === "" ? (
-          <h2>No Image Registered</h2>
+          <div className="flex w-full h-full items-center justify-center">
+            <h2>No Image Registered</h2>
+          </div>
         ) : (
-          // <Image
-          //   src={`https://boroughcrest-api.lws.codes/get-img?image=${isView}`}
-          //   layout="fill"
-          //   className=" w-full h-full"
-          //   alt=""
-          //   objectFit="contain"
-          // />
-          <div className=" w-full h-full flex justify-center items-center">
+          <div className=" relative w-full h-full flex justify-center items-center">
+            <button
+              className="buttonRed absolute bottom-4 right-4"
+              onClick={() =>
+                downloadImage(
+                  `https://boroughcrest-api.lws.codes/get-img?image=${isView}`
+                )
+              }
+            >
+              Download
+            </button>
             <TransformWrapper
               initialScale={1}
               initialPositionX={0}
