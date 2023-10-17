@@ -22,7 +22,6 @@ import { ApplyRecordMeter, GetRecordMeterList } from "./Query";
 import ReadingCrud from "./ReadingCrud";
 import SelectProperty from "./SelectProperty";
 
-
 type isTable = {
   itemArray: isTableItemObj[];
   selectAll: boolean;
@@ -117,13 +116,17 @@ export default function TableForm() {
       });
       return;
     }
-    const endPoint = `/finance/customer-facility/billing/record-meter-reading/export?billing_readings_name_id=${isReading.reading_id
-      }&period_from=${isValid(dateFrom) ? format(dateFrom, "yyyy-MM-dd") : ""
-      }&period_to=${isValid(dateTo) ? format(dateTo, "yyyy-MM-dd") : ""
-      }&paginate=10&page=${RecordMeterTablePage}`;
+    const endPoint = `/finance/customer-facility/billing/record-meter-reading/export?billing_readings_name_id=${
+      isReading.reading_id
+    }&period_from=${
+      isValid(dateFrom) ? format(dateFrom, "yyyy-MM-dd") : ""
+    }&period_to=${
+      isValid(dateTo) ? format(dateTo, "yyyy-MM-dd") : ""
+    }&paginate=10&page=${RecordMeterTablePage}`;
     DynamicExportHandler(
       endPoint,
-      `record_meter_reading-${isValid(dateFrom) ? format(dateFrom, "yyyy-MM-dd") : ""
+      `record_meter_reading-${
+        isValid(dateFrom) ? format(dateFrom, "yyyy-MM-dd") : ""
       }_${isValid(dateTo) ? format(dateTo, "yyyy-MM-dd") : ""}`,
       setPrompt,
       setExportLoading
@@ -148,15 +151,15 @@ export default function TableForm() {
               id: item.id,
               select: select,
               property: {
-                id: item.property.id,
-                unit_code: item.property.unit_code,
+                id: item?.property?.id,
+                unit_code: item?.property?.unit_code,
               },
-              previous_reading: item.previous_reading,
-              current_reading: item.current_reading,
-              consumption: item.consumption,
-              moving_average_consumption: item.moving_average_consumption,
-              status: item.status,
-              percentage: item.percentage,
+              previous_reading: item?.previous_reading,
+              current_reading: item?.current_reading,
+              consumption: item?.consumption,
+              moving_average_consumption: item?.moving_average_consumption,
+              status: item?.status,
+              percentage: item?.percentage,
             };
           }
         );

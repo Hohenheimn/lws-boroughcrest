@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from "react";
 import Image from "next/image";
+import { AiOutlineClose } from "react-icons/ai";
 import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 
 type Modal_Image = {
@@ -35,6 +36,10 @@ export default function Modal_Image({ setView, isView }: Modal_Image) {
           </div>
         ) : (
           <div className=" relative w-full h-full flex justify-center items-center">
+            <AiOutlineClose
+              className=" absolute top-4 right-4 cursor-pointer text-ThemeRed"
+              onClick={() => setView(false)}
+            />
             <button
               className="buttonRed absolute bottom-4 right-4"
               onClick={() =>
