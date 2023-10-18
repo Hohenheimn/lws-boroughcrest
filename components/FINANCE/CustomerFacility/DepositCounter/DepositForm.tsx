@@ -177,7 +177,7 @@ export default function DepositForm({
         {id !== undefined ? "Modify Deposit" : "Create Deposit"}
       </h1>
       <ul className="flex flex-wrap justify-between pb-8 mb-8">
-        <li className="w-[24%] flex items-center 1366px:w-2/4 1366px:mb-2 640px:w-full">
+        <li className="w-[24%] flex items-center 1366px:w-[49%] 1366px:mb-2 640px:w-full">
           <p className="labelField">DEPOSIT DATE</p>
           <div className="calendar">
             <span className="cal">
@@ -198,7 +198,7 @@ export default function DepositForm({
             {isDate.toggle && <Calendar value={isDate} setValue={setDate} />}
           </div>
         </li>
-        <li className="w-[24%] flex items-center 1366px:w-2/4 1366px:mb-2 640px:w-full">
+        <li className="w-[24%] flex items-center 1366px:w-[49%] 1366px:mb-2 640px:w-full">
           <p className=" labelField">REFERENCE NO.</p>
           <input
             type="text"
@@ -207,14 +207,14 @@ export default function DepositForm({
             onChange={(e) => setReferenceNo(e.target.value)}
           />
         </li>
-        <li className="w-[24%] flex items-center 1366px:w-2/4 1366px:mb-2 640px:w-full">
+        <li className="w-[24%] flex items-center 1366px:w-[49%] 1366px:mb-2 640px:w-full">
           <p className=" labelField">BANK</p>
           <BankAccountDropDown
             isObject={isBankAccount}
             setObject={setBankAccount}
           />
         </li>
-        <li className="w-[24%] flex items-center 1366px:w-2/4 1366px:mb-2 640px:w-full">
+        <li className="w-[24%] flex items-center 1366px:w-[49%] 1366px:mb-2 640px:w-full">
           <p className=" labelField">AMOUNT</p>
           <h1>
             <TextNumberDisplay

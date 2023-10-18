@@ -55,7 +55,7 @@ export default function CheckPaymentList() {
       isPeriod={isPeriod}
       setPeriod={setPeriod}
       page="check-payment-list"
-      EndPointList={`/finance/customer-facility/collection?paginate=10&collection_check_warehouse_id=not null&receipt_type=Provisional&filters=${isFilterText}&keyword=${isSearch}&page=${
+      EndPointList={`/finance/customer-facility/collection?paginate=10&receipt_type=Provisional&filters=${isFilterText}&keyword=${isSearch}&page=${
         isSearch === "" ? TablePage : 1
       }&date_from=${dateFrom}&date_to=${dateTo}`}
       EndPointAdvFilter={
