@@ -85,7 +85,7 @@ export default function ReadingPropertyForm({
         );
         return {
           ...item,
-          previous_reading: filterClone[0]?.previous_reading,
+          previous_reading: filterClone[0]?.current_reading,
           previousReadingModifiable: false,
         };
       }
