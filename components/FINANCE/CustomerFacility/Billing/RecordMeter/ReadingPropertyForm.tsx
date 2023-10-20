@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { format, isValid, parse } from "date-fns";
 import { useRouter } from "next/router";
 import { useQueryClient } from "react-query";
-import { ScaleLoader } from "react-spinners";
+import { BarLoader, ScaleLoader } from "react-spinners";
 
 import AppContext from "../../../../Context/AppContext";
 import { ErrorSubmit } from "../../../../Reusable/ErrorMessage";
@@ -276,6 +276,20 @@ export default function ReadingPropertyForm({
             ))}
           </tbody>
         </table>
+
+        {isLoading && (
+          <div className="w-full h-full flex justify-center items-center">
+            <aside className="text-center flex justify-center py-5">
+              <BarLoader
+                color={"#8f384d"}
+                height="10px"
+                width="200px"
+                aria-label="Loading Spinner"
+                data-testid="loader"
+              />
+            </aside>
+          </div>
+        )}
       </div>
       <div className="flex justify-end py-5 mt-10">
         <button
