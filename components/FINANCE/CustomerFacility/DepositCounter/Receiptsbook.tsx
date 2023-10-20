@@ -169,7 +169,7 @@ export default function Receiptsbook({
           receipt_no: item?.receipt_no,
           bank_and_account_no:
             item?.bank_account?.bank_branch === undefined
-              ? "???"
+              ? ""
               : `${item?.bank_account?.bank_branch} - ${item?.bank_account?.bank_acc_no}`,
           reference_no: item?.reference_no,
           deposit_date: item?.deposit_date,
@@ -304,7 +304,7 @@ export default function Receiptsbook({
       updateMutate(Payload);
     } else {
       setPrompt({
-        message: "Select a Bank Credit!",
+        message: "Select a Receipt Book!",
         type: "draft",
         toggle: true,
       });
