@@ -16,6 +16,7 @@ type Props = {
 
 type childrenCashReceipt = {
   deposit_date: string;
+  receipt_date: string;
   depositor: {
     id: string | number;
     name: string;
@@ -33,25 +34,38 @@ export default function DepositDetail({ id }: Props) {
       setTotal((prev) => Number(prev) + item.amount_paid);
     });
   }, [data]);
-  const date = parse(data?.data.receipt_date, "yyyy-MM-dd", new Date());
+  const date = parse(data?.data.deposit_date, "yyyy-MM-dd", new Date());
 
   return (
     <div className={styleModal.container}>
       <section>
         <div>
           <div className="mb-5 flex justify-between items-center">
-            <h3 className="text-ThemeRed">Deposit Details</h3>
-            <Tippy content="Modify" theme="ThemeRed">
-              <div>
-                <Link
-                  href={`/finance/customer-facility/deposit-counter/modify?deposit_id=${id}`}
-                >
-                  <a>
-                    <HiPencil className="text-[20px] cursor-pointer" />
-                  </a>
-                </Link>
-              </div>
-            </Tippy>
+            <div>
+              <h3 className="text-ThemeRed mb-2">Deposit Details </h3>
+              {data?.data?.children?.length > 0 ? (
+                <h3 className="text-ThemeRed text-sm">
+                  Collection Mode of Payment: Cash
+                </h3>
+              ) : (
+                <h3 className="text-ThemeRed text-sm">
+                  Collection Mode of Payment: Deposit
+                </h3>
+              )}
+            </div>
+            {data?.data?.children?.length > 0 && (
+              <Tippy content="Modify" theme="ThemeRed">
+                <div>
+                  <Link
+                    href={`/finance/customer-facility/deposit-counter/modify?deposit_id=${id}`}
+                  >
+                    <a>
+                      <HiPencil className="text-[20px] cursor-pointer" />
+                    </a>
+                  </Link>
+                </div>
+              </Tippy>
+            )}
           </div>
           {isLoading ? (
             <div className="flex justify-center py-5">
@@ -64,7 +78,7 @@ export default function DepositDetail({ id }: Props) {
             </div>
           ) : (
             <>
-              <ul className="flex flex-wrap mb-5">
+              <ul className="flex gap-5 flex-wrap mb-5">
                 <li className="text-[13px] mr-2">
                   <span className="text-[#545454]">Deposit Date:</span>{" "}
                   {isValid(date) ? format(date, "MMM dd yyyy") : ""}
@@ -79,32 +93,36 @@ export default function DepositDetail({ id }: Props) {
                   {data?.data?.bank_account?.bank_acc_no}
                 </li>
               </ul>
-              <div className="w-full overflow-auto max-h-[50vh]">
-                <table className="table_list miniTable">
-                  <thead className="textRed">
-                    <tr>
-                      <th className="text-start">Doc Date</th>
-                      <th>Depositor</th>
-                      <th>Receipt No.</th>
-                      <th>Deposit Amount</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {data?.data.children.map(
-                      (item: childrenCashReceipt, index: number) => (
-                        <TableList key={index} item={item} />
-                      )
-                    )}
-                  </tbody>
-                </table>
-              </div>
-              <div className="flex justify-end items-center mt-5">
-                <h3 className="text-[14px] mr-2">Total Amount: </h3>
-                <TextNumberDisplay
-                  className="withPeso text-[14px] text-[#545454]"
-                  value={total}
-                />
-              </div>
+              {data?.data?.children?.length > 0 && (
+                <div className="w-full overflow-auto max-h-[50vh]">
+                  <table className="table_list miniTable">
+                    <thead className="textRed">
+                      <tr>
+                        <th className="text-start">Doc Date</th>
+                        <th>Depositor</th>
+                        <th>Receipt No.</th>
+                        <th>Deposit Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {data?.data?.children.map(
+                        (item: childrenCashReceipt, index: number) => (
+                          <TableList key={index} item={item} />
+                        )
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+              {data?.data?.children.length > 0 && (
+                <div className="flex justify-end items-center mt-5">
+                  <h3 className="text-[14px] mr-2">Total Amount: </h3>
+                  <TextNumberDisplay
+                    className="withPeso text-[14px] text-[#545454]"
+                    value={total}
+                  />
+                </div>
+              )}
             </>
           )}
           <div className="flex justify-end py-5 mt-10">
@@ -122,7 +140,7 @@ type TableList = {
   item: childrenCashReceipt;
 };
 const TableList = ({ item }: TableList) => {
-  const date = parse(item.deposit_date, "yyyy-MM-dd", new Date());
+  const date = parse(item?.receipt_date, "yyyy-MM-dd", new Date());
   return (
     <tr>
       <td> {isValid(date) ? format(date, "MMM dd yyyy") : ""}</td>

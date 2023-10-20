@@ -14,7 +14,7 @@ export const GetReceiptsBook = (
     ["receipts-book-list", keyword, tablepage, listType, status, paginate],
     () => {
       return api.get(
-        `/finance/customer-facility/deposit-counter?list_type=${listType}&paginate=${paginate}&status=${status}&keywords=${keyword}&paginate=10&page=${tablepage}`,
+        `/finance/customer-facility/deposit-counter?list_type=${listType}&paginate=${paginate}&status=${status}&keywords=${keyword}&page=${tablepage}`,
 
         {
           headers: {

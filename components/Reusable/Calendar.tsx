@@ -92,7 +92,9 @@ export default function Calendar({
 
   // get date today
   let today = startOfDay(date);
-  const [currentMonth, setCurrentMonth] = useState(format(today, "MMMM"));
+  const [currentMonth, setCurrentMonth] = useState(
+    period?.from ? format(period?.from, "MMMM") : format(today, "MMMM")
+  );
   const [currenYear, setCurrentYear] = useState(
     birthday !== undefined
       ? format(YearCanbeSelected, "yyyy")
