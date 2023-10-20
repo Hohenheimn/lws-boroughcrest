@@ -106,7 +106,11 @@ export default function DepositForm({
             select = itemSelect.select;
           }
         });
-        const date = parse(item.receipt_date, "yyyy-MM-dd", new Date());
+        const date = parse(
+          item?.deposit_date ? item?.deposit_date : item?.receipt_date,
+          "yyyy-MM-dd",
+          new Date()
+        );
         return {
           deposit_date: isValid(date) ? format(date, "MMM dd yyyy") : "",
           customer: item?.depositor,
@@ -120,6 +124,10 @@ export default function DepositForm({
         itemArray: [...CloneArray, ...defCashReceipt],
         selectAll: false,
       });
+      console.log("defCashReceipt");
+      console.log(defCashReceipt);
+      console.log("CloneArray");
+      console.log(CloneArray);
     }
   }, [data?.data]);
 
