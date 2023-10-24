@@ -162,6 +162,9 @@ export default function Receiptsbook({
         if (isSelectedIDs.includes(item.id)) {
           select = true;
         }
+        let variance =
+          Number(item?.amount_paid) - Number(item?.bank_credit[0]?.credit);
+        variance = isNaN(variance) ? 0 : variance;
         return {
           id: item.id,
           document_date: item?.receipt_date,
@@ -176,21 +179,22 @@ export default function Receiptsbook({
           deposit_amount: item?.amount_paid,
           variance: item?.amount_paid,
           status: item?.status,
-          index: "",
-          indexID: "",
+          index: item?.bank_credit[0]?.index,
+          indexID: item?.bank_credit[0]?.id,
+          indexAmount: item?.bank_credit[0]?.credit,
           select: select,
-          childrenRB:
-            type === "receipts-book"
-              ? item?.bank_credit?.map((itemChild: any) => {
-                  return {
-                    id: itemChild.id,
-                    indexID: itemChild.id,
-                    index: itemChild.index,
-                    amount: itemChild.credit,
-                    variance: itemChild.variance,
-                  };
-                })
-              : [],
+          childrenRB: item?.bank_credit
+            ?.filter((_: any, indx: number) => indx > 0)
+            .map((itemChild: any) => {
+              variance = Number(variance) - Number(itemChild?.credit);
+              return {
+                id: itemChild.id,
+                indexID: itemChild.id,
+                index: itemChild.index,
+                amount: itemChild?.credit,
+                variance: variance,
+              };
+            }),
         };
       });
       if (
@@ -428,6 +432,7 @@ export default function Receiptsbook({
               <th>REFERENCE NO.</th>
               <th>DEPOSIT DATE</th>
               <th>DEPOSIT AMOUNT</th>
+              {type === "receipts-book" && <th>CREDIT AMOUNT</th>}
               <th>INDEX</th>
               {type !== "receipts-book" && <th>VARIANCE</th>}
               {type !== "receipts-book" && <th></th>}
@@ -672,6 +677,14 @@ const List = ({
             className={itemDetail?.deposit_amount === "" ? "" : "withPeso"}
           />
         </td>
+        {type === "receipts-book" && (
+          <td>
+            <TextNumberDisplay
+              value={itemDetail?.indexAmount}
+              className={itemDetail?.indexAmount === "" ? "" : "withPeso"}
+            />
+          </td>
+        )}
         <td>
           {type === "receipts-book" ? (
             itemDetail?.index
@@ -777,6 +790,7 @@ const ChildList = ({
         <td></td>
         <td></td>
         <td></td>
+        {type === "receipts-book" && <td></td>}
         {type === "receipts-book" && (
           <td>
             <TextNumberDisplay

@@ -50,10 +50,10 @@ export default function DepositCounter() {
       const cloneReceiptBook = ReceiptBookData.itemArray.map(
         (item: isTableItemObjRB) => {
           if (Number(changeData.parentID) === Number(item?.id)) {
-            let variance = item?.variance;
+            let variance = Number(item?.variance) - Number(item?.indexAmount);
             const children = item?.childrenRB?.map((item) => {
               variance = Number(variance) - Number(item?.amount);
-
+              console.log(variance);
               return {
                 ...item,
                 variance: variance,
@@ -64,9 +64,6 @@ export default function DepositCounter() {
           return item;
         }
       );
-
-      console.log(cloneReceiptBook);
-
       setReceiptBookData({
         selectAll: false,
         itemArray: cloneReceiptBook,
@@ -80,44 +77,19 @@ export default function DepositCounter() {
     }
     // Bank Credit's Reference no and receipt no to Receipt Book
     if (changeData.fromWhere === "bank credit") {
-      // const cloneBankCredit = isBankCredit.itemArray.map(
-      //     (item: isTableItemObjBC) => {
-      //         if (Number(changeData.parentID) === Number(item?.id)) {
-      //             let variance = item?.credit_amount;
-      //             item?.childrenBC.map((item) => {
-      //                 variance = Number(variance) - Number(item?.amount);
-      //             });
-      //             variance =
-      //                 Number(variance) - Number(item?.rec_ref_amount);
-      //             if (Number.isNaN(variance)) {
-      //                 return {
-      //                     ...item,
-      //                     variance: item?.credit_amount,
-      //                 };
-      //             } else {
-      //                 return {
-      //                     ...item,
-      //                     variance: variance <= 0 ? 0 : variance,
-      //                 };
-      //             }
-      //         }
-      //         return item;
-      //     }
-      // );
-
       const cloneBankCredit = isBankCredit.itemArray.map(
         (item: isTableItemObjBC) => {
           if (Number(changeData.parentID) === Number(item?.id)) {
-            let variance = item?.variance;
+            let variance: number =
+              Number(item?.variance) - Number(item?.rec_ref_amount);
             const children = item?.childrenBC?.map((item) => {
               variance = Number(variance) - Number(item?.amount);
-
               return {
                 ...item,
                 variance: variance,
               };
             });
-            return { ...item, childrenRB: children };
+            return { ...item, childrenBC: children };
           }
           return item;
         }
@@ -157,10 +129,11 @@ export default function DepositCounter() {
 
   const SaveHandler = () => {
     const filterReceipt = ReceiptBookData.itemArray.filter(
-      (items) => items.indexID !== ""
+      (items) => items.indexID !== "" && items.indexID !== undefined
     );
     const filterBankCredit = isBankCredit.itemArray.filter(
-      (items) => Number(items.rec_ref_id) !== 0
+      (items) =>
+        Number(items.rec_ref_id) !== 0 && Number(items.rec_ref_id) !== undefined
     );
     const PayloadRB = filterReceipt.map((itemRB) => {
       const childrenID = itemRB.childrenRB.map((childItem) => {
@@ -169,6 +142,7 @@ export default function DepositCounter() {
       return {
         id: itemRB.id,
         type_of_id: "receipt_book",
+        // tag_parent_id: itemRB.indexID,
         tag_ids: [...childrenID, itemRB.indexID],
         variance:
           itemRB.childrenRB.length <= 0
@@ -183,6 +157,7 @@ export default function DepositCounter() {
       return {
         id: itemBC.id,
         type_of_id: "bank_credit",
+        // tag_parent_id: itemBC.rec_ref_id,
         tag_ids: [...childrenID, itemBC.rec_ref_id],
         variance:
           itemBC.childrenBC.length <= 0
@@ -191,8 +166,7 @@ export default function DepositCounter() {
       };
     });
 
-    const Payload = [...PayloadRB, ...PayloadBC];
-
+    const Payload: any = [...PayloadRB, ...PayloadBC];
     if (Payload.length > 0) {
       mutate(Payload);
     } else {
