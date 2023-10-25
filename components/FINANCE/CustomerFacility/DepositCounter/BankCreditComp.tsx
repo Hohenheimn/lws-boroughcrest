@@ -87,25 +87,9 @@ export default function BankCreditComp({
     "approve"
   );
 
-  const [isPaginate, setPaginate] = useState(10);
-
-  const { setPrompt } = useContext(AppContext);
-
-  const [isSearch, setSearch] = useState("");
-
   const [isSelectedBankCreditIDs, setSelectedBankCreditIDs] = useState<
     number[]
   >([]);
-
-  const [isSelectBank, setSelectBank] = useState<any>([]);
-
-  const [isSelectBankIDS, setSelectBankIDS] = useState<any[]>([]);
-  useEffect(() => {
-    const selectbandIDS = isSelectBank.map((item: any) => {
-      return item.id;
-    });
-    setSelectBankIDS(selectbandIDS);
-  }, [isSelectBank]);
 
   const [isPeriod, setPeriod] = useState({
     from: "",
@@ -114,6 +98,96 @@ export default function BankCreditComp({
 
   const [TablePage, setTablePage] = useState(1);
 
+  const [isSelectBankIDS, setSelectBankIDS] = useState<any[]>([]);
+
+  const displayStatus = type === "bank-credit" ? "matched" : "unmatched";
+
+  const dateFrom = parse(isPeriod.from, "MMM dd yyyy", new Date());
+
+  const dateTo = parse(isPeriod.to, "MMM dd yyyy", new Date());
+
+  const [isSearch, setSearch] = useState("");
+
+  const [isPaginate, setPaginate] = useState(10);
+
+  const { data, isLoading, isError } = GetBankCredit(
+    displayStatus,
+    isValid(dateFrom) ? format(dateFrom, "yyyy-MM-dd") : "",
+    isValid(dateTo) ? format(dateTo, "yyyy-MM-dd") : "",
+    isSelectBankIDS,
+    TablePage,
+    isSearch,
+    isPaginate
+  );
+
+  useEffect(() => {
+    let selectAll = false;
+    const clone = data?.data?.data.map((parentMap: any) => {
+      let select = false;
+      if (isSelectedBankCreditIDs.includes(parentMap.id)) {
+        select = true;
+      }
+      let variance =
+        Number(parentMap?.credit) -
+        Number(parentMap?.receipt_book[0]?.amount_paid);
+      return {
+        id: parentMap.id,
+        index: parentMap?.index,
+        bank_account_no: parentMap?.bank_account?.bank_acc_no,
+        credit_date: parentMap?.date,
+        credit_amount: parentMap?.credit,
+        remarks: parentMap?.remarks,
+        variance: parentMap?.credit,
+        status: parentMap?.status,
+        receipt_no: parentMap?.receipt_book[0]?.receipt_no
+          ? parentMap?.receipt_book[0]?.receipt_no
+          : ``,
+        reference_no: parentMap?.receipt_book[0]?.reference_no
+          ? parentMap?.receipt_book[0]?.reference_no
+          : ``,
+        rec_ref_id: parentMap?.receipt_book[0]?.id,
+        rec_ref_amount: parentMap?.receipt_book[0]?.amount_paid,
+        select: select,
+        childrenBC: parentMap?.receipt_book
+          ?.filter((_: any, indx: number) => indx > 0)
+          .map((itemChild: any) => {
+            variance = Number(variance) - Number(itemChild?.amount_paid);
+            return {
+              id: itemChild?.id,
+              receipt_no: itemChild?.receipt_no,
+              reference_no: itemChild?.reference_no,
+              amount: itemChild?.amount_paid,
+              variance: variance,
+            };
+          }),
+      };
+    });
+
+    if (
+      clone?.length !== 0 &&
+      clone?.every((val: any) => isSelectedBankCreditIDs.includes(val.id))
+    ) {
+      selectAll = true;
+    } else {
+      selectAll = false;
+    }
+
+    setBankCredit({
+      selectAll: selectAll,
+      itemArray: clone,
+    });
+  }, [data?.data?.data]);
+  const { setPrompt } = useContext(AppContext);
+
+  const [isSelectBank, setSelectBank] = useState<any>([]);
+
+  useEffect(() => {
+    const selectbandIDS = isSelectBank.map((item: any) => {
+      return item.id;
+    });
+    setSelectBankIDS(selectbandIDS);
+  }, [isSelectBank]);
+
   // GET SELECTED Reference no and receipt no FOR FILTERING DROPDOWN
   const [OverallSelectedReceipt, setOverallSelectedReceipt] = useState<
     string[]
@@ -121,15 +195,16 @@ export default function BankCreditComp({
   const [OverallSelectedReference, setOverallSelectedReference] = useState<
     string[]
   >([]);
+
   useEffect(() => {
     let ReceiptParent: string[] = [];
     let ReceiptChildren: string[] = [];
-    isBankCredit.itemArray.map((item: isTableItemObjBC) => {
+    isBankCredit.itemArray?.map((item: isTableItemObjBC) => {
       if (item.receipt_no !== null) {
       }
       ReceiptParent = [...ReceiptParent, item.receipt_no];
     });
-    isBankCredit.itemArray.map((item: isTableItemObjBC) => {
+    isBankCredit.itemArray?.map((item: isTableItemObjBC) => {
       item.childrenBC.map((item2) => {
         if (item2.receipt_no !== null) {
           ReceiptChildren = [
@@ -143,12 +218,12 @@ export default function BankCreditComp({
 
     let ReferenceParent: string[] = [];
     let ReferenceChildren: string[] = [];
-    isBankCredit.itemArray.map((item: isTableItemObjBC) => {
+    isBankCredit.itemArray?.map((item: isTableItemObjBC) => {
       if (item.receipt_no === null) {
         ReferenceParent = [...ReferenceParent, item.reference_no];
       }
     });
-    isBankCredit.itemArray.map((item: isTableItemObjBC) => {
+    isBankCredit.itemArray?.map((item: isTableItemObjBC) => {
       item.childrenBC.map((item2) => {
         if (item.receipt_no === null) {
           ReferenceChildren = [...ReferenceChildren, `${item2.reference_no}`];
@@ -175,12 +250,12 @@ export default function BankCreditComp({
       setSelectedBankCreditIDs([]);
     } else {
       // add
-      const BankCreditIDs = isBankCredit.itemArray.map((item) => {
+      const BankCreditIDs = isBankCredit.itemArray?.map((item) => {
         return Number(item.id);
       });
       setSelectedBankCreditIDs(BankCreditIDs);
     }
-    const newItems = isBankCredit?.itemArray.map((item: any) => {
+    const newItems = isBankCredit?.itemArray?.map((item: any) => {
       return {
         ...item,
         select: !isBankCredit.selectAll,
@@ -191,8 +266,9 @@ export default function BankCreditComp({
       selectAll: !isBankCredit.selectAll,
     });
   };
+
   const AddHandler = (id: string | number) => {
-    const cloneToAdd = isBankCredit.itemArray.map((item: isTableItemObjBC) => {
+    const cloneToAdd = isBankCredit.itemArray?.map((item: isTableItemObjBC) => {
       if (item.id === id) {
         return {
           ...item,
@@ -217,7 +293,7 @@ export default function BankCreditComp({
   };
 
   const DeleteHandler = (id: string | number) => {
-    const cloneToDelete = isBankCredit.itemArray.filter(
+    const cloneToDelete = isBankCredit.itemArray?.filter(
       (item) => item.id !== id
     );
     setBankCredit({
@@ -229,7 +305,7 @@ export default function BankCreditComp({
     parentID: string | number,
     selectedID: string | number
   ) => {
-    const cloneToDelete = isBankCredit.itemArray.map(
+    const cloneToDelete = isBankCredit.itemArray?.map(
       (item: isTableItemObjBC) => {
         if (item.id === parentID) {
           const clonetoFilter = item.childrenBC.filter(
@@ -256,22 +332,6 @@ export default function BankCreditComp({
     });
   };
 
-  const displayStatus = type === "bank-credit" ? "matched" : "unmatched";
-
-  const dateFrom = parse(isPeriod.from, "MMM dd yyyy", new Date());
-
-  const dateTo = parse(isPeriod.to, "MMM dd yyyy", new Date());
-
-  const { data, isLoading, isError } = GetBankCredit(
-    displayStatus,
-    isValid(dateFrom) ? format(dateFrom, "yyyy-MM-dd") : "",
-    isValid(dateTo) ? format(dateTo, "yyyy-MM-dd") : "",
-    isSelectBankIDS,
-    TablePage,
-    isSearch,
-    isPaginate
-  );
-
   const [isExportLoading, setExportLoading] = useState(false);
 
   const ExportHandler = () => {
@@ -289,57 +349,6 @@ export default function BankCreditComp({
       setExportLoading
     );
   };
-
-  // APPLY DATA FROM API
-  useEffect(() => {
-    if (data?.status === 200) {
-      let selectAll = false;
-      const CloneArray = data?.data.data.map((item: any) => {
-        let select = false;
-        if (isSelectedBankCreditIDs.includes(item.id)) {
-          select = true;
-        }
-        return {
-          id: item.id,
-          index: item?.index,
-          bank_account_no: item?.bank_account?.bank_acc_no,
-          credit_date: item?.date,
-          credit_amount: item?.credit,
-          remarks: item?.remarks,
-          variance: item?.credit,
-          status: item?.status,
-          receipt_no: item?.receipt_no,
-          rec_ref_id: "",
-          reference_no: item?.reference_no,
-          select: select,
-          childrenBC:
-            type === "bank-credit"
-              ? item?.receipt_book.map((receiptBookItem: any) => {
-                  return {
-                    receipt_no: receiptBookItem?.receipt_no,
-                    reference_no: receiptBookItem?.reference_no,
-                    amount: receiptBookItem?.amount_paid,
-                  };
-                })
-              : [],
-        };
-      });
-
-      if (
-        CloneArray.length !== 0 &&
-        CloneArray.every((val: any) => isSelectedBankCreditIDs.includes(val.id))
-      ) {
-        selectAll = true;
-      } else {
-        selectAll = false;
-      }
-
-      setBankCredit({
-        itemArray: CloneArray,
-        selectAll: selectAll,
-      });
-    }
-  }, [data?.data.data, isSelectedBankCreditIDs]);
 
   let buttonClicked = "";
 
@@ -501,12 +510,13 @@ export default function BankCreditComp({
               <th>CREDIT AMOUNT</th>
               <th>REMARKS</th>
               <th>RECEIPT NO. / REFERENCE NO.</th>
+              {type === "bank-credit" && <th>DEBIT</th>}
               <th>{type === "bank-credit" ? "STATUS" : "VARIANCE"}</th>
               {type !== "bank-credit" && <th></th>}
             </tr>
           </thead>
           <tbody>
-            {isBankCredit?.itemArray.map(
+            {isBankCredit?.itemArray?.map(
               (item: isTableItemObjBC, index: number) => (
                 <List
                   key={index}
@@ -529,7 +539,7 @@ export default function BankCreditComp({
             )}
           </tbody>
         </table>
-        {Number(isPaginate) === Number(isBankCredit?.itemArray.length) &&
+        {Number(isPaginate) === Number(isBankCredit?.itemArray?.length) &&
           type !== "bank-credit" && (
             <div className=" h-[40px] w-full flex justify-center items-center">
               <button
@@ -610,12 +620,12 @@ const List = ({
 
   useEffect(() => {
     if (isSelect.rec_ref !== "") {
-      const newItems = isTableItem?.itemArray.map((item: any) => {
+      const newItems = isTableItem?.itemArray?.map((item: any) => {
         if (itemDetail.id == item.id) {
           return {
             ...item,
-            reference_no: "",
-            receipt_no: "",
+            reference_no: itemDetail?.reference_no,
+            receipt_no: itemDetail?.receipt_no,
           };
         }
         return item;
@@ -661,7 +671,7 @@ const List = ({
     const amount = e.target.getAttribute("data-amount");
     const ChildRowID = e.target.getAttribute("data-rowid");
 
-    const newItems = isTableItem?.itemArray.map((item: any) => {
+    const newItems = isTableItem?.itemArray?.map((item: any) => {
       if (itemDetail.id == item.id) {
         if (key === "select") {
           if (item.select) {
@@ -724,11 +734,8 @@ const List = ({
   );
   credit_date = isValid(credit_date) ? format(credit_date, "MMM dd yyyy") : "";
 
-  const DisplayVariance =
-    Number(itemDetail.credit_amount) - Number(itemDetail.rec_ref_amount);
-
   const remainingVariance: number =
-    Number(itemDetail.variance) - Number(itemDetail.rec_ref_amount);
+    Number(itemDetail.credit_amount) - Number(itemDetail.rec_ref_amount);
 
   return (
     <>
@@ -758,16 +765,14 @@ const List = ({
           />
         </td>
         <td>{itemDetail.remarks}</td>
-        {type === "bank-credit" ? (
+        {type === "bank-credit" && (
           <td>
-            {itemDetail?.childrenBC?.map((item: any, index: number) => (
-              <span key={index}>
-                {item.receipt_no ? item.receipt_no : item.reference_no}{" "}
-                {itemDetail?.receipt_book?.length - 1 === index ? ", " : ""}
-              </span>
-            ))}
+            {itemDetail.receipt_no
+              ? itemDetail.receipt_no
+              : itemDetail.reference_no}
           </td>
-        ) : (
+        )}
+        {type !== "bank-credit" && (
           <td className="maxlarge">
             {isSelect.rec_ref === "" ? (
               <div className="select">
@@ -781,6 +786,13 @@ const List = ({
                       autoComplete="off"
                       className="field w-full"
                       readOnly
+                      value={
+                        itemDetail.receipt_no
+                          ? itemDetail.receipt_no
+                          : itemDetail.reference_no
+                          ? itemDetail.reference_no
+                          : ""
+                      }
                       onClick={() =>
                         setSelect({
                           ...isSelect,
@@ -819,7 +831,7 @@ const List = ({
                         : itemDetail.reference_no
                     }
                     selectHandler={SelectHandler}
-                    keyType={isSelect.rec_ref}
+                    keyTypeOutSide={isSelect.rec_ref}
                     rowID={1}
                     selecteRef={SelectedReference}
                     selecteRec={SelectedReceipt}
@@ -829,6 +841,15 @@ const List = ({
                 )}
               </>
             )}
+          </td>
+        )}
+        {type === "bank-credit" && (
+          <td>
+            {" "}
+            <TextNumberDisplay
+              value={itemDetail.rec_ref_amount}
+              className="withPeso"
+            />
           </td>
         )}
         <td>
@@ -866,7 +887,7 @@ const List = ({
           ) : (
             <InputNumberForTable
               onChange={() => {}}
-              value={DisplayVariance}
+              value={remainingVariance}
               className={"field disabled w-full text-end"}
               type={""}
             />
@@ -881,7 +902,7 @@ const List = ({
                 <div
                   className={`ml-5 1024px:ml-2 ${
                     (remainingVariance === undefined ||
-                      remainingVariance < 0 ||
+                      remainingVariance <= 0 ||
                       isNaN(remainingVariance)) &&
                     "pointer-events-none opacity-[.5]"
                   }`}
@@ -941,9 +962,10 @@ const ChildList = ({
   SelectedReference,
 }: ChildList) => {
   const [isSelect, setSelect] = useState({
-    rec_ref: "",
     toggle: false,
+    rec_ref: "",
   });
+
   const SelectField = (value: string) => {
     setSelect({
       rec_ref: value,
@@ -955,28 +977,19 @@ const ChildList = ({
     <tr
       className={`${itemDetail.childrenBC.length - 1 !== index && "noBorder"}`}
     >
-      <td></td>
-      <td></td>
-      <td></td>
-
-      <td>
-        {/* {itemChildren.receipt_no === null
-                    ? itemChildren.reference_no
-                    : itemChildren.receipt_no} */}
-      </td>
-      <td>
-        {type === "bank-credit" && (
-          <TextNumberDisplay value={itemChildren.amount} className="withPeso" />
-        )}
-      </td>
-      {/* <td></td>
+      <td colSpan={type === "bank-credit" ? 6 : 4}></td>
       {type === "bank-credit" && (
         <td>
           {itemChildren.receipt_no
             ? itemChildren.receipt_no
             : itemChildren.reference_no}
         </td>
-      )} */}
+      )}
+      <td>
+        {type === "bank-credit" && (
+          <TextNumberDisplay value={itemChildren.amount} className="withPeso" />
+        )}
+      </td>
       {type !== "bank-credit" && (
         <>
           <td className="maxlarge">
@@ -992,6 +1005,13 @@ const ChildList = ({
                       autoComplete="off"
                       className="field w-full"
                       readOnly
+                      value={
+                        itemChildren.receipt_no
+                          ? itemChildren.receipt_no
+                          : itemChildren.reference_no
+                          ? itemChildren.reference_no
+                          : ""
+                      }
                       onClick={() =>
                         setSelect({
                           ...isSelect,
@@ -1037,12 +1057,12 @@ const ChildList = ({
                 setSelectField={SelectField}
                 name="index"
                 value={
-                  isSelect.rec_ref === "receipt"
+                  isSelect.rec_ref.replace("-first", "") === "receipt"
                     ? itemChildren.receipt_no
                     : itemChildren.reference_no
                 }
                 selectHandler={SelectHandlerChildDD}
-                keyType={isSelect.rec_ref}
+                keyTypeOutSide={isSelect.rec_ref}
                 rowID={itemChildren.id}
                 selecteRef={SelectedReference}
                 selecteRec={SelectedReceipt}
@@ -1070,10 +1090,7 @@ const ChildList = ({
               itemDetail.childrenBC.length - 1 === index && (
                 <div
                   className={`ml-5 1024px:ml-2 ${
-                    itemDetail.variance !== "0" &&
-                    itemChildren.reference_no === "" &&
-                    itemDetail.variance !== 0 &&
-                    itemDetail.childrenBC.length - 1 === index &&
+                    Number(itemChildren.variance) <= 0 &&
                     "pointer-events-none opacity-[.5]"
                   }`}
                 >

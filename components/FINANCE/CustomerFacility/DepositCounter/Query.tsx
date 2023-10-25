@@ -235,22 +235,8 @@ export const SaveTagging = (onSuccess: any, onError: any) => {
     {
       onSuccess: () => {
         onSuccess();
-        queryClient.invalidateQueries([
-          "bank-credit-list",
-          "unmatched",
-          "",
-          "",
-          [],
-          1,
-          "",
-        ]);
-        queryClient.invalidateQueries([
-          "receipts-book-list",
-          "",
-          "",
-          "receipt_book",
-          "unmatched",
-        ]);
+        queryClient.invalidateQueries("receipts-book-list");
+        queryClient.invalidateQueries("bank-credit-list");
       },
       onError: onError,
     }

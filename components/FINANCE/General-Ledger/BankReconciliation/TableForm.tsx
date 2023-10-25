@@ -36,7 +36,7 @@ import { BankReconImport, CreateUpdateBR, GetBR } from "./Query";
 type isTableitemArray = isTableitemObj[];
 
 type isTableitemObj = {
-  id: string | number;
+  id: string;
   date: string;
   debit: string;
   credit: string;
@@ -112,6 +112,7 @@ export default function TableForm() {
 
   const [isExportLoading, setExportLoading] = useState(false);
 
+  const [deletedIDs, setDeletedIDs] = useState<number[]>([]);
   const ExportHandler = () => {
     if (isPeriod.from === "" || isPeriod.to === "" || isBankAccount.id === "") {
       setPrompt({
@@ -140,6 +141,7 @@ export default function TableForm() {
       message: "Bank reconciliation successfully saved!",
       type: "success",
     });
+    setDeletedIDs([]);
   };
 
   const onError = (e: any) => {
@@ -236,6 +238,7 @@ export default function TableForm() {
 
   const SubmitHandler = () => {
     let validate = true;
+
     const bank_recon = isTableItem.map((item: isTableitemObj) => {
       if (item.date === "") {
         setPrompt({
@@ -246,6 +249,7 @@ export default function TableForm() {
         validate = false;
         return;
       }
+
       if (item.debit === "" && item.credit === "") {
         setPrompt({
           toggle: true,
@@ -255,8 +259,21 @@ export default function TableForm() {
         validate = false;
         return;
       }
+
       const date = parse(item.date, "MMM dd yyyy", new Date());
+
+      const id: string = item?.id;
+      if (String(id).includes("new")) {
+        return {
+          date: isValid(date) ? format(date, "yyyy-MM-dd") : "",
+          debit: `${item.debit}`,
+          credit: `${item.credit}`,
+          remarks: item.remarks,
+          document_no: item.document_no,
+        };
+      }
       return {
+        id: item?.id,
         date: isValid(date) ? format(date, "yyyy-MM-dd") : "",
         debit: `${item.debit}`,
         credit: `${item.credit}`,
@@ -264,10 +281,13 @@ export default function TableForm() {
         document_no: item.document_no,
       };
     });
+
     const Payload = {
       bank_recon: bank_recon,
       bank_account_id: `${isBankAccount.id}`,
+      deleted_bank_recon_ids: deletedIDs,
     };
+
     if (validate) mutate(Payload);
   };
 
@@ -275,7 +295,7 @@ export default function TableForm() {
     <>
       {router.query.view !== undefined && <Details />}
       <section className={styleSearch.container}>
-        <div className={styleSearch.period}>
+        <div className="flex gap-2 flex-wrap items-center">
           <PeriodCalendar value={isPeriod} setValue={setPeriod} />
           <div className="flex items-center ml-5 1280px:ml-0 1280px:mt-5">
             <p className="labelField">BANK&nbsp;ACCOUNT</p>
@@ -421,6 +441,8 @@ export default function TableForm() {
                       Permission_create={Permission_create}
                       Permission_modify={Permission_modify}
                       Permission_view={Permission_view}
+                      deletedIDs={deletedIDs}
+                      setDeletedIDs={setDeletedIDs}
                     />
                   ))}
                 </>
@@ -478,6 +500,8 @@ type ListProps = {
   Permission_create: boolean;
   Permission_modify: boolean;
   Permission_view: boolean;
+  deletedIDs: number[];
+  setDeletedIDs: Function;
 };
 
 const List = ({
@@ -493,6 +517,8 @@ const List = ({
   Permission_create,
   Permission_modify,
   Permission_view,
+  deletedIDs,
+  setDeletedIDs,
 }: ListProps) => {
   const { setPrompt } = useContext(AppContext);
   const itemData: isTableitemObj = itemDetail;
@@ -605,6 +631,9 @@ const List = ({
     setTableItem((item: any[]) =>
       item.filter((x: any) => x.id !== itemData.id)
     );
+    if (!String(itemData.id).includes("new-item")) {
+      setDeletedIDs([...deletedIDs, itemData.id]);
+    }
   };
 
   return (

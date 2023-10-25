@@ -101,7 +101,7 @@ const ListItem = ({
   }, [tempSearch]);
   // end
   const { isLoading, data, isError } = useQuery(
-    ["DD-BC", name, tempSearch, "unmatched"],
+    ["DD-BC", name, keywordSearch, "unmatched"],
     () => {
       return api.get(
         `/finance/customer-facility/bank-credit?status=unmatched&keywords=${keywordSearch}`,

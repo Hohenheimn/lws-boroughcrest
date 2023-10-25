@@ -210,7 +210,7 @@ export default function Receiptsbook({
         selectAll: selectAll,
       });
     }
-  }, [data?.data.data]);
+  }, [data?.data.data, isSelectedIDs]);
 
   const AddHandler = (id: string | number) => {
     const cloneToAdd = isReceiptBookData?.itemArray?.map(
@@ -632,8 +632,9 @@ const List = ({
     ? format(document_date, "MMM dd yyyy")
     : "";
 
-  const DisplayVariance =
+  const remainingVariance =
     Number(itemDetail.deposit_amount) - Number(itemDetail.indexAmount);
+
   return (
     <>
       <tr className={`${itemDetail?.childrenRB?.length > 0 && "noBorder"}`}>
@@ -708,24 +709,20 @@ const List = ({
           <td>
             <InputNumberForTable
               onChange={() => {}}
-              value={DisplayVariance}
+              value={remainingVariance}
               className={"field disabled w-full max-w-[150px] text-end"}
               type={""}
             />
           </td>
         )}
         {type !== "receipts-book" && (
-          <td className="actionIcon">
+          <td className="actionIcon h-full flex items-center">
             {itemDetail?.variance !== 0 &&
               itemDetail?.childrenRB?.length <= 0 &&
               Permission_modify && (
                 <div
-                  className={`ml-5 1024px:ml-2 ${
-                    itemDetail?.variance !== "0" &&
-                    itemDetail?.index === "" &&
-                    itemDetail?.variance !== 0 &&
-                    itemDetail?.childrenRB?.length <= 0 &&
-                    "pointer-events-none opacity-[.5]"
+                  className={`ml-5 h-full 1024px:ml-2 ${
+                    remainingVariance <= 0 && "pointer-events-none opacity-[.5]"
                   }`}
                   onClick={() => AddHandler(itemDetail?.id)}
                 >
@@ -835,10 +832,7 @@ const ChildList = ({
               index === itemDetail?.childrenRB?.length - 1 && (
                 <div
                   className={`ml-5 1024px:ml-2 ${
-                    itemDetail?.variance !== "0" &&
-                    itemChildren.index === "" &&
-                    itemDetail?.variance !== 0 &&
-                    itemDetail?.childrenRB?.length - 1 === index &&
+                    Number(itemDetail.variance) <= 0 &&
                     "pointer-events-none opacity-[.5]"
                   }`}
                   onClick={() => AddHandler(itemDetail.id)}
