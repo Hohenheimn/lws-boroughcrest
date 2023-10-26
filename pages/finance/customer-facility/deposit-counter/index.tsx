@@ -48,25 +48,23 @@ export default function DepositCounter() {
     // // Receipt book's Index to Bank Credit
     if (changeData.fromWhere === "receipt book") {
       const cloneReceiptBook = ReceiptBookData.itemArray.map(
-        (item: isTableItemObjRB) => {
-          if (Number(changeData.parentID) === Number(item?.id)) {
-            let variance = item?.variance;
-            const children = item?.childrenRB?.map((item) => {
+        (parentitem: isTableItemObjRB) => {
+          if (Number(changeData.parentID) === Number(parentitem?.id)) {
+            let variance =
+              Number(parentitem?.deposit_amount) -
+              Number(parentitem?.indexAmount);
+            const children = parentitem?.childrenRB?.map((item) => {
               variance = Number(variance) - Number(item?.amount);
-
               return {
                 ...item,
                 variance: variance,
               };
             });
-            return { ...item, childrenRB: children };
+            return { ...parentitem, childrenRB: children };
           }
-          return item;
+          return parentitem;
         }
       );
-
-      console.log(cloneReceiptBook);
-
       setReceiptBookData({
         selectAll: false,
         itemArray: cloneReceiptBook,
@@ -80,44 +78,19 @@ export default function DepositCounter() {
     }
     // Bank Credit's Reference no and receipt no to Receipt Book
     if (changeData.fromWhere === "bank credit") {
-      // const cloneBankCredit = isBankCredit.itemArray.map(
-      //     (item: isTableItemObjBC) => {
-      //         if (Number(changeData.parentID) === Number(item?.id)) {
-      //             let variance = item?.credit_amount;
-      //             item?.childrenBC.map((item) => {
-      //                 variance = Number(variance) - Number(item?.amount);
-      //             });
-      //             variance =
-      //                 Number(variance) - Number(item?.rec_ref_amount);
-      //             if (Number.isNaN(variance)) {
-      //                 return {
-      //                     ...item,
-      //                     variance: item?.credit_amount,
-      //                 };
-      //             } else {
-      //                 return {
-      //                     ...item,
-      //                     variance: variance <= 0 ? 0 : variance,
-      //                 };
-      //             }
-      //         }
-      //         return item;
-      //     }
-      // );
-
       const cloneBankCredit = isBankCredit.itemArray.map(
         (item: isTableItemObjBC) => {
           if (Number(changeData.parentID) === Number(item?.id)) {
-            let variance = item?.variance;
+            let variance: number =
+              Number(item?.credit_amount) - Number(item?.rec_ref_amount);
             const children = item?.childrenBC?.map((item) => {
               variance = Number(variance) - Number(item?.amount);
-
               return {
                 ...item,
                 variance: variance,
               };
             });
-            return { ...item, childrenRB: children };
+            return { ...item, childrenBC: children };
           }
           return item;
         }
@@ -157,10 +130,10 @@ export default function DepositCounter() {
 
   const SaveHandler = () => {
     const filterReceipt = ReceiptBookData.itemArray.filter(
-      (items) => items.indexID !== ""
+      (items) => items.indexID !== "" && items.indexID !== undefined
     );
     const filterBankCredit = isBankCredit.itemArray.filter(
-      (items) => Number(items.rec_ref_id) !== 0
+      (items) => items.rec_ref_id !== undefined
     );
     const PayloadRB = filterReceipt.map((itemRB) => {
       const childrenID = itemRB.childrenRB.map((childItem) => {
@@ -172,7 +145,7 @@ export default function DepositCounter() {
         tag_ids: [...childrenID, itemRB.indexID],
         variance:
           itemRB.childrenRB.length <= 0
-            ? itemRB.variance
+            ? Number(itemRB.deposit_amount) - Number(itemRB.indexAmount)
             : itemRB.childrenRB[Number(itemRB.childrenRB.length) - 1].variance,
       };
     });
@@ -186,12 +159,21 @@ export default function DepositCounter() {
         tag_ids: [...childrenID, itemBC.rec_ref_id],
         variance:
           itemBC.childrenBC.length <= 0
-            ? itemBC.variance
+            ? Number(itemBC.credit_amount) - Number(itemBC.rec_ref_amount)
             : itemBC.childrenBC[Number(itemBC.childrenBC.length) - 1].variance,
       };
     });
 
-    const Payload = [...PayloadRB, ...PayloadBC];
+    const Payload: any = [...PayloadRB, ...PayloadBC];
+
+    if (Payload.some((someItem: any) => someItem.variance < 0)) {
+      setPrompt({
+        message: `Some of item has a invalid variance!`,
+        type: "draft",
+        toggle: true,
+      });
+      return;
+    }
 
     if (Payload.length > 0) {
       mutate(Payload);

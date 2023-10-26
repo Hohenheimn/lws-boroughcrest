@@ -162,6 +162,9 @@ export default function Receiptsbook({
         if (isSelectedIDs.includes(item.id)) {
           select = true;
         }
+        let variance =
+          Number(item?.amount_paid) - Number(item?.bank_credit[0]?.credit);
+        variance = isNaN(variance) ? 0 : variance;
         return {
           id: item.id,
           document_date: item?.receipt_date,
@@ -176,21 +179,22 @@ export default function Receiptsbook({
           deposit_amount: item?.amount_paid,
           variance: item?.amount_paid,
           status: item?.status,
-          index: "",
-          indexID: "",
+          index: item?.bank_credit[0]?.index,
+          indexID: item?.bank_credit[0]?.id,
+          indexAmount: item?.bank_credit[0]?.credit,
           select: select,
-          childrenRB:
-            type === "receipts-book"
-              ? item?.bank_credit?.map((itemChild: any) => {
-                  return {
-                    id: itemChild.id,
-                    indexID: itemChild.id,
-                    index: itemChild.index,
-                    amount: itemChild.credit,
-                    variance: itemChild.variance,
-                  };
-                })
-              : [],
+          childrenRB: item?.bank_credit
+            ?.filter((_: any, indx: number) => indx > 0)
+            .map((itemChild: any) => {
+              variance = Number(variance) - Number(itemChild?.credit);
+              return {
+                id: itemChild.id,
+                indexID: itemChild.id,
+                index: itemChild.index,
+                amount: itemChild?.credit,
+                variance: variance,
+              };
+            }),
         };
       });
       if (
@@ -206,7 +210,7 @@ export default function Receiptsbook({
         selectAll: selectAll,
       });
     }
-  }, [data?.data.data]);
+  }, [data?.data.data, isSelectedIDs]);
 
   const AddHandler = (id: string | number) => {
     const cloneToAdd = isReceiptBookData?.itemArray?.map(
@@ -428,6 +432,7 @@ export default function Receiptsbook({
               <th>REFERENCE NO.</th>
               <th>DEPOSIT DATE</th>
               <th>DEPOSIT AMOUNT</th>
+              {type === "receipts-book" && <th>CREDIT AMOUNT</th>}
               <th>INDEX</th>
               {type !== "receipts-book" && <th>VARIANCE</th>}
               {type !== "receipts-book" && <th></th>}
@@ -627,8 +632,9 @@ const List = ({
     ? format(document_date, "MMM dd yyyy")
     : "";
 
-  const DisplayVariance =
+  const remainingVariance =
     Number(itemDetail.deposit_amount) - Number(itemDetail.indexAmount);
+
   return (
     <>
       <tr className={`${itemDetail?.childrenRB?.length > 0 && "noBorder"}`}>
@@ -672,6 +678,14 @@ const List = ({
             className={itemDetail?.deposit_amount === "" ? "" : "withPeso"}
           />
         </td>
+        {type === "receipts-book" && (
+          <td>
+            <TextNumberDisplay
+              value={itemDetail?.indexAmount}
+              className={itemDetail?.indexAmount === "" ? "" : "withPeso"}
+            />
+          </td>
+        )}
         <td>
           {type === "receipts-book" ? (
             itemDetail?.index
@@ -695,24 +709,20 @@ const List = ({
           <td>
             <InputNumberForTable
               onChange={() => {}}
-              value={DisplayVariance}
+              value={remainingVariance}
               className={"field disabled w-full max-w-[150px] text-end"}
               type={""}
             />
           </td>
         )}
         {type !== "receipts-book" && (
-          <td className="actionIcon">
+          <td className="actionIcon h-full flex items-center">
             {itemDetail?.variance !== 0 &&
               itemDetail?.childrenRB?.length <= 0 &&
               Permission_modify && (
                 <div
-                  className={`ml-5 1024px:ml-2 ${
-                    itemDetail?.variance !== "0" &&
-                    itemDetail?.index === "" &&
-                    itemDetail?.variance !== 0 &&
-                    itemDetail?.childrenRB?.length <= 0 &&
-                    "pointer-events-none opacity-[.5]"
+                  className={`ml-5 h-full 1024px:ml-2 ${
+                    remainingVariance <= 0 && "pointer-events-none opacity-[.5]"
                   }`}
                   onClick={() => AddHandler(itemDetail?.id)}
                 >
@@ -777,6 +787,7 @@ const ChildList = ({
         <td></td>
         <td></td>
         <td></td>
+        {type === "receipts-book" && <td></td>}
         {type === "receipts-book" && (
           <td>
             <TextNumberDisplay
@@ -821,10 +832,7 @@ const ChildList = ({
               index === itemDetail?.childrenRB?.length - 1 && (
                 <div
                   className={`ml-5 1024px:ml-2 ${
-                    itemDetail?.variance !== "0" &&
-                    itemChildren.index === "" &&
-                    itemDetail?.variance !== 0 &&
-                    itemDetail?.childrenRB?.length - 1 === index &&
+                    Number(itemDetail.variance) <= 0 &&
                     "pointer-events-none opacity-[.5]"
                   }`}
                   onClick={() => AddHandler(itemDetail.id)}
