@@ -58,8 +58,9 @@ export default function CheckPaymentList() {
       EndPointList={`/finance/customer-facility/collection?paginate=10&receipt_type=Provisional&filters=${isFilterText}&keyword=${isSearch}&page=${
         isSearch === "" ? TablePage : 1
       }&date_from=${dateFrom}&date_to=${dateTo}`}
+      // &collection_check_warehouse_id=not null
       EndPointAdvFilter={
-        "/finance/customer-facility/collection/filter-options?receipt_type=Provisional&collection_check_warehouse_id=not null&keywords="
+        "/finance/customer-facility/collection/filter-options?receipt_type=Provisional&keywords="
       }
       EndPointExport={`/finance/customer-facility/collection/export?paginate=10&collection_check_warehouse_id=not null&receipt_type=Provisional&filters=${isFilterText}&keyword=${isSearch}&page=${
         isSearch === "" ? TablePage : 1

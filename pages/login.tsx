@@ -70,6 +70,12 @@ export default function Login() {
         localStorage.setItem("password", isPassword);
       }
 
+      setPrompt({
+        message: "Successfully login",
+        type: "success",
+        toggle: true,
+      });
+
       setCookie("user", token);
 
       router.push("/dashboard");
@@ -81,7 +87,13 @@ export default function Login() {
       setSuccess(false);
 
       if (error?.response?.status === 401) {
-        setInvalid("Invalid Username or Password");
+        setPrompt({
+          message: error?.response?.data?.error,
+          type: "error",
+          toggle: true,
+        });
+        const message = error?.response?.data?.error;
+        setInvalid(message);
       } else {
         setInvalid(error?.message);
       }
