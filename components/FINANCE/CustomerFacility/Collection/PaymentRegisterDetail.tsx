@@ -119,7 +119,7 @@ export default function PaymentRegisterDetail({
                   <Tippy theme="ThemeRed" content="Print">
                     <div className="relative w-8 h-8 transition-all duration-75 hover:scale-[1.1]">
                       <Link
-                        href={`/finance/customer-facility/collection/payment-register/print?type=payment register detail&payment_register_id=${CollectionDetail?.id}`}
+                        href={`/finance/customer-facility/collection/payment-register/print?type=payment register detail&payment_register_id=${CollectionDetail?.id}&receipt_type=${CollectionDetail?.receipt_type}`}
                       >
                         <a target="_blank">
                           <Image

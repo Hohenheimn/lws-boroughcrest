@@ -74,6 +74,7 @@ export type CollectionItem = {
     uom: string;
   }[];
   outstanding_balances: {
+    reference_no: string;
     balance: string | number;
     billing_invoice_id: number;
     collection_id: number;
@@ -90,6 +91,9 @@ export type CollectionItem = {
     remarks: string;
   }[];
   proof_of_payment: string;
+  bank_account: {
+    bank_branch: string;
+  };
 };
 
 export type PaymentSummaryHistories = CollectionItem;
