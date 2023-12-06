@@ -397,20 +397,23 @@ export default function PaymentRegisterDetail({
                 />
               </li>
             )}
-          <li
-            className={`w-full rounded-2xl p-10 480px:p-8 bg-white mb-10 640px:mb-5 ${
-              DisplayForPrint ? "border" : "shadow-lg"
-            }`}
-          >
-            <PaymentSummaryTable
-              SummaryItems={CollectionDetail?.histories}
-              CreditTax={CollectionDetail?.credit_tax}
-              TotalDue={TotalDue}
-              triggerID={CollectionDetail?.id}
-              LessDiscount={CollectionDetail?.discount}
-              AmoundPaid={CollectionDetail?.amount_paid}
-            />
-          </li>
+          {CollectionDetail?.receipt_type !== "Provisional" && (
+            <li
+              className={`w-full rounded-2xl p-10 480px:p-8 bg-white mb-10 640px:mb-5 ${
+                DisplayForPrint ? "border" : "shadow-lg"
+              }`}
+            >
+              <PaymentSummaryTable
+                SummaryItems={CollectionDetail?.histories}
+                CreditTax={CollectionDetail?.credit_tax}
+                TotalDue={TotalDue}
+                triggerID={CollectionDetail?.id}
+                LessDiscount={CollectionDetail?.discount}
+                AmoundPaid={CollectionDetail?.amount_paid}
+              />
+            </li>
+          )}
+
           <li
             className={`w-full rounded-2xl p-10 480px:p-8 bg-white ${
               DisplayForPrint ? "border" : "shadow-lg"

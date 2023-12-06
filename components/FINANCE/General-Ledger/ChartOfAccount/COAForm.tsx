@@ -417,7 +417,9 @@ export default function COAForm({
               <label htmlFor="status">*APPLY TO SUB-ACCOUNT</label>
               <div
                 className={`statusCircle ${isStatus ? "active" : "inactive"}`}
-                onClick={() => setStatus(!isStatus)}
+                onClick={() => {
+                  isParent.id ? setStatus(true) : setStatus(!isStatus);
+                }}
               ></div>
             </li>
 

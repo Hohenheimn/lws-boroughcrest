@@ -87,15 +87,6 @@ export default function GeneralReportsCheckbox({
   };
 
   const ApplyHandler = () => {
-    if (isReportType === "General Ledger" && isAccount.length <= 0) {
-      setPrompt({
-        message: "Select an Account",
-        type: "draft",
-        toggle: true,
-      });
-      return;
-    }
-
     if (
       isReportType === "Trial Balance" &&
       Period.from === "" &&
