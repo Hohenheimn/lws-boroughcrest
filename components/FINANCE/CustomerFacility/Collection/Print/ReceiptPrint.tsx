@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 
 import { format, startOfDay } from "date-fns";
 
+import numberToWords from "number-to-words";
+
 import { CollectionItem } from "../../../../../pages/finance/customer-facility/collection/payment-register";
 import { LoginUserInfo } from "../../../../HOC/LoginUser/UserInfo";
 import { TextNumberDisplay } from "../../../../Reusable/NumberFormat";
@@ -216,7 +218,9 @@ const ReceiptPrint = ({
                     </ul>
                     <ul className=" w-full flex justify-between gap-2">
                       <li>the sum of</li>
-                      <li className="border-b border-[#545454] flex-1"></li>
+                      <li className="border-b border-[#545454] flex-1 text-center capitalize">
+                        {numberToWords.toWords(total)} Pesos
+                      </li>
                       <li>
                         (Php <TextNumberDisplay value={total} className={""} />)
                       </li>
