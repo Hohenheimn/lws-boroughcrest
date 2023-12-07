@@ -24,7 +24,16 @@ export type CollectionItem = {
       id: number;
       unit_code: string;
     }[];
-    type: "Company";
+    type: string;
+    tin: string;
+    registered_address_building: string;
+    registered_address_district: string;
+    registered_address_municipal_city: string;
+    registered_address_province: string;
+    registered_address_street: string;
+    registered_address_unit_floor: string;
+    registered_address_zip_code: string;
+    registered_email: string;
   };
   user_id: number;
   type: string;

@@ -10,11 +10,47 @@ type Props = {
   userInfo?: LoginUserInfo;
   data: CollectionItem;
   receiptType: string;
+  arRange: { serial_from: string; serial_to: string };
+  prRange: { serial_from: string; serial_to: string };
+  orRange: { serial_from: string; serial_to: string };
 };
 
-const ReceiptPrint = ({ userInfo, data, receiptType }: Props) => {
+const ReceiptPrint = ({
+  userInfo,
+  data,
+  receiptType,
+  arRange,
+  prRange,
+  orRange,
+}: Props) => {
   const date = new Date();
   let today = startOfDay(date);
+
+  console.log(data);
+  console.log(userInfo);
+  const cashAmount = data?.mode_of_payment === "Cash" ? data?.amount_paid : 0;
+  const [depositsAmountTotal, setDepositsAmountTotal] = useState(0);
+  const [checkWarehouseTotal, setCheckWarehouseTotal] = useState(0);
+  const [total, setTotal] = useState(0);
+
+  useEffect(() => {
+    setDepositsAmountTotal(0);
+    data?.deposits.map((item) => {
+      setDepositsAmountTotal((prev) => prev + Number(item.amount));
+    });
+    setCheckWarehouseTotal(0);
+    data?.check_warehouses.map((item) => {
+      setCheckWarehouseTotal((prev) => prev + Number(item.amount));
+    });
+  }, [data]);
+
+  useEffect(() => {
+    setTotal(
+      Number(depositsAmountTotal) +
+        Number(checkWarehouseTotal) +
+        Number(cashAmount)
+    );
+  }, [depositsAmountTotal, checkWarehouseTotal]);
 
   const textLgBold =
     " text-[1.5rem] print:text-[1rem] font-bold text-start leading-[2rem] print:leading-[1rem]";
@@ -146,20 +182,35 @@ const ReceiptPrint = ({ userInfo, data, receiptType }: Props) => {
                     )}
                     {(receiptType === "Acknowledgement" ||
                       receiptType === "Provisional") && (
-                      <FormPayment data={data} />
+                      <FormPayment
+                        cashAmount={cashAmount}
+                        data={data}
+                        checkWarehouseTotal={checkWarehouseTotal}
+                        depositsAmountTotal={depositsAmountTotal}
+                        total={total}
+                      />
                     )}
                   </li>
                   <li className="w-3/4 flex flex-col gap-2">
                     <ul className=" w-full flex justify-between gap-2">
                       <li>Received from</li>
-                      <li className="border-b border-[#545454] flex-1"></li>
+                      <li className="border-b border-[#545454] flex-1 text-center">
+                        {data?.customer?.name}
+                      </li>
                     </ul>
                     <ul className=" w-full flex justify-between gap-2">
-                      <li>with TIN 001-254-555-00000 and address at</li>
-                      <li className="border-b border-[#545454] flex-1"></li>
+                      <li>with TIN {data?.customer?.tin} and address at</li>
+                      <li className="border-b border-[#545454] flex-1 text-center">
+                        {data?.customer?.registered_address_building},{" "}
+                        {data?.customer?.registered_address_district},{" "}
+                        {data?.customer?.registered_address_municipal_city},{" "}
+                        {data?.customer?.registered_address_province},{" "}
+                        {data?.customer?.registered_address_street},{" "}
+                        {data?.customer?.registered_address_unit_floor},{" "}
+                        {data?.customer?.registered_address_zip_code}
+                      </li>
                     </ul>
                     <ul className=" w-full flex justify-between gap-2">
-                      <li className="border-b border-[#545454] flex-1"></li>
                       <li>egaged in the business style of</li>
                       <li className="border-b border-[#545454] flex-1"></li>
                     </ul>
@@ -167,32 +218,23 @@ const ReceiptPrint = ({ userInfo, data, receiptType }: Props) => {
                       <li>the sum of</li>
                       <li className="border-b border-[#545454] flex-1"></li>
                       <li>
-                        (Php{" "}
-                        <TextNumberDisplay
-                          value={data?.amount_paid}
-                          className={""}
-                        />
-                        )
+                        (Php <TextNumberDisplay value={total} className={""} />)
                       </li>
                     </ul>
-                    {receiptType === "Official" && (
-                      <ul className=" w-full flex justify-between gap-2">
-                        <li>
-                          In partial/full payment of account described below.
-                        </li>
-                      </ul>
-                    )}
-                    {receiptType === "Acknowledgement" && (
-                      <ul className=" w-full flex justify-between gap-2">
-                        <li>In partial/full payment for</li>
-                        <li className="border-b border-[#545454] flex-1"></li>
-                        <li>.</li>
-                      </ul>
-                    )}
+
+                    <ul className=" w-full flex justify-between gap-2">
+                      <li>
+                        In partial/full payment of account described below.
+                      </li>
+                    </ul>
 
                     <div>
                       <aside className="w-full border-l border-r border-t border-[#545454] py-1 text-center italic font-medium">
-                        <h1 className=" italic">Check Warehouse</h1>
+                        <h1 className=" italic">
+                          {receiptType === "Official" && "Outstanding Balances"}
+                          {receiptType === "Acknowledgement" && "Deposits"}
+                          {receiptType === "Provisional" && "Checkwarehouse"}
+                        </h1>
                       </aside>
                       <div className="border border-[#545454] p-5">
                         {receiptType === "Official" && (
@@ -289,7 +331,13 @@ const ReceiptPrint = ({ userInfo, data, receiptType }: Props) => {
             <td className=" flex gap-2 items-end">
               {receiptType === "Official" && (
                 <div className=" w-1/4">
-                  <FormPayment data={data} />
+                  <FormPayment
+                    cashAmount={cashAmount}
+                    data={data}
+                    depositsAmountTotal={depositsAmountTotal}
+                    checkWarehouseTotal={checkWarehouseTotal}
+                    total={total}
+                  />
                 </div>
               )}
               <div
@@ -303,8 +351,15 @@ const ReceiptPrint = ({ userInfo, data, receiptType }: Props) => {
                     <p className="text-red-500">
                       DATE ISSUED: 01/15/2020 VALID UNTIL: 01/31/2025
                     </p>
-                    <p className="text-red-500">
-                      SERIES RANGE: OR0000001 TO OR099999999
+                    <p>
+                      SERIES RANGE:{" "}
+                      {receiptType === "Official" && orRange.serial_from}
+                      {receiptType === "Acknowledgement" && arRange.serial_from}
+                      {receiptType === "Provisional" &&
+                        prRange.serial_from} to{" "}
+                      {receiptType === "Official" && orRange.serial_to}
+                      {receiptType === "Acknowledgement" && arRange.serial_to}
+                      {receiptType === "Provisional" && prRange.serial_to}
                     </p>
                   </li>
                   <li className="flex flex-col items-center">
@@ -364,13 +419,19 @@ const ReceiptPrint = ({ userInfo, data, receiptType }: Props) => {
 
 export default ReceiptPrint;
 
-const FormPayment = ({ data }: { data: CollectionItem }) => {
-  const [depositsAmount, setDepositsAmount] = useState(0);
-  useEffect(() => {
-    data?.deposits.map((item) => {
-      setDepositsAmount((prev) => prev + Number(item.amount));
-    });
-  }, [data]);
+const FormPayment = ({
+  data,
+  depositsAmountTotal,
+  checkWarehouseTotal,
+  total,
+  cashAmount,
+}: {
+  data: CollectionItem;
+  depositsAmountTotal: number;
+  checkWarehouseTotal: number;
+  total: number;
+  cashAmount: number;
+}) => {
   return (
     <div className=" w-full">
       <p className=" bg-[#545454] w-full text-center text-white print:text-[#545454] py-1">
@@ -380,17 +441,14 @@ const FormPayment = ({ data }: { data: CollectionItem }) => {
         <ul className=" w-full flex justify-between">
           <li>Cash</li>
           <li className=" text-end">
-            <TextNumberDisplay
-              value={data?.amount_paid}
-              className={"withPeso"}
-            />
+            <TextNumberDisplay value={cashAmount} className={"withPeso"} />
           </li>
         </ul>
         <ul className=" w-full flex justify-between">
           <li>Check</li>
           <li className=" text-end ">
             <TextNumberDisplay
-              value={data?.amount_paid}
+              value={checkWarehouseTotal}
               className={"withPeso"}
             />
           </li>
@@ -401,28 +459,30 @@ const FormPayment = ({ data }: { data: CollectionItem }) => {
           <li>{data?.bank_account?.bank_branch}</li>
         </ul>
         <ul className=" w-full flex justify-between pl-5 gap-2">
-          <li>Check No.:</li>
-          {/* <li>
+          <li>Check&nbsp;No.:</li>
+
+          <li className=" text-end">
             {data?.check_warehouses?.map((item) => item.check_no).join(", ")}
-          </li> */}
-          <li className="border-b border-red-500 flex-1"></li>
+          </li>
         </ul>
         <ul className=" w-full flex justify-between pl-5 gap-2">
-          <li>Check Date:</li>
-          {/* <li>
+          <li>Check&nbsp;Date:</li>
+          <li className=" text-end">
             {data?.check_warehouses?.map((item) => item.check_date).join(", ")}
-          </li> */}
-          <li className="border-b border-red-500 flex-1"></li>
+          </li>
         </ul>
         <ul className=" w-full flex justify-between gap-2">
           <li>Deposits</li>
           <li>
-            <TextNumberDisplay value={depositsAmount} className={"withPeso"} />
+            <TextNumberDisplay
+              value={depositsAmountTotal}
+              className={"withPeso"}
+            />
           </li>
         </ul>
         <ul className=" w-full flex justify-between pl-5 gap-2">
           <li>Date of Deposit:</li>
-          <li></li>
+          <li>{data?.receipt_date}</li>
         </ul>
         <ul className=" w-full flex justify-between pl-5 gap-2">
           <li>Date Posted:</li>
@@ -430,7 +490,9 @@ const FormPayment = ({ data }: { data: CollectionItem }) => {
         </ul>
         <ul className=" w-full flex justify-between gap-2">
           <li>Total:</li>
-          <li className=" text-end">xx</li>
+          <li className=" text-end">
+            <TextNumberDisplay value={total} className={"withPeso"} />
+          </li>
         </ul>
       </article>
     </div>

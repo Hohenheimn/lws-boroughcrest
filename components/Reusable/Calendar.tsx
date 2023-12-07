@@ -174,14 +174,9 @@ export default function Calendar({
         <div className="p-3 bg-[#f5f5f5] rounded-t">
           <div className="mb-5 flex items-center justify-between">
             <div className="flex items-center w-full justify-between">
-              <button
+              <div
                 aria-label="calendar backward"
                 onClick={prevMonthHandler}
-                disabled={
-                  currenYear === "1970" && currentMonth === "January"
-                    ? true
-                    : false
-                }
                 className="mr-3 640px:mr-1 text-[#757575] border flex justify-center items-center bg-white rounded-full font-NHU-black w-5 h-5 "
               >
                 <svg
@@ -199,7 +194,7 @@ export default function Calendar({
                   <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                   <polyline points="15 6 9 12 15 18" />
                 </svg>
-              </button>
+              </div>
               <div className="flex">
                 <div className="relative mr-2  w-[100px] cursor-pointer text-center bg-white rounded-lg font-bold">
                   <span
@@ -264,15 +259,10 @@ export default function Calendar({
                   )}
                 </div>
               </div>
-              <button
+              <div
                 aria-label="calendar forward"
                 onClick={nextMonthHandler}
-                disabled={
-                  currenYear === "5000" && currentMonth === "December"
-                    ? true
-                    : false
-                }
-                className=" ml-3 640px:ml-1 border flex justify-center items-center bg-white rounded-full font-NHU-black w-5 h-5"
+                className=" cursor-pointer ml-3 640px:ml-1 border flex justify-center items-center bg-white rounded-full font-NHU-black w-5 h-5"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -289,7 +279,7 @@ export default function Calendar({
                   <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                   <polyline points="9 6 15 12 9 18" />
                 </svg>
-              </button>
+              </div>
             </div>
           </div>
           <div className=" flex flex-wrap mb-2">

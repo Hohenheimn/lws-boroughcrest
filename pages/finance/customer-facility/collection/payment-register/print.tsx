@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
+import { getCookie } from "cookies-next";
 import { startOfDay, format } from "date-fns";
 import Image from "next/image";
-import { BarLoader } from "react-spinners";
 
+import { useQuery } from "react-query";
+
+import { BarLoader } from "react-spinners";
 import Tippy from "@tippy.js/react";
 
 import { CollectionItem } from ".";
@@ -11,6 +14,7 @@ import { GetCollectionDetail } from "../../../../../components/FINANCE/CustomerF
 import { LoginUserInfo } from "../../../../../components/HOC/LoginUser/UserInfo";
 import NoPermissionComp from "../../../../../components/Reusable/PermissionValidation/NoPermissionComp";
 import { PageAccessValidation } from "../../../../../components/Reusable/PermissionValidation/PageAccessValidation";
+import api from "../../../../../util/api";
 
 export default function Print({
   payment_register_id,
@@ -25,15 +29,40 @@ export default function Print({
     print();
   };
 
-  const { isLoading, data } = GetCollectionDetail(payment_register_id);
-  const collection: CollectionItem = data?.data;
+  const { isLoading: collectionLoading, data: collectionData } =
+    GetCollectionDetail(payment_register_id);
+
+  const { data: policyData, isLoading: policyLoading } = useQuery(
+    ["policy"],
+    () => {
+      return api.get(`/finance/policy`, {
+        headers: {
+          Authorization: "Bearer " + getCookie("user"),
+        },
+      });
+    },
+    {
+      refetchOnWindowFocus: false,
+    }
+  );
+  const collection: CollectionItem = collectionData?.data;
+
+  const arRange = policyData?.data?.finance_reference?.filter(
+    (filter: any) => filter.prefix === "AR"
+  )[0];
+  const orRange = policyData?.data?.finance_reference?.filter(
+    (filter: any) => filter.prefix === "OR"
+  )[0];
+  const prRange = policyData?.data?.finance_reference?.filter(
+    (filter: any) => filter.prefix === "PR"
+  )[0];
 
   //   Page validation
   const PagePermisson = PageAccessValidation("Collection");
   if (!PagePermisson && PagePermisson !== undefined) {
     return <NoPermissionComp />;
   }
-  if (isLoading) {
+  if (collectionLoading || policyLoading) {
     return (
       <div className="top-0 left-0 absolute w-full h-full flex justify-center items-center">
         <aside className="text-center flex justify-center py-5">
@@ -67,6 +96,9 @@ export default function Print({
           userInfo={userInfo}
           data={collection}
           receiptType={receipt_type}
+          arRange={arRange}
+          orRange={orRange}
+          prRange={prRange}
         />
       </div>
     </section>
