@@ -36,12 +36,14 @@ export default function Modal_Image({ setView, isView }: Modal_Image) {
           </div>
         ) : (
           <div className=" relative w-full h-full flex justify-center items-center">
-            <AiOutlineClose
-              className=" absolute top-4 right-4 cursor-pointer text-ThemeRed"
-              onClick={() => setView(false)}
-            />
             <button
-              className="buttonRed absolute bottom-4 right-4"
+              className="buttonRed absolute top-4 right-4 z-20 cursor-pointer text-ThemeRed"
+              onClick={() => setView(false)}
+            >
+              Close
+            </button>
+            <button
+              className="buttonRed absolute bottom-4 z-20 right-4"
               onClick={() =>
                 downloadImage(
                   `https://boroughcrest-api.lws.codes/get-img?image=${isView}`
@@ -59,7 +61,7 @@ export default function Modal_Image({ setView, isView }: Modal_Image) {
                 <img
                   src={`https://boroughcrest-api.lws.codes/get-img?image=${isView}`}
                   alt="test"
-                  className=" min-h-full min-w-full object-contain object-center"
+                  className=" min-h-full min-w-full object-contain object-center "
                 />
               </TransformComponent>
             </TransformWrapper>

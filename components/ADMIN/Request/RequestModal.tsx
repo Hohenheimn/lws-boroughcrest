@@ -6,6 +6,8 @@ import { AiFillCheckSquare, AiFillCloseSquare } from "react-icons/ai";
 
 import { BeatLoader, ScaleLoader } from "react-spinners";
 
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+
 import AppContext from "../../Context/AppContext";
 import { ErrorSubmit } from "../../Reusable/ErrorMessage";
 import Modal_Image from "../../Reusable/Modal_Image";
@@ -219,7 +221,7 @@ export default function RequestModal() {
 
   return (
     <ModalTemp>
-      {isView !== "" && <Modal_Image setView={setView} isView={isView} />}
+      {isView && <Modal_Image setView={setView} isView={isView} />}
       {rejectRemarks.toggle && (
         <ModalTemp>
           <h2 className=" mb-2">Remarks</h2>
@@ -513,16 +515,71 @@ export default function RequestModal() {
 
         <li className="w-full">
           <h1 className=" text-ThemeRed mb-5">ATTACHMENT</h1>
-          <div
-            className="relative aspect-[2/1] cursor-pointer"
-            onClick={() => setView(`${RequestDetail.attachment}`)}
-          >
-            <Image
-              src={`https://boroughcrest-api.lws.codes/get-img?image=${RequestDetail.attachment}`}
-              layout="fill"
-              objectFit="contain"
-              alt="attachment"
-            />
+          <div>
+            {typeof RequestDetail?.attachment !== "string" ? (
+              <>
+                <ul className=" w-full space-y-2">
+                  {RequestDetail?.attachment
+                    ?.filter(
+                      (filter) =>
+                        filter.includes(".jpg") ||
+                        filter.includes(".png") ||
+                        filter.includes(".webp") ||
+                        filter.includes(".jpeg")
+                    )
+                    .map((file: string, indx: number) => (
+                      <li key={indx} className=" flex justify-center w-full">
+                        <Image
+                          key={indx}
+                          src={`https://boroughcrest-api.lws.codes/get-img?image=${file}`}
+                          width={200}
+                          height={200}
+                          alt="attachment"
+                          className="cursor-pointer object-contain"
+                          onClick={() => setView(`${file}`)}
+                        />
+                      </li>
+                    ))}
+                  {RequestDetail?.attachment
+                    ?.filter(
+                      (filter) =>
+                        !filter.includes(".jpg") &&
+                        !filter.includes(".png") &&
+                        !filter.includes(".webp") &&
+                        !filter.includes(".jpeg")
+                    )
+                    .map((file: string, indx: number) => (
+                      <li
+                        key={indx}
+                        className=" w-full border border-ThemeRed "
+                      >
+                        <Link
+                          href={`https://boroughcrest-api.lws.codes/get-img?image=${file}`}
+                        >
+                          <a
+                            target="_blank"
+                            rel="noreferrer"
+                            className=" cursor-pointer w-full p-2 block"
+                          >
+                            {file.replaceAll("service-request/", "")}
+                          </a>
+                        </Link>
+                      </li>
+                    ))}
+                </ul>
+              </>
+            ) : (
+              <div className=" flex justify-center w-full border">
+                <Image
+                  src={`https://boroughcrest-api.lws.codes/get-img?image=${RequestDetail?.attachment}`}
+                  width={300}
+                  height={300}
+                  alt="attachment"
+                  className="cursor-pointer object-contain"
+                  onClick={() => setView(`${RequestDetail?.attachment}`)}
+                />
+              </div>
+            )}
           </div>
         </li>
       </ul>
