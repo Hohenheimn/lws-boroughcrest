@@ -64,7 +64,7 @@ const ReceiptPrint = ({
             <th>
               <ul className=" flex justify-between items-end">
                 <li className=" flex items-start gap-2 w-[70%]">
-                  <aside className=" border border-[#545454] w-[10rem]  aspect-square flex justify-center items-center">
+                  <aside className=" border border-[#545454] w-[8rem] aspect-square flex justify-center items-center">
                     <p>LOGO</p>
                   </aside>
                   <aside className=" text-start pr-10">
@@ -130,7 +130,7 @@ const ReceiptPrint = ({
                 </h1>
                 <ul className=" flex items-end gap-2">
                   <li className="w-1/4 border border-[#545454] ">
-                    {receiptType === "Official" && (
+                    {/* {receiptType === "Official" && (
                       <>
                         <aside className=" px-3 flex justify-between bg-[#545454] w-full text-center text-white print:text-[#545454] py-1">
                           <p>PARTICULARS</p>
@@ -184,8 +184,15 @@ const ReceiptPrint = ({
                           </ul>
                         </article>
                       </>
-                    )}
-                    {(receiptType === "Acknowledgement" ||
+                    )} */}
+                    <FormPayment
+                      cashAmount={cashAmount}
+                      data={data}
+                      checkWarehouseTotal={checkWarehouseTotal}
+                      depositsAmountTotal={depositsAmountTotal}
+                      total={total}
+                    />
+                    {/* {(receiptType === "Acknowledgement" ||
                       receiptType === "Provisional") && (
                       <FormPayment
                         cashAmount={cashAmount}
@@ -194,7 +201,7 @@ const ReceiptPrint = ({
                         depositsAmountTotal={depositsAmountTotal}
                         total={total}
                       />
-                    )}
+                    )} */}
                   </li>
                   <li className="w-3/4 flex flex-col gap-2">
                     <ul className=" w-full flex justify-between gap-2">
@@ -336,7 +343,7 @@ const ReceiptPrint = ({
         <tfoot>
           <tr>
             <td className=" flex gap-2 items-end">
-              {receiptType === "Official" && (
+              {/* {receiptType === "Official" && (
                 <div className=" w-1/4">
                   <FormPayment
                     cashAmount={cashAmount}
@@ -346,12 +353,9 @@ const ReceiptPrint = ({
                     total={total}
                   />
                 </div>
-              )}
-              <div
-                className={` ${
-                  receiptType === "Official" ? "w-3/4" : "w-full"
-                }`}
-              >
+              )} */}
+              {/* receiptType === "Official" ? "w-3/4" : "w-full" */}
+              <div className={`w-full`}>
                 <ul className=" w-full flex justify-between items-center">
                   <li>
                     <p>ACKNOWLEDGEMENT CERTIFICATE NO.:</p>
