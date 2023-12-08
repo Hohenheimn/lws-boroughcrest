@@ -20,6 +20,30 @@ export type LoginUserInfo = {
   permissions: PermissionsUserLogin[];
   system_admin: any;
   corporate_admin: any;
+  corporate: {
+    address_building: string;
+    address_district: string;
+    address_municipal_city: string;
+    address_province: string;
+    address_street: string;
+    address_unit_floor: string;
+    address_zip_code: string;
+    alt_contact_no: string;
+    alt_email: null;
+    assigned_corporate_id: string;
+    branch_code: string;
+    contact_no: string;
+    email: string;
+    gst_type: string;
+    id: 31;
+    logo: string;
+    name: string;
+    rdo_no: string;
+    sec_registration_no: string;
+    subscriber_id: string;
+    tin: string;
+    with_transaction: 0;
+  };
 };
 export type PermissionsUserLogin = {
   access: string[];

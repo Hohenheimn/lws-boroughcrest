@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { format, startOfDay } from "date-fns";
+import { addYears, format, startOfDay } from "date-fns";
 
 import numberToWords from "number-to-words";
 
@@ -27,7 +27,7 @@ const ReceiptPrint = ({
 }: Props) => {
   const date = new Date();
   let today = startOfDay(date);
-
+  const dateIn5Years = addYears(today, 5);
   console.log(data);
   console.log(userInfo);
   const cashAmount = data?.mode_of_payment === "Cash" ? data?.amount_paid : 0;
@@ -67,24 +67,27 @@ const ReceiptPrint = ({
                   <aside className=" border border-[#545454] w-[10rem]  aspect-square flex justify-center items-center">
                     <p>LOGO</p>
                   </aside>
-                  <aside className=" text-start">
-                    <h1 className={`${textLgBold} text-red-500`}>
-                      PALM BEACH VILLAS BORACAY AND PANGALO TOWERS CONDOMINIUM
-                      ASSOCIATION INC.
+                  <aside className=" text-start pr-10">
+                    <h1 className={`${textLgBold}`}>
+                      {userInfo?.corporate?.name}
                     </h1>
-                    <p className="text-red-500">
-                      2F ASSOCIATION BLDG., 8008 ROXAS BLVD.
+                    <p>
+                      {userInfo?.corporate?.address_building},{" "}
+                      {userInfo?.corporate?.address_district},{" "}
+                      {userInfo?.corporate?.address_municipal_city},{" "}
+                      {userInfo?.corporate?.address_province},{" "}
+                      {userInfo?.corporate?.address_street},{" "}
+                      {userInfo?.corporate?.address_unit_floor},{" "}
+                      {userInfo?.corporate?.address_zip_code}
                     </p>
-                    <p className="text-red-500">
-                      BRGY. 76, FOURTH DISTRICT, PASAY CITY 1300
-                    </p>
+
                     <p>
                       {userInfo?.corporate_gst_type} REG. TIN:{" "}
-                      <span className="text-red-500">000-000-000-0000</span>
+                      <span>{userInfo?.corporate?.tin}</span>
                     </p>
                     <p>
-                      CONTACT NO.: {userInfo?.contact_no} EMAIL:{" "}
-                      {userInfo?.email}
+                      CONTACT NO.: {userInfo?.corporate?.contact_no} EMAIL:{" "}
+                      {userInfo?.corporate?.email}
                     </p>
                   </aside>
                 </li>
@@ -352,8 +355,9 @@ const ReceiptPrint = ({
                 <ul className=" w-full flex justify-between items-center">
                   <li>
                     <p>ACKNOWLEDGEMENT CERTIFICATE NO.:</p>
-                    <p className="text-red-500">
-                      DATE ISSUED: 01/15/2020 VALID UNTIL: 01/31/2025
+                    <p>
+                      DATE ISSUED: {format(today, "MM/dd/yyyy")} VALID UNTIL:{" "}
+                      {format(dateIn5Years, "MM/dd/yyyy")}
                     </p>
                     <p>
                       SERIES RANGE:{" "}
