@@ -280,7 +280,7 @@ export default function COAForm({
                   samewidth={false}
                   toRef={
                     <input
-                      type="number"
+                      type="text"
                       className="field"
                       value={isParent.value}
                       {...register("parent", {
@@ -316,6 +316,7 @@ export default function COAForm({
                           setChartcode={setChartcode}
                           isChartcode={isChartCode}
                           isParent={isParent}
+                          coaId={router.query.modify}
                         />
                       )}
                     </>
