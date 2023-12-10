@@ -473,15 +473,11 @@ const FormPayment = ({
         <ul className=" w-full flex justify-between pl-5 gap-2">
           <li>Check&nbsp;No.:</li>
 
-          <li className=" text-end">
-            {data?.check_warehouses?.map((item) => item.check_no).join(", ")}
-          </li>
+          <li className=" text-end">{data?.check_warehouses[0]?.check_no}</li>
         </ul>
         <ul className=" w-full flex justify-between pl-5 gap-2">
           <li>Check&nbsp;Date:</li>
-          <li className=" text-end">
-            {data?.check_warehouses?.map((item) => item.check_date).join(", ")}
-          </li>
+          <li className=" text-end">{data?.check_warehouses[0]?.check_date}</li>
         </ul>
         <ul className=" w-full flex justify-between gap-2">
           <li>Deposits</li>
@@ -494,14 +490,12 @@ const FormPayment = ({
         </ul>
         <ul className=" w-full flex justify-between pl-5 gap-2">
           <li>Date of Deposit:</li>
-          <li>
-            {data?.receipt_type === "Aknowledgement" && data?.receipt_date}
-          </li>
+          <li></li>
         </ul>
-        {/* <ul className=" w-full flex justify-between pl-5 gap-2">
+        <ul className=" w-full flex justify-between pl-5 gap-2">
           <li>Date Posted:</li>
-          <li className="border-b border-red-500 flex-1"></li>
-        </ul> */}
+          <li>{data?.receipt_date}</li>
+        </ul>
         <ul className=" w-full flex justify-between gap-2">
           <li>Total:</li>
           <li className=" text-end">
