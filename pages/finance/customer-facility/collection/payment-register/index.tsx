@@ -52,6 +52,9 @@ export type CollectionItem = {
   chart_of_account_chart_code: string;
   parent_id: number | null;
   updated_at: string;
+  created_by: {
+    name: string;
+  };
   created_at: string;
   histories: PaymentSummaryHistories[];
   deposits: {
@@ -141,6 +144,13 @@ export default function PaymentRegister() {
         setFilterText={setFilterText}
         isSearch={isSearch}
         setSearch={setSearch}
+        printCollectionType={`?collection=list&search=${isSearch}&date_from=${
+          isValid(dateFrom) ? format(dateFrom, "yyyy-MM-dd") : ""
+        }&date_to=${
+          isValid(dateTo) ? format(dateTo, "yyyy-MM-dd") : ""
+        }&paginate=10&page=${
+          isSearch === "" ? TablePage : 1
+        }&filters=${isFilterText}&status&receipt_type=Acknowledgement,Official`}
         FilterEndpoint="/finance/customer-facility/collection/filter-options"
         page="payment-register"
         isPeriod={isPeriod}
@@ -166,7 +176,7 @@ export default function PaymentRegister() {
           </thead>
           <tbody>
             {data?.data.data.map((item: CollectionItem, index: number) => (
-              <List key={index} itemDetail={item} />
+              <CollectionList key={index} itemDetail={item} />
             ))}
           </tbody>
         </table>
@@ -199,8 +209,7 @@ export default function PaymentRegister() {
 type ListProps = {
   itemDetail: CollectionItem;
 };
-
-const List = ({ itemDetail }: ListProps) => {
+const CollectionList = ({ itemDetail }: ListProps) => {
   const date = parse(itemDetail?.receipt_date, "yyyy-MM-dd", new Date());
 
   const router = useRouter();

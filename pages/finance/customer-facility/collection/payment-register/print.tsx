@@ -109,12 +109,14 @@ export async function getServerSideProps({ query }: any) {
   const type = query?.type;
   const payment_register_id = query?.payment_register_id;
   const receipt_type = query?.receipt_type;
+  const collection = query?.collection;
   return {
     props: {
       type: type,
       payment_register_id:
         payment_register_id !== undefined ? payment_register_id : "",
       receipt_type: receipt_type ? receipt_type : "",
+      collection: collection,
     },
   };
 }

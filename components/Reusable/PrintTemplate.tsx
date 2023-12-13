@@ -32,7 +32,7 @@ export default function PrintTemplate({ title, children, narrow }: Props) {
         narrow ? "w-[80%]" : "w-[95%]"
       } printThis print:h-full top-0 `}
     >
-      <aside className="w-full py-5 flex justify-end px-5 hidePrint">
+      <aside className="w-full py-5 flex justify-end px-5 hidePrint print:hidden">
         <Tippy theme="ThemeRed" content="Print">
           <div
             className="relative h-[35px] w-[35px] hover:scale-[1.1] transition-all duration-75"

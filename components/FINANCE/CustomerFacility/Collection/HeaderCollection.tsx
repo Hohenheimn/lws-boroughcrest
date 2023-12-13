@@ -26,6 +26,7 @@ type Props = {
   };
   setPeriod: Function;
   ExportEndpoint: string;
+  printCollectionType: string;
 };
 
 export default function HeaderCollection({
@@ -37,6 +38,7 @@ export default function HeaderCollection({
   isPeriod,
   setPeriod,
   ExportEndpoint,
+  printCollectionType,
 }: Props) {
   const { setPrompt } = useContext(AppContext);
 
@@ -138,7 +140,9 @@ export default function HeaderCollection({
             <li className={style.importExportPrint}>
               <Tippy theme="ThemeRed" content="Print">
                 <div className={style.icon}>
-                  <Link href="/finance/customer-facility/collection/payment-register/print?type=payment register list">
+                  <Link
+                    href={`/finance/customer-facility/collection/payment-register/print-list${printCollectionType}`}
+                  >
                     <a target="_blank">
                       <Image
                         src="/Images/Print.png"

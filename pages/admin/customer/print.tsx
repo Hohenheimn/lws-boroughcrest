@@ -3,7 +3,10 @@ import { getCookie } from "cookies-next";
 import { BarLoader } from "react-spinners";
 import "tippy.js/dist/tippy.css";
 
-import { GetPrintCustomerList } from "../../../components/ReactQuery/CustomerMethod";
+import {
+  GetCustomerList,
+  GetPrintCustomerList,
+} from "../../../components/ReactQuery/CustomerMethod";
 import NoPermissionComp from "../../../components/Reusable/PermissionValidation/NoPermissionComp";
 import { PageAccessValidation } from "../../../components/Reusable/PermissionValidation/PageAccessValidation";
 import PrintTemplate from "../../../components/Reusable/PrintTemplate";
@@ -11,7 +14,7 @@ import type { customerItemDetail } from "../../../types/customerList";
 
 type Props = {
   Keyword: string;
-  PageNumber: string | number;
+  PageNumber: number;
   RowNumber: number;
   Columns: string;
 };
@@ -25,7 +28,11 @@ export default function Print({
   // Getting column from parameter
   const ColumnsArray = Columns.split(",");
 
-  const { data, isLoading, isError } = GetPrintCustomerList();
+  const { data, isLoading, isError } = GetCustomerList(
+    PageNumber,
+    Keyword,
+    RowNumber
+  );
 
   const PagePermisson = PageAccessValidation("Customer");
 
@@ -63,7 +70,7 @@ export default function Print({
             <tbody className="text-[14px]">
               {!isLoading && !isError && (
                 <>
-                  {data?.data?.map((item: any, index: number) => (
+                  {data?.data?.data?.map((item: any, index: number) => (
                     <List
                       key={index}
                       itemDetail={item}

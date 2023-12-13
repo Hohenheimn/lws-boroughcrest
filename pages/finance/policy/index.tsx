@@ -267,39 +267,57 @@ export default function Policy() {
                     </td>
                     <td className="flex items-center py-2">
                       {isToggle ? (
-                        <input
-                          type="text"
-                          className={`field duration-200 ease-in-out`}
-                          value={item.serial_from}
-                          onChange={(e) => {
-                            if (e.target.value.length <= 9) {
-                              UpdateValue(
-                                "serial_from",
-                                e.target.value,
-                                item.id
-                              );
-                            }
-                          }}
-                        />
+                        <>
+                          {item.serial_from !== null &&
+                            item.serial_from !== undefined && (
+                              <input
+                                type="text"
+                                className={`field duration-200 ease-in-out`}
+                                value={item.serial_from}
+                                onChange={(e) => {
+                                  if (e.target.value.length <= 9) {
+                                    UpdateValue(
+                                      "serial_from",
+                                      e.target.value,
+                                      item.id
+                                    );
+                                  }
+                                }}
+                              />
+                            )}
+                        </>
                       ) : (
-                        <h4 className="main_text noMB">{item.serial_from}</h4>
+                        <h4 className="main_text noMB">
+                          {item?.serial_from ? item?.serial_from : ""}
+                        </h4>
                       )}
                       <span className=" text-DarkBlue font-NHU-bold mx-5">
                         -
                       </span>{" "}
                       {isToggle ? (
-                        <input
-                          type="text"
-                          className={`field duration-200 ease-in-out`}
-                          value={item.serial_to}
-                          onChange={(e) => {
-                            if (e.target.value.length <= 9) {
-                              UpdateValue("serial_to", e.target.value, item.id);
-                            }
-                          }}
-                        />
+                        <>
+                          {item.serial_to !== null &&
+                            item.serial_to !== undefined && (
+                              <input
+                                type="text"
+                                className={`field duration-200 ease-in-out`}
+                                value={item.serial_to}
+                                onChange={(e) => {
+                                  if (e.target.value.length <= 9) {
+                                    UpdateValue(
+                                      "serial_to",
+                                      e.target.value,
+                                      item.id
+                                    );
+                                  }
+                                }}
+                              />
+                            )}
+                        </>
                       ) : (
-                        <h4 className="main_text noMB">{item.serial_to}</h4>
+                        <h4 className="main_text noMB">
+                          {item?.serial_to ? item?.serial_to : ""}
+                        </h4>
                       )}
                     </td>
                   </tr>

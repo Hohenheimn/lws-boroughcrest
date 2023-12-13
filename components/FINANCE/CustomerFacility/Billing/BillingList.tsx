@@ -285,7 +285,6 @@ export default function BillingList() {
     const endPoint = `/finance/customer-facility/billing/export?list_type=${type}&paginate=10&keywords=${isSearch}&page=${
       isSearch === "" ? TablePage : 1
     }&filters=${isFilterText}&date_from=${dateFrom}&date_to=${dateTo}`;
-    console.log(endPoint);
     DynamicExportHandler(
       endPoint,
       "Posted-invoices-list",
@@ -463,7 +462,9 @@ export default function BillingList() {
               <li className={style.importExportPrint}>
                 <Tippy theme="ThemeRed" content="Print">
                   <div className={`${style.noFill} mr-5`}>
-                    <Link href="/finance/customer-facility/billing/invoice-list/print">
+                    <Link
+                      href={`/finance/customer-facility/billing/invoice-list/print?isSearch=${isSearch}&type=${type}&TablePage=${TablePage}&isFilterText=${isFilterText}&dateFrom=${dateFrom}&dateTo=${dateTo}`}
+                    >
                       <a target="_blank">
                         <Image
                           src="/Images/Print.png"

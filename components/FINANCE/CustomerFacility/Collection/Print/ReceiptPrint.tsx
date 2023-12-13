@@ -28,8 +28,6 @@ const ReceiptPrint = ({
   const date = new Date();
   let today = startOfDay(date);
   const dateIn5Years = addYears(today, 5);
-  console.log(data);
-  console.log(userInfo);
   const cashAmount = data?.mode_of_payment === "Cash" ? data?.amount_paid : 0;
   const [depositsAmountTotal, setDepositsAmountTotal] = useState(0);
   const [checkWarehouseTotal, setCheckWarehouseTotal] = useState(0);
@@ -129,71 +127,9 @@ const ReceiptPrint = ({
                   {receiptType} RECEIPT
                 </h1>
                 <ul className=" flex items-end gap-2">
-                  <li className="w-1/4 border border-[#545454] ">
-                    {/* {receiptType === "Official" && (
-                      <>
-                        <aside className=" px-3 flex justify-between bg-[#545454] w-full text-center text-white print:text-[#545454] py-1">
-                          <p>PARTICULARS</p>
-                          <p>AMOUNT</p>
-                        </aside>
-                        <article className=" p-3 w-full flex flex-col gap-y-2">
-                          <ul className=" w-full flex justify-between">
-                            <li>Total Sales {`(Net of VAT)`}</li>
-                            <li className=" text-end">xx</li>
-                          </ul>
-                          <ul className=" w-full flex justify-between">
-                            <li>Add: VAT Amount</li>
-                            <li className=" text-end">xx</li>
-                          </ul>
-                          <ul className=" w-full flex justify-between">
-                            <li>Total Due</li>
-                            <li className=" text-end">xx</li>
-                          </ul>
-                          <ul className=" w-full flex justify-between">
-                            <li>Less: Withholding Tax</li>
-                            <li className=" text-end">xx</li>
-                          </ul>
-                          <ul className=" w-full flex justify-between mb-10">
-                            <li>Amount Due</li>
-                            <li className=" text-end">xx</li>
-                          </ul>
-
-                          <ul className=" w-full flex justify-between">
-                            <li>VAT-able Sales</li>
-                            <li className=" text-end">xx</li>
-                          </ul>
-
-                          <ul className=" w-full flex justify-between">
-                            <li>VAT Amount</li>
-                            <li className=" text-end">xx</li>
-                          </ul>
-
-                          <ul className=" w-full flex justify-between">
-                            <li>VAT-Exempt Sales</li>
-                            <li className=" text-end">xx</li>
-                          </ul>
-
-                          <ul className=" w-full flex justify-between">
-                            <li>Zero-rated Sales</li>
-                            <li className=" text-end">xx</li>
-                          </ul>
-
-                          <ul className=" w-full flex justify-between">
-                            <li>Total Sales</li>
-                            <li className=" text-end">xx</li>
-                          </ul>
-                        </article>
-                      </>
-                    )} */}
-                    <FormPayment
-                      cashAmount={cashAmount}
-                      data={data}
-                      checkWarehouseTotal={checkWarehouseTotal}
-                      depositsAmountTotal={depositsAmountTotal}
-                      total={total}
-                    />
-                    {/* {(receiptType === "Acknowledgement" ||
-                      receiptType === "Provisional") && (
+                  {(receiptType === "Official" ||
+                    receiptType === "Acknowledgement") && (
+                    <li className="w-1/4 border border-[#545454] ">
                       <FormPayment
                         cashAmount={cashAmount}
                         data={data}
@@ -201,9 +137,14 @@ const ReceiptPrint = ({
                         depositsAmountTotal={depositsAmountTotal}
                         total={total}
                       />
-                    )} */}
-                  </li>
-                  <li className="w-3/4 flex flex-col gap-2">
+                    </li>
+                  )}
+
+                  <li
+                    className={`${
+                      receiptType === "Provisional" ? "w-full" : "w-3/4"
+                    }  flex flex-col gap-2`}
+                  >
                     <ul className=" w-full flex justify-between gap-2">
                       <li>Received from</li>
                       <li className="border-b border-[#545454] flex-1 text-center">
@@ -343,25 +284,14 @@ const ReceiptPrint = ({
         <tfoot>
           <tr>
             <td className=" flex gap-2 items-end">
-              {/* {receiptType === "Official" && (
-                <div className=" w-1/4">
-                  <FormPayment
-                    cashAmount={cashAmount}
-                    data={data}
-                    depositsAmountTotal={depositsAmountTotal}
-                    checkWarehouseTotal={checkWarehouseTotal}
-                    total={total}
-                  />
-                </div>
-              )} */}
-              {/* receiptType === "Official" ? "w-3/4" : "w-full" */}
               <div className={`w-full`}>
                 <ul className=" w-full flex justify-between items-center">
                   <li>
                     <p>ACKNOWLEDGEMENT CERTIFICATE NO.:</p>
                     <p>
-                      DATE ISSUED: {format(today, "MM/dd/yyyy")} VALID UNTIL:{" "}
-                      {format(dateIn5Years, "MM/dd/yyyy")}
+                      DATE ISSUED: Jan 15 2023 VALID UNTIL Jan 31 2028
+                      {/* {format(today, "MM/dd/yyyy")} VALID UNTIL:{" "}
+                      {format(dateIn5Years, "MM/dd/yyyy")} */}
                     </p>
                     <p>
                       SERIES RANGE:{" "}
@@ -377,49 +307,46 @@ const ReceiptPrint = ({
                   <li className="flex flex-col items-center">
                     <aside className=" flex">
                       <p>By:</p>
-                      <div className="w-[20rem] border-b border-[#545454]"></div>
+                      <div className="w-[20rem] border-b border-[#545454] text-center">
+                        {data?.created_by?.name}
+                      </div>
                     </aside>
                     <p>Cashier / Authorized Representative</p>
                   </li>
                 </ul>
 
-                {receiptType === "Acknowledgement" && (
-                  <figure className=" w-full flex flex-col items-center my-10">
-                    <h1>
-                      {`"THIS ACKNOWLEDGEMENT RECIEPT SHALL BE VALID FOR FIVE (5) YEARS FROM THE DATE OF ACKNOWLEDGEMENT CERTIFICATE."`}
-                    </h1>
-                    <h1>{`THIS DOCUMENT IS NOT VALID FOR CLAIM OF INPUT TAX"`}</h1>
-                  </figure>
-                )}
-                {receiptType === "Official" && (
-                  <figure className=" w-full flex flex-col items-center my-10 text-center">
-                    <h1>
-                      {`"THIS OFFICIAL RECEIPT SHALL BE VALID FOR FIVE (5) YEARS FROM THE DATE OF ACKNOWLEDGEMENT CERTIFICATE"`}
-                    </h1>
-                    <h1>{`THIS DOCUMENT IS NOT VALID FOR CLAIM OF INPUT TAX"`}</h1>
-                  </figure>
-                )}
+                {receiptType !== "Provisional" && (
+                  <>
+                    {receiptType === "Acknowledgement" && (
+                      <figure className=" w-full flex flex-col items-center my-10">
+                        <h1>
+                          {`"THIS ACKNOWLEDGEMENT RECIEPT SHALL BE VALID FOR FIVE (5) YEARS FROM THE DATE OF ACKNOWLEDGEMENT CERTIFICATE."`}
+                        </h1>
+                        <h1>{`THIS DOCUMENT IS NOT VALID FOR CLAIM OF INPUT TAX"`}</h1>
+                      </figure>
+                    )}
+                    {receiptType === "Official" && (
+                      <figure className=" w-full flex flex-col items-center my-10 text-center">
+                        <h1>
+                          {`"THIS OFFICIAL RECEIPT SHALL BE VALID FOR FIVE (5) YEARS FROM THE DATE OF ACKNOWLEDGEMENT CERTIFICATE"`}
+                        </h1>
+                        <h1>{`THIS DOCUMENT IS NOT VALID FOR CLAIM OF INPUT TAX"`}</h1>
+                      </figure>
+                    )}
 
-                {receiptType === "Provisional" && (
-                  <figure className=" w-full flex flex-col items-center my-10 text-center">
-                    <h1>
-                      {`"THIS PROVISIONAL RECEIPT SHALL BE VALID FOR FIVE (5) YEARS FROM THE DATE OF ACKNOWLEDGEMENT CERTIFICATE"`}
-                    </h1>
-                    <h1>{`THIS DOCUMENT IS NOT VALID FOR CLAIM OF INPUT TAX"`}</h1>
-                  </figure>
+                    <ul className=" w-full flex justify-between ">
+                      <li>
+                        <p>SOFTWARE PROVIDER:</p>
+                        <p>VAT REG. TIN:</p>
+                        <p>ADDRESS:</p>
+                      </li>
+                      <li className=" text-end">
+                        <p>DATEBASE NAME/VERSION</p>
+                        <p>REV NO. 01/01/19</p>
+                      </li>
+                    </ul>
+                  </>
                 )}
-
-                <ul className=" w-full flex justify-between ">
-                  <li>
-                    <p>SOFTWARE PROVIDER:</p>
-                    <p>VAT REG. TIN:</p>
-                    <p>ADDRESS:</p>
-                  </li>
-                  <li className=" text-end">
-                    <p>DATEBASE NAME/VERSION</p>
-                    <p>REV NO. 01/01/19</p>
-                  </li>
-                </ul>
               </div>
             </td>
           </tr>
@@ -506,3 +433,63 @@ const FormPayment = ({
     </div>
   );
 };
+
+{
+  /* 
+    PARTICULARS AMOUNT
+  {receiptType === "Official" && (
+                      <>
+                        <aside className=" px-3 flex justify-between bg-[#545454] w-full text-center text-white print:text-[#545454] py-1">
+                          <p>PARTICULARS</p>
+                          <p>AMOUNT</p>
+                        </aside>
+                        <article className=" p-3 w-full flex flex-col gap-y-2">
+                          <ul className=" w-full flex justify-between">
+                            <li>Total Sales {`(Net of VAT)`}</li>
+                            <li className=" text-end">xx</li>
+                          </ul>
+                          <ul className=" w-full flex justify-between">
+                            <li>Add: VAT Amount</li>
+                            <li className=" text-end">xx</li>
+                          </ul>
+                          <ul className=" w-full flex justify-between">
+                            <li>Total Due</li>
+                            <li className=" text-end">xx</li>
+                          </ul>
+                          <ul className=" w-full flex justify-between">
+                            <li>Less: Withholding Tax</li>
+                            <li className=" text-end">xx</li>
+                          </ul>
+                          <ul className=" w-full flex justify-between mb-10">
+                            <li>Amount Due</li>
+                            <li className=" text-end">xx</li>
+                          </ul>
+
+                          <ul className=" w-full flex justify-between">
+                            <li>VAT-able Sales</li>
+                            <li className=" text-end">xx</li>
+                          </ul>
+
+                          <ul className=" w-full flex justify-between">
+                            <li>VAT Amount</li>
+                            <li className=" text-end">xx</li>
+                          </ul>
+
+                          <ul className=" w-full flex justify-between">
+                            <li>VAT-Exempt Sales</li>
+                            <li className=" text-end">xx</li>
+                          </ul>
+
+                          <ul className=" w-full flex justify-between">
+                            <li>Zero-rated Sales</li>
+                            <li className=" text-end">xx</li>
+                          </ul>
+
+                          <ul className=" w-full flex justify-between">
+                            <li>Total Sales</li>
+                            <li className=" text-end">xx</li>
+                          </ul>
+                        </article>
+                      </>
+                    )} */
+}
