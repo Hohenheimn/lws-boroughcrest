@@ -15,6 +15,7 @@ type Props = {
   arRange: { serial_from: string; serial_to: string };
   prRange: { serial_from: string; serial_to: string };
   orRange: { serial_from: string; serial_to: string };
+  acknowledgementCertificate: string;
 };
 
 const ReceiptPrint = ({
@@ -24,6 +25,7 @@ const ReceiptPrint = ({
   arRange,
   prRange,
   orRange,
+  acknowledgementCertificate,
 }: Props) => {
   const date = new Date();
   let today = startOfDay(date);
@@ -287,7 +289,10 @@ const ReceiptPrint = ({
               <div className={`w-full`}>
                 <ul className=" w-full flex justify-between items-center">
                   <li>
-                    <p>ACKNOWLEDGEMENT CERTIFICATE NO.:</p>
+                    <p>
+                      ACKNOWLEDGEMENT CERTIFICATE NO.:{" "}
+                      {acknowledgementCertificate}
+                    </p>
                     <p>
                       DATE ISSUED: Jan 15 2023 VALID UNTIL Jan 31 2028
                       {/* {format(today, "MM/dd/yyyy")} VALID UNTIL:{" "}

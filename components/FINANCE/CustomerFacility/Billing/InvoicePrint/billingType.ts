@@ -48,5 +48,43 @@ export type billingPrintType = {
     payment_amount: string;
     status: string;
     post_to_portal: boolean;
+    invoice_list: InvoiceListType[];
   }[];
+};
+
+export type InvoiceListType = {
+  id: number;
+  billing_invoice_id: number;
+  charge_id: number;
+  property_unit_id: number;
+  description: "Internet Bill";
+  unit_price: number;
+  quantity: number;
+  vat: number;
+  amount: number;
+  amount_paid: number;
+  adjustment_amount: number;
+  billing_batch_list_id: number;
+  billing_readings_list_id: number;
+  charge: {
+    id: number;
+    corporate_id: number;
+    assigned_charge_id: string;
+    code: string;
+    type: string;
+    name: string;
+    description: string;
+    base_rate: number;
+    charge_uom_id: number;
+    vat_percent: number;
+    receivable_coa_id: number;
+    discounts_coa_id: number;
+    revenue_coa_id: number;
+    advances_coa_id: number;
+    minimum: number;
+    interest: string;
+    payment_heirarchy: number;
+    soa_sort_order: number;
+    with_transaction: number;
+  };
 };

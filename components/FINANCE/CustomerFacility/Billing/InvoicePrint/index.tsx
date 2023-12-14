@@ -1,19 +1,50 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { LoginUserInfo } from "../../../../HOC/LoginUser/UserInfo";
 import { TextNumberDisplay } from "../../../../Reusable/NumberFormat";
-import { billingPrintType } from "./billingType";
+import { InvoiceListType, billingPrintType } from "./billingType";
 
 type Props = {
   userInfo?: LoginUserInfo;
   data: billingPrintType;
   invoiceRange: { serial_from: string; serial_to: string };
+  acknowledgementCertificate: string;
 };
 
-const InvoicePrint = ({ userInfo, data, invoiceRange }: Props) => {
+const InvoicePrint = ({
+  userInfo,
+  data,
+  invoiceRange,
+  acknowledgementCertificate,
+}: Props) => {
   const [beginningBalance, setBeginningBalance] = useState(0);
-  const [remainingAdvances, setRemainingAdvances] = useState(0);
   const [payTotal, setPayTotal] = useState(0);
+  const [amountStillDue, setAmountStillDue] = useState(0);
+
+  const [remainingAdvances, setRemainingAdvances] = useState(0);
+
+  const [invoiceList, setInvoiceList] = useState<InvoiceListType[]>([]);
+
+  useEffect(() => {
+    setBeginningBalance(0);
+    setInvoiceList([]);
+    setPayTotal(0);
+    setAmountStillDue(0);
+    data?.billing_invoices.map((billing) =>
+      billing.invoice_list.map((invoice) => {
+        setInvoiceList([...invoiceList, invoice]);
+        const balance = Number(invoice.amount) - Number(invoice.amount_paid);
+        setBeginningBalance((value: number) => value + Number(invoice.amount));
+        setPayTotal(
+          (value: number) => value + Number(invoice.amount) + Number(balance)
+        );
+        setAmountStillDue(
+          (value: number) => value + Number(invoice.amount) + Number(balance)
+        );
+      })
+    );
+  }, []);
+
   return (
     <main className=" p-[2rem] page-break">
       <ul className=" flex justify-between items-start list-none">
@@ -77,10 +108,10 @@ const InvoicePrint = ({ userInfo, data, invoiceRange }: Props) => {
               CUSTOMER&apos;S COPY
             </p>
           </aside>
-          <ul className=" flex w-full">
-            {data?.billing_invoices.map((item) => (
+          <ul className=" flex justify-end w-full">
+            {data?.billing_invoices.map((item, indx) => (
               <li
-                key={item.id}
+                key={indx}
                 className=" p-[1rem] text-center border border-black"
               >
                 <p>INV NO.</p>
@@ -100,8 +131,8 @@ const InvoicePrint = ({ userInfo, data, invoiceRange }: Props) => {
         <li>
           <p>
             <TextNumberDisplay
-              value={10960}
-              className={"withPeso text-red-500"}
+              value={beginningBalance}
+              className={"withPeso"}
             />
           </p>
         </li>
@@ -109,53 +140,70 @@ const InvoicePrint = ({ userInfo, data, invoiceRange }: Props) => {
       <table className=" w-full">
         <thead>
           <tr>
-            <th className=" border border-black">INV NO.</th>
+            <th className=" border border-black">CODE</th>
             <th className=" border border-black">DESCRIPTION</th>
             <th className=" border border-black">AMOUNT DUE</th>
+            <th className=" border border-black">AMOUNT PAID</th>
             <th className=" border border-black">APPLIED ADVANCE</th>
             <th className=" border border-black">REMAINING BAL</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
+          {/* <tr>
             <td colSpan={5} className=" py-2">
               <h3>
                 CREDIT MEMO NO.: <span className=" text-red-500">CM00021</span>
               </h3>
             </td>
-          </tr>
-          {data?.billing_invoices.map((billing) => (
-            <tr key={billing.id}>
-              <td className=" text-red-500">{billing.invoice_no}</td>
-              <td className=" text-red-500">Interest Penalty</td>
-              <td className=" text-end text-red-500">5,906</td>
+          </tr> */}
+          {invoiceList.map((inv, indx) => (
+            <tr key={indx}>
+              <td>{inv.charge.code}</td>
+              <td>{inv.charge.description}</td>
+              <td className=" text-end ">
+                <TextNumberDisplay
+                  value={Number(inv.amount)}
+                  className={"withPeso"}
+                />
+              </td>
+              <td className=" text-end ">
+                <TextNumberDisplay
+                  value={Number(inv.amount_paid)}
+                  className={"withPeso"}
+                />
+              </td>
               <td className=" text-red-500">OVERDUE</td>
-              <td className=" text-end text-red-500">0.02</td>
+              <td className=" text-end">
+                <TextNumberDisplay
+                  value={Number(inv.amount) - Number(inv.amount_paid)}
+                  className={"withPeso"}
+                />
+              </td>
             </tr>
           ))}
 
           <tr>
-            <td colSpan={5} className=" border-t border-black"></td>
+            <td colSpan={6} className=" border-t border-black"></td>
           </tr>
           <tr>
-            <td colSpan={4} className=" text-end font-bold py-2">
+            <td colSpan={5} className=" text-end font-bold py-2">
               <p>REMAINING ADVANCES</p>
             </td>
             <td className=" text-end font-bold py-2">
               <TextNumberDisplay
-                value={9500}
-                className={"withPeso text-red-500"}
+                value={remainingAdvances}
+                className={"withPeso "}
               />
             </td>
           </tr>
           <tr>
-            <td colSpan={4} className=" text-end font-bold py-2 pb-20">
+            <td colSpan={5} className=" text-end font-bold py-2 pb-20">
               <p>AMOUNT STILL DUE</p>
             </td>
             <td className=" text-end font-bold py-2  pb-20">
               <TextNumberDisplay
-                value={0}
-                className={"withPeso text-red-500"}
+                value={amountStillDue}
+                className={"withPeso "}
               />
             </td>
           </tr>
@@ -165,13 +213,13 @@ const InvoicePrint = ({ userInfo, data, invoiceRange }: Props) => {
       <ul className=" flex justify-end border-t border-black py-5 w-full">
         <li className=" w-[20rem] space-y-1">
           <h5 className=" text-center">SUMMARY</h5>
-          {data?.billing_invoices.map((item) => (
-            <ul key={item.id} className=" flex justify-between gap-2">
+          {data?.billing_invoices.map((item, indx) => (
+            <ul key={indx} className=" flex justify-between gap-2">
               <li>{item.invoice_no}</li>
               <li>
                 <TextNumberDisplay
-                  value={item.payment_amount}
-                  className={"withPeso text-red-500"}
+                  value={item.due_amount}
+                  className={"withPeso "}
                 />
               </li>
             </ul>
@@ -204,7 +252,9 @@ const InvoicePrint = ({ userInfo, data, invoiceRange }: Props) => {
             </li>
             <li className=" flex justify-between py-[5px] px-[10px] items-center">
               <h2 className=" text-2xl text-black">PHP</h2>
-              <h2 className=" text-xl text-red-500">15,156.64</h2>
+              <h2 className=" text-xl ">
+                <TextNumberDisplay value={payTotal} className={"withPeso"} />
+              </h2>
             </li>
           </ul>
         </li>
@@ -235,7 +285,9 @@ const InvoicePrint = ({ userInfo, data, invoiceRange }: Props) => {
       </p>
       <ul className=" flex justify-between py-[10px]">
         <li>
-          <p className=" text-[.9rem]">ACKNOWLEDGEMENT CERTIFICATE NO.:</p>
+          <p className=" text-[.9rem]">
+            ACKNOWLEDGEMENT CERTIFICATE NO.: {acknowledgementCertificate}
+          </p>
           <p className=" text-[.9rem]">
             DATE ISSUED: Jan 15 2023 VALID UNTIL Jan 31 2028
           </p>

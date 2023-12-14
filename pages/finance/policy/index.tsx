@@ -138,16 +138,17 @@ export default function Policy() {
   };
 
   const SaveHandler = () => {
+    const FinanceReferencePayload = FinanceReference.map((item) => {
+      return {
+        prefix: item.prefix,
+        serial_from: item.serial_from,
+        serial_to: item.serial_to,
+      };
+    });
     const Payload = {
       finance_period: isMonth,
       year: isYear,
-      finance_reference: FinanceReference.map((item) => {
-        return {
-          prefix: item.prefix,
-          serial_from: item.serial_from,
-          serial_to: item.serial_to,
-        };
-      }),
+      finance_reference: FinanceReferencePayload,
     };
     mutate(Payload);
   };
@@ -265,61 +266,53 @@ export default function Policy() {
                         <h4 className="main_text noMB">{item.prefix}</h4>
                       )}
                     </td>
-                    <td className="flex items-center py-2">
-                      {isToggle ? (
-                        <>
-                          {item.serial_from !== null &&
-                            item.serial_from !== undefined && (
-                              <input
-                                type="text"
-                                className={`field duration-200 ease-in-out`}
-                                value={item.serial_from}
-                                onChange={(e) => {
-                                  if (e.target.value.length <= 9) {
-                                    UpdateValue(
-                                      "serial_from",
-                                      e.target.value,
-                                      item.id
-                                    );
-                                  }
-                                }}
-                              />
-                            )}
-                        </>
-                      ) : (
-                        <h4 className="main_text noMB">
-                          {item?.serial_from ? item?.serial_from : ""}
-                        </h4>
-                      )}
-                      <span className=" text-DarkBlue font-NHU-bold mx-5">
-                        -
-                      </span>{" "}
-                      {isToggle ? (
-                        <>
-                          {item.serial_to !== null &&
-                            item.serial_to !== undefined && (
-                              <input
-                                type="text"
-                                className={`field duration-200 ease-in-out`}
-                                value={item.serial_to}
-                                onChange={(e) => {
-                                  if (e.target.value.length <= 9) {
-                                    UpdateValue(
-                                      "serial_to",
-                                      e.target.value,
-                                      item.id
-                                    );
-                                  }
-                                }}
-                              />
-                            )}
-                        </>
-                      ) : (
-                        <h4 className="main_text noMB">
-                          {item?.serial_to ? item?.serial_to : ""}
-                        </h4>
-                      )}
-                    </td>
+                    {item.document !== "Acknowledgement Certificate No." && (
+                      <td className="flex items-center py-2">
+                        {isToggle ? (
+                          <input
+                            type="text"
+                            className={`field duration-200 ease-in-out`}
+                            value={item.serial_from}
+                            onChange={(e) => {
+                              if (e.target.value.length <= 9) {
+                                UpdateValue(
+                                  "serial_from",
+                                  e.target.value,
+                                  item.id
+                                );
+                              }
+                            }}
+                          />
+                        ) : (
+                          <h4 className="main_text noMB">
+                            {item?.serial_from ? item?.serial_from : ""}
+                          </h4>
+                        )}
+                        <span className=" text-DarkBlue font-NHU-bold mx-5">
+                          -
+                        </span>
+                        {isToggle ? (
+                          <input
+                            type="text"
+                            className={`field duration-200 ease-in-out`}
+                            value={item.serial_to}
+                            onChange={(e) => {
+                              if (e.target.value.length <= 9) {
+                                UpdateValue(
+                                  "serial_to",
+                                  e.target.value,
+                                  item.id
+                                );
+                              }
+                            }}
+                          />
+                        ) : (
+                          <h4 className="main_text noMB">
+                            {item?.serial_to ? item?.serial_to : ""}
+                          </h4>
+                        )}
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>

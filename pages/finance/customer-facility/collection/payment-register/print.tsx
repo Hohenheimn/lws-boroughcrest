@@ -57,6 +57,11 @@ export default function Print({
     (filter: any) => filter.prefix === "PR"
   )[0];
 
+  const acknowledgementCertificate =
+    policyData?.data?.finance_reference?.filter(
+      (filter: any) => filter.document === "Acknowledgement Certificate No."
+    )[0];
+
   //   Page validation
   const PagePermisson = PageAccessValidation("Collection");
   if (!PagePermisson && PagePermisson !== undefined) {
@@ -99,6 +104,7 @@ export default function Print({
           arRange={arRange}
           orRange={orRange}
           prRange={prRange}
+          acknowledgementCertificate={acknowledgementCertificate?.prefix}
         />
       </div>
     </section>
@@ -116,7 +122,7 @@ export async function getServerSideProps({ query }: any) {
       payment_register_id:
         payment_register_id !== undefined ? payment_register_id : "",
       receipt_type: receipt_type ? receipt_type : "",
-      collection: collection,
+      collection: collection ? collection : "",
     },
   };
 }

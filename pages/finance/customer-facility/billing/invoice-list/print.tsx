@@ -60,6 +60,11 @@ export default function Print({
     (filter: any) => filter.prefix === "INV"
   )[0];
 
+  const acknowledgementCertificate =
+    policyData?.data?.finance_reference?.filter(
+      (filter: any) => filter.document === "Acknowledgement Certificate No."
+    )[0];
+
   const billingInvoice: billingPrintType[] = data?.data?.data;
 
   const [userInfo, setUserInfo] = useState<LoginUserInfo>();
@@ -105,12 +110,18 @@ export default function Print({
             </div>
           </Tippy>
         </aside>
+        {billingInvoice.length <= 0 && (
+          <aside className=" w-full flex justify-center items-center py-10">
+            <h1 className=" text-5xl">No Invoices with Balance to Print</h1>
+          </aside>
+        )}
         {billingInvoice.map((billing) => (
           <InvoicePrint
             key={billing.id}
             data={billing}
             userInfo={userInfo}
             invoiceRange={invoiceRange}
+            acknowledgementCertificate={acknowledgementCertificate?.prefix}
           />
         ))}
       </div>
