@@ -7,7 +7,7 @@ import { InvoiceListType, billingPrintType } from "./billingType";
 type Props = {
   userInfo?: LoginUserInfo;
   data: billingPrintType;
-  invoiceRange: { serial_from: string; serial_to: string };
+  invoiceRange: { serial_from: string; serial_to: string; prefix: string };
   acknowledgementCertificate: string;
 };
 
@@ -20,29 +20,29 @@ const InvoicePrint = ({
   const [beginningBalance, setBeginningBalance] = useState(0);
   const [payTotal, setPayTotal] = useState(0);
   const [amountStillDue, setAmountStillDue] = useState(0);
-
   const [remainingAdvances, setRemainingAdvances] = useState(0);
-
-  const [invoiceList, setInvoiceList] = useState<InvoiceListType[]>([]);
 
   useEffect(() => {
     setBeginningBalance(0);
-    setInvoiceList([]);
     setPayTotal(0);
     setAmountStillDue(0);
-    data?.billing_invoices.map((billing) =>
-      billing.invoice_list.map((invoice) => {
-        setInvoiceList([...invoiceList, invoice]);
-        const balance = Number(invoice.amount) - Number(invoice.amount_paid);
-        setBeginningBalance((value: number) => value + Number(invoice.amount));
-        setPayTotal(
-          (value: number) => value + Number(invoice.amount) + Number(balance)
-        );
-        setAmountStillDue(
-          (value: number) => value + Number(invoice.amount) + Number(balance)
-        );
-      })
-    );
+    // computation for beginning balance
+    data?.billing_invoices.slice(1).map((billing) => {
+      const balance =
+        Number(billing.due_amount) - Number(billing.payment_amount);
+      setBeginningBalance((value: number) => value + Number(balance));
+    });
+
+    // computation for pay total and amount still due
+    data?.billing_invoices[0].invoice_list.map((invoice) => {
+      const balance = Number(invoice.amount) - Number(invoice.amount_paid);
+      setPayTotal(
+        (value: number) => value + Number(invoice.amount) + Number(balance)
+      );
+      setAmountStillDue(
+        (value: number) => value + Number(invoice.amount) + Number(balance)
+      );
+    });
   }, []);
 
   return (
@@ -109,15 +109,10 @@ const InvoicePrint = ({
             </p>
           </aside>
           <ul className=" flex justify-end w-full">
-            {data?.billing_invoices.map((item, indx) => (
-              <li
-                key={indx}
-                className=" p-[1rem] text-center border border-black"
-              >
-                <p>INV NO.</p>
-                <h4>{item?.invoice_no}</h4>
-              </li>
-            ))}
+            <li className=" p-[1rem] text-center border border-black">
+              <p>INV NO.</p>
+              <h4>{data?.billing_invoices[0].invoice_no}</h4>
+            </li>
           </ul>
         </li>
       </ul>
@@ -156,7 +151,7 @@ const InvoicePrint = ({
               </h3>
             </td>
           </tr> */}
-          {invoiceList.map((inv, indx) => (
+          {data?.billing_invoices[0]?.invoice_list.map((inv, indx) => (
             <tr key={indx}>
               <td>{inv.charge.code}</td>
               <td>{inv.charge.description}</td>
@@ -218,7 +213,7 @@ const InvoicePrint = ({
               <li>{item.invoice_no}</li>
               <li>
                 <TextNumberDisplay
-                  value={item.due_amount}
+                  value={Number(item.due_amount) - Number(item.payment_amount)}
                   className={"withPeso "}
                 />
               </li>
@@ -292,7 +287,8 @@ const InvoicePrint = ({
             DATE ISSUED: Jan 15 2023 VALID UNTIL Jan 31 2028
           </p>
           <p className=" text-[.9rem]">
-            SERIES RANGE: {invoiceRange?.serial_from} to{" "}
+            SERIES RANGE: {invoiceRange?.prefix}
+            {invoiceRange?.serial_from} to {invoiceRange?.prefix}
             {invoiceRange?.serial_to}
           </p>
         </li>

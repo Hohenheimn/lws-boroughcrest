@@ -51,17 +51,17 @@ export default function PrintList({
   return (
     <>
       <div className="flex items-center flex-col">
-        <PrintTemplate title="Customer">
+        <PrintTemplate title="Collection" narrow>
           <table className="w-full">
-            <thead className="text-[#545454] text-[14px] text-start">
+            <thead className="text-[#545454] text-[14pr] text-start">
               <tr>
-                <th>Receipt Date</th>
-                <th>Receipt No.</th>
-                <th>Customer</th>
-                <th>Property</th>
-                <th>Amount Received</th>
-                <th>Mode of Payment</th>
-                <th>Cash Account</th>
+                <th className=" text-start">Receipt Date</th>
+                <th className=" text-start">Receipt No.</th>
+                <th className=" text-start">Customer</th>
+                <th className=" text-start">Property</th>
+                <th className=" text-start">Amount Received</th>
+                <th className=" text-start">Mode of Payment</th>
+                <th className=" text-start">Cash Account</th>
               </tr>
             </thead>
             <tbody>
@@ -76,8 +76,8 @@ export default function PrintList({
             <aside className="text-center flex justify-center py-5">
               <BarLoader
                 color={"#8f384d"}
-                height="10px"
-                width="200px"
+                height="10pr"
+                width="200pr"
                 aria-label="Loading Spinner"
                 data-testid="loader"
               />
@@ -104,15 +104,15 @@ const CollectionList = ({ itemDetail }: any) => {
         );
       }}
     >
-      <td className=" px-2">
+      <td className=" pr-2">
         {isValid(date) ? format(date, "MMM dd yyyy") : ""}
       </td>
 
-      <td className=" px-2">{itemDetail?.receipt_no}</td>
+      <td className=" pr-2">{itemDetail?.receipt_no}</td>
 
-      <td className=" px-2">{itemDetail?.customer?.name}</td>
+      <td className=" pr-2">{itemDetail?.customer?.name}</td>
 
-      <td className=" px-2">
+      <td className=" pr-2">
         {itemDetail?.customer?.properties?.map((item: any, index: number) =>
           itemDetail?.customer?.properties?.length - 1 === index
             ? item.unit_code
@@ -120,18 +120,18 @@ const CollectionList = ({ itemDetail }: any) => {
         )}
       </td>
 
-      <td className=" px-2">
-        <div className=" flex w-full justify-end">
+      <td className=" pr-2 flex justify-end">
+        <div>
           <TextNumberDisplay
-            className="withPeso w-full text-end"
+            className="withPeso w-full text-end "
             value={itemDetail?.amount_paid}
           />
         </div>
       </td>
 
-      <td className=" px-2">{itemDetail?.mode_of_payment}</td>
+      <td className=" pr-2">{itemDetail?.mode_of_payment}</td>
 
-      <td className=" px-2">{itemDetail?.chart_of_account_account_name}</td>
+      <td className=" pr-2">{itemDetail?.chart_of_account_account_name}</td>
     </tr>
   );
 };

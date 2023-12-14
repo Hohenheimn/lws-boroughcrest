@@ -12,9 +12,9 @@ type Props = {
   userInfo?: LoginUserInfo;
   data: CollectionItem;
   receiptType: string;
-  arRange: { serial_from: string; serial_to: string };
-  prRange: { serial_from: string; serial_to: string };
-  orRange: { serial_from: string; serial_to: string };
+  arRange: { serial_from: string; serial_to: string; prefix: string };
+  prRange: { serial_from: string; serial_to: string; prefix: string };
+  orRange: { serial_from: string; serial_to: string; prefix: string };
   acknowledgementCertificate: string;
 };
 
@@ -300,13 +300,19 @@ const ReceiptPrint = ({
                     </p>
                     <p>
                       SERIES RANGE:{" "}
-                      {receiptType === "Official" && orRange.serial_from}
-                      {receiptType === "Acknowledgement" && arRange.serial_from}
+                      {receiptType === "Official" &&
+                        `${orRange.prefix}${orRange.serial_from}`}
+                      {receiptType === "Acknowledgement" &&
+                        `${arRange.prefix}${arRange.serial_from}`}
                       {receiptType === "Provisional" &&
-                        prRange.serial_from} to{" "}
-                      {receiptType === "Official" && orRange.serial_to}
-                      {receiptType === "Acknowledgement" && arRange.serial_to}
-                      {receiptType === "Provisional" && prRange.serial_to}
+                        `${prRange.prefix}${prRange.serial_from}`}{" "}
+                      to{" "}
+                      {receiptType === "Official" &&
+                        `${orRange.prefix}${orRange.serial_to}`}
+                      {receiptType === "Acknowledgement" &&
+                        `${arRange.prefix}${arRange.serial_to}`}
+                      {receiptType === "Provisional" &&
+                        `${prRange.prefix}${prRange.serial_to}`}
                     </p>
                   </li>
                   <li className="flex flex-col items-center">
