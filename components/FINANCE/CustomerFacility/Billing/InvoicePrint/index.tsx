@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 
+import Image from "next/image";
+
 import { LoginUserInfo } from "../../../../HOC/LoginUser/UserInfo";
 import { TextNumberDisplay } from "../../../../Reusable/NumberFormat";
 import { InvoiceListType, billingPrintType } from "./billingType";
@@ -22,6 +24,8 @@ const InvoicePrint = ({
   const [amountStillDue, setAmountStillDue] = useState(0);
   const [remainingAdvances, setRemainingAdvances] = useState(0);
   const [totalAppliedAdvances, setTotalAppliedAdvances] = useState(0);
+
+  console.log(userInfo);
 
   useEffect(() => {
     let inBeginningBalances = 0;
@@ -66,7 +70,12 @@ const InvoicePrint = ({
     <main className=" p-[2rem] page-break">
       <ul className=" flex justify-between items-start list-none">
         <li>
-          <aside className=" w-[10rem] aspect-square border border-black"></aside>
+          <Image
+            src={`https://boroughcrest-api.lws.codes/get-img?image=${userInfo?.corporate?.logo}`}
+            width={200}
+            height={200}
+            className=" object-contain object-top"
+          />
         </li>
         <li className=" text-center uppercase">
           <h2>{userInfo?.corporate?.name}</h2>

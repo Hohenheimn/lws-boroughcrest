@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 
 import { addYears, format, startOfDay } from "date-fns";
 
+import Image from "next/image";
+
 import numberToWords from "number-to-words";
 
 import { CollectionItem } from "../../../../../pages/finance/customer-facility/collection/payment-register";
@@ -64,9 +66,13 @@ const ReceiptPrint = ({
             <th>
               <ul className=" flex justify-between items-end uppercase">
                 <li className=" flex items-start gap-2 w-[70%]">
-                  <aside className=" border border-[#545454] w-[8rem] aspect-square flex justify-center items-center">
-                    <p>LOGO</p>
-                  </aside>
+                  <Image
+                    src={`https://boroughcrest-api.lws.codes/get-img?image=${userInfo?.corporate?.logo}`}
+                    width={150}
+                    height={150}
+                    className=" object-contain object-top"
+                  />
+
                   <aside className=" text-start pr-10">
                     <h1 className={`${textLgBold}`}>
                       {userInfo?.corporate?.name}
