@@ -21,29 +21,46 @@ const InvoicePrint = ({
   const [payTotal, setPayTotal] = useState(0);
   const [amountStillDue, setAmountStillDue] = useState(0);
   const [remainingAdvances, setRemainingAdvances] = useState(0);
+  const [totalAppliedAdvances, setTotalAppliedAdvances] = useState(0);
 
   useEffect(() => {
+    let inBeginningBalances = 0;
     setBeginningBalance(0);
     setPayTotal(0);
     setAmountStillDue(0);
+    setTotalAppliedAdvances(0);
     // computation for beginning balance
     data?.billing_invoices.slice(1).map((billing) => {
       const balance =
-        Number(billing.due_amount) - Number(billing.payment_amount);
+        Number(billing.due_amount) -
+        Number(billing.payment_amount) -
+        Number(billing.applied_advances);
       setBeginningBalance((value: number) => value + Number(balance));
+      inBeginningBalances = inBeginningBalances + Number(balance);
     });
 
     // computation for pay total and amount still due
+    let inPayTotal = 0;
+    let inAmountStillDue = 0;
+    let inTotalAppliedAdvances = 0;
     data?.billing_invoices[0].invoice_list.map((invoice) => {
-      const balance = Number(invoice.amount) - Number(invoice.amount_paid);
-      setPayTotal(
-        (value: number) => value + Number(invoice.amount) + Number(balance)
-      );
-      setAmountStillDue(
-        (value: number) => value + Number(invoice.amount) + Number(balance)
-      );
+      const balance =
+        Number(invoice.amount) -
+        Number(invoice.amount_paid) -
+        Number(invoice.adjustment_amount);
+      inPayTotal = inPayTotal + Number(balance);
+      inAmountStillDue = inAmountStillDue + Number(balance);
+      inTotalAppliedAdvances =
+        inTotalAppliedAdvances + Number(invoice.adjustment_amount);
     });
+    setPayTotal(Number(inPayTotal) + Number(inBeginningBalances));
+    setAmountStillDue(Number(inAmountStillDue) + Number(inBeginningBalances));
+    setTotalAppliedAdvances(inTotalAppliedAdvances);
   }, []);
+
+  // amount still due = add all balance from table and beginning balance
+  // remaining balance = amount - amount paid - appled advances
+  //  applied advance =  total of applied advances
 
   return (
     <main className=" p-[2rem] page-break">
@@ -121,6 +138,14 @@ const InvoicePrint = ({
           <h3 className="">APPLIED ADVANCES</h3>
         </li>
         <li>
+          <p>
+            <TextNumberDisplay
+              value={totalAppliedAdvances}
+              className={"withPeso"}
+            />
+          </p>
+        </li>
+        <li>
           <p>BEGINNING BALANCE</p>
         </li>
         <li>
@@ -167,10 +192,20 @@ const InvoicePrint = ({
                   className={"withPeso"}
                 />
               </td>
-              <td className=" text-red-500">OVERDUE</td>
+              <td className=" text-end">
+                {" "}
+                <TextNumberDisplay
+                  value={Number(inv.adjustment_amount)}
+                  className={"withPeso"}
+                />
+              </td>
               <td className=" text-end">
                 <TextNumberDisplay
-                  value={Number(inv.amount) - Number(inv.amount_paid)}
+                  value={
+                    Number(inv.amount) -
+                    Number(inv.amount_paid) -
+                    Number(inv.adjustment_amount)
+                  }
                   className={"withPeso"}
                 />
               </td>
@@ -209,15 +244,23 @@ const InvoicePrint = ({
         <li className=" w-[20rem] space-y-1">
           <h5 className=" text-center">SUMMARY</h5>
           {data?.billing_invoices.map((item, indx) => (
-            <ul key={indx} className=" flex justify-between gap-2">
-              <li>{item.invoice_no}</li>
-              <li>
-                <TextNumberDisplay
-                  value={Number(item.due_amount) - Number(item.payment_amount)}
-                  className={"withPeso "}
-                />
-              </li>
-            </ul>
+            <div key={indx}>
+              {Number(item.due_amount) - Number(item.payment_amount) <= 0 ? (
+                <div />
+              ) : (
+                <ul className=" flex justify-between gap-2">
+                  <li>{item.invoice_no}</li>
+                  <li>
+                    <TextNumberDisplay
+                      value={
+                        Number(item.due_amount) - Number(item.payment_amount)
+                      }
+                      className={"withPeso "}
+                    />
+                  </li>
+                </ul>
+              )}
+            </div>
           ))}
         </li>
       </ul>
