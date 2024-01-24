@@ -31,8 +31,13 @@ function MyApp({ Component, pageProps }: ExtendAppProps) {
 
   const [userInfo, setUserInfo] = useState<LoginUserInfo>();
   useEffect(() => {
-    if (!router.pathname.includes("/login")) {
-      setUserInfo(JSON.parse(localStorage.userInfo));
+    if (
+      !router.pathname.includes("/login") ||
+      !router.pathname.includes("/reset-password")
+    ) {
+      if (localStorage.userInfo) {
+        setUserInfo(JSON.parse(localStorage.userInfo));
+      }
     }
   }, []);
   // //   block other pages from system admin

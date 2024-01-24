@@ -62,7 +62,7 @@ export default function ResetPassword({ token }: any) {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <AnimatePresence>
-        {togglePrompt.toggle && <PrompMessage />}
+        {togglePrompt?.toggle && <PrompMessage />}
       </AnimatePresence>
       <form
         onSubmit={Submit}
@@ -189,12 +189,11 @@ export default function ResetPassword({ token }: any) {
 }
 
 export async function getServerSideProps(context: any) {
-  // const router = useRouter();
-  const token = context.query.token;
+  const token = context?.query?.token;
   if (!token) {
     return {
       redirect: {
-        permanent: false,
+        permanent: true,
         destination: "/login",
       },
     };
