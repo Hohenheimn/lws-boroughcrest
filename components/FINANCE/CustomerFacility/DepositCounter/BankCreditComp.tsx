@@ -568,9 +568,8 @@ export default function BankCreditComp({
       {type === "bank-credit" && (
         <Pagination
           setTablePage={setTablePage}
-          TablePage={TablePage}
-          PageNumber={data?.data.last_page}
-          CurrentPage={data?.data.current_page}
+          tablePage={TablePage}
+          totalPage={data?.data.last_page}
         />
       )}
     </>

@@ -77,7 +77,7 @@ export default function Receiptsbook({
 }: Props) {
   const { setPrompt } = useContext(AppContext);
   const router = useRouter();
-  const [TablePage, setTablePage] = useState<string | number>("");
+  const [TablePage, setTablePage] = useState<number>(1);
   const [isSearch, setSearch] = useState("");
 
   const [isSelectedIDs, setSelectedIDs] = useState<number[]>([]);
@@ -492,9 +492,8 @@ export default function Receiptsbook({
       {type === "receipts-book" && (
         <Pagination
           setTablePage={setTablePage}
-          TablePage={TablePage}
-          PageNumber={data?.data.meta.last_page}
-          CurrentPage={data?.data.meta.current_page}
+          tablePage={TablePage}
+          totalPage={data?.data.meta.last_page}
         />
       )}
     </>

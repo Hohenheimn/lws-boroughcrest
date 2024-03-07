@@ -55,16 +55,12 @@ export default function CheckPaymentList() {
       isPeriod={isPeriod}
       setPeriod={setPeriod}
       page="check-payment-list"
-      EndPointList={`/finance/customer-facility/collection?paginate=10&receipt_type=Provisional&filters=${isFilterText}&keyword=${isSearch}&page=${
-        isSearch === "" ? TablePage : 1
-      }&date_from=${dateFrom}&date_to=${dateTo}`}
+      EndPointList={`/finance/customer-facility/collection?paginate=10&receipt_type=Provisional&filters=${isFilterText}&keyword=${isSearch}&page=${TablePage}&date_from=${dateFrom}&date_to=${dateTo}`}
       // &collection_check_warehouse_id=not null
       EndPointAdvFilter={
         "/finance/customer-facility/collection/filter-options?receipt_type=Provisional&keywords="
       }
-      EndPointExport={`/finance/customer-facility/collection/export?paginate=10&collection_check_warehouse_id=not null&receipt_type=Provisional&filters=${isFilterText}&keyword=${isSearch}&page=${
-        isSearch === "" ? TablePage : 1
-      }&date_from=${dateFrom}&date_to=${dateTo}`}
+      EndPointExport={`/finance/customer-facility/collection/export?paginate=10&collection_check_warehouse_id=not null&receipt_type=Provisional&filters=${isFilterText}&keyword=${isSearch}&page=${TablePage}&date_from=${dateFrom}&date_to=${dateTo}`}
       ExportName="Check-Payment-list"
     />
   );

@@ -15,9 +15,7 @@ export const GetInvoiceList = (
     ["invoice-list", keyword, type, TablePage, filterArray, dateFrom, dateTo],
     () => {
       return api.get(
-        `/finance/customer-facility/billing?list_type=${type}&paginate=10&keywords=${keyword}&page=${
-          keyword === "" ? TablePage : 1
-        }&filters=${filterArray}&date_from=${dateFrom}&date_to=${dateTo}`,
+        `/finance/customer-facility/billing?list_type=${type}&paginate=10&keywords=${keyword}&page=${TablePage}&filters=${filterArray}&date_from=${dateFrom}&date_to=${dateTo}`,
         {
           headers: { Authorization: "Bearer " + getCookie("user") },
         }

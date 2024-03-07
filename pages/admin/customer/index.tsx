@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 
@@ -12,37 +12,28 @@ import { PageAccessValidation } from "../../../components/Reusable/PermissionVal
 import SearchFilter from "../../../components/SearchFilterNew/SearchFilter";
 
 export default function Customer() {
-    const router = useRouter();
+  const router = useRouter();
 
-    const { setSearchBar, cusToggle, DefaultCustomerFormValue, isSearchBar } =
-        useContext(AppContext);
+  const { cusToggle, DefaultCustomerFormValue } = useContext(AppContext);
 
-    const PagePermisson = PageAccessValidation("Customer");
+  const [search, setSearch] = useState("");
 
-    if (!PagePermisson && PagePermisson !== undefined) {
-        return <NoPermissionComp />;
-    }
+  const PagePermisson = PageAccessValidation("Customer");
 
-    return (
-        <>
-            <SearchFilter
-                page="Customer"
-                setSearchTable={setSearchBar}
-                exportAPI={`/admin/customer/export?keywords=${isSearchBar}`}
-            />
-            <CustomerTable />
-            {cusToggle && (
-                <CustomerForm DefaultValue={DefaultCustomerFormValue} />
-            )}
-            {router.query.draft !== undefined && <ModifyCustomer />}
-        </>
-    );
+  if (!PagePermisson && PagePermisson !== undefined) {
+    return <NoPermissionComp />;
+  }
+
+  return (
+    <>
+      <SearchFilter
+        page="Customer"
+        setSearchTable={setSearch}
+        exportAPI={`/admin/customer/export?keywords=${search}`}
+      />
+      <CustomerTable search={search} />
+      {cusToggle && <CustomerForm DefaultValue={DefaultCustomerFormValue} />}
+      {router.query.draft !== undefined && <ModifyCustomer />}
+    </>
+  );
 }
-
-export const getServerSideProps: GetServerSideProps = requiredAuthentication(
-    async (context) => {
-        return {
-            props: {},
-        };
-    }
-);

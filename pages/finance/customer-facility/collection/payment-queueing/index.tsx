@@ -194,9 +194,7 @@ export default function PaymentQueueing() {
         </ModalTemp>
       )}
       <HeaderCollection
-        printCollectionType={`?collection=list&search=${isSearch}&date_from=&date_to=&paginate=10&page=${
-          isSearch === "" ? TablePage : 1
-        }&filters=${isFilterText}`}
+        printCollectionType={`?collection=list&search=${isSearch}&date_from=&date_to=&paginate=10&page=${TablePage}&filters=${isFilterText}`}
         setFilterText={setFilterText}
         isSearch={isSearch}
         setSearch={setSearch}
@@ -248,9 +246,8 @@ export default function PaymentQueueing() {
       </div>
       <Pagination
         setTablePage={setTablePage}
-        TablePage={TablePage}
-        PageNumber={data?.data.meta.last_page}
-        CurrentPage={data?.data.meta.current_page}
+        tablePage={TablePage}
+        totalPage={data?.data.meta.last_page}
       />
     </>
   );

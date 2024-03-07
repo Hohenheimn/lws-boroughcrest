@@ -102,9 +102,8 @@ export default function SuperAdminDashboard() {
 
         <Pagination
           setTablePage={setPage}
-          TablePage={page}
-          PageNumber={data?.data.meta.last_page}
-          CurrentPage={data?.data.meta.current_page}
+          tablePage={page}
+          totalPage={data?.data.meta.last_page}
         />
         {SelectedItem !== null && (
           <SubscriberForm

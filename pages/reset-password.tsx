@@ -6,12 +6,10 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { FaKey } from "react-icons/fa";
-
 import { ScaleLoader } from "react-spinners";
 
 import AppContext from "../components/Context/AppContext";
 import { ChangePassword } from "../components/ReactQuery/ForgotPassword";
-import { ErrorSubmit } from "../components/Reusable/ErrorMessage";
 import PrompMessage from "../components/Reusable/PrompMessage";
 
 export default function ResetPassword({ token }: any) {

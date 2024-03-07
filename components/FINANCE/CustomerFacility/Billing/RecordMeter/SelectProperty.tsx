@@ -111,10 +111,6 @@ export default function SelectProperty({
     id: "",
   });
 
-  useEffect(() => {
-    console.log(isFilterbyCategory);
-  }, [isFilterbyCategory]);
-
   const { isLoading, isError, data } = useQuery(
     [
       "Property-List",
@@ -126,9 +122,7 @@ export default function SelectProperty({
     ],
     () => {
       return api.get(
-        `/admin/property/unit?page=${
-          isSearch === "" ? TablePage : 1
-        }&paginate=10&keywords=${isSearch}&${
+        `/admin/property/unit?page=${TablePage}&paginate=10&keywords=${isSearch}&${
           isFilterbyCategory === "Tower" ? "tower_id" : "project_id"
         }=${isCategoryList.id}`,
         {
@@ -347,10 +341,10 @@ export default function SelectProperty({
           <div className="mb-5"></div>
           <Pagination
             setTablePage={setTablePage}
-            TablePage={TablePage}
-            PageNumber={data?.data.last_page}
-            CurrentPage={data?.data.current_page}
+            tablePage={TablePage}
+            totalPage={data?.data.last_page}
           />
+
           <div className="flex justify-end py-5 mt-10">
             {router.query.modify === undefined && (
               <button

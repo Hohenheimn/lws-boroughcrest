@@ -604,11 +604,11 @@ export default function BillingList() {
         )}
         {isError && <TableErrorMessage />}
       </div>
+
       <Pagination
         setTablePage={setTablePage}
-        TablePage={TablePage}
-        PageNumber={data?.data.meta.last_page}
-        CurrentPage={data?.data.meta.current_page}
+        tablePage={TablePage}
+        totalPage={data?.data.meta.last_page}
       />
     </>
   );

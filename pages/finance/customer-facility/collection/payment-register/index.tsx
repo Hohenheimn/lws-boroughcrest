@@ -148,9 +148,7 @@ export default function PaymentRegister() {
           isValid(dateFrom) ? format(dateFrom, "yyyy-MM-dd") : ""
         }&date_to=${
           isValid(dateTo) ? format(dateTo, "yyyy-MM-dd") : ""
-        }&paginate=10&page=${
-          isSearch === "" ? TablePage : 1
-        }&filters=${isFilterText}&status&receipt_type=Acknowledgement,Official`}
+        }&paginate=10&page=${TablePage}&filters=${isFilterText}&status&receipt_type=Acknowledgement,Official`}
         FilterEndpoint="/finance/customer-facility/collection/filter-options"
         page="payment-register"
         isPeriod={isPeriod}
@@ -198,9 +196,8 @@ export default function PaymentRegister() {
       </div>
       <Pagination
         setTablePage={setTablePage}
-        TablePage={TablePage}
-        PageNumber={data?.data.meta.last_page}
-        CurrentPage={data?.data.meta.current_page}
+        tablePage={TablePage}
+        totalPage={data?.data.meta.last_page}
       />
     </>
   );

@@ -446,10 +446,10 @@ export default function TableForm() {
         </div>
         <Pagination
           setTablePage={RecordMetersetTablePage}
-          TablePage={RecordMeterTablePage}
-          PageNumber={data?.data?.records?.last_page}
-          CurrentPage={data?.data?.records?.current_page}
+          tablePage={RecordMeterTablePage}
+          totalPage={data?.data?.records?.last_page || 1}
         />
+
         <div className="w-full flex justify-end mt-5">
           <button className="buttonRed" onClick={ApplyHandler}>
             {applyLoading ? (

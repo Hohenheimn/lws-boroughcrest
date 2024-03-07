@@ -101,9 +101,7 @@ export default function JournalTable({ type, isPeriod, setPeriod }: Props) {
 
   const ExportHandler = () => {
     DynamicExportHandler(
-      `/finance/general-ledger/journal/export?list_type=${type}&keywords=${isSearch}&page=${
-        isSearch === "" ? TablePage : 1
-      }&filters=${isFilterText}&date_from=${
+      `/finance/general-ledger/journal/export?list_type=${type}&keywords=${isSearch}&page=${TablePage}&filters=${isFilterText}&date_from=${
         isValid(dateFrom) ? format(dateFrom, "yyyy-MM-dd") : ""
       }&date_to=${isValid(dateTo) ? format(dateTo, "yyyy-MM-dd") : ""}`,
       "journal-list",
@@ -471,9 +469,8 @@ export default function JournalTable({ type, isPeriod, setPeriod }: Props) {
       </div>
       <Pagination
         setTablePage={setTablePage}
-        TablePage={TablePage}
-        PageNumber={data?.data.last_page}
-        CurrentPage={data?.data.current_page}
+        tablePage={TablePage}
+        totalPage={data?.data.last_page}
       />
     </>
   );

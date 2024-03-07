@@ -32,9 +32,7 @@ export const SubscriberList = (
 ) => {
   return useQuery(["subscriber-list", keyword, pageNumber], () => {
     return api.get(
-      `/system-admin/subscriber?keywords=${keyword}&page=${
-        keyword === "" ? pageNumber : 1
-      }&paginate=${rowNumber}`,
+      `/system-admin/subscriber?keywords=${keyword}&page=${pageNumber}&paginate=${rowNumber}`,
       {
         headers: {
           Authorization: "Bearer " + getCookie("user"),

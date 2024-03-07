@@ -76,9 +76,8 @@ export default function PropertyTable({ isSearchTable }: any) {
 
       <Pagination
         setTablePage={setTablePage}
-        TablePage={TablePage}
-        PageNumber={data?.data.last_page}
-        CurrentPage={data?.data.current_page}
+        tablePage={TablePage}
+        totalPage={data?.data.last_page}
       />
     </>
   );

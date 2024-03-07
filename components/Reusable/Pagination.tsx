@@ -1,78 +1,102 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { RiArrowRightSLine, RiArrowLeftSLine } from "react-icons/ri";
-import Tippy from "@tippy.js/react";
-import "tippy.js/dist/tippy.css";
 
 type Pagination = {
-    setTablePage: Function;
-    TablePage: number | string;
-    PageNumber: number;
-    CurrentPage: number;
+  setTablePage: Function;
+  tablePage: number;
+  totalPage: number;
 };
 
 export default function Pagination({
-    setTablePage,
-    TablePage,
-    PageNumber,
-    CurrentPage,
+  setTablePage,
+  tablePage,
+  totalPage,
 }: Pagination) {
-    const SelectPage = (page: number) => {
-        const SelectedPage = Number(page) + 1;
-        setTablePage(SelectedPage);
-    };
-    return (
-        <div className=" w-full flex justify-end">
-            <ul className=" flex items-center">
-                <Tippy
-                    theme="ThemeRed"
-                    content={<span className="capitalize">Back</span>}
-                >
-                    <li>
-                        <button
-                            className="flex items-center"
-                            disabled={1 === TablePage && true}
-                            onClick={() =>
-                                setTablePage((page: number) => page - 1)
-                            }
-                        >
-                            <RiArrowLeftSLine className="text-[24px] text-ThemeRed cursor-pointer" />
-                        </button>
-                    </li>
-                </Tippy>
-                <li className=" border-2 border-white flex items-center text-gray-400">
-                    {Array.from(Array(PageNumber), (e, index) => {
-                        return (
-                            <div
-                                onClick={() => SelectPage(index)}
-                                key={index}
-                                className={`${
-                                    CurrentPage === index + 1
-                                        ? " text-ThemeRed"
-                                        : " text-RegularColor"
-                                } font-bold h-5 w-5 1550px:w-5 1550px:h-5 480px:w-6 480px:h-6 text-[13px] flex justify-center items-center border-r border-white cursor-pointer`}
-                            >
-                                {index + 1}
-                            </div>
-                        );
-                    })}
-                </li>
-                <Tippy
-                    theme="ThemeRed"
-                    content={<span className="capitalize">Next</span>}
-                >
-                    <li>
-                        <button
-                            className="flex items-center"
-                            onClick={() =>
-                                setTablePage((page: number) => page + 1)
-                            }
-                            disabled={CurrentPage === PageNumber}
-                        >
-                            <RiArrowRightSLine className=" text-[24px] text-ThemeRed cursor-pointer" />
-                        </button>
-                    </li>
-                </Tippy>
-            </ul>
-        </div>
-    );
+  const SelectPage = (page: number) => {
+    const SelectedPage = Number(page);
+    setTablePage(SelectedPage);
+  };
+
+  const getPreviousAndNextNumbers = (number: number) => {
+    const result = [];
+
+    for (let i = number - 2; i <= number + 2; i++) {
+      if (i >= 1 && i <= totalPage) {
+        result.push(i);
+      }
+    }
+    return result;
+  };
+
+  const [currentPages, setCurrentPages] = useState([1]);
+
+  useEffect(() => {
+    const activePage = getPreviousAndNextNumbers(tablePage);
+    setCurrentPages(activePage);
+  }, [tablePage, totalPage]);
+
+  return (
+    <div className=" w-full flex justify-end ">
+      <ul className=" flex items-center  ">
+        <li>
+          <button
+            className="flex items-center"
+            disabled={1 === tablePage && true}
+            onClick={() => setTablePage((page: number) => page - 1)}
+          >
+            <RiArrowLeftSLine className="text-[24px] text-black cursor-pointer" />
+          </button>
+        </li>
+
+        {tablePage > 3 && (
+          <li className=" flex items-center text-gray-400 border-4 border-white">
+            <div
+              onClick={() => SelectPage(1)}
+              className={`${
+                tablePage === 1 && " text-ThemeRed"
+              } w-10 h-8 bg-gray-100 border-r border-white font-bold size-16 flex justify-center items-center cursor-pointer`}
+            >
+              {1}...
+            </div>
+          </li>
+        )}
+
+        <li className=" flex items-center text-gray-400 border-4 border-white ">
+          {currentPages.map((item) => (
+            <div
+              onClick={() => SelectPage(item)}
+              key={item}
+              className={`${
+                tablePage === item && " text-ThemeRed"
+              } w-8 aspect-square bg-gray-100 border-r border-white font-bold size-16 flex justify-center items-center cursor-pointer`}
+            >
+              {item}
+            </div>
+          ))}
+        </li>
+        {tablePage < totalPage - 2 && (
+          <li className=" flex items-center text-gray-400 border-4 border-white">
+            <div
+              onClick={() => SelectPage(totalPage)}
+              className={`${
+                tablePage === totalPage && " text-ThemeRed"
+              } w-10 h-8 bg-gray-100 border-r border-white font-bold size-16 flex justify-center items-center cursor-pointer`}
+            >
+              ...{totalPage}
+            </div>
+          </li>
+        )}
+
+        <li>
+          <button
+            className="flex items-center"
+            onClick={() => setTablePage((page: number) => page + 1)}
+            disabled={tablePage === totalPage}
+          >
+            <RiArrowRightSLine className=" text-[24px] text-black cursor-pointer" />
+          </button>
+        </li>
+      </ul>
+    </div>
+  );
 }
