@@ -126,6 +126,24 @@ export const GetUnitCode = (classType: string, searchUnitCode?: string) => {
   });
 };
 
+export const GetUnitCodeDropdown = (
+  classType: string,
+  searchUnitCode?: string
+) => {
+  return useQuery(["get-unitcode", classType, searchUnitCode], () => {
+    return api.get(
+      `/admin/property/unit?keywords=${searchUnitCode}&for_dropdown=1${
+        classType === "Owner" ? "&NoOwner=1" : ""
+      }${classType === "Developer" ? "&NoDeveloper=1" : ""}`,
+      {
+        headers: {
+          Authorization: "Bearer " + getCookie("user"),
+        },
+      }
+    );
+  });
+};
+
 export const PutCustomer = (onSuccess: any, onError: any, id: any) => {
   return useMutation(
     (data: FormData) => {

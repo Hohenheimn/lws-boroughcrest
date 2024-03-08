@@ -7,6 +7,7 @@ import { BarLoader, MoonLoader } from "react-spinners";
 import "tippy.js/dist/tippy.css";
 import Tippy from "@tippy.js/react";
 
+
 import AppContext from "../../Context/AppContext";
 import {
   DeleteFloor,
@@ -16,6 +17,7 @@ import {
   GetTower,
 } from "../../ReactQuery/PropertyMethod";
 import { ErrorSubmit } from "../../Reusable/ErrorMessage";
+
 
 type Props = {
   set: any;
@@ -169,7 +171,7 @@ const Floor = ({
       <aside className="w-full flex justify-between  ">
         <div
           onClick={AddArray}
-          className="font-bold cursor-pointer text-ThemeRed text-[12px] inline-block  hover:underline"
+          className="font-bold cursor-pointer text-ThemeRed text-[12px] inline-block hover:underline"
         >
           ADD FLOOR
         </div>

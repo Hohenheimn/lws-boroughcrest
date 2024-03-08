@@ -7,7 +7,7 @@ import { ScaleLoader } from "react-spinners";
 import style from "../../../../styles/Popup_Modal.module.scss";
 import AppContext from "../../../Context/AppContext";
 import {
-  GetUnitCode,
+  GetUnitCodeDropdown,
   UpdateProperties,
 } from "../../../ReactQuery/CustomerMethod";
 
@@ -341,7 +341,10 @@ const Select = ({
   // end
 
   // Get unit codes to display
-  const { isLoading, data, isError } = GetUnitCode(classType, keywordSearch);
+  const { isLoading, data, isError } = GetUnitCodeDropdown(
+    classType,
+    keywordSearch
+  );
 
   const removeDraft = data?.data.filter(
     (fitlerItem: any) => fitlerItem.status !== "Draft"
