@@ -166,7 +166,7 @@ const Floor = ({
         <p className="text-[12px] text-ThemeRed">{isWarning}</p>
       )}
 
-      <aside className="w-full flex justify-between">
+      <aside className="w-full flex justify-between  ">
         <div
           onClick={AddArray}
           className="font-bold cursor-pointer text-ThemeRed text-[12px] inline-block  hover:underline"

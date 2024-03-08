@@ -8,13 +8,8 @@ import style from "../../../../styles/Popup_Modal.module.scss";
 import AppContext from "../../../Context/AppContext";
 import {
   GetUnitCode,
-  PostCustomerDraft,
-  PostCustomerSave,
   UpdateProperties,
 } from "../../../ReactQuery/CustomerMethod";
-import DynamicPopOver from "../../../Reusable/DynamicPopOver";
-import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
-import { CustomerFormDefaultValue } from "./CustomerForm";
 
 type ModifyRolesPermission = {
   setToggle: Function;
@@ -43,8 +38,7 @@ export default function CustomerUnitCodeForm({
 }: ModifyRolesPermission) {
   const queryClient = useQueryClient();
 
-  const { setPrompt, setCusError, CustomerErrorDefault, setCusToggle } =
-    useContext(AppContext);
+  const { setPrompt } = useContext(AppContext);
   let buttonClick = "";
   const router = useRouter();
   const id = router.query.id;
@@ -75,14 +69,7 @@ export default function CustomerUnitCodeForm({
     const ArrayPropertyID = isProperty?.map((item: any) => {
       return item.unit_code;
     });
-    // if (ArrayPropertyID.includes("")) {
-    //   setPrompt({
-    //     message: "Cannot proceed, one of unit code is empty",
-    //     type: "draft",
-    //     toggle: true,
-    //   });
-    //   return;
-    // }
+
     const stringify = JSON.stringify(ArrayPropertyID);
     const Payload = {
       unit_codes: stringify,

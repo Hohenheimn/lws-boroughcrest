@@ -572,9 +572,9 @@ input[type="number"] {
 
 // For dropdown Table
 .crud-container {
-  @apply overflow-y-auto min-h-[200px] max-h-[400px] p-2 pt-0 relative pb-9;
+  @apply overflow-y-auto min-h-[200px] max-h-[400px] p-2 pt-0 relative;
   aside {
-    @apply cursor-pointer text-ThemeRed text-[12px] py-2  absolute bottom-[0px] left-[0] px-2;
+    @apply cursor-pointer text-ThemeRed text-[12px] py-2 px-2;
   }
 }
 .crud-table {
