@@ -10,6 +10,7 @@ import {
   GetUnitCodeDropdown,
   UpdateProperties,
 } from "../../../ReactQuery/CustomerMethod";
+import { ErrorSubmit } from "../../../Reusable/ErrorMessage";
 
 type ModifyRolesPermission = {
   setToggle: Function;
@@ -43,6 +44,10 @@ export default function CustomerUnitCodeForm({
   const router = useRouter();
   const id = router.query.id;
 
+  const onError = (res: any) => {
+    ErrorSubmit(res, setPrompt);
+  };
+
   const OnSuccess = () => {
     setPrompt({
       message: "Property Successfully updated!",
@@ -61,7 +66,7 @@ export default function CustomerUnitCodeForm({
 
   // MUTATION START HERE
   const { mutate: UpdateProperty, isLoading: LoadingProperty } =
-    UpdateProperties(id, OnSuccess);
+    UpdateProperties(id, OnSuccess, onError);
   const [isSave, setSave] = useState(false);
 
   // Modify Property
@@ -214,6 +219,8 @@ const List = ({ detail, setProperty, isProperty, id, classType }: List) => {
   const [isSelect, setSelect] = useState(false);
   const { setPrompt } = useContext(AppContext);
 
+  const menuRef = useRef<any>();
+
   const [searchUnitCode, setSearchUnitCode] = useState(detail?.unit_code);
 
   useEffect(() => {
@@ -251,10 +258,23 @@ const List = ({ detail, setProperty, isProperty, id, classType }: List) => {
     }
   };
 
+  useEffect(() => {
+    const clickOutSide = (e: any) => {
+      if (!menuRef.current.contains(e.target)) {
+        setSelect(false);
+        setSearchUnitCode(detail.unit_code);
+      }
+    };
+    document.addEventListener("mousedown", clickOutSide);
+    return () => {
+      document.removeEventListener("mousedown", clickOutSide);
+    };
+  });
+
   return (
     <tr>
       <td className=" pr-2 ">
-        <div className=" relative w-full">
+        <div className=" relative w-full" ref={menuRef}>
           <input
             type="text"
             value={searchUnitCode}
@@ -328,8 +348,6 @@ const Select = ({
   setSearchUnitCode,
   detail,
 }: any) => {
-  const Menu = useRef<any>();
-
   // Reset show item when open
   const [showItemAll, setshowItemAll] = useState(true);
   const keywordSearch = showItemAll ? "" : searchUnitCode;
@@ -350,21 +368,8 @@ const Select = ({
     (fitlerItem: any) => fitlerItem.status !== "Draft"
   );
 
-  useEffect(() => {
-    const clickOutSide = (e: any) => {
-      if (!Menu.current.contains(e.target)) {
-        setSelect(false);
-        setSearchUnitCode(detail.unit_code);
-      }
-    };
-    document.addEventListener("mousedown", clickOutSide);
-    return () => {
-      document.removeEventListener("mousedown", clickOutSide);
-    };
-  });
-
   return (
-    <ul ref={Menu} className="dropdown-list">
+    <ul className="dropdown-list">
       {isLoading && (
         <li className="flex justify-center">
           <ScaleLoader color="#8f384d" height="10px" width="2px" />

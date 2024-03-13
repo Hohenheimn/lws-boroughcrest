@@ -206,7 +206,11 @@ export const CustomerExport = () => {
   });
 };
 
-export const UpdateProperties = (id: any, onSuccess: any) => {
+export const UpdateProperties = (
+  id: any,
+  onSuccess: () => void,
+  onError: (res: any) => void
+) => {
   return useMutation(
     (data: any) => {
       return api.post(`admin/customer/${id}/property`, data, {
@@ -217,6 +221,7 @@ export const UpdateProperties = (id: any, onSuccess: any) => {
     },
     {
       onSuccess: onSuccess,
+      onError: onError,
     }
   );
 };
