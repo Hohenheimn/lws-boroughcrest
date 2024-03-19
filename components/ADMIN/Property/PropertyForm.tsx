@@ -109,6 +109,13 @@ export default function PropertyForm({
 
   const [FormModify, setFormModify] = useState("New");
   const [isUnitCode, setUnitCode] = useState(DefaultFormData.unit_code);
+
+  const dropdownDefault = {
+    id: "",
+    value: "",
+    firstVal: "",
+    firstID: "",
+  };
   const [isProjectVal, setProjectVal] = useState({
     id: DefaultFormData?.project_id,
     value: DefaultFormData?.project,
@@ -227,6 +234,11 @@ export default function PropertyForm({
     queryClient.invalidateQueries("get-property-detail");
     setError({ ...ErrorDefault });
     setUnitCode("");
+    setDevVal(dropdownDefault);
+    setFloorVal(dropdownDefault);
+    setProjectVal(dropdownDefault);
+    setTowerVal(dropdownDefault);
+    setValue("area", "");
     reset();
     if (router.query.id !== undefined) {
       // Update
@@ -261,6 +273,10 @@ export default function PropertyForm({
     }
     if (isButton === "save" || isButton === "draft") {
       setNewPropToggle(false);
+    }
+    if (isButton === "new" && router.query.id) {
+      router.push("/admin/property");
+      setNewPropToggle(true);
     }
   };
   const onError = (e: any) => {
@@ -701,11 +717,6 @@ export default function PropertyForm({
                 defaultValue={watch("area")}
                 limitation={10}
               />
-              {/* <input
-                                type="text"
-                              
-                                {...register("area")}
-                            /> */}
               {errors.area && (
                 <p className="text-[10px]">{errors.area.message}</p>
               )}
@@ -823,7 +834,4 @@ export default function PropertyForm({
       </section>
     </form>
   );
-}
-function setPrompt(arg0: { message: string; type: string; toggle: boolean }) {
-  throw new Error("Function not implemented.");
 }
