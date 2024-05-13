@@ -76,11 +76,11 @@ export default function ReadingPropertyForm({
   useEffect(() => {
     const clone = DefaultValue.properties.map((item) => {
       if (
-        data?.data?.records.some(
+        data?.data?.records?.some(
           (some: any) => some.property_unit_id === item.property_unit_id
         )
       ) {
-        const filterClone = data?.data?.records.filter(
+        const filterClone = data?.data?.records?.filter(
           (filter: any) => filter.property_unit_id === item.property_unit_id
         );
         return {

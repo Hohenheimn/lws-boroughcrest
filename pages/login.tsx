@@ -63,6 +63,8 @@ export default function Login() {
 
       const UserInfo = JSON.stringify(responseUserInfo?.data);
 
+      console.log(UserInfo);
+
       localStorage.setItem("userInfo", UserInfo);
 
       if (CheckRemember === true) {

@@ -190,10 +190,7 @@ export default function Layout({ children }: Layout) {
                 )}
               </AnimatePresence>
               {router.pathname === "/" && (
-                <div
-                  className=" flex items-center px-8 py-4 bg-white flex-1 max-w-[600px] rounded-lg shadow-lg 640px:px-4 640px:py-2 480px:order-2
-                            "
-                >
+                <div className="flex items-center px-8 py-4 bg-white flex-1 max-w-[600px] rounded-lg shadow-lg 640px:px-4 640px:py-2 480px:order-2">
                   <input
                     type="text"
                     className="flex-1 outline-none text-14px "
