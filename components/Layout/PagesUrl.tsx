@@ -75,7 +75,6 @@ export const SidebarLinks = () => {
   };
 
   useEffect(() => {
-    // console.log(userInfo);
     if (localStorage.userInfo !== undefined) {
       // SYSTEM ADMIN
       if (userInfo?.system_admin) {
@@ -193,22 +192,6 @@ export const SidebarLinks = () => {
               ];
             }
           }
-          // if (
-          //     userInfo?.permissions?.some(
-          //         (someItem) => someItem.menu === "Communication"
-          //     )
-          // ) {
-          //     if (ValidatePermissionPage("Communication")) {
-          //         addLinks = [
-          //             ...addLinks,
-          //             {
-          //                 name: "communication",
-          //                 url: "/admin/communication",
-          //                 ActiveName: "communication",
-          //             },
-          //         ];
-          //     }
-          // }
           if (
             userInfo?.permissions?.some(
               (someItem) =>
@@ -341,20 +324,23 @@ export const SidebarLinks = () => {
             ];
           }
 
-          addLinks.splice(2, 0, {
-            name: "Check Warehouse",
-            url: "/finance/check-warehouse/check-receivables/check-schedule",
-            ActiveName: "check-warehouse",
-          });
+          if (
+            userInfo?.permissions?.some(
+              (someItem) => someItem.menu === "Check Receivables"
+            )
+          ) {
+            addLinks.splice(2, 0, {
+              name: "Check Warehouse",
+              url: "/finance/check-warehouse/check-receivables/check-schedule",
+              ActiveName: "check-warehouse",
+            });
+          }
 
           const urlRedirect = FinanceRedirect(`${addLinks[0]?.name}`, userInfo);
 
           return {
             ...item,
-            url:
-              addLinks.length > 0 && urlRedirect !== undefined
-                ? urlRedirect
-                : "/finance/check-warehouse/check-payment",
+            url: urlRedirect,
             SubMenu: [...addLinks, ...item.SubMenu],
           };
         }
@@ -372,6 +358,7 @@ export const SidebarLinks = () => {
         userInfo?.corporate_id !== undefined
       ) {
         const cloneOtherUser = clone.filter((item) => item.name !== "project");
+
         const removeNoSubMenu = cloneOtherUser.filter(
           (filterItem) => filterItem.SubMenu.length > 0
         );
